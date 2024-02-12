@@ -18,10 +18,12 @@ module DocAuth
 
       def use_uploaded_file(upload_file_content)
         @uploaded_file = upload_file_content
+        @uploaded_file_present = upload_file_content.present?
         @parsed_uploaded_file = parse_yaml(@uploaded_file).deep_symbolize_keys
+        is_binary_file = !upload_file_content.ascii_only?
         upload_failed_alerts = @parsed_uploaded_file.dig(:failed_alerts) ||
                                @parsed_uploaded_file.dig(:failed_alert)
-        pii = @parsed_uploaded_file[:document]
+        pii = @parsed_uploaded_file[:document] || {}
         pii_available = !pii.blank?
         if pii_available
           set_doc_auth_result('Passed')
@@ -40,8 +42,11 @@ module DocAuth
           set_check_status('2D Barcode Read', 'Passed')
           update_with_yaml(@parsed_uploaded_file)
         end
-        set_pii(pii)
-        clean_up_pii(pii)
+        if @uploaded_file_present
+          set_pii(pii)
+          # when using image, we do not remove data
+          clean_up_pii(pii) unless is_binary_file
+        end
       end
 
       def failed_input_alerts
@@ -75,6 +80,7 @@ module DocAuth
       )
         details = param_details
         target_details = details.select { |d| d[:Group] == 'AUTHENTICATION_RESULT' }
+        # rubocop:disable Metrics/BlockLength
         target_details.each do |d|
           case d[:Name]
           when 'DocumentName'
@@ -104,6 +110,7 @@ module DocAuth
           when 'ExpirationDate_Day'
             set_value(detail: d, value: expire_date.day.to_s) unless expire_date.blank?
           end
+          # rubocop:enable Metrics/BlockLength
         end
       end
 
@@ -178,6 +185,7 @@ module DocAuth
         grp_name = 'IDAUTH_FIELD_DATA'
         details = param_details
         target_details = details.select { |d| d[:Group] == grp_name }
+        # rubocop:disable Metrics/BlockLength
         target_details.each do |d|
           case d[:Name]
           when 'Fields_DocumentClassName'
@@ -209,6 +217,7 @@ module DocAuth
             set_value(detail: d, value: issuing_day&.to_s)
           end
         end
+        # rubocop:enable Metrics/BlockLength
       end
 
       def set_issuing_country_code(
@@ -338,6 +347,7 @@ module DocAuth
         target_details = details.select { |d| d[:Group] == grp_name }
         front = front_data&.symbolize_keys
         back = back_data&.symbolize_keys
+        # rubocop:disable Metrics/BlockLength
         target_details.each do |d|
           name = d[:Name]
           case name
@@ -368,6 +378,7 @@ module DocAuth
             d[:Values][1][:Value] = 1 unless !!w
           end
         end
+        # rubocop:enable Metrics/BlockLength
       end
 
       def set_transaction_status(
@@ -813,8 +824,10 @@ module DocAuth
 
       def clean_up_pii(pii)
         # pii non empty
-        return if pii.blank?
-        missing_keys = %i[first_name last_name address1 dob city state zipcode] - pii.keys
+        return if pii.nil?
+        missing_keys = %i[first_name last_name address1 address2 dob city state zipcode
+                          state_id_number state_id_type state_id_expiration state_id_issued
+                          state_id_jurisdiction issuing_country_code middle_name] - pii.keys
         id_auth_fields_missing = []
         missing_keys.each do |missing_key|
           case missing_key
@@ -822,12 +835,17 @@ module DocAuth
             id_auth_fields_missing << pii_field_name(:dob_year)
             id_auth_fields_missing << pii_field_name(:dob_month)
             id_auth_fields_missing << pii_field_name(:dob_day)
-          when :address1
-            id_auth_fields_missing << pii_field_name(:address1)
-          when :first_name
-            id_auth_fields_missing << pii_field_name(:first_name)
-          when :last_name
-            id_auth_fields_missing << pii_field_name(:last_name)
+          when :state_id_expiration
+            id_auth_fields_missing << pii_field_name(:state_id_expiration_year)
+            id_auth_fields_missing << pii_field_name(:state_id_expiration_month)
+            id_auth_fields_missing << pii_field_name(:state_id_expiration_day)
+          when :state_id_issued
+            id_auth_fields_missing << pii_field_name(:state_id_issued_year)
+            id_auth_fields_missing << pii_field_name(:state_id_issued_month)
+            id_auth_fields_missing << pii_field_name(:state_id_issued_day)
+          else
+            field_name = pii_field_name(missing_key)
+            id_auth_fields_missing << field_name if field_name.present?
           end
         end
         remove_id_auth_fields(id_auth_fields_missing)

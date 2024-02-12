@@ -5,14 +5,14 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::TrueIdMockClient do
   let(:warn_notifier) { instance_double('Proc') }
   let(:config) do
-    DocAuth::Mock::Config.new(
+    {
       dpi_threshold: 290,
       sharpness_threshold: 40,
       glare_threshold: 40,
       warn_notifier: warn_notifier,
-    )
+    }
   end
-  let(:client) { described_class.new(config) }
+  let(:client) { described_class.new(**config) }
 
   let(:input_with_alerts) do
     <<~YAML
