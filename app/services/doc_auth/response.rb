@@ -41,6 +41,7 @@ module DocAuth
         pii_from_doc: pii_from_doc.merge(other.pii_from_doc),
         attention_with_barcode: attention_with_barcode? || other.attention_with_barcode?,
         doc_type_supported: doc_type_supported? || other.doc_type_supported?,
+        selfie_status: selfie_status,
         selfie_live: selfie_live?,
         selfie_quality_good: selfie_quality_good?,
       )
