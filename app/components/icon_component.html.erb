@@ -4,7 +4,7 @@
       focusable: 'false',
       role: 'img',
       **tag_options,
-      class: ['usa-icon', *tag_options[:class]],
+      class: css_class,
     ) do %>
   <use href="<%= icon_path %>"></use>
 <% end %>

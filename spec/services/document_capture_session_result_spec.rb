@@ -10,6 +10,8 @@ RSpec.describe DocumentCaptureSessionResult do
       result = DocumentCaptureSessionResult.new(
         id: id,
         success: success,
+        doc_auth_success: success,
+        selfie_status: :success,
         pii: pii,
         attention_with_barcode: false,
       )
@@ -20,6 +22,8 @@ RSpec.describe DocumentCaptureSessionResult do
       expect(loaded_result.success?).to eq(success)
       expect(loaded_result.pii).to eq(pii.deep_symbolize_keys)
       expect(loaded_result.attention_with_barcode?).to eq(false)
+      expect(loaded_result.selfie_status).to eq(:success)
+      expect(loaded_result.doc_auth_success).to eq(true)
     end
     it 'add fingerprint with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
@@ -45,6 +49,76 @@ RSpec.describe DocumentCaptureSessionResult do
           selfie_status: 'success',
         )
         expect(result.selfie_status).to be_an_instance_of(Symbol)
+      end
+    end
+
+    describe '#success?' do
+      it 'reports true when doc_auth_success is true and selfie_status is :not_processed' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: false,
+          pii: pii,
+          attention_with_barcode: false,
+          selfie_status: :not_processed,
+          doc_auth_success: true,
+        )
+        expect(result.success?).to eq(true)
+      end
+      it 'reports correctly from false when missing doc_auth_success and selfie_status' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: true,
+          pii: pii,
+          attention_with_barcode: false,
+        )
+        expect(result.success?).to eq(false)
+      end
+      it 'reports failure when selfie_status is :fail' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: false,
+          pii: pii,
+          attention_with_barcode: false,
+          selfie_status: :fail,
+          doc_auth_success: true,
+        )
+        expect(result.success?).to eq(false)
+      end
+
+      it 'reports failure when doc_auth_success is false' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: false,
+          pii: pii,
+          attention_with_barcode: false,
+          selfie_status: :success,
+          doc_auth_success: false,
+        )
+        expect(result.success?).to eq(false)
+      end
+
+      describe 'when success field, doc_auth_success, and selfie_status conflict' do
+        it 'reports correct result' do
+          result = DocumentCaptureSessionResult.new(
+            id: id,
+            success: false,
+            pii: pii,
+            attention_with_barcode: false,
+            selfie_status: :not_processed,
+            doc_auth_success: true,
+          )
+          expect(result.success?).to eq(true)
+
+          result = DocumentCaptureSessionResult.new(
+            id: id,
+            success: true,
+            pii: pii,
+            attention_with_barcode: false,
+            selfie_status: :fail,
+            doc_auth_success: true,
+          )
+          expect(result.success?).to eq(false)
+        end
       end
     end
   end

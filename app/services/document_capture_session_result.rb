@@ -10,13 +10,11 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :failed_back_image_fingerprints,
   :failed_selfie_image_fingerprints,
   :captured_at,
-  :selfie_check_performed,
-  :doc_auth_success, :selfie_status, :selfie_success,
+  :doc_auth_success, :selfie_status,
   keyword_init: true,
   allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
                     :failed_back_image_fingerprints, :failed_selfie_image_fingerprints,
-                    :captured_at, :selfie_check_performed, :doc_auth_success, :selfie_status,
-                    :selfie_success]
+                    :captured_at, :doc_auth_success, :selfie_status]
 ) do
   include DocAuth::SelfieConcern
 
@@ -28,7 +26,12 @@ DocumentCaptureSessionResult = RedactedStruct.new(
     self[:selfie_status].to_sym
   end
 
-  alias_method :success?, :success
+  def success_status
+    # doc_auth_success : including document, attention_with_barcode and id type verification
+    !!doc_auth_success && selfie_status != :fail
+  end
+
+  alias_method :success?, :success_status
   alias_method :attention_with_barcode?, :attention_with_barcode
   alias_method :pii_from_doc, :pii
 

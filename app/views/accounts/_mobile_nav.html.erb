@@ -1,6 +1,7 @@
 <nav class="usa-nav tablet:display-none sidenav-mobile" aria-label="<%= t('account.navigation.landmark_label') %>">
   <div class="usa-nav__inner">
     <button class="usa-nav__close">
+      <%= render IconComponent.new(icon: :close, size: 3) %>
       <span class="usa-sr-only">
         <%= t('account.navigation.close') %>
       </span>

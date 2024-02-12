@@ -39,5 +39,6 @@
   },
   "peerDependencies": {
     "prettier": ">=3"
-  }
+  },
+  "sideEffects": false
 }

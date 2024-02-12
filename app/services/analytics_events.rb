@@ -412,11 +412,13 @@ module AnalyticsEvents
   # Logs after an email is sent
   # @param [String] action type of email being sent
   # @param [String, nil] ses_message_id AWS SES Message ID
-  def email_sent(action:, ses_message_id:, **extra)
+  # @param [Integer] email_address_id Database identifier for email address record
+  def email_sent(action:, ses_message_id:, email_address_id:, **extra)
     track_event(
       'Email Sent',
       action: action,
       ses_message_id: ses_message_id,
+      email_address_id: email_address_id,
       **extra,
     )
   end
@@ -605,14 +607,6 @@ module AnalyticsEvents
       profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       **extra,
     )
-  end
-
-  # An uncaught error occurred in frontend JavaScript
-  # @param [String] name
-  # @param [String] message
-  # @param [String] stack
-  def frontend_error(name:, message:, stack: nil, **_extra)
-    track_event('Frontend Error', name:, message:, stack:)
   end
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
@@ -3636,12 +3630,14 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
+  # @param [Array] vtr
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
+    vtr:,
     unauthorized_scope:,
     user_fully_authenticated:,
     **extra
@@ -3651,6 +3647,7 @@ module AnalyticsEvents
       client_id: client_id,
       scope: scope,
       acr_values: acr_values,
+      vtr: vtr,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
       **extra,
@@ -4052,6 +4049,17 @@ module AnalyticsEvents
     track_event('Reactivate Account Submitted')
   end
 
+  # Submission event for the "verify password" page the user sees after entering their personal key.
+  # @param [Boolean] success Whether the form was submitted successfully.
+  def reactivate_account_verify_password_submitted(success:, **extra)
+    track_event(:reactivate_account_verify_password_submitted, success: success, **extra)
+  end
+
+  # Visit event for the "verify password" page the user sees after entering their personal key.
+  def reactivate_account_verify_password_visited(**extra)
+    track_event(:reactivate_account_verify_password_visited, **extra)
+  end
+
   # Account profile reactivation page visited
   def reactivate_account_visit
     track_event('Reactivate Account Visited')
@@ -4427,11 +4435,13 @@ module AnalyticsEvents
   # Tracks when a user is redirected back to the service provider
   # @param [Integer] ial
   # @param [Integer] billed_ial
-  def sp_redirect_initiated(ial:, billed_ial:, **extra)
+  # @param [String, nil] sign_in_flow
+  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, **extra)
     track_event(
       'SP redirect initiated',
-      ial: ial,
-      billed_ial: billed_ial,
+      ial:,
+      billed_ial:,
+      sign_in_flow:,
       **extra,
     )
   end

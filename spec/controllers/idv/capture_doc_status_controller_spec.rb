@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Idv::CaptureDocStatusController do
   let(:user) { build(:user) }
-
   let(:doc_auth_response) do
     DocAuth::Response.new(
       success: true,
@@ -31,6 +30,8 @@ RSpec.describe Idv::CaptureDocStatusController do
   end
 
   before do
+    allow(doc_auth_response).to receive(:doc_auth_success?).and_return(true)
+    allow(doc_auth_response).to receive(:selfie_status).and_return(:success)
     stub_sign_in(user) if user
   end
 
