@@ -16,9 +16,11 @@ module DocAuth
         set_image_metrics(default_data[:image_metrics][:front], default_data[:image_metrics][:back])
       end
 
+      CHECK_2D_BARCODE_READ = '2D Barcode Read'
+
       def use_uploaded_file(upload_file_content)
         @uploaded_file = upload_file_content
-        @uploaded_file_present = upload_file_content.present?
+        @uploaded_file_present = !upload_file_content.nil?
         @parsed_uploaded_file = parse_yaml(@uploaded_file).deep_symbolize_keys
         is_binary_file = !upload_file_content.ascii_only?
         upload_failed_alerts = @parsed_uploaded_file.dig(:failed_alerts) ||
@@ -27,30 +29,23 @@ module DocAuth
         pii_available = !pii.blank?
         if pii_available
           set_doc_auth_result('Passed')
-          set_check_status('2D Barcode Read', 'Passed')
-          update_with_yaml(@parsed_uploaded_file)
+          set_check_status(CHECK_2D_BARCODE_READ, 'Passed')
         elsif upload_failed_alerts.nil?
-          update_with_yaml(@parsed_uploaded_file)
-          set_check_status('2D Barcode Read', 'Failed')
+          set_check_status(CHECK_2D_BARCODE_READ, 'Failed')
           set_doc_auth_result('Failed')
-        elsif upload_failed_alerts.blank?
+        elsif upload_failed_alerts.empty?
           set_doc_auth_result('Passed')
-          set_check_status('2D Barcode Read', 'Passed')
-          update_with_yaml(@parsed_uploaded_file)
+          set_check_status(CHECK_2D_BARCODE_READ, 'Passed')
         else
           set_doc_auth_result('Failed')
-          set_check_status('2D Barcode Read', 'Passed')
-          update_with_yaml(@parsed_uploaded_file)
+          set_check_status(CHECK_2D_BARCODE_READ, 'Passed')
         end
+        update_with_yaml(@parsed_uploaded_file)
         if @uploaded_file_present
           set_pii(pii)
           # when using image, we do not remove data
           clean_up_pii(pii) unless is_binary_file
         end
-      end
-
-      def failed_input_alerts
-        process_input_alerts
       end
 
       def alert_idx(alert_name)
@@ -342,6 +337,7 @@ module DocAuth
       def set_image_metrics(
         front_data, back_data
       )
+        return if front_data.blank? && back_data.blank?
         grp_name = 'IMAGE_METRICS_RESULT'
         details = param_details
         target_details = details.select { |d| d[:Group] == grp_name }
@@ -416,13 +412,13 @@ module DocAuth
         target_details.each do |d|
           case d[:Name]
           when 'Fields_ExpirationDate_Month'
-            v = expire_date&.month.to_s
+            v = expire_date.month.to_s
             set_value(detail: d, value: v)
           when 'Fields_xpirationDate_Day'
-            v = expire_date&.day.to_s
+            v = expire_date.day.to_s
             set_value(detail: d, value: v)
           when 'Fields_ExpirationDate_Year'
-            v = expire_date&.year.to_s
+            v = expire_date.year.to_s
             set_value(detail: d, value: v)
           end
         end
@@ -533,7 +529,7 @@ module DocAuth
         # rubocop:enable Layout/LineLength
       end
 
-      def with_default_pii
+      def with_random_pii
         # Faker::Config.random = Random.new(42)
         last_name = Faker::Name.last_name
         first_name = Faker::Name.first_name
@@ -818,8 +814,9 @@ module DocAuth
       public def parse_yaml(uploaded_file)
         data = default_data.clone
         data[:failed_alerts] = []
-        data = uploaded_file.ascii_only? ? uploaded_file : data.deep_stringify_keys.to_yaml
-        super(data)
+        serialized_data = uploaded_file.ascii_only? ?
+                            uploaded_file : data.deep_stringify_keys.to_yaml
+        super(serialized_data)
       end
 
       def clean_up_pii(pii)
