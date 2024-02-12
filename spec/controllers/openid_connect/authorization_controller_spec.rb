@@ -1049,20 +1049,22 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
       it 'redirects to SP landing page with the request_id in the params' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: authorization request',
-               success: true,
-               client_id: client_id,
-               prompt: 'select_account',
-               referer: nil,
-               allow_prompt_login: true,
-               errors: {},
-               unauthorized_scope: true,
-               user_fully_authenticated: false,
-               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-               code_challenge_present: false,
-               service_provider_pkce: nil,
-               scope: 'openid',
-               vtr: nil)
+          with(
+            'OpenID Connect: authorization request',
+            success: true,
+            client_id: client_id,
+            prompt: 'select_account',
+            referer: nil,
+            allow_prompt_login: true,
+            errors: {},
+            unauthorized_scope: true,
+            user_fully_authenticated: false,
+            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+            code_challenge_present: false,
+            service_provider_pkce: nil,
+            scope: 'openid',
+            vtr: nil,
+          )
 
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
@@ -1076,7 +1078,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
-          aal_level_requested: 1, # ToDo: Get Hooper's opinion
+          aal_level_requested: 1,
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           piv_cac_requested: false,
           phishing_resistant_requested: false,
