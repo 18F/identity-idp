@@ -92,7 +92,7 @@ class ImageUploadResponsePresenter
   end
 
   def show_selfie_failures
-    @form_response.extra[:liveness_checking_required] == true
+    @form_response.extra[:liveness_enabled] == true
   end
 
   def selfie_status
