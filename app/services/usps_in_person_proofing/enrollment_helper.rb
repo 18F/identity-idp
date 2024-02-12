@@ -30,6 +30,7 @@ module UspsInPersonProofing
           second_address_line_present: pii[:address2].present?,
           service_provider: enrollment.service_provider&.issuer,
           opted_in_to_in_person_proofing: opt_in,
+          tmx_status: enrollment&.profile&.fraud_pending_reason || :pass,
         )
 
         send_ready_to_verify_email(user, enrollment)
