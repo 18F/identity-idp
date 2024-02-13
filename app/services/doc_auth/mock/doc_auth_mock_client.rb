@@ -77,7 +77,7 @@ module DocAuth
 
         get_results(
           instance_id: instance_id,
-          selfie_required: !selfie_image.blank? || liveness_checking_required,
+          selfie_required: liveness_checking_required,
         )
       end
 
