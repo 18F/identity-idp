@@ -71,7 +71,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         attach_images
         submit_images
         expect(page).to have_current_path(idv_ssn_path)
-
       end
     end
 
