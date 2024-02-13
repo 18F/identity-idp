@@ -15,23 +15,8 @@ module Reporting
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
+
     EVENT = 'Multi-Factor Authentication'
-
-    module Methods
-      def self.all_methods
-        TwoFactorAuthenticatable::AuthMethod.constants.map do |c|
-          next if c == :PHISHING_RESISTANT_METHODS || c == :REMEMBER_DEVICE
-
-          if c == :PERSONAL_KEY
-            # The AuthMethod constant defines this as `personal_key`
-            # but in the events it is `personal-key`
-            'personal-key'
-          else
-            TwoFactorAuthenticatable::AuthMethod.const_get(c)
-          end
-        end.compact
-      end
-    end
 
     # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
