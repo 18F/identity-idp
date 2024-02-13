@@ -74,8 +74,10 @@ module DocAuth
             include_liveness? ?
               config.trueid_liveness_nocropping_workflow :
               config.trueid_noliveness_nocropping_workflow
-          elsif !include_liveness?
-            config.trueid_noliveness_cropping_workflow
+          else
+            include_liveness? ?
+              config.trueid_liveness_cropping_workflow :
+              config.trueid_noliveness_cropping_workflow
           end
         end
 
