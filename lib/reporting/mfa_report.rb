@@ -15,7 +15,6 @@ module Reporting
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
-
     EVENT = 'Multi-Factor Authentication'
 
     # @param [Array<String>] issuers
