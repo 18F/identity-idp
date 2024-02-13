@@ -3,17 +3,23 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::ReadyToVerifyController do
   let(:user) { create(:user) }
   let(:in_person_proofing_enabled) { false }
+  let(:in_person_proofing_enforce_tmx) { false }
 
   before do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+      and_return(in_person_proofing_enforce_tmx)
   end
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
-      expect(subject).to have_actions(:before, :confirm_two_factor_authenticated)
+      expect(subject).to have_actions(
+        :before, :confirm_two_factor_authenticated,
+        :handle_fraud
+      )
     end
   end
 
@@ -43,6 +49,45 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           response
 
           expect(@analytics).to have_logged_event('IdV: in person ready to verify visited')
+        end
+
+        context 'with in_person_proofing_enforce_tmx disabled and pending fraud review' do
+          let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
+          let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
+          it 'redirects to please call page' do
+            response
+
+            expect(response).not_to render_template :show
+            expect(response).to redirect_to idv_please_call_url
+          end
+        end
+
+        context 'in_person_proofing_enforce_tmx enabled, pending fraud review, enrollment passed' do
+          let(:in_person_proofing_enforce_tmx) { true }
+          let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
+          let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
+
+          it 'redirects to please call' do
+            response
+
+            expect(response).to redirect_to idv_please_call_url
+          end
+        end
+
+        context 'in_person_proofing_enforce_tmx enabled, pending fraud review,
+          enrollment not passed' do
+          let(:in_person_proofing_enforce_tmx) { true }
+          let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
+          let!(:enrollment) do
+            create(:in_person_enrollment, :establishing, user: user, profile: profile)
+          end
+
+          it 'does not redirect to please call' do
+            response
+
+            expect(response).to render_template :show
+            expect(response).not_to redirect_to idv_please_call_url
+          end
         end
       end
     end
