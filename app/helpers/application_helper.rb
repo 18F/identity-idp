@@ -23,7 +23,10 @@ module ApplicationHelper
   end
 
   def extends_layout(layout, **locals, &block)
-    @view_flow.get(:layout).replace capture(&block) # rubocop:disable Rails/HelperInstanceVariable
+    if block.present?
+      @view_flow.get(:layout).replace capture(&block) # rubocop:disable Rails/HelperInstanceVariable
+    end
+
     render template: "layouts/#{layout}", locals:
   end
 

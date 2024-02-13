@@ -31,15 +31,36 @@ RSpec.feature 'OIDC Authorization Confirmation', allowed_extra_analytics: [:*] d
       user1
     end
 
-    it 'it confirms the user wants to continue to SP with signin email after signing in again' do
-      second_email = create(:email_address, user: user1)
-      sign_in_user(user1, second_email.email)
-      visit_idp_from_ial1_oidc_sp
-      expect(current_url).to match(user_authorization_confirmation_path)
-      expect(page).to have_content second_email.email
+    shared_examples 'signin email after signing in again' do
+      it 'it confirms the user wants to continue to SP' do
+        second_email = create(:email_address, user: user1)
+        sign_in_user(user1, second_email.email)
+        visit_idp_from_ial1_oidc_sp
+        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_content second_email.email
 
-      continue_as(second_email.email)
-      expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
+        continue_as(second_email.email)
+        expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
+      end
+    end
+
+    it_behaves_like 'signin email after signing in again'
+
+    context 'with client-side redirect' do
+      before do
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
+      end
+
+      it_behaves_like 'signin email after signing in again'
+    end
+
+    context 'with client-side javascript redirect' do
+      before do
+        allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+          and_return('client_side_js')
+      end
+
+      it_behaves_like 'signin email after signing in again'
     end
 
     it 'it allows the user to switch accounts prior to continuing to the SP' do
