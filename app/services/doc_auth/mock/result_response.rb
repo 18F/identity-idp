@@ -7,9 +7,10 @@ module DocAuth
 
       attr_reader :uploaded_file, :config
 
-      def initialize(uploaded_file, config)
+      def initialize(uploaded_file, config, selfie_required = false)
         @uploaded_file = uploaded_file.to_s
         @config = config
+        @selfie_required = selfie_required
         super(
           success: success?,
           errors: errors,
@@ -138,8 +139,12 @@ module DocAuth
       end
 
       def selfie_status
-        return :not_processed if portrait_match_results&.dig(:FaceMatchResult).nil?
-        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
+        if @selfie_required
+          return :success if portrait_match_results&.dig(:FaceMatchResult).nil?
+          portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
+        else
+          :not_processed
+        end
       end
 
       private
