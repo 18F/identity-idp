@@ -664,7 +664,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       let(:image_source) { nil }
 
       before do
-        expect_any_instance_of(DocAuth::Mock::TrueIdMockClient).
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).
           with(hash_including(image_source: image_source)).
           and_call_original

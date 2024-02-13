@@ -199,12 +199,15 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
+    when 'true_id_mock'
+      DocAuthErrorTranslatorProxy.new(
+        DocAuth::Mock::TrueIdMockClient.new(
+          warn_notifier: warn_notifier,
+        ),
+      )
     when Idp::Constants::Vendors::MOCK
       DocAuthErrorTranslatorProxy.new(
-        # DocAuth::Mock::DocAuthMockClient.new(
-        #   warn_notifier: warn_notifier,
-        # ),
-        DocAuth::Mock::TrueIdMockClient.new(
+        DocAuth::Mock::DocAuthMockClient.new(
           warn_notifier: warn_notifier,
         ),
       )
