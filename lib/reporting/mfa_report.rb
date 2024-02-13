@@ -15,14 +15,7 @@ module Reporting
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
-
-    module Events
-      MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'
-
-      def self.all_events
-        constants.map { |c| const_get(c) }
-      end
-    end
+    EVENT = 'Multi-Factor Authentication'
 
     module Methods
       def self.all_methods
@@ -110,34 +103,32 @@ module Reporting
     def query
       params = {
         issuers: quote(issuers),
-        event_names: quote(Events.all_events),
-        fields:,
-        stats:,
+        event: quote(EVENT),
       }
 
       format(<<~QUERY, params)
-        fields %{fields}
+        fields properties.event_properties.multi_factor_auth_method = 'backup_code' as backup_code,
+          properties.event_properties.multi_factor_auth_method = 'voice' as voice,
+          properties.event_properties.multi_factor_auth_method = 'webauthn' as webauthn,
+          properties.event_properties.multi_factor_auth_method = 'webauthn_platform' as webauthn_platform,
+          properties.event_properties.multi_factor_auth_method = 'personal-key' as personal_key,
+          properties.event_properties.multi_factor_auth_method = 'totp' as totp,
+          properties.event_properties.multi_factor_auth_method = 'piv_cac' as piv_cac,
+          properties.event_properties.multi_factor_auth_method = 'sms' as sms
         | filter properties.service_provider IN %{issuers}
-        | filter name in %{event_names} and not properties.event_properties.confirmation_for_add_phone and properties.event_properties.context != 'reauthentication'
+        | filter name = %{event}
+          AND NOT properties.event_properties.confirmation_for_add_phone
+          AND properties.event_properties.context != 'reauthentication'
         | filter properties.event_properties.success = '1'
-        | stats %{stats}
+        | stats sum(backup_code) as `backup_code_total`,
+          sum(voice) as `voice_total`,
+          sum(webauthn) as `webauthn_total`,
+          sum(webauthn_platform) as `webauthn_platform_total`,
+          sum(personal_key) as `personal_key_total`,
+          sum(totp) as `totp_total`,
+          sum(piv_cac) as `piv_cac_total`,
+          sum(sms) as `sms_total`
       QUERY
-    end
-
-    def fields
-      Methods.all_methods.map do |method|
-        # Cloudwatch doesn't like the hyphen in personal-key
-        no_hypen_method = method.tr('-', '_')
-        'properties.event_properties.multi_factor_auth_method = ' +
-          "#{method}' as #{no_hypen_method}"
-      end.join(', ')
-    end
-
-    def stats
-      Methods.all_methods.map do |method|
-        m = method.tr('-', '_')
-        "sum(#{m}) as `#{m + '_total'}`"
-      end.join(', ')
     end
 
     def cloudwatch_client
