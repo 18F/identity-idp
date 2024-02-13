@@ -79,21 +79,24 @@ RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
       expect(status).to eq('Failed')
       json = subject.build
       dob_month = get_id_auth_data(json, 'DOB_Month')
-      expect(dob_month).to eq('10')
+      # pii removed when not specifying
+      expect(dob_month).to eq(nil)
     end
   end
 end
 
 def get_id_auth_data(json, field_name)
+  return nil if json.blank?
   # rubocop:disable Layout/LineLength
   path = "Products[].ParameterDetails[?Group=='IDAUTH_FIELD_DATA' && Name=='Fields_#{field_name}'].Values[0]"
   # rubocop:enable Layout/LineLength
-  JMESPath.search(path, JSON.parse(json))[0][0]['Value']
+  JMESPath.search(path, JSON.parse(json))&.dig(0, 0, 'Value')
 end
 
 def get_auth_result(json, field_name)
+  return nil if json.blank?
   # rubocop:disable Layout/LineLength
   path = "Products[].ParameterDetails[?Group=='AUTHENTICATION_RESULT' && Name=='#{field_name}'].Values[0]"
   # rubocop:enable Layout/LineLength
-  JMESPath.search(path, JSON.parse(json))[0][0]['Value']
+  JMESPath.search(path, JSON.parse(json))&.dig(0, 0, 'Value')
 end
