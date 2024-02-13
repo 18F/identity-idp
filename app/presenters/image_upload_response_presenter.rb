@@ -96,7 +96,7 @@ class ImageUploadResponsePresenter
   end
 
   def selfie_status
-    @form_response.respond_to?(:selfie_status) ? @form_response.selfie_status : true
+    @form_response.respond_to?(:selfie_status) ? @form_response.selfie_status : :not_processed
   end
 
   def selfie_live?
