@@ -1,7 +1,5 @@
 <% self.title = t('headings.redirecting') %>
 
-<%= content_for(:head) do %>
-  <meta content="0;url=<%= @oidc_redirect_uri %>" http-equiv="refresh" />
-<% end %>
+<%= content_for(:meta_refresh, "0;url=#{@oidc_redirect_uri}") %>
 
 <%= extends_layout :base %>
