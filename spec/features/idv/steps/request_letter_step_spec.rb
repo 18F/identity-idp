@@ -32,6 +32,12 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
 
+    before do
+      # Without this, the check for GPO expiration leaves an expired
+      # OTP rate limiter laying around.
+      allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
+    end
+
     it 'if not rate limited, allow user to resend letter & redirect to letter enqueued step', :js do
       complete_idv_by_mail_and_sign_out
 

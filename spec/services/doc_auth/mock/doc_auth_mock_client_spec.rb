@@ -193,6 +193,11 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         failed_alerts: []
       YAML
 
+      image_no_setting = <<~YAML
+        doc_auth_result: Passed
+        failed_alerts: []
+      YAML
+
       it 'sets selfie_check_performed to true' do
         response = client.post_images(
           front_image: image,
@@ -203,6 +208,19 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
         expect(response.selfie_check_performed?).to be(true)
         expect(response.extra).to have_key(:portrait_match_results)
+      end
+
+      it 'returns selfie status with default setting' do
+        response = client.post_images(
+          front_image: image_no_setting,
+          back_image: image_no_setting,
+          liveness_checking_required: liveness_checking_required,
+          selfie_image: image_no_setting,
+        )
+
+        expect(response.selfie_check_performed?).to be(true)
+        expect(response.selfie_status).to eq(:success)
+        expect(response.extra).to_not have_key(:portrait_match_results)
       end
     end
 

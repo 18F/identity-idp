@@ -522,7 +522,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
     end
 
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-    let(:aal_level) { 0 }
+    let(:aal_level) { 1 }
     let(:ial2_settings) do
       saml_settings(
         overrides: {
