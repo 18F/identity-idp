@@ -32,7 +32,7 @@ RSpec.feature 'OIDC Authorization Confirmation', allowed_extra_analytics: [:*] d
     end
 
     shared_examples 'signin email after signing in again' do
-      it 'it confirms the user wants to continue to SP' do
+      it 'confirms the user wants to continue to SP' do
         second_email = create(:email_address, user: user1)
         sign_in_user(user1, second_email.email)
         visit_idp_from_ial1_oidc_sp
