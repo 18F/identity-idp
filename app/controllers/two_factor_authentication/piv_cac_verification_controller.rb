@@ -34,6 +34,7 @@ module TwoFactorAuthentication
         success: result.success?,
         subject_dn: piv_cac_verification_form.x509_dn,
       )
+      session[:sign_in_flow] = :sign_in
       if result.success?
         handle_valid_piv_cac
       else

@@ -61,8 +61,7 @@ module Users
 
     def remove_piv_cac
       revoke_remember_device(current_user)
-      current_user_id = current_user.id
-      Db::PivCacConfiguration.delete(current_user_id, params[:id].to_i)
+      current_user.piv_cac_configurations.where(id: params[:id].to_i).delete_all
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
     end

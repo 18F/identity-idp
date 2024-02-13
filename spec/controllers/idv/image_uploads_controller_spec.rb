@@ -1240,6 +1240,14 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             field: 'dob',
             message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
           },
+          {
+            field: 'front',
+            message: I18n.t('doc_auth.errors.general.multiple_front_id_failures'),
+          },
+          {
+            field: 'back',
+            message: I18n.t('doc_auth.errors.general.multiple_back_id_failures'),
+          },
         ]
       end
     end

@@ -15,7 +15,7 @@ module DocAuth
 
         handle_http_response(http_response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
-        handle_connection_error(e)
+        handle_connection_error(exception: e)
       end
 
       def metric_name
@@ -45,10 +45,20 @@ module DocAuth
         ].join(' ')
         exception = DocAuth::RequestError.new(message, http_response.status)
 
-        handle_connection_error(exception)
+        response_body = begin
+          http_response.body.present? ? JSON.parse(http_response.body) : {}
+        rescue JSON::JSONError
+          {}
+        end
+
+        handle_connection_error(
+          exception: exception,
+          status_code: response_body.dig('status', 'code'),
+          status_message: response_body.dig('status', 'message'),
+        )
       end
 
-      def handle_connection_error(exception)
+      def handle_connection_error(exception:, status_code: nil, status_message: nil)
         NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
@@ -58,7 +68,9 @@ module DocAuth
             vendor: 'TrueID',
             selfie_live: false,
             selfie_quality_good: false,
-          },
+            vendor_status_code: status_code,
+            vendor_status_message: status_message,
+          }.compact,
         )
       end
 
