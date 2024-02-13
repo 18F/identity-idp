@@ -18,6 +18,7 @@ module DocAuth
       pii_from_doc: {},
       attention_with_barcode: false,
       doc_type_supported: true,
+      selfie_status: :not_processed,
       selfie_live: true,
       selfie_quality_good: true
     )
@@ -28,6 +29,7 @@ module DocAuth
       @pii_from_doc = pii_from_doc
       @attention_with_barcode = attention_with_barcode
       @doc_type_supported = doc_type_supported
+      @selfie_status = selfie_status
       @selfie_live = selfie_live
       @selfie_quality_good = selfie_quality_good
     end
