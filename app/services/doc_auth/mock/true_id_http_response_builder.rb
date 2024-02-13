@@ -683,10 +683,6 @@ module DocAuth
         end
       end
 
-      def failed_alerts
-        re
-      end
-
       def read_fixture_file_at_path(filepath)
         expanded_path = Rails.root.join(
           'spec',
@@ -701,16 +697,6 @@ module DocAuth
 
       def parse_template
         @parsed_template = JSON.parse(@template, symbolize_names: true)
-      end
-
-      def parsed_data_from_uploaded_file
-        return @parsed_data_from_uploaded_file if defined?(@parsed_data_from_uploaded_file)
-
-        @parsed_data_from_uploaded_file = parse_yaml(@uploaded_file)
-      end
-
-      def parsed_input_alerts
-        parsed_data_from_uploaded_file&.dig('failed_alerts')
       end
 
       def set_value(detail:, value:, default_value: '')
