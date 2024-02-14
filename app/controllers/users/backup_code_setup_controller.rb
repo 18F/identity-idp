@@ -15,8 +15,14 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def index
-      create
-      render action: 'create'
+      generate_codes
+      result = BackupCodeSetupForm.new(current_user).submit
+      visit_result = result.to_h.merge(analytics_properties_for_visit)
+      analytics.backup_code_setup_visit(**visit_result)
+      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
+
+      save_backup_codes
+      track_backup_codes_created
     end
 
     def create
@@ -28,7 +34,6 @@ module Users
 
       save_backup_codes
       track_backup_codes_created
-      analytics.multi_factor_auth_setup(**analytics_properties)
     end
 
     def edit
@@ -37,6 +42,7 @@ module Users
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
+      analytics.multi_factor_auth_setup(**analytics_properties)
       redirect_to next_setup_path || after_mfa_setup_path
     end
 
