@@ -18,9 +18,9 @@ RSpec.describe IconComponent, type: :component do
 
     expect(icon).to be_present
     expect(inline_style).to match(%r{##{id}\s{.+?}}).
-      and include('-webkit-mask-image:').
-      and include('mask-image:').
-      and match(%r{url\([^)]+/print-\w+\.svg\)})
+      and(include('-webkit-mask-image:')).
+      and(include('mask-image:')).
+      and(match(%r{url\([^)]+/print-\w+\.svg\)}))
   end
 
   context 'with invalid icon' do
