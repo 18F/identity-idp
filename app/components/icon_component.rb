@@ -255,7 +255,7 @@ class IconComponent < BaseComponent
   end
 
   def css_class
-    classes = ['usa-icon', *tag_options[:class]]
+    classes = ['icon', 'usa-icon', *tag_options[:class]]
     classes << "usa-icon--size-#{size}" if size
     classes
   end

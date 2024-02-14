@@ -1,4 +1,4 @@
 <%= content_tag(:span, '', **tag_options, id: "icon-#{unique_id}", class: css_class) %>
 <%= content_tag(:style, nonce: content_security_policy_nonce) do %>
-  <%= "#icon-#{unique_id} { mask-image: url(#{icon_path}); -webkit-mask-image: url(#{icon_path}); mask-size: 100%; -webkit-mask-size: 100%; background-color: currentColor; }" %>
+  <%= "#icon-#{unique_id} { mask-image: url(#{icon_path}); -webkit-mask-image: url(#{icon_path}); }" %>
 <% end %>
