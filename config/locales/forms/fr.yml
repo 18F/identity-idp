@@ -2,15 +2,6 @@
 fr:
   forms:
     backup_code:
-      are_you_sure_desc_html:
-        - '<strong>Les codes de sauvegarde sont la méthode d’authentification la
-          moins recommandée,</strong> car les codes peuvent facilement être
-          perdus. Essayez une option plus sûre, comme une application
-          d’authentification ou une clé de sécurité.'
-        - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
-          copier ou noter. Vous saisirez un code chaque fois que vous vous
-          connecterez.
-      are_you_sure_title: Êtes-vous sûr de vouloir utiliser des codes de sauvegarde?
       caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous
         donnerons de nouveaux codes une fois que vous aurez utilisé les dix
         fournis.
