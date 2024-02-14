@@ -699,7 +699,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   describe '#successful_result?' do
     context 'and selfie check is enabled' do
-      liveness_checking_enabled = true
+      let(:liveness_checking_enabled) { true }
 
       it 'returns true with a passing selfie' do
         response = described_class.new(
