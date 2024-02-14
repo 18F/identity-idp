@@ -33,7 +33,7 @@ module Idv
       end
     end
 
-    def self.opted_in_to_remote(idv_session:)
+    def self.selected_remote(idv_session:)
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
          idv_session.service_provider&.in_person_proofing_enabled
@@ -50,7 +50,7 @@ module Idv
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given &&
-                          self.opted_in_to_remote(idv_session: idv_session)
+                          self.selected_remote(idv_session: idv_session)
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil

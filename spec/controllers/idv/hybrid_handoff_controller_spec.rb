@@ -203,7 +203,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           subject.idv_session.skip_doc_auth = nil
         end
 
-        it 'does not render the show template' do
+        it 'redirects to how to verify' do
           get :show
 
           expect(response).not_to render_template :show
