@@ -831,6 +831,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(identity.code_challenge).to eq(code_challenge)
         expect(identity.nonce).to eq(nonce)
         expect(identity.ial).to eq(1)
+        expect(identity.acr).to eq '[]'
+        expect(identity.vot).to eq ['C1'].to_json
       end
     end
   end
