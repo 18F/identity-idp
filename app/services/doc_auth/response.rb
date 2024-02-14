@@ -49,6 +49,7 @@ module DocAuth
       )
     end
 
+    # Success related
     def success?
       @success
     end

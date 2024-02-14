@@ -12,6 +12,7 @@ module DocAuth
         raise NotImplementedError
       end
 
+      # The post_images method
       def post_images(
         front_image:,
         back_image:,

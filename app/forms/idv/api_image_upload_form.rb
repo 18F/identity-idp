@@ -27,15 +27,36 @@ module Idv
     end
 
     def submit
+      # Run the validations at the top of this file, also create the DocAuthFormResponse
       form_response = validate_form
 
       client_response = nil
       doc_pii_response = nil
 
+      # The validations at the top of this file passed
       if form_response.success?
+        # Post the images to TrueID. Routing stuff is to handle other clients like Acuant
+        # This always calls LexisNexisClient::post_images
+        # That will always use TrueIdRequest and TrueIdResponse
         client_response = post_images_to_client
+        # ^^This always is a TrueIdResponse ^^
 
+        # This always calls TrueIdResponse::success?
+        # That call (to TrueIdResponse::success?) has many layers
+        # - Hits app/services/doc_auth/response.rb::success?
+        # - That passes to @success, and :success
+        # - That gets back to app/services/doc_auth/lexis_nexis/responses/true_id_response.rb::success
+        # - That is remapped to successful_result? (in the same file)
+        # - That's where the actual code lives to determine success
         if client_response.success?
+          # At this point, we know that we have a TrueID reponse that
+          # succeeded. This means the user successfully uploaded the
+          # front and back of their drivers license (and selfie if required)
+          # So now, we need to go validate the pii - does it meet our requirements?
+          # Code for this is in this file:
+          # - If we have pii that meets our requirements, store it for use on the session
+          # - If we don't have pii that meet our requirements, return the DocPiiForm errors
+          #     and some other information we merge in.
           doc_pii_response = validate_pii_from_doc(client_response)
         end
       end

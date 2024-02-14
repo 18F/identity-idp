@@ -3,8 +3,10 @@ module Idv
     respond_to :json
 
     def create
+      # Create ApiImageUploadForm and call submit
       image_upload_form_response = image_upload_form.submit
 
+      # Send the results to the FE via JSON
       presenter = ImageUploadResponsePresenter.new(
         form_response: image_upload_form_response,
         url_options: url_options,

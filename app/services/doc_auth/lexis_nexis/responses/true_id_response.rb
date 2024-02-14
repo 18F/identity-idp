@@ -17,6 +17,7 @@ module DocAuth
           @liveness_checking_enabled = liveness_checking_enabled
           @pii_from_doc = read_pii(true_id_product)
           super(
+            # Success related
             success: successful_result?,
             errors: error_messages,
             extra: extra_attributes,
@@ -36,6 +37,7 @@ module DocAuth
         #    vendor (document and selfie if requested)
         #    document type
         #    bar code attention
+        # Success related
         def successful_result?
           (all_passed? || attention_with_barcode?) && id_type_supported?
         end

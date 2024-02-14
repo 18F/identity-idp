@@ -28,6 +28,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
 
   def success_status
     # doc_auth_success : including document, attention_with_barcode and id type verification
+    # The !!pii on this line fixes the bug
     !!doc_auth_success && selfie_status != :fail && !!pii
   end
 
