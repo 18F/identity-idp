@@ -23,6 +23,7 @@ module DocAuth
             portrait_match_results: portrait_match_results,
             billed: true,
             classification_info: classification_info,
+            liveness_checking_required: @selfie_required,
           }.compact,
         )
       end
@@ -245,6 +246,7 @@ module DocAuth
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
+          extra: { liveness_checking_required: liveness_enabled },
         }.compact
       end
     end

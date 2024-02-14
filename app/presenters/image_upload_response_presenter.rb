@@ -51,8 +51,9 @@ class ImageUploadResponsePresenter
       json[:ocr_pii] = ocr_pii
       json[:result_failed] = doc_auth_result_failed?
       json[:doc_type_supported] = doc_type_supported?
-      json[:selfie_live] = selfie_live? if show_selfie_failures
-      json[:selfie_quality_good] = selfie_quality_good? if show_selfie_failures
+      json[:selfie_status] = selfie_status if show_selfie_failures?
+      json[:selfie_live] = selfie_live? if show_selfie_failures?
+      json[:selfie_quality_good] = selfie_quality_good? if show_selfie_failures?
       json[:failed_image_fingerprints] = failed_fingerprints
       json
     end
@@ -90,8 +91,12 @@ class ImageUploadResponsePresenter
     @form_response.extra[:failed_image_fingerprints] || { front: [], back: [], selfie: [] }
   end
 
-  def show_selfie_failures
+  def show_selfie_failures?
     @form_response.extra[:liveness_checking_required] == true
+  end
+
+  def selfie_status
+    @form_response.respond_to?(:selfie_status) ? @form_response.selfie_status : :not_processed
   end
 
   def selfie_live?
