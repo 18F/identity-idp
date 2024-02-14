@@ -3,7 +3,7 @@ class OpenidConnectTokenForm
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  ISSUED_AT_LEEWAY_SECONDS = 10.seconds.to_i
+  ISSUED_AT_LEEWAY_SECONDS = 30.seconds.to_i
 
   ATTRS = %i[
     client_assertion
