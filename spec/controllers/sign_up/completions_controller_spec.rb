@@ -17,6 +17,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: current_sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         }
         get :show
 
@@ -31,6 +32,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             ial2: false,
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
@@ -67,6 +69,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             ial2: true,
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
@@ -141,6 +144,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
             ial2: false,
             ialmax: true,
             requested_attributes: [:email],
@@ -220,6 +224,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         stub_sign_in(user)
         subject.session[:sp] = { issuer: sp.issuer,
                                  ial2: false,
+                                 acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                                  requested_attributes: [:email],
                                  request_url: 'http://localhost:3000' }
         get :show
@@ -245,6 +250,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
       it 'tracks analytics' do
         stub_sign_in(user)
         subject.session[:sp] = {
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
@@ -271,7 +277,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: 'foo',
-          ial: 1,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
@@ -290,6 +296,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
       it 'redirects to account page if the session request_url is removed' do
         stub_sign_in(user)
         subject.session[:sp] = {
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           ial2: false,
           issuer: 'foo',
           requested_attributes: ['email'],
@@ -306,6 +313,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           DisposableEmailDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             ial2: false,
             issuer: 'foo',
             request_url: 'http://example.com',
@@ -343,6 +351,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
           issuer: sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           ial2: true,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
@@ -371,7 +380,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
           issuer: sp.issuer,
-          ial: 2,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: %w[email first_name verified_at],
         }
@@ -395,12 +404,11 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
           issuer: sp.issuer,
-          ial: 2,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: %w[email first_name verified_at],
         }
         allow(@linker).to receive(:link_identity).with(
-          ial: 2,
           verified_attributes: %w[email first_name verified_at],
           last_consented_at: now,
           clear_deleted_at: true,
@@ -428,6 +436,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         }
         patch :update
       end
@@ -441,6 +450,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         }
 
         expect(original_profile.activated_at).to be_present
@@ -468,6 +478,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         subject.session[:sp] = {
           ial2: false,
           request_url: 'http://example.com',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         }
 
         patch :update

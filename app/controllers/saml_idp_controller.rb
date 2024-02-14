@@ -113,13 +113,6 @@ class SamlIdpController < ApplicationController
     request.env['devise_session_limited_failure_redirect_url'] = request.url
   end
 
-  def pii_requested_but_locked?
-    if resolved_authn_context_result.identity_proofing_or_ialmax?
-      current_user.identity_verified? &&
-        !Pii::Cacher.new(current_user, user_session).exists_in_session?
-    end
-  end
-
   def capture_analytics
     analytics_payload = result.to_h.merge(
       endpoint: api_saml_auth_path(path_year: params[:path_year]),
