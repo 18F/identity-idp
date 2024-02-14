@@ -532,7 +532,7 @@ stop-review-app:
 
 deploy_production:
   stage: deploy_production
-  allow_failure: false
+  allow_failure: true
   needs:
     - job: build-review-image
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov

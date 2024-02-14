@@ -126,6 +126,34 @@ RSpec.describe DataPull do
           :user_events,
         )
       end
+
+      context 'with a UUID that is not found' do
+        let(:uuid) { 'abcdef' }
+        let(:argv) do
+          ['ig-request', uuid, '--requesting-issuer', service_provider.issuer]
+        end
+
+        it 'returns an empty hash for that user' do
+          data_pull.run
+
+          response = JSON.parse(stdout.string, symbolize_names: true)
+          expect(response.first).to eq(
+            user_id: nil,
+            login_uuid: nil,
+            requesting_issuer_uuid: uuid,
+            email_addresses: [],
+            mfa_configurations: {
+              phone_configurations: [],
+              auth_app_configurations: [],
+              webauthn_configurations: [],
+              piv_cac_configurations: [],
+              backup_code_configurations: [],
+            },
+            user_events: [],
+            not_found: true,
+          )
+        end
+      end
     end
   end
 

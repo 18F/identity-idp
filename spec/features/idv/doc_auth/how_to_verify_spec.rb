@@ -184,11 +184,11 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'opt in false at start but true during navigation' do
       let(:initial_opt_in_enabled) { false }
 
-      it 'should not be bounced back from Hybrid Handoff to How to Verify' do
+      it 'should be bounced back from Hybrid Handoff to How to Verify' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         page.refresh
-        expect(page).to have_current_path(idv_hybrid_handoff_url)
+        expect(page).to have_current_path(idv_how_to_verify_url)
       end
     end
 
@@ -275,11 +275,11 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
         complete_hybrid_handoff_step
       end
 
-      it 'should go to Hybrid Handoff from Document Capture with opt in toggled midstream' do
+      it 'should continue to Document Capture with opt in toggled midstream' do
         expect(page).to have_current_path(idv_document_capture_path)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         page.go_back
-        expect(page).to have_current_path(idv_hybrid_handoff_url)
+        expect(page).to have_current_path(idv_document_capture_url)
       end
     end
 

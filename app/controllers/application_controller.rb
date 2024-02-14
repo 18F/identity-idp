@@ -451,7 +451,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_full_width(template, **opts)
-    render template, **opts, layout: 'base'
+    render template, **opts, layout: 'application'
   end
 
   def analytics_exception_info(exception)

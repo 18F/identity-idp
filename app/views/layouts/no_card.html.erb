@@ -1,1 +1,1 @@
-<%= render template: 'layouts/base', locals: { disable_card: true } %>
+<%= extends_layout(:application, body_class: 'site', disable_card: true) { yield } %>

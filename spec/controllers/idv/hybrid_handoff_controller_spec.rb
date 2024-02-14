@@ -8,6 +8,11 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
+  let(:service_provider) do
+    create(:service_provider, :active, :in_person_proofing_enabled)
+  end
+  let(:in_person_proofing) { false }
+  let(:ipp_opt_in_enabled) { false }
 
   before do
     stub_sign_in(user)
@@ -15,6 +20,11 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     stub_analytics
     stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
+    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
+                                     ipp_opt_in_enabled
+                                   }
   end
 
   describe '#step_info' do
@@ -177,6 +187,61 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         end.not_to change {
           subject.idv_session.skip_hybrid_handoff?
         }.from(false)
+      end
+    end
+
+    context 'opt in ipp is enabled' do
+      let(:in_person_proofing) { true }
+      let(:ipp_opt_in_enabled) { true }
+      before do
+        stub_up_to(:how_to_verify, idv_session: subject.idv_session)
+        subject.idv_session.service_provider.in_person_proofing_enabled = true
+      end
+
+      context 'opt in selection is nil' do
+        before do
+          subject.idv_session.skip_doc_auth = nil
+        end
+
+        it 'redirects to how to verify' do
+          get :show
+
+          expect(response).not_to render_template :show
+          expect(response).to redirect_to(idv_how_to_verify_url)
+        end
+      end
+
+      context 'opted in to hybrid flow' do
+        it 'renders the show template' do
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'opted in to ipp flow' do
+        before do
+          subject.idv_session.skip_doc_auth = true
+        end
+
+        it 'redirects to the how to verify page' do
+          get :show
+
+          expect(response).to redirect_to(idv_how_to_verify_url)
+        end
+      end
+
+      context 'opt in ipp is not available on service provider' do
+        before do
+          subject.idv_session.service_provider.in_person_proofing_enabled = false
+          subject.idv_session.skip_doc_auth = nil
+        end
+
+        it 'renders the show template' do
+          get :show
+
+          expect(response).to render_template :show
+        end
       end
     end
   end

@@ -303,6 +303,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
+        liveness_checking_required: false,
       )
       expect(response.doc_auth_success?).to eq(true)
       expect(response.selfie_status).to eq(:not_processed)
@@ -332,6 +333,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
         billed: true,
         classification_info: {},
+        liveness_checking_required: false,
       )
     end
   end
@@ -357,6 +359,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
         billed: true,
         classification_info: {},
+        liveness_checking_required: false,
       )
     end
   end
@@ -403,6 +406,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
+        liveness_checking_required: false,
       )
     end
   end
@@ -700,6 +704,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
         expect(response.doc_auth_success?).to eq(true)
         expect(response.selfie_status).to eq(:fail)
+        expect(response.extra[:liveness_checking_required]).to eq(true)
       end
     end
   end
@@ -713,6 +718,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).not_to have_key(:portrait_match_results)
       expect(response.doc_auth_success?).to eq(true)
       expect(response.selfie_status).to eq(:not_processed)
+      expect(response.extra[:liveness_checking_required]).to eq(false)
     end
   end
 end
