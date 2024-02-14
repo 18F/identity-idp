@@ -4,6 +4,7 @@ module DataRequests
   module Local
     class WriteCloudwatchLogs
       HEADERS = %w[
+        uuid
         timestamp
         event_name
         success
@@ -14,19 +15,24 @@ module DataRequests
         user_agent
       ].freeze
 
-      attr_reader :cloudwatch_results, :output_dir
+      attr_reader :cloudwatch_results, :requesting_issuer_uuid, :csv
 
-      def initialize(cloudwatch_results, output_dir)
+      def initialize(cloudwatch_results:, requesting_issuer_uuid:, csv:, include_header: false)
         @cloudwatch_results = cloudwatch_results
-        @output_dir = output_dir
+        @requesting_issuer_uuid = requesting_issuer_uuid
+        @csv = csv
+        @include_header = include_header
+      end
+
+      def include_header?
+        !!@include_header
       end
 
       def call
-        CSV.open(File.join(output_dir, 'logs.csv'), 'w') do |csv|
-          csv << HEADERS
-          cloudwatch_results.each do |row|
-            csv << build_row(row)
-          end
+        csv << HEADERS if include_header?
+
+        cloudwatch_results.each do |row|
+          csv << build_row(row)
         end
       end
 
@@ -60,6 +66,7 @@ module DataRequests
         user_agent = data.dig('properties', 'user_agent')
 
         [
+          requesting_issuer_uuid,
           timestamp,
           event_name,
           success,

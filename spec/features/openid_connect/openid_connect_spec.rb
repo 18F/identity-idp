@@ -950,12 +950,8 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     end
 
     context 'when signed in with another browser' do
-      it 'redirects back to the client app after concurrent session logout' do
+      it 'redirects back to the client app if logging out after concurrent session logout' do
         user = user_with_2fa
-        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
-        IdentityLinker.new(user, service_provider).link_identity(
-          verified_attributes: %w[openid email],
-        )
 
         perform_in_browser(:one) do
           visit_idp_from_sp_with_ial1(:oidc)
@@ -978,6 +974,31 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
           visit account_path
           expect(page).to_not have_content(t('headings.account.login_info'))
           expect(page).to have_content(t('headings.sign_in_without_sp'))
+        end
+      end
+
+      it 'maintains authentication request if logged out by concurrent session logout' do
+        user = user_with_2fa
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:two) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:oidc)
+
+          expect(page).to have_content(
+            [
+              ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).friendly_name,
+              t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+            ].join(' '),
+          )
         end
       end
     end

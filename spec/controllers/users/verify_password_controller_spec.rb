@@ -7,6 +7,7 @@ RSpec.describe Users::VerifyPasswordController do
   let(:user) { create(:user, profiles: profiles, **recovery_hash) }
 
   before do
+    stub_analytics
     stub_sign_in(user)
   end
 
@@ -51,6 +52,11 @@ RSpec.describe Users::VerifyPasswordController do
 
           expect(response).to render_template(:new)
         end
+
+        it 'logs an analytics event' do
+          get :new
+          expect(@analytics).to have_logged_event(:reactivate_account_verify_password_visited)
+        end
       end
 
       describe '#update' do
@@ -72,6 +78,13 @@ RSpec.describe Users::VerifyPasswordController do
           before do
             allow(form).to receive(:submit).and_return(response_ok)
             put :update, params: user_params
+          end
+
+          it 'logs an appropriate analytics event' do
+            expect(@analytics).to have_logged_event(
+              :reactivate_account_verify_password_submitted,
+              success: true,
+            )
           end
 
           it 'tracks the appropriate attempts api events' do
@@ -99,6 +112,13 @@ RSpec.describe Users::VerifyPasswordController do
             allow(form).to receive(:submit).and_return(response_bad)
 
             put :update, params: user_params
+          end
+
+          it 'logs an appropriate analytics event' do
+            expect(@analytics).to have_logged_event(
+              :reactivate_account_verify_password_submitted,
+              success: false,
+            )
           end
 
           it 'tracks the appropriate attempts api event' do

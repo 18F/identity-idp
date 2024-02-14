@@ -22,8 +22,12 @@ module ApplicationHelper
     end
   end
 
-  def background_cls(cls)
-    content_for(:background_cls) { cls }
+  def extends_layout(layout, **locals, &block)
+    if block.present?
+      @view_flow.get(:layout).replace capture(&block) # rubocop:disable Rails/HelperInstanceVariable
+    end
+
+    render template: "layouts/#{layout}", locals:
   end
 
   def sp_session

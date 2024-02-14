@@ -609,14 +609,6 @@ module AnalyticsEvents
     )
   end
 
-  # An uncaught error occurred in frontend JavaScript
-  # @param [String] name
-  # @param [String] message
-  # @param [String] stack
-  def frontend_error(name:, message:, stack: nil, **_extra)
-    track_event('Frontend Error', name:, message:, stack:)
-  end
-
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -4055,6 +4047,17 @@ module AnalyticsEvents
   # Account profile reactivation submitted
   def reactivate_account_submit
     track_event('Reactivate Account Submitted')
+  end
+
+  # Submission event for the "verify password" page the user sees after entering their personal key.
+  # @param [Boolean] success Whether the form was submitted successfully.
+  def reactivate_account_verify_password_submitted(success:, **extra)
+    track_event(:reactivate_account_verify_password_submitted, success: success, **extra)
+  end
+
+  # Visit event for the "verify password" page the user sees after entering their personal key.
+  def reactivate_account_verify_password_visited(**extra)
+    track_event(:reactivate_account_verify_password_visited, **extra)
   end
 
   # Account profile reactivation page visited

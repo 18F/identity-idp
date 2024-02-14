@@ -440,6 +440,19 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         sleep(10)
       end
 
+      it 'shows selfie inline error messages for both front and back' do
+        expect(page).to have_css(
+          '.usa-error-message[role="alert"]',
+          text: t('doc_auth.errors.general.multiple_front_id_failures'),
+          count: 1,
+        )
+        expect(page).to have_css(
+          '.usa-error-message[role="alert"]',
+          text: t('doc_auth.errors.general.multiple_back_id_failures'),
+          count: 1,
+        )
+      end
+
       it 'stops user submitting the same images again' do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth document_capture visited',
