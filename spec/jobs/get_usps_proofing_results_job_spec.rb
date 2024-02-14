@@ -44,6 +44,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         transaction_end_date_time: anything,
         transaction_start_date_time: anything,
         job_name: 'GetUspsProofingResultsJob',
+        tmx_status: :threatmetrix_pass,
       )
     end
   end
