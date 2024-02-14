@@ -419,8 +419,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           )
 
           errors = post_images_response.errors
-          expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
-          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(errors.keys).to contain_exactly(:general, :back, :front, :hints, :selfie)
+          expect(errors[:selfie]).to contain_exactly(
+            DocAuth::Errors::SELFIE_NOT_LIVE_POOR_QUALITY_FIELD,
+          )
         end
       end
     end
