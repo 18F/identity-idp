@@ -193,7 +193,7 @@ describe('DocumentCaptureWarning', () => {
         });
 
         // error message section
-        validateHeader('errors.doc_auth.selfie_no_facematch_heading', 1, true);
+        validateHeader('errors.doc_auth.selfie_fail_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText('general error')).to.be.ok();
         expect(getByText('idv.warning.attempts_html')).to.be.ok();
