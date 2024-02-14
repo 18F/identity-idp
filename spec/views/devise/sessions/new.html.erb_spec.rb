@@ -11,7 +11,6 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
     allow_any_instance_of(ActionController::TestRequest).to receive(:path).
       and_return('/')
-    assign(:ial, 1)
   end
 
   it 'sets autocomplete attribute off' do
