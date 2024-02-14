@@ -37,15 +37,13 @@ RSpec.describe FrontendLogger do
     context 'with unknown event' do
       let(:name) { :test_event }
 
-      it 'logs unknown event with warning' do
-        call
-
-        expect(analytics).to have_logged_event('Frontend (warning): test_event')
-      end
+      it { expect(call).to eq(false) }
     end
 
     context 'with method handler' do
       let(:name) { 'method' }
+
+      it { expect(call).to eq(true) }
 
       it 'calls method with attributes based on signature' do
         call
@@ -56,6 +54,8 @@ RSpec.describe FrontendLogger do
 
     context 'with proc handler' do
       let(:name) { 'proc' }
+
+      it { expect(call).to eq(true) }
 
       it 'calls the method and passes analytics and attributes' do
         call
