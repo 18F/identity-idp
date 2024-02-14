@@ -20,7 +20,6 @@ module Users
     def new
       override_csp_for_google_analytics
 
-      @ial = sp_session_ial
       @issuer_forced_reauthentication = issuer_forced_reauthentication?(
         issuer: decorated_sp_session.sp_issuer,
       )
