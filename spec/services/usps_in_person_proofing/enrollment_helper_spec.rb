@@ -198,6 +198,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: nil,
+              tmx_status: :threatmetrix_pass,
             )
           end
         end
@@ -216,6 +217,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: issuer,
+              tmx_status: :threatmetrix_pass,
             )
           end
         end
@@ -242,6 +244,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: nil,
+              tmx_status: :threatmetrix_pass,
             )
           end
 
@@ -261,6 +264,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
                 opted_in_to_in_person_proofing: nil,
                 second_address_line_present: true,
                 service_provider: nil,
+                tmx_status: :threatmetrix_pass,
               )
             end
           end
@@ -279,6 +283,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: true,
               second_address_line_present: false,
               service_provider: nil,
+              tmx_status: :threatmetrix_pass,
             )
           end
         end
