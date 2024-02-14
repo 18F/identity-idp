@@ -1,6 +1,11 @@
-<%= content_tag(:span, '', **tag_options, id: "icon-#{unique_id}", class: css_class) %>
 <%= content_tag(
-      :style,
-      "#icon-#{unique_id} { mask-image: url(#{icon_path}); -webkit-mask-image: url(#{icon_path}); }",
-      nonce: content_security_policy_nonce,
-    ) %>
+      :span,
+      content_tag(
+        :style,
+        "#icon-#{unique_id} { mask-image: url(#{icon_path}); -webkit-mask-image: url(#{icon_path}); }",
+        nonce: content_security_policy_nonce,
+      ),
+      **tag_options,
+      id: "icon-#{unique_id}",
+      class: css_class,
+    ) -%>
