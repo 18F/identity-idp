@@ -6,6 +6,8 @@ class IdentityLinker
     @service_provider = service_provider
     @ial = nil
     @aal = nil
+    @acr = nil
+    @vot = nil
     @requested_aal_value = nil
   end
 
@@ -13,6 +15,8 @@ class IdentityLinker
     code_challenge: nil,
     ial: nil,
     aal: nil,
+    acr: nil,
+    vot: nil,
     requested_aal_value: nil,
     nonce: nil,
     rails_session_id: nil,
@@ -30,6 +34,8 @@ class IdentityLinker
         code_challenge: code_challenge,
         ial: ial,
         aal: aal,
+        acr: acr,
+        vot: vot,
         requested_aal_value: requested_aal_value,
         nonce: nonce,
         rails_session_id: rails_session_id,
