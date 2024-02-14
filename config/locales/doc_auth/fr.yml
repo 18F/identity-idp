@@ -114,7 +114,8 @@ fr:
         network_error: Nous avons des difficultés techniques de notre côté. Veuillez
           essayer de soumettre à nouveau vos images plus tard.
         no_liveness: Essayez de prendre de nouvelles photos.
-        selfie_failure: Nous n'avons pas réussi à vérifier votre photo. Essayez à nouveau avec une nouvelle photo.
+        selfie_failure: Nous n’avons pas réussi à vérifier votre photo. Essayez à
+          nouveau avec une nouvelle photo.
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo peut avoir
