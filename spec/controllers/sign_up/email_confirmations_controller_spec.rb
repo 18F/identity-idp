@@ -174,9 +174,14 @@ RSpec.describe SignUp::EmailConfirmationsController do
           url: '',
           uuid: sp_request_uuid,
           ial: '1',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         )
         create(:email_address, :unconfirmed, confirmation_token:, user: build(:user, email: nil))
-        get :create, params: { confirmation_token:, _request_id: request_id_param }
+        get :create, params: {
+          confirmation_token:,
+          _request_id: request_id_param,
+          acr_values: Vot::LegacyComponentValues::IAL1,
+        }
       end
 
       context 'with invalid request id' do

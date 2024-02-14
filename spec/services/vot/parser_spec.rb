@@ -2,6 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Vot::Parser do
   describe '#parse' do
+    context 'when neither a VtR nor ACR values are provided' do
+      it 'raises an error' do
+        expect { Vot::Parser.new(vector_of_trust: nil, acr_values: nil).parse }.
+          to raise_error(Vot::Parser::ParseException, 'VoT parser called without VoT or ACR values')
+      end
+    end
+
     context 'when a vector is completely expanded' do
       it 'returns the vector along with requirements' do
         vector_of_trust = 'C1.C2.Cb'

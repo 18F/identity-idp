@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
-
+  let(:selfie_required) { false }
   subject(:response) do
     config = DocAuth::Mock::Config.new(
       dpi_threshold: 290,
@@ -10,12 +10,12 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, config)
+    described_class.new(input, config, selfie_required)
   end
 
   context 'with an image file' do
     let(:input) { DocAuthImageFixtures.document_front_image }
-
+    let(:selfie_required) { true }
     it 'returns a successful response with the default PII' do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
@@ -23,6 +23,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).
         to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
+      expect(response.selfie_status).to eq(:success)
     end
   end
 
@@ -659,7 +660,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           failed_alerts: []
         YAML
       end
-      let(:selfie_check_performed) { true }
+      let(:selfie_required) { true }
 
       it 'returns the expected values' do
         selfie_results = {
@@ -686,7 +687,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           failed_alerts: []
         YAML
       end
-      let(:selfie_check_performed) { true }
+      let(:selfie_required) { true }
 
       it 'returns the expected values' do
         selfie_results = {
@@ -705,7 +706,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
   context 'when a selfie check is not performed' do
     let(:input) { DocAuthImageFixtures.document_front_image }
-    let(:selfie_check_performed) { false }
+    let(:selfie_required) { false }
 
     it 'returns the expected values' do
       expect(response.selfie_check_performed?).to eq(false)
