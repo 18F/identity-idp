@@ -19,7 +19,7 @@ module Idv
 
     def show
       if pii_is_missing
-        handle_missing_pii
+        redirect_to fix_broken_personal_key_url
         return
       end
 
@@ -31,14 +31,6 @@ module Idv
       add_proofing_component
 
       finish_idv_session
-    end
-
-    def handle_missing_pii
-      redirect_to fix_broken_personal_key_url
-    end
-
-    def pii_is_missing
-      user_session[:encrypted_profiles].blank? && !current_user.pending_profile
     end
 
     def update
@@ -129,6 +121,10 @@ module Idv
     def in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
       current_user.pending_in_person_enrollment.present?
+    end
+
+    def pii_is_missing
+      user_session[:encrypted_profiles].blank?
     end
   end
 end

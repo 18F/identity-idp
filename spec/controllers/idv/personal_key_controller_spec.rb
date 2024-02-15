@@ -45,6 +45,8 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
   let(:threatmetrix_review_status) { nil }
 
+  let(:pii_cacher) { Pii::Cacher.new(user, controller.user_session) }
+
   before do
     stub_analytics
     stub_attempts_tracker
@@ -68,6 +70,8 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
     if mint_profile_from_idv_session
       idv_session.create_profile_from_applicant_with_password(password)
     end
+
+    pii_cacher.save(password)
   end
 
   describe '#step_info' do
@@ -227,8 +231,15 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
       end
 
       context 'but a profile is pending from a different session' do
+        before { pii_cacher.save(password, pending_profile) }
+
         context 'due to fraud review' do
-          let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
+          let!(:pending_profile) do
+            create(:profile,
+                   :fraud_review_pending,
+                   :with_pii,
+                   user: user)
+          end
 
           it 'does not redirect' do
             get :show
@@ -237,7 +248,12 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
         end
 
         context 'due to in person proofing' do
-          let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
+          let!(:pending_profile) do
+            create(:profile,
+                   :in_person_verification_pending,
+                   :with_pii,
+                   user: user)
+          end
 
           it 'does not redirect' do
             get :show
