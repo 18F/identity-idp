@@ -152,9 +152,11 @@ fr:
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
       setup:
-        fail: Appelez le %{contact_number} et indiquez le code d’erreur %{support_code}.
-        fail_date_html: Appelez notre centre de contact avant le %{date_html} pour
-          continuer à vérifier votre identité.
+        fail_date_html: Appelez notre centre de contact avant le
+          <strong>%{date_html}</strong> pour continuer à vérifier votre
+          identité.
+        fail_html: Appelez le <strong>%{contact_number}</strong> et indiquez le
+          <br/>code d’erreur <strong>%{support_code}</strong>.
         heading: S’il vous plaît, appelez-nous
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
