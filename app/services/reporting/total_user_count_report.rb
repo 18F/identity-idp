@@ -12,7 +12,7 @@ module Reporting
       [
         ['Metric', 'All Users', 'Verified users', 'Time Range Start', 'Time Range End'],
         ['All-time count', total_user_count, verified_user_count, '-', report_date.to_date],
-        ['All-time fully registered', total_fully_registered, '', '-', report_date.to_date],
+        ['All-time fully registered', total_fully_registered, '-', '-', report_date.to_date],
         [
           'New users count',
           new_user_count,
