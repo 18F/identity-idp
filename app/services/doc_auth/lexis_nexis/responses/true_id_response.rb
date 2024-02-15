@@ -43,7 +43,7 @@ module DocAuth
           # 1. all_passed? is true,  attention_with_barcode? is false, and id_type_supported? is true
           #  - In this case, TrueID has returned information about the PII, because it's not an 'attention' result
           # 2. all_passed? is false, attention_with_barcode? is true,  and id_type_supported? is true
-        #!!! - In this case, TrueID has NOT returned information about the PII, because it's not an 'attention' result
+        #!!! - In this case, TrueID has NOT returned information about the PII, because it IS an 'attention' result
         #!!! - Instead, we returnn `true` here, then correct the result on line 31 in app/services/document_capture_session_result.rb
           # 3. all_passed? is true , attention_with_barcode? is true,  and id_type_supported? is true
           #  - In this case, TrueID has returned information about the PII, because it's not an 'attention' result
