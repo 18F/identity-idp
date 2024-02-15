@@ -25,6 +25,16 @@ describe('isTrackableErrorEvent', () => {
     });
   });
 
+  context('with non-javascript filename', () => {
+    const event = new ErrorEvent('error', {
+      filename: new URL('foo', window.location.origin).toString(),
+    });
+
+    it('returns false', () => {
+      expect(isTrackableErrorEvent(event)).to.be.false();
+    });
+  });
+
   context('with filename from the same host', () => {
     const event = new ErrorEvent('error', {
       filename: new URL('foo.js', window.location.origin).toString(),
