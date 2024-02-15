@@ -3,7 +3,8 @@ module Idv
     respond_to :json
 
     def create
-      # Create ApiImageUploadForm and call submit
+      # START HERE
+      # Every time a user submits images, create ApiImageUploadForm and call submit on it
       image_upload_form_response = image_upload_form.submit
 
       # Send the results to the FE via JSON
@@ -18,6 +19,7 @@ module Idv
     private
 
     def image_upload_form
+      # Create the image upload form with arguments
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
         service_provider: current_sp,
