@@ -33,6 +33,10 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:verified_within) { nil }
   let(:biometric_comparison_required) { nil }
 
+  before do
+    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+  end
+
   describe '#submit' do
     subject(:result) { form.submit }
 
@@ -145,6 +149,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with an invalid vtr' do
       let(:vtr) { ['A1.B2.C3'].to_json }
+
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:vtr]).
@@ -165,6 +170,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with no authorized vtr components' do
       let(:vtr) { ['C1.P1'].to_json }
       let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
+
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values]).
@@ -245,6 +251,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when prompt is not given' do
       let(:prompt) { nil }
+
       it { expect(valid?).to eq(true) }
     end
 
@@ -282,6 +289,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when scope is unauthorized and we block unauthorized scopes' do
       let(:scope) { 'email profile' }
+
       it 'has errors' do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
         expect(valid?).to eq(false)
@@ -292,6 +300,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when scope is good and we block unauthorized scopes' do
       let(:scope) { 'email' }
+
       it 'does not have errors' do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
         expect(valid?).to eq(true)
@@ -300,6 +309,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when scope is unauthorized and we do not block unauthorized scopes' do
       let(:scope) { 'email profile' }
+
       it 'does not have errors' do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
         expect(valid?).to eq(true)
@@ -660,6 +670,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
   end
 
   describe '#verified_within' do
+    let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+
     context 'the issuer is allowed to use verified_within' do
       before do
         allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).

@@ -70,6 +70,7 @@ module DocAuth
             selfie_quality_good: false,
             vendor_status_code: status_code,
             vendor_status_message: status_message,
+            reference: @reference,
           }.compact,
         )
       end
@@ -146,13 +147,14 @@ module DocAuth
       end
 
       def settings
+        @reference = uuid
         {
           Type: 'Initiate',
           Settings: {
             Mode: request_mode,
             Locale: config.locale,
             Venue: 'online',
-            Reference: uuid,
+            Reference: @reference,
           },
         }
       end

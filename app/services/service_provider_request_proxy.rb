@@ -36,6 +36,7 @@ class ServiceProviderRequestProxy
       aal: nil, requested_attributes: nil,
       biometric_comparison_required: false, acr_values: nil, vtr: nil
     )
+
     yield(spr)
     create(
       uuid: uuid,
@@ -59,8 +60,8 @@ class ServiceProviderRequestProxy
       :aal,
       :requested_attributes,
       :biometric_comparison_required,
-      :acr_values,
       :vtr,
+      :acr_values,
     )
     write(obj, uuid)
     hash_to_spr(obj, uuid)

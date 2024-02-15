@@ -1,28 +1,18 @@
-<!DOCTYPE html>
-<html class="no-js">
-  <head>
-    <meta charset="utf-8" />
-    <title><%= t('headings.redirecting') %> | <%= APP_NAME %></title>
-    <%= javascript_tag(nonce: true) do %>
-      document.documentElement.classList.replace('no-js', 'js');
-    <% end %>
-    <%= stylesheet_link_tag 'application', media: 'all' %>
-    <%= render_stylesheet_once_tags %>
-  </head>
-  <body class="tablet:bg-primary-lighter">
-    <div class="grid-container tablet:padding-y-6 no-js">
-      <div class="grid-row">
-        <div class="tablet:grid-col-6 tablet:grid-offset-3">
-          <%= render PageHeadingComponent.new.with_content(t('saml_idp.shared.saml_post_binding.heading')) %>
+<% self.title = t('headings.redirecting') %>
 
-          <p>
-            <%= t('saml_idp.shared.saml_post_binding.no_js') %>
-          </p>
+<%= extends_layout :base do %>
+  <div class="grid-container tablet:padding-y-6 no-js">
+    <div class="grid-row">
+      <div class="tablet:grid-col-6 tablet:grid-offset-3">
+        <%= render PageHeadingComponent.new.with_content(t('saml_idp.shared.saml_post_binding.heading')) %>
 
-          <%= link_to(t('forms.buttons.continue'), @oidc_redirect_uri, class: 'usa-button usa-button--wide usa-button--big', data: { click_immediate: '' }) %>
-        </div>
+        <p>
+          <%= t('saml_idp.shared.saml_post_binding.no_js') %>
+        </p>
+
+        <%= link_to(t('forms.buttons.continue'), @oidc_redirect_uri, class: 'usa-button usa-button--wide usa-button--big', data: { click_immediate: '' }) %>
       </div>
     </div>
-    <%= render_javascript_pack_once_tags 'click-immediate' %>
-  </body>
-</html>
+  </div>
+  <%= render_javascript_pack_once_tags 'click-immediate' %>
+<% end %>

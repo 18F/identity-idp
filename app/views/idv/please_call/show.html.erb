@@ -1,11 +1,14 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-        current_step: :secure_account,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<% if @in_person == false or @in_person.nil? %>
+  <% content_for(:pre_flash_content) do %>
+      <%= render StepIndicatorComponent.new(
+            steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+            current_step: :secure_account,
+            locale_scope: 'idv',
+            class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+          ) %>
+  <% end %>
+<% end %> 
+
 <%= render(
       'idv/shared/error',
       title: t('titles.failure.information_not_verified'),
@@ -15,6 +18,6 @@
       <%= t('idv.failure.setup.fail_date_html', date_html: I18n.l(@call_by_date, format: I18n.t('time.formats.event_date'))) %>
     </p>
     <p>
-      <%= t('idv.failure.setup.fail', support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number) %>
+      <%= t('idv.failure.setup.fail_html', support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number) %>
     </p>
 <% end %>

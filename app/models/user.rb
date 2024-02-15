@@ -206,6 +206,13 @@ class User < ApplicationRecord
     pending_profile if pending_profile&.in_person_verification_pending?
   end
 
+  ##
+  # Return the status of the current In Person Proofing Enrollment
+  # @return [String] enrollment status
+  def in_person_enrollment_status
+    pending_profile&.in_person_enrollment&.status
+  end
+
   def has_in_person_enrollment?
     pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
   end
