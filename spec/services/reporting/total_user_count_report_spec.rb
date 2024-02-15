@@ -10,7 +10,7 @@ RSpec.describe Reporting::TotalUserCountReport do
     [
       ['Metric', 'All Users', 'Verified users', 'Time Range Start', 'Time Range End'],
       ['All-time count', expected_total_count, expected_verified_count, '-', Date.new(2021, 3, 1)],
-      ['All-time fully registered', expected_total_fully_registered, '', '-', Date.new(2021, 3, 1)],
+      ['All-time fully registered', expected_total_fully_registered, '-', '-', Date.new(2021, 3, 1)],
       [
         'New users count',
         expected_new_count,
