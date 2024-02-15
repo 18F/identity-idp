@@ -56,26 +56,35 @@ class IdTokenBuilder
   end
 
   def acr
-    ial = identity.ial
-    case ial
-    when Idp::Constants::IAL_MAX then determine_ial_max_acr
-    when Idp::Constants::IAL1 then Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    else
-      raise "Unknown ial #{ial}"
-    end
+    return nil unless identity.acr_values.present?
+    resolved_authn_context_result.component_values.map do |component_value|
+      if component_value == Vot::LegacyComponentValues::IALMAX
+        determine_ial_max_acr.name
+      else
+        component_value.name
+      end
+    end.join(' ')
   end
 
   def vot
-    identity.vot
+    return nil unless identity.vtr.present?
+    resolved_authn_context_result.component_values.map(&:name).join('.')
   end
 
   def determine_ial_max_acr
     if identity.user.identity_verified?
-      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+      Vot::LegacyComponentValues::IAL2
     else
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      Vot::LegacyComponentValues::IAL1
     end
+  end
+
+  def resolved_authn_context_result
+    @resolved_authn_context_result ||= AuthnContextResolver.new(
+      service_provider: identity.service_provider_record,
+      vtr: [identity.vot],
+      acr_values: identity.acr,
+    ).resolve
   end
 
   def expires
