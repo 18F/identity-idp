@@ -38,6 +38,7 @@ class IdTokenBuilder
   def id_token_claims
     {
       acr: acr,
+      vot: vot,
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
@@ -63,6 +64,10 @@ class IdTokenBuilder
     else
       raise "Unknown ial #{ial}"
     end
+  end
+
+  def vot
+    identity.vot
   end
 
   def determine_ial_max_acr
