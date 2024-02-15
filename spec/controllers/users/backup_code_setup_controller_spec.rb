@@ -41,9 +41,9 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
       })
     expect(@irs_attempts_api_tracker).to receive(:track_event).
       with(:mfa_enroll_backup_code, success: true)
-    post :create
+    post :index
 
-    expect(response).to render_template('create')
+    expect(response).to render_template('index')
     expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
   end
 
@@ -55,7 +55,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
       expect(user.remember_device_revoked_at).to eq nil
 
       freeze_time do
-        post :create
+        post :index
         expect(user.reload.remember_device_revoked_at).to eq nil
       end
     end
@@ -69,7 +69,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
       expect(user.remember_device_revoked_at).to eq nil
 
       freeze_time do
-        post :create
+        post :index
         expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
       end
     end
