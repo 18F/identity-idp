@@ -105,6 +105,8 @@ class ApplicationController < ActionController::Base
   end
 
   def resolved_authn_context_result
+    return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
+
     if current_sp.nil?
       @resolved_authn_context_result ||= Vot::Parser::Result.no_sp_result
     else
@@ -121,6 +123,8 @@ class ApplicationController < ActionController::Base
   end
 
   def current_sp
+    return @current_sp if defined?(@current_sp)
+
     @current_sp ||= sp_from_sp_session || sp_from_request_id
   end
 
