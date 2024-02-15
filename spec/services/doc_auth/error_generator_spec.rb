@@ -550,7 +550,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         it 'DocAuthResult is failed with selfie error' do
           error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
           errors = described_class.new(config).generate_doc_auth_errors(error_info)
-          expect(errors.keys).to contain_exactly(:general, :selfie, :hints)
+          expect(errors.keys).to contain_exactly(:front, :back, :general, :selfie, :hints)
         end
       end
     end
