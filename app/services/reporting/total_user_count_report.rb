@@ -48,7 +48,7 @@ module Reporting
 
     def total_fully_registered
       Reports::BaseReport.transaction_with_timeout do
-        RegistrationLog.where.not(registered_at: nil).count
+        RegistrationLog.where('registered_at > ?', end_date).where.not(registered_at: nil).count
       end
     end
 
