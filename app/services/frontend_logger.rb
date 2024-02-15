@@ -25,8 +25,6 @@ class FrontendLogger
       analytics_method.call(**hash_from_kwargs(attributes, analytics_method))
       true
     else
-      # 2023-10-31 - Temporary
-      analytics.track_event("Frontend (warning): #{name}", attributes)
       false
     end
   end
