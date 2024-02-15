@@ -86,6 +86,21 @@ module Idv
     end
 
     def personal_key
+      # DEBUG
+      # idv_session.personal_key = nil
+
+      # Profile.transaction do
+      #   current_user.profiles.each do |profile|
+      #     pii = cacher.fetch(profile.id)
+      #     next if pii.nil?
+
+      #     new_personal_key = profile.encrypt_recovery_pii(pii, personal_key: new_personal_key)
+
+      #     profile.save!
+      #   end
+      # end
+      # END DEBUG
+
       idv_session.personal_key || generate_personal_key
     end
 
