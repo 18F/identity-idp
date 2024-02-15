@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_10_142935) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_15_212318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -288,6 +288,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_142935) do
     t.datetime "deleted_at", precision: nil
     t.integer "aal"
     t.text "requested_aal_value"
+    t.string "vtr"
+    t.string "acr_values"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
