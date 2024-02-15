@@ -7,9 +7,8 @@
           expanded: false,
         },
       ) do %>
-    <%= image_tag(asset_url('globe-blue.svg'), width: 12, height: 12, alt: '', class: 'tablet:display-none') %>
-    <%= image_tag(asset_url('globe-white.svg'), width: 12, height: 12, alt: '', class: 'display-none tablet:display-inline') %>
-    <span id="language-picker-description-<%= unique_id %>">
+    <%= render IconComponent.new(icon: :language) %>
+    <span id="language-picker-description-<%= unique_id %>" class="language-picker__label-text">
       <%= t('i18n.language') %>
     </span>
   <% end %>
