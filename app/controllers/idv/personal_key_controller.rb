@@ -18,6 +18,11 @@ module Idv
     skip_before_action :handle_fraud
 
     def show
+      if pii_is_missing
+        handle_missing_pii
+        return
+      end
+
       analytics.idv_personal_key_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
@@ -26,6 +31,14 @@ module Idv
       add_proofing_component
 
       finish_idv_session
+    end
+
+    def handle_missing_pii
+      redirect_to fix_broken_personal_key_url
+    end
+
+    def pii_is_missing
+      user_session[:encrypted_profiles].blank? && !current_user.pending_profile
     end
 
     def update
@@ -86,21 +99,6 @@ module Idv
     end
 
     def personal_key
-      # DEBUG
-      # idv_session.personal_key = nil
-
-      # Profile.transaction do
-      #   current_user.profiles.each do |profile|
-      #     pii = cacher.fetch(profile.id)
-      #     next if pii.nil?
-
-      #     new_personal_key = profile.encrypt_recovery_pii(pii, personal_key: new_personal_key)
-
-      #     profile.save!
-      #   end
-      # end
-      # END DEBUG
-
       idv_session.personal_key || generate_personal_key
     end
 

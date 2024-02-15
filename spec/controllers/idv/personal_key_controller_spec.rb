@@ -190,6 +190,18 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
   end
 
   describe '#show' do
+    context 'when we have no personal key or encrypted profiles in the session' do
+      it 'redirects to get the users password and fetch the PII' do
+        controller.idv_session.personal_key = nil
+        controller.user_session[:encrypted_profiles] = nil
+
+        response = get :show
+
+        expect(controller.user_session[:needs_new_personal_key]).to be true
+        expect(response).to redirect_to(capture_password_path)
+      end
+    end
+
     context 'profile has been created from idv_session' do
       it 'does not redirect' do
         get :show
