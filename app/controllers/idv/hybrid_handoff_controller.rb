@@ -143,7 +143,10 @@ module Idv
     end
 
     def extra_view_variables
-      { idv_phone_form: build_form }
+      {
+        idv_phone_form: build_form,
+        doc_auth_selfie_capture: decorated_sp_session.selfie_required?,
+      }
     end
 
     def build_form

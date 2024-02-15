@@ -53,7 +53,7 @@
     <% end %>
   </div>
 </div>
-
+<% unless doc_auth_selfie_capture %>
 <hr class="margin-y-4" />
 <div class="grid-row grid-gap grid-gap-2">
   <div class="grid-col-12 tablet:grid-col-auto">
@@ -83,5 +83,6 @@
     <% end %>
   </div>
 </div>
+<% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'hybrid_handoff' %>
