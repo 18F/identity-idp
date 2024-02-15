@@ -9,6 +9,7 @@ class DocumentCaptureSession < ApplicationRecord
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
+  # This is a place we write to the session
   def store_result_from_response(doc_auth_response)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
@@ -27,6 +28,7 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
+  # This is a place we write to the session
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
                              selfie_image_fingerprint:, doc_auth_success:, selfie_status:)
     session_result = load_result || DocumentCaptureSessionResult.new(

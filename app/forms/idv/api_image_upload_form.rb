@@ -58,6 +58,7 @@ module Idv
           # - If we don't have pii that meet our requirements, return the DocPiiForm errors
           #     and some other information we merge in.
           doc_pii_response = validate_pii_from_doc(client_response)
+          # 👆🏻 This calls methods that write to the session
         end
       end
 
@@ -67,6 +68,7 @@ module Idv
         doc_pii_response: doc_pii_response,
       )
 
+      # This calls methods that write to the session
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
       track_event(response)
@@ -149,6 +151,7 @@ module Idv
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
       if client_response.success? && response.success?
+        # This calls a method that writes to the session 
         store_pii(client_response)
       end
 
@@ -429,6 +432,7 @@ module Idv
     end
 
     def store_pii(client_response)
+      # This method writes to the session
       document_capture_session.store_result_from_response(client_response)
     end
 
@@ -502,6 +506,7 @@ module Idv
           failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
           failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
         end
+        # This method writes to the session
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: failed_front_fingerprint,
           back_image_fingerprint: failed_back_fingerprint,
@@ -510,6 +515,7 @@ module Idv
           selfie_status: client_response.selfie_status,
         )
       elsif doc_pii_response && !doc_pii_response.success?
+        # This method writes to the session
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],
           back_image_fingerprint: extra_attributes[:back_image_fingerprint],
