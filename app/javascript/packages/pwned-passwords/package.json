@@ -1,0 +1,14 @@
+{
+  "name": "@18f/identity-pwned-passwords",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "download-pwned-passwords": "./cli.js"
+  },
+  "private": true,
+  "sideEffects": false,
+  "dependencies": {
+    "@thi.ng/heaps": "^2.1.59",
+    "p-queue": "^8.0.1"
+  }
+}
