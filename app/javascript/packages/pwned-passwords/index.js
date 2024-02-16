@@ -35,6 +35,9 @@ export class Downloader {
   /** @type {PairingHeap<HashPair>} */
   commonHashes;
 
+  /** @type {TextDecoder} */
+  decoder = new TextDecoder();
+
   /**
    * @param {Partial<DownloadOptions>} options
    */
@@ -108,7 +111,7 @@ export class Downloader {
 
     // @ts-ignore
     for await (const chunk of body) {
-      const [appended, ...lines] = new TextDecoder().decode(chunk).split('\r\n');
+      const [appended, ...lines] = this.decoder.decode(chunk).split('\r\n');
       if (lines.length) {
         const nextData = /** @type {string} */ (lines.pop());
         yield data + appended;
