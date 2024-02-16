@@ -59,7 +59,11 @@ module Idv
         key: :document_capture,
         controller: self,
         next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
-        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' && (!idv_session.selfie_check_required || idv.skip_hybrid_handoff) },
+        preconditions: ->(idv_session:, user:) {
+                         idv_session.flow_path == 'standard' && (
+                           !idv_session.selfie_check_required || idv_session.skip_hybrid_handoff
+                         )
+                       },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
@@ -85,6 +89,7 @@ module Idv
         irs_reproofing: irs_reproofing?,
         redo_document_capture: idv_session.redo_document_capture,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
+        selfie_check_required: idv_session.selfie_check_required,
       }.merge(ab_test_analytics_buckets)
     end
 

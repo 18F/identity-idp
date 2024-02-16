@@ -53,9 +53,7 @@
     <% end %>
   </div>
 </div>
-
-<% if !@selfie_check_required %>
-  <hr class="margin-y-4" />
+ <hr class="margin-y-4" />
   <div class="grid-row grid-gap grid-gap-2">
     <div class="grid-col-12 tablet:grid-col-auto">
       <%= image_tag(
@@ -84,6 +82,5 @@
       <% end %>
     </div>
   </div>
-<% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'hybrid_handoff' %>
