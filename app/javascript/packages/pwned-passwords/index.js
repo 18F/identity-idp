@@ -42,16 +42,9 @@ export class Downloader {
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
     this.downloaders = new PQueue({ concurrency });
-    this.commonHashes = new PairingHeap(undefined, { compare: this.compareHashPair });
-  }
-
-  /**
-   * @param {HashPair} a
-   * @param {HashPair} b
-   * @return {number}
-   */
-  compareHashPair(a, b) {
-    return a.occurrences - b.occurrences;
+    this.commonHashes = new PairingHeap(undefined, {
+      compare: (a, b) => a.occurrences - b.occurrences,
+    });
   }
 
   async download() {
