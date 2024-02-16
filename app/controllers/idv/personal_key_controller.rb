@@ -19,6 +19,7 @@ module Idv
 
     def show
       if pii_is_missing
+        user_session[:stored_location] = request.original_fullpath
         redirect_to fix_broken_personal_key_url
         return
       end

@@ -201,7 +201,7 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
         response = get :show
 
-        expect(controller.user_session[:needs_new_personal_key]).to be true
+        expect(controller.user_session[:stored_location]).to eq(idv_personal_key_path)
         expect(response).to redirect_to(capture_password_path)
       end
     end
