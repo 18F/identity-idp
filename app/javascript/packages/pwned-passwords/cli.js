@@ -15,17 +15,17 @@ const { values: flags } = parseArgs({
 
 const { 'range-start': rangeStart, 'range-end': rangeEnd, concurrency } = flags;
 
-const readHashes = await new Downloader({
+const result = await new Downloader({
   rangeStart,
   rangeEnd,
   concurrency: concurrency ? Number(concurrency) : undefined,
 }).download();
 
 await pipeline(
-  Readable.from(readHashes()),
-  async function* (hashes) {
-    for await (const hash of hashes) {
-      yield `${hash}\n`;
+  Readable.from(result),
+  async function* (hashPairs) {
+    for await (const hashPair of hashPairs) {
+      yield `${hashPair.hash}\n`;
     }
   },
   process.stdout,

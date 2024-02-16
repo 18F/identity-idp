@@ -1,5 +1,6 @@
+// eslint-disable-next-line import/no-unresolved
 import PQueue from 'p-queue';
-import { PairingHeap } from '@thi.ng/heaps';
+import PairingHeap from './pairing-heap.js';
 
 /**
  * @typedef DownloadOptions
@@ -37,16 +38,17 @@ export class Downloader {
   /**
    * @param {Partial<DownloadOptions>} options
    */
-  constructor({ rangeStart = '00000', rangeEnd = '00000', concurrency = 40, maxSize = 30 }) {
+  constructor({ rangeStart = '00000', rangeEnd = '0000f', concurrency = 40, maxSize = 30 }) {
     this.rangeStart = rangeStart;
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
     this.downloaders = new PQueue({ concurrency });
-    this.commonHashes = new PairingHeap(undefined, {
-      compare: (a, b) => a.occurrences - b.occurrences,
-    });
+    this.commonHashes = new PairingHeap((a, b) => a.occurrences - b.occurrences);
   }
 
+  /**
+   * @return {Promise<Iterable>}
+   */
   async download() {
     const start = parseInt(this.rangeStart, 16);
     const end = parseInt(this.rangeEnd, 16);
@@ -56,13 +58,11 @@ export class Downloader {
 
     await this.downloaders.onIdle();
 
-    /** @type {PairingHeap<string>} */
-    const sortedHashes = new PairingHeap(undefined, { compare: (a, b) => a.localeCompare(b) });
-    for (const hashPair of this.commonHashes) {
-      sortedHashes.push(hashPair.hash);
-    }
-    return function* readHashes() {
-      yield* sortedHashes;
+    const { commonHashes } = this;
+    return {
+      *[Symbol.iterator]() {
+        yield* commonHashes;
+      },
     };
   }
 
