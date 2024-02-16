@@ -233,10 +233,12 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
         context 'due to fraud review' do
           let!(:pending_profile) do
-            create(:profile,
-                   :fraud_review_pending,
-                   :with_pii,
-                   user: user)
+            create(
+              :profile,
+              :fraud_review_pending,
+              :with_pii,
+              user: user,
+            )
           end
 
           it 'does not redirect' do
@@ -247,10 +249,12 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
         context 'due to in person proofing' do
           let!(:pending_profile) do
-            create(:profile,
-                   :in_person_verification_pending,
-                   :with_pii,
-                   user: user)
+            create(
+              :profile,
+              :in_person_verification_pending,
+              :with_pii,
+              user: user,
+            )
           end
 
           it 'does not redirect' do
