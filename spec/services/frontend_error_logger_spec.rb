@@ -11,7 +11,7 @@ RSpec.describe FrontendErrorLogger do
             name: 'name',
             message: 'message',
             stack: 'stack',
-            filename: 'filename',
+            filename: 'filename.js',
           },
         },
       )
@@ -20,8 +20,21 @@ RSpec.describe FrontendErrorLogger do
         name: 'name',
         message: 'message',
         stack: 'stack',
-        filename: 'filename',
+        filename: 'filename.js',
       )
+    end
+
+    context 'with filename other than js' do
+      it 'notices an expected error to NewRelic with custom parameters' do
+        expect(NewRelic::Agent).not_to receive(:notice_error)
+
+        FrontendErrorLogger.track_error(
+          name: 'name',
+          message: 'message',
+          stack: 'stack',
+          filename: 'filename',
+        )
+      end
     end
   end
 end
