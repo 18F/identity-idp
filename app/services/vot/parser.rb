@@ -25,6 +25,36 @@ module Vot
       def identity_proofing_or_ialmax?
         identity_proofing? || ialmax?
       end
+
+      def aal_level_requested
+        if aal2?
+          2
+        else
+          1
+        end
+      end
+
+      def ial_value_requested
+        if ialmax?
+          0
+        elsif identity_proofing?
+          2
+        else
+          1
+        end
+      end
+
+      def ial2_requested?
+        identity_proofing?
+      end
+
+      def ialmax_requested?
+        ialmax?
+      end
+
+      def piv_cac_requested?
+        hspd12?
+      end
     end
 
     attr_reader :vector_of_trust, :acr_values
