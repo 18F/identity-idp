@@ -71,7 +71,7 @@ export class Downloader {
    * @return {string}
    */
   getPaddedRange(value) {
-    return value.toString(16).padStart(5, '0');
+    return value.toString(16).padStart(5, '0').toUpperCase();
   }
 
   /** @param {string} range */
