@@ -81,7 +81,7 @@ export class Downloader {
     for await (const line of this.readLines(body)) {
       const hashSuffixOccurrences = line.split(':');
       const occurrences = Number(hashSuffixOccurrences[1]);
-      if (this.commonHashes.length > this.maxSize) {
+      if (this.commonHashes.length >= this.maxSize) {
         if (occurrences > /** @type {HashPair} */ (this.commonHashes.peek()).occurrences) {
           this.commonHashes.pop();
         } else {
