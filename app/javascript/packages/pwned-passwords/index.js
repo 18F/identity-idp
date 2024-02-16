@@ -56,9 +56,7 @@ export class Downloader {
 
     await this.downloaders.onIdle();
 
-    /**
-     * @type {PairingHeap<string>}
-     */
+    /** @type {PairingHeap<string>} */
     const sortedHashes = new PairingHeap(undefined, { compare: (a, b) => a.localeCompare(b) });
     for (const hashPair of this.commonHashes) {
       sortedHashes.push(hashPair.hash);
