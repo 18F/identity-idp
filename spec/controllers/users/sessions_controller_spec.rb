@@ -43,7 +43,6 @@ RSpec.describe Users::SessionsController, devise: true do
 
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :fully_registered)
-      subject.session['user_return_to'] = mock_valid_site
 
       stub_analytics
       stub_attempts_tracker
@@ -52,7 +51,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         bad_password_count: 0,
-        stored_location: mock_valid_site,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -513,12 +511,10 @@ RSpec.describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
-        subject.session['user_return_to'] = mock_valid_site
 
         expect(@analytics).to receive(:track_event).with(
           'Sign in page visited',
           flash: 'hello',
-          stored_location: mock_valid_site,
         )
 
         get :new
