@@ -2,6 +2,7 @@
 
 import { parseArgs } from 'node:util';
 import { pipeline } from 'node:stream/promises';
+import { createWriteStream } from 'node:fs';
 import { Downloader } from './index.js';
 
 const { values: flags } = parseArgs({
@@ -10,6 +11,7 @@ const { values: flags } = parseArgs({
     'range-end': { type: 'string' },
     'max-size': { type: 'string' },
     concurrency: { type: 'string' },
+    'out-file': { type: 'string' },
   },
 });
 
@@ -18,6 +20,7 @@ const {
   'range-end': rangeEnd,
   'max-size': maxSize,
   concurrency,
+  'out-file': outFile,
 } = flags;
 
 const result = await new Downloader({
@@ -27,6 +30,8 @@ const result = await new Downloader({
   maxSize: maxSize ? Number(maxSize) : undefined,
 }).download();
 
+const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
+
 await pipeline(
   result,
   async function* (hashPairs) {
@@ -34,5 +39,5 @@ await pipeline(
       yield `${hashPair.hash}\n`;
     }
   },
-  process.stdout,
+  outputStream,
 );
