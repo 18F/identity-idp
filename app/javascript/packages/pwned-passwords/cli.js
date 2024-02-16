@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { parseArgs } from 'node:util';
-import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { Downloader } from './index.js';
 
@@ -29,7 +28,7 @@ const result = await new Downloader({
 }).download();
 
 await pipeline(
-  Readable.from(result),
+  result,
   async function* (hashPairs) {
     for await (const hashPair of hashPairs) {
       yield `${hashPair.hash}\n`;
