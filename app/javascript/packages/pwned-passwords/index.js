@@ -54,27 +54,25 @@ export class Downloader {
     return a.occurrences - b.occurrences;
   }
 
-  download() {
+  async download() {
     const start = parseInt(this.rangeStart, 16);
     const end = parseInt(this.rangeEnd, 16);
     for (let i = start; i <= end; i++) {
       this.downloaders.add(() => this.downloadRange(this.getPaddedRange(i)));
     }
 
-    return new Promise((resolve) => {
-      this.downloaders.on('completed', () => {
-        /**
-         * @type {PairingHeap<string>}
-         */
-        const sortedHashes = new PairingHeap(undefined, { compare: (a, b) => a.localeCompare(b) });
-        for (const hashPair of this.commonHashes) {
-          sortedHashes.push(hashPair.hash);
-        }
-        resolve(function* readHashes() {
-          yield* sortedHashes;
-        });
-      });
-    });
+    await this.downloaders.onIdle();
+
+    /**
+     * @type {PairingHeap<string>}
+     */
+    const sortedHashes = new PairingHeap(undefined, { compare: (a, b) => a.localeCompare(b) });
+    for (const hashPair of this.commonHashes) {
+      sortedHashes.push(hashPair.hash);
+    }
+    return function* readHashes() {
+      yield* sortedHashes;
+    };
   }
 
   /**
