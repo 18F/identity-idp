@@ -82,7 +82,7 @@ export class Downloader {
     const url = new URL(range, API_ROOT);
     const { body } = await fetch(url);
     for await (const line of this.readLines(body)) {
-      const hashSuffixOccurrences = line.split(':');
+      const hashSuffixOccurrences = line.split(':', 2);
       const occurrences = Number(hashSuffixOccurrences[1]);
       if (this.commonHashes.length >= this.maxSize) {
         if (occurrences > this.commonHashes.peek().occurrences) {
