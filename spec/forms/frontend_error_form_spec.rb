@@ -21,6 +21,15 @@ RSpec.describe FrontendErrorForm do
       end
     end
 
+    context 'without filename' do
+      let(:filename) { nil }
+
+      it 'is unsuccessful' do
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(filename: [t('errors.general'), t('errors.general')])
+      end
+    end
+
     context 'with filename without extension' do
       let(:filename) { 'https://example.com/foo' }
 

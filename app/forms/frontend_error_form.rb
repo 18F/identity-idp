@@ -16,13 +16,13 @@ class FrontendErrorForm
   private
 
   def validate_filename_extension
-    return if File.extname(filename) == '.js'
+    return if File.extname(filename.to_s) == '.js'
     errors.add(:filename, :invalid_extension, message: t('errors.general'))
   end
 
   def validate_filename_host
     begin
-      return if URI(filename).host == IdentityConfig.store.domain_name
+      return if URI(filename.to_s).host == IdentityConfig.store.domain_name
     rescue URI::InvalidURIError; end
 
     errors.add(:filename, :invalid_host, message: t('errors.general'))
