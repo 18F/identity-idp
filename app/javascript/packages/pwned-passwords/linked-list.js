@@ -9,17 +9,16 @@
  * @template V
  */
 class LinkedList {
-  /** @type {LinkedListNode<V>} */
+  /** @type {LinkedListNode<V> | undefined} */
   head;
 
-  /** @type {LinkedListNode<V>} */
+  /** @type {LinkedListNode<V> | undefined} */
   tail;
 
   /**
    * @return {Iterator<V>}
    */
   *[Symbol.iterator]() {
-    /** @type {LinkedListNode<V> | undefined} */
     let next = this.head;
     while (next) {
       yield next.value;
