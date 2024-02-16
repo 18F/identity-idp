@@ -70,8 +70,6 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
     if mint_profile_from_idv_session
       idv_session.create_profile_from_applicant_with_password(password)
     end
-
-    pii_cacher.save(password)
   end
 
   describe '#step_info' do

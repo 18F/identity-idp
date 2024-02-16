@@ -19,8 +19,7 @@ module Idv
 
     def show
       if pii_is_missing
-        user_session[:stored_location] = request.original_fullpath
-        redirect_to fix_broken_personal_key_url
+        redirect_to_retrieve_pii
         return
       end
 
@@ -126,6 +125,11 @@ module Idv
 
     def pii_is_missing
       user_session[:encrypted_profiles].blank?
+    end
+
+    def redirect_to_retrieve_pii
+      user_session[:stored_location] = request.original_fullpath
+      redirect_to fix_broken_personal_key_url
     end
   end
 end
