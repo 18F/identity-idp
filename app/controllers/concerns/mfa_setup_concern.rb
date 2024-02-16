@@ -29,7 +29,7 @@ module MfaSetupConcern
     when 'webauthn_platform'
       webauthn_setup_url(platform: true)
     when 'backup_code'
-      backup_code_setup_url
+      backup_code_create_url
     end
   end
 

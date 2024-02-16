@@ -8,7 +8,7 @@
   <%= t('forms.backup_code_regenerate.caution') %>
 </p>
 
-<%= form_tag(backup_code_setup_path, method: :get, class: 'margin-top-5') do %>
+<%= form_tag(backup_code_create_path, method: :get, class: 'margin-top-5') do %>
   <%= button_tag t('account.index.backup_code_confirm_regenerate'), type: 'submit',
                                                                     class: 'usa-button usa-button--big usa-button--wide margin-bottom-2' %>
 <% end %>
