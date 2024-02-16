@@ -33,7 +33,7 @@ export class Downloader {
   maxSize;
 
   /** @type {PairingHeap<HashPair>} */
-  commonHashes;
+  commonHashes = new PairingHeap((a, b) => a.occurrences - b.occurrences);
 
   /** @type {TextDecoder} */
   decoder = new TextDecoder();
@@ -46,7 +46,6 @@ export class Downloader {
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
     this.downloaders = new PQueue({ concurrency });
-    this.commonHashes = new PairingHeap((a, b) => a.occurrences - b.occurrences);
   }
 
   /**
