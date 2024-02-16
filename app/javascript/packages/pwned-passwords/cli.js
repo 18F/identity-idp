@@ -3,6 +3,7 @@
 import { parseArgs } from 'node:util';
 import { pipeline } from 'node:stream/promises';
 import { createWriteStream } from 'node:fs';
+import { SingleBar } from 'cli-progress';
 import { Downloader } from './index.js';
 
 const { values: flags } = parseArgs({
@@ -23,14 +24,23 @@ const {
   'out-file': outFile,
 } = flags;
 
-const result = await new Downloader({
+const downloader = new Downloader({
   rangeStart,
   rangeEnd,
   concurrency: concurrency ? Number(concurrency) : undefined,
   maxSize: maxSize ? Number(maxSize) : undefined,
-}).download();
+});
 
 const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
+
+if (outFile) {
+  const progressBar = new SingleBar({});
+  downloader.once('start', (total) => progressBar.start(total, 0));
+  downloader.on('download', () => progressBar.increment());
+  downloader.once('complete', () => progressBar.stop());
+}
+
+const result = await downloader.download();
 
 await pipeline(
   result,

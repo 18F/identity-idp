@@ -1,3 +1,5 @@
+/* eslint-disable no-unreachable */
+import EventEmitter from 'node:events';
 // eslint-disable-next-line import/no-unresolved
 import PQueue from 'p-queue';
 import PairingHeap from './pairing-heap.js';
@@ -19,7 +21,7 @@ import PairingHeap from './pairing-heap.js';
 
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
 
-export class Downloader {
+export class Downloader extends EventEmitter {
   /** @type {string} */
   rangeStart;
 
@@ -41,7 +43,9 @@ export class Downloader {
   /**
    * @param {Partial<DownloadOptions>} options
    */
-  constructor({ rangeStart = '00000', rangeEnd = '0000f', concurrency = 40, maxSize = 30 }) {
+  constructor({ rangeStart = '00000', rangeEnd = '000f0', concurrency = 40, maxSize = 30 }) {
+    super();
+
     this.rangeStart = rangeStart;
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
@@ -54,11 +58,17 @@ export class Downloader {
   async download() {
     const start = parseInt(this.rangeStart, 16);
     const end = parseInt(this.rangeEnd, 16);
+    const total = end - start + 1;
+    this.emit('start', total);
     for (let i = start; i <= end; i++) {
-      this.downloaders.add(() => this.downloadRange(this.getPaddedRange(i)));
+      this.downloaders.add(async () => {
+        await this.downloadRange(this.getPaddedRange(i));
+        this.emit('download');
+      });
     }
 
     await this.downloaders.onIdle();
+    this.emit('complete');
 
     const { commonHashes } = this;
     return {
