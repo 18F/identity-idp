@@ -82,7 +82,7 @@ export class Downloader {
       const hashSuffixOccurrences = line.split(':');
       const occurrences = Number(hashSuffixOccurrences[1]);
       if (this.commonHashes.length >= this.maxSize) {
-        if (occurrences > /** @type {HashPair} */ (this.commonHashes.peek()).occurrences) {
+        if (occurrences > this.commonHashes.peek().occurrences) {
           this.commonHashes.pop();
         } else {
           // eslint-disable-next-line no-continue
