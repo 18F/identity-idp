@@ -204,7 +204,7 @@ module Features
       user
     end
 
-    def sign_in_with_warden(user, auth_method: nil, issuer: nil)
+    def sign_in_with_warden(user, auth_method: nil, issuer: nil, selfie_required: false)
       login_as(user, scope: :user, run_callbacks: false)
 
       Warden.on_next_request do |proxy|
@@ -213,13 +213,19 @@ module Features
         if auth_method
           session['warden.user.user.session']['auth_events'] = [{ auth_method:, at: Time.zone.now }]
         end
-        session['sp'] = { issuer: } if issuer
+        session['sp'] = {
+          issuer: issuer,
+          biometric_comparison_required: selfie_required,
+        }.compact
       end
       visit account_path
     end
 
-    def sign_in_and_2fa_user(user = user_with_2fa, issuer: nil)
-      sign_in_with_warden(user, auth_method: 'phone', issuer:)
+    def sign_in_and_2fa_user(user = user_with_2fa, issuer: nil, selfie_required: nil)
+      sign_in_with_warden(
+        user, auth_method: 'phone', issuer: issuer,
+              selfie_required: selfie_required
+      )
       user
     end
 
@@ -382,10 +388,14 @@ module Features
       end
     end
 
-    def ial2_sp_session(request_url: 'http://localhost:3000')
+    def ial2_sp_session(request_url: 'http://localhost:3000', selfie_required: false)
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session[:sp] = { ial2: true, request_url: request_url }
+        session[:sp] = {
+          ial2: true,
+          request_url: request_url,
+          biometric_comparison_required: selfie_required,
+        }
       end
     end
 

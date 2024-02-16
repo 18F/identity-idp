@@ -11,9 +11,12 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
-
+  let(:doc_auth_selfie_capture_enabled) { false }
+  let(:sp_selfie_required) { false }
   before do
-    sign_in_and_2fa_user
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(doc_auth_selfie_capture_enabled)
+    sign_in_and_2fa_user(selfie_required: sp_selfie_required)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
@@ -207,6 +210,19 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
       expect(document_capture_session).to be
       expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
+    end
+  end
+
+  context 'on a desktop with selfie enabled system wide' do
+    let(:doc_auth_selfie_capture_enabled) { true }
+    before do
+      complete_doc_auth_steps_before_hybrid_handoff_step
+    end
+    context 'with sp selfie enabled' do
+      let(:sp_selfie_enabled) { true }
+      it 'forces user to mobile' do
+        # WIP
+      end
     end
   end
 end

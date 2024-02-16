@@ -13,7 +13,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
   end
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
-
+  let(:doc_auth_selfie_capture_enabled) { false }
   before do
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
@@ -25,6 +25,8 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                      ipp_opt_in_enabled
                                    }
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(doc_auth_selfie_capture_enabled)
   end
 
   describe '#step_info' do
@@ -240,6 +242,34 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         it 'renders the show template' do
           get :show
 
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    context 'with selfie enabled system wide' do
+      let(:doc_auth_selfie_capture_enabled) { true }
+      before do
+        allow(controller).to receive(:current_sp).
+          and_return(service_provider)
+      end
+      describe 'when selfie is enabled for sp' do
+        let(:sp_selfie_enabled) { true }
+        it 'pass doc_auth_selfie_capture as true to front end' do
+          allow(controller).to receive(:sp_session).
+            and_return({ biometric_comparison_required: sp_selfie_enabled })
+          get :show
+          expect(subject.extra_view_variables).to include(doc_auth_selfie_capture: true)
+          expect(response).to render_template :show
+        end
+      end
+      describe 'when selfie is disabled for sp' do
+        let(:sp_selfie_enabled) { false }
+        it 'pass doc_auth_selfie_capture as false to front end' do
+          allow(controller).to receive(:sp_session).
+            and_return({ biometric_comparison_required: sp_selfie_enabled })
+          get :show
+          expect(subject.extra_view_variables).to include(doc_auth_selfie_capture: false)
           expect(response).to render_template :show
         end
       end
