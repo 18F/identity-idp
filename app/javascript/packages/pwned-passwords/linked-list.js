@@ -19,10 +19,10 @@ class LinkedList {
    * @return {Iterator<V>}
    */
   *[Symbol.iterator]() {
-    let next = this.head;
-    while (next) {
-      yield next.value;
-      next = next.next;
+    let current = this.head;
+    while (current) {
+      yield current.value;
+      current = current.next;
     }
   }
 
