@@ -7,18 +7,25 @@ import { Downloader } from './index.js';
 
 const { values: flags } = parseArgs({
   options: {
-    concurrency: { type: 'string' },
     'range-start': { type: 'string' },
     'range-end': { type: 'string' },
+    'max-size': { type: 'string' },
+    concurrency: { type: 'string' },
   },
 });
 
-const { 'range-start': rangeStart, 'range-end': rangeEnd, concurrency } = flags;
+const {
+  'range-start': rangeStart,
+  'range-end': rangeEnd,
+  'max-size': maxSize,
+  concurrency,
+} = flags;
 
 const result = await new Downloader({
   rangeStart,
   rangeEnd,
   concurrency: concurrency ? Number(concurrency) : undefined,
+  maxSize: maxSize ? Number(maxSize) : undefined,
 }).download();
 
 await pipeline(
