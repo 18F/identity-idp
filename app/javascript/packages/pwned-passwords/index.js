@@ -56,7 +56,7 @@ export class Downloader {
 
   download() {
     const start = parseInt(this.rangeStart, 16);
-    const end = parseInt(this.rangeStart, 16);
+    const end = parseInt(this.rangeEnd, 16);
     for (let i = start; i <= end; i++) {
       this.downloaders.add(() => this.downloadRange(this.getPaddedRange(i)));
     }
