@@ -35,7 +35,7 @@ RSpec.describe IconListComponent, type: :component do
 
     it 'renders items with default color' do
       expect(rendered).to have_css('.usa-icon-list__icon:not([class*="text-"])', count: 2)
-      expect(rendered).to have_xpath('//style[contains(text(), "/cancel-")]')
+      expect(rendered).to have_css('.usa-icon use[href$=".svg#cancel"]', count: 2)
     end
 
     context 'with icon or color attributes specified on parent component' do
@@ -48,7 +48,7 @@ RSpec.describe IconListComponent, type: :component do
 
       it 'passes those attributes to slotted items' do
         expect(rendered).to have_css('.usa-icon-list__icon.text-error', count: 2)
-        expect(rendered).to have_xpath('//style[contains(text(), "/cancel-")]', count: 2)
+        expect(rendered).to have_css('.usa-icon use[href$=".svg#cancel"]', count: 2)
       end
     end
 
@@ -62,9 +62,9 @@ RSpec.describe IconListComponent, type: :component do
 
       it 'renders items with their attributes' do
         expect(rendered).to have_css('.usa-icon-list__icon.text-success', count: 1)
-        expect(rendered).to have_xpath('//style[contains(text(), "/check_circle-")]', count: 1)
+        expect(rendered).to have_css('.usa-icon use[href$=".svg#check_circle"]', count: 1)
         expect(rendered).to have_css('.usa-icon-list__icon.text-error', count: 1)
-        expect(rendered).to have_xpath('//style[contains(text(), "/cancel-")]', count: 1)
+        expect(rendered).to have_css('.usa-icon use[href$=".svg#cancel"]', count: 1)
       end
     end
 

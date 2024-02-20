@@ -43,6 +43,10 @@
     }
   }
 
+  span {
+    margin: 0 units(1);
+  }
+
   &::after {
     content: '';
     display: block;
@@ -78,10 +82,6 @@
       background-image: url('/angle-arrow-down-white.svg');
     }
   }
-}
-
-.language-picker__label-text {
-  margin: 0 units(1);
 }
 
 .language-picker__list {
