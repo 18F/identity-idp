@@ -98,7 +98,7 @@ export interface UploadErrorResponse {
   /**
    * Whether the selfie captured matched the image on the id.
    */
-  selfie_failed: boolean;
+  selfie_status?: string;
 
   /**
    * Whether the doc type is clearly not supported type.
