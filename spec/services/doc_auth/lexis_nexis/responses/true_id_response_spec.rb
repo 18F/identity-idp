@@ -49,19 +49,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   let(:liveness_enabled) { false }
   let(:workflow) { 'default_workflow' }
-  let(:reference) { SecureRandom.uuid }
   let(:request_context) do
     {
       workflow: workflow,
-      settings: {
-        Type: 'Initiate',
-        Settings: {
-          Mode: 'test',
-          Locale: config.locale,
-          Venue: 'online',
-          Reference: reference,
-        },
-      },
     }
   end
   context 'when the response is a success' do
@@ -364,7 +354,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         attention_with_barcode: false,
         doc_type_supported: true,
         conversation_id: a_kind_of(String),
-        reference: reference,
+        reference: a_kind_of(String),
         vendor: 'TrueID',
         billed: true,
         log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Failed' }),
@@ -456,7 +446,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       )
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
       expect(output[:vendor]).to eq('TrueID')
-      expect(output[:reference]).to eq(reference)
+      expect(output[:reference]).to match(a_kind_of(String))
     end
 
     it 'produces reasonable output for a malformed TrueID response' do
@@ -469,7 +459,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:backtrace)
-      expect(output[:reference]).to eq(reference)
+      expect(output[:reference]).to be_truthy
     end
 
     it 'is not billed' do

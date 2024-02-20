@@ -25,7 +25,6 @@ module DocAuth
 
         def request_context
           {
-            settings: settings,
             workflow: workflow,
           }
         end

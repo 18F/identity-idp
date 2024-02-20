@@ -139,7 +139,7 @@ module DocAuth
         end
 
         def reference
-          @request_context&.dig(:settings, :Settings, :Reference)
+          @reference ||= parsed_response_body.dig(:Status, :Reference)
         end
 
         def products
