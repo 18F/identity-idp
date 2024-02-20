@@ -9,7 +9,19 @@ module Vot
       :identity_proofing?,
       :biometric_comparison?,
       :ialmax?,
-    )
+    ) do
+      def self.no_sp_result
+        self.new(
+          component_values: [],
+          aal2?: false,
+          phishing_resistant?: false,
+          hspd12?: false,
+          identity_proofing?: false,
+          biometric_comparison?: false,
+          ialmax?: false,
+        )
+      end
+    end
 
     attr_reader :vector_of_trust, :acr_values
 

@@ -58,16 +58,15 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         attach_images(
           Rails.root.join(
             'spec', 'fixtures',
-            'ial2_test_credential_barcode_attention_no_dob.yml'
+            'ial2_test_credential_barcode_attention_no_address.yml'
           ),
         )
         submit_images
 
-        expect(page).to have_content(t('doc_auth.errors.barcode_attention.heading'))
-        click_idv_continue
-
-        # should show try again
+        expect(page).to have_content(t('doc_auth.errors.alerts.address_check'))
         expect(page).to have_current_path(idv_document_capture_path)
+
+        click_try_again
         attach_images
         submit_images
         expect(page).to have_current_path(idv_ssn_path)

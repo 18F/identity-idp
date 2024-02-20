@@ -46,7 +46,7 @@ RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*]
     it 'sends the confirmation email again' do
       sign_up_with('test@example.com')
 
-      expect { click_on t('links.resend') }.
+      expect { click_on t('notices.signed_up_but_unconfirmed.resend_confirmation_email') }.
         to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(

@@ -65,7 +65,7 @@ asked to consent to share their information with the partner before being sent b
 To simulate a true end-to-end user experience, you can either...
 
 - Use the built-in test controller for SAML logins at http://localhost:3000/test/saml/login or OIDC logins at http://localhost:3000/test/oidc/login
-  
+
   Note: to update service provider configurations, run the command `rake db:seed` or `make setup`.
 - Or, run a sample partner application, which is configured by default to run with your local IdP instance:
    - OIDC: https://github.com/18F/identity-oidc-sinatra
@@ -125,8 +125,8 @@ $ SKIP_BUILD=true bundle exec rspec spec/features
 
 Since the automatic build is meant to act as a safeguard to prevent stale assets from being used,
 disabling it will mean you're responsible for running the build any time JavaScript or Sass source
-files are changed. You can do this by running `yarn build` for JavaScript, or `yarn build:css` for
-stylesheets.
+files are changed. You can do this by running `yarn build:js` for JavaScript, or `yarn build:css`
+for stylesheets.
 
 ### Viewing email messages
 

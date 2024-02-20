@@ -56,13 +56,12 @@ class FrontendLogController < ApplicationController
   EVENT_MAP = ALLOWED_EVENTS.index_by(&:to_s).merge(LEGACY_EVENT_MAP).freeze
 
   def create
-    result = frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
+    success = frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
 
-    if result
-      render json: { success: true }, status: :ok
+    if success
+      render json: { success: }, status: :ok
     else
-      render json: { success: false, error_message: 'invalid event' },
-             status: :bad_request
+      render json: { success:, error_message: 'invalid event' }, status: :bad_request
     end
   end
 

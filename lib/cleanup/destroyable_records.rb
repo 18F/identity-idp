@@ -26,7 +26,7 @@ class DestroyableRecords
 
     stdout.puts '********'
     stdout.puts 'Integration:'
-    if integration.nil?
+    if integration.blank?
       stdout.puts 'No associated integration'
     else
       stdout.puts integration.attributes.to_yaml
@@ -46,7 +46,7 @@ class DestroyableRecords
 
     stdout.puts '*******'
     stdout.puts 'These are the IAA orders that will be affected: \n'
-    if iaa_orders.nil?
+    if iaa_orders.blank?
       stdout.puts 'No IAA orders will be affected'
     else
       stdout.puts 'These are the IAA orders that will be affected: \n'
@@ -79,11 +79,11 @@ class DestroyableRecords
   private
 
   def integration_usages
-    integration&.integration_usages
+    integration&.integration_usages || []
   end
 
   def iaa_orders
-    integration&.iaa_orders
+    integration&.iaa_orders || []
   end
 
   def in_person_enrollments
