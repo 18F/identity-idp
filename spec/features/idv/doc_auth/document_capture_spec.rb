@@ -346,7 +346,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           inline_error = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_poor_quality'))
           expect(page).to have_content(inline_error)
         end
-        # New test
+        
         it 'try again and page show selfie fail inline error message' do
           visit_idp_from_oidc_sp_with_ial2
           sign_in_and_2fa_user(user)
