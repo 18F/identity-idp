@@ -53,8 +53,6 @@ fr:
           contrôle. Essayez de prendre de nouvelles photos.
         selfie_not_live: 'Rééssayez de vous prendre en photo. Assurez-vous que lensemble
           de votre visage est clair et visible sur la photo.'
-        selfie_not_live_poor_quality: 'Nous n’avons pas réussi à vérifier votre photo.
-          Essayez à nouveau avec une nouvelle photo.'
         selfie_poor_quality: 'Rééssayez de vous prendre en photo. Assurez-vous que
           l’ensemble de votre visage est clair et visible sur la photo.'
         sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez

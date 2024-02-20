@@ -29,7 +29,6 @@ module DocAuth
     SELFIE_FAILURE = 'selfie_failure'
     SELFIE_NOT_LIVE = 'selfie_not_live'
     SELFIE_POOR_QUALITY = 'selfie_poor_quality'
-    SELFIE_NOT_LIVE_POOR_QUALITY_FIELD = 'selfie_not_live_poor_quality'
     SEX_CHECK = 'sex_check'
     VISIBLE_COLOR_CHECK = 'visible_color_check'
     VISIBLE_PHOTO_CHECK = 'visible_photo_check'
@@ -120,9 +119,9 @@ module DocAuth
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       # TODO, theses messages need modifying
       # Liveness, use general error for now
-      SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_NOT_LIVE_POOR_QUALITY_FIELD, hints: false },
-      SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_NOT_LIVE_POOR_QUALITY_FIELD, hints: false },
-      SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_NOT_LIVE_POOR_QUALITY_FIELD, hints: false },
+      SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_FAILURE, hints: false },
+      SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_FAILURE, hints: false },
+      SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },
     }
     # rubocop:enable Layout/LineLength
   end

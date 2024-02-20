@@ -82,7 +82,7 @@ module DocAuth
           general: [Errors::SELFIE_NOT_LIVE],
           front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
           back: [Errors::MULTIPLE_BACK_ID_FAILURES],
-          selfie: [Errors::SELFIE_NOT_LIVE_POOR_QUALITY_FIELD],
+          selfie: [Errors::SELFIE_FAILURE],
           hints: false,
         }
       end

@@ -50,7 +50,6 @@ es:
           control. Intente tomar nuevas fotografías.
         selfie_not_live: 'Intenta volver a tomarte una foto. Asegúrate de que tu rostro
           completo esté claro y visible en la foto.'
-        selfie_not_live_poor_quality: 'No pudimos verificar su foto. Trate de tomarse otra foto.'
         selfie_poor_quality: 'Intenta volver a tomarte una foto. Asegúrate de que tu
           rostro completo esté claro y visible en la foto.'
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar

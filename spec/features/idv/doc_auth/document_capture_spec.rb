@@ -305,7 +305,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           expect(page).to have_current_path(idv_document_capture_path)
           click_try_again
           expect(page).to have_current_path(idv_document_capture_path)
-          inline_error = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_poor_quality'))
+          inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
           expect(page).to have_content(inline_error)
         end
 
@@ -343,10 +343,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           expect(page).to have_current_path(idv_document_capture_path)
           click_try_again
           expect(page).to have_current_path(idv_document_capture_path)
-          inline_error = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_poor_quality'))
+          inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
           expect(page).to have_content(inline_error)
         end
-        
+
         it 'try again and page show selfie fail inline error message' do
           visit_idp_from_oidc_sp_with_ial2
           sign_in_and_2fa_user(user)
@@ -381,7 +381,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           expect(page).to have_current_path(idv_document_capture_path)
           click_try_again
           expect(page).to have_current_path(idv_document_capture_path)
-          inline_error = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_poor_quality'))
+          inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
           expect(page).to have_content(inline_error)
         end
       end

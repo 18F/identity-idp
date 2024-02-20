@@ -40,7 +40,6 @@ en:
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
         selfie_not_live: 'Try taking a photo of yourself again. Make sure your whole
           face is clear and visible in the photo.'
-        selfie_not_live_poor_quality: 'We couldn’t verify the photo of yourself. Try taking a new picture.'
         selfie_poor_quality: 'Try taking a photo of yourself again. Make sure your whole
           face is clear and visible in the photo.'
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.

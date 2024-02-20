@@ -60,9 +60,6 @@ module DocAuthRouter
     DocAuth::Errors::SELFIE_NOT_LIVE => 'doc_auth.errors.alerts.selfie_not_live',
     # i18n-tasks-use t('doc_auth.errors.alerts.selfie_poor_quality')
     DocAuth::Errors::SELFIE_POOR_QUALITY => 'doc_auth.errors.alerts.selfie_poor_quality',
-    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_not_live_poor_quality')
-    DocAuth::Errors::SELFIE_NOT_LIVE_POOR_QUALITY_FIELD =>
-      'doc_auth.errors.alerts.selfie_not_live_poor_quality',
     # i18n-tasks-use t('doc_auth.errors.alerts.sex_check')
     DocAuth::Errors::SEX_CHECK => 'doc_auth.errors.alerts.sex_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.visible_color_check')
