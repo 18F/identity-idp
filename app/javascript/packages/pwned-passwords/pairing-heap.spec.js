@@ -13,11 +13,17 @@ describe('PairingHeap', () => {
       heap.push(4);
       heap.push(3);
 
+      expect(heap.length).to.equal(5);
       expect(heap.pop()).to.equal(0);
+      expect(heap.length).to.equal(4);
       expect(heap.pop()).to.equal(1);
+      expect(heap.length).to.equal(3);
       expect(heap.pop()).to.equal(2);
+      expect(heap.length).to.equal(2);
       expect(heap.pop()).to.equal(3);
+      expect(heap.length).to.equal(1);
       expect(heap.pop()).to.equal(4);
+      expect(heap.length).to.equal(0);
     });
   });
 });
