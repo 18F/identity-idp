@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_15_212318) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_16_184124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -362,14 +362,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_212318) do
     t.datetime "ftp_at", precision: nil, null: false
     t.integer "letter_requests_count", null: false
     t.index ["ftp_at"], name: "index_letter_requests_to_usps_ftp_logs_on_ftp_at"
-  end
-
-  create_table "monthly_auth_counts", force: :cascade do |t|
-    t.string "issuer", null: false
-    t.string "year_month", null: false
-    t.integer "user_id", null: false
-    t.integer "auth_count", default: 1, null: false
-    t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
   end
 
   create_table "notification_phone_configurations", force: :cascade do |t|
