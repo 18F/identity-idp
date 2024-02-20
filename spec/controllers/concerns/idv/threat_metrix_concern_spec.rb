@@ -38,6 +38,21 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
           expect(csp.directives['img-src']).to include('*.online-metrix.net')
         end
       end
+
+      context 'with content security policy directives for style-src' do
+        before do
+          allow(Rails.application.config).to receive(:content_security_policy_nonce_directives).
+            and_return(['style-src'])
+        end
+
+        it 'removes style-src nonce directive to allow all unsafe inline styles' do
+          get :index
+
+          csp = parse_content_security_policy
+
+          expect(csp['style-src']).to_not include(/'nonce-.+'/)
+        end
+      end
     end
 
     context 'ff is not set' do
@@ -47,6 +62,20 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
         secure_header_config = response.request.headers.env['secure_headers_request_config']
         expect(secure_header_config).to be_nil
       end
+    end
+  end
+
+  def parse_content_security_policy
+    header = response.request.content_security_policy.build(
+      controller,
+      request.content_security_policy_nonce_generator.call(request),
+      request.content_security_policy_nonce_directives,
+    )
+    header.split(';').each_with_object({}) do |directive, result|
+      tokens = directive.strip.split(/\s+/)
+      key = tokens.first
+      rules = tokens[1..-1]
+      result[key] = rules
     end
   end
 end

@@ -91,5 +91,34 @@ RSpec.describe Idv::AcuantConcern, :controller do
       expect(csp.style_src).to include("'unsafe-inline'")
       expect(csp.img_src).to include('blob:')
     end
+
+    context 'with content security policy directives for style-src' do
+      before do
+        allow(Rails.application.config).to receive(:content_security_policy_nonce_directives).
+          and_return(['style-src'])
+      end
+
+      it 'removes style-src nonce directive to allow all unsafe inline styles' do
+        get :index, params: { step: 'document_capture' }
+
+        csp = parse_content_security_policy
+
+        expect(csp['style-src']).to_not include(/'nonce-.+'/)
+      end
+    end
+  end
+
+  def parse_content_security_policy
+    header = response.request.content_security_policy.build(
+      controller,
+      request.content_security_policy_nonce_generator.call(request),
+      request.content_security_policy_nonce_directives,
+    )
+    header.split(';').each_with_object({}) do |directive, result|
+      tokens = directive.strip.split(/\s+/)
+      key = tokens.first
+      rules = tokens[1..-1]
+      result[key] = rules
+    end
   end
 end
