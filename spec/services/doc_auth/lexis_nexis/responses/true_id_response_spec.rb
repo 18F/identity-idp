@@ -101,6 +101,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         errors: {},
         attention_with_barcode: false,
         conversation_id: a_kind_of(String),
+        request_id: a_kind_of(String),
         doc_type_supported: true,
         reference: a_kind_of(String),
         vendor: 'TrueID',
@@ -136,13 +137,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
           Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
-        lexis_nexis_status: a_hash_including(
-          :ConversationId,
-          :RequestId,
-          :TransactionStatus,
-          :TransactionReasonCode,
-          :Reference,
-        ),
         doc_auth_success: true,
         selfie_status: :not_processed,
         selfie_live: true,
@@ -350,6 +344,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         attention_with_barcode: false,
         doc_type_supported: true,
         conversation_id: a_kind_of(String),
+        request_id: a_kind_of(String),
         reference: a_kind_of(String),
         vendor: 'TrueID',
         billed: true,
@@ -392,13 +387,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         selfie_live: true,
         selfie_quality_good: false,
         liveness_enabled: false,
-        lexis_nexis_status: a_hash_including(
-          :ConversationId,
-          :RequestId,
-          :TransactionStatus,
-          :TransactionReasonCode,
-          :Reference,
-        ),
       )
     end
     it 'produces appropriate errors with document tampering' do

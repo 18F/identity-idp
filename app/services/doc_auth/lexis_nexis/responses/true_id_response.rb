@@ -120,7 +120,7 @@ module DocAuth
         end
 
         def request_id
-          @request_id ||= parsed_response_body.dig(:Status, :RequestID)
+          @request_id ||= parsed_response_body.dig(:Status, :RequestId)
         end
 
         def parsed_response_body
