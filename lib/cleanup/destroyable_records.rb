@@ -60,11 +60,8 @@ class DestroyableRecords
   def destroy_records
     if integration
       stdout.puts 'Destroying integration usages'
-      integration_usages.each do |integration_usage|
-        integration_usage.destroy!
-      end
+      integration_usages.destroy_all
       integration.reload
-
       stdout.puts "Destroying integration with issuer #{integration.issuer}"
       integration.destroy!
       service_provider.reload
