@@ -38,6 +38,7 @@ const config = {
     'newline-per-chained-call': 'off',
     'no-cond-assign': ['error', 'except-parens'],
     'no-console': 'error',
+    'no-continue': 'off',
     'no-empty': ['error', { allowEmptyCatch: true }],
     'no-param-reassign': ['off', 'never'],
     'no-promise-executor-return': 'off',

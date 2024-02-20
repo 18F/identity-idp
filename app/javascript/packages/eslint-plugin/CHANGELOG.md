@@ -44,8 +44,10 @@
   - `no-loss-of-precision`
   - `no-redeclare`
   - `no-useless-constructor`
-- React: The following rules are no longer enforced:
-  - `react/no-array-index-key`
+- The following rules are no longer enforced:
+- The following rules are no longer enforced:
+  - `no-continue`
+  - `react/no-array-index-key` (affects React ruleset only)
 - `prefer-const` is only enforced on destructuring assignment if all variables should be `const` ([`destructuring: 'all'` option](https://eslint.org/docs/latest/rules/prefer-const#destructuring)).
 
 ## v2.0.0 (2022-03-14)

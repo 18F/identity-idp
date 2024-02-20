@@ -95,7 +95,6 @@ export class Downloader extends EventEmitter {
         if (occurrences > this.commonHashes.peek().occurrences) {
           this.commonHashes.pop();
         } else {
-          // eslint-disable-next-line no-continue
           continue;
         }
       }
