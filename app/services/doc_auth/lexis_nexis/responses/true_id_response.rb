@@ -70,7 +70,10 @@ module DocAuth
 
         def extra_attributes
           if with_authentication_result?
-            attrs = response_info.merge(true_id_product[:AUTHENTICATION_RESULT])
+            attrs = response_info.merge(
+              true_id_product[:AUTHENTICATION_RESULT],
+              lexis_nexis_status: parsed_response_body[:Status],
+            )
             attrs.reject! do |k, _v|
               PII_EXCLUDES.include?(k) || k.start_with?('Alert_')
             end
