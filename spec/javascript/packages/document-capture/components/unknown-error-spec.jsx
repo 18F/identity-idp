@@ -161,6 +161,7 @@ describe('UnknownError', () => {
         </I18nContext.Provider>,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
+      // Expect that the "2 attempts remaining" text appears
       expect(within(container).getByText(/2 attempts/)).to.be.ok();
       expect(within(container).getByText(/remaining/)).to.be.ok();
     });
@@ -193,6 +194,7 @@ describe('UnknownError', () => {
         </I18nContext.Provider>,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
+      // Don't expect that the "2 attempts remaining" text appears
       expect(within(container).queryByText(/2 attempts/)).to.be.null();
     });
   });
@@ -225,6 +227,7 @@ describe('UnknownError', () => {
         </I18nContext.Provider>,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
+      // Expect that the "2 attempts remaining" text appears
       expect(within(container).getByText(/2 attempts/)).to.be.ok();
       expect(within(container).getByText(/remaining/)).to.be.ok();
     });
@@ -257,6 +260,7 @@ describe('UnknownError', () => {
         </I18nContext.Provider>,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
+      // Don't expect that the "2 attempts remaining" text appears
       expect(within(container).queryByText(/2 attempts/)).to.be.null();
     });
   });
