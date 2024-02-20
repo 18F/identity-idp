@@ -1,6 +1,7 @@
 ---
 fr:
   telephony:
+    account_deleted_notice: Cet SMS confirme que vous avez supprimé votre compte %{app_name}.
     account_reset_cancellation_notice: Votre demande de suppression de votre compte %{app_name} a été annulée.
     account_reset_notice: Comme demandé, votre compte %{app_name} sera supprimé dans
       les %{interval}. Vous ne voulez pas supprimer votre compte? Connectez-vous

@@ -17,7 +17,8 @@
     "generate-browsers-json": "./scripts/generate-browsers-json.js",
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",
-    "build": "webpack && yarn generate-browsers-json",
+    "build": "yarn build:js",
+    "build:js": "concurrently 'yarn:webpack' 'make browsers.json'",
     "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
   },
   "dependencies": {
@@ -31,6 +32,7 @@
     "babel-plugin-polyfill-corejs3": "^0.5.2",
     "browserslist": "^4.22.3",
     "cleave.js": "^1.6.0",
+    "concurrently": "^8.2.2",
     "core-js": "^3.21.1",
     "fast-glob": "^3.2.7",
     "foundation-emails": "^2.3.1",

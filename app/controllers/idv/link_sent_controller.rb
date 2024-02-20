@@ -26,7 +26,7 @@ module Idv
 
       # The doc capture flow will have fetched the results already. We need
       # to fetch them again here to add the PII to this session
-      handle_document_verification_success(document_capture_session_result)
+      handle_document_verification_success
       idv_session.redo_document_capture = nil
 
       redirect_to idv_ssn_url
@@ -63,9 +63,9 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    def handle_document_verification_success(get_results_response)
+    def handle_document_verification_success
       save_proofing_components(current_user)
-      extract_pii_from_doc(current_user, get_results_response, store_in_session: true)
+      extract_pii_from_doc(current_user, store_in_session: true)
       idv_session.flow_path = 'hybrid'
     end
 
@@ -80,12 +80,7 @@ module Idv
     end
 
     def take_photo_with_phone_successful?
-      document_capture_session_result.present? && document_capture_session_result.success? &&
-        selfie_requirement_met?
-    end
-
-    def document_capture_session_result
-      @document_capture_session_result ||= document_capture_session&.load_result
+      stored_result&.success? && selfie_requirement_met?
     end
   end
 end

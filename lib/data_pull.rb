@@ -152,11 +152,34 @@ class DataPull
       ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
       uuids = args
 
-      users = uuids.map { |uuid| DataRequests::Deployed::LookupUserByUuid.new(uuid).call }.compact
+      users, missing_uuids = uuids.map do |uuid|
+        DataRequests::Deployed::LookupUserByUuid.new(uuid).call || uuid
+      end.partition { |u| u.is_a?(User) }
+
       shared_device_users = DataRequests::Deployed::LookupSharedDeviceUsers.new(users).call
 
       output = shared_device_users.map do |user|
         DataRequests::Deployed::CreateUserReport.new(user, config.requesting_issuers).call
+      end
+
+      if config.include_missing?
+        output += missing_uuids.map do |uuid|
+          {
+            user_id: nil,
+            login_uuid: nil,
+            requesting_issuer_uuid: uuid,
+            email_addresses: [],
+            mfa_configurations: {
+              phone_configurations: [],
+              auth_app_configurations: [],
+              webauthn_configurations: [],
+              piv_cac_configurations: [],
+              backup_code_configurations: [],
+            },
+            user_events: [],
+            not_found: true,
+          }
+        end
       end
 
       ScriptBase::Result.new(

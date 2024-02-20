@@ -16,6 +16,9 @@ module FraudReviewConcern
   end
 
   def handle_pending_fraud_review
+    # If the user has not passed IPP at a post office, allow them to
+    # complete another enrollment by not redirecting to please call
+    return if in_person_can_perform_fraud_review?
     redirect_to_fraud_review if fraud_review_pending?
   end
 

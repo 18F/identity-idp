@@ -106,6 +106,16 @@ RSpec.describe DestroyableRecords do
       expect(iaa_order.integrations.include? integration).to be false
     end
 
+    describe 'integration without usages or iaa_orders' do
+      let!(:empty_integration) { create(:integration) }
+      let!(:service_provider) { empty_integration.service_provider }
+
+      it 'destroys the integration' do
+        deleted_int = Agreements::Integration.find_by(id: empty_integration.id)
+        expect(deleted_int).to be nil
+      end
+    end
+
     it 'does not delete unrelated objects' do
       iu2.reload
       iaa_order.reload

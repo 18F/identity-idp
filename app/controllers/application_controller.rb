@@ -105,11 +105,17 @@ class ApplicationController < ActionController::Base
   end
 
   def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
-      service_provider: current_sp,
-      vtr: sp_session[:vtr],
-      acr_values: sp_session[:acr_values],
-    ).resolve
+    return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
+
+    if current_sp.nil?
+      @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
+    else
+      @resolved_authn_context_result = AuthnContextResolver.new(
+        service_provider: current_sp,
+        vtr: sp_session[:vtr],
+        acr_values: sp_session[:acr_values],
+      ).resolve
+    end
   end
 
   def context
@@ -451,7 +457,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_full_width(template, **opts)
-    render template, **opts, layout: 'base'
+    render template, **opts, layout: 'application'
   end
 
   def analytics_exception_info(exception)

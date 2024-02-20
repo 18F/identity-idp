@@ -37,10 +37,12 @@ module Idv
                      attributes: [:dob], less_than_or_equal_to: ->(_rec) {
                        Time.zone.today - IdentityConfig.store.idv_min_age_years.years
                      },
-                     message: I18n.t(
-                       'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
-                       app_name: APP_NAME,
-                     )
+                     message: ->(_, _) do
+                       I18n.t(
+                         'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+                         app_name: APP_NAME,
+                       )
+                     end
       # rubocop:enable Layout/LineLength
     end
     # rubocop:enable Metrics/BlockLength

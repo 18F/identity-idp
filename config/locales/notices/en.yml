@@ -35,7 +35,7 @@ en:
       first_paragraph_end: with a link to confirm your email address. Follow the link
         to continue creating your account.
       first_paragraph_start: We sent an email to
-      no_email_sent_explanation_start: Didn’t receive an email?
+      resend_confirmation_email: Resend the confirmation email
     timeout_warning:
       partially_signed_in:
         continue: Continue sign in

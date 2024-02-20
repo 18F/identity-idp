@@ -39,6 +39,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:attention_barcode_read) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_barcode_read_attention)
   end
+  let(:attention_barcode_read_with_face_match_fail) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_barcode_read_attention_with_face_match_fail)
+  end
   let(:failure_response_no_liveness_low_dpi) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_no_liveness_low_dpi)
   end
@@ -695,24 +698,37 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#successful_result?' do
-    context 'when all checks other than selfie pass' do
-      context 'and selfie check is enabled' do
-        liveness_checking_enabled = true
+    context 'and selfie check is enabled' do
+      let(:liveness_checking_enabled) { true }
 
-        it 'returns true with a passing selfie' do
-          response = described_class.new(
-            success_with_liveness_response, config, liveness_checking_enabled
-          )
+      it 'returns true with a passing selfie' do
+        response = described_class.new(
+          success_with_liveness_response, config, liveness_checking_enabled
+        )
 
-          expect(response.successful_result?).to eq(true)
-        end
-
+        expect(response.successful_result?).to eq(true)
+      end
+      context 'when portrait match fails' do
         it 'returns false with a failing selfie' do
           response = described_class.new(
             failure_response_face_match_fail, config, liveness_checking_enabled
           )
 
           expect(response.successful_result?).to eq(false)
+        end
+        context 'when attention with barcode' do
+          let(:response) do
+            described_class.new(
+              attention_barcode_read_with_face_match_fail,
+              config,
+              liveness_checking_enabled,
+            )
+          end
+
+          it 'returns false' do
+            expect(response.doc_auth_success?).to eq(true)
+            expect(response.successful_result?).to eq(false)
+          end
         end
       end
 

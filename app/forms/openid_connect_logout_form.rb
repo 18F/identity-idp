@@ -17,12 +17,12 @@ class OpenidConnectLogoutForm
 
   validates :client_id,
             presence: {
-              message: I18n.t('openid_connect.logout.errors.client_id_missing'),
+              message: ->(_, _) { I18n.t('openid_connect.logout.errors.client_id_missing') },
             },
             if: :reject_id_token_hint?
   validates :id_token_hint,
             absence: {
-              message: I18n.t('openid_connect.logout.errors.id_token_hint_present'),
+              message: ->(_, _) { I18n.t('openid_connect.logout.errors.id_token_hint_present') },
             },
             if: :reject_id_token_hint?
   validates :post_logout_redirect_uri, presence: true
