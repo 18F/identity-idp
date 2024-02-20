@@ -5,7 +5,8 @@ set -eu
 submit_to_s3='false'
 pwned_directory="pwned_passwords"
 number_of_passwords=3000000
-pwned_file="${pwned_directory}/pwned-passwords.txt"
+pwned_file="${pwned_directory}/pwned_passwords.txt"
+pwned_file_unsorted="${pwned_directory}/pwned_passwords_unsorted.txt"
 aws_prod="false"
 
 usage() {
@@ -21,14 +22,30 @@ EOM
 
 download_pwned_passwords() {
   echo "Downloading pwned passwords. This may take awhile ..."
-  yarn -s download-pwned-passwords | cut -d: -f 1 | sort > $pwned_file
+  yarn -s download-pwned-passwords -o $pwned_file_unsorted
+  sort $pwned_file_unsorted -o $pwned_file
+}
+
+check_pwned_unsorted() {
+  if [[ -f "$pwned_file_unsorted" ]]; then
+    while true; do
+      read -p "${pwned_file_unsorted} was found. Do you want to redownload (y/n)?" yn
+      case $yn in
+          [Yy]* ) download_pwned_passwords; break ;;
+          [Nn]* ) break ;;
+          * ) echo "Please answer yes or no.";;
+      esac
+    done
+  else
+    download_pwned_passwords
+  fi
 }
 
 check_passwords() {
   echo "Checking if 'password' is in ${pwned_file}..."
   check="grep -i $(echo -n "password" | sha1sum | awk '{print $1}') -- $pwned_file"
   if [ -z $(eval $check) ]; then
-    echo "SHA-1 check for 'password' came up empty. Please redownload"
+    echo "SHA-1 check for 'password' came up empty. Please redownload the pwned passwords"
     exit 1
   else
     echo "Check succeeded!"
@@ -73,6 +90,17 @@ post_to_s3() {
   fi
 }
 
+cleanup() {
+  read -p "Do you want to remove ${pwned_file_unsorted}? (y/n) " -n 1 -r yn
+  if [[ $yn =~ ^[Yy]$ ]]; then
+    echo "Removing pwned passwords 7z file"
+    rm $pwned_file_unsorted
+  else
+    echo "  Goodbye."
+    exit 0
+  fi
+}
+
 while getopts "hn:u:f:sp" opt; do
   case $opt in
     n ) number_of_passwords=$OPTARG;;
@@ -86,9 +114,10 @@ while getopts "hn:u:f:sp" opt; do
   esac
 done
 
-download_pwned_passwords
+check_pwned_unsorted
 check_passwords
 if [[ $submit_to_s3 == "true" ]]; then
   check_s3_env
   post_to_s3
 fi
+cleanup
