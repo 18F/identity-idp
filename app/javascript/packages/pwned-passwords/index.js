@@ -59,7 +59,7 @@ export class Downloader extends EventEmitter {
     const start = parseInt(this.rangeStart, 16);
     const end = parseInt(this.rangeEnd, 16);
     const total = end - start + 1;
-    this.emit('start', total);
+    this.emit('start', { total });
     for (let i = start; i <= end; i++) {
       this.downloaders.add(async () => {
         await this.downloadRange(this.getPaddedRange(i));
@@ -105,6 +105,10 @@ export class Downloader extends EventEmitter {
       const hashSuffix = hashSuffixOccurrences[0];
       const hash = range + hashSuffix;
       this.commonHashes.push({ hash, occurrences });
+      this.emit('hashchange', {
+        hashes: this.commonHashes.length,
+        hashMin: this.commonHashes.peek().occurrences,
+      });
     }
   }
 

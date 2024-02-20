@@ -3,7 +3,7 @@
 import { parseArgs } from 'node:util';
 import { pipeline } from 'node:stream/promises';
 import { createWriteStream } from 'node:fs';
-import { SingleBar } from 'cli-progress';
+import Progress from 'cli-progress';
 import { Downloader } from './index.js';
 
 const { values: flags } = parseArgs({
@@ -34,9 +34,13 @@ const downloader = new Downloader({
 const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
 
 if (outFile) {
-  const progressBar = new SingleBar({});
-  downloader.once('start', (total) => progressBar.start(total, 0));
+  const progressBar = new Progress.SingleBar({
+    format:
+      '[{bar}] {percentage}% | ETA {eta}s | {value}/{total} | {hashes} hashes (>= {hashMin} occurrences)',
+  });
+  downloader.once('start', ({ total }) => progressBar.start(total, 0, { hashes: 0, hashMin: 0 }));
   downloader.on('download', () => progressBar.increment());
+  downloader.on('hashchange', ({ hashes, hashMin }) => progressBar.update({ hashes, hashMin }));
   downloader.once('complete', () => progressBar.stop());
 }
 
