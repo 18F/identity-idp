@@ -1,6 +1,4 @@
-/* eslint-disable no-unreachable */
 import EventEmitter from 'node:events';
-// eslint-disable-next-line import/no-unresolved
 import PQueue from 'p-queue';
 import PairingHeap from './pairing-heap.js';
 

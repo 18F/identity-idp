@@ -25,7 +25,10 @@
     "react-hooks/exhaustive-deps": "error"
   },
   "settings": {
-    "import/internal-regex": "^@18f/identity-"
+    "import/internal-regex": "^@18f/identity-",
+    "import/resolver": {
+      "typescript": true
+    }
   },
   "overrides": [
     {

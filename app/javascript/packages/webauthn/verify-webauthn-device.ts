@@ -1,4 +1,4 @@
-import { base64ToArrayBuffer, arrayBufferToBase64 } from '@18f/identity-webauthn';
+import { base64ToArrayBuffer, arrayBufferToBase64 } from './converters';
 
 export interface VerifyCredentialDescriptor {
   id: string;
