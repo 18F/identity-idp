@@ -29,6 +29,7 @@ module Idv
 
     def override_csp_to_allow_acuant
       policy = current_content_security_policy
+      request.content_security_policy_nonce_directives.delete('style-src')
       policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
       policy.script_src(*policy.script_src, :unsafe_eval)
       policy.style_src(*policy.style_src, :unsafe_inline)
