@@ -10,7 +10,7 @@ const { values: flags } = parseArgs({
   options: {
     'range-start': { type: 'string' },
     'range-end': { type: 'string' },
-    'max-size': { type: 'string' },
+    'max-size': { type: 'string', short: 'n' },
     concurrency: { type: 'string' },
     'out-file': { type: 'string', short: 'o' },
   },

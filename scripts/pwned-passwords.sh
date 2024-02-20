@@ -22,7 +22,7 @@ EOM
 
 download_pwned_passwords() {
   echo "Downloading pwned passwords. This may take awhile ..."
-  yarn -s download-pwned-passwords -o $pwned_file_top_hashes
+  yarn -s download-pwned-passwords -n $number_of_passwords -o $pwned_file_top_hashes
   sort $pwned_file_top_hashes -o $pwned_file
 }
 
