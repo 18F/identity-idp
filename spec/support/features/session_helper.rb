@@ -490,7 +490,7 @@ module Features
     end
 
     def click_link_to_use_a_different_email
-      click_link t('notices.use_diff_email.link')
+      click_link t('notices.use_diff_email.link').upcase_first
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
