@@ -1,5 +1,3 @@
-import LinkedList from './linked-list.js';
-
 /**
  * @template V
  * @typedef {(a: V, b: V) => number} Comparator
@@ -31,14 +29,15 @@ class PairingHeap {
   }
 
   *[Symbol.iterator]() {
-    /** @type {LinkedList<Heap<V>>} */
-    const queue = new LinkedList();
-
-    if (this.heap) {
-      queue.push(this.heap);
+    if (!this.heap) {
+      return;
     }
 
-    for (const { value, head, next } of queue) {
+    /** @type {Heap<V>[]} */
+    const queue = [this.heap];
+    for (let i = 0; i < queue.length; i++) {
+      const { value, head, next } = queue[i];
+
       yield value;
 
       if (next) {
