@@ -47,9 +47,27 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
-
+  let(:liveness_enabled) { false }
+  let(:workflow) { 'default_workflow' }
+  let(:reference) { SecureRandom.uuid }
+  let(:request_context) do
+    {
+      workflow: workflow,
+      settings: {
+        Type: 'Initiate',
+        Settings: {
+          Mode: 'test',
+          Locale: config.locale,
+          Venue: 'online',
+          Reference: reference,
+        },
+      },
+    }
+  end
   context 'when the response is a success' do
-    let(:response) { described_class.new(success_response, config) }
+    let(:response) do
+      described_class.new(success_response, config, liveness_enabled, request_context)
+    end
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
@@ -63,6 +81,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(extra_attributes).not_to be_empty
       expect(extra_attributes[:classification_info]).to include(:Front, :Back)
       expect(extra_attributes).to have_key(:workflow)
+      expect(extra_attributes).to have_key(:reference)
     end
     it 'has PII data' do
       # This is the minimum expected by doc_pii_form in the core IDP
@@ -328,7 +347,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces expected hash output' do
-      output = described_class.new(failure_response_with_all_failures, config).to_h
+      output = described_class.new(
+        failure_response_with_all_failures, config, liveness_enabled,
+        request_context
+      ).to_h
 
       expect(output).to match(
         success: false,
@@ -342,7 +364,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         attention_with_barcode: false,
         doc_type_supported: true,
         conversation_id: a_kind_of(String),
-        reference: a_kind_of(String),
+        reference: reference,
         vendor: 'TrueID',
         billed: true,
         log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Failed' }),
@@ -422,7 +444,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for a TrueID failure without details' do
-      output = described_class.new(failure_response_empty, config).to_h
+      output = described_class.new(
+        failure_response_empty, config, liveness_enabled,
+        request_context
+      ).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(
@@ -431,15 +456,20 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       )
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
       expect(output[:vendor]).to eq('TrueID')
+      expect(output[:reference]).to eq(reference)
     end
 
     it 'produces reasonable output for a malformed TrueID response' do
       allow(NewRelic::Agent).to receive(:notice_error)
-      output = described_class.new(failure_response_malformed, config).to_h
+      output = described_class.new(
+        failure_response_malformed, config, liveness_enabled,
+        request_context
+      ).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:backtrace)
+      expect(output[:reference]).to eq(reference)
     end
 
     it 'is not billed' do

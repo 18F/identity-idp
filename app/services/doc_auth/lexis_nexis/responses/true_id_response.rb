@@ -30,7 +30,10 @@ module DocAuth
             success: false,
             errors: { network: true },
             exception: e,
-            extra: { backtrace: e.backtrace },
+            extra: {
+              backtrace: e.backtrace,
+              reference: reference,
+            },
           )
         end
 
@@ -136,7 +139,7 @@ module DocAuth
         end
 
         def reference
-          @reference ||= parsed_response_body.dig(:Status, :Reference)
+          @request_context&.dig(:settings, :Settings, :Reference)
         end
 
         def products
