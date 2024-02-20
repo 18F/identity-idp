@@ -2,6 +2,13 @@ module Telephony
   class AlertSender
     SMS_MAX_LENGTH = 160
 
+    def send_account_deleted_notice(to:, country_code:)
+      message = I18n.t('telephony.account_deleted_notice', app_name: APP_NAME)
+      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
+      response
+    end
+
     def send_account_reset_notice(to:, country_code:, interval:)
       message = I18n.t(
         'telephony.account_reset_notice', app_name: APP_NAME,

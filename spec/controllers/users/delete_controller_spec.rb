@@ -74,7 +74,14 @@ RSpec.describe Users::DeleteController do
       allow(UserMailer).to receive(:account_delete_submitted).and_call_original
       stub_signed_in_user
       delete
-      expect(UserMailer).not_to have_received(:account_delete_submitted)
+      expect(ActionMailer::Base.deliveries.count).to eq 1
+    end
+
+    it 'text user of account deletion' do
+      allow(Telephony).to receive(:send_account_deleted_notice).and_call_original
+      stub_signed_in_user
+      delete
+      expect(Telephony).to have_received(:send_account_deleted_notice)
     end
 
     it 'logs a succesful submit' do
@@ -114,6 +121,7 @@ RSpec.describe Users::DeleteController do
     user = create(
       :user,
       :fully_registered,
+      :with_phone,
       email: 'old_email@example.com',
       password: ControllerHelper::VALID_PASSWORD,
     )

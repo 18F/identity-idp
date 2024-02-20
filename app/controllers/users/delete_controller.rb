@@ -14,6 +14,7 @@ module Users
       irs_attempts_api_tracker.logged_in_account_purged(success: true)
       send_push_notifications
       notify_user_via_email_of_deletion
+      notify_user_via_sms_of_deletion
       delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
@@ -60,5 +61,16 @@ module Users
       end
     end
     # rubocop:enable IdentityIdp/MailLaterLinter
+
+    def notify_user_via_sms_of_deletion
+      phone_configurations = current_user.phone_configurations
+      phone_configurations.each do |configuration|
+        next unless configuration.capabilities.supports_sms?
+        Telephony.send_account_deleted_notice(
+          to: configuration.phone,
+          country_code: Phonelib.parse(configuration.phone).country,
+        )
+      end
+    end
   end
 end
