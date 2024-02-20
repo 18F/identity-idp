@@ -21,7 +21,7 @@ module Idv
       analytics.idv_personal_key_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
-        pii_missing: pii_is_missing?,
+        encrypted_profiles_missing: pii_is_missing?,
         **opt_in_analytics_properties,
       )
 
