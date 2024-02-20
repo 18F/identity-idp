@@ -31,7 +31,7 @@ RSpec.describe 'content security policy', allowed_extra_analytics: [:*] do
         expect(content_security_policy['script-src']).to match(
           /'self' 'unsafe-eval' 'nonce-[\w\d=\/+]+'/,
         )
-        expect(content_security_policy['style-src']).to eq("'self'")
+        expect(content_security_policy['style-src']).to match(/'self' 'nonce-[\w\d=\/+]+'/)
       end
 
       it 'uses logout SP to override CSP form action that will allow a redirect to the CSP' do
@@ -75,7 +75,7 @@ RSpec.describe 'content security policy', allowed_extra_analytics: [:*] do
         expect(content_security_policy['script-src']).to match(
           /'self' 'unsafe-eval' 'nonce-[\w\d=\/+]+'/,
         )
-        expect(content_security_policy['style-src']).to eq("'self'")
+        expect(content_security_policy['style-src']).to match(/'self' 'nonce-[\w\d=\/+]+'/)
       end
 
       it 'uses logout SP to override CSP form action that will allow a redirect to the CSP' do
@@ -111,7 +111,7 @@ RSpec.describe 'content security policy', allowed_extra_analytics: [:*] do
       expect(content_security_policy['script-src']).to match(
         /'self' 'unsafe-eval' 'nonce-[\w\d=\/+]+'/,
       )
-      expect(content_security_policy['style-src']).to eq("'self'")
+      expect(content_security_policy['style-src']).to match(/'self' 'nonce-[\w\d=\/+]+'/)
     end
   end
 
