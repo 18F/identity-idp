@@ -45,8 +45,10 @@ const result = await downloader.download();
 await pipeline(
   result,
   async function* (hashPairs) {
+    let prefix = '';
     for await (const hashPair of hashPairs) {
-      yield `${hashPair.hash}\n`;
+      yield `${prefix}${hashPair.hash}`;
+      prefix ||= '\n';
     }
   },
   outputStream,
