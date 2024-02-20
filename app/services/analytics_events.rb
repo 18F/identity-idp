@@ -1013,6 +1013,7 @@ module AnalyticsEvents
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
+  # @param [String] reference_id ReferenceID from TrueID
   # @param [String] reference
   # @param [String] transaction_status
   # @param [String] transaction_reason_code
