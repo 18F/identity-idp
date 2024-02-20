@@ -74,7 +74,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         bad_password_count: 1,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -94,7 +93,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: 'anonymous-uuid',
         user_locked_out: false,
         bad_password_count: 1,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -133,7 +131,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: true,
         bad_password_count: 0,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -157,7 +154,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         bad_password_count: 2,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -176,7 +172,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: 'anonymous-uuid',
         user_locked_out: false,
         bad_password_count: 1,
-        stored_location: nil,
         sp_request_url_present: true,
         remember_device: false,
       }
@@ -251,7 +246,6 @@ RSpec.describe Users::SessionsController, devise: true do
           user_id: user.uuid,
           user_locked_out: false,
           bad_password_count: 0,
-          stored_location: nil,
           sp_request_url_present: false,
           remember_device: false,
         }
@@ -378,7 +372,6 @@ RSpec.describe Users::SessionsController, devise: true do
           user_id: user.uuid,
           user_locked_out: false,
           bad_password_count: 0,
-          stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
         }
@@ -404,7 +397,6 @@ RSpec.describe Users::SessionsController, devise: true do
           user_id: user.uuid,
           user_locked_out: false,
           bad_password_count: 0,
-          stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
         }
