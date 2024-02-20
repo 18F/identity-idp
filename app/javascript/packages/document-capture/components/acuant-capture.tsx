@@ -512,9 +512,19 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureSuccess({ image }: { image: string }) {
+    const analyticsPayload: ImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
+      width: null,
+      height: null,
+      fingerprint: null,
+      mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
+      source: 'acuant',
+      size: getDecodedBase64ByteSize(image),
+      failedImageResubmission: false,
+    });
+
     trackEvent('idv_sdk_selfie_image_added', { captureAttempts });
 
-    onChangeAndResetError(image);
+    onChangeAndResetError(image, analyticsPayload);
     onResetFailedCaptureAttempts();
     setIsCapturingEnvironment(false);
   }
