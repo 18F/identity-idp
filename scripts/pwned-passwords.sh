@@ -6,7 +6,7 @@ submit_to_s3='false'
 pwned_directory="pwned_passwords"
 number_of_passwords=3000000
 pwned_file="${pwned_directory}/pwned_passwords.txt"
-pwned_file_unsorted="${pwned_directory}/pwned_passwords_unsorted.txt"
+pwned_file_top_hashes="${pwned_directory}/pwned_passwords_top_hashes.txt"
 aws_prod="false"
 
 usage() {
@@ -22,14 +22,14 @@ EOM
 
 download_pwned_passwords() {
   echo "Downloading pwned passwords. This may take awhile ..."
-  yarn -s download-pwned-passwords -o $pwned_file_unsorted
-  sort $pwned_file_unsorted -o $pwned_file
+  yarn -s download-pwned-passwords -o $pwned_file_top_hashes
+  sort $pwned_file_top_hashes -o $pwned_file
 }
 
 check_pwned_unsorted() {
-  if [[ -f "$pwned_file_unsorted" ]]; then
+  if [[ -f "$pwned_file_top_hashes" ]]; then
     while true; do
-      read -p "${pwned_file_unsorted} was found. Do you want to redownload (y/n)?" yn
+      read -p "${pwned_file_top_hashes} was found. Do you want to redownload (y/n)?" yn
       case $yn in
           [Yy]* ) download_pwned_passwords; break ;;
           [Nn]* ) break ;;
@@ -91,10 +91,10 @@ post_to_s3() {
 }
 
 cleanup() {
-  read -p "Do you want to remove ${pwned_file_unsorted}? (y/n) " -n 1 -r yn
+  read -p "Do you want to remove ${pwned_file_top_hashes}? (y/n) " -n 1 -r yn
   if [[ $yn =~ ^[Yy]$ ]]; then
     echo "Removing pwned passwords 7z file"
-    rm $pwned_file_unsorted
+    rm $pwned_file_top_hashes
   else
     echo "  Goodbye."
     exit 0
