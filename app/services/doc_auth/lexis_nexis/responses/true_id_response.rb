@@ -72,7 +72,6 @@ module DocAuth
           if with_authentication_result?
             attrs = response_info.merge(
               true_id_product[:AUTHENTICATION_RESULT],
-              lexis_nexis_status: parsed_response_body[:Status],
             )
             attrs.reject! do |k, _v|
               PII_EXCLUDES.include?(k) || k.start_with?('Alert_')
@@ -118,6 +117,10 @@ module DocAuth
 
         def conversation_id
           @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
+        end
+
+        def request_id
+          @request_id ||= parsed_response_body.dig(:Status, :RequestID)
         end
 
         def parsed_response_body
@@ -191,6 +194,7 @@ module DocAuth
         def basic_logging_info
           {
             conversation_id: conversation_id,
+            request_id: request_id,
             reference: reference,
             vendor: 'TrueID',
             billed: billed?,
