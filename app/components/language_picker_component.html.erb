@@ -7,11 +7,11 @@
           expanded: false,
         },
       ) do %>
-    <%= render IconComponent.new(icon: :language) %>
-    <span id="language-picker-description-<%= unique_id %>" class="language-picker__label-text">
+    <%= image_tag(asset_url('globe-blue.svg'), width: 12, height: 12, alt: '', class: 'tablet:display-none') %>
+    <%= image_tag(asset_url('globe-white.svg'), width: 12, height: 12, alt: '', class: 'display-none tablet:display-inline') %>
+    <span id="language-picker-description-<%= unique_id %>">
       <%= t('i18n.language') %>
     </span>
-    <%= render IconComponent.new(icon: :expand_more, size: 3, class: 'language-picker__expander') %>
   <% end %>
   <ul
     id="language-picker-<%= unique_id %>"

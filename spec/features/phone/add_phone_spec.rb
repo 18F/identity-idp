@@ -6,7 +6,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
-    expect(page).to have_link(href: phone_setup_path, text: t('account.index.phone_add'))
+    expect(page).to have_link(t('account.index.phone_add'), normalize_ws: true, exact: true)
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
