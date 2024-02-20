@@ -113,12 +113,11 @@ module DocAuth
       VISIBLE_PHOTO_CHECK => { long_msg: VISIBLE_PHOTO_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       SEX_CHECK => { long_msg: SEX_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       VISIBLE_COLOR_CHECK => { long_msg: VISIBLE_COLOR_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
-      # Multiple Errors
+      # Multiple errors
       MULTIPLE_FRONT_ID_FAILURES => { long_msg: MULTIPLE_FRONT_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
-      # TODO, theses messages need modifying
-      # Liveness, use general error for now
+      # Selfie errors
       SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_FAILURE, hints: false },
       SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_FAILURE, hints: false },
       SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },
