@@ -131,5 +131,7 @@ export class Downloader extends EventEmitter {
         data += appended;
       }
     }
+
+    yield data;
   }
 }
