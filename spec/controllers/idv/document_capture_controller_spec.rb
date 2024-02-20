@@ -57,6 +57,7 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
           expect(subject).not_to receive(:render).with(:show, locals: an_instance_of(Hash))
           get :show
+          expect(response).to redirect_to(idv_hybrid_handoff_path)
         end
       end
     end
