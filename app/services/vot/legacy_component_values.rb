@@ -67,7 +67,7 @@ module Vot
       name: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
       description: 'Legacy AAL3',
       implied_component_values: [],
-      requirements: [:aal2, :hspd12],
+      requirements: [:aal2, :phishing_resistant],
     )
     AAL3_HSPD12 = ComponentValue.new(
       name: Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,

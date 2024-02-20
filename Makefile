@@ -177,7 +177,7 @@ brakeman: ## Runs brakeman code security check
 	(bundle exec brakeman) || (echo "Error: update code as needed to remove security issues. For known exceptions already in brakeman.ignore, use brakeman to interactively update exceptions."; exit 1)
 
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
-	yarn build
+	yarn build:js
 
 browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
 	yarn generate-browsers-json

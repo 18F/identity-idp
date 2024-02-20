@@ -1,6 +1,7 @@
 function isTrackableErrorEvent(event: ErrorEvent): boolean {
   try {
-    return new URL(event.filename).host === window.location.host;
+    const { host, pathname } = new URL(event.filename);
+    return host === window.location.host && pathname.endsWith('.js');
   } catch {
     return false;
   }

@@ -20,7 +20,6 @@ module Users
     def new
       override_csp_for_google_analytics
 
-      @ial = sp_session_ial
       @issuer_forced_reauthentication = issuer_forced_reauthentication?(
         issuer: decorated_sp_session.sp_issuer,
       )
@@ -76,10 +75,9 @@ module Users
     end
 
     def process_locked_out_session
-      irs_attempts_api_tracker.login_rate_limited(
-        email: auth_params[:email],
-      )
-
+      irs_attempts_api_tracker.login_rate_limited(email: auth_params[:email])
+      warden.logout(:user)
+      warden.lock!
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url
     end

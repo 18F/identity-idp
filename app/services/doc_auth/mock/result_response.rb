@@ -7,9 +7,10 @@ module DocAuth
 
       attr_reader :uploaded_file, :config
 
-      def initialize(uploaded_file, config)
+      def initialize(uploaded_file, config, selfie_required = false)
         @uploaded_file = uploaded_file.to_s
         @config = config
+        @selfie_required = selfie_required
         super(
           success: success?,
           errors: errors,
@@ -22,6 +23,7 @@ module DocAuth
             portrait_match_results: portrait_match_results,
             billed: true,
             classification_info: classification_info,
+            liveness_checking_required: @selfie_required,
           }.compact,
         )
       end
@@ -138,8 +140,12 @@ module DocAuth
       end
 
       def selfie_status
-        return :not_processed if portrait_match_results&.dig(:FaceMatchResult).nil?
-        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
+        if @selfie_required
+          return :success if portrait_match_results&.dig(:FaceMatchResult).nil?
+          portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
+        else
+          :not_processed
+        end
       end
 
       private
@@ -240,6 +246,7 @@ module DocAuth
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
+          extra: { liveness_checking_required: liveness_enabled },
         }.compact
       end
     end

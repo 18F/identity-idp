@@ -473,6 +473,19 @@ RSpec.describe ApplicationController do
       expect(result.aal2?).to eq(true)
       expect(result.identity_proofing?).to eq(true)
     end
+
+    context 'without an SP' do
+      it 'returns a no-SP result' do
+        sp = nil
+        sp_session = {}
+        allow(controller).to receive(:current_sp).and_return(sp)
+        allow(controller).to receive(:sp_session).and_return(sp_session)
+
+        result = subject.resolved_authn_context_result
+
+        expect(result).to eq(Vot::Parser::Result.no_sp_result)
+      end
+    end
   end
 
   describe '#sp_session_request_url_with_updated_params' do

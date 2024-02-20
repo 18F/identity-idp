@@ -9,7 +9,19 @@ module Vot
       :identity_proofing?,
       :biometric_comparison?,
       :ialmax?,
-    )
+    ) do
+      def self.no_sp_result
+        self.new(
+          component_values: [],
+          aal2?: false,
+          phishing_resistant?: false,
+          hspd12?: false,
+          identity_proofing?: false,
+          biometric_comparison?: false,
+          ialmax?: false,
+        )
+      end
+    end
 
     attr_reader :vector_of_trust, :acr_values
 
@@ -25,6 +37,11 @@ module Vot
         elsif acr_values.present?
           map_initial_acr_values_to_component_values
         end
+
+      if !initial_components
+        raise ParseException.new('VoT parser called without VoT or ACR values')
+      end
+
       expand_components_with_initial_components(initial_components)
     end
 

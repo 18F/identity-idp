@@ -50,7 +50,7 @@
   <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
   <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
 <% end %>
-<% if @ial && desktop_device? %>
+<% if desktop_device? %>
   <div class='margin-x-neg-1 margin-top-205'>
     <%= link_to(
           t('account.login.piv_cac'),
@@ -88,4 +88,3 @@
 
 <noscript><link rel="stylesheet" href="<%= no_js_detect_css_path(location: :sign_in) %>"></noscript>
 <%= javascript_packs_tag_once('platform-authenticator-available') %>
-

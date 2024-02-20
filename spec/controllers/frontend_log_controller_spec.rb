@@ -31,10 +31,9 @@ RSpec.describe FrontendLogController do
       end
 
       context 'with invalid event name' do
-        it 'logs with warning' do
+        it 'responds as unsuccessful' do
           action
 
-          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
           expect(json[:error_message]).to eq('invalid event')
@@ -239,10 +238,9 @@ RSpec.describe FrontendLogController do
       end
 
       context 'with invalid event name' do
-        it 'logs with warning' do
+        it 'responds as unsuccessful' do
           action
 
-          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
           expect(json[:error_message]).to eq('invalid event')

@@ -53,6 +53,26 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
       end
     end
 
+    context 'attention barcode with invalid pii is uploaded', allow_browser_log: true do
+      it 'try again and page show doc type inline error message' do
+        attach_images(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'ial2_test_credential_barcode_attention_no_address.yml'
+          ),
+        )
+        submit_images
+
+        expect(page).to have_content(t('doc_auth.errors.alerts.address_check'))
+        expect(page).to have_current_path(idv_document_capture_path)
+
+        click_try_again
+        attach_images
+        submit_images
+        expect(page).to have_current_path(idv_ssn_path)
+      end
+    end
+
     context 'rate limits calls to acuant', allow_browser_log: true do
       let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do

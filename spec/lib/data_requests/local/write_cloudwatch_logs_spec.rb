@@ -30,23 +30,28 @@ RSpec.describe DataRequests::Local::WriteCloudwatchLogs do
     ]
   end
 
-  around do |ex|
-    Dir.mktmpdir do |dir|
-      @output_dir = dir
-      ex.run
-    end
-  end
+  let(:io) { StringIO.new }
+  let(:csv) { CSV.new(io) }
+
+  let(:requesting_issuer_uuid) { SecureRandom.hex }
+  let(:include_header) { true }
 
   subject(:writer) do
-    DataRequests::Local::WriteCloudwatchLogs.new(cloudwatch_results, @output_dir)
+    DataRequests::Local::WriteCloudwatchLogs.new(
+      cloudwatch_results:,
+      csv:,
+      requesting_issuer_uuid:,
+      include_header: include_header,
+    )
   end
 
   describe '#call' do
-    it 'writes the logs to output_dir/logs.csv' do
+    it 'writes the logs to the CSV' do
       writer.call
 
-      row = CSV.read(File.join(@output_dir, 'logs.csv'), headers: true).first
+      row = CSV.parse(io.string, headers: true).first
 
+      expect(row['uuid']).to eq(requesting_issuer_uuid)
       expect(row['timestamp']).to eq(now.iso8601)
       expect(row['event_name']).to eq('Some Log: Event')
       expect(row['success']).to eq('true')
@@ -83,7 +88,7 @@ RSpec.describe DataRequests::Local::WriteCloudwatchLogs do
       it 'unpacks all multi factor ids' do
         writer.call
 
-        csv = CSV.read(File.join(@output_dir, 'logs.csv'), headers: true)
+        csv = CSV.parse(io.string, headers: true)
 
         expect(csv.map { |row| [row['multi_factor_auth_method'], row['multi_factor_id']] }).
           to eq(

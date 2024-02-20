@@ -12,6 +12,7 @@ module Reporting
       [
         ['Metric', 'All Users', 'Verified users', 'Time Range Start', 'Time Range End'],
         ['All-time count', total_user_count, verified_user_count, '-', report_date.to_date],
+        ['All-time fully registered', total_fully_registered, '-', '-', report_date.to_date],
         [
           'New users count',
           new_user_count,
@@ -42,6 +43,12 @@ module Reporting
     def new_user_count
       Reports::BaseReport.transaction_with_timeout do
         User.where(created_at: current_month).count
+      end
+    end
+
+    def total_fully_registered
+      Reports::BaseReport.transaction_with_timeout do
+        RegistrationLog.where('registered_at <= ?', end_date).where.not(registered_at: nil).count
       end
     end
 
