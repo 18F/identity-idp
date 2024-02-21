@@ -155,7 +155,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
           click_continue
           expect(page).to have_content(t('notices.backup_codes_configured'))
-          expect(page).to have_current_path(auth_method_confirmation_path)
+          expect(page).to have_current_path(confirm_backup_codes_path)
 
           click_link t('mfa.add')
           expect(page).to have_current_path(authentication_methods_setup_path)
@@ -175,7 +175,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
           click_continue
           expect(page).to have_content(t('notices.backup_codes_configured'))
-          expect(page).to have_current_path(auth_method_confirmation_path)
+          expect(page).to have_current_path(confirm_backup_codes_path)
 
           click_link t('mfa.add')
           expect(page).to have_current_path(authentication_methods_setup_path)
@@ -232,10 +232,10 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       expect(page).to have_link(t('components.download_button.label'))
       click_continue
       expect(page).to have_current_path(
-        auth_method_confirmation_path,
+        confirm_backup_codes_path,
       )
 
-      click_button t('mfa.skip')
+      click_continue
     end
 
     it 'goes to the next page after user confirms that they have saved their backup codes' do
