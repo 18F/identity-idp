@@ -19,8 +19,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
   before do
     allow(controller).to receive(:current_sp).
       and_return(service_provider)
-    allow(controller).to receive(:sp_session).
-      and_return({ biometric_comparison_required: sp_selfie_enabled })
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
     # precondition set in agreement controller
@@ -265,8 +263,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
       describe 'when selfie is enabled for sp' do
         let(:sp_selfie_enabled) { true }
         it 'pass on correct flags and states and logs correct info' do
-          allow(controller).to receive(:sp_session).
-            and_return({ biometric_comparison_required: sp_selfie_enabled })
           get :show
           expect(response).to render_template :show
           expect(subject.idv_session.selfie_check_required).to eq(true)
@@ -276,8 +272,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
       describe 'when selfie is disabled for sp' do
         let(:sp_selfie_enabled) { false }
         it 'pass on correct flags and states and logs correct info' do
-          allow(controller).to receive(:sp_session).
-            and_return({ biometric_comparison_required: sp_selfie_enabled })
           get :show
           expect(response).to render_template :show
           expect(subject.idv_session.selfie_check_required).to eq(false)
