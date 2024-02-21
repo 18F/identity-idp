@@ -21,12 +21,12 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
       and_return(service_provider)
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
-    # precondition set in agreement controller
-    subject.idv_session.selfie_check_required = sp_selfie_enabled && doc_auth_selfie_capture_enabled
     stub_analytics
     stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
+    allow(subject.decorated_sp_session).to receive(:selfie_required?).
+      and_return(sp_selfie_enabled && doc_auth_selfie_capture_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                      ipp_opt_in_enabled
@@ -256,17 +256,13 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
 
     context 'with selfie enabled system wide' do
       let(:doc_auth_selfie_capture_enabled) { true }
-      before do
-        # allow(controller).to receive(:current_sp).
-        #   and_return(service_provider)
-      end
       describe 'when selfie is enabled for sp' do
         let(:sp_selfie_enabled) { true }
         it 'pass on correct flags and states and logs correct info' do
           get :show
           expect(response).to render_template :show
-          expect(subject.idv_session.selfie_check_required).to eq(true)
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+          expect(subject.idv_session.selfie_check_required).to eq(true)
         end
       end
       describe 'when selfie is disabled for sp' do
@@ -317,8 +313,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
 
       before do
         subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
-        subject.idv_session.selfie_check_required =
-          sp_selfie_enabled && doc_auth_selfie_capture_enabled
       end
 
       it 'invalidates future steps' do
@@ -365,10 +359,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         {
           type: 'desktop',
         }
-      end
-      before do
-        subject.idv_session.selfie_check_required =
-          sp_selfie_enabled && doc_auth_selfie_capture_enabled
       end
 
       it 'sends analytics_submitted event for desktop' do

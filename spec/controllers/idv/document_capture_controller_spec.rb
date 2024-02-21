@@ -30,7 +30,8 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     stub_analytics
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
-    subject.idv_session.selfie_check_required = doc_auth_selfie_capture_enabled && sp_selfie_enabled
+    allow(controller.decorated_sp_session).to receive(:selfie_required?).
+      and_return(doc_auth_selfie_capture_enabled && sp_selfie_enabled)
     subject.idv_session.flow_path = flow_path
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end

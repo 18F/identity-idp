@@ -8,7 +8,6 @@ module Idv
     before_action :confirm_step_allowed
 
     def show
-      idv_session.selfie_check_required = decorated_sp_session.selfie_required?
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'agreement', :view,
@@ -49,7 +48,9 @@ module Idv
         key: :agreement,
         controller: self,
         next_steps: [:hybrid_handoff, :document_capture, :how_to_verify],
-        preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
+        preconditions: ->(idv_session:, user:) {
+          idv_session.welcome_visited
+        },
         undo_step: ->(idv_session:, user:) do
           idv_session.idv_consent_given = nil
           idv_session.skip_hybrid_handoff = nil

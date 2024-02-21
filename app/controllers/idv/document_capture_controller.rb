@@ -61,7 +61,9 @@ module Idv
         next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
         preconditions: ->(idv_session:, user:) {
                          idv_session.flow_path == 'standard' && (
-                           !idv_session.selfie_check_required || idv_session.skip_hybrid_handoff
+                           # mobile
+                           idv_session.skip_hybrid_handoff ||
+                            !idv_session.selfie_check_required # desktop but selfie not required
                          )
                        },
         undo_step: ->(idv_session:, user:) do
