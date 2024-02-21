@@ -58,10 +58,10 @@
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-2' %>
 <% end %>
 
-<%= render PageFooterComponent.new do %>
-  <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), authentication_methods_setup_path %>
+<% if user_session[:in_account_creation_flow] %>
+  <%= render PageFooterComponent.new do %>
+    <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), authentication_methods_setup_path %>
 
-  <% if user_session[:in_account_creation_flow] %>
     <%= form_tag(backup_code_delete_path, method: :delete, class: 'margin-top-5') do %>
       <%= button_tag t('links.cancel'), type: 'submit',
                                         class: 'usa-button usa-button--small usa-button--wide margin-bottom-2 usa-button--unstyled' %>
