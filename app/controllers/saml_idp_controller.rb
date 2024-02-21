@@ -114,7 +114,7 @@ class SamlIdpController < ApplicationController
   end
 
   def pii_requested_but_locked?
-    if resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
+    if resolved_authn_context_result.identity_proofing_or_ialmax?
       current_user.identity_verified? &&
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
