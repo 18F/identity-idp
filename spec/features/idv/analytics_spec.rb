@@ -855,8 +855,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       allow(BrowserCache).to receive(:get).and_return(mobile_device)
 
       # mock mobile device as cameraCapable
-      allow_any_instance_of(ActionController::Parameters).to
-      receive(:[]).and_wrap_original do |impl, param_name|
+      allow_any_instance_of(ActionController::Parameters).
+        to receive(:[]).and_wrap_original do |impl, param_name|
         param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
       end
 
