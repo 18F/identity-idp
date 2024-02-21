@@ -4,7 +4,7 @@ class MfaConfirmationController < ApplicationController
 
   def show
     if backup_code_confirmation_needed?
-      confirm_backup_codes_path
+      redirect_to confirm_backup_codes_path
     end
     @content = mfa_confirmation_presenter
     analytics.user_registration_suggest_another_mfa_notice_visited

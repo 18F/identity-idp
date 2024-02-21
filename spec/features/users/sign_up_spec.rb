@@ -245,7 +245,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     it 'allows a user to sign up with backup codes and add methods without reauthentication' do
       sign_in_user
       set_up_2fa_with_backup_codes
-      skip_second_mfa_prompt
 
       visit phone_setup_path
       expect(page).to have_current_path phone_setup_path
@@ -464,7 +463,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   it 'allows a user to sign up with backup codes and add methods after without reauthentication' do
     sign_in_user
     set_up_2fa_with_backup_codes
-    skip_second_mfa_prompt
 
     click_link t('forms.buttons.continue')
     expect(page).to have_current_path account_path
