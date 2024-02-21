@@ -60,7 +60,7 @@ export class Downloader extends EventEmitter {
     this.emit('start', { total });
     for (let i = start; i <= end; i++) {
       this.downloaders.add(async () => {
-        await this.downloadRange(this.getPaddedRange(i));
+        await this.#downloadRange(this.#getPaddedRange(i));
         this.emit('download');
       });
     }
@@ -80,12 +80,12 @@ export class Downloader extends EventEmitter {
    * @param {number} value
    * @return {string}
    */
-  getPaddedRange(value) {
+  #getPaddedRange(value) {
     return value.toString(16).padStart(5, '0').toUpperCase();
   }
 
   /** @param {string} range */
-  async downloadRange(range) {
+  async #downloadRange(range) {
     const url = new URL(range, API_ROOT);
     const response = await fetch(url);
     const text = await response.text();
