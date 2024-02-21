@@ -17,12 +17,12 @@
   },
   "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
-    "stylelint-config-recommended-scss": "^13.1.0",
-    "stylelint-prettier": "^4.0.2"
+    "stylelint-config-recommended-scss": "^14.0.0",
+    "stylelint-prettier": "^5.0.0"
   },
   "peerDependencies": {
     "prettier": ">=3.0.0",
-    "stylelint": ">=15.10.0"
+    "stylelint": ">=16.0.2"
   },
   "sideEffects": false
 }
