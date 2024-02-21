@@ -163,13 +163,12 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
 
     reactivate_profile(new_password, user.personal_key)
 
-    expect(current_path).to eq account_path
-    expect(page).to have_content(t('idv.messages.personal_key'))
+    expect(page).to have_content(t('forms.personal_key_partial.header'))
+    expect(page).to have_current_path(manage_personal_key_path)
 
-    sp_friendly_name = ServiceProvider.find_by(issuer: service_provider_issuer(sp)).friendly_name
-    click_link t('account.index.continue_to_service_provider', service_provider: sp_friendly_name)
+    check t('forms.personal_key.required_checkbox')
+    click_continue
 
-    click_submit_default if current_path == complete_saml_path
     click_agree_and_continue
 
     expect(current_url).to eq complete_saml_url if sp == :saml
