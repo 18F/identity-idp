@@ -31,7 +31,7 @@ RSpec.describe IdentityLinker do
       nonce = SecureRandom.hex
       ial = 3
       acr_values = 'http://idmanagement.gov/ns/assurance/aal/1'
-      vtr = 'C2.Pb'
+      vtr = ['C2.Pb'].to_json
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
       verified_attributes = %w[address email]
