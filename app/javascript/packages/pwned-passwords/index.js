@@ -87,8 +87,10 @@ export class Downloader extends EventEmitter {
   /** @param {string} range */
   async downloadRange(range) {
     const url = new URL(range, API_ROOT);
-    const { body } = await fetch(url);
-    for await (const line of this.readLines(body)) {
+    const response = await fetch(url);
+    const text = await response.text();
+    const lines = text.split('\r\n');
+    for await (const line of lines) {
       const hashSuffixOccurrences = line.split(':', 2);
       const occurrences = Number(hashSuffixOccurrences[1]);
       if (this.commonHashes.length >= this.maxSize) {
@@ -107,31 +109,5 @@ export class Downloader extends EventEmitter {
         hashMin: this.commonHashes.peek().occurrences,
       });
     }
-  }
-
-  /**
-   * @param {Response['body']} body
-   */
-  async *readLines(body) {
-    if (!body) {
-      return;
-    }
-
-    let data = '';
-
-    // @ts-ignore
-    for await (const chunk of body) {
-      const [appended, ...lines] = this.decoder.decode(chunk).split('\r\n');
-      if (lines.length) {
-        const nextData = /** @type {string} */ (lines.pop());
-        yield data + appended;
-        yield* lines;
-        data = nextData;
-      } else {
-        data += appended;
-      }
-    }
-
-    yield data;
   }
 }

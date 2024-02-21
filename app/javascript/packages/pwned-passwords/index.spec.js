@@ -2,37 +2,16 @@ import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { Downloader } from './index.js';
 
-const encoder = new TextEncoder();
-
 describe('Downloader', () => {
-  function createStreamResponder(chunks) {
-    return () => {
-      const stream = new ReadableStream({
-        start(controller) {
-          chunks.forEach((chunk) => controller.enqueue(encoder.encode(chunk)));
-          controller.close();
-        },
-      });
-
-      return new HttpResponse(stream, {
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      });
-    };
-  }
-
   let server;
   before(() => {
     server = setupServer(
-      http.get(
-        'https://api.pwnedpasswords.com/range/00000',
-        createStreamResponder(['fo', 'o:30', '\r\nbar:20']),
+      http.get('https://api.pwnedpasswords.com/range/00000', () =>
+        HttpResponse.text('foo:30\r\nbar:20'),
       ),
-      http.get('https://api.pwnedpasswords.com/range/00001', createStreamResponder(['bar', ':10'])),
-      http.get(
-        'https://api.pwnedpasswords.com/range/00002',
-        createStreamResponder(['ba', 'z:10\r\n', 'quux:40']),
+      http.get('https://api.pwnedpasswords.com/range/00001', () => HttpResponse.text('bar:10')),
+      http.get('https://api.pwnedpasswords.com/range/00002', () =>
+        HttpResponse.text('baz:10\r\nquux:40'),
       ),
     );
     server.listen();
