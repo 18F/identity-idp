@@ -12,15 +12,12 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
 
-  before do
-    sign_in_and_2fa_user
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
-      and_return(fake_attempts_tracker)
-  end
-
   context 'on a desktop device send link' do
     before do
+      sign_in_and_2fa_user
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
+        and_return(fake_attempts_tracker)
       complete_doc_auth_steps_before_hybrid_handoff_step
     end
 
@@ -207,6 +204,25 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
       expect(document_capture_session).to be
       expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
+    end
+  end
+
+  context 'on a desktop device when selfie required', js: true do
+    let(:user) { user_with_2fa }
+    before do
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+        and_return(true)
+      sign_in_and_2fa_user(user)
+      visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
+        and_return(fake_attempts_tracker)
+      complete_doc_auth_steps_before_document_capture_step
+    end
+    it 'it prevents from proceeding to document capture' do
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
+      click_on t('forms.buttons.upload_photos')
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
   end
 end
