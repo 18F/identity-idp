@@ -114,7 +114,7 @@ class SamlIdpController < ApplicationController
   end
 
   def pii_requested_but_locked?
-    if (sp_session && sp_session_ial > 1) || ial_context.ialmax_requested?
+    if resolved_authn_context_result.identity_proofing_or_ialmax?
       current_user.identity_verified? &&
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
@@ -146,7 +146,9 @@ class SamlIdpController < ApplicationController
   end
 
   def requested_ial
-    return 'ialmax' if ial_context.ialmax_requested?
+    requested_ial_acr = FederatedProtocols::Saml.new(saml_request).ial
+    requested_ial_component = Vot::LegacyComponentValues.by_name[requested_ial_acr]
+    return 'ialmax' if requested_ial_component&.requirements&.include?(:ialmax)
 
     saml_request&.requested_ial_authn_context || 'none'
   end
@@ -174,9 +176,19 @@ class SamlIdpController < ApplicationController
     )
   end
 
+  def resolved_authn_context_int_ial
+    if resolved_authn_context_result.ialmax?
+      0
+    elsif resolved_authn_context_result.identity_proofing?
+      2
+    else
+      1
+    end
+  end
+
   def track_events
     analytics.sp_redirect_initiated(
-      ial: ial_context.ial,
+      ial: resolved_authn_context_int_ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
       sign_in_flow: session[:sign_in_flow],
     )
