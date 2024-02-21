@@ -58,7 +58,7 @@ class DestroyableRecords
   end
 
   def destroy_records
-    if integration
+    if integration.present?
       stdout.puts 'Destroying integration usages'
       integration_usages.destroy_all
       integration.reload
