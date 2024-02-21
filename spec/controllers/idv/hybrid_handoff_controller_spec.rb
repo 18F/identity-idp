@@ -23,6 +23,8 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
       and_return({ biometric_comparison_required: sp_selfie_enabled })
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
+    # precondition set in agreement controller
+    subject.idv_session.selfie_check_required = sp_selfie_enabled && doc_auth_selfie_capture_enabled
     stub_analytics
     stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)

@@ -8,8 +8,8 @@ module Idv
     before_action :confirm_step_allowed
 
     def show
+      idv_session.selfie_check_required = decorated_sp_session.selfie_required?
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
-
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'agreement', :view,
         true
