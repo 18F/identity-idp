@@ -34,18 +34,6 @@ class StoreSpMetadataInSession
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
 
-  def ial_value
-    return nil unless parsed_vot
-
-    if parsed_vot&.ialmax?
-      0
-    elsif parsed_vot&.identity_proofing?
-      2
-    elsif parsed_vot
-      1
-    end
-  end
-
   def ial2_value
     parsed_vot&.identity_proofing?
   end
@@ -82,7 +70,6 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      ial: ial_value,
       ial2: ial2_value,
       ialmax: ialmax_value,
       aal_level_requested: aal_level_requested_value,
