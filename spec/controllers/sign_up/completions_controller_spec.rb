@@ -33,7 +33,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           subject.session[:sp] = {
             issuer: current_sp.issuer,
             acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            ial2: false,
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
           }
@@ -44,7 +43,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           expect(@analytics).to have_received(:track_event).with(
             'User registration: agency handoff visited',
             ial2: false,
-            ialmax: nil,
+            ialmax: false,
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
@@ -69,8 +68,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
-            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            ial2: true,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
           }
@@ -83,7 +81,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           expect(@analytics).to have_received(:track_event).with(
             'User registration: agency handoff visited',
             ial2: true,
-            ialmax: nil,
+            ialmax: false,
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
@@ -145,8 +143,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           subject.session[:sp] = {
             issuer: current_sp.issuer,
             acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-            ial2: false,
-            ialmax: true,
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
           }
@@ -222,11 +218,12 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         user = create(:user)
         sp = create(:service_provider, issuer: 'https://awesome')
         stub_sign_in(user)
-        subject.session[:sp] = { issuer: sp.issuer,
-                                 ial2: false,
-                                 acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-                                 requested_attributes: [:email],
-                                 request_url: 'http://localhost:3000' }
+        subject.session[:sp] = {
+          issuer: sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          requested_attributes: [:email],
+          request_url: 'http://localhost:3000',
+        }
         get :show
 
         expect(response).to render_template(:show)
@@ -251,7 +248,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         stub_sign_in(user)
         subject.session[:sp] = {
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
         }
@@ -262,7 +258,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         expect(@analytics).to have_received(:track_event).with(
           'User registration: complete',
           ial2: false,
-          ialmax: nil,
+          ialmax: false,
           service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
@@ -297,7 +293,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         stub_sign_in(user)
         subject.session[:sp] = {
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          ial2: false,
           issuer: 'foo',
           requested_attributes: ['email'],
         }
@@ -314,7 +309,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           stub_sign_in(user)
           subject.session[:sp] = {
             acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            ial2: false,
             issuer: 'foo',
             request_url: 'http://example.com',
           }
@@ -325,7 +319,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           expect(@analytics).to have_received(:track_event).with(
             'User registration: complete',
             ial2: false,
-            ialmax: nil,
+            ialmax: false,
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: 'agency-page',
             needs_completion_screen_reason: :new_sp,
@@ -352,7 +346,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         subject.session[:sp] = {
           issuer: sp.issuer,
           acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          ial2: true,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
@@ -363,7 +356,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         expect(@analytics).to have_received(:track_event).with(
           'User registration: complete',
           ial2: true,
-          ialmax: nil,
+          ialmax: false,
           service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
@@ -433,7 +426,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
       xit 'does not log a reproofing event during initial proofing' do
         stub_sign_in(user)
         subject.session[:sp] = {
-          ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -447,7 +439,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
 
         stub_sign_in(user)
         subject.session[:sp] = {
-          ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -476,7 +467,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
         stub_sign_in(user)
         subject.session[:sp] = {
-          ial2: false,
           request_url: 'http://example.com',
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         }
