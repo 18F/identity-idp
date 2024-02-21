@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { i18n } from '@18f/identity-i18n';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { SWRConfig } from 'swr';
 import { usePropertyValue } from '@18f/identity-test-helpers';
 import { ComponentType } from 'react';
@@ -78,8 +78,8 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     server.resetHandlers();
     // todo: should we return USPS_RESPONSE here?
     server.use(
-      rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-      rest.put(locationsURL, (_req, res, ctx) => res(ctx.json({ success: true }))),
+      http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
+      http.put(locationsURL, () => HttpResponse.json({ success: true })),
     );
   });
 
@@ -94,7 +94,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   context('USPS request returns an error', () => {
     beforeEach(() => {
-      server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.status(500))));
+      server.use(http.post(locationsURL, () => new HttpResponse(null, { status: 500 })));
     });
 
     it('displays a try again error message', async () => {
@@ -259,7 +259,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
     it('displays correct pluralization for multiple location results', async () => {
       server.resetHandlers();
-      server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))));
+      server.use(http.post(locationsURL, () => HttpResponse.json(USPS_RESPONSE)));
       const { findByLabelText, findByText } = render(
         <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
         { wrapper },

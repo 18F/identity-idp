@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue } from '@18f/identity-test-helpers';
 import { setupServer } from 'msw/node';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { ComponentType } from 'react';
@@ -96,9 +96,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
 
   context('initial ArcGIS API request throws an error', () => {
     beforeEach(() => {
-      server.use(
-        rest.post(addressSearchURL, (_req, res, ctx) => res(ctx.json([]), ctx.status(422))),
-      );
+      server.use(http.post(addressSearchURL, () => HttpResponse.json([], { status: 422 })));
     });
 
     it('displays a try again error message', async () => {
@@ -124,10 +122,8 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('initial USPS API request throws an error', () => {
     beforeEach(() => {
       server.use(
-        rest.post(addressSearchURL, (_req, res, ctx) =>
-          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
-        ),
-        rest.post(locationsURL, (_req, res, ctx) => res(ctx.status(500))),
+        http.post(addressSearchURL, () => HttpResponse.json(DEFAULT_RESPONSE)),
+        http.post(locationsURL, () => new HttpResponse(null, { status: 500 })),
       );
     });
 
@@ -154,10 +150,8 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('initial API request is successful', () => {
     beforeEach(() => {
       server.use(
-        rest.post(addressSearchURL, (_req, res, ctx) =>
-          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
-        ),
-        rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        http.post(addressSearchURL, () => HttpResponse.json(DEFAULT_RESPONSE)),
+        http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
       );
     });
 
@@ -273,10 +267,8 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       it('displays correct pluralization for multiple location results', async () => {
         server.resetHandlers();
         server.use(
-          rest.post(addressSearchURL, (_req, res, ctx) =>
-            res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
-          ),
-          rest.post(locationsURL, (_req, res, ctx) => res(ctx.json(MULTI_LOCATION_RESPONSE))),
+          http.post(addressSearchURL, () => HttpResponse.json(DEFAULT_RESPONSE)),
+          http.post(locationsURL, () => HttpResponse.json(MULTI_LOCATION_RESPONSE)),
         );
         const { findByLabelText, findByText } = render(
           <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
@@ -303,10 +295,8 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('subsequent network failures clear results', () => {
     beforeEach(() => {
       server.use(
-        rest.post(addressSearchURL, (_req, res, ctx) =>
-          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
-        ),
-        rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        http.post(addressSearchURL, () => HttpResponse.json(DEFAULT_RESPONSE)),
+        http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
       );
     });
 
@@ -328,25 +318,22 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       expect(result).to.exist();
 
       server.use(
-        rest.post(addressSearchURL, (_req, res, ctx) =>
-          res(
-            ctx.json([
-              {
-                address: '500 Main St E, Bronwood, Georgia, 39826',
-                location: {
-                  latitude: 31.831686000000005,
-                  longitude: -84.363768,
-                },
-                street_address: '500 Main St E',
-                city: 'Bronwood',
-                state: 'GA',
-                zip_code: '39826',
+        http.post(addressSearchURL, () =>
+          HttpResponse.json([
+            {
+              address: '500 Main St E, Bronwood, Georgia, 39826',
+              location: {
+                latitude: 31.831686000000005,
+                longitude: -84.363768,
               },
-            ]),
-            ctx.status(200),
-          ),
+              street_address: '500 Main St E',
+              city: 'Bronwood',
+              state: 'GA',
+              zip_code: '39826',
+            },
+          ]),
         ),
-        rest.post(locationsURL, (_req, res, ctx) => res(ctx.status(500))),
+        http.post(locationsURL, () => new HttpResponse(null, { status: 500 })),
       );
 
       await userEvent.type(
@@ -365,11 +352,9 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('user deletes text from searchbox after location results load', () => {
     beforeEach(() => {
       server.use(
-        rest.post(addressSearchURL, (_req, res, ctx) =>
-          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
-        ),
-        rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-        rest.put(locationsURL, (_req, res, ctx) => res(ctx.json({ success: true }))),
+        http.post(addressSearchURL, () => HttpResponse.json(DEFAULT_RESPONSE)),
+        http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
+        http.put(locationsURL, () => HttpResponse.json({ success: true })),
       );
     });
 
