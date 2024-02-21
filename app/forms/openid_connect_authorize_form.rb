@@ -100,7 +100,7 @@ class OpenidConnectAuthorizeForm
       rails_session_id: rails_session_id,
       ial: ial_context.ial,
       aal: aal,
-      acr_values: acr_values,
+      acr_values: acr_values&.join(' '),
       vtr: vtr,
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
