@@ -6,7 +6,7 @@
   - Dropped support for `stylelint` versions below `v16.0.2`.
   - Dropped support for Node.js versions below `v18.12.0`.
   - For full details, refer to release notes for affected dependencies:
-    - [`stylelint-prettier`](https://github.com/prettier/stylelint-prettier/blob/main/CHANGELOG.md):
+    - [`stylelint-prettier`](https://github.com/prettier/stylelint-prettier/blob/main/CHANGELOG.md)
     - [`stylelint-config-recommended-scss`](https://github.com/stylelint-scss/stylelint-config-recommended-scss/blob/master/CHANGELOG.md)
     - [`stylelint-scss`](https://github.com/stylelint-scss/stylelint-scss/blob/master/CHANGELOG.md)
     - [`stylelint-config-recommended`](https://github.com/stylelint/stylelint-config-recommended/blob/main/CHANGELOG.md)
