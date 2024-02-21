@@ -51,6 +51,9 @@ export class Downloader extends EventEmitter {
   }
 
   /**
+   * Downloads the top password hashes from the configured range and resolves with an iterable
+   * object containing all hashes in no particular order.
+   *
    * @return {Promise<Iterable>}
    */
   async download() {
@@ -60,7 +63,7 @@ export class Downloader extends EventEmitter {
     this.emit('start', { total });
     for (let i = start; i <= end; i++) {
       this.downloaders.add(async () => {
-        await this.#downloadRange(this.#getPaddedRange(i));
+        await this.#downloadRange(this.#getRangePath(i));
         this.emit('download');
       });
     }
@@ -77,14 +80,21 @@ export class Downloader extends EventEmitter {
   }
 
   /**
+   * Given a number between 0 and 1048575 (16^5 - 1), returns the normalized value to be used as the
+   * path suffix for the HaveIBeenPwned range API (a padded, uppercase base16 number).
+   *
    * @param {number} value
    * @return {string}
    */
-  #getPaddedRange(value) {
+  #getRangePath(value) {
     return value.toString(16).padStart(5, '0').toUpperCase();
   }
 
-  /** @param {string} range */
+  /**
+   * Downloads a given range and appends common password hashes from the response.
+   *
+   * @param {string} range
+   */
   async #downloadRange(range) {
     const url = new URL(range, API_ROOT);
     const response = await fetch(url);

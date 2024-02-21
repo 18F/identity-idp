@@ -51,6 +51,8 @@ class PairingHeap {
   }
 
   /**
+   * Returns the top value of the heap.
+   *
    * @return {V}
    */
   peek() {
@@ -58,6 +60,8 @@ class PairingHeap {
   }
 
   /**
+   * Adds a new value to the heap.
+   *
    * @param {V} value
    */
   push(value) {
@@ -71,6 +75,8 @@ class PairingHeap {
   }
 
   /**
+   * Removes and returns the top value from the heap.
+   *
    * @return {V}
    */
   pop() {
@@ -83,8 +89,10 @@ class PairingHeap {
   }
 
   /**
+   * Melds pairs of heaps to a new heap.
+   *
    * @param {Heap<V> | undefined} heap
-   * @return {Heap<V>|undefined}
+   * @return {Heap<V> | undefined}
    */
   #mergePairs(heap) {
     if (heap === undefined) {
@@ -104,9 +112,11 @@ class PairingHeap {
   }
 
   /**
-   * @param {Heap<V>|undefined} a
-   * @param {Heap<V>|undefined} b
-   * @return {Heap<V>|undefined}
+   * Merges two heaps.
+   *
+   * @param {Heap<V> | undefined} a
+   * @param {Heap<V> | undefined} b
+   * @return {Heap<V> | undefined}
    */
   #merge(a, b) {
     if (a === undefined) {
