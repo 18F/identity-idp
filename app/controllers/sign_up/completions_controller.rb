@@ -60,8 +60,7 @@ module SignUp
     end
 
     def ial2_requested?
-      resolved_authn_context_result.identity_proofing? ||
-        (resolved_authn_context_result.ialmax? && current_user.identity_verified?)
+      resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
     def selfie_required?

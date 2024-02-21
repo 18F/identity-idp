@@ -224,6 +224,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           requested_attributes: [:email],
           request_url: 'http://localhost:3000',
         }
+
         get :show
 
         expect(response).to render_template(:show)
