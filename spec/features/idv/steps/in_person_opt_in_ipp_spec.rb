@@ -8,16 +8,16 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
   org = 'test_org'
 
   let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
+  let(:user) { user_with_2fa }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(5)
   end
 
   context 'when ipp_opt_in_enabled and ipp_opt_in_enabled are both enabled' do
     context 'ThreatMetrix review pending' do
-      let(:user) { user_with_2fa }
-
       before do
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return(org)
@@ -27,7 +27,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
 
       it 'allows the user to continue down the happy path selecting to opt in',
          allow_browser_log: true do
-        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+        visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+        sign_in_via_branded_page(user)
 
         # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
         begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
@@ -116,16 +117,16 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
 
         # signing in again before completing in-person proofing at a post office
         Capybara.reset_session!
-        sign_in_live_with_2fa(user)
-        visit_idp_from_sp_with_ial2(:oidc)
+        visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+        sign_in_via_branded_page(user)
         expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       end
     end
 
     it 'works for a happy path when the user opts into opt-in ipp',
        allow_browser_log: true do
-      user = user_with_2fa
-      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      sign_in_via_branded_page(user)
 
       # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
       begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
@@ -282,7 +283,6 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
       end
 
       it 'skips how to verify and goes to hybrid_handoff' do
-        user = user_with_2fa
         sign_in_and_2fa_user(user)
         visit_idp_from_sp_with_ial2(:oidc)
         complete_welcome_step
@@ -293,8 +293,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
 
     it 'works for a happy path when the user opts out of opt-in ipp',
        allow_browser_log: true do
-      user = user_with_2fa
-      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      sign_in_via_branded_page(user)
 
       # complete welcome step, agreement step, how to verify step (and opts out of Opt-in Ipp)
       begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_out
@@ -433,7 +433,6 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
   end
 
   context 'when ipp_enabled is false and ipp_opt_in_enabled is true' do
-    let(:user) { user_with_2fa }
     let(:sp) { :oidc }
 
     before do
@@ -460,8 +459,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
 
     it 'works properly along the normal path when in_person_proofing_enabled is true' do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
-      visit_idp_from_sp_with_ial2(:oidc)
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      sign_in_via_branded_page(user)
       complete_welcome_step
       complete_agreement_step
       complete_how_to_verify_step(remote: true)
