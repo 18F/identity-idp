@@ -40,9 +40,10 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
       end
 
       context 'with content security policy directives for style-src' do
+        let(:csp_nonce_directives) { ['style-src'] }
+
         before do
-          allow(Rails.application.config).to receive(:content_security_policy_nonce_directives).
-            and_return(['style-src'])
+          request.content_security_policy_nonce_directives = csp_nonce_directives
         end
 
         it 'removes style-src nonce directive to allow all unsafe inline styles' do
@@ -51,6 +52,10 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
           csp = parse_content_security_policy
 
           expect(csp['style-src']).to_not include(/'nonce-.+'/)
+
+          # Ensure that the default configuration is not mutated as a result of the request-specific
+          # revisions to the content security policy.
+          expect(csp_nonce_directives).to eq(['style-src'])
         end
       end
     end

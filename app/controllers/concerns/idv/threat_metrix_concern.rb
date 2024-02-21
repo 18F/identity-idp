@@ -26,7 +26,8 @@ module Idv
       # `style-src` must be updated to enable:
       #   - `unsafe-inline`, since the ThreatMetrix library applies inline
       #      styles to elements it inserts into the DOM
-      request.content_security_policy_nonce_directives.delete('style-src')
+      request.content_security_policy_nonce_directives =
+        request.content_security_policy_nonce_directives.without('style-src')
       policy.style_src(*(policy.style_src.to_set << :unsafe_inline))
 
       # `img-src` must be updated to enable:
