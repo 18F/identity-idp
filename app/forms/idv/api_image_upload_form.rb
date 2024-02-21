@@ -206,7 +206,7 @@ module Idv
     end
 
     def image_source
-      if acuant_sdk_captured?
+      if acuant_sdk_captured_id?
         DocAuth::ImageSources::ACUANT_SDK
       else
         DocAuth::ImageSources::UNKNOWN

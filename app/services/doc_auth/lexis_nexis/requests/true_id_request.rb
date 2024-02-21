@@ -72,7 +72,7 @@ module DocAuth
         end
 
         def workflow
-          if acuant_sdk_source? && image_cropped
+          if acuant_sdk_source? && @image_cropped
             include_liveness? ?
               config.trueid_liveness_nocropping_workflow :
               config.trueid_noliveness_nocropping_workflow
