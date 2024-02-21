@@ -109,8 +109,6 @@ class ApplicationController < ActionController::Base
 
     if current_sp.nil?
       @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
-    elsif sp_session[:vtr].empty? && sp_session[:acr_values].empty?
-      @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
         service_provider: current_sp,
