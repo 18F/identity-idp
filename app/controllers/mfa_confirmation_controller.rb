@@ -3,6 +3,9 @@ class MfaConfirmationController < ApplicationController
   before_action :confirm_two_factor_authenticated
 
   def show
+    if backup_code_confirmation_needed?
+      redirect_to confirm_backup_codes_path
+    end
     @content = mfa_confirmation_presenter
     analytics.user_registration_suggest_another_mfa_notice_visited
   end
@@ -17,7 +20,7 @@ class MfaConfirmationController < ApplicationController
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       success: true,
     )
-    redirect_to after_skip_path
+    redirect_to confirm_backup_codes_path
   end
 
   private
@@ -35,14 +38,6 @@ class MfaConfirmationController < ApplicationController
 
   def mfa_context
     @mfa_context ||= MfaContext.new(current_user)
-  end
-
-  def after_skip_path
-    if backup_code_confirmation_needed?
-      confirm_backup_codes_path
-    else
-      sign_up_completed_path
-    end
   end
 
   def backup_code_confirmation_needed?
