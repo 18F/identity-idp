@@ -17,15 +17,7 @@ import PairingHeap from './pairing-heap.js';
  * @prop {number} prevalence Prevalance count within known breaches
  */
 
-/**
- * URL prefix for HaveIBeenPwned Range endpoint.
- */
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
-
-/**
- * Number of attempts to retry upon failed download for a given range.
- */
-const MAX_RETRY = 5;
 
 class Downloader extends EventEmitter {
   /** @type {string} */
@@ -70,7 +62,10 @@ class Downloader extends EventEmitter {
     const total = end - start + 1;
     this.emit('start', { total });
     for (let i = start; i <= end; i++) {
-      this.downloaders.add(() => this.#downloadRangeWithRetry(this.#getRangePath(i)));
+      this.downloaders.add(async () => {
+        await this.#downloadRange(this.#getRangePath(i));
+        this.emit('download');
+      });
     }
 
     await this.downloaders.onIdle();
@@ -93,26 +88,6 @@ class Downloader extends EventEmitter {
    */
   #getRangePath(value) {
     return value.toString(16).padStart(5, '0').toUpperCase();
-  }
-
-  /**
-   * Downloads a given range and appends common password hashes from the response. If the download
-   * fails, it is retried corresponding to the number of given remaining attempts.
-   *
-   * @param {string} range
-   * @param {number} remainingAttempts
-   */
-  async #downloadRangeWithRetry(range, remainingAttempts = MAX_RETRY) {
-    try {
-      await this.#downloadRange(range);
-      this.emit('download');
-    } catch (error) {
-      if (error.code === 'UND_ERR_SOCKET' && remainingAttempts > 0) {
-        this.downloaders.add(() => this.#downloadRangeWithRetry(range, remainingAttempts - 1));
-      } else {
-        throw error;
-      }
-    }
   }
 
   /**
