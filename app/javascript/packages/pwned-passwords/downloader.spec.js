@@ -1,6 +1,6 @@
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
-import { Downloader } from './index.js';
+import Downloader from './downloader.js';
 
 describe('Downloader', () => {
   let server;

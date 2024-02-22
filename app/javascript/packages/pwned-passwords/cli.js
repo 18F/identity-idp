@@ -4,7 +4,7 @@ import { parseArgs } from 'node:util';
 import { pipeline } from 'node:stream/promises';
 import { createWriteStream } from 'node:fs';
 import Progress from 'cli-progress';
-import { Downloader } from './index.js';
+import Downloader from './downloader.js';
 
 const { values: flags } = parseArgs({
   options: {
