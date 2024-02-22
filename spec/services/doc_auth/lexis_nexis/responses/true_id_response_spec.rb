@@ -50,17 +50,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
-  let(:liveness_enabled) { false }
-  let(:workflow) { 'default_workflow' }
-  let(:request_context) do
-    {
-      workflow: workflow,
-    }
-  end
+
   context 'when the response is a success' do
-    let(:response) do
-      described_class.new(success_response, config, liveness_enabled, request_context)
-    end
+    let(:response) { described_class.new(success_response, config) }
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
@@ -73,8 +65,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       extra_attributes = response.extra_attributes
       expect(extra_attributes).not_to be_empty
       expect(extra_attributes[:classification_info]).to include(:Front, :Back)
-      expect(extra_attributes).to have_key(:workflow)
-      expect(extra_attributes).to have_key(:reference)
     end
     it 'has PII data' do
       # This is the minimum expected by doc_pii_form in the core IDP
@@ -151,7 +141,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         selfie_live: true,
         selfie_quality_good: true,
         liveness_enabled: false,
-        workflow: anything,
       )
       passed_alerts = response_hash.dig(:processed_alerts, :passed)
       passed_alerts.each do |alert|
@@ -340,10 +329,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces expected hash output' do
-      output = described_class.new(
-        failure_response_with_all_failures, config, liveness_enabled,
-        request_context
-      ).to_h
+      output = described_class.new(failure_response_with_all_failures, config).to_h
 
       expect(output).to match(
         success: false,
@@ -399,7 +385,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         selfie_live: true,
         selfie_quality_good: false,
         liveness_enabled: false,
-        workflow: anything,
       )
     end
     it 'produces appropriate errors with document tampering' do
@@ -437,10 +422,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for a TrueID failure without details' do
-      output = described_class.new(
-        failure_response_empty, config, liveness_enabled,
-        request_context
-      ).to_h
+      output = described_class.new(failure_response_empty, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(
@@ -449,20 +431,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       )
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
       expect(output[:vendor]).to eq('TrueID')
-      expect(output[:reference]).to match(a_kind_of(String))
     end
 
     it 'produces reasonable output for a malformed TrueID response' do
       allow(NewRelic::Agent).to receive(:notice_error)
-      output = described_class.new(
-        failure_response_malformed, config, liveness_enabled,
-        request_context
-      ).to_h
+      output = described_class.new(failure_response_malformed, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:backtrace)
-      expect(output[:reference]).to be_truthy
     end
 
     it 'is not billed' do
@@ -700,19 +677,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     context 'when selfie check is enabled' do
       context 'whe missing selfie result in response' do
-        let(:request_context) do
-          {
-            workflow: 'selfie_workflow',
-          }
-        end
-        let(:response) { described_class.new(success_response, config, true, request_context) }
+        let(:response) { described_class.new(success_response, config, true) }
         it 'returns :not_processed when missing selfie in response' do
           expect(response.selfie_status).to eq(:not_processed)
-        end
-        it 'includes workflow in extra_attributes' do
-          expect(response.extra_attributes).to include(
-            workflow: 'selfie_workflow',
-          )
         end
       end
       context 'when selfie passed' do

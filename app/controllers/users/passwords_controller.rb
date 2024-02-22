@@ -3,7 +3,7 @@ module Users
     include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :capture_password_if_pii_present_but_locked
+    before_action :capture_password_if_pii_requested_but_locked
     before_action :confirm_recently_authenticated_2fa
 
     def edit
@@ -33,7 +33,7 @@ module Users
 
     private
 
-    def capture_password_if_pii_present_but_locked
+    def capture_password_if_pii_requested_but_locked
       return unless current_user.identity_verified? &&
                     !Pii::Cacher.new(current_user, user_session).exists_in_session?
       user_session[:stored_location] = request.url

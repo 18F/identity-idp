@@ -6,7 +6,6 @@ Dir.chdir(__dir__) { require 'bundler/setup' }
 require 'active_support'
 require 'active_support/core_ext/enumerable' # index_by
 require 'active_support/core_ext/integer/time'
-require 'active_support/core_ext/string/access'
 require 'optparse'
 require 'terminal-table'
 
@@ -61,15 +60,14 @@ class EmailDeliveries
     results = query_data(uuids)
 
     table = Terminal::Table.new
-    table << %w[user_id email_address_id timestamp message_id email_action events]
+    table << %w[user_id timestamp message_id email_action events]
     table << :separator
 
     results.each do |result|
       table << [
         result.user_id,
-        result.email_address_id,
         result.timestamp,
-        result.message_id.reverse.truncate(27).reverse,
+        result.message_id,
         result.email_action,
         result.events.join(', '),
       ]
@@ -80,7 +78,6 @@ class EmailDeliveries
 
   Result = Struct.new(
     :user_id,
-    :email_address_id,
     :timestamp,
     :message_id,
     :email_action,
@@ -96,7 +93,6 @@ class EmailDeliveries
           fields
             @timestamp
           , properties.user_id AS user_id
-          , properties.event_properties.email_address_id AS email_address_id
           , properties.event_properties.ses_message_id AS ses_message_id
           , properties.event_properties.action AS email_action
           | filter name = 'Email Sent'
@@ -131,7 +127,6 @@ class EmailDeliveries
         map do |message_id, events|
           Result.new(
             user_id: events_by_message_id[message_id]['user_id'],
-            email_address_id: events_by_message_id[message_id]['email_address_id'],
             email_action: events_by_message_id[message_id]['email_action'],
             timestamp: events_by_message_id[message_id]['@timestamp'],
             message_id: message_id,

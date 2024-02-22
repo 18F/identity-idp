@@ -194,13 +194,13 @@ RSpec.describe IdvController, allowed_extra_analytics: [:*] do
 
     describe 'SP for IdV requirement' do
       let(:current_sp) { create(:service_provider) }
-      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+      let(:ial) { 2 }
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
 
       before do
         stub_sign_in(user)
         if current_sp.present?
-          session[:sp] = { issuer: current_sp.issuer, acr_values: acr_values }
+          session[:sp] = { issuer: current_sp.issuer, ial: ial }
         else
           session[:sp] = {}
         end
@@ -237,7 +237,7 @@ RSpec.describe IdvController, allowed_extra_analytics: [:*] do
       end
 
       context 'with an SP context that does not require IdV' do
-        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+        let(:ial) { 1 }
 
         context 'when an SP is required' do
           let(:idv_sp_required) { true }
@@ -266,7 +266,7 @@ RSpec.describe IdvController, allowed_extra_analytics: [:*] do
       end
 
       context 'with an SP context that requires IdV' do
-        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+        let(:ial) { 2 }
 
         context 'when an SP is required' do
           let(:idv_sp_required) { true }

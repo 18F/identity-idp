@@ -53,7 +53,13 @@ module IdvSessionConcern
   def redirect_unless_sp_requested_verification
     return if !IdentityConfig.store.idv_sp_required
     return if idv_session_user.profiles.any?
-    return if resolved_authn_context_result.identity_proofing?
+
+    ial_context = IalContext.new(
+      ial: sp_session_ial,
+      service_provider: sp_from_sp_session,
+      user: idv_session_user,
+    )
+    return if ial_context.ial2_or_greater?
 
     redirect_to account_url
   end

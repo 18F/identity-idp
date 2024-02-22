@@ -42,8 +42,6 @@ export class UploadFormEntriesError extends FormError {
 
   isFailedDocType = false;
 
-  isFailedSelfie = false;
-
   selfieNotLive = false;
 
   selfieNotGoodQuality = false;
@@ -127,8 +125,6 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     }
 
     error.isFailedResult = !!result.result_failed;
-
-    error.isFailedSelfie = result.selfie_status === 'fail';
 
     error.isFailedDocType = !result.doc_type_supported;
 

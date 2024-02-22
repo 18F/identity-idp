@@ -14,4 +14,4 @@ doc_auth_result: Passed
 failed_alert: []
 portrait_match_results:
   FaceMatchResult: Fail
-  FaceErrorMessage: 'Successful. Liveness: Live'
+  FaceErrorMessage: 'Liveness: PoorQuality'

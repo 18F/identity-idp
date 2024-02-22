@@ -2,15 +2,16 @@
 
 # Wraps up logic for querying the IAL level of an authorization request
 class IalContext
-  attr_reader :ial, :service_provider, :user
+  attr_reader :ial, :service_provider, :user, :authn_context_comparison
 
   # @param ial [String, Integer] IAL level as either an integer (see ::Idp::Constants::IAL2, etc)
   #   or a string see Saml::Idp::Constants contexts
   # @param service_provider [ServiceProvider, nil]
-  def initialize(ial:, service_provider:, user: nil)
+  def initialize(ial:, service_provider:, user: nil, authn_context_comparison: nil)
+    @authn_context_comparison = authn_context_comparison
     @service_provider = service_provider
     @user = user
-    @ial = convert_ial_to_int(ial)
+    @ial = int_ial(ial)
   end
 
   def ial2_service_provider?
@@ -42,6 +43,19 @@ class IalContext
   end
 
   private
+
+  def int_ial(input)
+    return 0 if saml_ialmax?(input)
+
+    convert_ial_to_int(input)
+  end
+
+  def saml_ialmax?(input)
+    int_ial_from_request = convert_ial_to_int(input)
+    return false unless int_ial_from_request.present?
+
+    service_provider&.ial == 2 && authn_context_comparison == 'minimum' && int_ial_from_request < 2
+  end
 
   def convert_ial_to_int(input)
     Integer(input)
