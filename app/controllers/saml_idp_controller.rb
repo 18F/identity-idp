@@ -104,8 +104,15 @@ class SamlIdpController < ApplicationController
     SamlEndpoint.new(params[:path_year]).saml_metadata
   end
 
+  def ialmax_request_with_ial1_acr_and_pii_requested_and_locked?
+    requested_ial == 'ialmax' &&
+      current_user.identity_verified? &&
+      !Pii::Cacher.new(current_user, user_session).exists_in_session?
+  end
+
   def prompt_for_password_if_ial2_request_and_pii_locked
-    return unless pii_requested_but_locked?
+    return unless pii_requested_but_locked? ||
+                  ialmax_request_with_ial1_acr_and_pii_requested_and_locked?
     redirect_to capture_password_url
   end
 
