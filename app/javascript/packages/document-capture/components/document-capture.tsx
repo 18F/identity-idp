@@ -8,6 +8,7 @@ import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
+import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
@@ -131,6 +132,11 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
           name: 'documents',
           form: DocumentsStep,
           title: t('doc_auth.headings.document_capture'),
+        },
+        {
+          name: 'selfie',
+          form: SelfieStep,
+          title: t('doc_auth.headings.selfie_capture'),
         },
       ].filter(Boolean) as FormStep[]);
 
