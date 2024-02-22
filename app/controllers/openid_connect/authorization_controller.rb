@@ -189,12 +189,6 @@ module OpenidConnect
       ).call
     end
 
-    def pii_requested_but_locked?
-      sp_session && sp_session_ial > 1 &&
-        current_user.identity_verified? &&
-        !Pii::Cacher.new(current_user, user_session).exists_in_session?
-    end
-
     def track_events
       event_ial_context = IalContext.new(
         ial: @authorize_form.ial,

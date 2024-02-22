@@ -41,7 +41,8 @@ class SamlRequestPresenter
   end
 
   def ialmax_authn_context?
-    ial_context.ialmax_requested?
+    ial_acr_value = FederatedProtocols::Saml.new(request).ial
+    Vot::LegacyComponentValues.by_name[ial_acr_value]&.requirements&.include?(:ialmax)
   end
 
   def authn_context
@@ -52,7 +53,6 @@ class SamlRequestPresenter
     @ial_context ||= IalContext.new(
       ial: request.requested_ial_authn_context || default_ial_context,
       service_provider: service_provider,
-      authn_context_comparison: request.requested_authn_context_comparison,
     )
   end
 

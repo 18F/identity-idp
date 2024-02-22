@@ -731,9 +731,10 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         )
       end
       let(:sign_in_flow) { :sign_in }
+      let(:skip_sign_in) { false }
 
       before do
-        stub_sign_in(user)
+        stub_sign_in(user) unless skip_sign_in
         session[:sign_in_flow] = sign_in_flow
         IdentityLinker.new(user, ServiceProvider.find_by(issuer: sp1_issuer)).link_identity(ial: 2)
         user.identities.last.update!(
@@ -821,6 +822,41 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
         it 'redirects to password capture if profile is verified but not in session' do
           saml_get_auth(ialmax_settings)
+          expect(response).to redirect_to capture_password_url
+        end
+      end
+
+      context 'profile is not in the session and an incorrect ACR value was stored' do
+        let(:pii) { nil }
+        let(:skip_sign_in) { true }
+
+        before do
+          IdentityLinker.new(
+            user,
+            ServiceProvider.find_by(issuer: sp1_issuer),
+          ).link_identity(ial: 2)
+          user.identities.last.update!(
+            verified_attributes: %w[email given_name family_name social_security_number address],
+          )
+          allow(subject).to receive(:attribute_asserter) { asserter }
+        end
+
+        it 'redirects the user to capture password' do
+          params = {
+            SAMLRequest: CGI.unescape(saml_request(ialmax_settings)),
+            path_year: SamlAuthHelper::PATH_YEAR,
+          }
+
+          # Initial request to store the SP request
+          get :auth, params: params
+
+          # The old code would store the IAL1 authn context instead of the IALMAX context
+          # This commit duplicates that behavior by overriding the value in the session here
+          controller.session[:sp][:acr_values] = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          stub_sign_in(user)
+
+          get :auth, params: params
+
           expect(response).to redirect_to capture_password_url
         end
       end

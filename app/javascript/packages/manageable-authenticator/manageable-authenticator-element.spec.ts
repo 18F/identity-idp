@@ -1,7 +1,7 @@
 import quibble from 'quibble';
 import { screen, waitFor } from '@testing-library/dom';
 import baseUserEvent from '@testing-library/user-event';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
 import type { SinonStub } from 'sinon';
@@ -226,11 +226,7 @@ describe('ManageableAuthenticatorElement', () => {
 
     context('successful response from server when submitting rename', () => {
       beforeEach(() => {
-        server.use(
-          rest.put('/api/manage', (_req, res, ctx) =>
-            res(ctx.json({ success: true }), ctx.status(200)),
-          ),
-        );
+        server.use(http.put('/api/manage', () => HttpResponse.json({ success: true })));
       });
 
       it('returns the user to summary details with new name for successful save', async () => {
@@ -278,9 +274,7 @@ describe('ManageableAuthenticatorElement', () => {
     context('failed response from server when submitting rename', () => {
       beforeEach(() => {
         server.use(
-          rest.put('/api/manage', (_req, res, ctx) =>
-            res(ctx.json({ error: 'Uh oh!' }), ctx.status(400)),
-          ),
+          http.put('/api/manage', () => HttpResponse.json({ error: 'Uh oh!' }, { status: 400 })),
         );
       });
 
@@ -360,11 +354,7 @@ describe('ManageableAuthenticatorElement', () => {
 
     context('successful response from server when deleting', () => {
       beforeEach(() => {
-        server.use(
-          rest.delete('/api/manage', (_req, res, ctx) =>
-            res(ctx.json({ success: true }), ctx.status(200)),
-          ),
-        );
+        server.use(http.delete('/api/manage', () => HttpResponse.json({ success: true })));
       });
 
       it('deletes the authenticator and displays a confirmation message', async () => {
@@ -395,9 +385,7 @@ describe('ManageableAuthenticatorElement', () => {
     context('failed response from server when deleting', () => {
       beforeEach(() => {
         server.use(
-          rest.delete('/api/manage', (_req, res, ctx) =>
-            res(ctx.json({ error: 'Uh oh!' }), ctx.status(400)),
-          ),
+          http.delete('/api/manage', () => HttpResponse.json({ error: 'Uh oh!' }, { status: 400 })),
         );
       });
 

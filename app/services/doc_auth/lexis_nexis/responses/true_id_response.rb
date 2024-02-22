@@ -11,9 +11,11 @@ module DocAuth
 
         attr_reader :config, :http_response
 
-        def initialize(http_response, config, liveness_checking_enabled = false)
+        def initialize(http_response, config, liveness_checking_enabled = false,
+                       request_context = {})
           @config = config
           @http_response = http_response
+          @request_context = request_context
           @liveness_checking_enabled = liveness_checking_enabled
           @pii_from_doc = read_pii(true_id_product)
           super(
@@ -28,7 +30,10 @@ module DocAuth
             success: false,
             errors: { network: true },
             exception: e,
-            extra: { backtrace: e.backtrace },
+            extra: {
+              backtrace: e.backtrace,
+              reference: reference,
+            },
           )
         end
 
@@ -191,6 +196,7 @@ module DocAuth
             reference: reference,
             vendor: 'TrueID',
             billed: billed?,
+            workflow: @request_context&.dig(:workflow),
           }
         end
 

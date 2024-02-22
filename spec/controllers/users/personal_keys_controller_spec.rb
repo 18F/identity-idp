@@ -72,7 +72,10 @@ RSpec.describe Users::PersonalKeysController do
 
     context 'user needs to reactive account' do
       it 'redirects to the sign up completed url for ial 1' do
-        controller.session[:sp] = { ial2: false }
+        controller.session[:sp] = {
+          issuer: create(:service_provider).issuer,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        }
 
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
@@ -86,7 +89,10 @@ RSpec.describe Users::PersonalKeysController do
       end
 
       it 'redirects to the reactivate account url for ial 2' do
-        controller.session[:sp] = { ial2: true }
+        controller.session[:sp] = {
+          issuer: create(:service_provider).issuer,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        }
 
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
