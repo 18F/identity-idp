@@ -1,10 +1,6 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import {
-  FormStepComponentProps,
-  FormStepsButton,
-  FormStepsContext,
-} from '@18f/identity-form-steps';
+import { FormStepComponentProps, FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';

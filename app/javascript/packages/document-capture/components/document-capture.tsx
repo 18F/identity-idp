@@ -53,6 +53,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
    *
    * @param nextFormValues Submitted form values.
    */
+  // Something here?
   function submitForm(nextFormValues: Record<string, any>) {
     setSubmissionError(undefined);
     setFormValues(nextFormValues);
