@@ -36,7 +36,7 @@ const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
 if (outFile) {
   const progressBar = new Progress.SingleBar({
     format:
-      '[{bar}] {percentage}% | ETA {eta}s | {value}/{total} | {hashes} hashes (>= {hashMin} occurrences)',
+      '[{bar}] {percentage}% | ETA {eta}s | {value}/{total} | {hashes} hashes (>= {hashMin} prevalence)',
   });
   downloader.once('start', ({ total }) => progressBar.start(total, 0, { hashes: 0, hashMin: 0 }));
   downloader.on('download', () => progressBar.increment());

@@ -14,7 +14,7 @@ import PairingHeap from './pairing-heap.js';
 /**
  * @typedef HashPair
  * @prop {string} hash SHA-1 password hash for common password
- * @prop {number} occurrences Prevalance count within known breaches
+ * @prop {number} prevalence Prevalance count within known breaches
  */
 
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
@@ -33,7 +33,7 @@ export class Downloader extends EventEmitter {
   maxSize;
 
   /** @type {PairingHeap<HashPair>} */
-  commonHashes = new PairingHeap((a, b) => a.occurrences - b.occurrences);
+  commonHashes = new PairingHeap((a, b) => a.prevalence - b.prevalence);
 
   /** @type {TextDecoder} */
   decoder = new TextDecoder();
@@ -101,22 +101,22 @@ export class Downloader extends EventEmitter {
     const text = await response.text();
     const lines = text.split('\r\n');
     for await (const line of lines) {
-      const hashSuffixOccurrences = line.split(':', 2);
-      const occurrences = Number(hashSuffixOccurrences[1]);
+      const hashSuffixPrevalence = line.split(':', 2);
+      const prevalence = Number(hashSuffixPrevalence[1]);
       if (this.commonHashes.length >= this.maxSize) {
-        if (occurrences > this.commonHashes.peek().occurrences) {
+        if (prevalence > this.commonHashes.peek().prevalence) {
           this.commonHashes.pop();
         } else {
           continue;
         }
       }
 
-      const hashSuffix = hashSuffixOccurrences[0];
+      const hashSuffix = hashSuffixPrevalence[0];
       const hash = range + hashSuffix;
-      this.commonHashes.push({ hash, occurrences });
+      this.commonHashes.push({ hash, prevalence });
       this.emit('hashchange', {
         hashes: this.commonHashes.length,
-        hashMin: this.commonHashes.peek().occurrences,
+        hashMin: this.commonHashes.peek().prevalence,
       });
     }
   }

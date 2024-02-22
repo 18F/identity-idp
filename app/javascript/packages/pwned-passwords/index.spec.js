@@ -34,9 +34,9 @@ describe('Downloader', () => {
       const results = Array.from(await downloader.download());
 
       expect(results).to.have.deep.members([
-        { hash: '00000bar', occurrences: 20 },
-        { hash: '00000foo', occurrences: 30 },
-        { hash: '00002quux', occurrences: 40 },
+        { hash: '00000bar', prevalence: 20 },
+        { hash: '00000foo', prevalence: 30 },
+        { hash: '00002quux', prevalence: 40 },
       ]);
     });
   });
