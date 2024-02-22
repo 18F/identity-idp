@@ -42,7 +42,7 @@ RSpec.shared_examples 'strong password' do |form_class|
     expect(result.extra).to include(user_id: '123') if result.extra.present?
   end
 
-  it 'does not allow a password containing words from the user email' do
+  it 'does not allow a password equal to a word from the user email' do
     user = build_stubbed(:user, email: 'janedoelongname@example.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)
     form = form_class.constantize.new(user)
