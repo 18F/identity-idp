@@ -1,4 +1,4 @@
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
 import { SESSIONS_URL, requestSessionStatus, extendSession } from './requests';
@@ -10,8 +10,8 @@ describe('requestSessionStatus', () => {
   context('session inactive', () => {
     before(() => {
       server = setupServer(
-        rest.get<{}, {}, SessionTimedOutStatusResponse>(SESSIONS_URL, (_req, res, ctx) =>
-          res(ctx.json({ live: false, timeout: null })),
+        http.get<{}, {}, SessionTimedOutStatusResponse>(SESSIONS_URL, () =>
+          HttpResponse.json({ live: false, timeout: null }),
         ),
       );
       server.listen();
@@ -34,8 +34,8 @@ describe('requestSessionStatus', () => {
     before(() => {
       timeout = new Date(Date.now() + 1000).toISOString();
       server = setupServer(
-        rest.get<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, (_req, res, ctx) =>
-          res(ctx.json({ live: true, timeout })),
+        http.get<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, () =>
+          HttpResponse.json({ live: true, timeout }),
         ),
       );
       server.listen();
@@ -55,7 +55,7 @@ describe('requestSessionStatus', () => {
   context('server responds with 401', () => {
     before(() => {
       server = setupServer(
-        rest.get<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(401))),
+        http.get<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 401 })),
       );
       server.listen();
     });
@@ -74,7 +74,7 @@ describe('requestSessionStatus', () => {
   context('server responds with 500', () => {
     before(() => {
       server = setupServer(
-        rest.get<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
+        http.get<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 500 })),
       );
       server.listen();
     });
@@ -97,8 +97,8 @@ describe('extendSession', () => {
 
     before(() => {
       server = setupServer(
-        rest.put<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, (_req, res, ctx) =>
-          res(ctx.json({ live: true, timeout })),
+        http.put<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, () =>
+          HttpResponse.json({ live: true, timeout }),
         ),
       );
       server.listen();
@@ -118,7 +118,7 @@ describe('extendSession', () => {
   context('server responds with 401', () => {
     before(() => {
       server = setupServer(
-        rest.put<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(401))),
+        http.put<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 401 })),
       );
       server.listen();
     });
@@ -137,7 +137,7 @@ describe('extendSession', () => {
   context('server responds with 500', () => {
     before(() => {
       server = setupServer(
-        rest.put<{}, {}>(SESSIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
+        http.put<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 500 })),
       );
       server.listen();
     });
