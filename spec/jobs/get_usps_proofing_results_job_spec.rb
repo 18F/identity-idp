@@ -1196,10 +1196,12 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
             it 'does not deactivate the profile when the enrollment has expired' do
               stub_request_expired_proofing_results
+
               job.perform(Time.zone.now)
               profile = pending_enrollment.reload.profile
-             
-              expect(profile.deactivation_reason).not_to eq "expired_profile_under_fraud_review"  
+
+              expect(profile.fraud_review_pending_at).to be_nil
+              expect(profile.fraud_rejection_at).to be_nil
               expect(job_analytics).not_to have_logged_event(
                 :idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed,
               )
@@ -1292,12 +1294,13 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
             it 'deactivates the profile when the enrollment has expired' do
               stub_request_expired_proofing_results
+
               job.perform(Time.zone.now)
-              
+
               profile = pending_enrollment.reload.profile
-              
               expect(profile).not_to be_active
-              expect(profile.deactivation_reason).to eq "expired_profile_under_fraud_review"
+              expect(profile.fraud_review_pending_at).to be_nil
+              expect(profile.fraud_rejection_at).not_to be_nil
               expect(job_analytics).to have_logged_event(
                 :idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed,
               )

@@ -23,7 +23,6 @@ class Profile < ApplicationRecord
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
     in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
-    expired_profile_under_fraud_review: 6
   }
 
   enum fraud_pending_reason: {
@@ -208,6 +207,14 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
+    )
+  end
+
+  def deactivate_due_to_ipp_expiration_during_fraud_review
+    update!(
+      active: false,
+      in_person_verification_pending_at: nil,
+      fraud_rejection_at: Time.zone.now,
     )
   end
 
