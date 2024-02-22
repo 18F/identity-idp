@@ -86,7 +86,7 @@ module Idv
           back_image: back_image_bytes,
           selfie_image: liveness_checking_required ? selfie_image_bytes : nil,
           image_source: image_source,
-          image_cropped: acuant_sdk_autocaptured_id?,
+          id_images_cropped: acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,

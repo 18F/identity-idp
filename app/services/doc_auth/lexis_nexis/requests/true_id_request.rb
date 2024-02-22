@@ -12,7 +12,7 @@ module DocAuth
           back_image:,
           selfie_image: nil,
           image_source: nil,
-          image_cropped: false,
+          id_images_cropped: false,
           liveness_checking_required: false
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
@@ -20,7 +20,7 @@ module DocAuth
           @back_image = back_image
           @selfie_image = selfie_image
           @image_source = image_source
-          @image_cropped = image_cropped
+          @id_images_cropped = id_images_cropped
           # when set to required, be sure to pass in selfie_image
           @liveness_checking_required = liveness_checking_required
         end
@@ -72,7 +72,7 @@ module DocAuth
         end
 
         def workflow
-          if acuant_sdk_source? && @image_cropped
+          if acuant_sdk_source? && @id_images_cropped
             include_liveness? ?
               config.trueid_liveness_nocropping_workflow :
               config.trueid_noliveness_nocropping_workflow
