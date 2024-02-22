@@ -126,7 +126,7 @@ module SignUp
     end
 
     def send_in_person_completion_survey
-      return unless sp_session_ial == ::Idp::Constants::IAL2
+      return unless resolved_authn_context_result.identity_proofing?
 
       Idv::InPerson::CompletionSurveySender.send_completion_survey(
         current_user,
