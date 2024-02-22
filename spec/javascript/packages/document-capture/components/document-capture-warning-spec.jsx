@@ -51,7 +51,7 @@ describe('DocumentCaptureWarning', () => {
     isFailedDocType,
     isFailedResult,
     isFailedSelfieLivenessOrQuality = false,
-    isFailedSelfieFacematch = false,
+    isFailedSelfieFaceMatch = false,
     inPersonUrl,
   }) {
     const unknownFieldErrors = [
@@ -66,7 +66,7 @@ describe('DocumentCaptureWarning', () => {
           <DocumentCaptureWarning
             isFailedDocType={isFailedDocType}
             isFailedResult={isFailedResult}
-            isFailedSelfie={isFailedSelfieFacematch}
+            isFailedSelfie={isFailedSelfieFaceMatch}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             remainingSubmitAttempts={2}
             unknownFieldErrors={unknownFieldErrors}
@@ -184,10 +184,10 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed facematch for selfie', () => {
         const isFailedDocType = false;
-        const isFailedSelfieFacematch = true;
+        const isFailedSelfieFaceMatch = true;
         const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
-          isFailedSelfieFacematch,
+          isFailedSelfieFaceMatch,
           isFailedResult,
           inPersonUrl,
         });
