@@ -26,7 +26,7 @@ class DestroyableRecords
 
     stdout.puts '********'
     stdout.puts 'Integration:'
-    if integration.nil?
+    if integration.blank?
       stdout.puts 'No associated integration'
     else
       stdout.puts integration.attributes.to_yaml
@@ -58,14 +58,15 @@ class DestroyableRecords
   end
 
   def destroy_records
-    if integration.present?
-      stdout.puts 'Destroying integration usages'
-      integration_usages.destroy_all
-      integration.reload
-      stdout.puts "Destroying integration with issuer #{integration.issuer}"
-      integration.destroy!
-      service_provider.reload
+    stdout.puts 'Destroying integration usages'
+    integration_usages.each do |integration_usage|
+      integration_usage.destroy!
     end
+    integration.reload
+
+    stdout.puts "Destroying integration with issuer #{integration.issuer}"
+    integration.destroy!
+    service_provider.reload
 
     stdout.puts "Destroying service provider issuer #{service_provider.issuer}"
     service_provider.destroy!
@@ -78,11 +79,11 @@ class DestroyableRecords
   private
 
   def integration_usages
-    integration&.integration_usages
+    integration&.integration_usages || []
   end
 
   def iaa_orders
-    integration&.iaa_orders
+    integration&.iaa_orders || []
   end
 
   def in_person_enrollments

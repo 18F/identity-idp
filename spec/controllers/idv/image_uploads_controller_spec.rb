@@ -461,7 +461,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           transaction_reason_code: nil,
           transaction_status: nil,
           vendor: nil,
-          workflow: an_instance_of(String),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -1219,7 +1218,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           transaction_reason_code: nil,
           transaction_status: nil,
           vendor: nil,
-          workflow: an_instance_of(String),
         )
 
         action

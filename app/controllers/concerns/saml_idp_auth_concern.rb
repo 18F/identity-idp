@@ -133,7 +133,7 @@ module SamlIdpAuthConcern
     IdentityLinker.
       new(current_user, saml_request_service_provider).
       link_identity(
-        ial: resolved_authn_context_int_ial,
+        ial: ial_context.ial,
         rails_session_id: session.id,
       )
   end
@@ -148,8 +148,9 @@ module SamlIdpAuthConcern
 
   def ial_context
     @ial_context ||= IalContext.new(
-      ial: resolved_authn_context_int_ial,
+      ial: requested_ial_authn_context,
       service_provider: saml_request_service_provider,
+      authn_context_comparison: saml_request.requested_authn_context_comparison,
       user: current_user,
     )
   end

@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
-import { http, HttpResponse } from 'msw';
+import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import FullAddressSearch from './full-address-search';
@@ -215,7 +215,7 @@ describe('FullAddressSearch', () => {
     let server: SetupServer;
     before(() => {
       server = setupServer(
-        http.post(locationsURL, () => HttpResponse.json([{ name: 'Baltimore' }])),
+        rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
       );
       server.listen();
     });

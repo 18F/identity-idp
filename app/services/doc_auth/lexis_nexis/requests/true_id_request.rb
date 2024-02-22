@@ -23,12 +23,6 @@ module DocAuth
           @liveness_checking_required = liveness_checking_required
         end
 
-        def request_context
-          {
-            workflow: workflow,
-          }
-        end
-
         private
 
         def body
@@ -49,7 +43,6 @@ module DocAuth
             http_response,
             config,
             include_liveness?,
-            request_context,
           )
         end
 
