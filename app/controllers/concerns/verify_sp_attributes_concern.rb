@@ -22,7 +22,7 @@ module VerifySpAttributesConcern
       current_user,
       current_sp,
     ).link_identity(
-      ial: sp_session_ial,
+      ial: linked_identity_ial,
       verified_attributes: sp_session[:requested_attributes],
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
@@ -60,6 +60,16 @@ module VerifySpAttributesConcern
     verification_timestamp = current_user.active_profile&.verified_at
 
     verification_timestamp.present? && last_estimated_consent < verification_timestamp
+  end
+
+  def linked_identity_ial
+    if resolved_authn_context_result.ialmax?
+      0
+    elsif resolved_authn_context_result.identity_proofing?
+      2
+    else
+      1
+    end
   end
 
   def find_sp_session_identity

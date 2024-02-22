@@ -79,22 +79,13 @@ module Users
     end
 
     def next_step
-      if ial_context.ial2_requested? && current_user.identity_verified? &&
-         !Pii::Cacher.new(current_user, user_session).exists_in_session?
+      if pii_requested_but_locked?
         capture_password_url
       elsif !current_user.accepted_rules_of_use_still_valid?
         rules_of_use_path
       else
         after_sign_in_path_for(current_user)
       end
-    end
-
-    def ial_context
-      @ial_context ||= IalContext.new(
-        ial: sp_session_ial,
-        service_provider: current_sp,
-        user: piv_cac_login_form.user,
-      )
     end
 
     def process_invalid_submission

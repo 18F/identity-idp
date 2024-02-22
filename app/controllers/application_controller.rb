@@ -257,7 +257,7 @@ class ApplicationController < ActionController::Base
   def user_needs_to_reactivate_account?
     return false if current_user.password_reset_profile.blank?
     return false if pending_profile_newer_than_password_reset_profile?
-    sp_session[:ial2] == true
+    resolved_authn_context_result.identity_proofing?
   end
 
   def pending_profile_newer_than_password_reset_profile?
@@ -387,8 +387,11 @@ class ApplicationController < ActionController::Base
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
-  def sp_session_ial
-    sp_session[:ial].presence || 1
+  def pii_requested_but_locked?
+    if resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
+      current_user.identity_verified? &&
+        !Pii::Cacher.new(current_user, user_session).exists_in_session?
+    end
   end
 
   def mfa_policy
@@ -402,7 +405,7 @@ class ApplicationController < ActionController::Base
       auth_methods_session:,
       aal_level_requested: resolved_authn_context_result.aal_level_requested,
       piv_cac_requested: sp_session[:piv_cac_requested],
-      phishing_resistant_requested: sp_session[:phishing_resistant_requested],
+      phishing_resistant_requested: resolved_authn_context_result.phishing_resistant?,
     )
   end
   delegate :user_needs_sp_auth_method_setup?, to: :service_provider_mfa_policy
