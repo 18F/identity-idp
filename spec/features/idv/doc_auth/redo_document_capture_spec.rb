@@ -276,6 +276,13 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
   end
 
   context 'when selfie is enabled' do
+    before do
+      # mock mobile device as cameraCapable
+      allow_any_instance_of(ActionController::Parameters).
+        to receive(:[]).and_wrap_original do |impl, param_name|
+        param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
+      end
+    end
     context 'error due to data issue with 2xx status code', allow_browser_log: true do
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
