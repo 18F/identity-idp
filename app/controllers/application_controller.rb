@@ -257,7 +257,7 @@ class ApplicationController < ActionController::Base
   def user_needs_to_reactivate_account?
     return false if current_user.password_reset_profile.blank?
     return false if pending_profile_newer_than_password_reset_profile?
-    sp_session[:ial2] == true
+    resolved_authn_context_result.identity_proofing?
   end
 
   def pending_profile_newer_than_password_reset_profile?
