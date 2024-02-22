@@ -731,11 +731,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         )
       end
       let(:sign_in_flow) { :sign_in }
-      let(:skip_stub_sign_in) { false }
+      let(:skip_sign_in) { false }
 
       before do
         stub_sign_in(user) unless skip_sign_in
-        session[:sign_in_flow] = skip_stub_sign_in
+        session[:sign_in_flow] = sign_in_flow
         IdentityLinker.new(user, ServiceProvider.find_by(issuer: sp1_issuer)).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[email given_name family_name social_security_number address],
@@ -831,7 +831,10 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         let(:skip_sign_in) { true }
 
         before do
-          IdentityLinker.new(user, ServiceProvider.find_by(issuer: sp1_issuer)).link_identity(ial: 2)
+          IdentityLinker.new(
+            user,
+            ServiceProvider.find_by(issuer: sp1_issuer),
+          ).link_identity(ial: 2)
           user.identities.last.update!(
             verified_attributes: %w[email given_name family_name social_security_number address],
           )
