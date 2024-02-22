@@ -44,7 +44,12 @@ RSpec.describe Users::PivCacLoginController do
 
       context 'with a valid token' do
         let(:service_provider) { create(:service_provider) }
-        let(:sp_session) { { ial: 1, issuer: service_provider.issuer } }
+        let(:sp_session) do
+          {
+            acr_values: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            issuer: service_provider.issuer,
+          }
+        end
         let(:nonce) { SecureRandom.base64(20) }
         let(:data) do
           {
@@ -175,7 +180,12 @@ RSpec.describe Users::PivCacLoginController do
               end
 
               context 'ial2 service_level' do
-                let(:sp_session) { { ial: Idp::Constants::IAL2, issuer: service_provider.issuer } }
+                let(:sp_session) do
+                  {
+                    acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                    issuer: service_provider.issuer,
+                  }
+                end
 
                 it 'redirects to account' do
                   expect(response).to redirect_to(account_url)
@@ -184,7 +194,10 @@ RSpec.describe Users::PivCacLoginController do
 
               context 'ial_max service level' do
                 let(:sp_session) do
-                  { ial: Idp::Constants::IAL_MAX, issuer: service_provider.issuer }
+                  {
+                    acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                    issuer: service_provider.issuer,
+                  }
                 end
 
                 it 'redirects to the after_sign_in_path_for' do
@@ -203,7 +216,12 @@ RSpec.describe Users::PivCacLoginController do
               end
 
               context 'ial2 service_level' do
-                let(:sp_session) { { ial: Idp::Constants::IAL2, issuer: service_provider.issuer } }
+                let(:sp_session) do
+                  {
+                    acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                    issuer: service_provider.issuer,
+                  }
+                end
 
                 it 'redirects to the capture_password_url' do
                   expect(response).to redirect_to(capture_password_url)
@@ -212,7 +230,10 @@ RSpec.describe Users::PivCacLoginController do
 
               context 'ial_max service_level' do
                 let(:sp_session) do
-                  { ial: Idp::Constants::IAL_MAX, issuer: service_provider.issuer }
+                  {
+                    acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                    issuer: service_provider.issuer,
+                  }
                 end
 
                 it 'redirects to the capture_password_url' do
