@@ -217,6 +217,10 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const innerHintId = `${hintId}-inner`;
   const labelId = `${inputId}-label`;
   const showInnerHint: boolean = !value && !isValuePending && !isMobile;
+  // In test only we allow the upload of yaml files, but because they're text files
+  // they don't have a preview. This shows the name of the file in the upload
+  // box (using the existing preview) when the file name ends with .yml
+  const isYamlFile: boolean = value instanceof window.File && value.name.endsWith('.yml');
 
   /**
    * In response to a file input change event, confirms that the file is valid before calling
@@ -344,7 +348,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
         onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
-          {value && !isValuePending && (
+          {value && !isValuePending && (!isMobile || isYamlFile) && (
             <div className="usa-file-input__preview-heading">
               <span>
                 {value instanceof window.File && (
