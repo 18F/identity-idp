@@ -3737,14 +3737,23 @@ module AnalyticsEvents
   # confirmed email
   # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
   # active proofed profile
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # The user entered an email address to request a password reset
-  def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
+  def password_reset_email(
+    success:,
+    errors:,
+    confirmed:,
+    active_profile:,
+    error_details: {},
+    **extra
+  )
     track_event(
       'Password Reset: Email Submitted',
-      success: success,
-      errors: errors,
-      confirmed: confirmed,
-      active_profile: active_profile,
+      success:,
+      errors:,
+      error_details:,
+      confirmed:,
+      active_profile:,
       **extra,
     )
   end
@@ -3753,13 +3762,29 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
   # (the user will need to use their personal key to reactivate their profile)
+  # @param [Boolean] pending_profile_invalidated Whether a pending profile was invalidated as a
+  # result of the password reset
+  # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
+  # associated with the associated profile.
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # The user changed the password for their account via the password reset flow
-  def password_reset_password(success:, errors:, profile_deactivated:, **extra)
+  def password_reset_password(
+    success:,
+    errors:,
+    profile_deactivated:,
+    pending_profile_invalidated:,
+    pending_profile_pending_reasons:,
+    error_details: {},
+    **extra
+  )
     track_event(
       'Password Reset: Password Submitted',
-      success: success,
-      errors: errors,
-      profile_deactivated: profile_deactivated,
+      success:,
+      errors:,
+      error_details:,
+      profile_deactivated:,
+      pending_profile_invalidated:,
+      pending_profile_pending_reasons:,
       **extra,
     )
   end
@@ -4683,6 +4708,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] user_id
+  # @param [Boolean] rate_limited
   # @param [String] domain_name
   def user_registration_email(
     success:,
@@ -4690,18 +4716,20 @@ module AnalyticsEvents
     errors:,
     error_details: nil,
     user_id: nil,
+    email_already_exists: nil,
     domain_name: nil,
     **extra
   )
     track_event(
       'User Registration: Email Submitted',
       {
-        success: success,
-        rate_limited: rate_limited,
-        errors: errors,
-        error_details: error_details,
-        user_id: user_id,
-        domain_name: domain_name,
+        success:,
+        rate_limited:,
+        errors:,
+        error_details:,
+        user_id:,
+        email_already_exists:,
+        domain_name:,
         **extra,
       }.compact,
     )
