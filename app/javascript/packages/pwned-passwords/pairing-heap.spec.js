@@ -3,6 +3,21 @@ import PairingHeap from './pairing-heap.js';
 describe('PairingHeap', () => {
   const comparator = (a, b) => a - b;
 
+  it('behaves like a sorted array', () => {
+    const array = [...Array(100)].map(() => Math.random());
+    const heap = new PairingHeap(comparator);
+
+    array.forEach((value) => heap.push(value));
+
+    expect(Array.from(heap)).to.have.members(array);
+
+    for (const sortedValue of array.sort(comparator)) {
+      expect(heap.pop()).to.equal(sortedValue);
+    }
+
+    expect(heap.length).to.equal(0);
+  });
+
   describe('#Symbol.iterator', () => {
     it('iterates members of the heap', () => {
       const heap = new PairingHeap(comparator);
