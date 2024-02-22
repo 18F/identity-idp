@@ -26,6 +26,7 @@ module FraudReviewConcern
 
   def in_person_prevent_fraud_redirection?
     IdentityConfig.store.in_person_proofing_enforce_tmx &&
+      !current_user.in_person_enrollment_status.nil? &&
       current_user.in_person_enrollment_status != 'passed'
   end
 
