@@ -34,6 +34,44 @@ class StoreSpMetadataInSession
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
 
+  def ial_value
+    return nil unless parsed_vot
+
+    if parsed_vot&.ialmax?
+      0
+    elsif parsed_vot&.identity_proofing?
+      2
+    elsif parsed_vot
+      1
+    end
+  end
+
+  def ial2_value
+    parsed_vot&.identity_proofing?
+  end
+
+  def ialmax_value
+    parsed_vot&.ialmax?
+  end
+
+  def aal_level_requested_value
+    return nil unless parsed_vot
+
+    if parsed_vot.aal2?
+      2
+    else
+      1
+    end
+  end
+
+  def piv_cac_requested_value
+    parsed_vot&.hspd12?
+  end
+
+  def phishing_resistant_value
+    parsed_vot&.phishing_resistant?
+  end
+
   def biometric_comparison_required_value
     parsed_vot&.biometric_comparison? || sp_request&.biometric_comparison_required
   end
@@ -44,12 +82,12 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      ial: parsed_vot&.ial_value_requested,
-      ial2: parsed_vot&.ial2_requested?,
-      ialmax: parsed_vot&.ialmax_requested?,
-      aal_level_requested: parsed_vot&.aal_level_requested,
-      piv_cac_requested: parsed_vot&.piv_cac_requested?,
-      phishing_resistant_requested: parsed_vot&.phishing_resistant?,
+      ial: ial_value,
+      ial2: ial2_value,
+      ialmax: ialmax_value,
+      aal_level_requested: aal_level_requested_value,
+      piv_cac_requested: piv_cac_requested_value,
+      phishing_resistant_requested: phishing_resistant_value,
       biometric_comparison_required: biometric_comparison_required_value,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
