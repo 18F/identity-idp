@@ -43,7 +43,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     end
 
     scenario 'user can select 2 MFA methods and then chooses another method during' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(current_path).to eq authentication_methods_setup_path
 
