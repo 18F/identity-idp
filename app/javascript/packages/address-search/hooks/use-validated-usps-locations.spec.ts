@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
 import useValidatedUspsLocations from './use-validated-usps-locations';
@@ -44,7 +44,7 @@ describe('useValidatedUspsLocations', () => {
 
   beforeEach(() => {
     server.resetHandlers();
-    server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))));
+    server.use(http.post(locationsURL, () => HttpResponse.json(USPS_RESPONSE)));
   });
 
   it('returns location results', async () => {
