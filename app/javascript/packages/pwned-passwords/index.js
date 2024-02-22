@@ -5,16 +5,16 @@ import PairingHeap from './pairing-heap.js';
 /**
  * @typedef DownloadOptions
  *
- * @prop {string} rangeStart
- * @prop {string} rangeEnd
- * @prop {number} concurrency
- * @prop {number} maxSize
+ * @prop {string} rangeStart Minimum hash prefix for HaveIBeenPwned Range API
+ * @prop {string} rangeEnd Inclusive maximum hash prefix for HaveIBeenPwned Range API
+ * @prop {number} concurrency Number of parallel downloaders to use to retrieve data
+ * @prop {number} maxSize Maximum number of top hashes to retrieve
  */
 
 /**
  * @typedef HashPair
- * @prop {string} hash
- * @prop {number} occurrences
+ * @prop {string} hash SHA-1 password hash for common password
+ * @prop {number} occurrences Prevalance count within known breaches
  */
 
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
