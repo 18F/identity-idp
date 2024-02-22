@@ -95,20 +95,37 @@ class PairingHeap {
    * @return {Heap<V> | undefined}
    */
   #mergePairs(heap) {
-    if (heap === undefined) {
-      return;
+    // Pass 1: Build pairs left-to-right
+
+    /** @type {Heap<V> | undefined} */
+    let current = heap;
+    /** @type {Array<[Heap<V>, Heap<V> | undefined]>} */
+    const pairs = [];
+    while (current) {
+      const nextSequence = current.next?.next;
+      pairs.push([current, current.next]);
+      if (current.next) {
+        current.next.next = undefined;
+      }
+      current.next = undefined;
+      current = nextSequence;
     }
 
-    const { next } = heap;
-    if (!next) {
-      return heap;
+    // Pass 2: Merge pairs right-to-left
+
+    /** @type {Heap<V> | undefined} */
+    let result;
+    while (pairs.length) {
+      const pairB = /** @type {[Heap<V>, Heap<V> | undefined]} */ (pairs.pop());
+      const pairA = pairs.pop();
+      if (pairA) {
+        result = this.#merge(result, this.#merge(this.#merge(...pairA), this.#merge(...pairB)));
+      } else {
+        result = this.#merge(result, this.#merge(...pairB));
+      }
     }
 
-    const nextSequence = next.next;
-    heap.next = undefined;
-    next.next = undefined;
-
-    return this.#merge(this.#merge(heap, next), this.#mergePairs(nextSequence));
+    return result;
   }
 
   /**
