@@ -23,7 +23,6 @@ module DocAuth
             portrait_match_results: portrait_match_results,
             billed: true,
             classification_info: classification_info,
-            workflow: workflow,
             liveness_checking_required: @selfie_required,
           }.compact,
         )
@@ -147,10 +146,6 @@ module DocAuth
         else
           :not_processed
         end
-      end
-
-      def workflow
-        selfie_check_performed? ? 'test_liveness_workflow' : 'test_non_liveness_workflow'
       end
 
       private

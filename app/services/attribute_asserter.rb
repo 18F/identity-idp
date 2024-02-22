@@ -34,7 +34,7 @@ class AttributeAsserter
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_all_emails(attrs) if bundle.include? :all_emails
-    add_bundle(attrs) if should_add_proofed_attributes?
+    add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     add_aal(attrs)
     add_ial(attrs) if authn_request.requested_ial_authn_context || !service_provider.ial.nil?
@@ -51,21 +51,12 @@ class AttributeAsserter
                 :decrypted_pii,
                 :user_session
 
-  def should_add_proofed_attributes?
-    return false if !user.active_profile.present?
-    ial_context.ial2_or_greater? || ial_max_requested?
-  end
-
-  def ial_max_requested?
-    ial_acr_value = FederatedProtocols::Saml.new(authn_request).ial
-    Vot::LegacyComponentValues.by_name[ial_acr_value]&.requirements&.include?(:ialmax)
-  end
-
   def ial_context
     @ial_context ||= IalContext.new(
       ial: authn_context,
       service_provider: service_provider,
       user: user,
+      authn_context_comparison: authn_request&.requested_authn_context_comparison,
     )
   end
 
@@ -135,17 +126,12 @@ class AttributeAsserter
 
   def add_ial(attrs)
     requested_context = authn_request.requested_ial_authn_context
-    context = if ialmax_requested_and_fullfilable?
-                # IAL2 since IALMAX only works for IAL2 SPs
-                sp_ial
+    context = if ial_context.ialmax_requested? && ial_context.ial2_requested?
+                sp_ial # IAL2 since IALMAX only works for IAL2 SPs
               else
                 requested_context.presence || sp_ial
               end
     attrs[:ial] = { getter: ial_getter_function(context) } if context
-  end
-
-  def ialmax_requested_and_fullfilable?
-    ial_max_requested? && user.active_profile.present?
   end
 
   def sp_ial

@@ -23,7 +23,10 @@ module Users
       @issuer_forced_reauthentication = issuer_forced_reauthentication?(
         issuer: decorated_sp_session.sp_issuer,
       )
-      analytics.sign_in_page_visit(flash: flash[:alert])
+      analytics.sign_in_page_visit(
+        flash: flash[:alert],
+        stored_location: session['user_return_to'],
+      )
       super
     end
 
@@ -131,6 +134,7 @@ module Users
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         bad_password_count: session[:bad_password_count].to_i,
+        stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
       )

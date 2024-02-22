@@ -303,7 +303,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
-        workflow: 'test_non_liveness_workflow',
         liveness_checking_required: false,
       )
       expect(response.doc_auth_success?).to eq(true)
@@ -335,7 +334,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         billed: true,
         classification_info: {},
         liveness_checking_required: false,
-        workflow: 'test_non_liveness_workflow',
       )
     end
   end
@@ -362,7 +360,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         billed: true,
         classification_info: {},
         liveness_checking_required: false,
-        workflow: 'test_non_liveness_workflow',
       )
     end
   end
@@ -410,7 +407,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         billed: true,
         classification_info: {},
         liveness_checking_required: false,
-        workflow: 'test_non_liveness_workflow',
       )
     end
   end

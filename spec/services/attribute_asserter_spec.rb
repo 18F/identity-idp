@@ -544,14 +544,9 @@ RSpec.describe AttributeAsserter do
           expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
           expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
         end
-
-        it 'does not include proofed attributes' do
-          expect(user.asserted_attributes[:first_name]).to eq(nil)
-          expect(user.asserted_attributes[:phone]).to eq(nil)
-        end
       end
 
-      context 'IAL2 service provider requests IALMAX with IAL2 user' do
+      context 'service provider requests IALMAX with IAL2 user' do
         let(:service_provider_ial) { 2 }
         let(:subject) do
           described_class.new(
@@ -568,7 +563,6 @@ RSpec.describe AttributeAsserter do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
             and_return(%w[email phone first_name])
-          ServiceProvider.find_by(issuer: sp1_issuer).update!(ial: 2)
           subject.build
         end
 
@@ -580,47 +574,6 @@ RSpec.describe AttributeAsserter do
           expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
         end
-
-        it 'includes proofed attributes' do
-          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq('Jåné')
-          expect(user.asserted_attributes[:phone][:getter].call(user)).to eq('+18888675309')
-        end
-      end
-    end
-
-    context 'non-IAL2 service provider requests IALMAX with IAL2 user' do
-      let(:service_provider_ial) { 1 }
-      let(:subject) do
-        described_class.new(
-          user: user,
-          name_id_format: name_id_format,
-          service_provider: service_provider,
-          authn_request: ialmax_authn_request,
-          decrypted_pii: decrypted_pii,
-          user_session: user_session,
-        )
-      end
-
-      before do
-        user.identities << identity
-        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-          and_return(%w[email phone first_name])
-        ServiceProvider.find_by(issuer: sp1_issuer).update!(ial: 1)
-        subject.build
-      end
-
-      it 'includes ial' do
-        expect(user.asserted_attributes.keys).to include(:ial)
-      end
-
-      it 'creates a getter function for ial attribute' do
-        expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-        expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
-      end
-
-      it 'includes proofed attributes' do
-        expect(user.asserted_attributes[:first_name]).to eq(nil)
-        expect(user.asserted_attributes[:phone]).to eq(nil)
       end
     end
 
