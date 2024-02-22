@@ -369,7 +369,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
               liveness_checking_required: true,
-              id_images_cropped: false,
+              images_cropped: false,
             ).and_call_original
 
           action
@@ -391,7 +391,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: false,
-            id_images_cropped: false,
+            images_cropped: false,
           ).and_call_original
 
         action
@@ -1290,7 +1290,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: true,
-            id_images_cropped: false,
+            images_cropped: false,
           ).and_call_original
 
         action
