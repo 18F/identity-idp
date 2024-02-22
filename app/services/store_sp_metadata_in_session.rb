@@ -52,10 +52,6 @@ class StoreSpMetadataInSession
     parsed_vot&.hspd12?
   end
 
-  def phishing_resistant_value
-    parsed_vot&.phishing_resistant?
-  end
-
   def biometric_comparison_required_value
     parsed_vot&.biometric_comparison? || sp_request&.biometric_comparison_required
   end
@@ -68,7 +64,6 @@ class StoreSpMetadataInSession
       requested_attributes: sp_request.requested_attributes,
       aal_level_requested: aal_level_requested_value,
       piv_cac_requested: piv_cac_requested_value,
-      phishing_resistant_requested: phishing_resistant_value,
       biometric_comparison_required: biometric_comparison_required_value,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
