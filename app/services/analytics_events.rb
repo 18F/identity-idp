@@ -4708,7 +4708,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] user_id
-  # @param [Boolean] rate_limited
+  # @param [Boolean] email_already_exists
   # @param [String] domain_name
   def user_registration_email(
     success:,
