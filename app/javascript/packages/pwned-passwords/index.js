@@ -41,7 +41,7 @@ export class Downloader extends EventEmitter {
   /**
    * @param {Partial<DownloadOptions>} options
    */
-  constructor({ rangeStart = '5ba42', rangeEnd = '5bb0a', concurrency = 40, maxSize = 300 }) {
+  constructor({ rangeStart = '00000', rangeEnd = 'fffff', concurrency = 40, maxSize = 300 }) {
     super();
 
     this.rangeStart = rangeStart;
