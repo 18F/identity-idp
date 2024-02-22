@@ -74,9 +74,17 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
+      <DocumentFrontAndBackCapture
+        defaultSideProps={defaultSideProps}
+        value={value}
+        selfieCaptureEnabled={selfieCaptureEnabled}
+      />
       {selfieCaptureEnabled && (
-        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieCaptureWithHeader
+          defaultSideProps={defaultSideProps}
+          selfieValue={value.selfie}
+          selfieCaptureEnabled={selfieCaptureEnabled}
+        />
       )}
       <FormStepsButton.Submit />
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}

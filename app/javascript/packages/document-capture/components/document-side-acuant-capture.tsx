@@ -19,6 +19,11 @@ interface DocumentSideAcuantCaptureProps {
   errors: FormStepError<{ front: string; back: string; selfie: string }>[];
   onError: OnErrorCallback;
   className?: string;
+  selfieCaptureEnabled: boolean;
+}
+
+function isUploadAllowed(selfieCaptureEnabled) {
+  return selfieCaptureEnabled === false;
 }
 
 /**
@@ -40,6 +45,7 @@ function DocumentSideAcuantCapture({
   errors,
   onError,
   className,
+  selfieCaptureEnabled,
 }: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
@@ -55,6 +61,7 @@ function DocumentSideAcuantCapture({
       /* i18n-tasks-use t('doc_auth.headings.selfie') */
       bannerText={t(`doc_auth.headings.${side}`)}
       value={value}
+      allowUpload={isUploadAllowed(selfieCaptureEnabled)}
       onChange={(nextValue, metadata) => {
         onChange({
           [side]: nextValue,

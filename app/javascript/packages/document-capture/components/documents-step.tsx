@@ -32,9 +32,11 @@ export function DocumentCaptureSubheaderOne({
 export function SelfieCaptureWithHeader({
   defaultSideProps,
   selfieValue,
+  selfieCaptureEnabled,
 }: {
   defaultSideProps: DefaultSideProps;
   selfieValue: ImageValue;
+  selfieCaptureEnabled: boolean;
 }) {
   const { t } = useI18n();
   return (
@@ -55,6 +57,7 @@ export function SelfieCaptureWithHeader({
         key="selfie"
         side="selfie"
         value={selfieValue}
+        selfieCaptureEnabled={selfieCaptureEnabled}
       />
     </>
   );
@@ -63,12 +66,15 @@ export function SelfieCaptureWithHeader({
 export function DocumentFrontAndBackCapture({
   defaultSideProps,
   value,
+  selfieCaptureEnabled,
 }: {
   defaultSideProps: DefaultSideProps;
   value: Record<string, ImageValue>;
+  selfieCaptureEnabled: boolean;
 }) {
   type DocumentSide = 'front' | 'back';
   const documentsSides: DocumentSide[] = ['front', 'back'];
+
   return (
     <>
       {documentsSides.map((side) => (
@@ -77,6 +83,7 @@ export function DocumentFrontAndBackCapture({
           key={side}
           side={side}
           value={value[side]}
+          selfieCaptureEnabled={selfieCaptureEnabled} // need to define
         />
       ))}
     </>
@@ -135,9 +142,17 @@ function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
+      <DocumentFrontAndBackCapture
+        defaultSideProps={defaultSideProps}
+        value={value}
+        selfieCaptureEnabled={selfieCaptureEnabled}
+      />
       {selfieCaptureEnabled && (
-        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieCaptureWithHeader
+          defaultSideProps={defaultSideProps}
+          selfieValue={value.selfie}
+          selfieCaptureEnabled={selfieCaptureEnabled}
+        />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
