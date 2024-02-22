@@ -344,7 +344,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
         onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
-          {value && !isValuePending && !isMobile && (
+          {value && !isValuePending && (
             <div className="usa-file-input__preview-heading">
               <span>
                 {value instanceof window.File && (
