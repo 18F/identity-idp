@@ -101,8 +101,8 @@ export class Downloader extends EventEmitter {
     const text = await response.text();
     const lines = text.split('\r\n');
     for await (const line of lines) {
-      const hashSuffixPrevalence = line.split(':', 2);
-      const prevalence = Number(hashSuffixPrevalence[1]);
+      const [hashSuffix, prevalenceAsString] = line.split(':', 2);
+      const prevalence = Number(prevalenceAsString);
       if (this.commonHashes.length >= this.maxSize) {
         if (prevalence > this.commonHashes.peek().prevalence) {
           this.commonHashes.pop();
@@ -111,7 +111,6 @@ export class Downloader extends EventEmitter {
         }
       }
 
-      const hashSuffix = hashSuffixPrevalence[0];
       const hash = range + hashSuffix;
       this.commonHashes.push({ hash, prevalence });
       this.emit('hashchange', {
