@@ -50,7 +50,6 @@ es:
           control. Intente tomar nuevas fotografías.
         selfie_not_live: 'Intenta volver a tomarte una foto. Asegúrate de que tu rostro
           completo esté claro y visible en la foto.'
-        selfie_not_live_poor_quality: 'No pudimos verificar su foto. Trate de tomarse otra foto.'
         selfie_poor_quality: 'Intenta volver a tomarte una foto. Asegúrate de que tu
           rostro completo esté claro y visible en la foto.'
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
@@ -108,6 +107,7 @@ es:
         network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
           enviar sus imágenes de nuevo más tarde.
         no_liveness: Intente tomar nuevas fotografías.
+        selfie_failure: No pudimos verificar su foto. Trate de tomarse otra foto.
       glare:
         failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que su foto tenga
