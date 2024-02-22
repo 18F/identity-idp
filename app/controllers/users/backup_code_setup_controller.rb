@@ -13,6 +13,7 @@ module Users
     before_action :authorize_backup_code_disable, only: [:delete]
 
     helper_method :in_multi_mfa_selection_flow?
+    helper_method :in_account_creation_flow?
 
     def index
       generate_codes
