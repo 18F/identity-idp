@@ -9,7 +9,6 @@ import MarketingSiteContext from '../context/marketing-site';
 interface UnknownErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   isFailedDocType: boolean;
-  isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   remainingSubmitAttempts: number;
   altFailedDocTypeMsg?: string | null;
@@ -44,7 +43,6 @@ function getError({ unknownFieldErrors }: GetErrorArguments) {
 function UnknownError({
   unknownFieldErrors = [],
   isFailedDocType = false,
-  isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
   remainingSubmitAttempts,
   altFailedDocTypeMsg = null,
@@ -82,7 +80,7 @@ function UnknownError({
       </p>
     );
   }
-  if ((isFailedSelfieLivenessOrQuality || isFailedSelfie) && err) {
+  if (isFailedSelfieLivenessOrQuality && err) {
     return (
       <>
         <p>{err.message}</p>

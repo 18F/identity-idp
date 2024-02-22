@@ -44,6 +44,8 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController, allowed_extra_analyt
     end
 
     context 'when loaded while adding a new phone' do
+      render_views
+
       let(:user) { create(:user) }
       let(:phone) { Faker::PhoneNumber.cell_phone_in_e164 }
       let(:opt_out_uuid) { PhoneNumberOptOut.create_or_find_with_phone(phone).uuid }

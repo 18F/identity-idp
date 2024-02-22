@@ -21,11 +21,6 @@ RSpec.describe SamlRequestPresenter do
           phone address1 address2 city state zipcode foo
         ]
         service_provider = ServiceProvider.new(attribute_bundle: all_attributes)
-        allow(request).to receive(
-          :service_provider,
-        ).and_return(
-          double(identifier: service_provider.issuer),
-        )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
 
         expect(presenter.requested_attributes).to eq(%i[email all_emails verified_at])
@@ -48,11 +43,6 @@ RSpec.describe SamlRequestPresenter do
 
         sp_attributes = %w[email first_name last_name ssn zipcode]
         service_provider = ServiceProvider.new(attribute_bundle: sp_attributes, ial: 2)
-        allow(request).to receive(
-          :service_provider,
-        ).and_return(
-          double(identifier: service_provider.issuer),
-        )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
 
         expect(presenter.requested_attributes).to eq(
@@ -77,11 +67,6 @@ RSpec.describe SamlRequestPresenter do
 
         sp_attributes = %w[email first_name last_name ssn zipcode all_emails]
         service_provider = ServiceProvider.new(attribute_bundle: sp_attributes, ial: 1)
-        allow(request).to receive(
-          :service_provider,
-        ).and_return(
-          double(identifier: service_provider.issuer),
-        )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
 
         expect(presenter.requested_attributes).to eq(%i[email all_emails])
@@ -100,11 +85,6 @@ RSpec.describe SamlRequestPresenter do
           attribute_bundle: %w[
             email first_name last_name dob foo ssn phone verified_at
           ],
-        )
-        allow(request).to receive(
-          :service_provider,
-        ).and_return(
-          double(identifier: service_provider.issuer),
         )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
         valid_attributes = %i[
@@ -125,11 +105,6 @@ RSpec.describe SamlRequestPresenter do
 
         service_provider = ServiceProvider.new(
           attribute_bundle: %w[address1 address2 city state zipcode],
-        )
-        allow(request).to receive(
-          :service_provider,
-        ).and_return(
-          double(identifier: service_provider.issuer),
         )
         presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
 

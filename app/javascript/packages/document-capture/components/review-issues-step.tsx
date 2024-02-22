@@ -38,7 +38,6 @@ export interface ReviewIssuesStepValue {
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   remainingSubmitAttempts?: number;
   isFailedResult?: boolean;
-  isFailedSelfie?: boolean;
   isFailedDocType?: boolean;
   isFailedSelfieLivenessOrQuality?: boolean;
   captureHints?: boolean;
@@ -57,7 +56,6 @@ function ReviewIssuesStep({
   remainingSubmitAttempts = Infinity,
   isFailedResult = false,
   isFailedDocType = false,
-  isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
   pii,
   captureHints = false,
@@ -122,7 +120,6 @@ function ReviewIssuesStep({
       <DocumentCaptureWarning
         isFailedDocType={isFailedDocType}
         isFailedResult={isFailedResult}
-        isFailedSelfie={isFailedSelfie}
         isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
         remainingSubmitAttempts={remainingSubmitAttempts}
         unknownFieldErrors={unknownFieldErrors}
@@ -134,7 +131,6 @@ function ReviewIssuesStep({
   // Show review issue screen, hasDismissed = true
   return (
     <DocumentCaptureReviewIssues
-      isFailedSelfie={isFailedSelfie}
       isFailedDocType={isFailedDocType}
       isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
       remainingSubmitAttempts={remainingSubmitAttempts}

@@ -51,7 +51,6 @@ describe('DocumentCaptureWarning', () => {
     isFailedDocType,
     isFailedResult,
     isFailedSelfieLivenessOrQuality = false,
-    isFailedSelfieFaceMatch = false,
     inPersonUrl,
   }) {
     const unknownFieldErrors = [
@@ -66,7 +65,6 @@ describe('DocumentCaptureWarning', () => {
           <DocumentCaptureWarning
             isFailedDocType={isFailedDocType}
             isFailedResult={isFailedResult}
-            isFailedSelfie={isFailedSelfieFaceMatch}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             remainingSubmitAttempts={2}
             unknownFieldErrors={unknownFieldErrors}
@@ -182,30 +180,7 @@ describe('DocumentCaptureWarning', () => {
         validateTroubleShootingSection();
       });
 
-      it('renders with failed facematch for selfie', () => {
-        const isFailedDocType = false;
-        const isFailedSelfieFaceMatch = true;
-        const { getByRole, getByText, queryByText } = renderContent({
-          isFailedDocType,
-          isFailedSelfieFaceMatch,
-          isFailedResult,
-          inPersonUrl,
-        });
-
-        // error message section
-        validateHeader('errors.doc_auth.selfie_fail_heading', 1, true);
-        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
-        expect(getByText('general error')).to.be.ok();
-        expect(getByText('idv.warning.attempts_html')).to.be.ok();
-        expect(queryByText('idv.failure.attempts_html')).to.null();
-        expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
-        // ipp section not existing
-        validateIppSection(false);
-        // troubleshooting section
-        validateTroubleShootingSection();
-      });
-
-      it('renders with failed quality/liveness selfie', () => {
+      it('renders with successful selfie', () => {
         const isFailedDocType = false;
         const isFailedSelfieLivenessOrQuality = true;
         const { getByRole, getByText, queryByText } = renderContent({

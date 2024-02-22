@@ -353,6 +353,7 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
   # @param [String] bad_password_count represents number of prior login failures
+  # @param [String] stored_location the URL to return to after signing in
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
   # Tracks authentication attempts at the email/password screen
@@ -361,6 +362,7 @@ module AnalyticsEvents
     user_id:,
     user_locked_out:,
     bad_password_count:,
+    stored_location:,
     sp_request_url_present:,
     remember_device:,
     **extra
@@ -371,6 +373,7 @@ module AnalyticsEvents
       user_id: user_id,
       user_locked_out: user_locked_out,
       bad_password_count: bad_password_count,
+      stored_location: stored_location,
       sp_request_url_present: sp_request_url_present,
       remember_device: remember_device,
       **extra,
@@ -4362,9 +4365,15 @@ module AnalyticsEvents
   end
 
   # @param [String] flash
+  # @param [String] stored_location
   # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, **extra)
-    track_event('Sign in page visited', flash:, **extra)
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
   end
 
   # @param [Boolean] success

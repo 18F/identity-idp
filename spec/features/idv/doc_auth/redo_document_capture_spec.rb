@@ -345,7 +345,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         expect(page).to have_css(
           '.usa-error-message[role="alert"]',
           text: t('doc_auth.errors.doc.resubmit_failed_image'),
-          count: 3,
+          count: 1,
         )
       end
     end

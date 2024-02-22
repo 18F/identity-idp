@@ -9,7 +9,7 @@ RSpec.describe BillableEventTrackable do
       :request_id,
       :user_session,
       :sp_session,
-      :resolved_authn_context_result,
+      :sp_session_ial,
       :session,
     ) do
       include BillableEventTrackable
@@ -33,7 +33,7 @@ RSpec.describe BillableEventTrackable do
       current_user:,
       request_id:,
       user_session: {},
-      resolved_authn_context_result: double(identity_proofing?: false),
+      sp_session_ial: 1,
       sp_session: {
         issuer: current_sp.issuer,
       },

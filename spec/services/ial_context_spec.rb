@@ -10,12 +10,14 @@ RSpec.describe IalContext do
     )
   end
   let(:user) { nil }
+  let(:authn_context_comparison) { nil }
 
   subject(:ial_context) do
     IalContext.new(
       ial: ial,
       service_provider: service_provider,
       user: user,
+      authn_context_comparison: authn_context_comparison,
     )
   end
 
@@ -116,6 +118,27 @@ RSpec.describe IalContext do
     context 'when ialmax is requested' do
       let(:ial) { Idp::Constants::IAL_MAX }
       it { expect(ial_context.ialmax_requested?).to eq(true) }
+    end
+
+    context 'when ial 1 is requested without Comparison=minimum and ial 2 SP' do
+      let(:ial) { Idp::Constants::IAL1 }
+      let(:authn_context_comparison) { 'exact' }
+      let(:sp_ial) { 2 }
+      it { expect(ial_context.ialmax_requested?).to eq(false) }
+    end
+
+    context 'when ial 1 is requested with Comparison=minimum and ial 2 SP' do
+      let(:ial) { Idp::Constants::IAL1 }
+      let(:authn_context_comparison) { 'minimum' }
+      let(:sp_ial) { 2 }
+      it { expect(ial_context.ialmax_requested?).to eq(true) }
+    end
+
+    context 'when ial 1 is requested with Comparison=minimum and ial 1 SP' do
+      let(:ial) { Idp::Constants::IAL1 }
+      let(:authn_context_comparison) { 'minimum' }
+      let(:sp_ial) { 1 }
+      it { expect(ial_context.ialmax_requested?).to eq(false) }
     end
 
     context 'when ial 2 is requested' do
