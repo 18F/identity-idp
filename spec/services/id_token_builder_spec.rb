@@ -63,16 +63,27 @@ RSpec.describe IdTokenBuilder do
 
     context 'it sets the vot' do
       it 'sets the vot' do
-        identity.vot = 'Pb'
+        identity.vtr = 'Pb'
         expect(decoded_payload[:vot]).to eq('C1.C2.P1.Pb')
       end
     end
 
     context 'it sets the acr' do
+      context 'aal request' do
+        before do
+          identity.aal = 1
+          identity.acr_values = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+        end
+
+        it 'sets the acr to the aal1 constant' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+
       context 'ial2 request' do
         before do
           identity.ial = 2
-          identity.acr = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+          identity.acr_values = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
         end
 
         it 'sets the acr to the ial2 constant' do
@@ -83,7 +94,7 @@ RSpec.describe IdTokenBuilder do
       context 'ial1 request' do
         before do
           identity.ial = 1
-          identity.acr = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          identity.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         end
 
         it 'sets the acr to the ial1 constant' do
@@ -94,7 +105,7 @@ RSpec.describe IdTokenBuilder do
       context 'ialmax request' do
         before do
           identity.ial = 0
-          identity.acr = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+          identity.acr_values = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
         end
 
         context 'non-verified user' do
