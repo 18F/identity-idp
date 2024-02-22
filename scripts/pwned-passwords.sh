@@ -26,7 +26,7 @@ download_pwned_passwords() {
   sort $pwned_file_top_hashes -o $pwned_file
 }
 
-check_pwned_unsorted() {
+check_pwned_top_hashes() {
   if [[ -f "$pwned_file_top_hashes" ]]; then
     while true; do
       read -p "${pwned_file_top_hashes} was found. Do you want to redownload (y/n)?" yn
@@ -114,7 +114,7 @@ while getopts "hn:u:f:sp" opt; do
   esac
 done
 
-check_pwned_unsorted
+check_pwned_top_hashes
 check_passwords
 if [[ $submit_to_s3 == "true" ]]; then
   check_s3_env
