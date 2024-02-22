@@ -145,6 +145,7 @@ en:
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
       verify:
+        exit: Exit %{app_name}
         fail_link_html: Get help at <strong>%{sp_name}</strong>
         fail_text: to access services.
         heading: We couldn’t verify your identity
