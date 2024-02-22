@@ -44,16 +44,7 @@ RSpec.describe Users::PivCacLoginController do
 
       context 'with a valid token' do
         let(:service_provider) { create(:service_provider) }
-<<<<<<< HEAD
-        let(:sp_session) do
-          {
-            acr_values: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-            issuer: service_provider.issuer,
-          }
-        end
-=======
         let(:sp_session) { { ial: 1, issuer: service_provider.issuer, vtr: vtr } }
->>>>>>> 38cf585fd (Fix broken specs.)
         let(:nonce) { SecureRandom.base64(20) }
         let(:vtr) { ['C1'] }
         let(:data) do
@@ -185,16 +176,19 @@ RSpec.describe Users::PivCacLoginController do
               end
 
               context 'ial2 service_level' do
-<<<<<<< HEAD
                 let(:sp_session) do
                   {
                     acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                     issuer: service_provider.issuer,
                   }
                 end
-=======
-                let(:sp_session) { { ial: Idp::Constants::IAL2, issuer: service_provider.issuer, vtr: vtr } }
->>>>>>> 38cf585fd (Fix broken specs.)
+                let(:sp_session) do
+                  {
+                    ial: Idp::Constants::IAL2,
+                    issuer: service_provider.issuer,
+                    vtr: vtr,
+                  }
+                end
 
                 it 'redirects to account' do
                   expect(response).to redirect_to(account_url)
@@ -203,14 +197,7 @@ RSpec.describe Users::PivCacLoginController do
 
               context 'ial_max service level' do
                 let(:sp_session) do
-<<<<<<< HEAD
-                  {
-                    acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-                    issuer: service_provider.issuer,
-                  }
-=======
                   { ial: Idp::Constants::IAL_MAX, issuer: service_provider.issuer, vtr: vtr }
->>>>>>> 38cf585fd (Fix broken specs.)
                 end
 
                 it 'redirects to the after_sign_in_path_for' do
