@@ -48,10 +48,10 @@ const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
 
 await pipeline(
   result,
-  async function* (hashes) {
+  async function* (hashPairs) {
     let prefix = '';
-    for await (const hash of hashes) {
-      yield `${prefix}${hash}`;
+    for await (const hashPair of hashPairs) {
+      yield `${prefix}${hashPair.hash}`;
       prefix ||= '\n';
     }
   },

@@ -53,7 +53,11 @@ describe('Downloader', () => {
 
       const results = Array.from(await downloader.download());
 
-      expect(results).to.have.deep.members(['00000bar', '00000foo', '00002quux']);
+      expect(results).to.have.deep.members([
+        { hash: '00000bar', prevalence: 20 },
+        { hash: '00000foo', prevalence: 30 },
+        { hash: '00002quux', prevalence: 40 },
+      ]);
     });
 
     it('retries when download experiences an error', async () => {
@@ -78,7 +82,10 @@ describe('Downloader', () => {
 
       const results = Array.from(await downloader.download());
       expect(didError).to.be.true();
-      expect(results).to.have.deep.members(['00000bar', '00000foo']);
+      expect(results).to.have.deep.members([
+        { hash: '00000bar', prevalence: 20 },
+        { hash: '00000foo', prevalence: 30 },
+      ]);
     });
 
     it('throws when requests repeatedly error after retry', async () => {
