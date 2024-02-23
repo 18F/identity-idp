@@ -85,7 +85,7 @@ module Idv
         irs_reproofing: irs_reproofing?,
         redo_document_capture: idv_session.redo_document_capture,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
-        liveness_check_required: decorated_sp_session.selfie_required?,
+        liveness_checking_required: decorated_sp_session.selfie_required?,
       }.merge(ab_test_analytics_buckets)
     end
 
