@@ -62,9 +62,19 @@ RSpec.describe IdTokenBuilder do
     end
 
     context 'it sets the vot' do
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
+          and_return(true)
+      end
+
       it 'sets the vot' do
         identity.vtr = 'Pb'
         expect(decoded_payload[:vot]).to eq('C1.C2.P1.Pb')
+      end
+
+      it 'sets the vtm' do
+        identity.vtr = 'Pb'
+        expect(decoded_payload[:vtm]).to eq(Idp::Constants::VTM)
       end
     end
 

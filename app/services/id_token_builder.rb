@@ -38,13 +38,14 @@ class IdTokenBuilder
   def id_token_claims
     {
       acr: acr,
-      vot: vot,
+      vot: (vot if sp_requests_vot?),
+      vtm: (Idp::Constants::VTM if sp_requests_vot?),
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
       c_hash: hash_token(code),
-    }
+    }.compact
   end
 
   def timestamp_claims
@@ -64,6 +65,10 @@ class IdTokenBuilder
         component_value.name
       end
     end.join(' ')
+  end
+
+  def sp_requests_vot?
+    IdentityConfig.store.use_vot_in_sp_requests
   end
 
   def vot
