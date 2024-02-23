@@ -69,14 +69,18 @@ RSpec.describe IdTokenBuilder do
     end
 
     context 'it sets the acr' do
-      context 'aal request' do
+      context 'aal and ial request' do
         before do
-          identity.aal = 1
-          identity.acr_values = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+          identity.aal = 2
+          acr_values = [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+          identity.acr_values = acr_values
         end
 
-        it 'sets the acr to the aal1 constant' do
-          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF)
+        it 'ignores the aal value' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
