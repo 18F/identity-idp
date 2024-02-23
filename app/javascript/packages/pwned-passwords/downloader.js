@@ -99,13 +99,7 @@ class Downloader extends EventEmitter {
       { concurrency: this.concurrency },
     );
     this.emit('complete');
-
-    const { commonHashes } = this;
-    return {
-      *[Symbol.iterator]() {
-        yield* commonHashes.data;
-      },
-    };
+    return this.commonHashes.data;
   }
 
   /**
