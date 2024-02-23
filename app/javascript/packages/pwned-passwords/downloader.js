@@ -67,7 +67,7 @@ class Downloader extends EventEmitter {
   concurrency;
 
   /** @type {TinyQueue<HashPair>} */
-  commonHashes;
+  commonHashes = new TinyQueue(undefined, (a, b) => a.prevalence - b.prevalence);
 
   /**
    * @param {Partial<DownloadOptions>} options
@@ -79,7 +79,6 @@ class Downloader extends EventEmitter {
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
     this.concurrency = concurrency;
-    this.commonHashes = new TinyQueue(undefined, (a, b) => a.prevalence - b.prevalence);
   }
 
   /**
