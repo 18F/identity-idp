@@ -11,8 +11,8 @@ class ServiceProviderSession
     @service_provider_request = service_provider_request
   end
 
-  def remember_device_default
-    sp_aal < 2
+  def remember_device_default(authorization_context)
+    !authorization_context.aal2?
   end
 
   def sp_redirect_uris
@@ -91,9 +91,7 @@ class ServiceProviderSession
   def mfa_expiration_interval(authorization_context)
     aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
     aal_2_expiration = IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
-    # ToDo: use auth context next two lines
-    # return aal_2_expiration if sp_aal > 1
-    # return aal_2_expiration if sp_ial > 1
+
     return aal_2_expiration if authorization_context.aal2?
 
     aal_1_expiration
@@ -130,14 +128,6 @@ class ServiceProviderSession
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request
-
-  def sp_aal
-    sp.default_aal || 1
-  end
-
-  def sp_ial
-    sp.ial || 1
-  end
 
   def request_url
     sp_session[:request_url] || service_provider_request.url
