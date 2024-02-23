@@ -486,6 +486,12 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       'IdV: doc auth agreement submitted' => {
         success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
+      'IdV: doc auth hybrid handoff visited' => {
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+      },
+      'IdV: doc auth hybrid handoff submitted' => {
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+      },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: anything, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean
       },
@@ -853,15 +859,12 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       allow_any_instance_of(DocumentCaptureSessionResult).
         to receive(:selfie_status).and_return(:success)
 
-      mobile_device = Browser.new(mobile_user_agent)
-      allow(BrowserCache).to receive(:parse).and_return(mobile_device)
-      allow(BrowserCache).to receive(:get).and_return(mobile_device)
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
 
-      perform_in_browser(:mobile) do
+      perform_in_browser(:desktop) do
         sign_in_and_2fa_user(user)
         visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)
         complete_doc_auth_steps_before_document_capture_step
-
         attach_images
         attach_selfie
         submit_images
