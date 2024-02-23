@@ -52,7 +52,7 @@ class Downloader extends EventEmitter {
    * Downloads the top password hashes from the configured range and resolves with an iterable
    * object containing all hashes in no particular order.
    *
-   * @return {Promise<Iterable>}
+   * @return {Promise<Iterable<HashPair>>}
    */
   async download() {
     const start = parseInt(this.rangeStart, 16);
