@@ -1,11 +1,10 @@
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
   before_action :confirm_two_factor_authenticated
+  before_action :redirect_to_backup_codes_confirm, only: [:show],
+                                                   if: :backup_code_confirmation_needed?
 
   def show
-    if backup_code_confirmation_needed?
-      redirect_to confirm_backup_codes_path
-    end
     @content = mfa_confirmation_presenter
     analytics.user_registration_suggest_another_mfa_notice_visited
   end
@@ -46,5 +45,9 @@ class MfaConfirmationController < ApplicationController
 
   def webauthn_platform_set_up_successful?
     mfa_context.webauthn_platform_configurations.present?
+  end
+
+  def redirect_to_backup_codes_confirm
+    redirect_to confirm_backup_codes_path
   end
 end
