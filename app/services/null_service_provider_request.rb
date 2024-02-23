@@ -12,4 +12,8 @@ class NullServiceProviderRequest
   def ial; end
 
   def requested_attributes; end
+
+  def vtr; end
+
+  def acr_values; end
 end

@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe NullServiceProviderSession do
   subject { NullServiceProviderSession.new }
 
+  let(:authorization_context) { Vot::Parser::Result.no_sp_result }
+
   describe '#new_session_heading' do
     it 'returns the correct string' do
       expect(subject.new_session_heading).to eq I18n.t('headings.sign_in_without_sp')
@@ -41,7 +43,7 @@ RSpec.describe NullServiceProviderSession do
 
   describe '#mfa_expiration_interval' do
     it 'returns the AAL1 expiration interval' do
-      expect(subject.mfa_expiration_interval).to eq(30.days)
+      expect(subject.mfa_expiration_interval(authorization_context)).to eq(30.days)
     end
   end
 

@@ -15,6 +15,7 @@ RSpec.describe ServiceProviderSession do
   let(:service_provider_request) { ServiceProviderRequest.new }
   let(:sp_name) { subject.sp_name }
   let(:sp_create_link) { '/sign_up/enter_email' }
+  let(:authorization_context) { Vot::Parser::Result.no_sp_result }
 
   before do
     allow(view_context).to receive(:sign_up_email_path).
@@ -246,7 +247,7 @@ RSpec.describe ServiceProviderSession do
         allow(sp).to receive(:default_aal).and_return(2)
       end
 
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
+      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
     end
 
     context 'with an IAL2 sp' do
@@ -254,11 +255,11 @@ RSpec.describe ServiceProviderSession do
         allow(sp).to receive(:ial).and_return(2)
       end
 
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
+      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
     end
 
     context 'with an sp that is not AAL2 or IAL2' do
-      it { expect(subject.mfa_expiration_interval).to eq(30.days) }
+      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(30.days) }
     end
   end
 
