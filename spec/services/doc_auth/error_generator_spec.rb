@@ -526,15 +526,12 @@ RSpec.describe DocAuth::ErrorGenerator do
       }
     end
 
-    # TODO fix this set of tests
     context 'when liveness is enabled' do
       let(:liveness_enabled) { true }
       context 'when liveness check passed' do
-        # TODO:👇🏻 This line does nothing right now, fix this test
         let(:face_match_result) { 'Pass' }
         it 'DocAuthResult is Passed with no other error' do
           error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
-
           # this is an edge case, the generate_doc_auth_errors function should no be
           # called when everything is successful
           expect(warn_notifier).to receive(:call).
@@ -544,13 +541,11 @@ RSpec.describe DocAuth::ErrorGenerator do
       end
 
       context 'when liveness check failed' do
-        # TODO:👇🏻 This line does nothing right now, fix this test
         let(:face_match_result) { 'Fail' }
-        # This test doesn't have a selfie error as far as I can tell
         it 'DocAuthResult is failed with selfie error' do
           error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
           errors = described_class.new(config).generate_doc_auth_errors(error_info)
-          expect(errors.keys).to contain_exactly(:general, :selfie, :hints)
+          expect(errors.keys).to contain_exactly(:front, :back, :general, :selfie, :hints)
         end
       end
     end

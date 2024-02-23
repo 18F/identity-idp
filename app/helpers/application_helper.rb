@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def ial2_requested?
-    sp_session && sp_session[:ial2]
+    resolved_authn_context_result.identity_proofing?
   end
 
   def cancel_link_text

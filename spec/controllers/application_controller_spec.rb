@@ -465,7 +465,7 @@ RSpec.describe ApplicationController do
         'http://idmanagement.gov/ns/assurance/aal/1',
       ].join(' ')
       sp_session = { vtr: nil, acr_values: acr_values }
-      allow(controller).to receive(:current_sp).and_return(sp)
+      allow(controller).to receive(:sp_from_sp_session).and_return(sp)
       allow(controller).to receive(:sp_session).and_return(sp_session)
 
       result = subject.resolved_authn_context_result
@@ -478,7 +478,7 @@ RSpec.describe ApplicationController do
       it 'returns a no-SP result' do
         sp = nil
         sp_session = {}
-        allow(controller).to receive(:current_sp).and_return(sp)
+        allow(controller).to receive(:sp_from_sp_session).and_return(sp)
         allow(controller).to receive(:sp_session).and_return(sp_session)
 
         result = subject.resolved_authn_context_result

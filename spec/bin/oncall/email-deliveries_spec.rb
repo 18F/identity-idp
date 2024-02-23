@@ -58,8 +58,8 @@ RSpec.describe EmailDeliveries do
     # rubocop:disable Layout/LineLength
     let(:events_log) do
       [
-        { '@timestamp' => '2023-01-01 00:00:01', 'user_id' => 'abc123', 'email_action' => 'forgot_password', 'ses_message_id' => 'message-1' },
-        { '@timestamp' => '2023-01-01 00:00:02', 'user_id' => 'def456', 'email_action' => 'forgot_password', 'ses_message_id' => 'message-2' },
+        { '@timestamp' => '2023-01-01 00:00:01', 'user_id' => 'abc123', 'email_action' => 'forgot_password', 'ses_message_id' => 'message-1', 'email_address_id' => '1' },
+        { '@timestamp' => '2023-01-01 00:00:02', 'user_id' => 'def456', 'email_action' => 'forgot_password', 'ses_message_id' => 'message-2', 'email_address_id' => '2' },
       ]
     end
 
@@ -80,9 +80,9 @@ RSpec.describe EmailDeliveries do
 
       expect(table).to eq(
         [
-          ['user_id', 'timestamp', 'message_id', 'email_action', 'events'],
-          ['abc123', '2023-01-01 00:00:01', 'message-1', 'forgot_password', 'Send, Delivery'],
-          ['def456', '2023-01-01 00:00:02', 'message-2', 'forgot_password',
+          ['user_id', 'email_address_id', 'timestamp', 'message_id', 'email_action', 'events'],
+          ['abc123', '1', '2023-01-01 00:00:01', 'message-1', 'forgot_password', 'Send, Delivery'],
+          ['def456', '2', '2023-01-01 00:00:02', 'message-2', 'forgot_password',
            'Send, Bounce-Transient-MailboxFull'],
         ],
       )

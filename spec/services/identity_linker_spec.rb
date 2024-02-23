@@ -30,6 +30,8 @@ RSpec.describe IdentityLinker do
       rails_session_id = SecureRandom.hex
       nonce = SecureRandom.hex
       ial = 3
+      acr_values = 'http://idmanagement.gov/ns/assurance/aal/1'
+      vtr = ['C2.Pb'].to_json
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
       verified_attributes = %w[address email]
@@ -38,6 +40,8 @@ RSpec.describe IdentityLinker do
         rails_session_id: rails_session_id,
         nonce: nonce,
         ial: ial,
+        acr_values: acr_values,
+        vtr: vtr,
         scope: scope,
         code_challenge: code_challenge,
         verified_attributes: verified_attributes.map(&:to_sym),
@@ -48,6 +52,8 @@ RSpec.describe IdentityLinker do
       expect(last_identity.nonce).to eq(nonce)
       expect(last_identity.rails_session_id).to eq(rails_session_id)
       expect(last_identity.ial).to eq(ial)
+      expect(last_identity.acr_values).to eq(acr_values)
+      expect(last_identity.vtr).to eq(vtr)
       expect(last_identity.scope).to eq(scope)
       expect(last_identity.code_challenge).to eq(code_challenge)
       expect(last_identity.verified_attributes).to eq(verified_attributes)
