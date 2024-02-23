@@ -39,12 +39,7 @@ module DocAuth
           else
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
-
-            if attention_with_barcode?
-              failed_file_data = file_data.dup.dig('failed_alerts')
-              failed_file_data.delete(ATTENTION_WITH_BARCODE_ALERT)
-            end
-            failed = failed_file_data
+            failed = failed_file_data(file_data.dup)
             passed = file_data.dig('passed_alerts')
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
@@ -259,6 +254,14 @@ module DocAuth
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
           extra: { liveness_checking_required: liveness_enabled },
         }.compact
+      end
+
+      def failed_file_data(failed_data)
+        if attention_with_barcode?
+          failed_data = failed_data.dig('failed_alerts')
+          failed_data.delete(ATTENTION_WITH_BARCODE_ALERT)
+        end
+        failed_data
       end
     end
   end
