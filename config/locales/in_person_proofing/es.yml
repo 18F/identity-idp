@@ -135,8 +135,8 @@ es:
         state_id_jurisdiction_hint: Este es el estado que emitió su identificación
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de identidad
-        state_id_number_florida_hint: 'Este es el número que figura en tu ID con una
-          letra y 12 números. Ejemplo: D123-456-78-901-2'
+        state_id_number_florida_hint_html: 'Este es el número que figura en tu ID con una
+          letra y 12 números. Ejemplo:&nbsp;D123-456-78-901-2'
         state_id_number_hint: 'Puede incluir letras, números y los siguientes símbolos:'
         state_id_number_hint_asterisks: 'asteriscos'
         state_id_number_hint_dashes: guiones
