@@ -124,11 +124,7 @@ class Downloader extends EventEmitter {
    */
   #get(url) {
     return new Promise((resolve, reject) => {
-      https
-        .get(url, (response) => {
-          resolve(response);
-        })
-        .on('error', reject);
+      https.get(url, resolve).on('error', reject);
     });
   }
 
