@@ -35,6 +35,7 @@ const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
 
 if (outFile) {
   const progressBar = new Progress.SingleBar({
+    fps: 3,
     format:
       '[{bar}] {percentage}% | ETA {eta_formatted} | {value}/{total} | {hashes} hashes (>= {hashMin} prevalence)',
   });
