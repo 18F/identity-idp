@@ -1,6 +1,6 @@
 import EventEmitter from 'node:events';
 import https from 'node:https';
-import PQueue from 'p-queue';
+import pTimes from 'p-times';
 import PairingHeap from './pairing-heap.js';
 
 /**
@@ -60,11 +60,11 @@ class Downloader extends EventEmitter {
   /** @type {string} */
   rangeEnd;
 
-  /** @type {PQueue} */
-  downloaders;
-
   /** @type {number} */
   maxSize;
+
+  /** @type {number} */
+  concurrency;
 
   /** @type {PairingHeap<HashPair>} */
   commonHashes = new PairingHeap((a, b) => a.prevalence - b.prevalence);
@@ -78,7 +78,7 @@ class Downloader extends EventEmitter {
     this.rangeStart = rangeStart;
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
-    this.downloaders = new PQueue({ concurrency });
+    this.concurrency = concurrency;
   }
 
   /**
@@ -92,20 +92,11 @@ class Downloader extends EventEmitter {
     const end = parseInt(this.rangeEnd, 16);
     const total = end - start + 1;
     this.emit('start', { total });
-    for (let i = start; i <= end; i++) {
-      this.downloaders.add(() => this.#downloadRangeWithRetry(this.#getRangePath(i)));
-    }
-
-    let error;
-    this.downloaders.on('error', (_error) => {
-      error = _error;
-      this.downloaders.clear();
-    });
-
-    await this.downloaders.onIdle();
-    if (error) {
-      throw error;
-    }
+    await pTimes(
+      total,
+      (index) => this.#downloadRangeWithRetry(this.#getRangePath(start + index)),
+      { concurrency: this.concurrency },
+    );
     this.emit('complete');
 
     const { commonHashes } = this;
@@ -140,7 +131,7 @@ class Downloader extends EventEmitter {
       this.emit('download');
     } catch (error) {
       if (remainingAttempts > 0) {
-        this.downloaders.add(() => this.#downloadRangeWithRetry(range, remainingAttempts - 1));
+        await this.#downloadRangeWithRetry(range, remainingAttempts - 1);
       } else {
         throw error;
       }
