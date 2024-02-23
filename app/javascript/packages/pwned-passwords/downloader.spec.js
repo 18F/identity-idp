@@ -31,10 +31,8 @@ describe('Downloader', () => {
       http.get('https://api.pwnedpasswords.com/range/00000', () =>
         HttpResponse.text('foo:30\r\nbar:20'),
       ),
-      http.get('https://api.pwnedpasswords.com/range/00001', () => HttpResponse.text('bar:10')),
-      http.get('https://api.pwnedpasswords.com/range/00002', () =>
-        HttpResponse.text('baz:10\r\nquux:40'),
-      ),
+      http.get('https://api.pwnedpasswords.com/range/00001', () => HttpResponse.text('baz:10')),
+      http.get('https://api.pwnedpasswords.com/range/00002', () => HttpResponse.text('quux:40')),
     );
     server.listen();
   });
@@ -55,11 +53,7 @@ describe('Downloader', () => {
 
       const results = Array.from(await downloader.download());
 
-      expect(results).to.have.deep.members([
-        { hash: '00000bar', prevalence: 20 },
-        { hash: '00000foo', prevalence: 30 },
-        { hash: '00002quux', prevalence: 40 },
-      ]);
+      expect(results).to.have.deep.members(['00000bar', '00000foo', '00002quux']);
     });
 
     it('retries when download experiences an error', async () => {
@@ -84,10 +78,7 @@ describe('Downloader', () => {
 
       const results = Array.from(await downloader.download());
       expect(didError).to.be.true();
-      expect(results).to.have.deep.members([
-        { hash: '00000bar', prevalence: 20 },
-        { hash: '00000foo', prevalence: 30 },
-      ]);
+      expect(results).to.have.deep.members(['00000bar', '00000foo']);
     });
 
     it('throws when requests repeatedly error after retry', async () => {

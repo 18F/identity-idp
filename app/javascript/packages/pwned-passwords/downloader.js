@@ -1,7 +1,7 @@
 import EventEmitter from 'node:events';
 import https from 'node:https';
 import pTimes from 'p-times';
-import PairingHeap from './pairing-heap.js';
+import Flatqueue from 'flatqueue';
 
 /**
  * @typedef DownloadOptions
@@ -10,12 +10,6 @@ import PairingHeap from './pairing-heap.js';
  * @prop {string} rangeEnd Inclusive maximum hash prefix for HaveIBeenPwned Range API
  * @prop {number} concurrency Number of parallel downloaders to use to retrieve data
  * @prop {number} maxSize Maximum number of top hashes to retrieve
- */
-
-/**
- * @typedef HashPair
- * @prop {string} hash SHA-1 password hash for common password
- * @prop {number} prevalence Prevalance count within known breaches
  */
 
 /**
@@ -66,8 +60,8 @@ class Downloader extends EventEmitter {
   /** @type {number} */
   concurrency;
 
-  /** @type {PairingHeap<HashPair>} */
-  commonHashes = new PairingHeap((a, b) => a.prevalence - b.prevalence);
+  /** @type {Flatqueue} */
+  commonHashes;
 
   /**
    * @param {Partial<DownloadOptions>} options
@@ -79,13 +73,15 @@ class Downloader extends EventEmitter {
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
     this.concurrency = concurrency;
+    this.commonHashes = new Flatqueue();
+    this.commonHashes.values = new Uint32Array(maxSize);
   }
 
   /**
    * Downloads the top password hashes from the configured range and resolves with an iterable
    * object containing all hashes in no particular order.
    *
-   * @return {Promise<Iterable<HashPair>>}
+   * @return {Promise<Iterable<string>>}
    */
   async download() {
     const start = parseInt(this.rangeStart, 16);
@@ -102,7 +98,7 @@ class Downloader extends EventEmitter {
     const { commonHashes } = this;
     return {
       *[Symbol.iterator]() {
-        yield* commonHashes;
+        yield* commonHashes.ids;
       },
     };
   }
@@ -150,7 +146,7 @@ class Downloader extends EventEmitter {
       const [hashSuffix, prevalenceAsString] = line.split(':', 2);
       const prevalence = Number(prevalenceAsString);
       if (this.commonHashes.length >= this.maxSize) {
-        if (prevalence > this.commonHashes.peek().prevalence) {
+        if (prevalence > /** @type {number} */ (this.commonHashes.peekValue())) {
           this.commonHashes.pop();
         } else {
           continue;
@@ -158,10 +154,10 @@ class Downloader extends EventEmitter {
       }
 
       const hash = range + hashSuffix;
-      this.commonHashes.push({ hash, prevalence });
+      this.commonHashes.push(hash, prevalence);
       this.emit('hashchange', {
         hashes: this.commonHashes.length,
-        hashMin: this.commonHashes.peek().prevalence,
+        hashMin: this.commonHashes.peekValue(),
       });
     }
   }
