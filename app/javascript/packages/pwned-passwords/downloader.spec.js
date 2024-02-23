@@ -61,5 +61,56 @@ describe('Downloader', () => {
         { hash: '00002quux', prevalence: 40 },
       ]);
     });
+
+    it('retries when download experiences an error', async () => {
+      let didError = false;
+
+      server.resetHandlers();
+      server.use(
+        http.get('https://api.pwnedpasswords.com/range/00000', () => {
+          if (!didError) {
+            didError = true;
+            return HttpResponse.error();
+          }
+
+          return HttpResponse.text('foo:30\r\nbar:20');
+        }),
+      );
+
+      const downloader = new Downloader({
+        rangeStart: '00000',
+        rangeEnd: '00000',
+      });
+
+      const results = Array.from(await downloader.download());
+      expect(didError).to.be.true();
+      expect(results).to.have.deep.members([
+        { hash: '00000bar', prevalence: 20 },
+        { hash: '00000foo', prevalence: 30 },
+      ]);
+    });
+
+    it('throws when requests repeatedly error after retry', async () => {
+      let attempts = 0;
+      server.resetHandlers();
+      server.use(
+        http.get('https://api.pwnedpasswords.com/range/00000', () => {
+          attempts++;
+          return HttpResponse.error();
+        }),
+      );
+
+      const downloader = new Downloader({
+        rangeStart: '00000',
+        rangeEnd: '00000',
+      });
+
+      try {
+        await downloader.download();
+        throw new Error('Expected downloader to throw.');
+      } catch {}
+
+      expect(attempts).to.be.greaterThan(1);
+    });
   });
 });
