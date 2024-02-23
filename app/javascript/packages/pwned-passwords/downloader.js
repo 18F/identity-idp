@@ -20,6 +20,27 @@ import PairingHeap from './pairing-heap.js';
 
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
 
+/**
+ * Asynchronously yields individual lines received from the given response
+ *
+ * @param {import('stream').Readable} response
+ * @yield {string}
+ */
+export async function* readLines(response) {
+  let data = '';
+
+  for await (const chunk of response) {
+    data += chunk.toString();
+    const split = data.split('\r\n');
+    if (split.length > 1) {
+      data = /** @type {string} */ (split.pop());
+      yield* split;
+    }
+  }
+
+  yield data;
+}
+
 class Downloader extends EventEmitter {
   /** @type {string} */
   rangeStart;
@@ -96,7 +117,7 @@ class Downloader extends EventEmitter {
   async #downloadRange(range) {
     const url = new URL(range, API_ROOT);
     const response = await this.#get(url);
-    for await (const line of this.readLines(response)) {
+    for await (const line of readLines(response)) {
       const [hashSuffix, prevalenceAsString] = line.split(':', 2);
       const prevalence = Number(prevalenceAsString);
       if (this.commonHashes.length >= this.maxSize) {
@@ -126,30 +147,6 @@ class Downloader extends EventEmitter {
     return new Promise((resolve, reject) => {
       https.get(url, resolve).on('error', reject);
     });
-  }
-
-  /**
-   * Asynchronously yields individual lines received from the given response
-   *
-   * @param {import('http').IncomingMessage} response
-   * @yield {string}
-   */
-  async *readLines(response) {
-    let data = '';
-
-    for await (const chunk of response) {
-      const [appended, ...lines] = chunk.toString().split('\r\n');
-      if (lines.length) {
-        const nextData = /** @type {string} */ (lines.pop());
-        yield data + appended;
-        yield* lines;
-        data = nextData;
-      } else {
-        data += appended;
-      }
-    }
-
-    yield data;
   }
 }
 
