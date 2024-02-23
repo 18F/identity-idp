@@ -1,5 +1,4 @@
 import EventEmitter from 'node:events';
-import https from 'node:https';
 import pTimes from 'p-times';
 import TinyQueue from 'tinyqueue';
 
@@ -25,27 +24,6 @@ import TinyQueue from 'tinyqueue';
  * @type {string}
  */
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
-
-/**
- * Asynchronously yields individual lines received from the given response
- *
- * @param {import('stream').Readable} response
- * @yield {string}
- */
-export async function* readLines(response) {
-  let data = '';
-
-  for await (const chunk of response) {
-    data += chunk.toString();
-    const split = data.split('\r\n');
-    if (split.length > 1) {
-      data = /** @type {string} */ (split.pop());
-      yield* split;
-    }
-  }
-
-  yield data;
-}
 
 class Downloader extends EventEmitter {
   /** @type {string} */
@@ -140,8 +118,10 @@ class Downloader extends EventEmitter {
    */
   async #downloadRange(range) {
     const url = new URL(range, API_ROOT);
-    const response = await this.#get(url);
-    for await (const line of readLines(response)) {
+    const response = await fetch(url);
+    const text = await response.text();
+    const lines = text.split('\r\n');
+    for await (const line of lines) {
       const [hashSuffix, prevalenceAsString] = line.split(':', 2);
       const prevalence = Number(prevalenceAsString);
       if (this.commonHashes.length >= this.maxSize) {
@@ -159,18 +139,6 @@ class Downloader extends EventEmitter {
         hashMin: this.commonHashes.peek()?.prevalence,
       });
     }
-  }
-
-  /**
-   * Initiates an HTTPS request and resolves with the response
-   *
-   * @param {URL} url
-   * @return {Promise<import('http').IncomingMessage>}
-   */
-  #get(url) {
-    return new Promise((resolve, reject) => {
-      https.get(url, resolve).on('error', reject);
-    });
   }
 }
 

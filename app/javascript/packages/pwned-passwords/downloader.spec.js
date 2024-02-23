@@ -1,28 +1,6 @@
-import { Readable } from 'node:stream';
-import { ReadableStream } from 'stream/web';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
-import Downloader, { readLines } from './downloader.js';
-
-describe('readLines', () => {
-  it('yields lines as they are received from the stream', async () => {
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      start(controller) {
-        controller.enqueue(encoder.encode('ba'));
-        controller.enqueue(encoder.encode('z:10\r\n'));
-        controller.enqueue(encoder.encode('quux:40\r'));
-        controller.enqueue(encoder.encode('\nfoo:5'));
-        controller.close();
-      },
-    });
-
-    const expectedLines = ['baz:10', 'quux:40', 'foo:5'];
-    for await (const line of readLines(Readable.fromWeb(stream))) {
-      expect(line).to.equal(expectedLines.shift());
-    }
-  });
-});
+import Downloader from './downloader.js';
 
 describe('Downloader', () => {
   let server;
