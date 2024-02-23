@@ -104,7 +104,6 @@ class SamlIdpController < ApplicationController
     SamlEndpoint.new(params[:path_year]).saml_metadata
   end
 
-
   def prompt_for_password_if_ial2_request_and_pii_locked
     return unless pii_requested_but_locked?
     redirect_to capture_password_url
