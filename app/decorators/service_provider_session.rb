@@ -118,12 +118,12 @@ class ServiceProviderSession
 
   def request_url_params
     @request_url_params ||= begin
-                              if request_url.present?
-                                UriService.params(request_url)
-                              else
-                                {}
-                              end
-                            end
+      if request_url.present?
+        UriService.params(request_url)
+      else
+        {}
+      end
+    end
   end
 
   private
@@ -136,14 +136,6 @@ class ServiceProviderSession
 
   def sp_ial
     sp.ial || 1
-  end
-
-  def requested_aal
-    AuthnContextResolver.new(
-      service_provider: nil,
-      vtr: sp_request.vtr,
-      acr_values: sp_request.acr_values,
-    ).resolve.aal_level_requested
   end
 
   def request_url
