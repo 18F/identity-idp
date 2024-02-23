@@ -38,10 +38,6 @@ class StoreSpMetadataInSession
     parsed_vot&.identity_proofing?
   end
 
-  def ialmax_value
-    parsed_vot&.ialmax?
-  end
-
   def aal_level_requested_value
     return nil unless parsed_vot
 
@@ -71,7 +67,6 @@ class StoreSpMetadataInSession
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
       ial2: ial2_value,
-      ialmax: ialmax_value,
       aal_level_requested: aal_level_requested_value,
       piv_cac_requested: piv_cac_requested_value,
       phishing_resistant_requested: phishing_resistant_value,
