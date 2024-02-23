@@ -972,6 +972,7 @@ module AnalyticsEvents
     errors:,
     remaining_submit_attempts:,
     flow_path:,
+    liveness_checking_required:,
     submit_attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
@@ -988,6 +989,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      liveness_checking_required: liveness_checking_required,
       **extra,
     )
   end
@@ -1050,6 +1052,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     client_image_metrics:,
     flow_path:,
+    liveness_checking_required:,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
@@ -1108,6 +1111,7 @@ module AnalyticsEvents
       portrait_match_results:,
       image_metrics:,
       address_line2_present:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -1128,6 +1132,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     pii_like_keypaths:,
     flow_path:,
+    liveness_checking_required:,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
@@ -1145,6 +1150,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
+      liveness_checking_required: liveness_checking_required,
       **extra,
     )
   end
