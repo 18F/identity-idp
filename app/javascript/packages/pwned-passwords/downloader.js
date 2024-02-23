@@ -9,6 +9,7 @@ import TinyQueue from 'tinyqueue';
  * @prop {string} rangeStart Minimum hash prefix for HaveIBeenPwned Range API
  * @prop {string} rangeEnd Inclusive maximum hash prefix for HaveIBeenPwned Range API
  * @prop {number} concurrency Number of parallel downloaders to use to retrieve data
+ * @prop {number} maxRetry Number of attempts to retry upon failed download for a given range
  * @prop {number} maxSize Maximum number of top hashes to retrieve
  */
 
@@ -24,13 +25,6 @@ import TinyQueue from 'tinyqueue';
  * @type {string}
  */
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
-
-/**
- * Number of attempts to retry upon failed download for a given range.
- *
- * @type {number}
- */
-const MAX_RETRY = 5;
 
 /**
  * Asynchronously yields individual lines received from the given response
@@ -72,12 +66,19 @@ class Downloader extends EventEmitter {
   /**
    * @param {Partial<DownloadOptions>} options
    */
-  constructor({ rangeStart = '00000', rangeEnd = 'fffff', concurrency = 40, maxSize = 3_000_000 }) {
+  constructor({
+    rangeStart = '00000',
+    rangeEnd = 'fffff',
+    concurrency = 40,
+    maxRetry = 5,
+    maxSize = 3_000_000,
+  }) {
     super();
 
     this.rangeStart = rangeStart;
     this.rangeEnd = rangeEnd;
     this.maxSize = maxSize;
+    this.maxRetry = maxRetry;
     this.concurrency = concurrency;
   }
 
@@ -119,7 +120,7 @@ class Downloader extends EventEmitter {
    * @param {string} range
    * @param {number} remainingAttempts
    */
-  async #downloadRangeWithRetry(range, remainingAttempts = MAX_RETRY) {
+  async #downloadRangeWithRetry(range, remainingAttempts = this.maxRetry) {
     try {
       await this.#downloadRange(range);
       this.emit('download');

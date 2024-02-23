@@ -78,6 +78,7 @@ describe('Downloader', () => {
       const downloader = new Downloader({
         rangeStart: '00000',
         rangeEnd: '00000',
+        maxRetry: 2,
       });
 
       const results = Array.from(await downloader.download());
@@ -101,6 +102,7 @@ describe('Downloader', () => {
       const downloader = new Downloader({
         rangeStart: '00000',
         rangeEnd: '00000',
+        maxRetry: 5,
       });
 
       try {
@@ -108,7 +110,7 @@ describe('Downloader', () => {
         throw new Error('Expected downloader to throw.');
       } catch {}
 
-      expect(attempts).to.be.greaterThan(1);
+      expect(attempts).to.equal(6);
     });
   });
 });

@@ -33,6 +33,7 @@ const hashes = Array.from(await downloader.download());
 
 Available constructor options:
 
+- `maxRetry`: Number of attempts to retry upon failed download for a given range (default: 5)
 - `maxSize`: Maximum number of top hashes to retrieve (default: 3,000,000)
 - `concurrency`: Number of parallel downloaders to use to retrieve data (default: 40)
 - `rangeStart`: Minimum hash prefix for [HaveIBeenPwned Range API](https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange) (default: 00000)
