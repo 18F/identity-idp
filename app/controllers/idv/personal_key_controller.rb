@@ -21,11 +21,16 @@ module Idv
       analytics.idv_personal_key_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
+        encrypted_profiles_missing: pii_is_missing?,
         **opt_in_analytics_properties,
       )
-      add_proofing_component
 
-      finish_idv_session
+      if pii_is_missing?
+        redirect_to_retrieve_pii
+      else
+        add_proofing_component
+        finish_idv_session
+      end
     end
 
     def update
@@ -116,6 +121,15 @@ module Idv
     def in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
       current_user.pending_in_person_enrollment.present?
+    end
+
+    def pii_is_missing?
+      user_session[:encrypted_profiles].blank?
+    end
+
+    def redirect_to_retrieve_pii
+      user_session[:stored_location] = request.original_fullpath
+      redirect_to fix_broken_personal_key_url
     end
   end
 end
