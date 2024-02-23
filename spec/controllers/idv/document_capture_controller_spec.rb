@@ -111,19 +111,42 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     context 'when a selfie is requested' do
       let(:doc_auth_selfie_capture_enabled) { true }
       let(:sp_selfie_enabled) { true }
+      let(:desktop_selfie_enabled) { false }
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+          and_return(desktop_selfie_enabled)
+      end
+      describe 'when desktop selfie disabled' do
+        let(:desktop_selfie_enabled) { false }
+        it 'redirect back to handoff page' do
+          expect(subject).not_to receive(:render).with(
+            :show,
+            locals: hash_including(
+              document_capture_session_uuid: document_capture_session_uuid,
+              doc_auth_selfie_capture: true,
+            ),
+          ).and_call_original
 
-      it 'redirect back to handoff page' do
-        expect(subject).not_to receive(:render).with(
-          :show,
-          locals: hash_including(
-            document_capture_session_uuid: document_capture_session_uuid,
-            doc_auth_selfie_capture: true,
-          ),
-        ).and_call_original
+          get :show
 
-        get :show
+          expect(response).to redirect_to(idv_hybrid_handoff_path)
+        end
+      end
 
-        expect(response).to redirect_to(idv_hybrid_handoff_path)
+      describe 'when desktop selfie enabled' do
+        let(:desktop_selfie_enabled) { true }
+        it 'allows capture' do
+          expect(subject).to receive(:render).with(
+            :show,
+            locals: hash_including(
+              document_capture_session_uuid: document_capture_session_uuid,
+              doc_auth_selfie_capture: true,
+            ),
+          ).and_call_original
+
+          get :show
+          expect(response).to render_template :show
+        end
       end
     end
 

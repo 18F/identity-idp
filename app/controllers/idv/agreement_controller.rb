@@ -9,6 +9,7 @@ module Idv
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
+
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'agreement', :view,
         true

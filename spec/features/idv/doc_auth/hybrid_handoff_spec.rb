@@ -209,7 +209,10 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
 
   context 'on a desktop device when selfie required', js: true do
     let(:user) { user_with_2fa }
+    let(:desktop_selfie_enabled) { false }
     before do
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+        and_return(desktop_selfie_enabled)
       expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
         and_return(true)
       sign_in_and_2fa_user(user)
@@ -219,10 +222,19 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
         and_return(fake_attempts_tracker)
       complete_doc_auth_steps_before_document_capture_step
     end
-    it 'it prevents from proceeding to document capture' do
-      expect(page).to have_current_path(idv_hybrid_handoff_path)
-      click_on t('forms.buttons.upload_photos')
-      expect(page).to have_current_path(idv_hybrid_handoff_path)
+    describe 'with desktop selfie disabled' do
+      let(:desktop_selfie_enabled) { false }
+      it 'it prevents from proceeding to document capture' do
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+        click_on t('forms.buttons.upload_photos')
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+      end
+    end
+    describe 'with desktop selfie enabled' do
+      let(:desktop_selfie_enabled) { true }
+      it 'it proceeds to document capture' do
+        expect(page).to have_current_path(idv_document_capture_path)
+      end
     end
   end
 end

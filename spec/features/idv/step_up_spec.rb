@@ -13,11 +13,7 @@ RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
 
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-    # mock mobile device as cameraCapable
-    allow_any_instance_of(ActionController::Parameters).
-      to receive(:[]).and_wrap_original do |impl, param_name|
-      param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
-    end
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
   end
 
   scenario 'User with active profile can redo idv when selfie required', js: true do

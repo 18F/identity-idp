@@ -846,6 +846,9 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         to receive(:biometric_comparison_required?).
         and_return(true)
 
+      allow(IdentityConfig.store).to receive(:des).
+        and_return(true)
+
       allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
       allow_any_instance_of(DocumentCaptureSessionResult).
         to receive(:selfie_status).and_return(:success)
@@ -853,12 +856,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       mobile_device = Browser.new(mobile_user_agent)
       allow(BrowserCache).to receive(:parse).and_return(mobile_device)
       allow(BrowserCache).to receive(:get).and_return(mobile_device)
-
-      # mock mobile device as cameraCapable
-      allow_any_instance_of(ActionController::Parameters).
-        to receive(:[]).and_wrap_original do |impl, param_name|
-        param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
-      end
 
       perform_in_browser(:mobile) do
         sign_in_and_2fa_user(user)

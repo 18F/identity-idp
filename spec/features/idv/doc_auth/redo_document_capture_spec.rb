@@ -277,11 +277,8 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
   context 'when selfie is enabled' do
     before do
-      # mock mobile device as cameraCapable
-      allow_any_instance_of(ActionController::Parameters).
-        to receive(:[]).and_wrap_original do |impl, param_name|
-        param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
-      end
+      # allow selfie on desktop
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
     end
     context 'error due to data issue with 2xx status code', allow_browser_log: true do
       before do
