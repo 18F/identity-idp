@@ -19,7 +19,7 @@ class NullServiceProviderSession
     IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
   end
 
-  def remember_device_default
+  def remember_device_default(_authorization_context)
     true
   end
 

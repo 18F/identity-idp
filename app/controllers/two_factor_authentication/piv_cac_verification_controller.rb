@@ -94,7 +94,7 @@ module TwoFactorAuthentication
         view: view_context,
         data: piv_cac_view_data,
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default: remember_device_default(resolved_authn_context_result),
       )
     end
 

@@ -88,7 +88,7 @@ module TwoFactorAuthentication
         view: view_context,
         data: { credentials:, user_opted_remember_device_cookie: },
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default: remember_device_default(resolved_authn_context_result),
         platform_authenticator: platform_authenticator?,
       )
     end

@@ -26,7 +26,7 @@ module Users
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
         user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        remember_device_default: remember_device_default(resolved_authn_context_result),
         platform_authenticator: @platform_authenticator,
         url_options:,
       )
@@ -69,7 +69,7 @@ module Users
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
         user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        remember_device_default: remember_device_default(resolved_authn_context_result),
         platform_authenticator: @platform_authenticator,
         url_options:,
       )
@@ -108,7 +108,7 @@ module Users
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
         user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        remember_device_default: remember_device_default(resolved_authn_context_result),
       )
     end
 

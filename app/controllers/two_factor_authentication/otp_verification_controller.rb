@@ -169,7 +169,7 @@ module TwoFactorAuthentication
         data: phone_view_data,
         view: view_context,
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default: remember_device_default(resolved_authn_context_result),
       )
     end
 

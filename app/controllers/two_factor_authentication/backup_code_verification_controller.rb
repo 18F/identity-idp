@@ -11,7 +11,7 @@ module TwoFactorAuthentication
         view: view_context,
         data: { current_user: current_user },
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default: remember_device_default(resolved_authn_context_result),
       )
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
     end
