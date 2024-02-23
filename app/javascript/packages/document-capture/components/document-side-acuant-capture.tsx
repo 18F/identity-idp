@@ -1,24 +1,25 @@
+import { useContext } from 'react';
 import { t } from '@18f/identity-i18n';
 import { FormError, FormStepsContext } from '@18f/identity-form-steps';
-import { useContext } from 'react';
+import type {
+  FormStepError,
+  OnErrorCallback,
+  RegisterFieldCallback,
+} from '@18f/identity-form-steps';
 import AcuantCapture from './acuant-capture';
 
-/** @typedef {import('@18f/identity-form-steps').FormStepError<*>} FormStepError */
-/** @typedef {import('@18f/identity-form-steps').RegisterFieldCallback} RegisterFieldCallback */
-/** @typedef {import('@18f/identity-form-steps').OnErrorCallback} OnErrorCallback */
-
-/**
- * @typedef DocumentSideAcuantCaptureProps
- *
- * @prop {'front'|'back'|'selfie'} side
- * @prop {RegisterFieldCallback} registerField
- * @prop {Blob|string|null|undefined} value
- * @prop {(nextValues:{[key:string]: Blob|string|null|undefined})=>void} onChange Update values,
- * merging with existing values.
- * @prop {FormStepError[]} errors
- * @prop {OnErrorCallback} onError
- * @prop {string=} className
- */
+interface DocumentSideAcuantCaptureProps {
+  side: 'front' | 'back' | 'selfie';
+  registerField: RegisterFieldCallback;
+  value: Blob | string | null | undefined;
+  /**
+   * onChange: Update values, merging with existing values.
+   */
+  onChange: (nextValues: { [key: string]: Blob | string | null | undefined }) => void;
+  errors: FormStepError<{ front: string; back: string; selfie: string }>[];
+  onError: OnErrorCallback;
+  className?: string;
+}
 
 /**
  * An error representing user declined access to camera.
@@ -31,9 +32,6 @@ export class CameraAccessDeclinedError extends FormError {
   }
 }
 
-/**
- * @param {DocumentSideAcuantCaptureProps} props Props object.
- */
 function DocumentSideAcuantCapture({
   side,
   registerField,
@@ -42,7 +40,7 @@ function DocumentSideAcuantCapture({
   errors,
   onError,
   className,
-}) {
+}: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
   return (
