@@ -15,7 +15,12 @@ RSpec.describe ServiceProviderSession do
   let(:service_provider_request) { ServiceProviderRequest.new }
   let(:sp_name) { subject.sp_name }
   let(:sp_create_link) { '/sign_up/enter_email' }
-  let(:authorization_context) { Vot::Parser::Result.no_sp_result }
+
+  let(:vector_of_trust) { nil }
+  let(:acr_values) { nil }
+  let(:authorization_context) do
+    Vot::Parser.new(vector_of_trust:, acr_values:).parse
+  end
 
   before do
     allow(view_context).to receive(:sign_up_email_path).
@@ -243,22 +248,20 @@ RSpec.describe ServiceProviderSession do
 
   describe '#mfa_expiration_interval' do
     context 'with an AAL2 sp' do
-      before do
-        allow(sp).to receive(:default_aal).and_return(2)
-      end
+      let(:acr_values) { Vot::LegacyComponentValues::AAL2.name }
 
       it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
     end
 
     context 'with an IAL2 sp' do
-      before do
-        allow(sp).to receive(:ial).and_return(2)
-      end
+      let(:acr_values) { Vot::LegacyComponentValues::IAL2.name }
 
       it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
     end
 
     context 'with an sp that is not AAL2 or IAL2' do
+      let(:acr_values) { Vot::LegacyComponentValues::IAL1.name }
+
       it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(30.days) }
     end
   end
