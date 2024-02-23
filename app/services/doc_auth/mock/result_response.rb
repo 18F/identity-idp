@@ -34,12 +34,17 @@ module DocAuth
         @errors ||= begin
           file_data = parsed_data_from_uploaded_file
 
-          if file_data.blank? || attention_with_barcode?
+          if file_data.blank?
             {}
           else
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
-            failed = file_data.dig('failed_alerts')
+
+            if attention_with_barcode?
+              failed_file_data = file_data.dup.dig('failed_alerts')
+              failed_file_data.delete(ATTENTION_WITH_BARCODE_ALERT)
+            end
+            failed = failed_file_data
             passed = file_data.dig('passed_alerts')
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
