@@ -31,8 +31,6 @@ const downloader = new Downloader({
   maxSize: maxSize ? Number(maxSize) : undefined,
 });
 
-const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
-
 if (outFile) {
   const progressBar = new Progress.SingleBar({
     fps: 3,
@@ -46,6 +44,7 @@ if (outFile) {
 }
 
 const result = await downloader.download();
+const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
 
 await pipeline(
   result,
