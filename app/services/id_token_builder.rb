@@ -39,7 +39,7 @@ class IdTokenBuilder
     {
       acr: acr,
       vot: (vot if sp_requests_vot?),
-      vtm: (Idp::Constants::VTM if sp_requests_vot?),
+      vtm: (IdentityConfig.store.vtm_url if sp_requests_vot?),
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,

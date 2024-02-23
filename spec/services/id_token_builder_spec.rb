@@ -21,6 +21,7 @@ RSpec.describe IdTokenBuilder do
 
   let(:now) { Time.zone.now }
   let(:custom_expiration) { (now + 5.minutes).to_i }
+  let(:vtm_url) { 'https://example.com/vot-trust-framework' }
   subject(:builder) do
     IdTokenBuilder.new(
       identity: identity,
@@ -65,6 +66,8 @@ RSpec.describe IdTokenBuilder do
       before do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
           and_return(true)
+        allow(IdentityConfig.store).to receive(:vtm_url).
+          and_return(vtm_url)
       end
 
       it 'sets the vot' do
@@ -74,7 +77,7 @@ RSpec.describe IdTokenBuilder do
 
       it 'sets the vtm' do
         identity.vtr = 'Pb'
-        expect(decoded_payload[:vtm]).to eq(Idp::Constants::VTM)
+        expect(decoded_payload[:vtm]).to eq(vtm_url)
       end
     end
 

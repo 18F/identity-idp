@@ -166,7 +166,5 @@ module Idp
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE = 'MT'
-
-    VTM = IdentityConfig.store.vtm_url
   end
 end
