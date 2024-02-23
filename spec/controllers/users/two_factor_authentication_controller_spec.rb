@@ -264,7 +264,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       before do
         stub_sign_in(user)
         controller.session[:sp] = {
-          phishing_resistant_requeste: true,
           issuer: service_provider.issuer,
           acr_values: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
         }
