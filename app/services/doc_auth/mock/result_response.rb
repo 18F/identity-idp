@@ -18,6 +18,7 @@ module DocAuth
           doc_type_supported: id_type_supported?,
           selfie_live: selfie_live?,
           selfie_quality_good: selfie_quality_good?,
+          selfie_status: selfie_status,
           extra: {
             doc_auth_result: doc_auth_result,
             portrait_match_results: portrait_match_results,
@@ -85,7 +86,7 @@ module DocAuth
       end
 
       def success?
-        (errors.blank? || attention_with_barcode?) && id_type_supported?
+        doc_auth_success? && (selfie_check_performed? ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
