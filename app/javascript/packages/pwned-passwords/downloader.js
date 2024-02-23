@@ -1,4 +1,5 @@
 import EventEmitter from 'node:events';
+import https from 'node:https';
 import PQueue from 'p-queue';
 import PairingHeap from './pairing-heap.js';
 
@@ -34,9 +35,6 @@ class Downloader extends EventEmitter {
 
   /** @type {PairingHeap<HashPair>} */
   commonHashes = new PairingHeap((a, b) => a.prevalence - b.prevalence);
-
-  /** @type {TextDecoder} */
-  decoder = new TextDecoder();
 
   /**
    * @param {Partial<DownloadOptions>} options
@@ -97,10 +95,8 @@ class Downloader extends EventEmitter {
    */
   async #downloadRange(range) {
     const url = new URL(range, API_ROOT);
-    const response = await fetch(url);
-    const text = await response.text();
-    const lines = text.split('\r\n');
-    for await (const line of lines) {
+    const response = await this.#get(url);
+    for await (const line of this.readLines(response)) {
       const [hashSuffix, prevalenceAsString] = line.split(':', 2);
       const prevalence = Number(prevalenceAsString);
       if (this.commonHashes.length >= this.maxSize) {
@@ -118,6 +114,46 @@ class Downloader extends EventEmitter {
         hashMin: this.commonHashes.peek().prevalence,
       });
     }
+  }
+
+  /**
+   * Initiates an HTTPS request and resolves with the response
+   *
+   * @param {URL} url
+   * @return {Promise<import('http').IncomingMessage>}
+   */
+  #get(url) {
+    return new Promise((resolve, reject) => {
+      https
+        .get(url, (response) => {
+          resolve(response);
+        })
+        .on('error', reject);
+    });
+  }
+
+  /**
+   * Asynchronously yields individual lines received from the given response
+   *
+   * @param {import('http').IncomingMessage} response
+   * @yield {string}
+   */
+  async *readLines(response) {
+    let data = '';
+
+    for await (const chunk of response) {
+      const [appended, ...lines] = chunk.toString().split('\r\n');
+      if (lines.length) {
+        const nextData = /** @type {string} */ (lines.pop());
+        yield data + appended;
+        yield* lines;
+        data = nextData;
+      } else {
+        data += appended;
+      }
+    }
+
+    yield data;
   }
 }
 
