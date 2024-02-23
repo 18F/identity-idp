@@ -405,7 +405,7 @@ class ApplicationController < ActionController::Base
       service_provider: sp_from_sp_session,
       auth_methods_session:,
       aal_level_requested: sp_session[:aal_level_requested],
-      piv_cac_requested: sp_session[:piv_cac_requested],
+      piv_cac_requested: resolved_authn_context_result.hspd12?,
       phishing_resistant_requested: resolved_authn_context_result.phishing_resistant?,
     )
   end

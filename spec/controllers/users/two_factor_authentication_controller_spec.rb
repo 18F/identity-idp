@@ -259,9 +259,15 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
     end
 
     context 'when SP requires PIV/CAC' do
+      let(:service_provider) { create(:service_provider) }
+
       before do
         stub_sign_in(user)
-        controller.session[:sp] = { phishing_resistant_requeste: true, piv_cac_requested: true }
+        controller.session[:sp] = {
+          phishing_resistant_requeste: true,
+          issuer: service_provider.issuer,
+          acr_values: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+        }
       end
 
       it 'redirects to MFA setup if no PIV/CAC is enabled' do
