@@ -58,13 +58,14 @@ class IdTokenBuilder
 
   def acr
     return nil unless identity.acr_values.present?
-    acr_ial_component_values.map do |component_value|
-      if component_value == Vot::LegacyComponentValues::IALMAX
-        determine_ial_max_acr.name
-      else
-        component_value.name
-      end
-    end.join(' ')
+
+    if resolved_authn_context_result.ialmax?
+      determine_ial_max_acr.name
+    elsif resolved_authn_context_result.identity_proofing?
+      Vot::LegacyComponentValues::IAL2.name
+    else
+      Vot::LegacyComponentValues::IAL1.name
+    end
   end
 
   def sp_requests_vot?
@@ -75,12 +76,6 @@ class IdTokenBuilder
   def vot
     return nil unless identity.vtr.present?
     resolved_authn_context_result.component_values.map(&:name).join('.')
-  end
-
-  def acr_ial_component_values
-    resolved_authn_context_result.component_values.select do |component_value|
-      component_value.name.include?('ial')
-    end
   end
 
   def determine_ial_max_acr
