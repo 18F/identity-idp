@@ -57,7 +57,3 @@
       ) %>
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-2' %>
 <% end %>
-
-<%= render PageFooterComponent.new do %>
-  <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), authentication_methods_setup_path %>
-<% end %>
