@@ -21,6 +21,12 @@
 
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('forms.buttons.continue'), sign_up_completed_path %>
+  <%= button_to(
+    auth_method_confirmation_skip_path,
+    method: :post,
+    class: 'usa-button usa-button--unstyled',
+  ) do %>
+    <%= t('forms.buttons.continue') %>
+  <% end %> 
 <% end %>
 
