@@ -66,7 +66,6 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      ial2: ial2_value,
       aal_level_requested: aal_level_requested_value,
       piv_cac_requested: piv_cac_requested_value,
       phishing_resistant_requested: phishing_resistant_value,

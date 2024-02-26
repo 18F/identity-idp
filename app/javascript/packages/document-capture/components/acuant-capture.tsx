@@ -36,11 +36,11 @@ interface ImageAnalyticsPayload {
   /**
    * Image width, or null if unknown
    */
-  width: number | null;
+  width?: number | null;
   /**
    * Image height, or null if unknown
    */
-  height: number | null;
+  height?: number | null;
   /**
    * Mime type, or null if unknown
    */
@@ -66,7 +66,7 @@ interface ImageAnalyticsPayload {
   /**
    * Fingerprint of the image, base64 encoded SHA-256 digest
    */
-  fingerprint: string | null;
+  fingerprint?: string | null;
 
   /**
    *
@@ -515,9 +515,16 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureSuccess({ image }: { image: string }) {
+    const analyticsPayload: ImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
+      mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
+      source: 'acuant',
+      size: getDecodedBase64ByteSize(image),
+      failedImageResubmission: false,
+    });
+
     trackEvent('idv_sdk_selfie_image_added', { captureAttempts });
 
-    onChangeAndResetError(image);
+    onChangeAndResetError(image, analyticsPayload);
     onResetFailedCaptureAttempts();
     setIsCapturingEnvironment(false);
   }

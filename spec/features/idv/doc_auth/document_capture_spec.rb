@@ -383,6 +383,47 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
           expect(page).to have_content(inline_error)
         end
+
+        context 'with Attention with Barcode' do
+          it 'try again and page show selfie fail inline error message' do
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(user)
+            complete_doc_auth_steps_before_document_capture_step
+            attach_images(
+              Rails.root.join(
+                'spec', 'fixtures',
+                'ial2_test_credential_barcode_attention_liveness_fail.yml'
+              ),
+            )
+            attach_selfie(
+              Rails.root.join(
+                'spec', 'fixtures',
+                'ial2_test_credential_barcode_attention_liveness_fail.yml'
+              ),
+            )
+            submit_images
+            message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+            expect(page).to have_content(message)
+            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+            security_message = strip_tags(
+              t(
+                'idv.warning.attempts_html',
+                count: IdentityConfig.store.doc_auth_max_attempts - 1,
+              ),
+            )
+
+            expect(page).to have_content(detail_message << "\n" << security_message)
+            review_issues_header = strip_tags(
+              t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+            )
+            expect(page).to have_content(review_issues_header)
+            expect(page).to have_current_path(idv_document_capture_path)
+            click_try_again
+            expect(page).to have_current_path(idv_document_capture_path)
+            inline_error = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+            expect(page).to have_content(inline_error)
+          end
+        end
       end
 
       context 'when selfie check is not enabled (flag off, and/or in production)' do
