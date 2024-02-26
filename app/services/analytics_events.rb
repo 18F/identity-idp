@@ -964,6 +964,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
   # @param [String] flow_path
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # The document capture image uploaded was locally validated during the IDV process
@@ -1012,6 +1013,7 @@ module AnalyticsEvents
   # @param [Boolean] attention_with_barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
@@ -1122,6 +1124,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
