@@ -7,10 +7,16 @@ describe('Downloader', () => {
   before(() => {
     server = setupServer(
       http.get('https://api.pwnedpasswords.com/range/00000', () =>
-        HttpResponse.text('foo:30\r\nbar:20'),
+        HttpResponse.text(
+          '0005AD76BD555C1D6D771DE417A4B87E4B4:10\r\n000A8DAE4228F821FB418F59826079BF368:4',
+        ),
       ),
-      http.get('https://api.pwnedpasswords.com/range/00001', () => HttpResponse.text('baz:10')),
-      http.get('https://api.pwnedpasswords.com/range/00002', () => HttpResponse.text('quux:40')),
+      http.get('https://api.pwnedpasswords.com/range/00001', () =>
+        HttpResponse.text('0005DE2A9668A41F6A508AFB6A6FC4A5610:1'),
+      ),
+      http.get('https://api.pwnedpasswords.com/range/00002', () =>
+        HttpResponse.text('00652C89EA578B262D2D091136353D253BC:11'),
+      ),
     );
     server.listen();
   });
@@ -32,9 +38,9 @@ describe('Downloader', () => {
       const results = Array.from(await downloader.download());
 
       expect(results).to.have.deep.members([
-        { hash: '00000bar', prevalence: 20 },
-        { hash: '00000foo', prevalence: 30 },
-        { hash: '00002quux', prevalence: 40 },
+        { hash: '00000000A8DAE4228F821FB418F59826079BF368', prevalence: 4 },
+        { hash: '000000005AD76BD555C1D6D771DE417A4B87E4B4', prevalence: 10 },
+        { hash: '0000200652C89EA578B262D2D091136353D253BC', prevalence: 11 },
       ]);
     });
 
@@ -49,7 +55,9 @@ describe('Downloader', () => {
             return HttpResponse.error();
           }
 
-          return HttpResponse.text('foo:30\r\nbar:20');
+          return HttpResponse.text(
+            '0005AD76BD555C1D6D771DE417A4B87E4B4:10\r\n000A8DAE4228F821FB418F59826079BF368:4',
+          );
         }),
       );
 
@@ -62,8 +70,8 @@ describe('Downloader', () => {
       const results = Array.from(await downloader.download());
       expect(didError).to.be.true();
       expect(results).to.have.deep.members([
-        { hash: '00000bar', prevalence: 20 },
-        { hash: '00000foo', prevalence: 30 },
+        { hash: '00000000A8DAE4228F821FB418F59826079BF368', prevalence: 4 },
+        { hash: '000000005AD76BD555C1D6D771DE417A4B87E4B4', prevalence: 10 },
       ]);
     });
 
