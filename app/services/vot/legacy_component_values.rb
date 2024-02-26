@@ -53,7 +53,7 @@ module Vot
     )
     AAL2_PHISHING_RESISTANT = ComponentValue.new(
       name: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy AAL2 with phishing resitance',
+      description: 'Legacy AAL2 with phishing resistance',
       implied_component_values: [],
       requirements: [:aal2, :phishing_resistant],
     )

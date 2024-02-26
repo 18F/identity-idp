@@ -6,7 +6,6 @@ Dir.chdir(__dir__) { require 'bundler/setup' }
 require 'active_support'
 require 'active_support/core_ext/enumerable' # index_by
 require 'active_support/core_ext/integer/time'
-require 'active_support/core_ext/string/access'
 require 'optparse'
 require 'terminal-table'
 
@@ -69,7 +68,7 @@ class EmailDeliveries
         result.user_id,
         result.email_address_id,
         result.timestamp,
-        result.message_id.reverse.truncate(27).reverse,
+        result.message_id.slice(0..24),
         result.email_action,
         result.events.join(', '),
       ]
