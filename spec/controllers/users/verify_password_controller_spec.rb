@@ -94,12 +94,12 @@ RSpec.describe Users::VerifyPasswordController do
             expect(@irs_attempts_api_tracker).to have_received(:idv_personal_key_generated)
           end
 
-          it 'redirects to the account page' do
-            expect(response).to redirect_to(account_url)
+          it 'redirects to the manage personal key page' do
+            expect(response).to redirect_to(manage_personal_key_url)
           end
 
           it 'sets a new personal key as a flash message' do
-            expect(flash[:personal_key]).to eq(key)
+            expect(controller.user_session[:personal_key]).to eq(key)
           end
         end
 
