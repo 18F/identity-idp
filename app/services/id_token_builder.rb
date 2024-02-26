@@ -68,6 +68,7 @@ class IdTokenBuilder
   end
 
   def sp_requests_vot?
+    return false unless identity.vtr.present?
     IdentityConfig.store.use_vot_in_sp_requests
   end
 
