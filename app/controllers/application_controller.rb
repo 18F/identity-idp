@@ -107,11 +107,12 @@ class ApplicationController < ActionController::Base
   def resolved_authn_context_result
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
-    if current_sp.nil?
+    service_provider = sp_from_sp_session
+    if service_provider.nil?
       @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
-        service_provider: current_sp,
+        service_provider: service_provider,
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
       ).resolve
@@ -404,7 +405,7 @@ class ApplicationController < ActionController::Base
       service_provider: sp_from_sp_session,
       auth_methods_session:,
       aal_level_requested: sp_session[:aal_level_requested],
-      piv_cac_requested: sp_session[:piv_cac_requested],
+      piv_cac_requested: resolved_authn_context_result.hspd12?,
       phishing_resistant_requested: resolved_authn_context_result.phishing_resistant?,
     )
   end
