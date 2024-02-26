@@ -3,7 +3,7 @@ module SignUp
     include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_identity_verified, if: :ial2?
+    before_action :confirm_identity_verified, if: :identity_proofing_required?
     before_action :confirm_selfie_captured, if: :selfie_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
@@ -55,16 +55,12 @@ module SignUp
       )
     end
 
-    def ial2?
-      sp_session[:ial2]
-    end
-
-    def ial_max?
-      sp_session[:ialmax]
+    def identity_proofing_required?
+      resolved_authn_context_result.identity_proofing?
     end
 
     def ial2_requested?
-      !!(ial2? || (ial_max? && current_user.identity_verified?))
+      resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
     def selfie_required?
@@ -91,8 +87,8 @@ module SignUp
 
     def analytics_attributes(page_occurence)
       attributes = {
-        ial2: sp_session[:ial2],
-        ialmax: sp_session[:ialmax],
+        ial2: resolved_authn_context_result.identity_proofing?,
+        ialmax: resolved_authn_context_result.ialmax?,
         service_provider_name: decorated_sp_session.sp_name,
         sp_session_requested_attributes: sp_session[:requested_attributes],
         sp_request_requested_attributes: service_provider_request.requested_attributes,

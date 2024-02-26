@@ -155,6 +155,7 @@ es:
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
       verify:
+        exit: Salir de %{app_name}
         fail_link_html: Obtenga ayuda en <strong>%{sp_name}</strong>
         fail_text: para acceder a los servicios.
         heading: No hemos podido verificar su identidad
