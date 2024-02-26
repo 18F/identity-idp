@@ -17,11 +17,11 @@ RSpec.configure do |config|
   config.raise_errors_for_deprecations!
   config.order = :random
   config.color = true
-  # config.formatter = if ENV['CI'] || RSPEC_RUNNING_IN_PARALLEL
-  #                      :progress
-  #                    else
-  #                      :documentation
-  #                    end
+  config.formatter = if ENV['CI'] || RSPEC_RUNNING_IN_PARALLEL
+                       :progress
+                     else
+                       :documentation
+                     end
 
   # allows you to run only the failures from the previous run:
   # rspec --only-failures
