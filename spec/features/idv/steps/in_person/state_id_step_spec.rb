@@ -442,8 +442,10 @@ RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: 
         t('in_person_proofing.form.state_id.state_id_number_texas_hint'),
       )
       expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-      expect(page).to have_content(
-        t('in_person_proofing.form.state_id.state_id_number_florida_hint_html'),
+      expect(page).to have_content strip_tags(
+        t('in_person_proofing.form.state_id.state_id_number_florida_hint_html').gsub(
+          /&nbsp;/, ' '
+        ),
       )
 
       # select a state without a state specific hint
