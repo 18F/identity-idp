@@ -44,6 +44,7 @@ function DocumentSideAcuantCapture({
   className,
 }) {
   const error = errors.find(({ field }) => field === side)?.error;
+  // This is the thing that determines if the form should complete
   const { changeStepCanComplete } = useContext(FormStepsContext);
   return (
     <AcuantCapture
