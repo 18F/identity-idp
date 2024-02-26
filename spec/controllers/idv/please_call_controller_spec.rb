@@ -73,8 +73,8 @@ RSpec.describe Idv::PleaseCallController do
       expect(response).to render_template :show
     end
 
-    it 'returns true from in_person_can_perform_fraud_review' do
-      expect(subject.in_person_can_perform_fraud_review?).to eq(true)
+    it 'returns false from in_person_prevent_fraud_redirection' do
+      expect(subject.in_person_prevent_fraud_redirection?).to eq(false)
     end
 
     it 'redirects a user who is not fraud review pending' do
@@ -93,6 +93,22 @@ RSpec.describe Idv::PleaseCallController do
       expect(response).to redirect_to(idv_not_verified_url)
     end
 
+    context 'user fails ipp' do
+      let!(:enrollment) { create(:in_person_enrollment, :failed, user: user, profile: profile) }
+
+      it 'returns true from in_person_prevent_fraud_redirection' do
+        expect(subject.in_person_prevent_fraud_redirection?).to eq(true)
+      end
+
+      it 'does not redirect a user who has been fraud rejected' do
+        profile.reject_for_fraud(notify_user: false)
+
+        get :show
+
+        expect(response).not_to redirect_to(idv_not_verified_url)
+      end
+    end
+
     context 'in person proofing and tmx disabled' do
       let(:in_person_proofing_enabled) { true }
       let(:in_person_proofing_enforce_tmx) { false }
@@ -105,8 +121,8 @@ RSpec.describe Idv::PleaseCallController do
           and_return(in_person_proofing_enforce_tmx)
       end
 
-      it 'returns false from in_person_can_perform_fraud_review' do
-        expect(subject.in_person_can_perform_fraud_review?).to eq(false)
+      it 'returns false from in_person_prevent_fraud_redirection' do
+        expect(subject.in_person_prevent_fraud_redirection?).to eq(false)
       end
     end
   end

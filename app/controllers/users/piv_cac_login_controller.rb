@@ -58,7 +58,7 @@ module Users
       @piv_cac_login_form ||= UserPivCacLoginForm.new(
         token: params[:token],
         nonce: piv_cac_nonce,
-        piv_cac_required: sp_session[:piv_cac_requested],
+        piv_cac_required: resolved_authn_context_result.hspd12?,
       )
     end
 

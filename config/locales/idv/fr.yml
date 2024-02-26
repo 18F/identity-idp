@@ -161,6 +161,7 @@ fr:
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
       verify:
+        exit: Quitter %{app_name}
         fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_name}</strong>
         fail_text: pour accéder aux services.
         heading: Nous n’avons pas pu vérifier votre identité
