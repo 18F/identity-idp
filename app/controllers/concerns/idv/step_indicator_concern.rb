@@ -13,6 +13,7 @@ module Idv
     STEP_INDICATOR_STEPS_GPO = [
       { name: :getting_started },
       { name: :verify_id },
+      # { name: :verify_selfie},
       { name: :verify_info },
       { name: :get_a_letter },
       { name: :secure_account },
