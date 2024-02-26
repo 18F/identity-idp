@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'users/backup_code_setup/index.html.erb' do
-  include MfaSetupConcern
-  include Devise::Test::ControllerHelpers
   let(:user) { build(:user, :fully_registered) }
 
   before do
@@ -79,7 +77,7 @@ RSpec.describe 'users/backup_code_setup/index.html.erb' do
       render
 
       expect(rendered).to have_button t(
-        'links.cancel'
+        'links.cancel',
       )
     end
   end
