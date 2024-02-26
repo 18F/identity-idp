@@ -23,6 +23,7 @@ import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import { FeatureFlagContext } from '../context';
 import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
@@ -320,6 +321,7 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
+  const { selfieCaptureEnabled } = useContext(FeatureFlagContext);
   const fullScreenRef = useRef<FullScreenRefHandle>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
@@ -382,6 +384,7 @@ function AcuantCapture(
       ...payload,
       captureAttempts,
       acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
+      liveness_checking_required: selfieCaptureEnabled,
     };
     incrementCaptureAttempts();
     return enhancedPayload;
@@ -408,7 +411,6 @@ function AcuantCapture(
       });
 
       trackEvent(
-        // Add it here
         name === 'selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`,
         analyticsPayload,
       );
@@ -584,6 +586,7 @@ function AcuantCapture(
       size: getDecodedBase64ByteSize(nextCapture.image.data),
       fingerprint: null,
       failedImageResubmission: false,
+      liveness_checking_required: false,
     });
 
     trackEvent(`IdV: ${name} image added`, analyticsPayload);
@@ -644,8 +647,8 @@ function AcuantCapture(
     trackEvent('IdV: Image capture failed', {
       field: name,
       acuantCaptureMode,
-      // Add it here
       error: getNormalizedAcuantCaptureFailureMessage(error, code),
+      liveness_checking_required: selfieCaptureEnabled,
     });
   }
 
