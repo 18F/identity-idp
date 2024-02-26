@@ -757,9 +757,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             let(:selfie_image_metadata) do
               { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }.to_json
             end
-            let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
-            it 'sets image source to unknown' do
+            it 'sets image source to acuant sdk' do
               form.submit
             end
           end
