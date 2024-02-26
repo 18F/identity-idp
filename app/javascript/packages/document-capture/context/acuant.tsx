@@ -273,6 +273,7 @@ function AcuantContextProvider({
             window.AcuantCamera = getActualAcuantCamera();
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             trackEvent('IdV: Acuant SDK loaded', {
+              // Add it here
               success: true,
               isCameraSupported: nextIsCameraSupported,
             });
@@ -284,6 +285,7 @@ function AcuantContextProvider({
         },
         onFail(code, description) {
           trackEvent('IdV: Acuant SDK loaded', {
+            // Add it here
             success: false,
             code,
             description,

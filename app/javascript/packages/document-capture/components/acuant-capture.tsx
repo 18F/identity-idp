@@ -408,6 +408,7 @@ function AcuantCapture(
       });
 
       trackEvent(
+        // Add it here
         name === 'selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`,
         analyticsPayload,
       );
@@ -643,6 +644,7 @@ function AcuantCapture(
     trackEvent('IdV: Image capture failed', {
       field: name,
       acuantCaptureMode,
+      // Add it here
       error: getNormalizedAcuantCaptureFailureMessage(error, code),
     });
   }
