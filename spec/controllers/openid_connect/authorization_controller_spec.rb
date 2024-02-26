@@ -1082,7 +1082,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           piv_cac_requested: false,
           phishing_resistant_requested: false,
-          ial2: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
           request_url: request.original_url,
