@@ -464,7 +464,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     sign_in_user
     set_up_2fa_with_backup_codes
 
-    click_link t('forms.buttons.continue')
+    click_button t('forms.buttons.continue')
     expect(page).to have_current_path account_path
     visit phone_setup_path
     expect(page).to have_current_path phone_setup_path
