@@ -1,11 +1,14 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepComponentProps, FormStepsButton } from '@18f/identity-form-steps';
+import {
+  FormStepComponentProps,
+  FormStepsButton,
+  FormStepsContext,
+} from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import TipList from './tip-list';
 import { FeatureFlagContext } from '../context';
@@ -25,25 +28,35 @@ export function DocumentCaptureSubheaderOne({
   );
 }
 
-export function DocumentFrontAndBackCapture({
+export function SelfieCaptureWithHeader({
   defaultSideProps,
-  value,
+  selfieValue,
 }: {
   defaultSideProps: DefaultSideProps;
-  value: Record<string, ImageValue>;
+  selfieValue: ImageValue;
 }) {
-  type DocumentSide = 'front' | 'back';
-  const documentsSides: DocumentSide[] = ['front', 'back'];
+  const { t } = useI18n();
+  const { changeStepCanComplete } = useContext(FormStepsContext);
+  changeStepCanComplete(true);
   return (
     <>
-      {documentsSides.map((side) => (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key={side}
-          side={side}
-          value={value[side]}
-        />
-      ))}
+      <hr className="margin-y-5" />
+      <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
+      <TipList
+        title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
+        titleClassName="margin-bottom-0 text-bold"
+        items={[
+          t('doc_auth.tips.document_capture_selfie_text1'),
+          t('doc_auth.tips.document_capture_selfie_text2'),
+          t('doc_auth.tips.document_capture_selfie_text3'),
+        ]}
+      />
+      <DocumentSideAcuantCapture
+        {...defaultSideProps}
+        key="selfie"
+        side="selfie"
+        value={selfieValue}
+      />
     </>
   );
 }
@@ -63,7 +76,7 @@ type DefaultSideProps = Pick<
   'registerField' | 'onChange' | 'errors' | 'onError'
 >;
 
-function DocumentsStep({
+function SelfieStep({
   value = {},
   onChange = () => {},
   errors = [],
@@ -71,7 +84,7 @@ function DocumentsStep({
   registerField = () => undefined,
 }: FormStepComponentProps<DocumentsStepValue>) {
   const { t } = useI18n();
-  const { isMobile } = useContext(DeviceContext);
+  const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { exitQuestionSectionEnabled, selfieCaptureEnabled } = useContext(FeatureFlagContext);
 
@@ -90,21 +103,12 @@ function DocumentsStep({
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
       <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
-      <TipList
-        titleClassName="margin-bottom-0 text-bold"
-        title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
-        items={[
-          t('doc_auth.tips.document_capture_id_text1'),
-          t('doc_auth.tips.document_capture_id_text2'),
-          t('doc_auth.tips.document_capture_id_text3'),
-        ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
-      />
-      <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
-      <FormStepsButton.Continue />
+      <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );
 }
 
-export default DocumentsStep;
+export default SelfieStep;

@@ -9,6 +9,7 @@ export enum VerifyFlowPath {
 type VerifyFlowStepIndicatorStep =
   | 'getting_started'
   | 'verify_id'
+  // | 'verify_selfie'
   | 'verify_info'
   | 'verify_phone_or_address'
   | 'secure_account'
@@ -33,12 +34,14 @@ const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
     steps: [
       'getting_started',
       'verify_id',
+      // 'verify_selfie',
       'verify_info',
       'verify_phone_or_address',
       'secure_account',
     ],
     mapping: {
       document_capture: 'verify_id',
+      // selfie_capture: 'verify_selfie',
       password_confirm: 'secure_account',
       personal_key: 'secure_account',
       personal_key_confirm: 'secure_account',
