@@ -13,7 +13,7 @@ interface DocumentSideAcuantCaptureProps {
   registerField: RegisterFieldCallback;
   value: Blob | string | null | undefined;
   /**
-   * onChange: Update values, merging with existing values.
+   * Update values, merging with existing values.
    */
   onChange: (nextValues: { [key: string]: Blob | string | null | undefined }) => void;
   errors: FormStepError<{ front: string; back: string; selfie: string }>[];
