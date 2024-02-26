@@ -45,7 +45,7 @@ function DocumentSideAcuantCapture({
 }) {
   const error = errors.find(({ field }) => field === side)?.error;
   // This is the thing that determines if the form should complete
-  const { changeStepCanComplete } = useContext(FormStepsContext);
+  //const { changeStepCanComplete } = useContext(FormStepsContext);
   return (
     <AcuantCapture
       ref={registerField(side, { isRequired: true })}
@@ -65,9 +65,9 @@ function DocumentSideAcuantCapture({
         });
         if (metadata?.failedImageResubmission) {
           onError(new Error(t('doc_auth.errors.doc.resubmit_failed_image')), { field: side });
-          changeStepCanComplete(false);
+          //changeStepCanComplete(false);
         } else {
-          changeStepCanComplete(true);
+          //changeStepCanComplete(true);
         }
       }}
       onCameraAccessDeclined={() => {

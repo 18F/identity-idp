@@ -36,6 +36,8 @@ export function SelfieCaptureWithHeader({
   selfieValue: ImageValue;
 }) {
   const { t } = useI18n();
+  const { changeStepCanComplete } = useContext(FormStepsContext);
+  changeStepCanComplete(true);
   return (
     <>
       <hr className="margin-y-5" />
