@@ -54,6 +54,10 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       end
       describe 'with sp selfie enabled' do
         let(:sp_selfie_enabled) { true }
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+            and_return(false)
+        end
         it 'does satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
           expect(subject).not_to receive(:render).with(:show, locals: an_instance_of(Hash))

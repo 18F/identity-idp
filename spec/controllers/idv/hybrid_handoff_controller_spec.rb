@@ -209,6 +209,8 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
 
       context 'opt in selection is nil' do
         before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+            and_return(false)
           subject.idv_session.skip_doc_auth = nil
         end
 
@@ -230,6 +232,8 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
 
       context 'opted in to ipp flow' do
         before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+            and_return(false)
           subject.idv_session.skip_doc_auth = true
         end
 

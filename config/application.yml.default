@@ -386,7 +386,7 @@ development:
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: false
   doc_auth_selfie_capture_enabled: false
-  doc_auth_selfie_desktop_test_mode: false
+  doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -529,7 +529,7 @@ test:
   database_worker_jobs_password: ''
   doc_auth_max_attempts: 4
   doc_auth_selfie_capture_enabled: false
-  doc_auth_selfie_desktop_test_mode: false
+  doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
