@@ -7,6 +7,7 @@ RSpec.describe 'users/backup_code_setup/index.html.erb' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive(:in_account_creation_flow?).and_return(false)
     @codes = BackupCodeGenerator.new(user).create
   end
 
@@ -59,13 +60,26 @@ RSpec.describe 'users/backup_code_setup/index.html.erb' do
     expect(rendered).to have_button t('forms.buttons.continue')
   end
 
-  context 'when in account creation' do
+  context 'during account creation' do
     before do
-      controller.user_session[:in_account_creation_flow] = true
+      allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:in_account_creation_flow?).and_return(true)
+      @codes = BackupCodeGenerator.new(user).create
     end
+
     it 'shows a link to add another authentication method' do
-      expect(rendered).to have_button t(
+      render
+
+      expect(rendered).to have_link t(
         'two_factor_authentication.backup_codes.add_another_authentication_option',
+      )
+    end
+
+    it 'shows a link to cancel account creation' do
+      render
+
+      expect(rendered).to have_button t(
+        'links.cancel'
       )
     end
   end
