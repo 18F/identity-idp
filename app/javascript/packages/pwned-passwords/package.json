@@ -9,7 +9,6 @@
   "sideEffects": false,
   "dependencies": {
     "cli-progress": "^3.12.0",
-    "p-times": "^4.0.0",
-    "tinyqueue": "^2.0.3"
+    "p-times": "^4.0.0"
   }
 }

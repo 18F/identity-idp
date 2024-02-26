@@ -1,6 +1,5 @@
 import EventEmitter from 'node:events';
-import pTimes from 'p-times';
-import TinyQueue from 'tinyqueue';
+import { Readable } from 'node:stream';
 
 /**
  * @typedef DownloadOptions
@@ -9,7 +8,7 @@ import TinyQueue from 'tinyqueue';
  * @prop {string} rangeEnd Inclusive maximum hash prefix for HaveIBeenPwned Range API
  * @prop {number} concurrency Number of parallel downloaders to use to retrieve data
  * @prop {number} maxRetry Number of attempts to retry upon failed download for a given range
- * @prop {number} maxSize Maximum number of top hashes to retrieve
+ * @prop {number} threshold Minimum prevalance count to pick from ranges
  */
 
 /**
@@ -25,6 +24,12 @@ import TinyQueue from 'tinyqueue';
  */
 const API_ROOT = 'https://api.pwnedpasswords.com/range/';
 
+function* createIterableRange(start, end) {
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
+}
+
 class Downloader extends EventEmitter {
   /** @type {string} */
   rangeStart;
@@ -33,13 +38,10 @@ class Downloader extends EventEmitter {
   rangeEnd;
 
   /** @type {number} */
-  maxSize;
-
-  /** @type {number} */
   concurrency;
 
-  /** @type {TinyQueue<HashPair>} */
-  commonHashes = new TinyQueue(undefined, (a, b) => a.prevalence - b.prevalence);
+  /** @type {number} */
+  threshold;
 
   /**
    * @param {Partial<DownloadOptions>} options
@@ -49,35 +51,38 @@ class Downloader extends EventEmitter {
     rangeEnd = 'fffff',
     concurrency = 40,
     maxRetry = 5,
-    maxSize = 3_000_000,
+    threshold = 20,
   }) {
     super();
 
     this.rangeStart = rangeStart;
     this.rangeEnd = rangeEnd;
-    this.maxSize = maxSize;
     this.maxRetry = maxRetry;
     this.concurrency = concurrency;
+    this.threshold = threshold;
   }
 
   /**
    * Downloads the top password hashes from the configured range and resolves with an iterable
    * object containing all hashes in no particular order.
    *
-   * @return {Promise<Iterable<HashPair>>}
+   * @return {import('stream').Readable}
    */
-  async download() {
-    const start = parseInt(this.rangeStart, 16);
-    const end = parseInt(this.rangeEnd, 16);
+  download() {
+    const { rangeStart, rangeEnd, concurrency, threshold } = this;
+    const start = parseInt(rangeStart, 16);
+    const end = parseInt(rangeEnd, 16);
     const total = end - start + 1;
     this.emit('start', { total });
-    await pTimes(
-      total,
-      (index) => this.#downloadRangeWithRetry(this.#getRangePath(start + index)),
-      { concurrency: this.concurrency },
-    );
-    this.emit('complete');
-    return this.commonHashes.data;
+
+    return Readable.from(createIterableRange(start, end))
+      .flatMap((i) => this.#downloadRangeWithRetry(this.#getRangePath(i)), { concurrency })
+      .filter((line) => this.#getPrevalence(line) >= threshold)
+      .on('end', () => this.emit('complete'));
+  }
+
+  #getPrevalence(line) {
+    return Number(line.slice(41));
   }
 
   /**
@@ -97,17 +102,20 @@ class Downloader extends EventEmitter {
    *
    * @param {string} range
    * @param {number} remainingAttempts
+   *
+   * @return {Promise<string[]>}
    */
   async #downloadRangeWithRetry(range, remainingAttempts = this.maxRetry) {
     try {
-      await this.#downloadRange(range);
+      const lines = await this.#downloadRange(range);
       this.emit('download');
+      return lines;
     } catch (error) {
       if (remainingAttempts > 0) {
-        await this.#downloadRangeWithRetry(range, remainingAttempts - 1);
-      } else {
-        throw error;
+        return this.#downloadRangeWithRetry(range, remainingAttempts - 1);
       }
+
+      throw error;
     }
   }
 
@@ -115,29 +123,14 @@ class Downloader extends EventEmitter {
    * Downloads a given range and appends common password hashes from the response.
    *
    * @param {string} range
+   *
+   * @return {Promise<string[]>}
    */
   async #downloadRange(range) {
     const url = new URL(range, API_ROOT);
     const response = await fetch(url);
     const text = await response.text();
-    const lines = text.split('\r\n');
-    for await (const line of lines) {
-      const prevalence = Number(line.slice(36));
-      if (this.commonHashes.length >= this.maxSize) {
-        if (prevalence > /** @type {HashPair} */ (this.commonHashes.peek()).prevalence) {
-          this.commonHashes.pop();
-        } else {
-          continue;
-        }
-      }
-
-      const hash = range + line.slice(0, 35);
-      this.commonHashes.push({ hash, prevalence });
-      this.emit('hashchange', {
-        hashes: this.commonHashes.length,
-        hashMin: this.commonHashes.peek()?.prevalence,
-      });
-    }
+    return text.split('\r\n').map((suffix) => range + suffix);
   }
 }
 
