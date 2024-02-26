@@ -12,7 +12,7 @@ RSpec.describe Reporting::ActiveUsersCountReport do
   end
 
   describe '#active_users_count_emailable_report' do
-    it 'returns a report for active users', aggregate_failures: true do
+    it 'returns a report for active users' do
       create(
         :service_provider_identity,
         user_id: 1,
