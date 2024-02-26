@@ -218,8 +218,10 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
   end
 
   context 'when backup codes are the only selected option' do
+    let(:mfa) { MfaContext.new(user) }
+    let(:user) { create(:user) }
     before do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(current_path).to eq authentication_methods_setup_path
 
@@ -230,18 +232,32 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       expect(current_path).to eq backup_code_setup_path
 
       expect(page).to have_link(t('components.download_button.label'))
+    end
+
+    it 'shows the confirm backup codes page' do
+      click_continue
+      expect(page).to have_current_path(
+        confirm_backup_codes_path,
+      )
+    end
+
+    it 'goes to the next page after user confirms that they have saved their backup codes' do
       click_continue
       expect(page).to have_current_path(
         confirm_backup_codes_path,
       )
 
       click_continue
-    end
-
-    it 'goes to the next page after user confirms that they have saved their backup codes' do
-      click_on t('forms.buttons.continue')
       expect(page).to have_current_path account_path
     end
+
+    it 'returns to setup mfa page when user clicks Cancel' do
+      click_on (t('links.cancel'))
+      expect(current_path).to eq authentication_methods_setup_path
+      expect(mfa.backup_code_configurations).to be_empty
+    end
+
+
   end
 
   describe 'adding a phone as a second mfa' do
