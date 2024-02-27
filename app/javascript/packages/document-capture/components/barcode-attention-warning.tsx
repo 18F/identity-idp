@@ -1,9 +1,11 @@
 import { Button, StatusPage } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
+import { useContext } from 'react';
 import { removeUnloadProtection } from '@18f/identity-url';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
+import FeatureFlagContext from '../context/feature-flag';
 
 interface BarcodeAttentionWarningProps {
   /**
@@ -18,8 +20,11 @@ interface BarcodeAttentionWarningProps {
 }
 
 function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProps) {
+  const { selfieCaptureEnabled } = useContext(FeatureFlagContext);
   function skipAttention() {
-    trackEvent('IdV: barcode warning continue clicked');
+    trackEvent('IdV: barcode warning continue clicked', {
+      liveness_checking_required: selfieCaptureEnabled,
+    });
     removeUnloadProtection();
     const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
     form?.submit();

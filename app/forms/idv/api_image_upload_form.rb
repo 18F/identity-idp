@@ -123,7 +123,10 @@ module Idv
       response.extra.merge!(extra_attributes)
       side_classification = doc_side_classification(client_response)
       response_with_classification =
-        response.to_h.merge(side_classification)
+        response.to_h.merge(
+          side_classification
+          liveness_checking_required
+        )
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 

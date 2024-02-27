@@ -612,6 +612,7 @@ module AnalyticsEvents
   # @param [Boolean] isCameraSupported
   # @param [Boolean] success
   # @param [Boolean] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
   # The Acuant SDK was loaded
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_acuant_sdk_loaded(
@@ -762,7 +763,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
-    **_extra
+    liveness_checking_required:,
   )
     track_event(
       'Frontend: IdV: back image clicked',
@@ -772,19 +773,22 @@ module AnalyticsEvents
       isDrop: isDrop,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_barcode_warning_continue_clicked(**_extra)
+  def idv_barcode_warning_continue_clicked(liveness_checking_required:)
     track_event(
       'Frontend: IdV: barcode warning continue clicked',
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
-  def idv_barcode_warning_retake_photos_clicked(**_extra)
+  def idv_barcode_warning_retake_photos_clicked(liveness_checking_required:)
     track_event(
       'Frontend: IdV: barcode warning retake photos clicked',
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
@@ -836,11 +840,13 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [String] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required 
   def idv_capture_troubleshooting_dismissed(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     flow_path:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     **_extra
   )
     track_event(
@@ -849,6 +855,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
@@ -1122,6 +1129,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
+  # @param [Boolean] liveness_checking_required Whether the selfie image is required or not
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -1133,6 +1141,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     classification_info: {},
+    liveness_checking_required:,
     **extra
   )
     track_event(
@@ -1146,6 +1155,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
+      liveness_checking_required: liveness_checking_required,
       **extra,
     )
   end
@@ -1401,6 +1411,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -1418,6 +1429,7 @@ module AnalyticsEvents
       isDrop: isDrop,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -3058,6 +3070,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] subheading
   # @param [Boolean] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
   def idv_warning_shown(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -3068,7 +3081,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     subheading:,
     use_alternate_sdk:,
-    **_extra
+    liveness_checking_required:,
   )
     track_event(
       'Frontend: IdV: warning shown',
@@ -3081,6 +3094,7 @@ module AnalyticsEvents
       remaining_submit_attempts: remaining_submit_attempts,
       subheading: subheading,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
