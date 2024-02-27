@@ -499,6 +499,7 @@ class IdentityConfig
     config.add(:version_headers_enabled, type: :boolean)
     config.add(:voice_otp_pause_time)
     config.add(:voice_otp_speech_rate)
+    config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types
