@@ -58,6 +58,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
+          selfie_check_required: boolean,
         }.merge(ab_test_args)
       end
 
@@ -181,6 +182,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
+          selfie_check_required: boolean,
         }.merge(ab_test_args)
       end
 
