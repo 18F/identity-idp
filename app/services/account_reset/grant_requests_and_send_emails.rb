@@ -51,15 +51,15 @@ module AccountReset
     end
 
     def fraud_wait_period_not_met?(arr, now)
-      if (arr.user.fraud_review_pending? || 
-        arr.user.fraud_rejection?) && 
-        (fraud_wait_period_days > 0)
+      if (arr.user.fraud_review_pending? ||
+        arr.user.fraud_rejection?) &&
+         (fraud_wait_period_days > 0)
         return arr.requested_at > (now - fraud_wait_period_days)
       end
     end
 
     def fraud_wait_period_days
-      IdentityConfig.store.account_reset_fraud_user_wait_period_days.days 
+      IdentityConfig.store.account_reset_fraud_user_wait_period_days.days
     end
   end
 end

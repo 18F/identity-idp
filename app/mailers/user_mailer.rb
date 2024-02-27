@@ -476,8 +476,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def supports_fraud_account_reset?
-    (user.fraud_review_pending? || 
-      user.fraud_rejection?) && 
+    (user.fraud_review_pending? ||
+      user.fraud_rejection?) &&
       (IdentityConfig.store.account_reset_fraud_user_wait_period_days.days > 0)
   end
 

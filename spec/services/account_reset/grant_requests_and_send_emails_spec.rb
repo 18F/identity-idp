@@ -104,7 +104,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
     end
 
     context 'after not waiting the full wait period' do
-      context 'standard user' do 
+      context 'standard user' do
         it 'does not send notifications before a request wait period is done' do
           create_account_reset_request_for(user)
 
@@ -121,7 +121,7 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
         end
       end
 
-      context 'possible fraud user' do 
+      context 'possible fraud user' do
         let(:user) { create(:user, :fraud_review_pending) }
         let(:user2) { create(:user, :fraud_rejection) }
         it 'does not send notifications before a request wait period is done' do
