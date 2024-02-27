@@ -1125,6 +1125,7 @@ module AnalyticsEvents
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
   # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] selfie_check_performed Whehter the selfie check actually occurred based on TrueID response
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
@@ -1154,6 +1155,7 @@ module AnalyticsEvents
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
       liveness_checking_required: liveness_checking_required,
+      selfie_check_performed: selfie_check_performed,
       **extra,
     )
   end

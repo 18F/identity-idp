@@ -23,6 +23,8 @@ module Idv
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
+          liveness_checking_required: decorated_sp_session.selfie_required?,
+          selfie_check_performed: idv_session.selfie_check_performed,
         }.merge(ab_test_analytics_buckets)
       end
     end
