@@ -11,7 +11,7 @@ module DocAuth
           front_image:,
           back_image:,
           selfie_image: nil,
-          image_source: nil, # tbd
+          image_source: nil,
           images_cropped: false,
           liveness_checking_required: false
         )
