@@ -31,7 +31,7 @@
               <%= t('doc_auth.tips.most_common') %>
             </span>
             <br />
-            <label><%= t('doc_auth.headings.verify_online') %></label>
+            <%= t('doc_auth.headings.verify_online') %>
             <span class="usa-radio__label-description">
               <p><%= t('doc_auth.info.verify_online_instruction') %></p>
               <p><%= t('doc_auth.info.verify_online_description') %></p>
@@ -54,7 +54,7 @@
                         alt: t('image_description.post_office')
           %>
           <div class="usa-radio__label--text">
-             <label><%= t('doc_auth.headings.verify_at_post_office') %> </label>
+            <%= t('doc_auth.headings.verify_at_post_office') %>
             <span class="usa-radio__label-description">
               <p><%= t('doc_auth.info.verify_at_post_office_instruction') %></p>
               <p><%= t('doc_auth.info.verify_at_post_office_description') %></p>
@@ -67,7 +67,7 @@
 
 <%= render(
       'shared/troubleshooting_options',
-      heading_tag: :h3,
+      heading_tag: :h2,
       heading: t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
       options: [
         {
