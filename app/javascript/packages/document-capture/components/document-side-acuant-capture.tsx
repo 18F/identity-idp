@@ -22,7 +22,7 @@ interface DocumentSideAcuantCaptureProps {
   selfieCaptureEnabled: boolean;
 }
 
-function isUploadAllowed(selfieCaptureEnabled) {
+function isUploadAllowed(selfieCaptureEnabled: boolean) {
   return selfieCaptureEnabled === false;
 }
 
