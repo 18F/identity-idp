@@ -73,10 +73,7 @@ module Idv
         extra: extra_attributes,
       )
 
-      analytics.idv_doc_auth_submitted_image_upload_form(
-        **response.to_h,
-        liveness_checking_required: liveness_checking_required,
-      )
+      analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
       response
     end
 
@@ -128,10 +125,7 @@ module Idv
       response_with_classification =
         response.to_h.merge(side_classification)
 
-      analytics.idv_doc_auth_submitted_pii_validation(
-        **response_with_classification,
-        liveness_checking_required: liveness_checking_required,
-      )
+      analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
       if client_response.success? && response.success?
         store_pii(client_response)
@@ -344,7 +338,6 @@ module Idv
           async: false,
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
-          liveness_checking_required: liveness_checking_required,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )
