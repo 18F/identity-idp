@@ -45,7 +45,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 1,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -68,7 +67,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -80,6 +78,7 @@ RSpec.describe StoreSpMetadataInSession do
           )
         end
       end
+
       context 'when IAL2 and phishing-resistant are requested with ACRs' do
         let(:request_acr) do
           [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -90,7 +89,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -114,7 +112,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -134,7 +131,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 1,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -155,7 +151,6 @@ RSpec.describe StoreSpMetadataInSession do
             expect(app_session[:sp]).to eq(
               {
                 issuer: issuer,
-                aal_level_requested: 2,
                 acr_values: request_acr,
                 piv_cac_requested: false,
                 request_url: request_url,
@@ -176,7 +171,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -196,7 +190,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -216,7 +209,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
@@ -237,7 +229,6 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               acr_values: request_acr,
-              aal_level_requested: 2,
               piv_cac_requested: false,
               request_url: request_url,
               request_id: request_id,
@@ -256,7 +247,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: true,
               request_url: request_url,
@@ -276,7 +266,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: true,
               request_url: request_url,
@@ -296,7 +285,6 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               request_url: request_url,
