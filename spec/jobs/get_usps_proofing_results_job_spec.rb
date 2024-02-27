@@ -1203,7 +1203,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               expect(profile.fraud_review_pending_at).to be_nil
               expect(profile.fraud_rejection_at).to be_nil
               expect(job_analytics).not_to have_logged_event(
-                :idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed,
+                :idv_ipp_results_job_user_deactivation_enrollment_expired,
               )
             end
           end
@@ -1302,7 +1302,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               expect(profile.fraud_review_pending_at).to be_nil
               expect(profile.fraud_rejection_at).not_to be_nil
               expect(job_analytics).to have_logged_event(
-                :idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed,
+                :idv_ipp_results_job_user_deactivation_enrollment_expired,
               )
             end
           end

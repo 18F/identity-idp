@@ -272,7 +272,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     if fraud_result_pending?(enrollment)
-      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed(
+      analytics(user: enrollment.user).idv_ipp_results_job_user_deactivation_enrollment_expired(
         **enrollment_analytics_attributes(enrollment, complete: true),
       )
       enrollment.profile.deactivate_due_to_ipp_expiration_during_fraud_review
