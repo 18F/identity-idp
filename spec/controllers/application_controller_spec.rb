@@ -459,31 +459,62 @@ RSpec.describe ApplicationController do
   end
 
   describe '#resolved_authn_context_result' do
-    it 'returns a resolved authn context result' do
-      sp = build(:service_provider, ial: 2)
-      acr_values = [
-        'http://idmanagement.gov/ns/assurance/aal/1',
-      ].join(' ')
-      sp_session = { vtr: nil, acr_values: acr_values }
-      allow(controller).to receive(:sp_from_sp_session).and_return(sp)
-      allow(controller).to receive(:sp_session).and_return(sp_session)
-
-      result = subject.resolved_authn_context_result
-
-      expect(result.aal2?).to eq(true)
-      expect(result.identity_proofing?).to eq(true)
-    end
-
-    context 'without an SP' do
-      it 'returns a no-SP result' do
-        sp = nil
-        sp_session = {}
+    context 'when using acr values' do
+      it 'returns a resolved authn context result' do
+        sp = build(:service_provider, ial: 2)
+        acr_values = [
+          'http://idmanagement.gov/ns/assurance/aal/1',
+        ].join(' ')
+        sp_session = { vtr: nil, acr_values: acr_values }
         allow(controller).to receive(:sp_from_sp_session).and_return(sp)
         allow(controller).to receive(:sp_session).and_return(sp_session)
 
         result = subject.resolved_authn_context_result
 
-        expect(result).to eq(Vot::Parser::Result.no_sp_result)
+        expect(result.aal2?).to eq(true)
+        expect(result.identity_proofing?).to eq(true)
+      end
+
+      context 'without an SP' do
+        it 'returns a no-SP result' do
+          sp = nil
+          sp_session = {}
+          allow(controller).to receive(:sp_from_sp_session).and_return(sp)
+          allow(controller).to receive(:sp_session).and_return(sp_session)
+
+          result = subject.resolved_authn_context_result
+
+          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+        end
+      end
+    end
+
+    context 'when using vot values' do
+      it 'returns a resolved authn context result' do
+        sp = build(:service_provider, ial: 2)
+        acr_values = nil
+        vtr = ['C2.P1']
+        sp_session = { vtr: vtr, acr_values: acr_values }
+        allow(controller).to receive(:sp_from_sp_session).and_return(sp)
+        allow(controller).to receive(:sp_session).and_return(sp_session)
+
+        result = subject.resolved_authn_context_result
+
+        expect(result.aal2?).to eq(true)
+        expect(result.identity_proofing?).to eq(true)
+      end
+
+      context 'without an SP' do
+        it 'returns a no-SP result' do
+          sp = nil
+          sp_session = {}
+          allow(controller).to receive(:sp_from_sp_session).and_return(sp)
+          allow(controller).to receive(:sp_session).and_return(sp_session)
+
+          result = subject.resolved_authn_context_result
+
+          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+        end
       end
     end
   end
