@@ -127,7 +127,7 @@
     <% state_id_number_hint = capture do %>
       <% [
            [:default, state_id_number_hint_default],
-           ['FL', t('in_person_proofing.form.state_id.state_id_number_florida_hint')],
+           ['FL', t('in_person_proofing.form.state_id.state_id_number_florida_hint_html')],
            ['TX', t('in_person_proofing.form.state_id.state_id_number_texas_hint')],
          ].each do |state, hint| %>
         <%= content_tag(
@@ -143,7 +143,7 @@
           name: :state_id_number,
           form: f,
           hint: state_id_number_hint,
-          hint_html: { class: ['tablet:grid-col-10', 'jurisdiction-extras'] },
+          hint_html: { class: ['jurisdiction-extras'] },
           input_html: { value: pii[:state_id_number] },
           label: t('in_person_proofing.form.state_id.state_id_number'),
           label_html: { class: 'usa-label' },
