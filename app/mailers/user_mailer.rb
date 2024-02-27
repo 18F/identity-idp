@@ -461,14 +461,28 @@ class UserMailer < ActionMailer::Base
 
     distance_of_time_in_words(
       current_time,
-      current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+      current_time + account_reset_wait_period_days,
       true,
       accumulate_on: :hours,
     )
   end
 
+  def account_reset_wait_period_days
+    if supports_fraud_account_reset?
+      IdentityConfig.store.account_reset_fraud_user_wait_period_days.days
+    else
+      IdentityConfig.store.account_reset_wait_period_days.days
+    end
+  end
+
+  def supports_fraud_account_reset?
+    (user.fraud_review_pending? || 
+      user.fraud_rejection?) && 
+      (IdentityConfig.store.account_reset_fraud_user_wait_period_days.days > 0)
+  end
+
   def account_reset_deletion_period_hours
-    IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
+    account_reset_wait_period_days.in_hours.to_i
   end
 
   def account_reset_token_valid_period

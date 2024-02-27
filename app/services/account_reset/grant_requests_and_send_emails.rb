@@ -8,6 +8,7 @@ module AccountReset
         sql_query_for_users_eligible_to_delete_their_accounts,
         tvalue: now - IdentityConfig.store.account_reset_wait_period_days.days,
       ).order('requested_at ASC').each do |arr|
+        next if fraud_wait_period_not_met?(arr, now)
         notifications_sent += 1 if grant_request_and_send_email(arr)
       end
 
@@ -47,6 +48,18 @@ module AccountReset
           account_reset_granted(arr).deliver_now_or_later
       end
       true
+    end
+
+    def fraud_wait_period_not_met?(arr, now)
+      if (arr.user.fraud_review_pending? || 
+        arr.user.fraud_rejection?) && 
+        (fraud_wait_period_days > 0)
+        return arr.requested_at > (now - fraud_wait_period_days)
+      end
+    end
+
+    def fraud_wait_period_days
+      IdentityConfig.store.account_reset_fraud_user_wait_period_days.days 
     end
   end
 end
