@@ -281,7 +281,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           before do
             allow_any_instance_of(FederatedProtocols::Oidc).
               to receive(:biometric_comparison_required?).
-              and_return({ biometric_comparison_required: true })
+              and_return(true)
           end
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
