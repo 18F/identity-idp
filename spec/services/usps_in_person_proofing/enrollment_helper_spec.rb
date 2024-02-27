@@ -22,6 +22,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
     'registration@usps.local.identitysandbox.gov'
   end
   let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
+  let(:in_person_proofing_enforce_tmx) { true }
 
   before(:each) do
     stub_request_token
@@ -37,6 +38,8 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
     allow(subject).to receive(:analytics).and_return(subject_analytics)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(usps_ipp_transliteration_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+      and_return(in_person_proofing_enforce_tmx)
   end
 
   describe '#schedule_in_person_enrollment' do
