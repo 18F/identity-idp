@@ -92,6 +92,43 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         it 'is valid' do
           expect(form.valid?).to eq(true)
         end
+
+        context 'validates image source' do
+          let(:selfie_image_metadata) do
+            { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }.to_json
+          end
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+              and_return(false)
+          end
+
+          context 'id images are uploaded' do
+            it 'is invalid' do
+              expect(form.valid?).to eq(false)
+            end
+          end
+
+          context 'images sourced by acuant sdk' do
+            let(:front_image_metadata) do
+              { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }.to_json
+            end
+            let(:back_image_metadata) do
+              { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
+            end
+            it 'is valid' do
+              expect(form.valid?).to eq(true)
+            end
+
+            context 'selfie is uploaded' do
+              let(:selfie_image_metadata) do
+                { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }.to_json
+              end
+              it 'is invalid' do
+                expect(form.valid?).to eq(false)
+              end
+            end
+          end
+        end
       end
     end
   end
