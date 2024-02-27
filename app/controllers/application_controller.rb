@@ -406,7 +406,7 @@ class ApplicationController < ActionController::Base
       auth_methods_session:,
       aal_level_requested: resolved_authn_context_result.aal_level_requested,
       piv_cac_requested: resolved_authn_context_result.hspd12?,
-      phishing_resistant_requested: resolved_authn_context_result.phishing_resistant_required?,
+      phishing_resistant_requested: resolved_authn_context_result.phishing_resistant?,
     )
   end
   delegate :user_needs_sp_auth_method_setup?, to: :service_provider_mfa_policy
