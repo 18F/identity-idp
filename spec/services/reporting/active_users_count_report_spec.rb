@@ -12,7 +12,7 @@ RSpec.describe Reporting::ActiveUsersCountReport do
   end
 
   describe '#active_users_count_emailable_report' do
-    it 'returns a report for active users', aggregate_failures: true do
+    it 'returns a report for active users' do
       create(
         :service_provider_identity,
         user_id: 1,
@@ -62,19 +62,25 @@ RSpec.describe Reporting::ActiveUsersCountReport do
         ['Fiscal year Q4 cumulative', 1, 1, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
       ]
 
+      allow(Db::Identity::SpActiveUserCounts).to receive(:overall).and_call_original
+
       emailable_report = report.active_users_count_emailable_report
 
-      emailable_report.table.zip(expected_table).each do |actual, expected|
-        expect(actual).to eq(expected)
-      end
+      expect(Db::Identity::SpActiveUserCounts).to have_received(:overall).exactly(3).times
 
-      expect(emailable_report.title).to eq('Active Users')
-      expect(emailable_report.filename).to eq 'active_users_count'
+      aggregate_failures do
+        emailable_report.table.zip(expected_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+
+        expect(emailable_report.title).to eq('Active Users')
+        expect(emailable_report.filename).to eq 'active_users_count'
+      end
     end
   end
 
   describe '#active_users_count_apg_emailable_report' do
-    it 'returns a report for active users using APG math', aggregate_failures: true do
+    it 'returns a report for active users using APG math' do
       create(
         :service_provider_identity,
         user_id: 1,
@@ -96,14 +102,20 @@ RSpec.describe Reporting::ActiveUsersCountReport do
         ['Fiscal year Q4 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
       ]
 
+      allow(Db::Identity::SpActiveUserCounts).to receive(:overall_apg).and_call_original
+
       emailable_report = report.active_users_count_apg_emailable_report
 
-      emailable_report.table.zip(expected_table).each do |actual, expected|
-        expect(actual).to eq(expected)
-      end
+      expect(Db::Identity::SpActiveUserCounts).to have_received(:overall_apg).exactly(2).times
 
-      expect(emailable_report.title).to eq('Active Users (APG)')
-      expect(emailable_report.filename).to eq 'active_users_count_apg'
+      aggregate_failures do
+        emailable_report.table.zip(expected_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+
+        expect(emailable_report.title).to eq('Active Users (APG)')
+        expect(emailable_report.filename).to eq 'active_users_count_apg'
+      end
     end
   end
 end
