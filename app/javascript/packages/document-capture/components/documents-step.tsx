@@ -83,7 +83,7 @@ export function DocumentFrontAndBackCapture({
           key={side}
           side={side}
           value={value[side]}
-          selfieCaptureEnabled={selfieCaptureEnabled} // need to define
+          selfieCaptureEnabled={selfieCaptureEnabled}
         />
       ))}
     </>
