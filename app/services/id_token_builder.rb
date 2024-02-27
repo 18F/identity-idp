@@ -37,7 +37,7 @@ class IdTokenBuilder
 
   def id_token_claims
     {
-      acr: acr,
+      acr: (acr if !sp_requests_vot?),
       vot: (vot if sp_requests_vot?),
       vtm: (IdentityConfig.store.vtm_url if sp_requests_vot?),
       nonce: identity.nonce,
@@ -74,7 +74,7 @@ class IdTokenBuilder
   end
 
   def vot
-    return nil unless identity.vtr.present?
+    return nil unless sp_requests_vot?
     resolved_authn_context_result.component_values.map(&:name).join('.')
   end
 
@@ -89,9 +89,14 @@ class IdTokenBuilder
   def resolved_authn_context_result
     @resolved_authn_context_result ||= AuthnContextResolver.new(
       service_provider: identity.service_provider_record,
-      vtr: [identity.vtr],
+      vtr: parsed_vtr_value,
       acr_values: identity.acr_values,
     ).resolve
+  end
+
+  def parsed_vtr_value
+    return nil unless sp_requests_vot?
+    JSON.parse(identity.vtr)
   end
 
   def expires

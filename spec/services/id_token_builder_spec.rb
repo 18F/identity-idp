@@ -62,47 +62,45 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:nonce]).to eq(identity.nonce)
     end
 
-    context 'it sets the vot' do
-      context 'sp requests vot' do
-        before do
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
-            and_return(true)
-          allow(IdentityConfig.store).to receive(:vtm_url).
-            and_return(vtm_url)
-        end
-
-        it 'sets the vot if the sp requests it' do
-          identity.vtr = 'Pb'
-          expect(decoded_payload[:vot]).to eq('C1.C2.P1.Pb')
-        end
-
-        it 'sets the vtm' do
-          identity.vtr = 'Pb'
-          expect(decoded_payload[:vtm]).to eq(vtm_url)
-        end
+    context 'sp request includes VTR' do
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
+          and_return(true)
+        allow(IdentityConfig.store).to receive(:vtm_url).
+          and_return(vtm_url)
       end
 
-      context 'sp does not request vot' do
-        before do
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
-            and_return(false)
-          allow(IdentityConfig.store).to receive(:vtm_url).
-            and_return(vtm_url)
-        end
+      it 'sets the vot if the sp requests it' do
+        identity.vtr = ['Pb'].to_json
+        expect(decoded_payload[:vot]).to eq('C1.C2.P1.Pb')
+      end
 
-        it 'does not set the vot if the sp does not request it' do
-          identity.vtr = 'Pb'
-          expect(decoded_payload[:vot]).to eq nil
-        end
-
-        it 'does not set the vtm' do
-          identity.vtr = nil
-          expect(decoded_payload[:vtm]).to eq nil
-        end
+      it 'sets the vtm' do
+        identity.vtr = ['Pb'].to_json
+        expect(decoded_payload[:vtm]).to eq(vtm_url)
       end
     end
 
-    context 'it sets the acr' do
+    context 'vtr is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
+          and_return(false)
+        allow(IdentityConfig.store).to receive(:vtm_url).
+          and_return(vtm_url)
+      end
+
+      it 'does not set the vot if the sp does not request it' do
+        identity.vtr = ['Pb'].to_json
+        expect(decoded_payload[:vot]).to eq nil
+      end
+
+      it 'does not set the vtm' do
+        identity.vtr = nil
+        expect(decoded_payload[:vtm]).to eq nil
+      end
+    end
+
+    context 'context sp requests ACR values' do
       context 'aal and ial request' do
         before do
           identity.aal = 2
@@ -159,6 +157,25 @@ RSpec.describe IdTokenBuilder do
             expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
           end
         end
+      end
+    end
+
+    context 'sp requests includes ACR values and VTR' do
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
+          and_return(true)
+        allow(IdentityConfig.store).to receive(:vtm_url).
+          and_return(vtm_url)
+
+        identity.ial = 1
+        identity.vtr = ['C1'].to_json
+        identity.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      end
+
+      it 'sets the vot and vtm and it does not set an acr' do
+        expect(decoded_payload[:vot]).to eq('C1')
+        expect(decoded_payload[:vtm]).to eq(vtm_url)
+        expect(decoded_payload[:acr]).to eq(nil)
       end
     end
 
