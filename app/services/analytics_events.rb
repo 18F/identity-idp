@@ -621,6 +621,7 @@ module AnalyticsEvents
     isCameraSupported:,
     success:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     **_extra
   )
     track_event(

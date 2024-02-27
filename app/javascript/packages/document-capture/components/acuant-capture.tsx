@@ -23,7 +23,7 @@ import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
-import { FeatureFlagContext } from '../context';
+import FeatureFlagContext from '../context/feature-flag';
 import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';

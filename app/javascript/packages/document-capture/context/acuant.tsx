@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import AnalyticsContext from './analytics';
 import DeviceContext from './device';
+import FeatureFlagContext from './feature-flag';
 
 /**
  * Global declarations
@@ -221,6 +222,7 @@ function AcuantContextProvider({
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
   const { trackEvent } = useContext(AnalyticsContext);
+  const { selfieCaptureEnabled } = useContext(FeatureFlagContext);
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
@@ -273,9 +275,9 @@ function AcuantContextProvider({
             window.AcuantCamera = getActualAcuantCamera();
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             trackEvent('IdV: Acuant SDK loaded', {
-              // Add it here
               success: true,
               isCameraSupported: nextIsCameraSupported,
+              liveness_checking_required: selfieCaptureEnabled,
             });
 
             setIsCameraSupported(nextIsCameraSupported);
@@ -285,10 +287,10 @@ function AcuantContextProvider({
         },
         onFail(code, description) {
           trackEvent('IdV: Acuant SDK loaded', {
-            // Add it here
             success: false,
             code,
             description,
+            liveness_checking_required: selfieCaptureEnabled,
           });
 
           setIsError(true);
