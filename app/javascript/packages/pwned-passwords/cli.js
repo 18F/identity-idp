@@ -4,6 +4,7 @@ import { parseArgs } from 'node:util';
 import { createWriteStream } from 'node:fs';
 import Progress from 'cli-progress';
 import Downloader from './downloader.js';
+import getLastLine from './get-last-line.js';
 
 const { values: flags } = parseArgs({
   options: {
@@ -30,24 +31,43 @@ const downloader = new Downloader({
   threshold: threshold ? Number(threshold) : undefined,
 });
 
+let linePrefix = '';
+
+/** @type {import('stream').Writable} */
+let outputStream;
 if (outFile) {
+  let offset = 0;
+
+  const lastLine = await getLastLine(outFile);
+  const lastHashPrefix = lastLine?.slice(0, 5);
+  if (lastHashPrefix && /^[A-Z0-9]+$/.test(lastHashPrefix)) {
+    const lastHashOffset = parseInt(lastHashPrefix, 16);
+    if (lastHashOffset < parseInt(downloader.rangeEnd, 16)) {
+      process.stdout.write(`Resuming from ${lastHashPrefix}…\n`);
+      offset = lastHashOffset + 1 - parseInt(downloader.rangeStart, 16);
+      downloader.rangeStart = downloader.getRangePath(lastHashOffset + 1);
+      outputStream = createWriteStream(outFile, { flags: 'a' });
+      linePrefix = '\n';
+    }
+  }
+
+  outputStream ??= createWriteStream(outFile);
+
   const progressBar = new Progress.SingleBar({
     fps: 3,
-    format: '[{bar}] {percentage}% | ETA {eta_formatted} | {value}/{total} | {hashes} hashes',
+    format: '[{bar}] {percentage}% | ETA {eta_formatted} | {value}/{total}',
   });
-  downloader.once('start', ({ total }) => progressBar.start(total, 0, { hashes: 0, hashMin: 0 }));
+  downloader.once('start', ({ total }) => progressBar.start(total + offset, offset));
   downloader.on('download', () => progressBar.increment());
   downloader.once('complete', () => progressBar.stop());
+} else {
+  outputStream = process.stdout;
 }
-
-const outputStream = outFile ? createWriteStream(outFile) : process.stdout;
-
-let prefix = '';
 
 downloader
   .download()
-  .map((line) => `${prefix}${line}`)
+  .map((line) => `${linePrefix}${line}`)
   .once('data', () => {
-    prefix = '\n';
+    linePrefix = '\n';
   })
   .pipe(outputStream);

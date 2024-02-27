@@ -26,21 +26,6 @@ download_pwned_passwords() {
   sort $pwned_file_top_hashes -o $pwned_file
 }
 
-check_pwned_top_hashes() {
-  if [[ -f "$pwned_file_top_hashes" ]]; then
-    while true; do
-      read -p "${pwned_file_top_hashes} was found. Do you want to redownload (y/n)?" yn
-      case $yn in
-          [Yy]* ) download_pwned_passwords; break ;;
-          [Nn]* ) break ;;
-          * ) echo "Please answer yes or no.";;
-      esac
-    done
-  else
-    download_pwned_passwords
-  fi
-}
-
 check_passwords() {
   echo "Checking if 'password' is in ${pwned_file}..."
   check="grep -i $(echo -n "password" | sha1sum | awk '{print $1}') -- $pwned_file"
@@ -114,7 +99,7 @@ while getopts "hn:u:f:sp" opt; do
   esac
 done
 
-check_pwned_top_hashes
+download_pwned_passwords
 check_passwords
 if [[ $submit_to_s3 == "true" ]]; then
   check_s3_env

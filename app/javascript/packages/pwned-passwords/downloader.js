@@ -76,7 +76,7 @@ class Downloader extends EventEmitter {
     this.emit('start', { total });
 
     return Readable.from(createIterableRange(start, end))
-      .flatMap((i) => this.#downloadRangeWithRetry(this.#getRangePath(i)), { concurrency })
+      .flatMap((i) => this.#downloadRangeWithRetry(this.getRangePath(i)), { concurrency })
       .filter((line) => this.#getPrevalence(line) >= threshold)
       .on('end', () => this.emit('complete'));
   }
@@ -92,7 +92,7 @@ class Downloader extends EventEmitter {
    * @param {number} value
    * @return {string}
    */
-  #getRangePath(value) {
+  getRangePath(value) {
     return value.toString(16).padStart(5, '0').toUpperCase();
   }
 
