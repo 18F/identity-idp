@@ -851,10 +851,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       allow_any_instance_of(FederatedProtocols::Oidc).
         to receive(:biometric_comparison_required?).
         and_return(true)
-
-      allow(IdentityConfig.store).to receive(:des).
-        and_return(true)
-
       allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
       allow_any_instance_of(DocumentCaptureSessionResult).
         to receive(:selfie_status).and_return(:success)
