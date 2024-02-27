@@ -19,7 +19,7 @@ module DocAuth
           @front_image = front_image
           @back_image = back_image
           @selfie_image = selfie_image
-          @image_source = image_source # tbd
+          @image_source = image_source
           @images_cropped = images_cropped
           # when set to required, be sure to pass in selfie_image
           @liveness_checking_required = liveness_checking_required
