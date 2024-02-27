@@ -148,20 +148,6 @@ module Features
       user
     end
 
-    def begin_sign_up_with_sp_and_ial(ial2:)
-      user = create(:user)
-      login_as(user, scope: :user, run_callbacks: false)
-
-      Warden.on_next_request do |proxy|
-        session = proxy.env['rack.session']
-        sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
-        session[:sp] = { ial2: ial2, issuer: sp.issuer, request_id: '123' }
-      end
-
-      visit account_path
-      user
-    end
-
     def sign_up_and_set_password
       user = sign_up
       user.password = VALID_PASSWORD
@@ -368,25 +354,6 @@ module Features
       expect(field[:spellcheck]).to eq('false')
 
       field.set(personal_key)
-    end
-
-    def ial1_sp_session
-      Warden.on_next_request do |proxy|
-        session = proxy.env['rack.session']
-        sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
-        session[:sp] = {
-          ial2: false,
-          issuer: sp.issuer,
-          requested_attributes: [:email],
-        }
-      end
-    end
-
-    def ial2_sp_session(request_url: 'http://localhost:3000')
-      Warden.on_next_request do |proxy|
-        session = proxy.env['rack.session']
-        session[:sp] = { ial2: true, request_url: request_url }
-      end
     end
 
     def cookies

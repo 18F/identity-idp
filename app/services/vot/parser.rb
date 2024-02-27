@@ -21,6 +21,10 @@ module Vot
           ialmax?: false,
         )
       end
+
+      def identity_proofing_or_ialmax?
+        identity_proofing? || ialmax?
+      end
     end
 
     attr_reader :vector_of_trust, :acr_values

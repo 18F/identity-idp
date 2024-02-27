@@ -51,7 +51,11 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user',
     fill_in 'Password', with: new_password
     click_continue
 
-    expect(page).to have_content t('idv.messages.personal_key')
-    expect(page).to have_content t('headings.account.verified_account')
+    expect(page).to have_content(t('forms.personal_key_partial.header'))
+    expect(page).to have_current_path(manage_personal_key_path)
+
+    personal_key = PersonalKeyGenerator.new(user).normalize(scrape_personal_key)
+
+    expect(user.reload.valid_personal_key?(personal_key)).to eq(true)
   end
 end

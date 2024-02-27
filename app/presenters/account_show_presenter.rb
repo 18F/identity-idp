@@ -1,20 +1,14 @@
 class AccountShowPresenter
-  attr_reader :user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
-              :sp_session_request_url, :sp_name
+  attr_reader :user, :decrypted_pii, :locked_for_session, :pii, :sp_session_request_url, :sp_name
 
-  def initialize(decrypted_pii:, personal_key:, sp_session_request_url:, sp_name:, user:,
+  def initialize(decrypted_pii:, sp_session_request_url:, sp_name:, user:,
                  locked_for_session:)
     @decrypted_pii = decrypted_pii
-    @personal_key = personal_key
     @user = user
     @sp_name = sp_name
     @sp_session_request_url = sp_session_request_url
     @locked_for_session = locked_for_session
     @pii = determine_pii
-  end
-
-  def show_personal_key_partial?
-    personal_key.present?
   end
 
   def show_password_reset_partial?
@@ -41,7 +35,6 @@ class AccountShowPresenter
   def showing_any_partials?
     show_service_provider_continue_partial? ||
       show_password_reset_partial? ||
-      show_personal_key_partial? ||
       show_gpo_partial?
   end
 

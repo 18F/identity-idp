@@ -18,11 +18,13 @@ module DocAuth
           doc_type_supported: id_type_supported?,
           selfie_live: selfie_live?,
           selfie_quality_good: selfie_quality_good?,
+          selfie_status: selfie_status,
           extra: {
             doc_auth_result: doc_auth_result,
             portrait_match_results: portrait_match_results,
             billed: true,
             classification_info: classification_info,
+            workflow: workflow,
             liveness_checking_required: @selfie_required,
           }.compact,
         )
@@ -32,12 +34,12 @@ module DocAuth
         @errors ||= begin
           file_data = parsed_data_from_uploaded_file
 
-          if file_data.blank? || attention_with_barcode?
+          if file_data.blank?
             {}
           else
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
-            failed = file_data.dig('failed_alerts')
+            failed = failed_file_data(file_data.dig('failed_alerts')&.dup)
             passed = file_data.dig('passed_alerts')
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
@@ -84,7 +86,7 @@ module DocAuth
       end
 
       def success?
-        (errors.blank? || attention_with_barcode?) && id_type_supported?
+        doc_auth_success? && (selfie_check_performed? ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
@@ -146,6 +148,10 @@ module DocAuth
         else
           :not_processed
         end
+      end
+
+      def workflow
+        selfie_check_performed? ? 'test_liveness_workflow' : 'test_non_liveness_workflow'
       end
 
       private
@@ -248,6 +254,13 @@ module DocAuth
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
           extra: { liveness_checking_required: liveness_enabled },
         }.compact
+      end
+
+      def failed_file_data(failed_alerts_data)
+        if attention_with_barcode?
+          failed_alerts_data&.delete(ATTENTION_WITH_BARCODE_ALERT)
+        end
+        failed_alerts_data
       end
     end
   end

@@ -155,6 +155,7 @@ es:
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
       verify:
+        exit: Salir de %{app_name}
         fail_link_html: Obtenga ayuda en <strong>%{sp_name}</strong>
         fail_text: para acceder a los servicios.
         heading: No hemos podido verificar su identidad
@@ -275,8 +276,6 @@ es:
           verificación</strong> en un plazo de <strong>5 a 10 días</strong>.
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
-      personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
-        seguro. La necesitará si pierde su contraseña.
       phone:
         alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
