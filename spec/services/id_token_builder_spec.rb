@@ -21,6 +21,7 @@ RSpec.describe IdTokenBuilder do
 
   let(:now) { Time.zone.now }
   let(:custom_expiration) { (now + 5.minutes).to_i }
+  let(:vtm_url) { 'https://example.com/vot-trust-framework' }
   subject(:builder) do
     IdTokenBuilder.new(
       identity: identity,
@@ -61,22 +62,89 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:nonce]).to eq(identity.nonce)
     end
 
+    context 'it sets the vot' do
+      context 'sp requests vot' do
+        before do
+          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:vtm_url).
+            and_return(vtm_url)
+        end
+
+        it 'sets the vot if the sp requests it' do
+          identity.vtr = 'Pb'
+          expect(decoded_payload[:vot]).to eq('C1.C2.P1.Pb')
+        end
+
+        it 'sets the vtm' do
+          identity.vtr = 'Pb'
+          expect(decoded_payload[:vtm]).to eq(vtm_url)
+        end
+      end
+
+      context 'sp does not request vot' do
+        before do
+          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
+            and_return(false)
+          allow(IdentityConfig.store).to receive(:vtm_url).
+            and_return(vtm_url)
+        end
+
+        it 'does not set the vot if the sp does not request it' do
+          identity.vtr = 'Pb'
+          expect(decoded_payload[:vot]).to eq nil
+        end
+
+        it 'does not set the vtm' do
+          identity.vtr = nil
+          expect(decoded_payload[:vtm]).to eq nil
+        end
+      end
+    end
+
     context 'it sets the acr' do
+      context 'aal and ial request' do
+        before do
+          identity.aal = 2
+          acr_values = [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+          identity.acr_values = acr_values
+        end
+
+        it 'ignores the aal value' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+
       context 'ial2 request' do
+        before do
+          identity.ial = 2
+          identity.acr_values = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+        end
+
         it 'sets the acr to the ial2 constant' do
           expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
       context 'ial1 request' do
-        before { identity.ial = 1 }
+        before do
+          identity.ial = 1
+          identity.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+        end
+
         it 'sets the acr to the ial1 constant' do
           expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
       context 'ialmax request' do
-        before { identity.ial = 0 }
+        before do
+          identity.ial = 0
+          identity.acr_values = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+        end
 
         context 'non-verified user' do
           it 'sets the acr to the ial1 constant' do

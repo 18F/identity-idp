@@ -448,7 +448,6 @@ class IdentityConfig
     config.add(:session_timeout_in_minutes, type: :integer)
     config.add(:session_timeout_warning_seconds, type: :integer)
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
-    config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_unsupported_passkey_platform_authentication_setup, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
@@ -500,6 +499,7 @@ class IdentityConfig
     config.add(:version_headers_enabled, type: :boolean)
     config.add(:voice_otp_pause_time)
     config.add(:voice_otp_speech_rate)
+    config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types

@@ -309,7 +309,6 @@ session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
-set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
@@ -340,6 +339,7 @@ verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
 version_headers_enabled: false
+vtm_url: 'https://developer.login.gov/vot-trust-framework'
 use_dashboard_service_providers: false
 use_kms: false
 use_vot_in_sp_requests: false
