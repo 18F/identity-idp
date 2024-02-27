@@ -22,7 +22,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
     'registration@usps.local.identitysandbox.gov'
   end
   let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
-  let(:in_person_proofing_enforce_tmx) { true }
 
   before(:each) do
     stub_request_token
@@ -38,8 +37,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
     allow(subject).to receive(:analytics).and_return(subject_analytics)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(usps_ipp_transliteration_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-      and_return(in_person_proofing_enforce_tmx)
   end
 
   describe '#schedule_in_person_enrollment' do
@@ -201,7 +198,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: nil,
-              tmx_status: :threatmetrix_pass,
+              tmx_status: nil,
             )
           end
         end
@@ -220,7 +217,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: issuer,
-              tmx_status: :threatmetrix_pass,
+              tmx_status: nil,
             )
           end
         end
@@ -247,7 +244,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: nil,
-              tmx_status: :threatmetrix_pass,
+              tmx_status: nil,
             )
           end
 
@@ -267,7 +264,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
                 opted_in_to_in_person_proofing: nil,
                 second_address_line_present: true,
                 service_provider: nil,
-                tmx_status: :threatmetrix_pass,
+                tmx_status: nil,
               )
             end
           end
@@ -286,7 +283,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               opted_in_to_in_person_proofing: true,
               second_address_line_present: false,
               service_provider: nil,
-              tmx_status: :threatmetrix_pass,
+              tmx_status: nil,
             )
           end
         end
