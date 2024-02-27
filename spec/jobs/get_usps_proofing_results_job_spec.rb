@@ -1194,7 +1194,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               )
             end
 
-            it 'does not deactivate the profile when the enrollment has expired' do
+            it 'does not set the fraud related fields on the profile when the enrollment has expired' do
               stub_request_expired_proofing_results
 
               job.perform(Time.zone.now)
@@ -1292,7 +1292,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
             end
 
-            it 'deactivates the profile when the enrollment has expired' do
+            it 'deactivates and sets the fraud related fields of the profile when the enrollment has expired' do
               stub_request_expired_proofing_results
 
               job.perform(Time.zone.now)
