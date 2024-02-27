@@ -308,7 +308,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               expect(page).to have_current_path(idv_phone_url)
             end
           end
-          context 'selfie with no liveness or poor quality is uploaded', allow_browser_log: true do
+          context 'selfie with no liveness or poor quality is uploaded',
+                  allow_browser_log: true do
             it 'try again and page show no liveness inline error message' do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
               sign_in_and_2fa_user(user)
@@ -464,33 +465,32 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           end
         end
 
-          context 'when selfie check is not enabled (flag off, and/or in production)' do
-            let(:selfie_check_enabled) { false }
-            it 'proceeds to the next page with valid info, excluding a selfie image' do
-              perform_in_browser(:mobile) do
-                visit_idp_from_oidc_sp_with_ial2
-                sign_in_and_2fa_user(user)
-                complete_doc_auth_steps_before_document_capture_step
+        context 'when selfie check is not enabled (flag off, and/or in production)' do
+          let(:selfie_check_enabled) { false }
+          it 'proceeds to the next page with valid info, excluding a selfie image' do
+            perform_in_browser(:mobile) do
+              visit_idp_from_oidc_sp_with_ial2
+              sign_in_and_2fa_user(user)
+              complete_doc_auth_steps_before_document_capture_step
 
-                expect(page).to have_current_path(idv_document_capture_url)
-                expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+              expect(page).to have_current_path(idv_document_capture_url)
+              expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
-                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-                expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
-                attach_images
-                submit_images
+              expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+              attach_images
+              submit_images
 
-                expect(page).to have_current_path(idv_ssn_url)
-                expect_costing_for_document
-                expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+              expect(page).to have_current_path(idv_ssn_url)
+              expect_costing_for_document
+              expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
 
-                expect(page).to have_current_path(idv_ssn_url)
-                fill_out_ssn_form_ok
-                click_idv_continue
-                complete_verify_step
-                expect(page).to have_current_path(idv_phone_url)
-              end
+              expect(page).to have_current_path(idv_ssn_url)
+              fill_out_ssn_form_ok
+              click_idv_continue
+              complete_verify_step
+              expect(page).to have_current_path(idv_phone_url)
             end
           end
         end

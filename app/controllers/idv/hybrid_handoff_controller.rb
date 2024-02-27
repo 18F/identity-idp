@@ -50,7 +50,7 @@ module Idv
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given &&
-                           self.selected_remote(idv_session: idv_session)
+                          self.selected_remote(idv_session: idv_session)
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
