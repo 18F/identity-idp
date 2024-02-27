@@ -21,8 +21,8 @@
   }
 
   .usa-radio__label--text {
-    h2,
-    h3 {
+    h3,
+    label {
       @include u-text('gray-70');
     }
   }
