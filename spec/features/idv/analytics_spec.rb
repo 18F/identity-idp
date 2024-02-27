@@ -859,8 +859,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       allow_any_instance_of(DocumentCaptureSessionResult).
         to receive(:selfie_status).and_return(:success)
 
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
-
       perform_in_browser(:desktop) do
         sign_in_and_2fa_user(user)
         visit_idp_from_sp_with_ial2(:oidc, biometric_comparison_required: true)

@@ -276,10 +276,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
   end
 
   context 'when selfie is enabled' do
-    before do
-      # allow selfie on desktop
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
-    end
     context 'error due to data issue with 2xx status code', allow_browser_log: true do
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).

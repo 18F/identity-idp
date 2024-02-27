@@ -13,7 +13,6 @@ RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
 
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
   end
 
   scenario 'User with active profile can redo idv when selfie required', js: true do
