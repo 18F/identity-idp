@@ -160,6 +160,19 @@ class OpenidConnectAuthorizeForm
     @biometric_comparison_required
   end
 
+  def parsed_vector_of_trust
+    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
+    return @parsed_vector_of_trust = nil if vtr.blank?
+
+    @parsed_vector_of_trust = begin
+      if vtr.is_a?(Array) && !vtr.empty?
+        Vot::Parser.new(vector_of_trust: vtr.first).parse
+      end
+    rescue Vot::Parser::ParseException
+      nil
+    end
+  end
+
   private
 
   attr_reader :identity, :success
@@ -311,19 +324,6 @@ class OpenidConnectAuthorizeForm
       return OpenidConnectAttributeScoper::VALID_SCOPES
     end
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
-  end
-
-  def parsed_vector_of_trust
-    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
-    return @parsed_vector_of_trust = nil if vtr.blank?
-
-    @parsed_vector_of_trust = begin
-      if vtr.is_a?(Array) && !vtr.empty?
-        Vot::Parser.new(vector_of_trust: vtr.first).parse
-      end
-    rescue Vot::Parser::ParseException
-      nil
-    end
   end
 
   def validate_privileges
