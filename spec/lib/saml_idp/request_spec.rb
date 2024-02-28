@@ -4,6 +4,7 @@ module SamlIdp
     let(:aal) { 'http://idmanagement.gov/ns/assurance/aal/3' }
     let(:default_aal) { 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo' }
     let(:ial) { 'http://idmanagement.gov/ns/assurance/ial/2' }
+    let(:vtr) { 'C1.C2.P1.Pb' }
     let(:password) { 'urn:oasis:names:tc:SAML:2.0:ac:classes:Password' }
     let(:authn_context_classref) { build_authn_context_classref(password) }
     let(:issuer) { 'localhost:3000' }
@@ -233,6 +234,34 @@ module SamlIdp
 
         it 'should return the ial uri' do
           expect(subject.requested_ial_authn_context).to eq(ial)
+        end
+      end
+    end
+
+    describe '#requested_vtr_authn_context' do
+      subject { described_class.new raw_authn_request }
+
+      context 'no vtr context requested' do
+        let(:authn_context_classref) { '' }
+
+        it 'should return nil' do
+          expect(subject.requested_vtr_authn_context).to be_nil
+        end
+      end
+
+      context 'only vtr is requested' do
+        let(:authn_context_classref) { build_authn_context_classref(vtr) }
+
+        it 'should return the vrt' do
+          expect(subject.requested_vtr_authn_context).to eq(vtr)
+        end
+      end
+
+      context 'multiple contexts including vtr' do
+        let(:authn_context_classref) { build_authn_context_classref([vtr, ial]) }
+
+        it 'should return the vrt' do
+          expect(subject.requested_vtr_authn_context).to eq(vtr)
         end
       end
     end
