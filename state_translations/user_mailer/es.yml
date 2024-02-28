@@ -67,7 +67,7 @@ en:
         cta:
           callout: Haga clic en el botón siguiente para empezar.
           label: Responda a nuestra encuesta
-        greeting: Hola:
+        greeting: 'Hola:'
         intent: Deseamos conocer su experiencia al verificar su identidad en persona en la oficina de correos.
         privacy_html: Sus respuestas a esta encuesta estarán protegidas conforme a los siguientes <a href=\"%{url}\">estándares de privacidad y seguridad</a>.
         request_description: Responda a una breve encuesta anónima; sus comentarios nos ayudarán a mejorar nuestra respuesta a sus necesidades.
@@ -78,7 +78,7 @@ en:
       body:
         canceled: Venció el plazo para verificar su identidad en persona, y cancelamos automáticamente su solicitud con el fin de proteger su información personal.
         cta: Empezar de nuevo
-        greeting: Hola:
+        greeting: 'Hola:'
         restart: Puede iniciar una nueva solicitud para verificar su identidad con %{partner_agency}.
       header: Venció el plazo para verificar su identidad en persona
       subject: Venció su solicitud para verificar su identidad en persona
@@ -94,7 +94,7 @@ en:
       body:
         help_center_html: Si necesita más ayuda, puede <a href=\"%{help_center_url}\">visitar nuestro Centro de ayuda</a> o contactar con la agencia a la que está intentando acceder.
         intro: Entendemos que estaba intentando verificar su identidad usando %{app_name}; sin embargo, su identidad no pudo ser verificada en la oficina de correos de %{location} el %{date}.
-      greeting: Hola:
+      greeting: 'Hola:'
       subject: No se pudo verificar su identidad en persona
     in_person_outage_notification:
       body:
@@ -106,7 +106,7 @@ en:
     in_person_ready_to_verify:
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_ready_to_verify_reminder:
-      greeting: Hola:
+      greeting: 'Hola:'
       heading:
         one: Le queda %{count} día para verificar su identidad en persona
         other: Le quedan %{count} días para verificar su identidad en persona
@@ -115,7 +115,7 @@ en:
         one: Verifique su identidad en una oficina de correos en el próximo día
         other: Verifique su identidad en una oficina de correos en los próximos %{count} días
     in_person_verified:
-      greeting: Hola:
+      greeting: 'Hola:'
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos de %{location}.
       next_sign_in:
         with_sp:
@@ -164,7 +164,7 @@ en:
       step_1: Visite el sitio web de %{app_name} y seleccione iniciar sesión.
       step_2: Seleccione “¿Olvidó su contraseña?” en la parte inferior de la página.
       step_3: Siga las instrucciones para restablecer su contraseña.
-      subject: Actividad inusual: restablezca su contraseña de %{app_name}
+      subject: 'Actividad inusual: restablezca su contraseña de %{app_name}'
     reset_password_instructions:
       footer: Este vínculo vence en %{expires} horas.
       gpo_letter_description: "Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad."

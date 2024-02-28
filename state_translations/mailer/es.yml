@@ -8,4 +8,4 @@ en:
     logo: 'Logotipo de %{app_name}'
     no_reply: No responda a este mensaje.
     privacy_policy: Política de privacidad
-    sent_at: Enviado: %{formatted_timestamp}
+    sent_at: 'Enviado: %{formatted_timestamp}'
