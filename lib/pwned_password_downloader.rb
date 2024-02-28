@@ -75,7 +75,7 @@ class PwnedPasswordDownload
   # @return [String]
   def download_one(prefix:, net_http: Net::HTTP::Persistent.new, keep: keep_threshold)
     net_http.
-      request(URI("https://api.pwnedpasswords.com/range/#{prefix}")).
+      request("https://api.pwnedpasswords.com/range/#{prefix}").
       body.
       each_line(chomp: true).
       select { |line| line[36..].to_i >= keep }.
