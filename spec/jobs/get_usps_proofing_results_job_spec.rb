@@ -1194,7 +1194,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               )
             end
 
-            it 'does not set the fraud related fields on the profile when the enrollment has expired' do
+            it 'does not set the fraud related fields of an expired enrollment' do
               stub_request_expired_proofing_results
 
               job.perform(Time.zone.now)
@@ -1203,7 +1203,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               expect(profile.fraud_review_pending_at).to be_nil
               expect(profile.fraud_rejection_at).to be_nil
               expect(job_analytics).not_to have_logged_event(
-                :idv_ipp_results_job_user_deactivation_enrollment_expired,
+                :idv_ipp_deactivated_for_never_visiting_post_office,
               )
             end
           end
@@ -1292,7 +1292,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
             end
 
-            it 'deactivates and sets the fraud related fields of the profile when the enrollment has expired' do
+            it 'deactivates and sets fraud related fields of an expired enrollment' do
               stub_request_expired_proofing_results
 
               job.perform(Time.zone.now)
@@ -1302,7 +1302,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               expect(profile.fraud_review_pending_at).to be_nil
               expect(profile.fraud_rejection_at).not_to be_nil
               expect(job_analytics).to have_logged_event(
-                :idv_ipp_results_job_user_deactivation_enrollment_expired,
+                :idv_ipp_deactivated_for_never_visiting_post_office,
               )
             end
           end

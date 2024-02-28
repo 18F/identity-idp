@@ -5007,14 +5007,14 @@ module AnalyticsEvents
     )
   end
 
-  # A user that Threatmetrix has determined is fraudulent has been moved to deactivated due to not visting the post office before the deadline
   # @param [String] enrollment_id
-  def idv_ipp_results_job_user_deactivation_enrollment_expired(
+  # A fraud user has been deactivated due to not visting the post office before the deadline
+  def idv_ipp_deactivated_for_never_visiting_post_office(
     enrollment_id:,
     **extra
   )
     track_event(
-      :idv_ipp_results_job_user_deactivation_enrollment_expired,
+      :idv_ipp_deactivated_for_never_visiting_post_office,
       enrollment_id: enrollment_id,
       **extra,
     )
