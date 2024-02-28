@@ -1017,6 +1017,7 @@ module AnalyticsEvents
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
+  # @param [String] request_id RequestId from TrueID
   # @param [String] reference
   # @param [String] transaction_status
   # @param [String] transaction_reason_code
@@ -1066,6 +1067,7 @@ module AnalyticsEvents
     selfie_status: nil,
     vendor: nil,
     conversation_id: nil,
+    request_id: nil,
     reference: nil,
     transaction_status: nil,
     transaction_reason_code: nil,
@@ -1102,6 +1104,7 @@ module AnalyticsEvents
       selfie_status:,
       vendor:,
       conversation_id:,
+      request_id:,
       reference:,
       transaction_status:,
       transaction_reason_code:,
