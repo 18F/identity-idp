@@ -45,6 +45,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 1,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -66,6 +67,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -87,6 +89,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -109,6 +112,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -127,6 +131,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 1,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -146,6 +151,7 @@ RSpec.describe StoreSpMetadataInSession do
             expect(app_session[:sp]).to eq(
               {
                 issuer: issuer,
+                aal_level_requested: 2,
                 acr_values: request_acr,
                 request_url: request_url,
                 request_id: request_id,
@@ -165,6 +171,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -183,6 +190,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -201,6 +209,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -219,6 +228,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -237,6 +247,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -255,6 +266,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
@@ -273,6 +285,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              aal_level_requested: 2,
               acr_values: request_acr,
               request_url: request_url,
               request_id: request_id,
