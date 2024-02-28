@@ -1401,14 +1401,17 @@ describe('document-capture/components/acuant-capture', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: false,
+      liveness_checking_required: false,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'button',
       isDrop: false,
+      liveness_checking_required: false,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'upload',
       isDrop: false,
+      liveness_checking_required: false,
     });
   });
 
@@ -1428,6 +1431,7 @@ describe('document-capture/components/acuant-capture', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: true,
+      liveness_checking_required: false,
     });
   });
 
