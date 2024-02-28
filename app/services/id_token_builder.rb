@@ -37,13 +37,15 @@ class IdTokenBuilder
 
   def id_token_claims
     {
-      acr: acr,
+      acr: (acr if !sp_requests_vot?),
+      vot: (vot if sp_requests_vot?),
+      vtm: (IdentityConfig.store.vtm_url if sp_requests_vot?),
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
       c_hash: hash_token(code),
-    }
+    }.compact
   end
 
   def timestamp_claims
@@ -55,22 +57,46 @@ class IdTokenBuilder
   end
 
   def acr
-    ial = identity.ial
-    case ial
-    when Idp::Constants::IAL_MAX then determine_ial_max_acr
-    when Idp::Constants::IAL1 then Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+    return nil unless identity.acr_values.present?
+
+    if resolved_authn_context_result.ialmax?
+      determine_ial_max_acr.name
+    elsif resolved_authn_context_result.identity_proofing?
+      Vot::LegacyComponentValues::IAL2.name
     else
-      raise "Unknown ial #{ial}"
+      Vot::LegacyComponentValues::IAL1.name
     end
+  end
+
+  def sp_requests_vot?
+    return false unless identity.vtr.present?
+    IdentityConfig.store.use_vot_in_sp_requests
+  end
+
+  def vot
+    return nil unless sp_requests_vot?
+    resolved_authn_context_result.component_values.map(&:name).join('.')
   end
 
   def determine_ial_max_acr
     if identity.user.identity_verified?
-      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+      Vot::LegacyComponentValues::IAL2
     else
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      Vot::LegacyComponentValues::IAL1
     end
+  end
+
+  def resolved_authn_context_result
+    @resolved_authn_context_result ||= AuthnContextResolver.new(
+      service_provider: identity.service_provider_record,
+      vtr: parsed_vtr_value,
+      acr_values: identity.acr_values,
+    ).resolve
+  end
+
+  def parsed_vtr_value
+    return nil unless sp_requests_vot?
+    JSON.parse(identity.vtr)
   end
 
   def expires

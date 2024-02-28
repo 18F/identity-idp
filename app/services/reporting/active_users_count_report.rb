@@ -94,34 +94,40 @@ module Reporting
 
     # @return [Array<ReportRow>]
     def fiscal_year_active_users_per_quarter_cumulative
-      @fiscal_year_active_users_per_quarter_cumulative ||= cumulative_quarter_ranges.
-        map do |quarter_range|
-          Reports::BaseReport.transaction_with_timeout do
-            ReportRow.from_hash_time_range(
-              time_range: quarter_range,
-              hash: Db::Identity::SpActiveUserCounts.overall(
-                quarter_range.begin,
-                quarter_range.end,
-              ).first,
-            )
+      @fiscal_year_active_users_per_quarter_cumulative ||= begin
+        data_by_quarter = {}
+        cumulative_quarter_ranges.
+          map do |quarter_range|
+            data_by_quarter[quarter_range] ||= Reports::BaseReport.transaction_with_timeout do
+              ReportRow.from_hash_time_range(
+                time_range: quarter_range,
+                hash: Db::Identity::SpActiveUserCounts.overall(
+                  quarter_range.begin,
+                  quarter_range.end,
+                ).first,
+              )
+            end
           end
-        end
+      end
     end
 
     # @return [Array<ReportRow>]
     def apg_fiscal_year_active_users_per_quarter_cumulative
-      @apg_fiscal_year_active_users_per_quarter_cumulative ||= cumulative_quarter_ranges.
-        map do |quarter_range|
-          Reports::BaseReport.transaction_with_timeout do
-            ReportRow.from_hash_time_range(
-              time_range: quarter_range,
-              hash: Db::Identity::SpActiveUserCounts.overall_apg(
-                quarter_range.begin,
-                quarter_range.end,
-              ).first,
-            )
+      @apg_fiscal_year_active_users_per_quarter_cumulative ||= begin
+        data_by_quarter = {}
+        cumulative_quarter_ranges.
+          map do |quarter_range|
+            data_by_quarter[quarter_range] ||= Reports::BaseReport.transaction_with_timeout do
+              ReportRow.from_hash_time_range(
+                time_range: quarter_range,
+                hash: Db::Identity::SpActiveUserCounts.overall_apg(
+                  quarter_range.begin,
+                  quarter_range.end,
+                ).first,
+              )
+            end
           end
-        end
+      end
     end
 
     # rubocop:disable Layout/LineLength
@@ -133,7 +139,7 @@ module Reporting
         CalendarService.fiscal_start_date(report_date)..CalendarService.fiscal_q4_start(report_date),
         CalendarService.fiscal_start_date(report_date)..CalendarService.fiscal_end_date(report_date).next_day(1),
       ].map do |range|
-        range.begin.beginning_of_day..([range.end.prev_day(1).end_of_day, report_date].min)
+        range.begin.in_time_zone('UTC').beginning_of_day..([range.end.prev_day(1).in_time_zone('UTC').end_of_day, report_date.in_time_zone('UTC')].min)
       end
     end
     # rubocop:enable Layout/LineLength

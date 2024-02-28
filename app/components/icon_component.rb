@@ -255,13 +255,13 @@ class IconComponent < BaseComponent
   end
 
   def css_class
-    classes = ['usa-icon', *tag_options[:class]]
+    classes = ['icon', 'usa-icon', *tag_options[:class]]
     classes << "usa-icon--size-#{size}" if size
     classes
   end
 
   def icon_path
-    asset_path([asset_path('sprite.svg'), '#', icon].join, host: asset_host)
+    @icon_path ||= asset_path("usa-icons/#{icon}.svg", host: asset_host)
   end
 
   private

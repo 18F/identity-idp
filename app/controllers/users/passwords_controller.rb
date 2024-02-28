@@ -51,8 +51,13 @@ module Users
       # that the user remains authenticated.
       bypass_sign_in current_user
 
-      flash[:personal_key] = @update_user_password_form.personal_key
-      redirect_to account_url, flash: { info: t('notices.password_changed') }
+      flash[:info] = t('notices.password_changed')
+      if @update_user_password_form.personal_key.present?
+        user_session[:personal_key] = @update_user_password_form.personal_key
+        redirect_to manage_personal_key_url
+      else
+        redirect_to account_url
+      end
     end
 
     def send_password_reset_risc_event

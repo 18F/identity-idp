@@ -285,9 +285,6 @@ fr:
           vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
-      personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
-        conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
-        perdez votre mot de passe.
       phone:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un

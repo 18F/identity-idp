@@ -1195,9 +1195,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
-          piv_cac_requested: false,
           acr_values: acr_values,
-          phishing_resistant_requested: false,
           request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
@@ -1233,8 +1231,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
           acr_values: acr_values,
-          piv_cac_requested: false,
-          phishing_resistant_requested: false,
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
