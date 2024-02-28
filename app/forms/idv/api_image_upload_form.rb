@@ -252,7 +252,7 @@ module Idv
       end
 
       if !IdentityConfig.store.doc_auth_selfie_desktop_test_mode &&
-         liveness_checking_required && !acuant_sdk_capture?
+         liveness_checking_required && !acuant_sdk_captured?
         errors.add(
           :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
