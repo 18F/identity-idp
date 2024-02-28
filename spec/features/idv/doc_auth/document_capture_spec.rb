@@ -54,6 +54,12 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
 
     context 'attention barcode with invalid pii is uploaded', allow_browser_log: true do
+      let(:desktop_selfie_mode) { false }
+      # test disabled desktop selfie mode allows upload for doc auth w/o selfie
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+          and_return(desktop_selfie_mode)
+      end
       it 'try again and page show doc type inline error message' do
         attach_images(
           Rails.root.join(
