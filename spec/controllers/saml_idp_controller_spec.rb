@@ -541,12 +541,12 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       )
     end
 
-    shared_examples 'a verified identity' do |authn_context, ial|
+    context 'with IAL2 and the identity is already verified' do
       let(:ial2_settings) do
         saml_settings(
           overrides: {
             issuer: sp1_issuer,
-            authn_context: authn_context,
+            authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           },
         )
       end
@@ -563,7 +563,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         ial2_authnrequest = saml_authn_request_url(
           overrides: {
             issuer: sp1_issuer,
-            authn_context: authn_context,
+            authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           },
         )
         raw_req = CGI.unescape ial2_authnrequest.split('SAMLRequest').last
@@ -584,7 +584,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       before do
         stub_sign_in(user)
         session[:sign_in_flow] = sign_in_flow
-        IdentityLinker.new(user, sp1).link_identity(ial: ial)
+        IdentityLinker.new(user, sp1).link_identity(ial: Idp::Constants::IAL2)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -606,7 +606,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
       it 'sets identity ial' do
         saml_get_auth(ial2_settings)
-        expect(user.identities.last.ial).to eq(ial)
+        expect(user.identities.last.ial).to eq(Idp::Constants::IAL2)
       end
 
       it 'does not redirect the user to the IdV URL' do
@@ -634,7 +634,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
-            requested_ial: authn_context,
+            requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: sp1_issuer,
             force_authn: false,
             user_fully_authenticated: true,
@@ -644,9 +644,9 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             success: true,
             errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [authn_context],
+            authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             authn_context_comparison: 'exact',
-            requested_ial: authn_context,
+            requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: sp1_issuer,
             endpoint: "/api/saml/auth#{path_year}",
             idv: false,
@@ -656,8 +656,8 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           })
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
-          ial: ial,
-          billed_ial: [ial, 2].min,
+          ial: Idp::Constants::IAL2,
+          billed_ial: Idp::Constants::IAL2,
           sign_in_flow:,
         )
 
@@ -675,14 +675,8 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       end
     end
 
-    context 'with IAL2 and the identity is already verified' do
-      it_behaves_like 'a verified identity',
-                      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                      Idp::Constants::IAL2
-    end
-
     context 'with IAL2 and the profile is reset' do
-      it 'redirects to IdV URL for IAL2 proofer' do
+      it 'redirects to reactivate account path' do
         user = create(:profile, :verified, :password_reset).user
         generate_saml_response(user, ial2_settings)
 
