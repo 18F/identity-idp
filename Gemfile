@@ -95,6 +95,7 @@ group :development do
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
+  gem 'net-http-persistent', '~> 4.0.2', require: false
 end
 
 group :development, :test do

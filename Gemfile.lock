@@ -432,6 +432,8 @@ GEM
     msgpack (1.7.2)
     multiset (0.5.3)
     mutex_m (0.2.0)
+    net-http-persistent (4.0.2)
+      connection_pool (~> 2.2)
     net-imap (0.4.10)
       date
       net-protocol
@@ -802,6 +804,7 @@ DEPENDENCIES
   maxminddb
   msgpack (~> 1.6)
   multiset
+  net-http-persistent (~> 4.0.2)
   net-sftp
   newrelic_rpm (~> 9.0)
   nokogiri (~> 1.16.0)
