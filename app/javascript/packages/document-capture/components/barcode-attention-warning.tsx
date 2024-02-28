@@ -31,7 +31,9 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
   }
 
   function handleDismiss() {
-    trackEvent('IdV: barcode warning retake photos clicked');
+    trackEvent('IdV: barcode warning retake photos clicked', {
+      liveness_checking_required: selfieCaptureEnabled,
+    });
     onDismiss();
   }
 
