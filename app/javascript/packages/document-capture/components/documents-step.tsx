@@ -9,10 +9,13 @@ import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import DeviceContext from '../context/device';
-import UploadContext from '../context/upload';
 import TipList from './tip-list';
-import { FeatureFlagContext } from '../context';
+import {
+  DeviceContext,
+  FeatureFlagContext,
+  SelfieCaptureEnabledContext,
+  UploadContext,
+} from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 
 export function DocumentCaptureSubheaderOne({
@@ -109,7 +112,8 @@ function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { exitQuestionSectionEnabled, selfieCaptureEnabled } = useContext(FeatureFlagContext);
+  const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
+  const { selfieCaptureEnabled } = useContext(SelfieCaptureEnabledContext);
 
   const pageHeaderText = selfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')

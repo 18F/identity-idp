@@ -6,8 +6,7 @@ describe('document-capture/context/feature-flag', () => {
   it('has expected default properties', () => {
     const { result } = renderHook(() => useContext(FeatureFlagContext));
 
-    expect(result.current).to.have.keys(['exitQuestionSectionEnabled', 'selfieCaptureEnabled']);
+    expect(result.current).to.have.keys(['exitQuestionSectionEnabled']);
     expect(result.current.exitQuestionSectionEnabled).to.be.a('boolean');
-    expect(result.current.selfieCaptureEnabled).to.be.a('boolean');
   });
 });
