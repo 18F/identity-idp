@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'fileutils'
-require 'thread'
 require 'net/http/persistent'
 require 'ruby-progressbar'
 
@@ -41,7 +40,7 @@ class PwnedPasswordDownload
 
     FileUtils.mkdir_p(destination)
 
-    threads = num_threads.times.map do
+    num_threads.times.map do
       Thread.new do |thread_id|
         net_http = Net::HTTP::Persistent.new(name: "thread_id_#{thread_id}")
 
@@ -62,11 +61,9 @@ class PwnedPasswordDownload
       end
     end
 
-    while !queue.empty?
-      sleep 3
-    end
+    sleep 3 until queue.empty?
 
-    bar.log("DONE") if verbose?
+    bar.log('DONE') if verbose?
   ensure
     bar.stop
   end
