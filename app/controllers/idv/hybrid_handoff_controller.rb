@@ -10,6 +10,9 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
+      @upload_enabled = idv_session.desktop_selfie_test_mode_enabled? ||
+                        !idv_session.selfie_check_required
+
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
