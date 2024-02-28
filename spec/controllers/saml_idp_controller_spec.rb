@@ -1194,7 +1194,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         sp_request_id = ServiceProviderRequestProxy.last.uuid
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          aal_level_requested: aal_level,
           piv_cac_requested: false,
           acr_values: acr_values,
           request_url: @stored_request_url.gsub('authpost', 'auth'),
@@ -1230,7 +1229,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          aal_level_requested: aal_level,
           acr_values: acr_values,
           piv_cac_requested: false,
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),

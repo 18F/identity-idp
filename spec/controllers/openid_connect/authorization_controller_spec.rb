@@ -1078,7 +1078,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
-          aal_level_requested: 1,
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           piv_cac_requested: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
