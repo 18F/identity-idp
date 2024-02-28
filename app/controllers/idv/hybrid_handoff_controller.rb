@@ -168,6 +168,7 @@ module Idv
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
+        selfie_check_required: idv_session.selfie_check_required,
       }.merge(ab_test_analytics_buckets)
     end
 

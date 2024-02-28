@@ -40,7 +40,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         )
         expect(response).to redirect_to account_url
         expect(flash[:info]).to eq t('notices.password_changed')
-        expect(flash[:personal_key]).to be_nil
+        expect(controller.user_session[:personal_key]).to be_nil
       end
 
       it 'updates the user password and regenerates personal key' do
@@ -64,8 +64,10 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
           ),
         )
 
-        expect(flash[:personal_key]).to eq(assigns(:update_user_password_form).personal_key)
-        expect(flash[:personal_key]).to be_present
+        expect(controller.user_session[:personal_key]).to eq(
+          assigns(:update_user_password_form).personal_key,
+        )
+        expect(response).to redirect_to manage_personal_key_url
       end
 
       it 'creates a user Event for the password change' do

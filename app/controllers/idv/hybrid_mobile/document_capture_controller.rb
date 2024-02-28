@@ -56,6 +56,7 @@ module Idv
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
           liveness_checking_required: decorated_sp_session.selfie_required?,
+          selfie_check_required: decorated_sp_session.selfie_required?,
         }.merge(
           ab_test_analytics_buckets,
         )

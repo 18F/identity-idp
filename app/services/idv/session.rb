@@ -23,6 +23,7 @@ module Idv
       redo_document_capture
       resolution_successful
       selfie_check_performed
+      selfie_check_required
       skip_doc_auth
       skip_hybrid_handoff
       ssn
@@ -247,6 +248,10 @@ module Idv
 
     def skip_hybrid_handoff?
       !!session[:skip_hybrid_handoff]
+    end
+
+    def desktop_selfie_test_mode_enabled?
+      IdentityConfig.store.doc_auth_selfie_desktop_test_mode
     end
 
     private

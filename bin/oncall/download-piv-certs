@@ -125,7 +125,7 @@ class DownloadPivCerts
         , properties.event_properties.key_id AS key_id
        | sort @timestamp desc
        | filter ispresent(properties.event_properties.key_id)
-       | filter properties.uuid IN #{quote(uuids)}
+       | filter properties.user_id IN #{quote(uuids)}
        | filter properties.event_properties.success = 0
     QUERY
 
@@ -136,7 +136,7 @@ class DownloadPivCerts
     Reporting::UnknownProgressBar.wrap(show_bar: progress_bar?, title: 'Querying logs') do
       cloudwatch_client.fetch(
         query: query,
-        from: 1.week.ago,
+        from: 2.weeks.ago,
         to: Time.now,
       )
     end

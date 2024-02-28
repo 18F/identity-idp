@@ -35,10 +35,10 @@ module Users
     end
 
     def handle_success(result)
-      flash[:personal_key] = result.extra[:personal_key]
+      user_session[:personal_key] = result.extra[:personal_key]
       irs_attempts_api_tracker.idv_personal_key_generated
       reactivate_account_session.clear
-      redirect_to account_url
+      redirect_to manage_personal_key_url
     end
 
     def verify_password_form
