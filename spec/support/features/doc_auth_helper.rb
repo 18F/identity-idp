@@ -81,7 +81,7 @@ module DocAuthHelper
       app_name: APP_NAME,
     )
     find(
-      'label.usa-radio__label',
+      'label',
       text: text_for_method,
       wait: 5,
     ).click
