@@ -2836,11 +2836,14 @@ module AnalyticsEvents
   def idv_sdk_selfie_image_added(captureAttempts:, **extra)
     track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
   end
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User closed the SDK for taking a selfie without submitting a photo
-  def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
-    track_event(:idv_sdk_selfie_image_capture_closed_without_photo, **extra)
+  def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts:, **extra)
+    track_event(
+      :idv_sdk_selfie_image_capture_closed_without_photo,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
   end
 
   # @param [Integer] sdk_error_code SDK code for the error encountered
@@ -2848,18 +2851,25 @@ module AnalyticsEvents
   # User encountered an error with the SDK selfie process
   # Error code 1: camera permission not granted
   # Error code 2: unexpected errors
-  def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
+  def idv_sdk_selfie_image_capture_failed(
+    sdk_error_code:,
+    sdk_error_message:,
+    captureAttempts:,
+    **extra
+  )
     track_event(
       :idv_sdk_selfie_image_capture_failed,
       sdk_error_code: sdk_error_code,
       sdk_error_message: sdk_error_message,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
 
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # User opened the SDK to take a selfie
-  def idv_sdk_selfie_image_capture_opened(**extra)
-    track_event(:idv_sdk_selfie_image_capture_opened, **extra)
+  def idv_sdk_selfie_image_capture_opened(captureAttempts:, **extra)
+    track_event(:idv_sdk_selfie_image_capture_opened, captureAttempts: captureAttempts, **extra)
   end
 
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
@@ -2873,7 +2883,6 @@ module AnalyticsEvents
   # @param [String] source
   # @param [Integer] width width of image added in pixels
   # User uploaded a selfie using the file picker
-  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_file_uploaded(
     captureAttempts:,
     failedImageResubmission:,
