@@ -1,6 +1,7 @@
 module Vot
   class Parser
     class ParseException < StandardError; end
+
     Result = Data.define(
       :component_values,
       :aal2?,
@@ -24,6 +25,14 @@ module Vot
 
       def identity_proofing_or_ialmax?
         identity_proofing? || ialmax?
+      end
+
+      def aal_level_requested
+        if aal2?
+          2
+        else
+          1
+        end
       end
     end
 

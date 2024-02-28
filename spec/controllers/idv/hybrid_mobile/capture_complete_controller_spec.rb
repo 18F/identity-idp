@@ -51,6 +51,7 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
         flow_path: 'hybrid',
         irs_reproofing: false,
         step: 'capture_complete',
+        liveness_checking_required: false,
       }.merge(ab_test_args)
     end
 

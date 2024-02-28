@@ -94,6 +94,7 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         skip_hybrid_handoff: nil,
         irs_reproofing: false,
         step: 'document_capture',
+        liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
       }.merge(ab_test_args)
     end
@@ -263,6 +264,7 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         skip_hybrid_handoff: nil,
         irs_reproofing: false,
         step: 'document_capture',
+        liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
       }.merge(ab_test_args)
     end
