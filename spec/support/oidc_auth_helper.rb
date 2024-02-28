@@ -111,7 +111,7 @@ module OidcAuthHelper
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
     client_id: OIDC_ISSUER,
-    scope: 'openid email profile:name social_security_number',
+    scope: 'openid email profile:name social_security_number'
   )
     vtr_params = {
       client_id: client_id,
