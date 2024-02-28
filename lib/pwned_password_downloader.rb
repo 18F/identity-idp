@@ -6,23 +6,16 @@ require 'ruby-progressbar'
 class PwnedPasswordDownload
   attr_reader :destination,
               :num_threads,
-              :verbose,
               :keep_threshold
 
   def initialize(
     destination: 'tmp/pwned',
     num_threads: 64,
-    verbose: false,
     keep_threshold: 30
   )
     @destination = destination
     @num_threads = num_threads
-    @verbose = verbose
     @keep_threshold = keep_threshold
-  end
-
-  def verbose?
-    !!@verbose
   end
 
   def run!
@@ -45,16 +38,9 @@ class PwnedPasswordDownload
         net_http = Net::HTTP::Persistent.new(name: "thread_id_#{thread_id}")
 
         while (prefix = queue.pop)
-          if already_downloaded?(prefix)
-            bar.log("#{prefix} SKIP, already downloaded") if verbose?
-          else
-            write_one(
-              prefix:,
-              content: download_one(prefix:, net_http:),
-            )
-            bar.log("#{prefix} DONE") if verbose?
-          end
           bar.increment
+          next if already_downloaded?(prefix)
+          write_one(prefix:, content: download_one(prefix:, net_http:))
         end
       ensure
         net_http.shutdown
@@ -62,8 +48,6 @@ class PwnedPasswordDownload
     end
 
     sleep 3 until queue.empty?
-
-    bar.log('DONE') if verbose?
   ensure
     bar.stop
   end
