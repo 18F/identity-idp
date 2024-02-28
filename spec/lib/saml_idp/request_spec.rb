@@ -264,6 +264,26 @@ module SamlIdp
           expect(subject.requested_vtr_authn_context).to eq(vtr)
         end
       end
+
+      context 'context that contains a VTR substring but is not a VTR' do
+        let(:authn_context_classref) do
+          fake_vtr = 'Not a VTR but does contain LetT3.Rs and Nu.Mb.Ers'
+          build_authn_context_classref(fake_vtr)
+        end
+
+        it 'does not match on the context' do
+          expect(subject.requested_vtr_authn_context).to be_nil
+        end
+      end
+
+      context 'with the default MFA context' do
+        let(:aal) { 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo' }
+        let(:authn_context_classref) { build_authn_context_classref(aal) }
+
+        it 'does not match on the context' do
+          expect(subject.requested_vtr_authn_context).to be_nil
+        end
+      end
     end
 
     describe '#valid?' do
