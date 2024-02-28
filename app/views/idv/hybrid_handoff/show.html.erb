@@ -54,7 +54,7 @@
   </div>
 </div>
 
-<% if @upload_enabled %>
+<% unless @upload_disabled %>
   <hr class="margin-y-4" />
   <div class="grid-row grid-gap grid-gap-2">
     <div class="grid-col-12 tablet:grid-col-auto">

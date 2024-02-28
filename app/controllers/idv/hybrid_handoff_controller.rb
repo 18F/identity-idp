@@ -10,8 +10,8 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      @upload_enabled = idv_session.desktop_selfie_test_mode_enabled? ||
-                        !idv_session.selfie_check_required
+      @upload_disabled = idv_session.selfie_check_required &&
+                         !idv_session.desktop_selfie_test_mode_enabled?
 
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
