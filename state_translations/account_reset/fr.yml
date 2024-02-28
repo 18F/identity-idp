@@ -1,0 +1,48 @@
+---
+fr:
+  account_reset:
+    cancel_request:
+      are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
+      cancel: Quitter
+      cancel_button: Annuler la suppression du compte
+      title: Annuler la suppression du compte
+    confirm_delete_account:
+      cta_html:  Vous pouvez %{link_html} ou fermer cette fenêtre si vous avez terminé. 
+      info_html:  Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons envoyé un e-mail de confirmation de la suppression du compte. 
+      link_text: créer un nouveau compte
+      title: Vous avez supprimé votre compte
+    confirm_request:
+      close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
+      instructions_end: pour commencer le processus de suppression du compte. Suivez les instructions dans votre e-mail pour terminer le processus.
+      instructions_start: Nous avons envoyé un e-mail à
+      security_note:  Par mesure de sécurité, nous avons également envoyé un SMS à votre numéro de téléphone enregistré. 
+    delete_account:
+      are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte ?
+      info:  La suppression de votre compte devrait être votre dernier recours si vous vous êtes fait bloquer de votre compte. Vous ne pourrez pas récupérer les informations liées à votre compte. Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous ne disposez plus d’un compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même adresse e-mail. 
+      title: La suppression de votre compte devrait être votre dernier recours
+    pending:
+      cancel_request: Annuler la demande
+      cancelled: Nous avons annulé votre demande de suppression de votre compte.
+      confirm:  Si vous annulez maintenant, vous devrez créer une nouvelle demande et attendre encore 24 heures pour supprimer votre compte. 
+      header: Vous avez demandé de supprimer votre compte
+      wait_html:  Il y a un délai d’attente de 24 heures pour supprimer votre compte. Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions pour terminer la suppression. 
+    recovery_options:
+      check_webauthn_platform: Utilisez le même appareil que celui avec lequel vous avez configuré le déverrouillage facial ou tactile
+      check_webauthn_platform_info:  Si vous avez configuré le déverrouillage facial ou tactile lorsque vous avez créé votre compte, assurez-vous d’utiliser le même appareil que celui avec lequel vous avez créé votre compte %{app_name}. 
+      header: Êtes-vous sûr de vouloir supprimer votre compte ?
+      help_text:  Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes. 
+      try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
+      try_method_again: Essayer à nouveau votre méthode d’authentification
+      use_device: Utiliser un autre appareil
+    request:
+      are_you_sure: Êtes-vous sûr de n’avoir accès à aucune de vos méthodes d’authentification ?
+      delete_account: Supprimer votre compte
+      delete_account_info:
+        -  La suppression de votre compte existant et la création d’un nouveau vous permettent d’utiliser la même adresse e-mail et de définir de nouvelles méthodes d’authentification. Cependant, la suppression annulera toutes les applications d’organismes que vous avez liées à votre compte et vous devrez restaurer chaque connexion. 
+        -  Si vous continuez, vous recevrez d’abord un e-mail de confirmation.  Par mesure de sécurité, 24 heures après l’arrivée du premier e-mail de confirmation, vous recevrez un autre e-mail qui contiendra le lien permettant de continuer la suppression de votre compte. 
+      info:
+        -  Si vous ne pouvez pas accéder à votre compte à l’aide des méthodes d’authentification que vous avez définies auparavant, la suppression de votre compte et la création d’un nouveau compte constituent la seule option possible. 
+        - Nous ne pouvons pas revenir sur la suppression d’un compte ; veuillez donc vérifier si vous disposez d’une autre méthode d’authentification à la place.
+      no_cancel: Annuler
+      title: Suppression et réinitialisation de compte
+      yes_continue:  Oui, continuer la suppression 
