@@ -62,11 +62,12 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def ial1_params(prompt: nil,
-                  state: SecureRandom.hex,
-                  nonce: SecureRandom.hex,
-                  client_id: OIDC_IAL1_ISSUER,
-                  tid: nil)
+  def ial1_params(
+    prompt: nil,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    client_id: OIDC_IAL1_ISSUER
+  )
     ial1_params = {
       client_id: client_id,
       response_type: 'code',
@@ -76,18 +77,18 @@ module OidcAuthHelper
       state: state,
       nonce: nonce,
     }
-    ial1_params[:tid] = tid if tid
     ial1_params[:prompt] = prompt if prompt
     ial1_params
   end
 
-  def ial2_params(prompt: nil,
-                  state: SecureRandom.hex,
-                  nonce: SecureRandom.hex,
-                  client_id: OIDC_ISSUER,
-                  acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                  tid: nil,
-                  biometric_comparison_required: false)
+  def ial2_params(
+    prompt: nil,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    client_id: OIDC_ISSUER,
+    acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+    biometric_comparison_required: false
+  )
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
@@ -97,7 +98,6 @@ module OidcAuthHelper
       state: state,
       nonce: nonce,
     }
-    ial2_params[:tid] = tid if tid
     ial2_params[:prompt] = prompt if prompt
     if biometric_comparison_required
       ial2_params[:biometric_comparison_required] = 'true'
@@ -112,7 +112,6 @@ module OidcAuthHelper
     nonce: SecureRandom.hex,
     client_id: OIDC_ISSUER,
     scope: 'openid email profile:name social_security_number',
-    tid: nil
   )
     vtr_params = {
       client_id: client_id,
@@ -123,7 +122,6 @@ module OidcAuthHelper
       state: state,
       nonce: nonce,
     }
-    vtr_params[:tid] = tid if tid
     vtr_params[:prompt] = prompt if prompt
     vtr_params
   end
