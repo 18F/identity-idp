@@ -6,7 +6,8 @@ submit_to_s3='false'
 pwned_directory="pwned_passwords"
 number_of_passwords=3000000
 pwned_url="https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z"
-pwned_7z="${pwned_directory}/pwned-passwords.7z"
+pwned_tmp_directory="tmp/pwned"
+pwned_all_hashes_file="tmp/pwned_hashes.txt"
 pwned_file="${pwned_directory}/pwned-passwords.txt"
 aws_prod="false"
 
@@ -22,28 +23,15 @@ Usage: ${0} [-nufdph]
 EOM
 }
 
-check_7z() {
-  if ! command -v 7z &> /dev/null; then
-    while true; do
-      read -p "7z is not installed. Do you wish to install (y/n)? " yn
-      case $yn in
-        [Yy]* ) brew install p7zip; break ;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no." ;;
-      esac
-    done
-  fi
-}
-
 download_pwned_passwords() {
   echo "Downloading pwned passwords. This may take awhile ..."
-  curl $pwned_url --output $pwned_7z
+  ./lib/pwned_password_downloader.rb
 }
 
-check_pwned_7z() {
-  if [[ -f "$pwned_7z" ]]; then
+check_pwned_download() {
+  if [[ -d "$pwned_tmp_directory" ]]; then
     while true; do
-      read -p "${pwned_7z} was found. Do you want to redownload (y/n)?" yn
+      read -p "${pwned_tmp_directory} was found. Do you want to resume / redownload (y/n)?" yn
       case $yn in
           [Yy]* ) download_pwned_passwords; break ;;
           [Nn]* ) break ;;
@@ -55,9 +43,13 @@ check_pwned_7z() {
   fi
 }
 
-unzip_pwned_passwords() {
-  echo "Unzipping ${pwned_7z}."
-  7z x $pwned_7z -so | head -n $number_of_passwords | cut -d: -f 1 | sort > $pwned_file
+process_pwned_download() {
+  echo "Processing downloaded password hashes..."
+  find $pwned_tmp_directory -type f -exec cat {} + | \
+    sort -n -r -t: -k 2 | \
+    head -n $number_of_passwords | \
+    cut -d: -f 1 | \
+    sort > $pwned_file
 }
 
 check_passwords() {
@@ -134,9 +126,8 @@ while getopts "hn:u:f:sp" opt; do
   esac
 done
 
-check_7z
-check_pwned_7z
-unzip_pwned_passwords
+check_pwned_download
+process_pwned_download
 check_passwords
 if [[ $submit_to_s3 == "true" ]]; then
   check_s3_env

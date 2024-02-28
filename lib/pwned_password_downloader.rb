@@ -79,10 +79,7 @@ class PwnedPasswordDownload
       body.
       each_line(chomp: true).
       select { |line| line.split(':', 2).last.to_i >= keep }.
-      map do |line|
-        "#{prefix}#{line}"
-      end.
-      join("\n")
+      reduce('') { |result, line| result + "#{prefix}#{line}\n" }
   end
 
   def write_one(prefix:, content:)
