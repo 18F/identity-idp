@@ -227,6 +227,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       primary_id_type: response['primaryIdType'],
       reason: 'Unsupported ID type',
       job_name: self.class.name,
+      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :failed,
@@ -263,6 +264,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: false,
       reason: 'Enrollment has expired',
       job_name: self.class.name,
+      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :expired,
@@ -334,6 +336,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: false,
       reason: 'Failed status',
       job_name: self.class.name,
+      tmx_status: enrollment.profile&.tmx_status,
     )
 
     enrollment.update(
@@ -370,6 +373,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: true,
       reason: 'Successful status update',
       job_name: self.class.name,
+      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :passed,
@@ -400,6 +404,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: true,
       reason: 'Passed with fraud pending',
       job_name: self.class.name,
+      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :passed,
@@ -425,6 +430,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: false,
       reason: 'Provided secondary proof of address',
       job_name: self.class.name,
+      tmx_status: enrollment.profile&.tmx_status,
     )
     enrollment.update(
       status: :failed,

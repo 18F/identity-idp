@@ -44,6 +44,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         transaction_end_date_time: anything,
         transaction_start_date_time: anything,
         job_name: 'GetUspsProofingResultsJob',
+        tmx_status: :threatmetrix_pass,
       )
     end
   end
@@ -194,6 +195,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       '%m/%d/%Y %H%M%S',
     ).in_time_zone('UTC')
   end
+  let(:in_person_proofing_enforce_tmx) { true }
 
   before do
     allow(IdentityConfig.store).
@@ -207,6 +209,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
       and_return(reprocess_delay_minutes)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+      and_return(in_person_proofing_enforce_tmx)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
       request_delay_ms / GetUspsProofingResultsJob::MILLISECONDS_PER_SECOND,
