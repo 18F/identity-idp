@@ -502,7 +502,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             and_return(desktop_selfie_mode)
         end
         describe 'when desktop selfie not allowed' do
-          it 'cannot proceed to document capture page' do
+          it 'can only proceed to link sent page' do
             perform_in_browser(:desktop) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
               sign_in_and_2fa_user(user)
