@@ -1080,7 +1080,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         expect(session[:sp]).to eq(
           aal_level_requested: 1,
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          piv_cac_requested: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
           request_url: request.original_url,

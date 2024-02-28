@@ -48,10 +48,6 @@ class StoreSpMetadataInSession
     end
   end
 
-  def piv_cac_requested_value
-    parsed_vot&.hspd12?
-  end
-
   def biometric_comparison_required_value
     parsed_vot&.biometric_comparison? || sp_request&.biometric_comparison_required
   end
@@ -63,7 +59,6 @@ class StoreSpMetadataInSession
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
       aal_level_requested: aal_level_requested_value,
-      piv_cac_requested: piv_cac_requested_value,
       biometric_comparison_required: biometric_comparison_required_value,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
