@@ -78,7 +78,7 @@ class PwnedPasswordDownload
       request(URI("https://api.pwnedpasswords.com/range/#{prefix}")).
       body.
       each_line(chomp: true).
-      select { |line| line.split(':', 2).last.to_i >= keep }.
+      select { |line| line[36..].to_i >= keep }.
       reduce('') { |result, line| result + "#{prefix}#{line}\n" }
   end
 
