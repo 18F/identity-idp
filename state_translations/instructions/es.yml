@@ -23,7 +23,7 @@ en:
         already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
         back_to_sign_in: Vuelva a iniciar sesión
         confirm_piv_cac: Presente la tarjeta PIV o CAC que asoció con su cuenta.
-        did_not_work_html: %{please_try_again_html}. Contacte con el administrador de su agencia si persiste este problema.
+        did_not_work_html: '%{please_try_again_html}. Contacte con el administrador de su agencia si persiste este problema.'
         http_failure: El servidor tardó demasiado en responder. Vuelva a intentarlo.
         no_certificate_html: Asegúrese de que su tarjeta PIV o CAC esté conectada y %{try_again_html}. Contacte con el administrador de su agencia si persiste este problema.
         not_auth_cert_html: El certificado que seleccionó no es válido para esta cuenta. %{please_try_again_html} con un certificado diferente. Contacte con el administrador de su agencia si persiste este problema.
