@@ -633,6 +633,7 @@ module AnalyticsEvents
       isCameraSupported: isCameraSupported,
       success: success,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -764,6 +765,7 @@ module AnalyticsEvents
     source:,
     use_alternate_sdk:,
     liveness_checking_required:,
+    **_extra
   )
     track_event(
       'Frontend: IdV: back image clicked',
@@ -840,7 +842,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [String] use_alternate_sdk
-  # @param [Boolean] liveness_checking_required 
+  # @param [Boolean] liveness_checking_required
   def idv_capture_troubleshooting_dismissed(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -1140,11 +1142,10 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     pii_like_keypaths:,
     flow_path:,
-    user_id: nil,
+    liveness_checking_required:, user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     classification_info: {},
-    liveness_checking_required:,
     **extra
   )
     track_event(
@@ -3085,6 +3086,7 @@ module AnalyticsEvents
     subheading:,
     use_alternate_sdk:,
     liveness_checking_required:,
+    **_extra
   )
     track_event(
       'Frontend: IdV: warning shown',
