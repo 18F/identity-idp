@@ -394,8 +394,7 @@ module Idv
     end
 
     def acuant_sdk_autocaptured_id?
-      acuant_sdk_captured_id? &&
-        image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
+      image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
         image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO'
     end
 
