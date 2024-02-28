@@ -7,7 +7,6 @@ pwned_directory="pwned_passwords"
 number_of_passwords=3000000
 pwned_url="https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z"
 pwned_tmp_directory="tmp/pwned"
-pwned_all_hashes_file="tmp/pwned_hashes.txt"
 pwned_file="${pwned_directory}/pwned-passwords.txt"
 aws_prod="false"
 
