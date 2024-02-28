@@ -220,8 +220,6 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               acr_values: request_acr,
-              piv_cac_requested: false,
-
               request_url: request_url,
               request_id: request_id,
               requested_attributes: requested_attributes,
