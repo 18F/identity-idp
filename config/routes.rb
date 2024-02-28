@@ -286,7 +286,6 @@ Rails.application.routes.draw do
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
-    get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
