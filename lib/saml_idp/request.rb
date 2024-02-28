@@ -5,6 +5,7 @@ module SamlIdp
     IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}.freeze
     LOA_PREFIX = %r{^http://idmanagement.gov/ns/assurance/loa}.freeze
     AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}.freeze
+    VTR_REGEXP = %r{[A-Z][a-z0-9](\.[A-Z][a-z0-9])*}.freeze
 
     def self.from_deflated_request(raw, options = {})
       if raw
@@ -99,6 +100,12 @@ module SamlIdp
     def requested_aal_authn_context
       requested_authn_contexts.select do |classref|
         AAL_PREFIX.match?(classref)
+      end.first
+    end
+
+    def requested_vtr_authn_context
+      requested_authn_contexts.select do |classref|
+        VTR_REGEXP.match?(classref)
       end.first
     end
 
