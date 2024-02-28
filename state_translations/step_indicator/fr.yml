@@ -1,0 +1,18 @@
+---
+fr:
+  step_indicator:
+    accessible_label: Progression par étapes
+    flows:
+      idv:
+        find_a_post_office: Trouver un bureau de poste
+        get_a_letter: Recevoir une lettre par la poste
+        getting_started: Démarrer
+        go_to_the_post_office: Se rendre au bureau de poste
+        secure_account: Sécuriser votre compte
+        verify_id: Vérifier votre identité
+        verify_info: Vérifier vos informations
+        verify_phone_or_address: Vérifier votre téléphone ou votre adresse
+    status:
+      complete: Étape effectuée
+      current: Étape en cours
+      not_complete: Étape non effectuée

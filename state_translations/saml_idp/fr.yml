@@ -1,0 +1,10 @@
+---
+fr:
+  saml_idp:
+    auth:
+      error:
+        title: Erreur
+    shared:
+      saml_post_binding:
+        heading: Valider pour continuer
+        no_js:  JavaScript semble être désactivé dans votre navigateur. Normalement, cette étape se produit automatiquement, mais comme vous avez désactivé JavaScript, veuillez cliquer sur le bouton « Valider » pour poursuivre la connexion ou la déconnexion. 
