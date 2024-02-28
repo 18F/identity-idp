@@ -145,6 +145,7 @@ en:
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
       verify:
+        exit: Exit %{app_name}
         fail_link_html: Get help at <strong>%{sp_name}</strong>
         fail_text: to access services.
         heading: We couldn’t verify your identity
@@ -258,8 +259,6 @@ en:
         timeframe_html: You’ll get a letter with a <strong>verification code</strong> in
           <strong>5 to 10 days</strong>.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
-      personal_key: This is your new personal key. Write it down and keep it in a safe
-        place. You will need it if you ever lose your password.
       phone:
         alert_html: '<strong>Enter a phone number that is:</strong>'
         description: We’ll check this number with records and send you a one-time code.

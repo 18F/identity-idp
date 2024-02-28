@@ -89,6 +89,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_capture_enabled: false
+doc_auth_selfie_desktop_test_mode: false
 doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
@@ -310,7 +311,6 @@ session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
-set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
@@ -341,6 +341,7 @@ verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
 version_headers_enabled: false
+vtm_url: 'https://developer.login.gov/vot-trust-framework'
 use_dashboard_service_providers: false
 use_kms: false
 use_vot_in_sp_requests: false
@@ -387,6 +388,7 @@ development:
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: false
   doc_auth_selfie_capture_enabled: false
+  doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -529,6 +531,7 @@ test:
   database_worker_jobs_password: ''
   doc_auth_max_attempts: 4
   doc_auth_selfie_capture_enabled: false
+  doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0

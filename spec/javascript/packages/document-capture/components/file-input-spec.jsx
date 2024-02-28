@@ -492,4 +492,23 @@ describe('document-capture/components/file-input', () => {
 
     expect(getByText('File loaded').classList.contains('usa-sr-only')).to.be.true();
   });
+
+  it('shows the file name on mobile for a yaml file', async () => {
+    const ymlFile = await getFixtureFile('ial2_test_credential.yml');
+    const { container } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <FileInput label="File" value={ymlFile} />
+      </DeviceContext.Provider>,
+    );
+    expect(container.querySelector('.usa-file-input__preview-heading')).to.be.ok();
+  });
+
+  it('doesnt show the file name on mobile for an image file', () => {
+    const { container } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <FileInput label="File" value={file} />
+      </DeviceContext.Provider>,
+    );
+    expect(container.querySelector('.usa-file-input__preview-heading')).to.not.be.ok();
+  });
 });

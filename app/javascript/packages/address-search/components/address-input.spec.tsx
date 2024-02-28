@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import AddressInput from './address-input';
@@ -30,8 +30,8 @@ describe('AddressInput', () => {
     let server: SetupServer;
     before(() => {
       server = setupServer(
-        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-        rest.post(ADDRESSES_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        http.post(LOCATIONS_URL, () => HttpResponse.json([{ name: 'Baltimore' }])),
+        http.post(ADDRESSES_URL, () => HttpResponse.json(DEFAULT_RESPONSE)),
       );
       server.listen();
     });

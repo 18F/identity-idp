@@ -2,10 +2,6 @@
 
 <% if @presenter.showing_any_partials? %>
   <div class="margin-bottom-4">
-    <% if @presenter.show_personal_key_partial? %>
-      <%= render 'accounts/personal_key', presenter: @presenter %>
-    <% end %>
-
     <% if @presenter.show_password_reset_partial? %>
       <%= render 'accounts/password_reset', presenter: @presenter %>
     <% end %>

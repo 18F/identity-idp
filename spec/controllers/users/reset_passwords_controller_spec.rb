@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_analytics: [:*] do
+RSpec.describe Users::ResetPasswordsController, devise: true do
   let(:password_error_message) do
     t('errors.attributes.password.too_short.other', count: Devise.password_length.first)
   end
@@ -409,6 +409,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_anal
           analytics_hash = {
             success: true,
             errors: {},
+            error_details: {},
             user_id: user.uuid,
             profile_deactivated: false,
             pending_profile_invalidated: false,
@@ -464,6 +465,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_anal
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: {},
           user_id: user.uuid,
           profile_deactivated: true,
           pending_profile_invalidated: false,
@@ -516,6 +518,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_anal
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: {},
           user_id: user.uuid,
           profile_deactivated: false,
           pending_profile_invalidated: false,
@@ -552,6 +555,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_anal
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: {},
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
@@ -583,6 +587,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_anal
         {
           success: true,
           errors: {},
+          error_details: {},
           user_id: user.uuid,
           confirmed: true,
           active_profile: false,
@@ -616,6 +621,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_anal
         {
           success: true,
           errors: {},
+          error_details: {},
           user_id: user.uuid,
           confirmed: false,
           active_profile: false,
@@ -663,6 +669,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true, allowed_extra_anal
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: {},
           user_id: user.uuid,
           confirmed: true,
           active_profile: true,

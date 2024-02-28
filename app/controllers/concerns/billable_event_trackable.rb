@@ -41,7 +41,7 @@ module BillableEventTrackable
   def session_has_been_billed_flag_key
     issuer = sp_session[:issuer]
 
-    if sp_session_ial == 1
+    if !resolved_authn_context_result.identity_proofing?
       "auth_counted_#{issuer}ial1"
     else
       "auth_counted_#{issuer}"
