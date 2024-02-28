@@ -8,13 +8,13 @@ class PwnedPasswordDownload
   attr_reader :destination,
               :num_threads,
               :verbose,
-              :keep_threshold # only keep password hashes that have uses bigger than this
+              :keep_threshold
 
   def initialize(
     destination: 'tmp/pwned',
     num_threads: 64,
     verbose: false,
-    keep_threshold: 10_000
+    keep_threshold: 30
   )
     @destination = destination
     @num_threads = num_threads
