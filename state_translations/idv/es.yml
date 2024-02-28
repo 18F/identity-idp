@@ -1,0 +1,271 @@
+---
+en:
+  idv:
+    accessible_labels:
+      masked_ssn: texto seguro, a partir de %{first_number} y hasta %{last_number}
+    buttons:
+      change_address_label: Actualizar dirección
+      change_label: Actualizar
+      change_ssn_label: Actualizar número de Seguro Social
+      change_state_id_label: Actualizar identificación estatal
+      continue_plain: Continuar
+      mail:
+        send: Solicitar una carta
+    cancel:
+      actions:
+        account_page: Ir a la página de la cuenta
+        exit: Salir de %{app_name}
+        keep_going: No, continuar
+        start_over: Empezar de nuevo
+      description:
+        account_page: página de la cuenta
+        exit:
+          with_sp_html:
+            - Si sale de %{app_name} y vuelve a %{sp_name}, no habrá verificado su identidad.
+            - Aún seguirá teniendo una cuenta de %{app_name}. Puede administrar o eliminar su cuenta en su %{account_page_link_html}.
+          without_sp:
+            - Si sale de la verificación de identidad y va a la página de su cuenta, no habrá verificado su identidad.
+            - Aún seguirá teniendo una cuenta de %{app_name}. Puede administrar o eliminar su cuenta en su %{account_page_text}.
+        gpo:
+          continue: Continúe para empezar de nuevo y verificar su identidad desde el principio.
+          start_over: 'Si borra su información y empieza de nuevo:'
+          start_over_new_address: Para enviar por correo su carta a otra dirección, tendrá que empezar de nuevo y verificar su identidad con la nueva dirección.
+          warnings:
+            - El código de verificación de su carta ya no funcionará.
+            - Tendrá que volver a verificar su identidad desde el principio.
+        hybrid: Si cancela ahora, se le pedirá que vuelva a su computadora para seguir verificando su identidad.
+        start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
+      headings:
+        confirmation:
+          hybrid: Canceló la carga de fotos de su identificación en este teléfono
+        exit:
+          with_sp: Salir de %{app_name} y volver a %{sp_name}
+          without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
+        prompt:
+          hybrid: ¿Está seguro de que desea cancelar la carga de fotos de su identificación en este teléfono?
+          standard: ¿Cancelar la verificación de su identidad?
+          start_over: ¿Empezar de nuevo a verificar su identidad?
+        start_over: Empiece de nuevo a verificar su identidad
+    errors:
+      incorrect_password: La contraseña que ingresó no es la correcta.
+      pattern_mismatch:
+        ssn: 'Ingrese un número de Seguro Social de nueve dígitos.'
+        zipcode: Ingrese un código postal de 5 o 9 dígitos.
+        zipcode_five: Ingrese un código postal de 5 dígitos.
+    failure:
+      attempts_html:
+        one: Por motivos de seguridad, le queda <strong>un intento</strong> para añadir su identificación en línea.
+        other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong> para añadir su identificación en línea.
+      button:
+        try_online: Vuelva a intentarlo en línea
+        warning: Vuelva a intentarlo
+      exceptions:
+        in_person_outage_error_message:
+          post_cta:
+            body: Mientras tanto, todavía puede iniciar el proceso de verificación en persona en %{app_name} y luego acudir a una oficina de correos. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.
+            title: Estamos resolviendo un problema técnico. Es posible que los resultados de su verificación de identidad no se le envíen por correo electrónico sino hasta el %{date}.
+          ready_to_verify:
+            body: Todavía puede acudir a una oficina de correos para completar el proceso de verificación de su identidad. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.
+            contact_html: <a href=\"%{help_url}\" target=\"_blank\">Contacte con el servicio de asistencia de %{app_name}</a> si no ha recibido un correo electrónico con los resultados de su verificación antes del %{date}.
+            title: Estamos resolviendo un problema técnico. Es posible que los resultados de su verificación de identidad no se le envíen por correo electrónico sino hasta el %{date}.
+        internal_error: Hubo un error interno al procesar su solicitud. Vuelva a intentarlo.
+        link: contáctenos
+        post_office_search_error: En este momento, estamos teniendo problemas técnicos. Intente de nuevo buscar una oficina de correos. Si el problema continúa, regrese más tarde.
+        text_html: Vuelva a intentarlo. Si sigue recibiendo estos errores, %{link_html}.
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
+      gpo:
+        rate_limited:
+          heading: Vuelva a intentarlo más tarde
+      phone:
+        heading: No encontramos registros que coincidan con este número de teléfono
+        jobfail: Algo salió mal y no podemos procesar su solicitud en este momento. Vuelva a intentarlo.
+        rate_limited:
+          body: Por motivos de seguridad, limitamos el número de veces que puede intentar verificar su número de teléfono en línea.
+          gpo:
+            button: Verificar por correo
+          heading: 'No pudimos verificar su identidad por teléfono'
+          option_try_again_later_html: 'Cancelar y empezar de nuevo en <strong>%{time_left}</strong>'
+          option_verify_by_mail_html: 'Verificar por correo, lo que tarda de <strong>5 a 10 días</strong>'
+          options_header: 'Usted puede:'
+        timeout: Terminó el tiempo de nuestra solicitud para verificar su información. Vuelva a intentarlo.
+        warning:
+          attempts_html:
+            one: Por motivos de seguridad, le queda <strong>un intento</strong>.
+            other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
+          gpo:
+            button: Verificar por correo
+            explanation: Si no tiene otro número de teléfono para intentarlo, haga la verificación por correo.
+            heading: Verificar por correo
+            how_long_it_takes_html: Esto tarda de <strong>5 a 10 días</strong>.
+          heading: No pudimos asociarlo a este número
+          learn_more_link: 'Obtenga más información sobre el número de teléfono que debe usar'
+          next_steps_html: 'Intente con <strong>otro</strong> número que use a menudo y haya usado por mucho tiempo. Puede ser el número del trabajo o de casa.'
+          try_again_button: 'Intentar con otro número'
+          you_entered: 'Usted ingresó:'
+      sessions:
+        exception: Hubo un error interno al procesar su solicitud.
+        fail_html: 'Por su seguridad, limitamos el número de veces que puede intentar verificar la información personal en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>'
+        heading: No encontramos registros que coincidan con sus datos personales
+        warning: Revise la información que ingresó y vuelva a intentarlo. Los errores más comunes suelen ser un número de Seguro Social o un código postal incorrecto.
+      setup:
+        fail: Llame al %{contact_number} y mencione el código de error %{support_code}.
+        fail_date_html: Llame a nuestro centro de atención antes del %{date_html} para seguir verificando su identidad.
+        heading: Llámenos
+      timeout: El tiempo de espera para procesar su solicitud es superior al habitual en este momento. Vuelva a intentarlo.
+      verify:
+        fail_link_html: Obtenga ayuda en <strong>%{sp_name}</strong>
+        fail_text: para acceder a los servicios.
+        heading: No pudimos verificar su identidad
+    forgot_password:
+      link_text: ¿Olvidó su contraseña?
+      modal_header: ¿Está seguro de que no puede recordar su contraseña?
+      reset_password: Restablecer la contraseña
+      try_again: Vuelva a intentarlo
+      warnings:
+        - Si olvidó su contraseña, deberá restablecerla y llenar el formulario de nuevo.
+        - Tendrá que volver a ingresar su información personal, como su nombre, identificación emitida por el estado, etc.
+    form:
+      address1: Línea de dirección 1
+      address2: Línea de dirección 2
+      city: Ciudad
+      dob: Fecha de nacimiento
+      first_name: Nombre
+      id_number: Número de identificación
+      issuing_state: Estado emisor
+      last_name: Apellido
+      password: Contraseña
+      ssn: Número de Seguro Social
+      ssn_label: Número de Seguro Social
+      state: Estado
+      zipcode: Código postal
+    gpo:
+      alert_info: 'Enviamos una carta con su código de verificación a:'
+      alert_rate_limit_warning_html: No puede solicitar más cartas por ahora. La fecha de su solicitud de carta anterior es el <strong>%{date_letter_was_sent}</strong>.
+      clear_and_start_over: Borre su información y empiece de nuevo
+      did_not_receive_letter:
+        form:
+          instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la carta que recibió.
+        intro:
+          be_patient_html: Recuerde que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias por su paciencia.
+          request_new_letter_link: solicitar una carta nueva
+          request_new_letter_prompt_html: Si no ha recibido su carta, puede <span>%{request_new_letter_link}</span>.
+        title: ¿No recibió su carta?
+      form:
+        instructions: Introduzca el código de 10 caracteres de la carta que recibió.
+        otp_label: Código de verificación
+        submit: Confirmar cuenta
+        title: Confirme su cuenta
+      intro_html: '<p>Si ya recibió su carta, introduzca su código de verificación a continuación. </p><p>Si su carta aún no ha llegado, tenga paciencia, ya que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias por su paciencia.</p>'
+      request_another_letter:
+        button: Solicitar otra carta
+        instructions_html: Solicite otra carta si tiene problemas con la carta actual o si nunca llegó. Las cartas tardan de <strong>5 a 10 días</strong> en llegar.
+        learn_more_link: Obtenga más información sobre la verificación de su dirección por correo
+        title: ¿Solicitar otra carta?
+      return_to_profile: Vuelva a su perfil
+      title: Bienvenido de nuevo
+      wrong_address: ¿No es la dirección correcta?
+    images:
+      come_back_later: Carta con una marca de verificación
+    legal_statement:
+      information_collection: >-
+        La recopilación de esta información cumple los requisitos del título 44 del USC sección 3507, según enmiendas de la sección 2 de la Ley de Reducción de Trámites de 1995. No es necesario que responda a estas preguntas a menos que mostremos un número de control válido de la Oficina de Administración y Presupuesto (OMB). El número de control de la OMB para esta recolección es 3090-0325. Calculamos que tardará un minuto en leer las instrucciones, recopilar los datos y responder las preguntas. Envíe únicamente comentarios relacionados con nuestro tiempo estimado, sugerencias para facilitar este trámite o cualquier otro aspecto de esta recopilación de información a: General Services Administration, Regulatory Secretariat Division (MVCB), ATTN: Lois Mandell/IC 3090-0325, 1800 F Street, NW, Washington, D. C. 20405.
+    messages:
+      activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
+      activated_link: contáctenos
+      clear_and_start_over: Borrar mi información y empezar de nuevo
+      come_back_later_html: <p>Las cartas tardan de <strong>5 a 10 días</strong> en llegar por First-Class Mail del Servicio Postal de los EE. UU. (USPS).</p> <p>Una vez que reciba su carta, inicie sesión en %{app_name} e introduzca su código de verificación cuando se le solicite.</p>
+      come_back_later_no_sp_html: Por ahora, puede volver a su <strong>cuenta de %{app_name}</strong>.
+      come_back_later_password_html: <strong>No olvide su contraseña.</strong><br /> Si restablece su contraseña, el código de verificación de su carta ya no funcionará y tendrá que verificar su identidad de nuevo.
+      come_back_later_sp_html: Por ahora, puede volver a <strong>%{sp}</strong>.
+      confirm: Hemos protegido su información verificada
+      enter_password:
+        by_mail_password_reminder_html: <strong>Recuerde su contraseña.</strong> El código de verificación de su carta no funcionará si restablece su contraseña más adelante.
+        message: '%{app_name} cifrará su información con su contraseña. Esto significa que su información está protegida y solo usted puede acceder a ella o modificarla.'
+        phone_verified: Verificamos su número de teléfono
+      gpo:
+        address_on_file: 'Enviaremos la carta por correo a la dirección que verificó anteriormente:'
+        another_letter_on_the_way: Le enviaremos otra carta
+        info_alert: Tendrá que esperar hasta que reciba su carta para terminar de verificar su identidad.
+        learn_more_verify_by_mail: Obtenga más información sobre la verificación de su dirección por correo
+        letter_on_the_way: Le enviaremos una carta
+        resend: Envíeme otra carta
+        start_over_html: Si esta no es la dirección correcta, tendrá que %{start_over_link_html}.
+        start_over_link_text: empezar de nuevo y verificar con su nueva dirección
+        timeframe_html: Recibirá una carta con un <strong>código de verificación</strong> en un plazo de <strong>5 a 10 días</strong>.
+      otp_delivery_method_description: Si introdujo un teléfono fijo arriba, seleccione “Llamada telefónica” a continuación.
+      personal_key: Esta es su nueva clave personal. Anótela y consérvela en un lugar seguro. La necesitará si llega a perder su contraseña.
+      phone:
+        alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
+        description: Comprobaremos este número con los registros y le enviaremos un código de un solo uso. Esto ayuda a verificar su identidad.
+        failed_number:
+          alert_text: No pudimos asociarlo a este número.
+          gpo_alert_html: Intente con <strong>otro</strong> número o %{link_html}.
+          gpo_verify_link: verificar por correo
+          try_again_html: Intente con <strong>otro</strong> número.
+        rules:
+          - En los Estados Unidos (incluidos los territorios de los EE. UU.)
+          - Su número principal (el que utiliza con más frecuencia)
+      return_to_profile: '‹ Vuelva a su perfil de %{app_name}'
+      select_verification_with_sp: Para protegerle contra el fraude de identidad, contactaremos con usted para confirmar que esta cuenta de %{sp_name} es legítima.
+      select_verification_without_sp: Para protegerle contra el fraude de identidad, contactaremos con usted para confirmar que esta cuenta es legítima.
+      sessions:
+        enter_password_message: Cuando vuelva a ingresar su contraseña, %{app_name} protegerá la información que nos dio, para que solo usted pueda acceder a ella.
+        no_pii: SITIO DE PRUEBA - No use información personal real (para fines de demostración únicamente) - SITIO DE PRUEBA
+      verify_info: Leímos sus datos en su identificación. Revíselos y haga los cambios necesarios antes de enviarlos para verificación.
+      verifying: Verificando…
+    titles:
+      activated: Ya se verificó su identidad
+      come_back_later: Su carta está en camino
+      enter_password: Revise y envíe
+      mail:
+        verify: Verifique su dirección
+      otp_delivery_method: ¿Cómo debemos enviar un código?
+      session:
+        enter_password: Vuelva a ingresar su contraseña de %{app_name}
+        enter_password_letter: Vuelva a ingresar su contraseña de %{app_name} para enviar su carta
+      unavailable: 'Estamos trabajando para corregir un error'
+    troubleshooting:
+      headings:
+        missing_required_items: ¿Le falta alguno de estos puntos?
+        need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
+      options:
+        contact_support: Contacte con el servicio de asistencia de %{app_name}
+        doc_capture_tips: Consejos para tomar fotos nítidas de su identificación
+        get_help_at_sp: Obtenga ayuda en %{sp_name}
+        learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
+        learn_more_verify_by_mail: Obtenga más información sobre la verificación de su dirección por correo
+        learn_more_verify_by_phone: Obtenga más información sobre el número de teléfono que debe usar
+        learn_more_verify_by_phone_in_person: Obtenga más información sobre la verificación de su número de teléfono
+        learn_more_verify_in_person: Obtenga más información sobre la verificación en persona
+        supported_documents: Obtenga más información sobre las identificaciones aceptadas
+        verify_by_mail: Verifique su dirección por correo
+    unavailable:
+      exit_button: 'Salir de %{app_name}'
+      idv_explanation:
+        with_sp_html: '<strong>%{sp}</strong> necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted.'
+        without_sp: 'La agencia a la que está intentando acceder debe asegurarse de que se trata de usted y no de alguien que se hace pasar por usted.'
+      next_steps_html: '%{status_page_link_html} o salga de %{app_name} y vuelva a intentarlo más tarde.'
+      status_page_link: 'Obtenga las actualizaciones en nuestra página de estado'
+      technical_difficulties: Lamentablemente, tenemos problemas técnicos y no podemos verificar su identidad en este momento.
+    warning:
+      attempts_html:
+        one: Por motivos de seguridad, le queda <strong>un intento</strong>.
+        other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
+      sessions:
+        heading: No encontramos registros que coincidan con sus datos personales
+      state_id:
+        cancel_button: Salir de %{app_name}
+        explanation: |
+          Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
+        heading: Estamos trabajando para corregir un error
+        next_steps:
+          items_html:
+            - Vuelva a intentarlo ahora <strong>o</strong>
+            - Salga de %{app_name} y vuelva a intentarlo más tarde
+          preamble: 'Usted puede:'
+        try_again_button: Vuelva a intentarlo
+    welcome:
+      no_js_header: Debe habilitar JavaScript para verificar su identidad.
+      no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe habilitar JavaScript para continuar con este proceso.'

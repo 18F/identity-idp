@@ -1,0 +1,189 @@
+---
+en:
+  user_mailer:
+    account_reinstated:
+      subject: Su cuenta está desbloqueada
+      we_have_finished_reviewing: Terminamos de revisar su cuenta de %{app_name} y ya puede volver a iniciar sesión con los datos de su cuenta.
+    account_rejected:
+      intro: No pudimos verificar su identidad con %{app_name}. Contacte con la agencia a cuyo servicio está intentando acceder.
+      subject: No pudimos verificar su identidad
+    account_reset_cancel:
+      intro_html: Este correo electrónico confirma que usted canceló su solicitud para eliminar su cuenta de %{app_name_html}.
+      subject: Solicitud cancelada
+    account_reset_complete:
+      intro_html: Este correo electrónico confirma que usted eliminó su cuenta de %{app_name_html}.
+      subject: Cuenta eliminada
+    account_reset_granted:
+      button: Sí, continuar eliminando
+      cancel_link_text: cancele
+      help_html: Si no desea eliminar su cuenta, %{cancel_account_reset_html}.
+      intro_html: Su período de espera de 24 horas finalizó. Complete el paso 2 del proceso.<br><br>Si no ha podido encontrar sus métodos de autenticación, seleccione “confirmar eliminación” para eliminar su cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los sitios web gubernamentales participantes que utilizan %{app_name}, puede crear una nueva cuenta de %{app_name} con la misma dirección de correo electrónico después de que se elimine su cuenta.<br><br>
+      subject: Elimine su cuenta de %{app_name}
+    account_reset_request:
+      cancel: ¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name} para cancelar.
+      header: Su cuenta será eliminada en 24 horas
+      intro_html: 'Como medida de seguridad, %{app_name} usa un proceso de dos pasos para eliminar su cuenta:<br><br> Paso uno: hay un período de espera de 24 horas si perdió el acceso a sus métodos de autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de autenticación, puede iniciar sesión en su cuenta de %{app_name} para cancelar esta solicitud.<br><br> Paso dos: Después de su período de espera de 24 horas, recibirá un correo electrónico para pedirle que confirme la eliminación de su cuenta de %{app_name}. Su cuenta no será eliminada hasta que usted confirme.'
+      subject: Cómo eliminar su cuenta de %{app_name}
+    account_verified:
+      change_password_link: cambie su contraseña
+      contact_link: contáctenos
+      intro_html: El %{date}, verificó correctamente su identidad con %{sp_name} usando %{app_name}. Si usted no efectuó esta acción, vaya a %{contact_link_html} e inicie sesión para %{change_password_link_html}.
+      subject: Verificó su identidad con %{sp_name}
+    add_email:
+      footer: Este vínculo vence en %{confirmation_period}.
+      header: Gracias por agregar un correo electrónico. Haga clic en el vínculo siguiente, o copie y pegue el vínculo completo en su navegador.
+      subject: Confirme su correo electrónico
+    add_email_associated_with_another_account:
+      help_html: Si no solicitó un nuevo correo electrónico o sospecha que hubo un error, visite %{help_link_html} de %{app_name_html} o %{contact_link_html}.
+      intro_html: Esta dirección de correo electrónico ya está asociada con una cuenta de %{app_name_html}, por lo que no podemos agregarla a otra cuenta. Primero, debe eliminarla o quitarla de la cuenta con la que está asociada. Para hacerlo, siga este vínculo e inicie sesión con esta dirección de correo electrónico. Si no está intentando agregar esta dirección de correo electrónico a una cuenta, puede ignorar este mensaje.
+      link_text: Ir a %{app_name}
+      reset_password_html: Si no recuerda su contraseña, vaya a %{app_name_html} para restablecerla.
+    contact_link_text: contáctenos
+    email_added:
+      header: Se agregó una nueva dirección de correo electrónico a su perfil de %{app_name}.
+      help: Si usted no hizo este cambio, inicie sesión en su perfil y administre sus direcciones de correo electrónico. Le recomendamos que también cambie su contraseña.
+      subject: Se añadió una nueva dirección de correo electrónico
+    email_confirmation_instructions:
+      create_new_account: cree una cuenta nueva.
+      email_not_found: No se encontró el correo electrónico
+      first_sentence:
+        confirmed: ¿Está intentando cambiar su dirección de correo electrónico?
+        forgot_password: Intentó restablecer su contraseña de %{app_name}, pero no tenemos una cuenta vinculada a esta dirección de correo electrónico.
+        unconfirmed: Gracias por enviar su dirección de correo electrónico.
+      footer: Este vínculo vence en %{confirmation_period}.
+      header: '%{intro} Haga clic en el vínculo siguiente, o copie y pegue el vínculo completo en su navegador.'
+      link_text: Confirmar la dirección de correo electrónico
+      request_with_diff_email: Puede solicitar su contraseña usando una dirección de correo electrónico diferente que esté conectada a su cuenta de %{app_name}.
+      subject: Confirme su correo electrónico
+      try_diff_email: Pruebe con una dirección de correo electrónico diferente
+      use_this_email: O use esta dirección de correo electrónico y
+    email_deleted:
+      header: Se eliminó una dirección de correo electrónico de su perfil de %{app_name}.
+      help_html: Si no deseaba eliminar esta dirección de correo electrónico, visite %{help_link_html} de %{app_name_html} o %{contact_link_html}.
+      subject: Dirección de correo electrónico eliminada
+    help_link_text: Centro de ayuda
+    in_person_completion_survey:
+      body:
+        cta:
+          callout: Haga clic en el botón siguiente para empezar.
+          label: Responda a nuestra encuesta
+        greeting: Hola:
+        intent: Deseamos conocer su experiencia al verificar su identidad en persona en la oficina de correos.
+        privacy_html: Sus respuestas a esta encuesta estarán protegidas conforme a los siguientes <a href=\"%{url}\">estándares de privacidad y seguridad</a>.
+        request_description: Responda a una breve encuesta anónima; sus comentarios nos ayudarán a mejorar nuestra respuesta a sus necesidades.
+        thanks: Gracias por usar %{app_name}.
+      header: Dedique un minuto para darnos su opinión acerca de nuestro servicio
+      subject: Cuéntenos su experiencia reciente con %{app_name}
+    in_person_deadline_passed:
+      body:
+        canceled: Venció el plazo para verificar su identidad en persona, y cancelamos automáticamente su solicitud con el fin de proteger su información personal.
+        cta: Empezar de nuevo
+        greeting: Hola:
+        restart: Puede iniciar una nueva solicitud para verificar su identidad con %{partner_agency}.
+      header: Venció el plazo para verificar su identidad en persona
+      subject: Venció su solicitud para verificar su identidad en persona
+    in_person_failed:
+      body:
+        with_cta: Haga clic en el botón o copie el vínculo siguiente para volver a intentar verificar su identidad en línea con %{sp_or_app_name}. Si sigue teniendo problemas, contacte con la agencia a la que está intentando acceder.
+        without_cta: Vuelva a intentar verificar su identidad en el sitio web de %{sp_name}. Si sigue teniendo problemas, contacte con la agencia a la que está intentando acceder.
+      intro: No se pudo verificar su identidad en la oficina de correos de %{location} el %{date}.
+      subject: No se pudo verificar su identidad en persona
+      verifying_identity: 'Cuando verifique su identidad:'
+      verifying_step_not_expired: Su licencia de conducir o identificación emitida por el estado debe estar vigente. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
+    in_person_failed_suspected_fraud:
+      body:
+        help_center_html: Si necesita más ayuda, puede <a href=\"%{help_center_url}\">visitar nuestro Centro de ayuda</a> o contactar con la agencia a la que está intentando acceder.
+        intro: Entendemos que estaba intentando verificar su identidad usando %{app_name}; sin embargo, su identidad no pudo ser verificada en la oficina de correos de %{location} el %{date}.
+      greeting: Hola:
+      subject: No se pudo verificar su identidad en persona
+    in_person_outage_notification:
+      body:
+        closing_html: Nos disculpamos por el retraso en el servicio. Si tiene alguna pregunta o no recibe su resultado antes del 1 de junio, <a href=\"%{contact_us_url}\">contacte con el servicio de atención al cliente de %{app_name}</a>.
+        heading: Demora de los resultados de la verificación en persona del 20 al 30 de mayo
+        instructions: Por ahora, si intentó completar el proceso de verificación de identidad en una oficina de correos, no es necesario que vuelva a intentarlo. Le aseguramos que los resultados de su verificación no se perdieron; están almacenados de forma segura y se le enviarán por correo electrónico una vez que solucionemos el problema técnico.
+        intro_html: Estamos resolviendo un problema técnico que está retrasando el envío de los correos electrónicos con los resultados de la verificación en persona. <strong>Si intentó verificar su identidad en una oficina de correos entre el 20 y el 29 de mayo, es posible que no reciba los resultados por correo electrónico sino hasta el martes 30 de mayo.</strong>
+      subject: 'Demora de los resultados de la verificación en persona de %{app_name}'
+    in_person_ready_to_verify:
+      subject: Está listo para verificar su identidad con %{app_name} en persona
+    in_person_ready_to_verify_reminder:
+      greeting: Hola:
+      heading:
+        one: Le queda %{count} día para verificar su identidad en persona
+        other: Le quedan %{count} días para verificar su identidad en persona
+      intro: No pierda la oportunidad de verificar su identidad en la oficina de correos de su localidad. Siga este paso para acceder a %{sp_name}.
+      subject:
+        one: Verifique su identidad en una oficina de correos en el próximo día
+        other: Verifique su identidad en una oficina de correos en los próximos %{count} días
+    in_person_verified:
+      greeting: Hola:
+      intro: El %{date}, verificó correctamente su identidad en la oficina de correos de %{location}.
+      next_sign_in:
+        with_sp:
+          with_cta: A continuación, haga clic en el botón o copie el vínculo siguiente para acceder a %{sp_name} e iniciar sesión.
+          without_cta: Ya puede iniciar la sesión en el sitio web de %{sp_name}.
+        without_sp: Luego, haga clic en el botón o copie el vínculo siguiente para iniciar sesión en %{app_name}.
+      sign_in: Iniciar sesión
+      subject: Logró verificar su identidad con %{app_name}
+      warning_contact_us_html: Si usted no intentó verificar su identidad en persona, inicie sesión en <a href=\"%{reset_password_url}\"> para restablecer su contraseña</a>. Para informar de esto, <a href=\"%{contact_us_url}\">contacte con el servicio de asistencia de %{app_name}</a>.
+    letter_reminder:
+      info_html: La carta que recibirá próximamente contiene un código de verificación que nos ayudará a verificar su dirección. Para completar el proceso de verificación de identidad, inicie sesión en %{link_html} e ingrese el código de verificación.
+      subject: Enviamos una carta a la dirección de su expediente
+    letter_reminder_14_days:
+      body_html: <p>Usted solicitó una carta con un código de verificación el <strong>%{date_letter_was_sent}</strong>.</p><p>Inicie sesión de nuevo en %{app_name} e ingrese el código de verificación para terminar de verificar su identidad. %{help_link}.</p>
+      did_not_get_a_letter_html: Si no recibió esta carta, %{another_letter_link_html}.
+      finish: Termine de verificar su identidad
+      sign_in_and_request_another_letter: inicie sesión para solicitar otra carta
+      subject: Termine de verificar su identidad
+    new_device_sign_in:
+      disavowal_link: restablezca su contraseña
+      help_html: Si usted no hizo este cambio, %{disavowal_link_html}. Para obtener más ayuda, visite %{app_name_html} %{help_link_html} o %{contact_link_html}.
+      info: 'Su cuenta de %{app_name} acaba de ser usada para iniciar sesión en un nuevo dispositivo.'
+      subject: Nuevo inicio de sesión con su cuenta de %{app_name}
+    password_changed:
+      disavowal_link: restablezca su contraseña
+      help_html: Si usted no hizo este cambio, %{disavowal_link_html}. Para obtener más ayuda, visite %{app_name_html} %{help_link_html} o %{contact_link_html}.
+      intro_html: Tiene una contraseña nueva para su cuenta de %{app_name_html}.
+    personal_key_regenerated:
+      help_html: <p>Se acaba de emitir una nueva clave personal de 16 caracteres para su cuenta de %{app_name}. Está recibiendo este correo electrónico comprobar que se trata de usted. </p><p>Si acaba de iniciar sesión y restablecer su clave personal, todo está bien. No tiene que hacer nada.</p><p>Si no acaba de restablecer su clave personal o no está seguro, siga de inmediato estos pasos para proteger su cuenta:<ol><li><strong><a href=\"%{reset_password_url}\">Cambie su contraseña</a>.</strong> Elija una contraseña que no haya usado aún con esta cuenta. </li><li><strong><a href=\"%{account_url}\">Inicie sesión en su cuenta de %{app_name}</a></strong> y compruebe que reconoce toda la información de la página de su cuenta, incluidos los métodos que usa para la autenticación de dos factores, como número de teléfono, aplicación de autenticación o clave de seguridad.</li><li><strong>En la <a href=\"%{account_url}\">página de su cuenta de %{app_name}</a>, solicite una nueva clave personal</strong>. Recuerde, no la comparta nunca a menos que la esté usando para iniciar sesión en un sitio web de confianza que utilice %{app_name}.</li></ol></p><br>Gracias,<br>El equipo de %{app_name}
+      intro: Nueva clave personal emitida
+      subject: Alerta de seguridad de la cuenta
+    personal_key_sign_in:
+      help_html: <p>Su cuenta de %{app_name}, acaba de ser usada para iniciar sesión con su clave personal de 16 caracteres. Está recibiendo este correo electrónico para comprobar que se trata de usted.</p><p>Si acaba de iniciar sesión con su clave personal, todo está bien. No tiene que hacer nada.</p><p>Si no inició sesión con una clave personal, o si no está seguro, siga de inmediato estos pasos para proteger su cuenta:<ol><li><strong><a href=\"%{reset_password_url}\">Cambie su contraseña</a>.</strong> Elija una contraseña que no haya usado aún con esta cuenta.</li><li><strong><a href=\"%{account_url}\">Inicie sesión en su cuenta de %{app_name}</a></strong> y compruebe que reconoce toda la información de la página de su cuenta, incluidos los métodos que usa para la autenticación de dos factores, como número de teléfono, aplicación de autenticación o clave de seguridad.</li><li><strong>En la <a href=\"%{account_url}\">página de su cuenta de %{app_name}</a>, solicite una nueva clave personal.</strong> Recuerde, no la comparta nunca a menos que la esté usando para iniciar sesión en un sitio web de confianza que utilice %{app_name}.</li></ol></p><br>Gracias,<br>El equipo de %{app_name}
+      intro: Clave personal utilizada para iniciar sesión
+      subject: Alerta de seguridad de la cuenta
+    phone_added:
+      disavowal_link: restablezca su contraseña
+      help_html: Si usted no hizo este cambio, inicie sesión en su perfil y administre sus números de teléfono. También le recomendamos que %{disavowal_link_html}.
+      intro: Se agregó un nuevo número de teléfono a su perfil de %{app_name}.
+      subject: Nuevo número de teléfono añadido
+    please_reset_password:
+      call_to_action: 'Como medida de precaución, desactivamos su contraseña para mantener su información segura. Siga los pasos a continuación para restablecer su contraseña y proteger su cuenta:'
+      intro: Detectamos actividad inusual en su cuenta de %{app_name}. Nos preocupa que alguien que no sea usted pueda estar intentando acceder a su información.
+      learn_more_link_text: Obtenga más información sobre sus opciones
+      reminder_html: Le recordamos que <strong>%{app_name} nunca le pedirá sus credenciales de inicio de sesión ni por teléfono ni por correo electrónico</strong>. Puede tomar otras medidas para proteger su cuenta habilitando la autenticación de dos factores.
+      step_1: Visite el sitio web de %{app_name} y seleccione iniciar sesión.
+      step_2: Seleccione “¿Olvidó su contraseña?” en la parte inferior de la página.
+      step_3: Siga las instrucciones para restablecer su contraseña.
+      subject: Actividad inusual: restablezca su contraseña de %{app_name}
+    reset_password_instructions:
+      footer: Este vínculo vence en %{expires} horas.
+      gpo_letter_description: "Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad."
+      gpo_letter_header: Su carta está en camino
+      header: Para terminar de restablecer su contraseña, haga clic en el vínculo siguiente, o copie y pegue el vínculo completo en su navegador.
+      link_text: Restablezca su contraseña
+      subject: Restablezca su contraseña
+    signup_with_your_email:
+      help_html: Si usted no solicitó una cuenta nueva o sospecha que hubo un error, visite la %{help_link_html} de %{app_name_html} o %{contact_link_html}.
+      intro_html: Esta dirección de correo electrónico ya está asociada con una cuenta de %{app_name_html}, por lo tanto no podemos usarla para crear una cuenta nueva. Para iniciar una sesión con su cuenta actual, siga este vínculo.  Si no está intentando iniciar sesión con esta dirección de correo electrónico, puede ignorar este mensaje.
+      link_text: Ir a %{app_name}
+      reset_password_html: Si no recuerda su contraseña, vaya a %{app_name_html} para restablecerla.
+    suspended_create_account:
+      message: Hubo un problema al crear su cuenta de %{app_name} con esta dirección de correo electrónico. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.
+      subject: No podemos crear su cuenta
+    suspended_reset_password:
+      message: Hubo un problema al restablecer su contraseña. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.
+      subject: No pudimos restablecer su contraseña
+    suspension_confirmed:
+      contact_agency: Contacte con la agencia a cuyo servicio está intentando acceder.
+      remain_locked: Terminamos la revisión de su cuenta de %{app_name} y la cuenta permanecerá bloqueada.
+      subject: Su cuenta está bloqueada
