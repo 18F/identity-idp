@@ -15,7 +15,7 @@ class NullServiceProviderSession
     view_context.root_url
   end
 
-  def mfa_expiration_interval
+  def mfa_expiration_interval(_authentication_context)
     IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
   end
 
