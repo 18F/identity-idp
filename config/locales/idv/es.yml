@@ -145,7 +145,7 @@ es:
         warning: Revise la información que ingresó y vuelva a intentarlo. Los errores
           más comunes suelen ser un número de Seguro Social o un código postal incorrecto.
       setup:
-        fail_date_html: Llame a nuestro centro de atención antes del %{date_html}
+        fail_date_html: Llame a nuestro centro de atención antes del <strong>%{date_html}</strong>
           para seguir verificando su identidad.
         fail_html: Llame al <strong>%{contact_number}</strong> y facilíteles el código
           de <br/>error <strong>%{support_code}</strong>.
