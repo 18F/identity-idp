@@ -9,6 +9,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_liveness_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_liveness)
   end
+  let(:doc_auth_success_with_face_match_fail) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
+  end
   let(:failure_response_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
@@ -66,6 +69,30 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.successful_result?).to eq(true)
       expect(response.to_h[:vendor]).to eq('TrueID')
     end
+
+    context 'when a portrait match is returned' do
+      context 'when selfie status if failed' do
+        let(:response) do
+          described_class.new(doc_auth_success_with_face_match_fail, config, liveness_enabled, request_context)
+        end
+        it 'is a successful result' do
+          expect(response.selfie_status).to eq(:fail)
+          expect(response.success?).to eq(true)
+          expect(response.to_h[:vendor]).to eq('TrueID')
+        end
+      end
+      context 'when selfie status if failed' do
+        let(:response) do
+          described_class.new(success_with_liveness_response, config, liveness_enabled, request_context)
+        end
+        it 'is a successful result' do
+          expect(response.selfie_status).to eq(:success)
+          expect(response.success?).to eq(true)
+          expect(response.to_h[:vendor]).to eq('TrueID')
+        end
+      end
+    end
+
     it 'has no error messages' do
       expect(response.error_messages).to be_empty
     end
