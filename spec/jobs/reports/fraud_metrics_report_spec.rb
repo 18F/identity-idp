@@ -11,9 +11,7 @@ RSpec.describe Reports::FraudMetricsReport do
   end
 
   let(:expected_s3_paths) do
-    [
-
-    ]
+    []
   end
 
   let(:s3_metadata) do
