@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AccountReset::RequestController, allowed_extra_analytics: [:*] do
+  include ActionView::Helpers::DateHelper
   let(:user) { create(:user, :with_authentication_app) }
   describe '#show' do
     it 'renders the page' do
@@ -31,6 +32,41 @@ RSpec.describe AccountReset::RequestController, allowed_extra_analytics: [:*] do
       expect(@analytics).to receive(:track_event).with('Account deletion and reset visited')
 
       get :show
+    end
+
+    context 'non-fraud user' do
+      it 'should have @account_reset_deletion_period_interval to match regular wait period' do
+        stub_sign_in_before_2fa(user)
+
+        get :show
+        current_time = Time.zone.now
+        time_in_hours = distance_of_time_in_words(
+          current_time,
+          current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+          true,
+          accumulate_on: :hours,
+        )
+        expect(controller.view_assigns['account_reset_deletion_period_interval']).
+          to eq(time_in_hours)
+      end
+    end
+
+    context 'fraud user' do
+      let(:user) { create(:user, :fraud_review_pending) }
+      it 'should have @account_reset_deletion_period_interval to match fraud wait period' do
+        stub_sign_in_before_2fa(user)
+
+        get :show
+        current_time = Time.zone.now
+        time_in_hours = distance_of_time_in_words(
+          current_time,
+          current_time + IdentityConfig.store.account_reset_fraud_user_wait_period_days.days,
+          true,
+          accumulate_on: :hours,
+        )
+        expect(controller.view_assigns['account_reset_deletion_period_interval']).
+          to eq(time_in_hours)
+      end
     end
   end
 
