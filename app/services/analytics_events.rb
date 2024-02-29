@@ -2850,6 +2850,8 @@ module AnalyticsEvents
 
   # @param [Integer] sdk_error_code SDK code for the error encountered
   # @param [String] sdk_error_message SDK message for the error encountered
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # User encountered an error with the SDK selfie process
   # Error code 1: camera permission not granted
   # Error code 2: unexpected errors
