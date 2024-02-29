@@ -964,6 +964,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
   # @param [String] flow_path
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # The document capture image uploaded was locally validated during the IDV process
@@ -972,6 +973,7 @@ module AnalyticsEvents
     errors:,
     remaining_submit_attempts:,
     flow_path:,
+    liveness_checking_required:,
     submit_attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
@@ -988,6 +990,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      liveness_checking_required: liveness_checking_required,
       **extra,
     )
   end
@@ -1010,6 +1013,7 @@ module AnalyticsEvents
   # @param [Boolean] attention_with_barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
@@ -1051,6 +1055,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     client_image_metrics:,
     flow_path:,
+    liveness_checking_required:,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
@@ -1111,6 +1116,7 @@ module AnalyticsEvents
       portrait_match_results:,
       image_metrics:,
       address_line2_present:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -1121,6 +1127,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
@@ -1131,6 +1138,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     pii_like_keypaths:,
     flow_path:,
+    liveness_checking_required:,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
@@ -1148,6 +1156,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
+      liveness_checking_required: liveness_checking_required,
       **extra,
     )
   end

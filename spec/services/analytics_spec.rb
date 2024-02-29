@@ -249,6 +249,7 @@ RSpec.describe Analytics do
       remaining_submit_attempts: nil,
       client_image_metrics: nil,
       flow_path: nil,
+      liveness_checking_required: nil,
       'DocumentName' => 'some_name',
     )
   end
