@@ -3,62 +3,59 @@ es:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - '<strong>Los códigos de respaldo son el método de autenticación menos
-          utilizado,</strong> ya que se pueden perder con facilidad. Prueba una
-          opción más segura, como una aplicación de autenticación o una clave de
-          seguridad.'
-        - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o
-          escribir. Ingresará un código cada vez que inicie sesión.
-      are_you_sure_title: '¿Está seguro de que desea usar códigos de respaldo?'
-      caution_codes: Cada código solo puede usarse una vez. Te daremos nuevos códigos
-        una vez que hayas usado los diez.
-      caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
-        iniciar sesión.
-      confirm_delete: '¿Estás seguro de que deseas eliminar tus códigos de respaldo?'
+      - "<strong>Los códigos de respaldo son el método de autenticación menos utilizado,</strong>
+        ya que se pueden perder con facilidad. Prueba una opción más segura, como
+        una aplicación de autenticación o una clave de seguridad."
+      - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o escribir.
+        Ingresará un código cada vez que inicie sesión.
+      are_you_sure_title: "¿Está seguro de que desea usar códigos de recuperación?"
+      caution_codes: Cada código solo se puede usar una vez. Cuando haya usado los
+        10 códigos, le enviaremos códigos nuevos.
+      caution_delete: Si elimina sus códigos de recuperación, ya no podrá usarlos
+        para iniciar sesión.
+      confirm_delete: "¿Está seguro de que desea eliminar sus códigos de recuperación?"
       generate: Obtener códigos
-      last_code: Usted utilizó el último código de seguridad. Imprima, copie o
-        descargue los códigos que aparecen a continuación. Puede introducir
-        estos nuevos códigos la próxima vez que se registre.
+      last_code: Ya usó su último código de recuperación. Imprima, copie o descargue
+        los códigos siguientes. Puede usar estos códigos nuevos la próxima vez que
+        inicie sesión.
       regenerate: Obtener nuevos códigos
-      saved: He guardado mis códigos de seguridad en un lugar seguro.
-      subinfo_html: '<strong>Si pierdes tu dispositivo, necesitarás estos códigos para
-        iniciar sesión en %{app_name}.</strong> Guárdalos o imprímelos y
-        consérvalos en un lugar seguro.'
-      title: Guarda estos códigos de seguridad
+      saved: Guardé mis códigos de recuperación en un lugar seguro.
+      subinfo_html: "<strong>Si pierde su dispositivo, necesitará estos códigos para
+        iniciar sesión en %{app_name}.</strong> Guárdelos o imprímalos, y consérvelos
+        en un lugar seguro."
+      title: Guarde estos códigos de recuperación
     backup_code_regenerate:
-      caution: Si vuelve a generar sus códigos de respaldo, recibirá un nuevo conjunto
-        de códigos de respaldo. Sus códigos de copia de seguridad originales ya
-        no serán válidos.
-      confirm: '¿Está seguro de que desea volver a generar sus códigos de copia de
-        seguridad?'
+      caution: Si vuelve a generar sus códigos de recuperación, recibirá un conjunto
+        nuevo de códigos. Sus códigos de recuperación originales ya no serán válidos.
+      confirm: "¿Está seguro de que desea volver a generar sus códigos de recuperación?"
     backup_code_reminder:
-      body_info: Si por alguna razón no puede acceder a su método de autenticación
-        principal, puede usar códigos de recuperación para ingresar a su cuenta.
+      body_info: Si no puede acceder a su método de autenticación principal, puede
+        usar códigos de recuperación para acceder a su cuenta.
       have_codes: Tengo mis códigos
-      heading: '¿Todavía tiene sus códigos de recuperación?'
-      need_new_codes: Necesito un nuevo conjunto de códigos de recuperación
+      heading: "¿Todavía tiene sus códigos de recuperación?"
+      need_new_codes: Necesito un conjunto nuevo de códigos de recuperación
     buttons:
       back: Atrás
       cancel: Sí, cancelar
       confirm: Confirmar
       continue: Continuar
-      delete: Borrar
-      disable: Borrar
+      delete: Eliminar
+      disable: Eliminar
       edit: Editar
       manage: Administrar
-      resend_confirmation: Reenviar instrucciones de confirmación
-      send_link: Enviar enlace
+      resend_confirmation: Volver a enviar instrucciones de confirmación
+      send_link: Enviar vínculo
       send_one_time_code: Enviar código
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
         update: Actualizar
-      upload_photos: Subir fotos
+      upload_photos: Cargar fotos
     confirmation:
       show_hdr: Crear una contraseña segura
     email:
       buttons:
-        delete: Eliminar correo electrónico
+        delete: Eliminar dirección de correo electrónico
     example: 'Ejemplo:'
     messages:
       remember_device: Recuerde este navegador
@@ -66,91 +63,88 @@ es:
     passwords:
       edit:
         buttons:
-          submit: Cambiar la contraseña
+          submit: Cambiar contraseña
         labels:
           password: Nueva contraseña
     personal_key:
-      alternative: '¿No tiene su clave personal?'
+      alternative: "¿No tiene su clave personal?"
       confirmation_label: Clave personal
       download: Descargar (archivo de texto)
-      instructions: Confirme que tiene una copia de su clave personal ingresándola a
-        continuación.
-      required_checkbox: He guardado mi clave personal en un lugar seguro.
+      instructions: Confirme que tiene una copia de su clave personal ingresándola
+        a continuación.
+      required_checkbox: Guardé mi clave personal en un lugar seguro.
       title: Ingrese su clave personal
     personal_key_partial:
       acknowledgement:
-        header: Necesitarás tu clave personal si olvidas tu contraseña. Mantenla en un
-          lugar seguro y no la compartas con nadie.
-        help_link_text: Más información sobre la clave personal
-        text: 'Si restableces tu contraseña sin tu clave personal, tendrás que volver a
-          verificar tu identidad.'
-      header: Guarda tu clave personal
+        header: Necesitará su clave personal si olvida su contraseña. Consérvela en
+          un lugar seguro y no la comparta con nadie.
+        help_link_text: Obtenga más información sobre la clave personal
+        text: Si restablece su contraseña y no tiene su clave personal, tendrá que
+          verificar nuevamente su identidad.
+      header: Guarde su clave personal
     phone:
       buttons:
-        delete: Eliminar el teléfono
+        delete: Eliminar teléfono
     piv_cac_delete:
-      caution: Si retira su tarjeta PIV/CAC, no podrá usarla para acceder a su cuenta
-        %{app_name}.
-      confirm: '¿Estás seguro de que deseas eliminar tu tarjeta PIV/CAC?'
+      caution: Si elimina su tarjeta PIV o CAC, no podrá usarla para acceder a su
+        cuenta de %{app_name}.
+      confirm: "¿Está seguro de que desea eliminar su tarjeta PIV o CAC?"
     piv_cac_login:
-      submit: Inserte su PIV/CAC
+      submit: Inserte su tarjeta PIV o CAC
     piv_cac_mfa:
-      submit: Presentar tarjeta PIV/CAC
+      submit: Presentar la tarjeta PIV o CAC
     piv_cac_setup:
-      nickname: Apodo PIV/CAC
+      nickname: Alias de la tarjeta PIV o CAC
       no_thanks: No, gracias
-      piv_cac_intro_html: Le pediremos que presente su tarjeta PIV/CAC <strong>cada
-        vez que inicie sesión</strong> como parte de la autenticación de dos
-        factores.<br><br>Después de hacer clic en “Agregar PIV/CAC”, su
-        navegador le solicitará su PIN PIV/CAC y le pedirá que seleccione un
-        certificado.
-      submit: Agregar tarjeta PIV/CAC
+      piv_cac_intro_html: Le pediremos que presente su tarjeta PIV o CAC <strong>cada
+        vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después
+        de hacer clic en “Agregar tarjeta PIV o CAC”, su navegador le pedirá el PIN
+        de su tarjeta PIV o CAC y que seleccione un certificado.
+      submit: Agregar tarjeta PIV o CAC
     registration:
       labels:
         email: Ingrese su dirección de correo electrónico
-        email_language: Seleccione su preferencia de idioma de correo electrónico
+        email_language: Seleccione su preferencia de idioma del correo electrónico
     spam_protection:
       description: Utilizamos reCAPTCHA como protección contra el correo no deseado
-        automatizado. Marque la casilla de abajo para continuar.
+        automatizado. Marque la casilla siguiente para continuar.
     ssn:
-      show: Mostrar Número de Seguro Social
+      show: Mostrar número de Seguro Social
     totp_delete:
       caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
-        a su cuenta %{app_name}.
-      confirm: '¿Seguro que quieres eliminar tu aplicación de autenticación?'
+        a su cuenta de %{app_name}.
+      confirm: "¿Está seguro de que desea eliminar su aplicación de autenticación?"
     totp_setup:
       totp_intro: Configure una aplicación de autenticación para iniciar sesión con
         códigos de seguridad temporales.
-      totp_step_1: Darle un apodo
-      totp_step_1a: Si agrega más de una aplicación, sabrá cuáles.
-      totp_step_2: Abra su app de autenticación.
-      totp_step_3: Escanee este código de barras QR con su aplicación
-      totp_step_4: Ingrese el código temporal de su aplicación
+      totp_step_1: Asígnele un alias.
+      totp_step_1a: Si agrega más de una aplicación, podrá distinguirlas.
+      totp_step_2: Abra su aplicación de autenticación.
+      totp_step_3: Escanee este código de barras QR con su aplicación.
+      totp_step_4: Ingrese el código temporal de su aplicación.
     two_factor:
-      backup_code: Código de respaldo
+      backup_code: Código de recuperación
       personal_key: Clave personal
-      try_again: Use otro número de teléfono.
+      try_again: Use otro número de teléfono
     validation:
       required_checkbox: Marque esta casilla para continuar
     webauthn_platform_setup:
       continue: Continuar
-      info_text: Tendrá que configurar un método de autenticación adicional después de
-        establecer el desbloqueo con la cara o con la huella digital.
-      intro_html: <p>Autentifíquese de la misma forma que desbloquea su dispositivo,
-        ya sea con su cara o huella digital, una contraseña u otro
-        método.</p><p>Si utiliza un gestor de contraseñas como iCloud Keychain o
-        Google Password Manager, es posible que le pida que guarde una llave de
-        acceso. Esto le permite autentificar en cualquier dispositivo con ese
-        gestor de contraseñas. %{link}</p>
-      intro_link_text: Más información sobre el uso de varios dispositivos.
-      nickname: Apodo de dispositivo.
-      nickname_hint: Si agrega más dispositivos para desbloquear con la cara o con la
-        huella digital, podrá distinguirlos.
+      info_text: Tendrá que configurar un método de autenticación adicional después
+        de establecer el desbloqueo facial o táctil.
+      intro_html: "<p>Autentíquese de la misma forma que desbloquea su dispositivo,
+        sea con su rostro o huella dactilar, contraseña u otro método.</p><p>Si utiliza
+        un administrador de contraseñas como iCloud Keychain o Google Password Manager,
+        es posible que le pida que guarde una clave de paso. Esto le permite autenticarse
+        en cualquier dispositivo con ese administrador de contraseñas. %{link}</p>"
+      intro_link_text: Obtenga más información sobre el uso de varios dispositivos.
+      nickname: Alias del dispositivo.
+      nickname_hint: Si agrega más dispositivos para desbloqueo facial o táctil, podrá
+        distinguirlos.
     webauthn_setup:
       continue: Continuar
-      intro_html: '<p>Añada una clave de seguridad que cumpla el estándar FIDO como
-        método de autenticación. Puede añadir tantas claves de seguridad como
-        desee. Para empezar, primero asigne un apodo a su clave de
-        seguridad.</p>'
-      nickname: Apodo clave de seguridad
-      saving: Guardando sus credenciales …
+      intro_html: "<p>Añada una clave de seguridad que cumpla el estándar de FIDO
+        como su método de autenticación. Puede añadir tantas claves de seguridad como
+        desee. Para empezar, asigne un alias a su clave de seguridad.</p>"
+      nickname: Alias de la clave de seguridad
+      saving: Guardando sus credenciales…

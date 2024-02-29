@@ -5,47 +5,46 @@ es:
       actions:
         cancel: Volver al perfil
         delete: Eliminar cuenta
-      bullet_1: Usted no tendrá una %{app_name} cuenta.
-      bullet_2_basic: Eliminaremos su dirección de correo electrónico, contraseña y
-        número de teléfono
-      bullet_2_verified: '%{app_name} borrará su email, contraseña, número de
-        teléfono, nombre, dirección, fecha de nacimiento y número de Seguro
-        Social de nuestro sistema.'
-      bullet_3: Usted no podrá tener acceso seguro a su información usando %{app_name}
-      bullet_4: Notificaremos a las agencias a las que acceda con %{app_name} que no
-        ya tengo una cuenta
-      heading: '¿Está seguro que desea eliminar su cuenta?'
+      bullet_1: No tendrá una cuenta de %{app_name}.
+      bullet_2_basic: Eliminaremos su dirección de correo electrónico, contraseña
+        y número de teléfono.
+      bullet_2_verified: "%{app_name} eliminará su dirección de correo electrónico,
+        contraseña, número de teléfono, nombre, dirección, fecha de nacimiento y número
+        de Seguro Social de nuestro sistema."
+      bullet_3: No podrá tener acceso seguro a su información usando %{app_name}.
+      bullet_4: Notificaremos a las agencias a las que acceda con %{app_name} que
+        usted ya no tiene una cuenta.
+      heading: "¿Está seguro de que desea eliminar su cuenta?"
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
       subheading: 'Si elimina su cuenta:'
     personal_key:
       accessible_labels:
-        code_example: Un ejemplo de clave personal con 16 caracteres
+        code_example: Un ejemplo de clave personal con 16 caracteres
         preview: Vista previa de la clave personal
-      confirmation_error: Ha ingresado una clave personal incorrecta.
-      generated_on_html: Tu clave personal fue generada el %{date_html}
+      confirmation_error: Ingresó una clave personal incorrecta.
+      generated_on_html: Su clave personal fue generada el %{date_html}
     phones:
       error_message: Agregó el número máximo de números de teléfono.
     rules_of_use:
-      check_box_to_accept: Marque esta casilla para aceptar las reglas de uso de %{app_name}
+      check_box_to_accept: Marque esta casilla para aceptar %{app_name}
       details_html: |-
         <div class="bold margin-bottom-1">Reglas de uso:</div>
         <ul>
-        <li>Explique cómo funciona el servicio %{app_name} y qué puede esperar de él,</li>
-        <li>Los términos bajo los cuales le brindamos el servicio %{app_name},</li>
+        <li>Explican cómo funciona el servicio de %{app_name} y qué puede esperar de este,</li>
+        <li>Las condiciones según las cuales le brindamos el servicio de %{app_name},</li>
         <li>Cómo usamos su información y sus derechos sobre esa información, y</li>
-        <li>Las condiciones que acepta cuando realiza determinadas acciones en el servicio %{app_name}.</li>
+        <li>Las condiciones que acepta cuando efectúa ciertas acciones en el servicio de %{app_name}.</li>
         </ul>
-      overview_html: Actualizamos nuestro %{link_html}. Revise y marque la casilla a
-        continuación para continuar.
+      overview_html: Actualizamos nuestro %{link_html}. Revise y marque esta casilla
+        para continuar.
     second_mfa_reminder:
       add_method: Agregar un método de autenticación
-      continue: Continúa con %{sp_name}
-      description: Su cuenta sólo tiene un método de autenticación. Para evitar que
-        bloqueen su cuenta, puede que necesites usar otro método de
-        autenticación.
-      heading: Aumente la seguridad de su cuenta
+      continue: Continuar con %{sp_name}
+      description: Su cuenta tiene un solo método de autenticación. Para evitar que
+        su cuenta quede bloqueada, agregue otro método de autenticación.
+      heading: Mejore la seguridad de su cuenta
     suspended_sign_in_account:
-      contact_details: No pudimos iniciar tu sesión. Por favor, llama a nuestro centro
-        de contacto al %{contact_number}.
-      error_details: Proporciona el código de error %{error_code}.
+      contact_details: No pudimos iniciar su sesión. Llame a nuestro centro de contacto
+        al %{contact_number}.
+      error_details: Proporcione el código de error %{error_code}.
       heading: Llámenos

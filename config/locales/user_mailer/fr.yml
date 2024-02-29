@@ -3,107 +3,99 @@ fr:
   user_mailer:
     account_reinstated:
       subject: Votre compte est déverrouillé
-      we_have_finished_reviewing: Nous avons terminé l’examen de votre compte
-        %{app_name} et vous pouvez maintenant vous reconnecter avec les
-        informations de votre compte.
+      we_have_finished_reviewing: Nous avons terminé l’examen de votre compte %{app_name}
+        et vous pouvez maintenant vous reconnecter avec les informations de votre
+        compte.
     account_rejected:
       intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez
-        contacter l’agence dont vous essayez d’accéder au service.
+        contacter l’organisme dont vous essayez d’accéder au service.
       subject: Nous n’avons pas pu vérifier votre identité
     account_reset_cancel:
-      intro_html: Cet e-mail confirme que vous avez annulé votre demande de
+      intro_html: Le présent e-mail confirme que vous avez annulé votre demande de
         suppression de votre compte %{app_name_html}.
       subject: Demande annulée
     account_reset_complete:
-      intro_html: Cet e-mail confirme que vous avez supprimé votre compte %{app_name_html}.
+      intro_html: Le présent e-mail confirme que vous avez supprimé votre compte %{app_name_html}.
       subject: Compte supprimé
     account_reset_granted:
-      button: Oui, continuez la suppression
+      button: Oui, continuer la suppression
       cancel_link_text: veuillez annuler
-      help_html: Si vous ne souhaitez pas supprimer votre compte,
-        %{cancel_account_reset_html}.
-      intro_html: Votre période d’attente de %{hours} heures est terminée. Veuillez
-        terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à
-        localiser vos méthodes d’authentification, sélectionnez “confirmer la
-        suppression” pour supprimer votre compte %{app_name}.<br><br> À
-        l’avenir, si vous devez accéder aux sites Web gouvernementaux
-        participants qui utilisent %{app_name}, vous pouvez créer un nouveau
-        compte %{app_name} en utilisant la même adresse e-mail après la
-        suppression de votre compte.<br><br>
+      help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset_html}.
+      intro_html: Votre période d’attente de 24 heures est terminée. Veuillez terminer
+        l’étape 2 du processus.<br><br> Si vous n'avez pas été en mesure de localiser
+        vos méthodes d’authentification, sélectionnez « confirmer la suppression »
+        pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez
+        accéder aux sites Web de l’administration participants qui utilisent %{app_name},
+        vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse
+        e-mail après la suppression de votre compte.<br><br>
       subject: Supprimer votre compte %{app_name}
     account_reset_request:
-      cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
+      cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte
         %{app_name} pour annuler.
-      header: Votre compte sera supprimé dans %{interval}
+      header: Votre compte sera supprimé dans 24 heures
       intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux
-        étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a une
-        période d’attente de %{hours} heures si vous avez perdu l’accès à vos
-        méthodes d’authentification et devez supprimer votre compte. Si vous
-        trouvez vos méthodes d’authentification, vous pouvez vous connecter à
-        votre compte %{app_name} pour annuler cette demande. <br> <br> Deuxième
-        étape: après votre période d’attente de %{hours} heures, vous recevrez
-        un e-mail qui vous demandera de confirmer la suppression de votre compte
-        %{app_name}. Votre compte ne sera pas supprimé tant que vous ne l’aurez
-        pas confirmé.'
+        étapes pour supprimer votre compte :<br><br> Étape 1 : Si vous avez perdu
+        l’accès à vos méthodes d’authentification et devez supprimer votre compte,
+        il y a une période d’attente de 24 heures. Si vous trouvez vos méthodes d’authentification,
+        vous pouvez vous connecter à votre compte %{app_name} pour annuler cette demande.<br><br>
+        Étape 2 : Après la période d’attente de 24 heures, vous recevrez un e-mail
+        vous demandant de confirmer la suppression de votre compte %{app_name}. Votre
+        compte ne sera pas supprimé tant que vous ne l’aurez pas confirmé.'
       subject: Comment supprimer votre compte %{app_name}
     account_verified:
       change_password_link: changer votre mot de passe
       contact_link: nous contacter
-      intro_html: Vous avez vérifié avec succès votre identité auprès de %{sp_name} le
-        %{date} en utilisant %{app_name}. Si vous n’avez pas effectué cette
-        action, veuillez %{contact_link_html} et vous connecter pour
-        %{change_password_link_html}.
-      subject: Vous avez vérifié votre identité avec %{sp_name}
+      intro_html: Le %{date}, vous avez réussi à confirmer votre identité auprès de
+        %{sp_name} à l’aide de %{app_name}. Si vous n’avez pas effectué cette action,
+        veuillez %{contact_link_html} et vous connecter pour %{change_password_link_html}.
+      subject: Vous avez confirmé votre identité avec %{sp_name}.
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
-      header: Merci d’avoir ajouté un email. S’il vous plaît cliquez sur le lien
-        ci-dessous ou copiez et collez le lien en entier dans votre navigateur.
-      subject: Confirmez votre email
+      header: Merci d’avoir ajouté une adresse e-mail. Veuillez cliquer sur le lien
+        ci-dessous ou faire un copier-coller de l’ensemble du lien dans votre navigateur.
+      subject: Confirmer votre adresse e-mail
     add_email_associated_with_another_account:
-      help_html: Si vous n’avez pas demandé de nouvel email ou que vous suspectez une
-        erreur, veuillez visiter le %{app_name_html} %{help_link_html} ou
-        %{contact_link_html}.
-      intro_html: Cette adresse électronique est déjà associée à un compte
-        %{app_name_html}, nous ne pouvons donc pas l’ajouter à un autre compte.
-        Vous devez d’abord le supprimer ou le supprimer du compte auquel il est
-        associé. Pour ce faire, suivez le lien ci-dessous et connectez-vous avec
-        cette adresse e-mail. Si vous n’essayez pas d’ajouter cette adresse
-        électronique à un compte, vous pouvez ignorer ce message.
-      link_text: Allez à %{app_name}
+      help_html: Si vous n’avez pas demandé de nouvel e-mail ou suspectez une erreur,
+        veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
+      intro_html: Cette adresse e-mail est déjà associée à un compte %{app_name_html},
+        nous ne pouvons donc pas l’ajouter à un autre compte. Vous devez d’abord la
+        supprimer ou la retirer du compte auquel elle est associée. Pour ce faire,
+        suivez le lien ci-dessous et connectez-vous avec cette adresse e-mail. Si
+        vous n’essayez pas d’ajouter cette adresse e-mail à un compte, vous pouvez
+        ignorer ce message.
+      link_text: Allez sur %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
-        à %{app_name_html} pour le réinitialiser.
-    contact_link_text: communiquez avec nous
+        sur %{app_name_html} pour le réinitialiser.
+    contact_link_text: nous contacter
     email_added:
       header: Une nouvelle adresse e-mail a été ajoutée à votre profil %{app_name}.
       help: Si vous n’avez pas apporté cette modification, connectez-vous à votre
-        profil et gérez vos adresses e-mail. Nous vous recommandons de changer
-        également votre mot de passe.
-      subject: Nouvelle adresse email ajoutée
+        profil et gérez vos adresses e-mail. Nous vous recommandons de changer également
+        votre mot de passe.
+      subject: Nouvelle adresse e-mail ajoutée
     email_confirmation_instructions:
       create_new_account: créer un nouveau compte.
-      email_not_found: Email non trouvé
+      email_not_found: E-mail non trouvé
       first_sentence:
-        confirmed: Vous tentez de changer votre adresse courriel?
+        confirmed: Vous tentez de changer votre adresse e-mail ?
         forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
-          compte %{app_name}, mais nous ne possédons pas de compte associé à
-          cette adresse courriel.
-        unconfirmed: Merci d’avoir envoyé votre adresse email.
+          compte %{app_name}, mais nous ne possédons pas de compte associé à cette
+          adresse e-mail.
+        unconfirmed: Merci d’avoir envoyé votre adresse e-mail.
       footer: Ce lien expirera dans %{confirmation_period}.
-      header: '%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller le
-        lien complet dans votre navigateur.'
-      link_text: Confirmez votre adresse email
+      header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou faire un copier-coller
+        de l’ensemble du lien dans votre navigateur."
+      link_text: Confirmer votre adresse e-mail
       request_with_diff_email: Vous pouvez demander votre mot de passe en utilisant
-        une adresse e-mail différente qui est connectée à votre compte
-        %{app_name}.
-      subject: Confirmez votre adresse courriel
+        une autre adresse e-mail connectée à votre compte %{app_name}.
+      subject: Confirmer votre adresse e-mail
       try_diff_email: Essayez une autre adresse e-mail
-      use_this_email: Ou utilisez cet e-mail et
+      use_this_email: Ou utilisez cette adresse e-mail et
     email_deleted:
-      header: Une adresse email a été supprimée de votre profil %{app_name}.
-      help_html: Si vous ne souhaitez pas supprimer cette adresse électronique
-        veuillez visiter le %{help_link_html} de %{app_name_html} ou
-        %{contact_link_html}.
-      subject: Adresse email supprimée
+      header: Une adresse e-mail a été supprimée de votre profil %{app_name}.
+      help_html: Si vous ne souhaitez pas supprimer cette adresse e-mail, veuillez
+        visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
+      subject: Adresse e-mail supprimée
     help_link_text: Centre d’aide
     in_person_completion_survey:
       body:
@@ -111,72 +103,71 @@ fr:
           callout: Cliquez sur le bouton ci-dessous pour commencer.
           label: Répondez à notre enquête
         greeting: Bonjour,
-        intent: Nous voulons connaître votre expérience en matière de vérification de
-          votre identité en personne au bureau de poste.
-        privacy_html: Vos réponses à cette enquête seront protégées conformément aux <a
-          href="%{url}">normes de confidentialité et de sécurité</a> suivantes.
-        request_description: Remplissez une courte enquête anonyme et nous utiliserons
+        intent: Nous voulons connaître votre expérience en matière de vérification
+          de votre identité en personne au bureau de poste.
+        privacy_html: Vos réponses à cette enquête seront protégées conformément aux
+          <a href=\"%{url}\">normes de confidentialité et de sécurité</a> suivantes.
+        request_description: Répondez à une courte enquête anonyme et nous utiliserons
           vos commentaires pour nous aider à mieux répondre à vos besoins.
         thanks: Merci d’utiliser %{app_name}.
-      header: Prenez une minute pour nous faire part de vos impressions
+      header: Faites-nous part rapidement de vos impressions
       subject: Parlez-nous de votre expérience récente avec %{app_name}
     in_person_deadline_passed:
       body:
-        canceled: Le délai imparti pour vérifier votre identité en personne a expiré.
-          Nous avons automatiquement annulé votre demande afin de protéger vos
-          données personnelles.
+        canceled: Le délai imparti pour confirmer votre identité en personne a expiré.
+          Nous avons automatiquement annulé votre demande afin de protéger vos données
+          personnelles.
         cta: Recommencer
         greeting: Bonjour,
-        restart: Pour introduire une nouvelle demande de vérification de votre identité
-          auprès de %{partner_agency}, cliquez sur le bouton ci-dessous.
+        restart: Vous pouvez commencer une nouvelle demande de vérification de votre
+          identité auprès de %{partner_agency}.
       header: Le délai imparti pour vérifier votre identité en personne a expiré
-      subject: La demande de vérification de votre identité en personne a expiré
+      subject: Votre demande de vérification de votre identité en personne a expiré
     in_person_failed:
       body:
-        with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
-          vérifier à nouveau votre identité en ligne par le biais de
-          %{sp_or_app_name}. Si vous rencontrez toujours des problèmes, veuillez
-          contacter l’agence à laquelle vous essayez d’accéder.
-        without_cta: Veuillez essayer de confirmer votre identité à nouveau sur le site
-          Web de %{sp_name}. Si vous rencontrez toujours des difficultés,
-          veuillez contacter l’agence à laquelle vous essayez d’accéder.
+        with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour réessayer
+          de confirmer votre identité en ligne par le biais de %{sp_or_app_name}.
+          Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme
+          auquel vous essayez d’accéder.
+        without_cta: Veuillez réessayer de confirmer votre identité sur le site Web
+          de %{sp_name}. Si vous rencontrez toujours des difficultés, veuillez contacter
+          l’organisme auquel vous essayez d’accéder.
       intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location}
         le %{date}.
       subject: Votre identité n’a pas pu être vérifiée en personne
       verifying_identity: 'Lors de la vérification de votre identité :'
-      verifying_step_not_expired: Votre carte d’identité ou votre permis de conduire
-        délivré par l’État ne doit pas être périmé. Nous n’acceptons
-        actuellement aucune autre forme d’identification, comme les passeports
-        et les cartes d’identité militaires.
+      verifying_step_not_expired: Votre carte d’identité délivrée par l’État ou votre
+        permis de conduire ne doit pas être périmé. Nous n’acceptons actuellement
+        aucune autre pièce d’identité, comme les passeports et les cartes d’identité
+        militaires.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: Si vous avez besoin d’aide supplémentaire, vous pouvez <a
-          href="%{help_center_url}">consulter notre centre d’aide</a> ou
-          contacter l’agence à laquelle vous essayez d’accéder.
-        intro: Nous comprenons que vous avez tenté de vérifier votre identité par le
-          biais de %{app_name}, mais votre identité n’a pas pu être vérifiée au
-          bureau de poste de %{location} le %{date}.
+          href=\"%{help_center_url}\">consulter notre centre d’aide</a> ou contacter
+          l’organisme auquel vous essayez d’accéder.
+        intro: Vous avez tenté de confirmer votre identité par le biais de %{app_name},
+          mais votre identité n’a pas pu être confirmée au bureau de poste de %{location}
+          le %{date}.
       greeting: Bonjour,
       subject: Votre identité n’a pas pu être vérifiée en personne
     in_person_outage_notification:
       body:
-        closing_html: Nous nous excusons sincèrement pour le retard de service. Si vous
-          avez des questions ou si vous ne recevez pas votre résultat avant le
-          1er juin, veuillez <a href="%{contact_us_url}">contacter le soutien au
-          client de %{app_name}</a>.
-        heading: Résultats de la vérification en personne reportés du 20 mai au 30 mai
-        instructions: Pour le moment, si vous avez tenté de terminer le processus de
-          vérification d’identité dans un bureau de poste, vous n’avez pas
-          besoin de réessayer. Rassurez-vous que vos résultats de vérification
-          ne sont pas perdus; ils sont stockés en toute sécurité et vous seront
-          envoyés par courriel une fois que nous aurons résolu le problème
-          technique.
-        intro_html: Nous travaillons pour résoudre un problème technique qui retarde les
-          courriels des résultats de la vérification en personne. <strong>Si
-          vous avez tenté d’effectuer une vérification d’identité dans un bureau
-          de poste entre le 20 et le 29 mai, vos résultats ne vous seront
-          peut-être pas envoyés par courriel avant le mardi 30 mai.</strong>
-      subject: Les résultats de la vérification en personne de %{app_name} sont reportés
+        closing_html: Nous vous présentons nos excuses pour le retard de service.
+          Si vous avez des questions ou ne recevez pas votre résultat d’ici le 1er
+          juin, veuillez <a href=\"%{contact_us_url}\">contacter le service client
+          de %{app_name}</a>.
+        heading: Résultats de la vérification en personne retardés du 20 au 30 mai
+        instructions: Pour le moment, si vous avez tenté de terminer le processus
+          de vérification de l’identité dans un bureau de poste, il n’est pas nécessaire
+          de réessayer. Rassurez-vous, vos résultats de vérification ne sont pas perdus ;
+          ils sont conservés en toute sécurité et vous seront envoyés par e-mail une
+          fois que nous aurons résolu le problème technique.
+        intro_html: Nous travaillons actuellement à la résolution d’un problème technique
+          qui retarde les e-mails de résultats de la vérification en personne. <strong>Si
+          vous avez tenté d’effectuer une vérification d’identité dans un bureau de
+          poste entre le 20 et le 29 mai, vos résultats pourraient ne pas vous être
+          envoyés par e-mail avant le mardi 30 mai.</strong>
+      subject: Résultats de la vérification en personne de %{app_name} retardés
     in_person_please_call:
       body:
         contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez
@@ -192,163 +183,159 @@ fr:
       heading:
         one: Il vous reste %{count} jour pour vérifier votre identité en personne
         other: Il vous reste %{count} jours pour vérifier votre identité en personne
-      intro: Ne manquez pas l’occasion de vérifier votre identité dans votre bureau de
-        poste de proximité. Complétez cette étape pour accéder à %{sp_name}.
+      intro: Ne ratez pas l’occasion de vérifier votre identité dans votre bureau
+        de poste. Effectuez cette étape pour accéder à %{sp_name}.
       subject:
-        one: Vérifiez votre identité auprès d’un bureau de poste dans le prochain jour
-        other: Vérifiez votre identité auprès d’un bureau de poste dans les %{count}
+        one: Vérifiez votre identité dans un bureau de poste au cours des prochaines
+          24 heures
+        other: Vérifiez votre identité dans un bureau de poste au cours des %{count}
           prochains jours
     in_person_verified:
       greeting: Bonjour,
-      intro: Vous avez vérifié avec succès votre identité au bureau de poste de
-        %{location} le %{date}.
+      intro: Vous avez réussi à vérifier votre identité au bureau de poste de %{location}
+        le %{date}.
       next_sign_in:
         with_sp:
-          with_cta: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
-            accéder à %{sp_name} et connectez-vous.
-          without_cta: Vous pouvez maintenant vous connecter à partir du site Web de
+          with_cta: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous
+            pour accéder à %{sp_name} et vous connecter.
+          without_cta: Vous pouvez désormais vous connecter depuis le site Web de
             %{sp_name}.
-        without_sp: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
-          vous connecter à %{app_name}.
+        without_sp: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous
+          pour vous connecter à %{app_name}.
       sign_in: Se connecter
-      subject: Vous avez vérifié avec succès votre identité avec %{app_name}
-      warning_contact_us_html: Si vous n’avez pas essayé de vérifier votre identité en
-        personne, veuillez vous connecter pour <a
-        href="%{reset_password_url}">réinitialiser votre mot de passe</a>. Pour
-        signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance
-        de %{app_name}</a>.
+      subject: Vous avez réussi à vérifier votre identité avec %{app_name}
+      warning_contact_us_html: Si vous n’avez pas essayé de confirmer votre identité
+        en personne, veuillez vous connecter pour <a href=\"%{reset_password_url}\">réinitialiser
+        votre mot de passe</a>. Pour signaler ce problème, <a href=\"%{contact_us_url}\">contactez
+        l’assistance de %{app_name}</a>.
     letter_reminder:
       info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
-        de vérification nous permettant de vérifier votre adresse. Vous pouvez
-        terminer le processus de vérification d’identité en vous connectant à
-        %{link_html} et en entrant le code de vérification.
-      subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
+        de vérification nous permettant de vérifier votre adresse. Vous pouvez terminer
+        le processus de vérification d’identité en vous connectant à %{link_html}
+        et en saisissant le code de vérification.
+      subject: Nous avons posté une lettre à l’adresse que vous avez enregistrée
     letter_reminder_14_days:
-      body_html: <p>Vous avez demandé une lettre avec un code de vérification le
-        <strong>%{date_letter_was_sent}</strong>.</p><p>Reconnectez-vous à
-        %{app_name} et saisissez le code de vérification pour terminer la
-        vérification de votre identité. %{help_link}.</p>
+      body_html: "<p>Vous avez demandé une lettre avec un code de vérification le
+        <strong>%{date_letter_was_sent}</strong>.</p><p>Reconnectez-vous à %{app_name}
+        et saisissez le code de vérification pour terminer la vérification de votre
+        identité. %{help_link}.</p>"
       did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
       finish: Terminer la vérification de votre identité
       sign_in_and_request_another_letter: connectez-vous pour en demander une autre
       subject: Terminer la vérification de votre identité
     new_device_sign_in:
-      disavowal_link: réinitialiser votre mot de passe
+      disavowal_link: réinitialisez votre mot de passe
       help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}.
-        Pour plus d’aide, veuillez visiter le %{help_link_html} de
-        %{app_name_html} ou %{contact_link_html}.
-      info: 'Votre compte %{app_name} a été connecté sur un nouvel appareil.'
+        Pour plus d’aide, veuillez visiter le %{help_link_html} de %{app_name_html}
+        ou %{contact_link_html}.
+      info: Votre compte %{app_name} vient d’être utilisé pour une connexion sur un
+        nouvel appareil.
       subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
-      disavowal_link: réinitialiser votre mot de passe
+      disavowal_link: réinitialisez votre mot de passe
       help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}.
-        Pour plus d’aide, veuillez visiter le %{help_link_html} de
-        %{app_name_html} ou %{contact_link_html}.
-      intro_html: Le mot de passe de votre compte %{app_name_html} a été changé.
+        Pour plus d’aide, veuillez visiter le %{help_link_html} de %{app_name_html}
+        ou %{contact_link_html}.
+      intro_html: Vous avez un nouveau mot de passe pour votre compte %{app_name_html}.
     personal_key_regenerated:
-      help_html: <p>Votre compte %{app_name} vient de recevoir une nouvelle clé
-        personnelle de 16 caractères. Le but de cet e-mail est de s’assurer que
-        c’est bien vous qui en êtes à l’origine.</p><p>Si vous venez de vous
-        connecter et de réinitialiser votre clé personnelle, c’est parfait! Vous
-        n’avez rien à faire.</p><p>Si vous ne venez pas de réinitialiser votre
-        clé personnelle, ou si vous n’êtes pas sûr, veuillez prendre
-        immédiatement les mesures suivantes pour sécuriser votre compte
-        :<ol><li><strong><a href="%{reset_password_url}"> Modifiez votre mot de
-        passe</a>.</strong> Choisissez un mot de passe que vous n’avez pas
-        encore utilisé avec ce compte.</li><li><strong><a href="%{account_url}">
-        Connectez-vous à votre compte %{app_name}</a></strong> et vérifiez bien
-        que toutes les informations sur la page de votre compte sont correctes,
-        y compris les méthodes que vous utilisez pour l’authentification à deux
-        facteurs, dont le numéro de téléphone, l’application d’authentification
-        ou la clé de sécurité.</li><li><strong>Sur votre <a
-        href="%{account_url}">page de compte %{app_name}</a>, demandez une
-        nouvelle clé personnelle.</strong> N’oubliez pas de ne jamais la
-        partager, sauf si vous l’utilisez pour vous connecter à un site de
-        confiance qui utilise %{app_name}.</li></ol></p><br>Merci,<br>L’équipe
-        %{app_name}
+      help_html: <p>Votre compte %{app_name} vient de recevoir une nouvelle clé personnelle
+        de 16 caractères. Le but de cet e-mail est de s’assurer que c’est bien vous
+        qui en êtes à l’origine.</p><p>Si vous venez de vous connecter et de réinitialiser
+        votre clé personnelle, c’est parfait ! Vous n’avez rien à faire.</p><p>Si
+        vous ne venez pas de réinitialiser votre clé personnelle, ou si vous n’êtes
+        pas sûr, veuillez prendre immédiatement les mesures suivantes pour sécuriser
+        votre compte :<ol><li><strong><a href=\"%{reset_password_url}\">Modifiez votre
+        mot de passe</a>.</strong> Choisissez un mot de passe que vous n’avez pas
+        encore utilisé avec ce compte.</li><li><strong><a href=\"%{account_url}\">Connectez-vous
+        à votre compte %{app_name}</a></strong> et assurez-vous de reconnaître toutes
+        les informations de la page de votre compte, y compris les méthodes que vous
+        utilisez pour l’authentification à deux facteurs, comme le numéro de téléphone,
+        l’appli d’authentification ou la clé de sécurité.</li><li><strong>Sur votre
+        <a href=\"%{account_url}\">page de compte %{app_name}</a>, demandez une nouvelle
+        clé personnelle.</strong> N’oubliez pas de ne jamais la partager, à moins
+        que vous ne l’utilisiez pour vous connecter à un site Web de confiance qui
+        utilise %{app_name}.</li></ol></p><br>Merci,<br>L’équipe %{app_name}
       intro: Nouvelle clé personnelle émise
       subject: Alerte de sécurité du compte
     personal_key_sign_in:
-      help_html: <p>Votre compte %{app_name} a été connecté à l’aide de votre clé
-        personnelle. Vous recevez cet email pour vous assurer que c’était bien
-        vous.</p><p>Si vous venez de vous connecter avec votre clé personnelle,
-        c’est parfait! Vous ne devez rien faire.</p><p>Si vous ne vous êtes pas
-        connecté avec une clé personnelle ou si vous n’êtes pas sûr, prenez
-        immédiatement les mesures suivantes pour sécuriser votre
-        compte:<ol><li><strong><a href="%{reset_password_url}">Changez votre mot
-        de passe</a>.</strong> Choisissez un mot de passe que vous n’avez pas
-        encore utilisé avec ce compte.</li><li><strong><a
-        href="%{account_url}">Connectez-vous à votre compte
-        %{app_name}</a></strong> et assurez-vous de reconnaître toutes les
-        informations de la page de votre compte, y compris les méthodes que vous
-        utilisez pour l’authentification à deux facteurs, telles que le numéro
-        de téléphone, l’application d’authentification ou la clé de
-        sécurité.</li><li><strong>Sur <a href="%{account_url}">la page de votre
-        compte %{app_name}</a>, demandez une nouvelle clé personnelle.</strong>
-        N’oubliez pas de ne jamais le partager à moins que vous ne l’utilisiez
-        pour vous connecter à un site Web de confiance utilisant
-        %{app_name}.</li></ol></p><br>Merci,<br>L’équipe %{app_name}
-      intro: La clé personnelle utilisée pour vous connecter
+      help_html: <p>Une connexion à votre compte %{app_name} à l’aide de votre clé
+        personnelle vient de se produire. Le but de cet e-mail est de s’assurer que
+        c’est bien vous qui en êtes à l’origine.</p><p>Si vous venez de vous connecter
+        avec votre clé personnelle, c’est parfait ! Il n’y a rien que vous deviez
+        faire.</p><p>Si vous ne vous êtes pas connecté avec une clé personnelle ou
+        si vous n’êtes pas sûr, veuillez prendre immédiatement les mesures suivantes
+        pour sécuriser votre compte :<ol><li><strong><a href=\"%{reset_password_url}\">Changez
+        votre mot de passe</a>.</strong> Choisissez un mot de passe que vous n’avez
+        pas encore utilisé avec ce compte.</li><li><strong><a href=\"%{account_url}\">Connectez-vous
+        à votre compte %{app_name}</a></strong> et assurez-vous de reconnaître toutes
+        les informations de la page de votre compte, y compris les méthodes que vous
+        utilisez pour l’authentification à deux facteurs, comme le numéro de téléphone,
+        l’appli d’authentification ou la clé de sécurité.</li><li><strong>Sur votre
+        <a href=\"%{account_url}\">page de compte %{app_name}</a>, demandez une nouvelle
+        clé personnelle.</strong> N’oubliez pas de ne jamais la partager, à moins
+        que vous ne l’utilisiez pour vous connecter à un site Web de confiance qui
+        utilise %{app_name}.</li></ol></p><br>Merci,<br>L’équipe %{app_name}
+      intro: Clé personnelle utilisée pour la connexion
       subject: Alerte de sécurité du compte
     phone_added:
       disavowal_link: réinitialiser votre mot de passe
       help_html: Si vous n’avez pas apporté cette modification, connectez-vous à votre
-        profil et gérez vos numéros de téléphone. Nous vous recommandons
-        également de %{disavowal_link_html}.
+        profil et gérez vos numéros de téléphone. Nous vous recommandons également
+        de %{disavowal_link_html}.
       intro: Un nouveau numéro de téléphone a été ajouté à votre profil %{app_name}.
       subject: Nouveau numéro de téléphone ajouté
     please_reset_password:
       call_to_action: 'Par précaution, nous avons désactivé votre mot de passe pour
-        conserver votre informations sûres. Veuillez suivre les étapes
-        ci-dessous pour réinitialiser votre mot de passe et Sécurise ton
-        compte:'
-      intro: Nous avons détecté une activité inhabituelle sur votre compte
-        %{app_name}. Nous sommes concernés quelqu’un d’autre que vous tente
-        peut-être d’accéder à vos informations.
-      learn_more_link_text: En savoir plus sur vos options
+        conserver vos informations en sécurité. Veuillez suivre les étapes ci-dessous
+        pour réinitialiser votre mot de passe et sécuriser votre compte :'
+      intro: Nous avons détecté une activité inhabituelle sur votre compte %{app_name}.
+        Nous nous inquiétons que quelqu’un d’autre que vous pourrait être en train
+        d’essayer d’accéder à vos informations.
+      learn_more_link_text: En savoir plus sur les options qui s’offrent à vous
       reminder_html: Pour rappel, <strong>%{app_name} ne vous demandera jamais vos
-        identifiants de connexion par téléphone ou par e-mail</strong>. Vous
-        pouvez prendre des mesures supplémentaires pour sécuriser votre compte
-        en activant l’authentification à deux facteurs.
+        identifiants de connexion par téléphone ou par e-mail</strong>. Vous pouvez
+        prendre des mesures supplémentaires pour sécuriser votre compte en activant
+        l’authentification à deux facteurs.
       step_1: Visitez le site Web %{app_name} et sélectionnez Connexion
-      step_2: Sélectionnez “Vous avez oublié votre mot de passe?” au bas de la page
+      step_2: Sélectionnez « Mot de passe oublié ? » au bas de la page
       step_3: Suivez les instructions pour réinitialiser votre mot de passe
       subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
     reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
       gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de
-        vérification contenu dans votre lettre ne correspondra plus et vous
-        devrez de vérifier à nouveau votre identité.
+        vérification contenu dans votre lettre ne fonctionnera plus et vous devrez
+        reconfirmer votre identité.
       gpo_letter_header: Votre lettre est en route
-      header: Pour terminer la réinitialisation de votre mot de passe, veuillez
-        cliquer sur le lien ci-dessous ou copier et coller le lien complet dans
+      header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer
+        sur le lien ci-dessous ou faire un copier-coller de l’ensemble du lien dans
         votre navigateur.
-      link_text: Réinitialisez votre mot de passe
-      subject: Réinitialisez votre mot de passe
+      link_text: Réinitialiser votre mot de passe
+      subject: Réinitialiser votre mot de passe
     signup_with_your_email:
-      help_html: Si vous n’avez pas demandé un nouveau compte ou que vous soupçonnez
-        qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de
-        %{app_name_html} ou %{contact_link_html}.
-      intro_html: Cette adresse courriel est déjà associée à un compte
-        %{app_name_html}, nous ne pouvons donc pas l’utiliser pour créer un
-        nouveau compte. Pour vous connecter à votre compte existant, suivez le
-        lien ci-dessous. Si vous ne tentez pas de vous connecter avec cette
-        adresse courriel, vous pouvez ignorer ce message.
-      link_text: Allez à %{app_name}
+      help_html: Si vous n’avez pas demandé un nouveau compte ou soupçonnez qu’une
+        erreur s’est produite, veuillez visiter le %{help_link_html} de %{app_name_html}
+        ou %{contact_link_html}.
+      intro_html: Cette adresse e-mail est déjà associée à un compte %{app_name_html},
+        nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous
+        connecter à votre compte existant, suivez le lien ci-dessous.  Si vous ne
+        tentez pas de vous connecter avec cette adresse e-mail, vous pouvez ignorer
+        ce message.
+      link_text: Aller sur %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
-        à %{app_name_html} pour le réinitialiser.
+        sur %{app_name_html} pour le réinitialiser.
     suspended_create_account:
-      message: Il y a eu un problème lors de la création de votre compte %{app_name}
-        avec cette adresse électronique. Veuillez appeler notre centre d’appels
-        au %{contact_number} et fournir ce code - %{support_code}.
+      message: 'Il y a eu un problème lors de la création de votre compte %{app_name}
+        avec cette adresse e-mail. Veuillez appeler notre centre de contact au %{contact_number}
+        et indiquer le code suivant : %{support_code}.'
       subject: Nous ne parvenons pas à créer votre compte
     suspended_reset_password:
-      message: La réinitialisation de votre mot de passe a posé un problème. Veuillez
-        appeler notre centre d’appels au %{contact_number} et fournir ce code -
-        %{support_code}.
+      message: 'Une erreur s''est produite lors de la réinitialisation de votre mot
+        de passe. Veuillez appeler notre centre de contact au %{contact_number} et
+        indiquer le code suivant : %{support_code}.'
       subject: Nous n’avons pas pu réinitialiser votre mot de passe
     suspension_confirmed:
-      contact_agency: Veuillez contacter l’agence dont vous essayez d’accéder au service.
+      contact_agency: Veuillez contacter l’organisme dont vous essayez d’accéder au
+        service.
       remain_locked: Nous avons terminé l’examen de votre compte %{app_name} et votre
         compte restera verrouillé.
       subject: Votre compte est verrouillé

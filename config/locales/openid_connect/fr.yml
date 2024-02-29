@@ -3,51 +3,49 @@ fr:
   openid_connect:
     authorization:
       errors:
-        bad_client_id: Mauvaise client_id
+        bad_client_id: Bad client_id
         invalid_verified_within_duration:
-          one: la valeur doit être d’au moins %{count} jour ou plus
-          other: la valeur doit être d’au moins %{count} jours ou plus
-        invalid_verified_within_format: Format non reconnu pour verified_within
-        missing_ial: Manque un niveau IAL valide
-        no_auth: Les acr_values ne sont pas autorisées
-        no_valid_acr_values: Valeurs acr_values inacceptables trouvées
-        no_valid_scope: Aucune étendue de données valide trouvée
+          one: value must be at least %{count} day or older
+          other: value must be at least %{count} days or older
+        invalid_verified_within_format: Unrecognized format for verified_within
+        missing_ial: Missing a valid IAL level
+        no_auth: The acr_values are not authorized
+        no_valid_acr_values: No acceptable acr_values found
+        no_valid_scope: No valid scope values found
         no_valid_vtr: vots encontrados no aceptables
-        prompt_invalid: prompt est non valide
-        redirect_uri_invalid: redirect_uri est non valide
-        redirect_uri_no_match: redirect_uri ne correspond pas au redirect_uri enregistré
-        unauthorized_scope: Portée non autorisée
+        prompt_invalid: No valid prompt values found
+        redirect_uri_invalid: redirect_uri is invalid
+        redirect_uri_no_match: redirect_uri does not match registered redirect_uri
+        unauthorized_scope: Unauthorized scope
     logout:
-      confirm: Oui, déconnectez-vous de %{app_name}
-      deny: Non, allez sur la page de mon compte
+      confirm: Yes, sign out of %{app_name}
+      deny: No, go to my account page
       errors:
-        client_id_invalid: client_id n’a pas été reconnu
-        client_id_missing: client_id est manquant
-        id_token_hint: id_token_hint n’a pas été reconnu
-        id_token_hint_present: Cette application est mal configurée et ne devrait pas
-          envoyer id_token_hint. Veuillez envoyer client_id à la place.
-        no_client_id_or_id_token_hint: Cette application est mal configurée et doit
-          envoyer client_id ou id_token_hint.
-      heading: Voulez-vous vous déconnecter de %{app_name}?
-      heading_with_sp: Souhaitez-vous vous déconnecter de %{app_name} et revenir à
-        %{service_provider_name}?
+        client_id_invalid: client_id was not recognized
+        client_id_missing: client_id is missing
+        id_token_hint: id_token_hint was not recognized
+        id_token_hint_present: This application is misconfigured and should not be
+          sending id_token_hint. Please send client_id instead.
+        no_client_id_or_id_token_hint: This application is misconfigured and must
+          send either client_id or id_token_hint.
+      heading: Do you want to sign out of %{app_name}?
+      heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
     token:
       errors:
-        expired_code: est expiré
-        invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}
-        invalid_authentication: Le client doit s’authentifier par PKCE ou
-          private_key_jwt, code_challenge ou client_assertion manquant
-        invalid_code: n’est pas valide, car il ne correspond à aucun utilisateur.
-          Veuillez consulter notre documentation à
-          https://developers.login.gov/oidc/#token
-        invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
-        invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante
-          représentant une heure dans le passé
-        invalid_signature: Impossible de valider l’assertion contre les clés publiques
-          enregistrées
+        expired_code: is expired
+        invalid_aud: Invalid audience claim, expected %{url}
+        invalid_authentication: Client must authenticate via PKCE or private_key_jwt,
+          missing either code_challenge or client_assertion
+        invalid_code: is invalid because doesn’t match any user. Please see our documentation
+          at https://developers.login.gov/oidc/#token
+        invalid_code_verifier: code_verifier did not match code_challenge
+        invalid_iat: iat must be an integer or floating point Unix timestamp representing
+          a time in the past
+        invalid_signature: Could not validate assertion against any registered public
+          keys
     user_info:
       errors:
-        malformed_authorization: Forme de l’en-tête d’autorisation non valide
-        no_authorization: Aucune en-tête d’autorisation fournie
-        not_found: L’autorisation pour le contenu du access_token fourni introuvable ou
-          il peut être expiré
+        malformed_authorization: Malformed Authorization header
+        no_authorization: No Authorization header provided
+        not_found: Could not find authorization for the contents of the provided access_token
+          or it may have expired

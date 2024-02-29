@@ -2,19 +2,18 @@
 es:
   shared:
     banner:
-      fake_site: Un sitio oficial del Gobierno de Estados Unidos
-      gov_description_html: Un sitio web <strong>.gov</strong> pertenece a una
-        organización oficial del Gobierno de Estados Unidos.
+      fake_site: Un sitio web de demostración del Gobierno de los Estados Unidos
+      gov_description_html: Un sitio web <strong>.gov</strong> pertenece a una organización
+        oficial del Gobierno de los Estados Unidos.
       gov_heading: Los sitios web oficiales usan .gov
-      how: Así es como usted puede verificarlo
+      how: Así es como usted puede saberlo
       landmark_label: Sitio web oficial del Gobierno
       lock_description: Un candado cerrado
-      official_site: Un sitio oficial del Gobierno de Estados Unidos
-      secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o
-        <strong>https://</strong> significa que usted se conectó de forma segura
-        a un sitio web .gov. Comparta información sensible sólo en sitios web
-        oficiales y seguros.
-      secure_heading: Los sitios web seguros .gov usan HTTPS
+      official_site: Un sitio web oficial del Gobierno de los Estados Unidos
+      secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o <strong>https://</strong>
+        significa que se conectó de forma segura a un sitio web .gov. Comunique información
+        confidencial solo en los sitios web oficiales protegidos.
+      secure_heading: Los sitios web .gov protegidos usan HTTPS
     footer_lite:
-      gsa: Administración General de Servicios de EE. UU.
-    skip_link: Salte al contenido principal
+      gsa: Administración General de Servicios de los EE. UU.
+    skip_link: Saltar al contenido principal

@@ -1,11 +1,11 @@
 ---
 es:
   mailer:
-    about: Sobre %{app_name}
+    about: Acerca de %{app_name}
     email_reuse_notice:
-      subject: Este email ya está asociado a una cuenta.
+      subject: Esta dirección de correo electrónico ya está asociada con una cuenta.
     help_html: Si necesita ayuda, visite %{link_html}
-    logo: '%{app_name} logo'
-    no_reply: Por favor, no responda a este mensaje.
-    privacy_policy: Póliza de privacidad
-    sent_at: Enviado el %{formatted_timestamp}
+    logo: Logotipo de %{app_name}
+    no_reply: No responda a este mensaje.
+    privacy_policy: Política de privacidad
+    sent_at: 'Enviado: %{formatted_timestamp}'

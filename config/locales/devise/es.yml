@@ -2,53 +2,52 @@
 es:
   devise:
     confirmations:
-      already_confirmed: Su email ha sido confirmado. %{action}
-      confirmed: Usted ha confirmado su email.
-      confirmed_but_must_set_password: Usted ha confirmado su email.
-      confirmed_but_remove_from_other_account: Esta dirección de correo electrónico ya
-        está asociada con una cuenta %{app_name}, por lo que no podemos
-        agregarla a otra cuenta. Primero debe eliminarlo o eliminarlo de la
-        cuenta con la que está asociado. Para ello, inicie sesión con esta
-        dirección de correo electrónico.
-      confirmed_but_sign_in: Has confirmado tu dirección de correo electrónico. Por
-        favor inicia sesión para ver tu perfil.
-      sign_in: Inicie la sesión de nuevo.
+      already_confirmed: Su dirección de correo electrónico fue confirmada. %{action}
+      confirmed: Usted confirmó su dirección de correo electrónico
+      confirmed_but_must_set_password: Usted confirmó su dirección de correo electrónico
+      confirmed_but_remove_from_other_account: Esta dirección de correo electrónico
+        ya está asociada con una cuenta de %{app_name}, por lo que no podemos agregarla
+        a otra cuenta. Primero, debe eliminarla o quitarla de la cuenta con la que
+        está asociada. Para ello, inicie sesión con esta dirección de correo electrónico.
+      confirmed_but_sign_in: Usted confirmó su dirección de correo electrónico. Inicie
+        sesión para ver su perfil.
+      sign_in: Inicie sesión.
     failure:
       already_authenticated: ''
-      inactive: Su cuenta aún no está activada.
-      invalid_html: El email o la contraseña que ingresó son incorrectos. Intente
-        %{link_html}.
-      invalid_link_text: restablecer su contraseña
-      last_attempt: Tiene un intento más antes de que su cuenta esté bloqueada.
+      inactive: Su cuenta no ha sido activada.
+      invalid_html: El correo electrónico o la contraseña que ingresó son incorrectos.
+        Intente %{link_html}.
+      invalid_link_text: restableciendo su contraseña
+      last_attempt: Le queda un intento más antes de que su cuenta quede bloqueada.
       locked: Su cuenta está bloqueada.
-      not_found_in_database_html: El email o la contraseña que ingresó son
-        incorrectos. Intente %{link_html}.
-      not_found_in_database_link_text: restablecer su contraseña
-      session_limited: Sus credenciales para iniciar una sesión se utilizaron en otro
-        navegador. Inicie una sesión nueva para continuar en este navegador.
-      timeout: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
-      unauthenticated: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
-      unconfirmed: Debe confirmar su email antes de continuar.
+      not_found_in_database_html: El correo electrónico o la contraseña que ingresó
+        son incorrectos. Intente %{link_html}.
+      not_found_in_database_link_text: restableciendo su contraseña
+      session_limited: Sus credenciales para iniciar una sesión se usaron en otro
+        navegador. Vuelva a iniciar sesión para continuar en este navegador.
+      timeout: Su sesión terminó. Vuelva a iniciar la sesión para continuar.
+      unauthenticated: Su sesión terminó. Vuelva a iniciar la sesión para continuar.
+      unconfirmed: Debe confirmar su dirección de correo electrónico antes de continuar.
     mailer:
       password_updated:
-        subject: Su contraseña ha sido cambiada.
+        subject: Su contraseña cambió
     passwords:
       choose_new_password: Elija una contraseña nueva.
-      invalid_token: El código para restablecer la contraseña no es válido. Inténtelo
+      invalid_token: El token para restablecer la contraseña no es válido. Inténtelo
         de nuevo.
-      no_token: Usted no puede acceder a esta página si no procede desde el email para
-        restablecer la contraseña. Asegúrese de utilizar el enlace completo que
-        está en el email.
-      send_instructions: En pocos minutos recibirá un email con instrucciones para
-        restablecer su contraseña.
-      send_paranoid_instructions: En pocos minutos recibirá un email con instrucciones
+      no_token: Use el vínculo del correo electrónico que recibió para restablecer
+        su contraseña. Si pega el vínculo en su navegador, cerciórese de pegar el
+        vínculo completo.
+      send_instructions: En unos minutos, recibirá un correo electrónico con instrucciones
         para restablecer su contraseña.
-      token_expired: Ha tardado demasiado en restablecer su contraseña. Inténtelo de nuevo.
-      updated: Su contraseña ha sido cambiada. Ahora ha iniciado una sesión.
-      updated_not_active: Su contraseña ha sido cambiada. Inicie sesión con su contraseña nueva.
+      send_paranoid_instructions: En unos minutos, recibirá un correo electrónico
+        con instrucciones para restablecer su contraseña.
+      token_expired: Tardó demasiado en restablecer su contraseña. Inténtelo de nuevo.
+      updated: Su contraseña cambió. Inició su sesión.
+      updated_not_active: Su contraseña cambió. Inicie sesión con su contraseña nueva.
     registrations:
-      close_window: Puedes cerrar esta ventana si terminaste.
-      destroyed: Su cuenta se ha eliminado exitosamente.
+      close_window: Puede cerrar esta ventana si ya terminó.
+      destroyed: Su cuenta fue eliminada.
     sessions:
       signed_in: ''
-      signed_out: Su sesión ha terminado ahora.
+      signed_out: Cerró su sesión.
