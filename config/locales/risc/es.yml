@@ -3,16 +3,16 @@ es:
   risc:
     security_event:
       errors:
-        alg_unsupported: algoritmo no compatible, debe estar firmado con %{expected_alg}
-        aud_invalid: reclamo de auditor inválido, esperado %{url}
-        event_type_missing: event perdido
-        event_type_unsupported: tipo de evento no admitido %{event_type}
-        exp_present: Los eventos SET no deben tener un reclamo de exp
-        jti_not_unique: jti ya existe
-        jti_required: se requiere reclamo jti
-        jwt_could_not_parse: no se pudo analizar JWT
-        no_public_key: no se pudo cargar la clave pública para el emisor
-        sub_not_found: reclamo de event.subject.sub no válido
-        sub_unsupported: no se acepta subclase de nivel superior
-        subject_type_unsupported: subject_type debe ser %{expected_subject_type}
-        typ_error: El encabezado típico debe ser %{expected_typ}
+        alg_unsupported: unsupported algorithm, must be signed with %{expected_alg}
+        aud_invalid: invalid aud claim, expected %{url}
+        event_type_missing: missing event
+        event_type_unsupported: unsupported event type %{event_type}
+        exp_present: SET events must not have an exp claim
+        jti_not_unique: jti was not unique
+        jti_required: jti claim is required
+        jwt_could_not_parse: could not parse JWT
+        no_public_key: could not load public key for issuer
+        sub_not_found: invalid event.subject.sub claim
+        sub_unsupported: top-level sub claim is not accepted
+        subject_type_unsupported: subject_type must be %{expected_subject_type}
+        typ_error: typ header must be %{expected_typ}

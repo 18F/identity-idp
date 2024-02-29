@@ -3,16 +3,16 @@ fr:
   risc:
     security_event:
       errors:
-        alg_unsupported: algorithme non pris en charge, doit être signé avec %{expected_alg}
-        aud_invalid: revendication aud non valide, %{url} attendu
-        event_type_missing: event manquant
-        event_type_unsupported: type d’événement non pris en charge %{event_type}
-        exp_present: Les événements SET ne doivent pas avoir de réclamation exp
-        jti_not_unique: jti n’était pas unique
-        jti_required: La revendication jti est requise
-        jwt_could_not_parse: impossible d’analyser JWT
-        no_public_key: impossible de charger la clé publique de l’émetteur
-        sub_not_found: revendication event.subject.sub non valide
-        sub_unsupported: la sub-revendication de niveau supérieur n’est pas acceptée
-        subject_type_unsupported: subject_type doit être %{expected_subject_type}
-        typ_error: l’en-tête typ doit être %{expected_typ}
+        alg_unsupported: unsupported algorithm, must be signed with %{expected_alg}
+        aud_invalid: invalid aud claim, expected %{url}
+        event_type_missing: missing event
+        event_type_unsupported: unsupported event type %{event_type}
+        exp_present: SET events must not have an exp claim
+        jti_not_unique: jti was not unique
+        jti_required: jti claim is required
+        jwt_could_not_parse: could not parse JWT
+        no_public_key: could not load public key for issuer
+        sub_not_found: invalid event.subject.sub claim
+        sub_unsupported: top-level sub claim is not accepted
+        subject_type_unsupported: subject_type must be %{expected_subject_type}
+        typ_error: typ header must be %{expected_typ}

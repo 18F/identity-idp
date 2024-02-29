@@ -1,7 +1,7 @@
 ---
 fr:
   user_authorization_confirmation:
-    continue: Continuer
-    currently_logged_in: 'Vous êtes déjà connecté(e) avec l’adresse e-mail suivante:'
+    continue: Suite
+    currently_logged_in: 'Vous êtes déjà connecté avec l’adresse e-mail suivante :'
     or: Ou
     sign_in: Changer d’adresse e-mail
