@@ -22,7 +22,7 @@ EOM
 
 download_pwned_passwords() {
   echo "Downloading pwned passwords. This may take awhile ..."
-  ./lib/pwned_password_downloader.rb
+  bundle exec ruby ./lib/pwned_password_downloader.rb
 }
 
 check_pwned_download() {
