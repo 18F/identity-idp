@@ -9,6 +9,10 @@ class PwnedPasswordDownloader
               :num_threads,
               :keep_threshold
 
+  SHA1_LENGTH = 40
+  HASH_PREFIX_LENGTH = 5
+  OCCURRENCE_OFFSET = SHA1_LENGTH - HASH_PREFIX_LENGTH + ':'.length
+
   def initialize(
     destination: 'tmp/pwned',
     num_threads: 64,
@@ -77,7 +81,7 @@ class PwnedPasswordDownloader
       request("https://api.pwnedpasswords.com/range/#{prefix}").
       body.
       each_line(chomp: true).
-      select { |line| line[36..].to_i >= keep }.
+      select { |line| line[OCCURRENCE_OFFSET..].to_i >= keep }.
       reduce('') { |result, line| result + "#{prefix}#{line}\n" }
   end
 
