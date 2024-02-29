@@ -104,7 +104,7 @@ es:
         intent: Deseamos conocer su experiencia al verificar su identidad en persona
           en la oficina de correos.
         privacy_html: Sus respuestas a esta encuesta estarán protegidas conforme a
-          los siguientes <a href=\"%{url}\">estándares de privacidad y seguridad</a>.
+          los siguientes <a href="%{url}">estándares de privacidad y seguridad</a>.
         request_description: Responda a una breve encuesta anónima; sus comentarios
           nos ayudarán a mejorar nuestra respuesta a sus necesidades.
         thanks: Gracias por usar %{app_name}.
@@ -137,7 +137,7 @@ es:
         identificación, como pasaportes o identificaciones militares.
     in_person_failed_suspected_fraud:
       body:
-        help_center_html: Si necesita más ayuda, puede <a href=\"%{help_center_url}\">visitar
+        help_center_html: Si necesita más ayuda, puede <a href="%{help_center_url}">visitar
           nuestro Centro de ayuda</a> o contactar con la agencia a la que está intentando
           acceder.
         intro: Entendemos que estaba intentando verificar su identidad usando %{app_name};
@@ -148,7 +148,7 @@ es:
     in_person_outage_notification:
       body:
         closing_html: Nos disculpamos por el retraso en el servicio. Si tiene alguna
-          pregunta o no recibe su resultado antes del 1 de junio, <a href=\"%{contact_us_url}\">contacte
+          pregunta o no recibe su resultado antes del 1 de junio, <a href="%{contact_us_url}">contacte
           con el servicio de atención al cliente de %{app_name}</a>.
         heading: Demora de los resultados de la verificación en persona del 20 al
           30 de mayo
@@ -198,8 +198,8 @@ es:
       sign_in: Iniciar sesión
       subject: Logró verificar su identidad con %{app_name}
       warning_contact_us_html: Si usted no intentó verificar su identidad en persona,
-        inicie sesión en <a href=\"%{reset_password_url}\"> para restablecer su contraseña</a>.
-        Para informar de esto, <a href=\"%{contact_us_url}\">contacte con el servicio
+        inicie sesión en <a href="%{reset_password_url}"> para restablecer su contraseña</a>.
+        Para informar de esto, <a href="%{contact_us_url}">contacte con el servicio
         de asistencia de %{app_name}</a>.
     letter_reminder:
       info_html: La carta que recibirá próximamente contiene un código de verificación
@@ -232,13 +232,13 @@ es:
         que se trata de usted. </p><p>Si acaba de iniciar sesión y restablecer su
         clave personal, todo está bien. No tiene que hacer nada.</p><p>Si no acaba
         de restablecer su clave personal o no está seguro, siga de inmediato estos
-        pasos para proteger su cuenta:<ol><li><strong><a href=\"%{reset_password_url}\">Cambie
+        pasos para proteger su cuenta:<ol><li><strong><a href="%{reset_password_url}">Cambie
         su contraseña</a>.</strong> Elija una contraseña que no haya usado aún con
-        esta cuenta. </li><li><strong><a href=\"%{account_url}\">Inicie sesión en
+        esta cuenta. </li><li><strong><a href="%{account_url}">Inicie sesión en
         su cuenta de %{app_name}</a></strong> y compruebe que reconoce toda la información
         de la página de su cuenta, incluidos los métodos que usa para la autenticación
         de dos factores, como número de teléfono, aplicación de autenticación o clave
-        de seguridad.</li><li><strong>En la <a href=\"%{account_url}\">página de su
+        de seguridad.</li><li><strong>En la <a href="%{account_url}">página de su
         cuenta de %{app_name}</a>, solicite una nueva clave personal</strong>. Recuerde,
         no la comparta nunca a menos que la esté usando para iniciar sesión en un
         sitio web de confianza que utilice %{app_name}.</li></ol></p><br>Gracias,<br>El
@@ -251,13 +251,13 @@ es:
         para comprobar que se trata de usted.</p><p>Si acaba de iniciar sesión con
         su clave personal, todo está bien. No tiene que hacer nada.</p><p>Si no inició
         sesión con una clave personal, o si no está seguro, siga de inmediato estos
-        pasos para proteger su cuenta:<ol><li><strong><a href=\"%{reset_password_url}\">Cambie
+        pasos para proteger su cuenta:<ol><li><strong><a href="%{reset_password_url}">Cambie
         su contraseña</a>.</strong> Elija una contraseña que no haya usado aún con
-        esta cuenta.</li><li><strong><a href=\"%{account_url}\">Inicie sesión en su
+        esta cuenta.</li><li><strong><a href="%{account_url}">Inicie sesión en su
         cuenta de %{app_name}</a></strong> y compruebe que reconoce toda la información
         de la página de su cuenta, incluidos los métodos que usa para la autenticación
         de dos factores, como número de teléfono, aplicación de autenticación o clave
-        de seguridad.</li><li><strong>En la <a href=\"%{account_url}\">página de su
+        de seguridad.</li><li><strong>En la <a href="%{account_url}">página de su
         cuenta de %{app_name}</a>, solicite una nueva clave personal.</strong> Recuerde,
         no la comparta nunca a menos que la esté usando para iniciar sesión en un
         sitio web de confianza que utilice %{app_name}.</li></ol></p><br>Gracias,<br>El

@@ -106,7 +106,7 @@ fr:
         intent: Nous voulons connaître votre expérience en matière de vérification
           de votre identité en personne au bureau de poste.
         privacy_html: Vos réponses à cette enquête seront protégées conformément aux
-          <a href=\"%{url}\">normes de confidentialité et de sécurité</a> suivantes.
+          <a href="%{url}">normes de confidentialité et de sécurité</a> suivantes.
         request_description: Répondez à une courte enquête anonyme et nous utiliserons
           vos commentaires pour nous aider à mieux répondre à vos besoins.
         thanks: Merci d’utiliser %{app_name}.
@@ -143,7 +143,7 @@ fr:
     in_person_failed_suspected_fraud:
       body:
         help_center_html: Si vous avez besoin d’aide supplémentaire, vous pouvez <a
-          href=\"%{help_center_url}\">consulter notre centre d’aide</a> ou contacter
+          href="%{help_center_url}">consulter notre centre d’aide</a> ou contacter
           l’organisme auquel vous essayez d’accéder.
         intro: Vous avez tenté de confirmer votre identité par le biais de %{app_name},
           mais votre identité n’a pas pu être confirmée au bureau de poste de %{location}
@@ -154,7 +154,7 @@ fr:
       body:
         closing_html: Nous vous présentons nos excuses pour le retard de service.
           Si vous avez des questions ou ne recevez pas votre résultat d’ici le 1er
-          juin, veuillez <a href=\"%{contact_us_url}\">contacter le service client
+          juin, veuillez <a href="%{contact_us_url}">contacter le service client
           de %{app_name}</a>.
         heading: Résultats de la vérification en personne retardés du 20 au 30 mai
         instructions: Pour le moment, si vous avez tenté de terminer le processus
@@ -205,8 +205,8 @@ fr:
       sign_in: Se connecter
       subject: Vous avez réussi à vérifier votre identité avec %{app_name}
       warning_contact_us_html: Si vous n’avez pas essayé de confirmer votre identité
-        en personne, veuillez vous connecter pour <a href=\"%{reset_password_url}\">réinitialiser
-        votre mot de passe</a>. Pour signaler ce problème, <a href=\"%{contact_us_url}\">contactez
+        en personne, veuillez vous connecter pour <a href="%{reset_password_url}">réinitialiser
+        votre mot de passe</a>. Pour signaler ce problème, <a href="%{contact_us_url}">contactez
         l’assistance de %{app_name}</a>.
     letter_reminder:
       info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
@@ -244,14 +244,14 @@ fr:
         votre clé personnelle, c’est parfait ! Vous n’avez rien à faire.</p><p>Si
         vous ne venez pas de réinitialiser votre clé personnelle, ou si vous n’êtes
         pas sûr, veuillez prendre immédiatement les mesures suivantes pour sécuriser
-        votre compte :<ol><li><strong><a href=\"%{reset_password_url}\">Modifiez votre
+        votre compte :<ol><li><strong><a href="%{reset_password_url}">Modifiez votre
         mot de passe</a>.</strong> Choisissez un mot de passe que vous n’avez pas
-        encore utilisé avec ce compte.</li><li><strong><a href=\"%{account_url}\">Connectez-vous
+        encore utilisé avec ce compte.</li><li><strong><a href="%{account_url}">Connectez-vous
         à votre compte %{app_name}</a></strong> et assurez-vous de reconnaître toutes
         les informations de la page de votre compte, y compris les méthodes que vous
         utilisez pour l’authentification à deux facteurs, comme le numéro de téléphone,
         l’appli d’authentification ou la clé de sécurité.</li><li><strong>Sur votre
-        <a href=\"%{account_url}\">page de compte %{app_name}</a>, demandez une nouvelle
+        <a href="%{account_url}">page de compte %{app_name}</a>, demandez une nouvelle
         clé personnelle.</strong> N’oubliez pas de ne jamais la partager, à moins
         que vous ne l’utilisiez pour vous connecter à un site Web de confiance qui
         utilise %{app_name}.</li></ol></p><br>Merci,<br>L’équipe %{app_name}
@@ -264,14 +264,14 @@ fr:
         avec votre clé personnelle, c’est parfait ! Il n’y a rien que vous deviez
         faire.</p><p>Si vous ne vous êtes pas connecté avec une clé personnelle ou
         si vous n’êtes pas sûr, veuillez prendre immédiatement les mesures suivantes
-        pour sécuriser votre compte :<ol><li><strong><a href=\"%{reset_password_url}\">Changez
+        pour sécuriser votre compte :<ol><li><strong><a href="%{reset_password_url}">Changez
         votre mot de passe</a>.</strong> Choisissez un mot de passe que vous n’avez
-        pas encore utilisé avec ce compte.</li><li><strong><a href=\"%{account_url}\">Connectez-vous
+        pas encore utilisé avec ce compte.</li><li><strong><a href="%{account_url}">Connectez-vous
         à votre compte %{app_name}</a></strong> et assurez-vous de reconnaître toutes
         les informations de la page de votre compte, y compris les méthodes que vous
         utilisez pour l’authentification à deux facteurs, comme le numéro de téléphone,
         l’appli d’authentification ou la clé de sécurité.</li><li><strong>Sur votre
-        <a href=\"%{account_url}\">page de compte %{app_name}</a>, demandez une nouvelle
+        <a href="%{account_url}">page de compte %{app_name}</a>, demandez une nouvelle
         clé personnelle.</strong> N’oubliez pas de ne jamais la partager, à moins
         que vous ne l’utilisiez pour vous connecter à un site Web de confiance qui
         utilise %{app_name}.</li></ol></p><br>Merci,<br>L’équipe %{app_name}
