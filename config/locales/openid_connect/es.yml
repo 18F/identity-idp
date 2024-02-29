@@ -13,7 +13,7 @@ es:
         no_valid_acr_values: No se encontraron ial_values aceptables
         no_valid_scope: No se encontraron valores de ámbito válidos
         no_valid_vtr: vots encontrados no aceptables
-        prompt_invalid: No valid prompt values found
+        prompt_invalid: Prompt no es válido
         redirect_uri_invalid: redirect_uri no es válido
         redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado
         unauthorized_scope: Ámbito no autorizado
