@@ -361,16 +361,16 @@ module DocAuthHelper
     )
   end
 
-  def mock_doc_auth_acuant_error_unknown
+  def mock_doc_auth_lexis_nexis_error_unknown
     failed_http_response = instance_double(
       Faraday::Response,
-      body: AcuantFixtures.get_results_response_failure,
+      body: LexisNexisFixtures.true_id_get_results_response_failure,
     )
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
-      response: DocAuth::Acuant::Responses::GetResultsResponse.new(
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
         failed_http_response,
-        DocAuth::Acuant::Config.new,
+        DocAuth::LexisNexis::Config.new,
       ),
     )
   end

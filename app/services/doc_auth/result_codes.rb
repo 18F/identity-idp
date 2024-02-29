@@ -1,5 +1,4 @@
 module DocAuth
-  module Acuant
     module ResultCodes
       ResultCode = Struct.new(:code, :name, :billed) do
         alias_method :billed?, :billed
@@ -34,5 +33,4 @@ module DocAuth
         BY_CODE[code]
       end
     end
-  end
 end

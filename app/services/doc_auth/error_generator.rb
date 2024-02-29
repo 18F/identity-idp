@@ -147,8 +147,8 @@ module DocAuth
                   side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
         issuer_type_ok = !side_issuer_type.present? ||
-                         side_issuer_type == DocAuth::Acuant::IssuerTypes::STATE_OR_PROVINCE.name ||
-                         side_issuer_type == DocAuth::Acuant::IssuerTypes::UNKNOWN.name
+                         side_issuer_type == DocAuth::IssuerTypes::STATE_OR_PROVINCE.name ||
+                         side_issuer_type == DocAuth::IssuerTypes::UNKNOWN.name
         both_side_ok &&= issuer_type_ok && side_ok && country_ok
         error_result.add_side(side.downcase.to_sym) unless side_ok && issuer_type_ok && country_ok
       end

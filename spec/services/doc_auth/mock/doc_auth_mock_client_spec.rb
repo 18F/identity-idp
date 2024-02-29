@@ -5,18 +5,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
   let(:liveness_checking_required) { false }
 
-  it 'implements all the public methods of the real Acuant client' do
-    expect(
-      described_class.instance_methods.sort,
-    ).to eq(
-      DocAuth::Acuant::AcuantClient.instance_methods.
-        concat(DocAuth::Mock::YmlLoaderConcern.instance_methods).sort,
-    )
-  end
-
+  let(:instance_id) { 'fake-instance-id' }
   it 'allows doc auth without any external requests' do
-    create_document_response = client.create_document
-    instance_id = create_document_response.instance_id
     post_front_image_response = client.post_front_image(
       instance_id: instance_id,
       image: DocAuthImageFixtures.document_front_image,
@@ -76,8 +66,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
             ClassName: Tribal Identification
     YAML
 
-    create_document_response = client.create_document
-    instance_id = create_document_response.instance_id
     client.post_front_image(
       instance_id: instance_id,
       image: yaml,
@@ -116,8 +104,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
             ClassName: Tribal Identification
     YAML
 
-    create_document_response = client.create_document
-    instance_id = create_document_response.instance_id
     client.post_front_image(
       instance_id: instance_id,
       image: yaml,
@@ -139,13 +125,29 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(get_results_response.extra[:classification_info]).to include(:Front, :Back)
   end
   it 'allows responses to be mocked' do
-    described_class.mock_response!(method: :create_document, response: 'Create doc test')
+    response = DocAuth::Response.new(
+      success: true,
+      errors: nil,
+      exception: nil,
+      extra: { vendor: 'Mock' },
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(method: :post_front_image, response: response)
 
-    expect(described_class.new.create_document).to eq('Create doc test')
+    expect(
+      described_class.new.post_front_image(
+        image: DocAuthImageFixtures.document_front_image,
+        instance_id: 'fake-instance-id',
+      ),
+    ).to eq(response)
 
     described_class.reset!
 
-    expect(described_class.new.create_document).to_not eq('Create doc test')
+    expect(
+      described_class.new.post_front_image(
+        image: DocAuthImageFixtures.document_front_image,
+        instance_id: 'fake-instance-id',
+      ),
+    ).to_not eq(response)
   end
 
   context 'when checking results gives a failure' do

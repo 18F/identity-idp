@@ -187,9 +187,9 @@ module DocAuth
 
       def doc_auth_result_from_success
         if success?
-          DocAuth::Acuant::ResultCodes::PASSED.name
+          DocAuth::ResultCodes::PASSED.name
         else
-          DocAuth::Acuant::ResultCodes::CAUTION.name
+          DocAuth::ResultCodes::CAUTION.name
         end
       end
 
