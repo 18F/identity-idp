@@ -189,14 +189,7 @@ const App = composeComponents(
     {
       value: {
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-        selfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
-    },
-  ],
-  [
-    DocumentCapture,
-    {
-      onStepChange: extendSession,
     },
   ],
   [
@@ -205,6 +198,12 @@ const App = composeComponents(
       value: {
         selfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
+    },
+  ],
+  [
+    DocumentCapture,
+    {
+      onStepChange: extendSession,
     },
   ],
 );
