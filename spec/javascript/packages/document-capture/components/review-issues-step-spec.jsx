@@ -179,13 +179,13 @@ describe('document-capture/components/review-issues-step', () => {
     expect(queryByLabelText('doc_auth.headings.document_capture_selfie')).to.not.exist();
   });
 
-  it('renders with front, back, and selfie inputs when selfieCaptureEnabled is true', async () => {
+  it('renders with front, back, and selfie inputs when isSelfieCaptureEnabled is true', async () => {
     const App = composeComponents(
       [
         SelfieCaptureContext.Provider,
         {
           value: {
-            selfieCaptureEnabled: true,
+            isSelfieCaptureEnabled: true,
           },
         },
       ],

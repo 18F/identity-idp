@@ -40,7 +40,7 @@ function DocumentCaptureReviewIssues({
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
   const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
-  const { selfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const defaultSideProps = {
     registerField,
@@ -52,7 +52,7 @@ function DocumentCaptureReviewIssues({
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
+      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
         remainingSubmitAttempts={remainingSubmitAttempts}
@@ -76,7 +76,7 @@ function DocumentCaptureReviewIssues({
         />
       )}
       <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
-      {selfieCaptureEnabled && (
+      {isSelfieCaptureEnabled && (
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />

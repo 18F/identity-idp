@@ -90,13 +90,13 @@ describe('document-capture/components/documents-step', () => {
   });
 
   context('selfie capture', () => {
-    it('renders with front, back, and selfie inputs when selfieCaptureEnabled is true', () => {
+    it('renders with front, back, and selfie inputs when isSelfieCaptureEnabled is true', () => {
       const App = composeComponents(
         [
           SelfieCaptureContext.Provider,
           {
             value: {
-              selfieCaptureEnabled: true,
+              isSelfieCaptureEnabled: true,
             },
           },
         ],
@@ -140,13 +140,13 @@ describe('document-capture/components/documents-step', () => {
     });
   });
 
-  it('renders with front, back when selfieCaptureEnabled is false', () => {
+  it('renders with front, back when isSelfieCaptureEnabled is false', () => {
     const App = composeComponents(
       [
         SelfieCaptureContext.Provider,
         {
           value: {
-            selfieCaptureEnabled: false,
+            isSelfieCaptureEnabled: false,
           },
         },
       ],

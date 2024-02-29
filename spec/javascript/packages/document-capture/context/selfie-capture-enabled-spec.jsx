@@ -6,7 +6,7 @@ describe('document-capture/context/feature-flag', () => {
   it('has expected default properties', () => {
     const { result } = renderHook(() => useContext(SelfieCaptureContext));
 
-    expect(result.current).to.have.keys(['selfieCaptureEnabled']);
-    expect(result.current.selfieCaptureEnabled).to.be.a('boolean');
+    expect(result.current).to.have.keys(['isSelfieCaptureEnabled']);
+    expect(result.current.isSelfieCaptureEnabled).to.be.a('boolean');
   });
 });

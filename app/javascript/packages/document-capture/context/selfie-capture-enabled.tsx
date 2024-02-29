@@ -4,11 +4,11 @@ interface SelfieCaptureEnabledProps {
   /**
    * Specify whether to show the selfie capture on the doc capture screen.
    */
-  selfieCaptureEnabled: boolean;
+  isSelfieCaptureEnabled: boolean;
 }
 
 const SelfieCaptureContext = createContext<SelfieCaptureEnabledProps>({
-  selfieCaptureEnabled: false,
+  isSelfieCaptureEnabled: false,
 });
 
 SelfieCaptureContext.displayName = 'SelfieCaptureContext';

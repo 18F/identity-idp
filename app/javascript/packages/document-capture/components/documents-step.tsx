@@ -19,14 +19,14 @@ import {
 import DocumentCaptureAbandon from './document-capture-abandon';
 
 export function DocumentCaptureSubheaderOne({
-  selfieCaptureEnabled,
+  isSelfieCaptureEnabled,
 }: {
-  selfieCaptureEnabled: boolean;
+  isSelfieCaptureEnabled: boolean;
 }) {
   const { t } = useI18n();
   return (
     <h2>
-      {selfieCaptureEnabled && '1. '}
+      {isSelfieCaptureEnabled && '1. '}
       {t('doc_auth.headings.document_capture_subheader_id')}
     </h2>
   );
@@ -113,9 +113,9 @@ function DocumentsStep({
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
-  const { selfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
-  const pageHeaderText = selfieCaptureEnabled
+  const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
 
@@ -129,7 +129,7 @@ function DocumentsStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
-      <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
+      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
@@ -140,7 +140,7 @@ function DocumentsStep({
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
       <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
-      {selfieCaptureEnabled && (
+      {isSelfieCaptureEnabled && (
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
