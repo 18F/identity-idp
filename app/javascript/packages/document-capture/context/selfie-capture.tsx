@@ -1,13 +1,13 @@
 import { createContext } from 'react';
 
-interface SelfieCaptureEnabledProps {
+interface SelfieCaptureProps {
   /**
    * Specify whether to show the selfie capture on the doc capture screen.
    */
   isSelfieCaptureEnabled: boolean;
 }
 
-const SelfieCaptureContext = createContext<SelfieCaptureEnabledProps>({
+const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
 });
 
