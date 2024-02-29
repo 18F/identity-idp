@@ -18,7 +18,7 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     cancellations:
-      prompt: "¿Está seguro de que desea cancelar?"
+      prompt: '¿Está seguro de que desea cancelar?'
     confirmations:
       new: Enviar otro correo electrónico de confirmación
     create_account_new_users: Crear una cuenta para usuarios nuevos
@@ -33,7 +33,7 @@ es:
       confirm: Confirme su contraseña actual para continuar
       confirm_for_personal_key: Introduzca la contraseña y obtenga una clave personal
         nueva
-      forgot: "¿Olvidó su contraseña?"
+      forgot: '¿Olvidó su contraseña?'
     piv_cac:
       certificate:
         bad: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
@@ -61,7 +61,7 @@ es:
       new: Use su tarjeta PIV o CAC para proteger su cuenta
     redirecting: Redirigiendo
     residential_address: Domicilio actual
-    session_timeout_warning: "¿Necesita más tiempo?"
+    session_timeout_warning: '¿Necesita más tiempo?'
     sign_in_existing_users: Iniciar sesión para usuarios existentes
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión

@@ -8,8 +8,8 @@ fr:
     buttons:
       add_new_photos: Ajouter de nouvelles photos
       continue: Suite
-      take_or_upload_picture_html: "<lg-take-photo>Prendre une photo</lg-take-photo><lg-or>
-        ou </lg-or><lg-upload>Télécharger une photo</lg-upload>"
+      take_or_upload_picture_html: '<lg-take-photo>Prendre une photo</lg-take-photo><lg-or>
+        ou </lg-or><lg-upload>Télécharger une photo</lg-upload>'
       take_picture: Prendre une photo
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
@@ -145,14 +145,14 @@ fr:
           nouvelles photos dans un endroit bien éclairé.
       upload_error: Désolé, il y a eu un problème de notre côté.
     exit_survey:
-      content_html: "<strong>Si vous n’avez pas de permis de conduire ou de carte
+      content_html: '<strong>Si vous n’avez pas de permis de conduire ou de carte
         d’identité d’un État, vous ne pouvez pas continuer à utiliser %{app_name}.</strong>
         Veuillez <a>quitter %{app_name} et contacter %{sp_name}</a> pour savoir ce
-        que vous pouvez faire."
-      content_nosp_html: "<strong>Si vous n’avez pas de permis de conduire ou de carte
+        que vous pouvez faire.'
+      content_nosp_html: '<strong>Si vous n’avez pas de permis de conduire ou de carte
         d’identité d’un État, vous ne pouvez pas continuer à utiliser %{app_name}.</strong>
         <a>Annulez la vérification de votre identité avec %{app_name}</a> et vous
-        pourrez redémarrer le processus lorsque vous serez prêt."
+        pourrez redémarrer le processus lorsque vous serez prêt.'
       header: Vous n’avez pas de permis de conduire ou de carte d’identité d’un État ?
       optional:
         button: Valider et quitter %{app_name}
@@ -235,8 +235,8 @@ fr:
         with_sp: Quitter %{app_name} et revenir à %{sp_name}
         without_sp: Quitter la vérification d’identité et accéder à la page de votre
           compte
-      getting_started_html: "%{sp_name} doit s’assurer que vous êtes bien vous, et
-        non quelqu’un qui se fait passer pour vous. %{link_html}"
+      getting_started_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et
+        non quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: Pour plus d’informations sur la vérification de
         votre identité
       how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne

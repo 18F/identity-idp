@@ -28,8 +28,8 @@ es:
           enviando id_token_hint. En vez de ello, enviar client_id.
         no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe
           enviar client_id o id_token_hint.
-      heading: "¿Desea cerrar sesión en %{app_name}?"
-      heading_with_sp: "¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?"
+      heading: '¿Desea cerrar sesión en %{app_name}?'
+      heading_with_sp: '¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?'
     token:
       errors:
         expired_code: venció

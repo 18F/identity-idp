@@ -2,11 +2,11 @@
 fr:
   two_factor_authentication:
     aal2_request:
-      phishing_resistant_html: "<strong>%{sp_name}</strong> nécessite une méthode
+      phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode
         d’authentification de haute sécurité, telle que le déverrouillage facial ou
-        tactile, une clé de sécurité ou une carte d’employé fédéral."
-      piv_cac_only_html: "<strong>%{sp_name}</strong> nécessite votre carte d’employé
-        fédéral, qui est une méthode d’authentification de haute sécurité."
+        tactile, une clé de sécurité ou une carte d’employé fédéral.'
+      piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé
+        fédéral, qui est une méthode d’authentification de haute sécurité.'
     account_reset:
       cancel_link: Annuler votre demande
       link: supprimer votre compte
@@ -34,16 +34,16 @@ fr:
       Après l’avoir envoyé, vous devrez utiliser un nouveau code de sauvegarde la
       fois suivante.
     backup_codes:
-      add_another_authentication_option: "‹ Ajouter une autre option d’authentification"
+      add_another_authentication_option: '‹ Ajouter une autre option d’authentification'
       instructions: Si vous n’avez pas accès à un autre appareil, conservez vos codes
         de sauvegarde en lieu sûr. Si vous perdez vos codes de sauvegarde, vous ne
         pourrez plus vous connecter à %{app_name}.
       new_backup_codes_html: J’ai besoin de nouveaux codes de sauvegarde
       saved_backup_codes: J’ai sauvegardé mes codes de sauvegarde
-      warning_html: "<strong>Vous n’avez configuré que des codes de sauvegarde sur
+      warning_html: '<strong>Vous n’avez configuré que des codes de sauvegarde sur
         votre compte. </strong>Si vous avez accès à un autre appareil, tel qu’un téléphone,
-        protégez votre compte à l’aide d’une autre méthode d’authentification."
-    choose_another_option: "‹ Choisir une autre méthode d’authentification"
+        protégez votre compte à l’aide d’une autre méthode d’authentification.'
+    choose_another_option: '‹ Choisir une autre méthode d’authentification'
     form_legend: Choisissez vos méthodes d’authentification
     header_text: Saisissez votre code à usage unique
     important_alert_icon: icône d’alerte importante
@@ -190,8 +190,8 @@ fr:
         une nouvelle liste. Gardez à l’esprit que les codes de sauvegarde sont faciles
         à perdre.
       configurations_added:
-        one: "%{count} ajouté"
-        other: "%{count} ajouté"
+        one: '%{count} ajouté'
+        other: '%{count} ajouté'
       no_count_configuration_added: Ajouté
       phone: SMS ou message vocal
       phone_info: Recevoir un code sécurisé par SMS (texto) ou appel téléphonique.

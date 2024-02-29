@@ -74,7 +74,7 @@ fr:
         consentement pour partager votre identité vérifiée
       completion_first_sign_in: Continuer vers %{sp}
       completion_ial2: Connecter vos informations vérifiées à %{sp}
-      completion_new_attributes: "%{sp} demande de nouvelles informations"
+      completion_new_attributes: '%{sp} demande de nouvelles informations'
       completion_new_sp: Vous vous connectez pour la première fois
       completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
       confirmation: Continuer à vous connecter

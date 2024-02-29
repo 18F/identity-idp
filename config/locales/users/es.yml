@@ -8,13 +8,13 @@ es:
       bullet_1: No tendrá una cuenta de %{app_name}.
       bullet_2_basic: Eliminaremos su dirección de correo electrónico, contraseña
         y número de teléfono.
-      bullet_2_verified: "%{app_name} eliminará su dirección de correo electrónico,
+      bullet_2_verified: '%{app_name} eliminará su dirección de correo electrónico,
         contraseña, número de teléfono, nombre, dirección, fecha de nacimiento y número
-        de Seguro Social de nuestro sistema."
+        de Seguro Social de nuestro sistema.'
       bullet_3: No podrá tener acceso seguro a su información usando %{app_name}.
       bullet_4: Notificaremos a las agencias a las que acceda con %{app_name} que
         usted ya no tiene una cuenta.
-      heading: "¿Está seguro de que desea eliminar su cuenta?"
+      heading: '¿Está seguro de que desea eliminar su cuenta?'
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
       subheading: 'Si elimina su cuenta:'
     personal_key:

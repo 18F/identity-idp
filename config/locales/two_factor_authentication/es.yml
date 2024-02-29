@@ -2,11 +2,11 @@
 es:
   two_factor_authentication:
     aal2_request:
-      phishing_resistant_html: "<strong>%{sp_name}</strong> requiere un método de
+      phishing_resistant_html: '<strong>%{sp_name}</strong> requiere un método de
         autenticación de alta seguridad, como desbloqueo facial o táctil, una clave
-        de seguridad o una identificación de empleado de gobierno."
-      piv_cac_only_html: "<strong>%{sp_name}</strong> requiere su identificación de
-        empleado de gobierno, un método de autenticación de alta seguridad."
+        de seguridad o una identificación de empleado de gobierno.'
+      piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de
+        empleado de gobierno, un método de autenticación de alta seguridad.'
     account_reset:
       cancel_link: Cancelar su solicitud
       link: eliminando su cuenta
@@ -33,15 +33,15 @@ es:
     backup_code_prompt: Puede utilizar este código de recuperación una sola vez. Después
       de enviarlo, tendrá que usar un nuevo código de recuperación la próxima vez.
     backup_codes:
-      add_another_authentication_option: "‹ Añada otra opción de autenticación"
+      add_another_authentication_option: '‹ Añada otra opción de autenticación'
       instructions: Si no tiene acceso a otro dispositivo, proteja sus códigos de
         recuperación. Si los pierde, no podrá iniciar sesión en %{app_name}.
       new_backup_codes_html: Necesito nuevos códigos de recuperación
       saved_backup_codes: Guardé mis códigos de recuperación
-      warning_html: "<strong>Solo ha configurado códigos de recuperación en su cuenta.
+      warning_html: '<strong>Solo ha configurado códigos de recuperación en su cuenta.
         </strong>Si tiene acceso a otro dispositivo, como un teléfono, proteja su
-        cuenta con otro método de autenticación."
-    choose_another_option: "‹ Elija otro método de autenticación"
+        cuenta con otro método de autenticación.'
+    choose_another_option: '‹ Elija otro método de autenticación'
     form_legend: Elija sus métodos de autenticación
     header_text: Introduzca su código de un solo uso
     important_alert_icon: icono importante de alerta
@@ -128,7 +128,7 @@ es:
       one_number_instruction: Debe haber agregado más de un número de teléfono para
         seleccionar un número de teléfono predeterminado.
       one_number_title: Este es su número predeterminado
-      title: "¿Desea configurar este como su número de teléfono predeterminado?"
+      title: '¿Desea configurar este como su número de teléfono predeterminado?'
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una sola vez. Después de ingresarla,
       recibirá una nueva clave.
@@ -177,8 +177,8 @@ es:
         dispositivo. Cuando haya usado el último código, generaremos una lista nueva.
         Recuerde que los códigos de recuperación se pierden con facilidad.
       configurations_added:
-        one: "%{count} añadida"
-        other: "%{count} añadida"
+        one: '%{count} añadida'
+        other: '%{count} añadida'
       no_count_configuration_added: Añadida
       phone: Mensaje de texto o de voz
       phone_info: Reciba un código seguro por mensaje de texto (SMS) o llamada telefónica.

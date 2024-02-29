@@ -8,9 +8,9 @@ fr:
       bullet_1: Vous n’aurez pas de compte %{app_name}.
       bullet_2_basic: Nous supprimerons votre adresse e-mail, votre mot de passe et
         votre numéro de téléphone
-      bullet_2_verified: "%{app_name} supprimera de notre système votre adresse e-mail,
+      bullet_2_verified: '%{app_name} supprimera de notre système votre adresse e-mail,
         votre mot de passe, votre numéro de téléphone, votre nom, votre adresse, votre
-        date de naissance et votre numéro de sécurité sociale."
+        date de naissance et votre numéro de sécurité sociale.'
       bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations à
         l’aide de %{app_name}.
       bullet_4: Nous informerons les organismes auxquels vous accédez avec %{app_name}
