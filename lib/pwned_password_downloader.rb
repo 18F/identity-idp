@@ -38,25 +38,24 @@ class PwnedPasswordDownloader
       Thread.new do |thread_id|
         net_http = Net::HTTP::Persistent.new(name: "thread_id_#{thread_id}")
 
-        loop do
-          prefix = queue.pop
-          break if !prefix
-
+        while (prefix = queue.pop)
           if already_downloaded?(prefix)
             bar.increment
             next
           end
 
-          write_one(
-            prefix:,
-            content: with_retries(max_tries: 5, rescue: Socket::ResolutionError) do
-              download_one(prefix:, net_http:)
-            end,
-          )
-          bar.increment
-          prefix = nil
-        ensure
-          queue << prefix if prefix
+          begin
+            write_one(
+              prefix:,
+              content: with_retries(max_tries: 5, rescue: Socket::ResolutionError) do
+                download_one(prefix:, net_http:)
+              end,
+            )
+          rescue
+            queue << prefix
+          else
+            bar.increment
+          end
         end
       ensure
         net_http.shutdown
