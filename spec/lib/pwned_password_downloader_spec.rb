@@ -3,8 +3,16 @@ require 'pwned_password_downloader'
 require 'tempfile'
 
 RSpec.describe PwnedPasswordDownloader do
-  let(:destination) { Dir.mktmpdir('pwned_passwords') }
-  subject(:downloader) { PwnedPasswordDownloader.new(destination:, output_progress: false) }
+  subject(:downloader) do
+    PwnedPasswordDownloader.new(destination: @destination, output_progress: false)
+  end
+
+  around do |example|
+    Dir.mktmpdir('pwned_passwords') do |destination|
+      @destination = destination
+      example.run
+    end
+  end
 
   before do
     stub_request(:get, URI.join(PwnedPasswordDownloader::RANGE_API_ROOT, '00000').to_s).to_return(
@@ -25,7 +33,7 @@ RSpec.describe PwnedPasswordDownloader do
     it 'downloads the given range' do
       run
 
-      expect(Dir.entries(destination)).to eq(['.', '..', '00000', '00001'])
+      expect(Dir.entries(@destination)).to eq(['.', '..', '00000', '00001'])
     end
   end
 end
