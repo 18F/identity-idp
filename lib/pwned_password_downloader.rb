@@ -3,11 +3,15 @@ require 'fileutils'
 require 'net/http/persistent'
 require 'retries'
 require 'ruby-progressbar'
+require 'ruby-progressbar/outputs/null'
 
 class PwnedPasswordDownloader
   attr_reader :destination,
               :num_threads,
-              :keep_threshold
+              :keep_threshold,
+              :output_progress
+
+  alias_method :output_progress?, :output_progress
 
   RANGE_API_ROOT = 'https://api.pwnedpasswords.com/range/'
   SHA1_LENGTH = 40
@@ -17,11 +21,13 @@ class PwnedPasswordDownloader
   def initialize(
     destination: 'tmp/pwned',
     num_threads: 64,
-    keep_threshold: 30
+    keep_threshold: 30,
+    output_progress: true
   )
     @destination = destination
     @num_threads = num_threads
     @keep_threshold = keep_threshold
+    @output_progress = output_progress
   end
 
   def run!(start: '00000', finish: 'FFFFF')
@@ -30,6 +36,13 @@ class PwnedPasswordDownloader
     end
 
     FileUtils.mkdir_p(destination)
+
+    progress_bar = ProgressBar.create(
+      title: 'Downloading...',
+      total: queue.size,
+      output: output_progress? ? $stdout : ProgressBar::Outputs::Null,
+      format: '[ %t ] %p%% %B %a (%E)',
+    )
 
     num_threads.times.map do
       Thread.new do |thread_id|
@@ -59,7 +72,7 @@ class PwnedPasswordDownloader
       end
     end
 
-    wait_for_progress until queue.empty?
+    wait_for_progress until progress_bar.finished?
   ensure
     progress_bar.stop
   end
@@ -70,14 +83,6 @@ class PwnedPasswordDownloader
 
   def wait_for_progress
     sleep 3
-  end
-
-  def progress_bar
-    @progress_bar ||= ProgressBar.create(
-      title: 'Downloading...',
-      total: queue.size,
-      format: '[ %t ] %p%% %B %a (%E)',
-    )
   end
 
   def already_downloaded?(prefix)

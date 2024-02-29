@@ -4,7 +4,7 @@ require 'tempfile'
 
 RSpec.describe PwnedPasswordDownloader do
   let(:destination) { Dir.mktmpdir('pwned_passwords') }
-  subject(:downloader) { PwnedPasswordDownloader.new(destination:) }
+  subject(:downloader) { PwnedPasswordDownloader.new(destination:, output_progress: false) }
 
   before do
     stub_request(:get, URI.join(PwnedPasswordDownloader::RANGE_API_ROOT, '00000').to_s).to_return(
@@ -15,9 +15,6 @@ RSpec.describe PwnedPasswordDownloader do
     allow(Thread).to receive(:new).and_yield(rand.to_s)
     allow(downloader).to receive(:queue).and_return([])
     allow(downloader).to receive(:wait_for_progress)
-    allow(downloader).to receive(:progress_bar).and_return(
-      double(ProgressBar, increment: nil, stop: nil),
-    )
   end
 
   describe '#run!' do
