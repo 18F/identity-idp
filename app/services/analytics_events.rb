@@ -2837,6 +2837,8 @@ module AnalyticsEvents
     track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
   end
 
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # User closed the SDK for taking a selfie without submitting a photo
   def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts: nil, **extra)
     track_event(
