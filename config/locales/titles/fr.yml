@@ -20,8 +20,7 @@ fr:
       switch_back: Retourner sur votre ordinateur
       verify: Vérifier votre identité
     edit_info:
-      email_language: Modifier la langue dans laquelle vous préférez recevoir les
-        e-mails
+      email_language: Modifier la langue dans laquelle vous préférez recevoir les e-mails
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
     enter_2fa_code:
@@ -45,8 +44,8 @@ fr:
       verify_info: Vérifier vos informations
     mfa_setup:
       face_touch_unlock_confirmation: Déverrouillage facial ou tactile ajouté
-      suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification
-        ! Ajoutez-en une deuxième en guise de sauvegarde.
+      suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification !
+        Ajoutez-en une deuxième en guise de sauvegarde.
     no_auth_option: Aucune méthode de connexion trouvée
     openid_connect:
       authorization: Autorisation OpenID Connect

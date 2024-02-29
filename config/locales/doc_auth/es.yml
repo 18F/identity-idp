@@ -8,40 +8,41 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      take_or_upload_picture_html: '<lg-take-photo>Tomar la foto</lg-take-photo><lg-or>
-        o </lg-or> <lg-upload>Cargar la foto</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>Tomar la
+        foto</lg-take-photo><lg-or> o </lg-or> <lg-upload>Cargar la
+        foto</lg-upload>'
       take_picture: Tomar la foto
       take_picture_retry: Volver a tomar la foto
       upload_picture: Cargar la foto
     errors:
       alerts:
-        address_check: No pudimos leer la dirección en su identificación. Intente
-          tomar nuevas fotos.
-        barcode_content_check: No pudimos leer el código de barras en el reverso de
-          su identificación. Puede ser debido a un problema con el código de barras,
-          o bien el código de barras es de un tipo nuevo que aún no reconocemos. Use
-          alguna otra identificación emitida por el estado.
+        address_check: No pudimos leer la dirección en su identificación. Intente tomar
+          nuevas fotos.
+        barcode_content_check: No pudimos leer el código de barras en el reverso de su
+          identificación. Puede ser debido a un problema con el código de
+          barras, o bien el código de barras es de un tipo nuevo que aún no
+          reconocemos. Use alguna otra identificación emitida por el estado.
         barcode_read_check: No pudimos leer el código de barras en el reverso de su
           identificación. Intente tomar una nueva foto.
         birth_date_checks: No pudimos leer la fecha de nacimiento en su identificación.
           Intente tomar nuevas fotos.
-        control_number_check: No pudimos leer el número de referencia en el reverso
-          de su identificación. Intente tomar una nueva foto.
-        doc_crosscheck: No pudimos reconocer su identificación. Puede estar maltratada
-          o dañada, o bien el frente y el reverso de la identificación no coinciden.
-          Intente tomar nuevas fotos.
+        control_number_check: No pudimos leer el número de referencia en el reverso de
+          su identificación. Intente tomar una nueva foto.
+        doc_crosscheck: No pudimos reconocer su identificación. Puede estar maltratada o
+          dañada, o bien el frente y el reverso de la identificación no
+          coinciden. Intente tomar nuevas fotos.
         doc_number_checks: No pudimos leer el número de documento en su identificación.
           Intente tomar nuevas fotos.
-        expiration_checks: El documento venció, o no pudimos leer la fecha de vencimiento
-          en su identificación. Si su identificación no ha vencido, intente tomar
-          nuevas fotografías.
+        expiration_checks: El documento venció, o no pudimos leer la fecha de
+          vencimiento en su identificación. Si su identificación no ha vencido,
+          intente tomar nuevas fotografías.
         full_name_check: No pudimos leer el nombre completo en su identificación.
           Intente tomar nuevas fotos.
-        id_not_recognized: No pudimos reconocer su identificación. Puede estar maltratada
-          o dañada, o bien es de un tipo de identificación que no reconocemos. Intente
-          tomar nuevas fotos.
-        id_not_verified: No pudimos verificar su identificación. Puede ser que se
-          haya movido cuando tomó la foto. Intente tomar nuevas fotos.
+        id_not_recognized: No pudimos reconocer su identificación. Puede estar
+          maltratada o dañada, o bien es de un tipo de identificación que no
+          reconocemos. Intente tomar nuevas fotos.
+        id_not_verified: No pudimos verificar su identificación. Puede ser que se haya
+          movido cuando tomó la foto. Intente tomar nuevas fotos.
         issue_date_checks: No pudimos leer la fecha de emisión en su identificación.
           Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
@@ -52,43 +53,45 @@ es:
           rostro completo esté claro y visible en la foto.
         sex_check: No pudimos leer el sexo en su identificación. Intente tomar nuevas
           fotos.
-        visible_color_check: No pudimos verificar su identificación. Puede ser que
-          se haya movido cuando tomó la foto, o que la foto es demasiado oscura. Intente
-          tomar nuevas fotografías con una luz más brillante.
+        visible_color_check: No pudimos verificar su identificación. Puede ser que se
+          haya movido cuando tomó la foto, o que la foto es demasiado oscura.
+          Intente tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la fotografía de su identificación.
           Intente tomar nuevas fotos.
       barcode_attention:
-        confirm_info: Si la información siguiente es incorrecta, cargue nuevas fotos
-          de su identificación emitida por el estado.
+        confirm_info: Si la información siguiente es incorrecta, cargue nuevas fotos de
+          su identificación emitida por el estado.
         heading: No pudimos leer el código de barras en su identificación.
       camera:
         blocked: Su cámara está bloqueada
-        blocked_detail: No tenemos permiso para acceder a la cámara. Revise la configuración
-          de su navegador o sistema, vuelva a cargar esta página o cargue una foto.
+        blocked_detail: No tenemos permiso para acceder a la cámara. Revise la
+          configuración de su navegador o sistema, vuelva a cargar esta página o
+          cargue una foto.
         failed: No se pudo activar la cámara; inténtelo de nuevo.
-      card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de identificación
-        estatal.
+      card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de
+        identificación estatal.
       doc:
         doc_type_check: Su licencia de conducir o identificación estatal debe ser
-          emitida por un estado o territorio de los EE. UU. No aceptamos otras formas
-          de identificación, como pasaportes o identificaciones militares.
+          emitida por un estado o territorio de los EE. UU. No aceptamos otras
+          formas de identificación, como pasaportes o identificaciones
+          militares.
         resubmit_failed_image: Ya intentó con esta imagen y no funcionó. Intente añadir
           una imagen diferente.
         wrong_id_type_html: Solo aceptamos una licencia de conducir o una identificación
-          estatal emitida por un estado o territorio de los EE. UU. No aceptamos otras
-          formas de identificación, como pasaportes o identificaciones militares.
-          <a>Obtenga más información sobre las identificaciones aceptadas</a>
+          estatal emitida por un estado o territorio de los EE. UU. No aceptamos
+          otras formas de identificación, como pasaportes o identificaciones
+          militares. <a>Obtenga más información sobre las identificaciones
+          aceptadas</a>
       dpi:
-        failed_short: La imagen es demasiado pequeña o está borrosa; inténtelo de
-          nuevo.
+        failed_short: La imagen es demasiado pequeña o está borrosa; inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
-          imagen o de su identificación sea demasiado pequeño o que la foto esté borrosa.
-          Asegúrese de que su identificación se vea más grande dentro del marco de
-          la imagen e intente tomar una nueva foto.
-        top_msg_plural: No pudimos leer su identificación. Es posible que el tamaño
-          de sus imágenes o de su identificación sea demasiado pequeño o que las fotos
-          estén borrosas. Asegúrese de que su identificación se vea grande dentro
-          del marco de la imagen e intente tomar nuevas fotos.
+          imagen o de su identificación sea demasiado pequeño o que la foto esté
+          borrosa. Asegúrese de que su identificación se vea más grande dentro
+          del marco de la imagen e intente tomar una nueva foto.
+        top_msg_plural: No pudimos leer su identificación. Es posible que el tamaño de
+          sus imágenes o de su identificación sea demasiado pequeño o que las
+          fotos estén borrosas. Asegúrese de que su identificación se vea grande
+          dentro del marco de la imagen e intente tomar nuevas fotos.
       file_type:
         invalid: No se acepta este tipo de archivo; elija un archivo JPG o PNG.
       general:
@@ -103,58 +106,60 @@ es:
         selfie_failure: No pudimos verificar su foto. Trate de tomarse otra foto.
       glare:
         failed_short: La imagen tiene reflejos; inténtelo de nuevo.
-        top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos.
-          Asegúrese de que el flash de su cámara esté apagado e intente tomar una
-          nueva foto.
+        top_msg: No pudimos leer su identificación. Es posible que su foto tenga
+          reflejos. Asegúrese de que el flash de su cámara esté apagado e
+          intente tomar una nueva foto.
         top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
-          tengan reflejos. Asegúrese de que el flash de su cámara esté apagado e intente
-          tomar nuevas fotos.
+          tengan reflejos. Asegúrese de que el flash de su cámara esté apagado e
+          intente tomar nuevas fotos.
       http:
         image_load:
           failed_short: El archivo de la imagen no es compatible; inténtelo de nuevo.
-          top_msg: El archivo de imagen que añadió no es compatible. Tome nuevas fotos
-            de su identificación e inténtelo de nuevo.
+          top_msg: El archivo de imagen que añadió no es compatible. Tome nuevas fotos de
+            su identificación e inténtelo de nuevo.
         image_size:
           failed_short: El archivo de la imagen no es compatible; inténtelo de nuevo.
-          top_msg: El tamaño de la imagen es demasiado grande o demasiado pequeño.
-            Añada imágenes de su identificación de unos 2025 x 1275 píxeles.
+          top_msg: El tamaño de la imagen es demasiado grande o demasiado pequeño. Añada
+            imágenes de su identificación de unos 2025 x 1275 píxeles.
         pixel_depth:
           failed_short: El archivo de la imagen no es compatible; inténtelo de nuevo.
-          top_msg: La profundidad de píxel de su archivo de imagen no es compatible.
-            Tome nuevas fotos de su identificación e inténtelo de nuevo. La profundidad
-            de píxel de la imagen admitida es RGB de 24 bits.
+          top_msg: La profundidad de píxel de su archivo de imagen no es compatible. Tome
+            nuevas fotos de su identificación e inténtelo de nuevo. La
+            profundidad de píxel de la imagen admitida es RGB de 24 bits.
       not_a_file: La selección no era un archivo válido.
       pii:
-        birth_date_min_age: Su fecha de nacimiento no cumple con el requisito de edad
-          mínima.
+        birth_date_min_age: Su fecha de nacimiento no cumple con el requisito de edad mínima.
       sharpness:
         failed_short: La imagen está borrosa; inténtelo de nuevo.
-        top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado
-          borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
-        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
-          estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar
+        top_msg: No pudimos leer su identificación. Es posible que su foto esté
+          demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar
           iluminado.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un
+          lugar iluminado.
       upload_error: Lo sentimos, algo no funcionó bien.
     exit_survey:
-      content_html: '<strong>Si no tiene una licencia de conducir o tarjeta de identificación
-        estatal, no puede continuar con %{app_name}.</strong> <a>Salga de %{app_name}
-        y contacte con %{sp_name}</a> para saber lo que puede hacer.'
+      content_html: '<strong>Si no tiene una licencia de conducir o tarjeta de
+        identificación estatal, no puede continuar con %{app_name}.</strong>
+        <a>Salga de %{app_name} y contacte con %{sp_name}</a> para saber lo que
+        puede hacer.'
       content_nosp_html: '<strong>Si no tiene una licencia de conducir o una tarjeta
-        identificación estatal, no puede continuar con %{app_name}.</strong> <a>Cancele
-        la verificación de su identidad con %{app_name}</a> y podrá iniciar el proceso
-        de nuevo cuando esté listo.'
+        identificación estatal, no puede continuar con %{app_name}.</strong>
+        <a>Cancele la verificación de su identidad con %{app_name}</a> y podrá
+        iniciar el proceso de nuevo cuando esté listo.'
       header: '¿No tiene una licencia de conducir o una identificación estatal?'
       optional:
         button: Enviar y salir de %{app_name}
-        content: Ayúdenos a agregar más documentos de identificación a %{app_name}.
-          ¿Qué otros tipos de documentos de identificación tiene?
+        content: Ayúdenos a agregar más documentos de identificación a %{app_name}. ¿Qué
+          otros tipos de documentos de identificación tiene?
         id_types:
           military_id: Tarjeta de identificación militar (puede ser una tarjeta de
-            identificación del Departamento de Defensa, una Tarjeta de identificación
-            de salud para veteranos o una Tarjeta de identificación de veterano)
+            identificación del Departamento de Defensa, una Tarjeta de
+            identificación de salud para veteranos o una Tarjeta de
+            identificación de veterano)
           other: Uno que no aparece en la lista
-          resident_card: Tarjeta verde de los EE. UU. (también conocida como Tarjeta
-            de residente permanente)
+          resident_card: Tarjeta verde de los EE. UU. (también conocida como Tarjeta de
+            residente permanente)
           tribal_id: Tarjeta de identificación tribal
           us_passport: Pasaporte estadounidense
           voter_registration_card: Tarjeta de registro electoral
@@ -163,17 +168,17 @@ es:
     forms:
       captured_image: Imagen capturada
       change_file: Cambiar archivo
-      choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de
-        la carpeta</lg-underline>
+      choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la
+        carpeta</lg-underline>
       doc_success: Verificamos su información
       selected_file: Archivo seleccionado
     headings:
       address: Actualice su dirección postal
       back: Reverso de su licencia de conducir o identificación estatal
       capture_complete: Verificamos su identificación
-      capture_scan_warning_html: No pudimos leer el código de barras en su identificación.
-        Si la información que aparece a continuación es incorrecta, %{link_html} de
-        su identificación emitida por el estado.
+      capture_scan_warning_html: No pudimos leer el código de barras en su
+        identificación. Si la información que aparece a continuación es
+        incorrecta, %{link_html} de su identificación emitida por el estado.
       capture_scan_warning_link: cargue nuevas fotos
       document_capture: Agregue fotos de su identificación
       document_capture_back: Reverso de su identificación
@@ -181,8 +186,7 @@ es:
       document_capture_selfie: Una foto de usted
       document_capture_subheader_id: Licencia de conducir o identificación estatal
       document_capture_subheader_selfie: Foto de usted
-      document_capture_with_selfie: Agregue fotos de su identificación y una foto
-        de usted
+      document_capture_with_selfie: Agregue fotos de su identificación y una foto de usted
       front: Frente de su licencia de conducir o identificación estatal
       how_to_verify: Elija cómo desea verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su identificación?'
@@ -202,19 +206,20 @@ es:
       verify_online: Verifique su identidad en línea
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
-      explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar
-        su identidad y acceder a <strong>%{service_provider_name}</strong> y sus servicios.
-      explanation_non_sp_html: Está utilizando <strong>%{app_name}</strong> para verificar
-        su identidad.
+      explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar su
+        identidad y acceder a <strong>%{service_provider_name}</strong> y sus
+        servicios.
+      explanation_non_sp_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad.
       only_add_if_text: 'SOLO AGREGUE SU IDENTIFICACIÓN SI:'
       only_add_own_account: Está usando su propia cuenta de %{app_name}
-      only_add_phone_verify: Usted solicitó a %{app_name} que verificara su identificación
-        con su teléfono
-      only_add_sp_services_html: Está tratando de acceder a los servicios de <strong>%{service_provider_name}</strong>
+      only_add_phone_verify: Usted solicitó a %{app_name} que verificara su
+        identificación con su teléfono
+      only_add_sp_services_html: Está tratando de acceder a los servicios de
+        <strong>%{service_provider_name}</strong>
     info:
       address_guidance_puerto_rico_html: Residentes en Puerto Rico:<br><br>Edite su
-        dirección para que el edificio de su vivienda o condominio figure en la línea
-        de dirección 2.
+        dirección para que el edificio de su vivienda o condominio figure en la
+        línea de dirección 2.
       capture_status_big_document: Demasiado cerca
       capture_status_capturing: Capturando
       capture_status_none: Alinear
@@ -222,16 +227,13 @@ es:
       capture_status_tap_to_capture: Tocar para capturar
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
-        without_sp: Salga de la verificación de identidad y vaya a la página de su
-          cuenta
+        without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
       getting_started_html: '%{sp_name} necesita asegurarse de que es usted y no es
         alguien que se hace pasar por usted. %{link_html}'
-      getting_started_learn_more: Obtén más información sobre la verificación de tu
-        identidad
+      getting_started_learn_more: Obtén más información sobre la verificación de tu identidad
       how_to_verify: Tiene la opción de verificar su identidad en línea o en persona
         en una oficina de correos participante
-      how_to_verify_troubleshooting_options_header: '¿Desea obtener más información
-        sobre cómo verificar su identidad?'
+      how_to_verify_troubleshooting_options_header: '¿Desea obtener más información sobre cómo verificar su identidad?'
       hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación
         emitida por el estado.
       image_loaded: Imagen cargada
@@ -243,42 +245,44 @@ es:
       keep_window_open: No cierre esta ventana.
       learn_more: Obtenga más información sobre cómo protegemos su información confidencial
       lets_go: 'La verificación de la identidad se efectúa en dos partes:'
-      link_sent: Revise su teléfono y siga las instrucciones para tomar una foto de
-        su identificación emitida por el estado.
+      link_sent: Revise su teléfono y siga las instrucciones para tomar una foto de su
+        identificación emitida por el estado.
       link_sent_complete_no_polling: Cuando termine, haga clic en “Continuar” para
         terminar la verificación de su identidad.
       link_sent_complete_polling: El siguiente paso se cargará automáticamente.
-      no_ssn: Debe tener un número de Seguro Social para finalizar la verificación
-        de su identidad.
+      no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de
+        su identidad.
       review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
       secure_account: Cifraremos su cuenta con su contraseña. Con el cifrado, sus
-        datos están protegidos y solo usted puede acceder a su información o modificarla.
+        datos están protegidos y solo usted puede acceder a su información o
+        modificarla.
       selfie_capture_status:
         face_close_to_border: DEMASIADO CERCA DEL MARCO
         face_not_found: NO SE ENCONTRÓ LA CARA
         face_too_small: LA CARA ES DEMASIADO CHICA
         too_many_faces: HAY DEMASIADAS CARAS
-      ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha
-        de nacimiento y dirección.
+      ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de
+        nacimiento y dirección.
       tag: Recomendado
       upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación
         desde esta computadora.'
-      upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora
-        después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador
-        web.
-      verify_at_post_office_description: Esta opción es mejor si no tiene un dispositivo
-        móvil o una manera fácil de tomar fotografías de su identificación.
+      upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta
+        computadora después de tomar las fotos. Su teléfono móvil debe tener una
+        cámara y un navegador web.
+      verify_at_post_office_description: Esta opción es mejor si no tiene un
+        dispositivo móvil o una manera fácil de tomar fotografías de su
+        identificación.
       verify_at_post_office_instruction: Ingresará la información de su identificación
-        en línea y verificará su identidad en persona en una oficina de correos participante.
-      verify_at_post_office_link_text: Obtenga más información sobre la verificación
-        en persona
+        en línea y verificará su identidad en persona en una oficina de correos
+        participante.
+      verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
       verify_identity: Le pediremos sus datos personales para verificar su identidad
         con los registros públicos.
-      verify_online_description: Esta opción es mejor si tiene un dispositivo móvil
-        o una manera de tomar fotografías de su identificación.
-      verify_online_instruction: Tomará fotografías de su identificación para verificar
-        su identidad por completo en línea. La mayoría de los usuarios logran terminar
-        este proceso en una sola sesión.
+      verify_online_description: Esta opción es mejor si tiene un dispositivo móvil o
+        una manera de tomar fotografías de su identificación.
+      verify_online_instruction: Tomará fotografías de su identificación para
+        verificar su identidad por completo en línea. La mayoría de los usuarios
+        logran terminar este proceso en una sola sesión.
       verify_online_link_text: Obtenga más información sobre la verificación en línea
       you_entered: 'Usted ingresó:'
     instructions:
@@ -288,18 +292,19 @@ es:
       bullet3: Número de teléfono O domicilio
       bullet4: Ingresar de nuevo tu contraseña de %{app_name}
       consent: Al marcar esta casilla, usted permite que %{app_name} pida, utilice,
-        conserve y divulgue su información personal. La usaremos para verificar su
-        identidad.
+        conserve y divulgue su información personal. La usaremos para verificar
+        su identidad.
       getting_started: 'Necesitarás:'
       learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
       switch_back: Vuelva a su computadora para finalizar la verificación de su identidad.
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba, solo se consideran válidos los números de
-        Seguro Social que comienzan con “900-” o “666-”. No ingrese IIP real en este
-        campo.
+        Seguro Social que comienzan con “900-” o “666-”. No ingrese IIP real en
+        este campo.
       text1: Su identificación no puede estar vencida.
       text1_with_selfie: Tómate una foto y toma fotografías de tu licencia de conducir
-        o identificación oficial estatal. No aceptamos ningún otro tipo de identificación.
+        o identificación oficial estatal. No aceptamos ningún otro tipo de
+        identificación.
       text2: No necesitará tener la tarjeta con usted.
       text3: Tu número de teléfono te vincula con tu información personal. Luego de
         confirmar tu información, te enviaremos un código.
@@ -316,8 +321,7 @@ es:
       document_capture_selfie_text2: Asegúrese de que se vea su rostro completo
       document_capture_selfie_text3: Tómese la foto en un sitio con buena iluminación
       most_common: Más común
-      review_issues_id_header_text: 'Revise las imágenes de su identificación emitida
-        por el estado:'
+      review_issues_id_header_text: 'Revise las imágenes de su identificación emitida por el estado:'
       review_issues_id_text1: '¿Usó un fondo de color oscuro?'
       review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
       review_issues_id_text3: '¿Está apagado el flash de su cámara?'

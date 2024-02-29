@@ -7,7 +7,7 @@ fr:
       connected_accounts: Vos comptes connectés
       devices: Appareils
       events: Événements
-      federal_employee_id: Carte d'employé fédéral
+      federal_employee_id: Carte d’employé fédéral
       login_info: Votre compte
       reactivate: Réactiver votre compte
       two_factor: Vos méthodes d’authentification
@@ -23,16 +23,15 @@ fr:
       new: Envoyer un autre e-mail de confirmation
     create_account_new_users: Créer un compte pour les nouveaux utilisateurs
     create_account_with_sp:
-      sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre compte
-        de façon sûre et sécurisée.
+      sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre
+        compte de façon sûre et sécurisée.
     edit_info:
       password: Changer votre mot de passe
       phone: Gérer les paramètres de votre téléphone
     passwords:
       change: Changer votre mot de passe
       confirm: Confirmer votre mot de passe actuel pour continuer
-      confirm_for_personal_key: Saisir le mot de passe et obtenir une nouvelle clé
-        personnelle
+      confirm_for_personal_key: Saisir le mot de passe et obtenir une nouvelle clé personnelle
       forgot: Mot de passe oublié ?
     piv_cac:
       certificate:
@@ -53,10 +52,11 @@ fr:
       add: Configurer votre PIV ou votre CAC comme méthode d’authentification à deux
         facteurs pour pouvoir l’utiliser pour vous connecter.
       new: Vous connecter avec votre PIV/CAC
-      success: Votre carte PIV/CAC a bien été configurée comme méthode d’authentification.
+      success: Votre carte PIV/CAC a bien été configurée comme méthode
+        d’authentification.
     piv_cac_setup:
-      already_associated: La carte PIV/CAC que vous avez présentée est associée à
-        un autre utilisateur.
+      already_associated: La carte PIV/CAC que vous avez présentée est associée à un
+        autre utilisateur.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte.
     redirecting: Redirection
     residential_address: Adresse résidentielle actuelle

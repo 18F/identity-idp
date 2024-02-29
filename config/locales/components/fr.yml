@@ -4,7 +4,7 @@ fr:
     barcode:
       image_alt: Code-barres
     captcha_submit_button:
-      action_message: Vérification en cours...
+      action_message: Vérification en cours…
       mock_score_disclaimer: Usage interne uniquement
       mock_score_label: 'Score reCAPTCHA : (0,0 - 1,0)'
     clipboard_button:
@@ -15,11 +15,10 @@ fr:
     download_button:
       label: Télécharger
     javascript_required:
-      browser_instructions: 'Suivez les instructions pour activer JavaScript dans
-        votre navigateur :'
+      browser_instructions: 'Suivez les instructions pour activer JavaScript dans votre navigateur :'
       enabled_alert: Vous avez activé JavaScript dans votre navigateur.
-      next_step: Veuillez rafraîchir cette page une fois que vous avez activé JavaScript
-        dans votre navigateur.
+      next_step: Veuillez rafraîchir cette page une fois que vous avez activé
+        JavaScript dans votre navigateur.
     manageable_authenticator:
       cancel: Annuler
       created_on: Créé le %{date}
