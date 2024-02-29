@@ -218,7 +218,7 @@ fr:
       verify_at_post_office: Confirmer votre identité dans un bureau de poste
       verify_identity: Confirmer votre identité
       verify_online: Confirmer votre identité en ligne
-      welcome: Commencer à confirmer votre identité
+      welcome: Vérifions votre identité pour %{sp_name}
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer
         votre identité et accéder à <strong>%{service_provider_name}</strong> et
@@ -303,10 +303,10 @@ fr:
       verify_online_link_text: En savoir plus sur la vérification en ligne
       you_entered: 'Vous avez saisi :'
     instructions:
-      bullet1: Carte d’identité délivrée par l’État
+      bullet1: Prendre des photos de votre pièce d’identité
       bullet1_with_selfie: Prenez des photos de vous et de vos pièces d’identité
-      bullet2: Numéro de sécurité sociale
-      bullet3: Numéro de téléphone OU adresse physique
+      bullet2: Saisissez votre numéro de sécurité sociale
+      bullet3: Faites correspondre votre numéro de téléphone
       bullet4: Saisissez à nouveau votre mot de passe %{app_name}
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les
@@ -318,11 +318,12 @@ fr:
       test_ssn: Dans l’environnement de test, seuls les numéros de sécurité sociale
         commençant par “900-” ou “666-” sont considérés comme valides. Ne
         saisissez pas de vraies IPI dans ce champ.
-      text1: Votre pièce d’identité ne doit pas être expirée.
+      text1: Utilisez votre permis de conduire ou votre carte d’identité nationale.
+        Les autres pièces d’identité ne sont pas acceptées.
       text1_with_selfie: Prenez une photo de vous et une de votre permis de conduire
         ou carte d’identité nationale. Les autres pièces d’identité ne sont pas
         acceptées.
-      text2: Vous n’aurez pas besoin de la carte sur vous.
+      text2: Vous n’aurez pas besoin de votre carte de sécurité sociale.
       text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
         fois la correspondance établie, nous vous enverrons un code.
       text4: Votre mot de passe enregistre et crypte vos informations personnelles.

@@ -204,7 +204,7 @@ es:
       verify_at_post_office: Verifique su identidad en una oficina de correos
       verify_identity: Verifique su identidad
       verify_online: Verifique su identidad en línea
-      welcome: Comience a verificar su identidad
+      welcome: Vamos a verificar tu identidad para %{sp_name}
     hybrid_flow_warning:
       explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar su
         identidad y acceder a <strong>%{service_provider_name}</strong> y sus
@@ -286,10 +286,10 @@ es:
       verify_online_link_text: Obtenga más información sobre la verificación en línea
       you_entered: 'Usted ingresó:'
     instructions:
-      bullet1: Identificación emitida por el estado
+      bullet1: Tomar fotos de tu identificación oficial
       bullet1_with_selfie: Tomar fotos tuyas y de tu identificación oficial
-      bullet2: Número de Seguro Social
-      bullet3: Número de teléfono O domicilio
+      bullet2: Ingresar tu Número de Seguro Social
+      bullet3: Confirmar tu número de teléfono
       bullet4: Ingresar de nuevo tu contraseña de %{app_name}
       consent: Al marcar esta casilla, usted permite que %{app_name} pida, utilice,
         conserve y divulgue su información personal. La usaremos para verificar
@@ -301,11 +301,12 @@ es:
       test_ssn: En el entorno de prueba, solo se consideran válidos los números de
         Seguro Social que comienzan con “900-” o “666-”. No ingrese IIP real en
         este campo.
-      text1: Su identificación no puede estar vencida.
+      text1: Utiliza tu licencia de conducir o identificación oficial estatal. No
+        aceptamos ningún otro tipo de identificación.
       text1_with_selfie: Tómate una foto y toma fotografías de tu licencia de conducir
         o identificación oficial estatal. No aceptamos ningún otro tipo de
         identificación.
-      text2: No necesitará tener la tarjeta con usted.
+      text2: No necesitarás tu tarjeta física del seguro social.
       text3: Tu número de teléfono te vincula con tu información personal. Luego de
         confirmar tu información, te enviaremos un código.
       text4: Tu contraseña permitirá guardar y encriptar tu información personal.

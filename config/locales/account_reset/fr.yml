@@ -40,9 +40,11 @@ fr:
     recovery_options:
       check_saved_credential: Vérifiez si vous avez des informations d’identification sauvegardées
       check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou
-        tactile lorsque vous avez créé votre compte, assurez-vous d’utiliser le
-        même appareil que celui avec lequel vous avez créé votre compte
-        %{app_name}.
+        tactile, vous avez peut-être sauvegardé vos informations
+        d’identification dans un gestionnaire de mots de passe, tel que iCloud
+        Keychain ou Google Password Manager. Essayez d’utiliser le
+        déverrouillage facial ou tactile sur un navigateur utilisant ce
+        gestionnaire de mots de passe.
       header: Êtes-vous sûr de vouloir supprimer votre compte ?
       help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name},
         essayez plutôt les mesures suivantes.
