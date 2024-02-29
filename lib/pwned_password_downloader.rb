@@ -3,7 +3,7 @@ require 'fileutils'
 require 'net/http/persistent'
 require 'ruby-progressbar'
 
-class PwnedPasswordDownload
+class PwnedPasswordDownloader
   attr_reader :destination,
               :num_threads,
               :keep_threshold
@@ -74,5 +74,5 @@ class PwnedPasswordDownload
 end
 
 if __FILE__ == $PROGRAM_NAME
-  PwnedPasswordDownload.new.run!
+  PwnedPasswordDownloader.new.run!
 end
