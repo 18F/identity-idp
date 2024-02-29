@@ -2833,7 +2833,7 @@ module AnalyticsEvents
   #                  (previously called "attempt")
   # User captured and approved of their selfie
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_added(captureAttempts:, **extra)
+  def idv_sdk_selfie_image_added(captureAttempts: nil, **extra)
     track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
   end
 
