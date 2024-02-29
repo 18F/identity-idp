@@ -57,7 +57,7 @@ gem 'profanity_filter'
 gem 'propshaft'
 gem 'rack', '>= 3.0'
 gem 'rack-attack', github: 'rack/rack-attack', ref: 'd9fedfae4f7f6409f33857763391f4e18a6d7467'
-gem 'rack-cors', '>= 1.0.5', '< 2.0.1', require: 'rack/cors'
+gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
 gem 'redacted_struct'
@@ -81,7 +81,7 @@ gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
-gem 'yard', require: false
+gem 'yard', '>= 0.9.35', require: false
 gem 'zlib', require: false
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.

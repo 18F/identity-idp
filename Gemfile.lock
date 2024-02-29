@@ -729,7 +729,7 @@ GEM
       nokogiri (~> 1.11)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.34)
+    yard (0.9.35)
     zeitwerk (2.6.12)
     zlib (3.0.0)
     zonebie (0.6.1)
@@ -812,7 +812,7 @@ DEPENDENCIES
   puma (~> 6.0)
   rack (>= 3.0)
   rack-attack!
-  rack-cors (>= 1.0.5, < 2.0.1)
+  rack-cors (>= 1.0.5)
   rack-headers_filter
   rack-mini-profiler (>= 1.1.3)
   rack-test (>= 1.1.0)
@@ -856,7 +856,7 @@ DEPENDENCIES
   webmock
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
-  yard
+  yard (>= 0.9.35)
   zlib
   zonebie
   zxcvbn (= 0.1.9)
