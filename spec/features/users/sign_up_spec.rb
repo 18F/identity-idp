@@ -243,7 +243,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     end
 
     it 'allows a user to sign up with backup codes and add methods without reauthentication' do
-      sign_in_user
+      sign_up_and_set_password
       set_up_2fa_with_backup_codes
 
       visit phone_setup_path
@@ -461,7 +461,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   it 'allows a user to sign up with backup codes and add methods after without reauthentication' do
-    sign_in_user
+    sign_up_and_set_password
     set_up_2fa_with_backup_codes
 
     click_button t('forms.buttons.continue')

@@ -27,7 +27,7 @@ module ReauthenticationRequiredConcern
   end
 
   def store_location(url)
-    if url === backup_code_continue_path
+    if request.method != :get
       user_session[:stored_location] = account_path
     else
       user_session[:stored_location] = url
