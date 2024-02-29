@@ -5,7 +5,6 @@ set -eu
 submit_to_s3='false'
 pwned_directory="pwned_passwords"
 number_of_passwords=3000000
-pwned_url="https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z"
 pwned_tmp_directory="tmp/pwned"
 pwned_file="${pwned_directory}/pwned-passwords.txt"
 aws_prod="false"
@@ -14,7 +13,6 @@ usage() {
   cat >&2 << EOM
 Usage: ${0} [-nufdph]
   -n : -n <number> Number of passwords to store. Default: ${number_of_passwords}
-  -u : -u <URL> URL for pwned passwords. Default: ${pwned_url}
   -f : -f <file> File to store pwned passwords. Default: ${pwned_file}
   -s : Upload to the AWS sandbox environment
   -p : Upload to the AWS prod environment
@@ -101,10 +99,10 @@ post_to_s3() {
 }
 
 cleanup() {
-  read -p "Do you want to remove ${pwned_7z}? (y/n) " -n 1 -r yn
+  read -p "Do you want to remove ${pwned_tmp_directory}? (y/n) " -n 1 -r yn
   if [[ $yn =~ ^[Yy]$ ]]; then
-    echo "Removing pwned passwords 7z file"
-    rm $pwned_7z
+    echo "Removing pwned passwords hashes directory"
+    rmdir $pwned_tmp_directory
   else
     echo "  Goodbye."
     exit 0
@@ -114,7 +112,6 @@ cleanup() {
 while getopts "hn:u:f:sp" opt; do
   case $opt in
     n ) number_of_passwords=$OPTARG;;
-    u ) pwned_url=$OPTARG;;
     f ) pwned_file=$OPTARG;;
     s ) submit_to_s3='true';;
     p ) submit_to_s3='true'; aws_prod='true';;
