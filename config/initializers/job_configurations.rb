@@ -199,6 +199,12 @@ else
         cron: cron_1w,
         args: -> { [Time.zone.now] },
       },
+      # Send fraud metrics to Team Judy
+      fraud_metrics_report: {
+        class: 'Reports::FraudMetricsReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.now] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength

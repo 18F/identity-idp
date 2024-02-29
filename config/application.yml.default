@@ -318,7 +318,9 @@ sp_issuer_user_counts_report_configs: '[]'
 team_ada_email: ''
 team_all_login_emails: '[]'
 team_daily_reports_emails: '[]'
+team_fraud_reports_emails: '[]'
 team_ursula_email: ''
+test_fraud_reports_emails: '[]'
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -582,7 +584,9 @@ test:
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_reports_emails: '["a@example.com", "d@example.com"]'
+  team_fraud_reports_emails: '["e@example.com", "f@example.com"]'
   telephony_adapter: test
+  test_fraud_reports_emails: '["g@example.com", "h@example.com"]'
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
   verify_gpo_key_attempt_window_in_minutes: 3
