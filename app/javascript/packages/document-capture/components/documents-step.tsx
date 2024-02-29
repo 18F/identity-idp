@@ -10,12 +10,7 @@ import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
-import {
-  DeviceContext,
-  FeatureFlagContext,
-  SelfieCaptureContext,
-  UploadContext,
-} from '../context';
+import { DeviceContext, FeatureFlagContext, SelfieCaptureContext, UploadContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 
 export function DocumentCaptureSubheaderOne({
