@@ -6,7 +6,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
-import { FeatureFlagContext, SelfieCaptureEnabledContext } from '../context';
+import { FeatureFlagContext, SelfieCaptureContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 import {
   DocumentCaptureSubheaderOne,
@@ -40,7 +40,7 @@ function DocumentCaptureReviewIssues({
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
   const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
-  const { selfieCaptureEnabled } = useContext(SelfieCaptureEnabledContext);
+  const { selfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const defaultSideProps = {
     registerField,

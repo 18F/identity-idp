@@ -13,7 +13,7 @@ import TipList from './tip-list';
 import {
   DeviceContext,
   FeatureFlagContext,
-  SelfieCaptureEnabledContext,
+  SelfieCaptureContext,
   UploadContext,
 } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
@@ -113,7 +113,7 @@ function DocumentsStep({
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
-  const { selfieCaptureEnabled } = useContext(SelfieCaptureEnabledContext);
+  const { selfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const pageHeaderText = selfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')

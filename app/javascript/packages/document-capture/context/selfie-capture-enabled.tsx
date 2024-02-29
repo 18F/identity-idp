@@ -7,10 +7,10 @@ interface SelfieCaptureEnabledProps {
   selfieCaptureEnabled: boolean;
 }
 
-const SelfieCaptureEnabledContext = createContext<SelfieCaptureEnabledProps>({
+const SelfieCaptureContext = createContext<SelfieCaptureEnabledProps>({
   selfieCaptureEnabled: false,
 });
 
-SelfieCaptureEnabledContext.displayName = 'SelfieCaptureEnabledContext';
+SelfieCaptureContext.displayName = 'SelfieCaptureContext';
 
-export default SelfieCaptureEnabledContext;
+export default SelfieCaptureContext;

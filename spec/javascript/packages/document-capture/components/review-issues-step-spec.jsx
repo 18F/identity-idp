@@ -6,7 +6,7 @@ import {
   InPersonContext,
   FailedCaptureAttemptsContextProvider,
   FeatureFlagContext,
-  SelfieCaptureEnabledContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
@@ -182,7 +182,7 @@ describe('document-capture/components/review-issues-step', () => {
   it('renders with front, back, and selfie inputs when selfieCaptureEnabled is true', async () => {
     const App = composeComponents(
       [
-        SelfieCaptureEnabledContext.Provider,
+        SelfieCaptureContext.Provider,
         {
           value: {
             selfieCaptureEnabled: true,

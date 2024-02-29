@@ -7,7 +7,7 @@ import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
-  SelfieCaptureEnabledContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { composeComponents } from '@18f/identity-compose-components';
@@ -93,7 +93,7 @@ describe('document-capture/components/documents-step', () => {
     it('renders with front, back, and selfie inputs when selfieCaptureEnabled is true', () => {
       const App = composeComponents(
         [
-          SelfieCaptureEnabledContext.Provider,
+          SelfieCaptureContext.Provider,
           {
             value: {
               selfieCaptureEnabled: true,
@@ -143,7 +143,7 @@ describe('document-capture/components/documents-step', () => {
   it('renders with front, back when selfieCaptureEnabled is false', () => {
     const App = composeComponents(
       [
-        SelfieCaptureEnabledContext.Provider,
+        SelfieCaptureContext.Provider,
         {
           value: {
             selfieCaptureEnabled: false,
