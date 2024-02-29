@@ -27,7 +27,7 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt login and no prior session' do
-      oidc_end_client_secret_jwt(prompt: 'login')
+      oidc_end_client_secret_jwt(vtr: 'C2', prompt: 'login')
     end
 
     it 'succeeds in forcing login with prompt login and prior session' do

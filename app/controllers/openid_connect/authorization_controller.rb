@@ -125,6 +125,7 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
+      puts "authorization_params: #{authorization_params}"
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
     end
 
@@ -143,6 +144,9 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
+
+      puts "pre_validate_authorize_form: result: #{result.inspect}"
+
       analytics.openid_connect_request_authorization(
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,
