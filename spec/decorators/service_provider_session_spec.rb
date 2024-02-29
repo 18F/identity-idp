@@ -241,12 +241,24 @@ RSpec.describe ServiceProviderSession do
   end
 
   describe '#mfa_expiration_interval' do
+    let(:authorization_context) do
+      Vot::Parser::Result.new(
+        component_values: [],
+        aal2?: false,
+        phishing_resistant?: false,
+        hspd12?: false,
+        identity_proofing?: false,
+        biometric_comparison?: false,
+        ialmax?: false,
+      )
+    end
+
     context 'with an AAL2 sp' do
       before do
         allow(sp).to receive(:default_aal).and_return(2)
       end
 
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
+      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
     end
 
     context 'with an IAL2 sp' do
@@ -254,11 +266,11 @@ RSpec.describe ServiceProviderSession do
         allow(sp).to receive(:ial).and_return(2)
       end
 
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
+      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
     end
 
     context 'with an sp that is not AAL2 or IAL2' do
-      it { expect(subject.mfa_expiration_interval).to eq(30.days) }
+      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(30.days) }
     end
   end
 

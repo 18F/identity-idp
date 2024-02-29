@@ -57,7 +57,7 @@ gem 'profanity_filter'
 gem 'propshaft'
 gem 'rack', '>= 3.0'
 gem 'rack-attack', github: 'rack/rack-attack', ref: 'd9fedfae4f7f6409f33857763391f4e18a6d7467'
-gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
+gem 'rack-cors', '>= 1.0.5', '< 2.0.1', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
 gem 'redacted_struct'
@@ -76,7 +76,8 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'terminal-table', require: false
-gem 'valid_email', '>= 0.1.3'
+# until a release includes https://github.com/hallelujah/valid_email/pull/126
+gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
 gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'

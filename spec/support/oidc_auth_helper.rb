@@ -16,6 +16,13 @@ module OidcAuthHelper
     oidc_path
   end
 
+  def visit_idp_from_oidc_sp_with_vtr(vtr:, **args)
+    params = vtr_params(vtr: vtr, **args)
+    oidc_path = openid_connect_authorize_path params
+    visit oidc_path
+    oidc_path
+  end
+
   def visit_idp_from_ial_max_oidc_sp(**args)
     args[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
     params = ial2_params(**args)
@@ -55,11 +62,12 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def ial1_params(prompt: nil,
-                  state: SecureRandom.hex,
-                  nonce: SecureRandom.hex,
-                  client_id: OIDC_IAL1_ISSUER,
-                  tid: nil)
+  def ial1_params(
+    prompt: nil,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    client_id: OIDC_IAL1_ISSUER
+  )
     ial1_params = {
       client_id: client_id,
       response_type: 'code',
@@ -69,18 +77,18 @@ module OidcAuthHelper
       state: state,
       nonce: nonce,
     }
-    ial1_params[:tid] = tid if tid
     ial1_params[:prompt] = prompt if prompt
     ial1_params
   end
 
-  def ial2_params(prompt: nil,
-                  state: SecureRandom.hex,
-                  nonce: SecureRandom.hex,
-                  client_id: OIDC_ISSUER,
-                  acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                  tid: nil,
-                  biometric_comparison_required: false)
+  def ial2_params(
+    prompt: nil,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    client_id: OIDC_ISSUER,
+    acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+    biometric_comparison_required: false
+  )
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
@@ -90,12 +98,32 @@ module OidcAuthHelper
       state: state,
       nonce: nonce,
     }
-    ial2_params[:tid] = tid if tid
     ial2_params[:prompt] = prompt if prompt
     if biometric_comparison_required
       ial2_params[:biometric_comparison_required] = 'true'
     end
     ial2_params
+  end
+
+  def vtr_params(
+    vtr:,
+    prompt: nil,
+    state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
+    client_id: OIDC_ISSUER,
+    scope: 'openid email profile:name social_security_number'
+  )
+    vtr_params = {
+      client_id: client_id,
+      response_type: 'code',
+      vtr: Array(vtr).to_json,
+      scope: scope,
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      nonce: nonce,
+    }
+    vtr_params[:prompt] = prompt if prompt
+    vtr_params
   end
 
   def include_phishing_resistant(params)

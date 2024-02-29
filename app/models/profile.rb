@@ -106,6 +106,12 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
+  def tmx_status
+    return nil unless IdentityConfig.store.in_person_proofing_enforce_tmx
+
+    fraud_pending_reason || :threatmetrix_pass
+  end
+
   def reason_not_to_activate
     if pending_reasons.any?
       "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"

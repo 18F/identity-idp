@@ -369,6 +369,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
               liveness_checking_required: true,
+              images_cropped: false,
             ).and_call_original
 
           action
@@ -390,6 +391,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: false,
+            images_cropped: false,
           ).and_call_original
 
         action
@@ -451,6 +453,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           address_line2_present: nil,
           alert_failure_count: nil,
           conversation_id: nil,
+          request_id: nil,
           decision_product_status: nil,
           image_metrics: nil,
           log_alert_results: nil,
@@ -651,6 +654,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               address_line2_present: nil,
               alert_failure_count: nil,
               conversation_id: nil,
+              request_id: nil,
               decision_product_status: nil,
               image_metrics: nil,
               log_alert_results: nil,
@@ -763,6 +767,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               address_line2_present: nil,
               alert_failure_count: nil,
               conversation_id: nil,
+              request_id: nil,
               decision_product_status: nil,
               image_metrics: nil,
               log_alert_results: nil,
@@ -875,6 +880,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               address_line2_present: nil,
               alert_failure_count: nil,
               conversation_id: nil,
+              request_id: nil,
               decision_product_status: nil,
               image_metrics: nil,
               log_alert_results: nil,
@@ -984,6 +990,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               address_line2_present: nil,
               alert_failure_count: nil,
               conversation_id: nil,
+              request_id: nil,
               decision_product_status: nil,
               image_metrics: nil,
               log_alert_results: nil,
@@ -1118,6 +1125,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           address_line2_present: nil,
           alert_failure_count: nil,
           conversation_id: nil,
+          request_id: nil,
           decision_product_status: nil,
           image_metrics: nil,
           log_alert_results: nil,
@@ -1209,6 +1217,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           address_line2_present: nil,
           alert_failure_count: nil,
           conversation_id: nil,
+          request_id: nil,
           decision_product_status: nil,
           image_metrics: nil,
           log_alert_results: nil,
@@ -1281,6 +1290,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: true,
+            images_cropped: false,
           ).and_call_original
 
         action

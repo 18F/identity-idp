@@ -353,6 +353,25 @@ RSpec.describe RegisterUserEmailForm do
         )
         expect_delivered_email_count(0)
       end
+
+      it 'returns false and adds errors when subdomain is blocked' do
+        blocked_domain = 'blocked.com'
+        blocked_email = 'test@sub.' + blocked_domain
+
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+        expect(BanDisposableEmailValidator).to receive(:config).and_return([blocked_domain])
+
+        expect(subject.submit(email: blocked_email, terms_accepted: '1').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          email_already_exists: false,
+          rate_limited: false,
+          user_id: 'anonymous-uuid',
+          domain_name: 'sub.blocked.com',
+        )
+        expect_delivered_email_count(0)
+      end
     end
 
     context 'when request_id is invalid' do
