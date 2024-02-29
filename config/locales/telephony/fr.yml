@@ -5,7 +5,7 @@ fr:
     account_reset_cancellation_notice: Votre demande de suppression de votre compte
       %{app_name} a été annulée.
     account_reset_notice: Conformément à votre demande, votre compte %{app_name} sera
-      supprimé dans 24 heures. Vous ne voulez pas supprimer votre compte ? Connectez-vous
+      supprimé dans %{interval}. Vous ne voulez pas supprimer votre compte ? Connectez-vous
       à votre compte %{app_name} pour annuler.
     authentication_otp:
       sms: |-

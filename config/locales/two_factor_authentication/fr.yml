@@ -11,7 +11,7 @@ fr:
       cancel_link: Annuler votre demande
       link: supprimer votre compte
       pending: Vous avez actuellement une demande en attente de suppression de votre
-        compte. Il faut compter 24 heures à partir du moment où vous avez fait la
+        compte. Il faut compter %{interval} à partir du moment où vous avez fait la
         demande pour terminer le processus. Veuillez revérifier ultérieurement.
       successful_cancel: Merci. Votre demande de suppression de votre compte %{app_name}
         a été annulée.

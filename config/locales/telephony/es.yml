@@ -5,7 +5,7 @@ es:
     account_reset_cancellation_notice: Su solicitud para eliminar su cuenta de %{app_name}
       fue cancelada.
     account_reset_notice: Como lo solicitó, su cuenta de %{app_name} se eliminará
-      en 24 horas. ¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name}
+      en %{interval}. ¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name}
       para cancelar.
     authentication_otp:
       sms: |-

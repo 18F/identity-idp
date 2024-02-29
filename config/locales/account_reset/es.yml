@@ -32,9 +32,9 @@ es:
       cancel_request: Cancelar solicitud
       cancelled: Cancelamos su solicitud para eliminar su cuenta.
       confirm: Si la cancela ahora, debe crear una nueva solicitud y esperar otras
-        24 horas para eliminar su cuenta.
+        %{interval} para eliminar su cuenta.
       header: Solicitó la eliminación de su cuenta
-      wait_html: Hay un período de espera de 24 horas para eliminar su cuenta. En
+      wait_html: Hay un período de espera de %{hours} horas para eliminar su cuenta. En
         <strong>%{interval}</strong>, recibirá un correo electrónico con instrucciones
         para completar la eliminación.
     recovery_options:

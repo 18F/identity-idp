@@ -21,7 +21,7 @@ fr:
       button: Oui, continuer la suppression
       cancel_link_text: veuillez annuler
       help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset_html}.
-      intro_html: Votre période d’attente de 24 heures est terminée. Veuillez terminer
+      intro_html: Votre période d’attente de %{hours} heures est terminée. Veuillez terminer
         l’étape 2 du processus.<br><br> Si vous n'avez pas été en mesure de localiser
         vos méthodes d’authentification, sélectionnez « confirmer la suppression »
         pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez
@@ -32,13 +32,13 @@ fr:
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte
         %{app_name} pour annuler.
-      header: Votre compte sera supprimé dans 24 heures
+      header: Votre compte sera supprimé dans %{interval}
       intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux
         étapes pour supprimer votre compte :<br><br> Étape 1 : Si vous avez perdu
         l’accès à vos méthodes d’authentification et devez supprimer votre compte,
-        il y a une période d’attente de 24 heures. Si vous trouvez vos méthodes d’authentification,
+        il y a une période d’attente de %{hours} heures. Si vous trouvez vos méthodes d’authentification,
         vous pouvez vous connecter à votre compte %{app_name} pour annuler cette demande.<br><br>
-        Étape 2 : Après la période d’attente de 24 heures, vous recevrez un e-mail
+        Étape 2 : Après la période d’attente de %{hours} heures, vous recevrez un e-mail
         vous demandant de confirmer la suppression de votre compte %{app_name}. Votre
         compte ne sera pas supprimé tant que vous ne l’aurez pas confirmé.'
       subject: Comment supprimer votre compte %{app_name}
