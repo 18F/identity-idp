@@ -51,5 +51,33 @@ RSpec.describe AddUserEmailForm do
         expect(response.success?).to eq(false)
       end
     end
+
+    context 'banned domains' do
+      before do
+        expect(BanDisposableEmailValidator).to receive(:config).and_return(%w[spamdomain.com])
+      end
+
+      context 'with the banned domain' do
+        let(:new_email) { 'test@spamdomain.com' }
+
+        it 'fails and does not send a confirmation email' do
+          expect(SendAddEmailConfirmation).to_not receive(:new)
+
+          response = submit
+          expect(response.success?).to eq(false)
+        end
+      end
+
+      context 'with a subdomain of the banned domain' do
+        let(:new_email) { 'test@abc.def.spamdomain.com' }
+
+        it 'fails and does not send a confirmation email' do
+          expect(SendAddEmailConfirmation).to_not receive(:new)
+
+          response = submit
+          expect(response.success?).to eq(false)
+        end
+      end
+    end
   end
 end
