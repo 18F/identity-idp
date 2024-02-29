@@ -16,7 +16,10 @@ RSpec.describe PwnedPasswordDownloader do
 
   before do
     stub_request(:get, URI.join(PwnedPasswordDownloader::RANGE_API_ROOT, '00000').to_s).to_return(
-      body: "0005AD76BD555C1D6D771DE417A4B87E4B4:10\r\n000A8DAE4228F821FB418F59826079BF368:4",
+      body: <<~BODY,
+        0005AD76BD555C1D6D771DE417A4B87E4B4:10
+        000A8DAE4228F821FB418F59826079BF368:4
+      BODY
     )
     stub_request(:get, URI.join(PwnedPasswordDownloader::RANGE_API_ROOT, '00001').to_s).
       to_return(body: '0005DE2A9668A41F6A508AFB6A6FC4A5610:1')
