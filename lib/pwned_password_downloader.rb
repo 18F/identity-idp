@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'fileutils'
 require 'net/http/persistent'
+require 'retries'
 require 'ruby-progressbar'
 
 class PwnedPasswordDownloader
@@ -37,10 +38,25 @@ class PwnedPasswordDownloader
       Thread.new do |thread_id|
         net_http = Net::HTTP::Persistent.new(name: "thread_id_#{thread_id}")
 
-        while (prefix = queue.pop)
+        loop do
+          prefix = queue.pop
+          break if !prefix
+
+          if already_downloaded?(prefix)
+            bar.increment
+            next
+          end
+
+          write_one(
+            prefix:,
+            content: with_retries(max_tries: 5, rescue: Socket::ResolutionError) do
+              download_one(prefix:, net_http:)
+            end,
+          )
           bar.increment
-          next if already_downloaded?(prefix)
-          write_one(prefix:, content: download_one(prefix:, net_http:))
+          prefix = nil
+        ensure
+          queue << prefix if prefix
         end
       ensure
         net_http.shutdown
