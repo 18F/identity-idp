@@ -28,8 +28,6 @@ RSpec.describe PwnedPasswordDownloader do
     )
     stub_request(:get, URI.join(PwnedPasswordDownloader::RANGE_API_ROOT, '00001').to_s).
       to_return(body: '00C271B56ABE9E5C137217BF2DE657C7B2F:5')
-    allow(Thread).to receive(:new).and_yield(rand.to_s)
-    allow(downloader).to receive(:queue).and_return([])
     allow(downloader).to receive(:wait_for_progress)
   end
 
