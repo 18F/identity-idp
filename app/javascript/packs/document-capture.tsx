@@ -196,7 +196,7 @@ const App = composeComponents(
     SelfieCaptureContext.Provider,
     {
       value: {
-        isSelfieCaptureEnabled: getisSelfieCaptureEnabled(),
+        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
     },
   ],
