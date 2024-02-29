@@ -162,7 +162,6 @@ class OpenidConnectAuthorizeForm
 
   def parsed_vector_of_trust
     return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
-    return @parsed_vector_of_trust = nil if vtr.blank?
 
     @parsed_vector_of_trust = begin
       if vtr.is_a?(Array) && !vtr.empty?
