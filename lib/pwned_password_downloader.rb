@@ -57,9 +57,10 @@ class PwnedPasswordDownloader
           begin
             write_one(
               prefix:,
-              content: with_retries(max_tries: 5, rescue: Socket::ResolutionError) do
-                download_one(prefix:, net_http:)
-              end,
+              content: with_retries(
+                max_tries: HASH_PREFIX_LENGTH,
+                rescue: Socket::ResolutionError,
+              ) { download_one(prefix:, net_http:) },
             )
           rescue
             queue << prefix
