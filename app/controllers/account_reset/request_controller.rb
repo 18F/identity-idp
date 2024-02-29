@@ -2,7 +2,6 @@ module AccountReset
   class RequestController < ApplicationController
     include TwoFactorAuthenticatable
     include AccountResetConcern
-    include ActionView::Helpers::DateHelper
 
     before_action :confirm_two_factor_enabled
 

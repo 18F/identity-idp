@@ -1,4 +1,5 @@
 module AccountResetConcern
+  include ActionView::Helpers::DateHelper
   def account_reset_deletion_period_interval
     current_time = Time.zone.now
 

@@ -2,7 +2,6 @@ module AccountReset
   class PendingController < ApplicationController
     include UserAuthenticator
     include AccountResetConcern
-    include ActionView::Helpers::DateHelper
 
     before_action :authenticate_user
     before_action :confirm_account_reset_request_exists
