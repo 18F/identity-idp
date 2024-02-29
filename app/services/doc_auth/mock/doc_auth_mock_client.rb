@@ -58,6 +58,7 @@ module DocAuth
         back_image:,
         selfie_image: nil,
         image_source: nil,
+        images_cropped: false,
         user_uuid: nil,
         uuid_prefix: nil,
         liveness_checking_required: false
