@@ -7,16 +7,16 @@ es:
         without_key: No tengo mi clave
     back_to_sp: Volver a %{sp}
     cancel: Cancelar
-    cancel_account_creation: "‹ Cancelar la creación de cuenta"
+    cancel_account_creation: '‹ Cancelar la creación de cuenta'
     contact: Contactar
     continue_sign_in: Continuar el inicio de sesión
     create_account: Crear una cuenta
     exit_login: Salir de %{app_name}
     go_back: Volver
     help: Ayuda
-    new_tab: "(abrir nueva pestaña)"
+    new_tab: '(abrir nueva pestaña)'
     passwords:
-      forgot: "¿Olvidó su contraseña?"
+      forgot: '¿Olvidó su contraseña?'
     privacy_policy: Privacidad y seguridad
     resend: Volver a enviar
     reverify: Verifique su identidad de nuevo.
@@ -24,4 +24,4 @@ es:
     sign_out: Cerrar sesión
     two_factor_authentication:
       send_another_code: Enviar otro código
-    what_is_totp: "¿Qué es una aplicación de autenticación?"
+    what_is_totp: '¿Qué es una aplicación de autenticación?'

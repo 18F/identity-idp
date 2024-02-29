@@ -8,8 +8,8 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      take_or_upload_picture_html: "<lg-take-photo>Tomar la foto</lg-take-photo><lg-or>
-        o </lg-or> <lg-upload>Cargar la foto</lg-upload>"
+      take_or_upload_picture_html: '<lg-take-photo>Tomar la foto</lg-take-photo><lg-or>
+        o </lg-or> <lg-upload>Cargar la foto</lg-upload>'
       take_picture: Tomar la foto
       take_picture_retry: Volver a tomar la foto
       upload_picture: Cargar la foto
@@ -136,14 +136,14 @@ es:
           iluminado.
       upload_error: Lo sentimos, algo no funcionó bien.
     exit_survey:
-      content_html: "<strong>Si no tiene una licencia de conducir o tarjeta de identificación
+      content_html: '<strong>Si no tiene una licencia de conducir o tarjeta de identificación
         estatal, no puede continuar con %{app_name}.</strong> <a>Salga de %{app_name}
-        y contacte con %{sp_name}</a> para saber lo que puede hacer."
-      content_nosp_html: "<strong>Si no tiene una licencia de conducir o una tarjeta
+        y contacte con %{sp_name}</a> para saber lo que puede hacer.'
+      content_nosp_html: '<strong>Si no tiene una licencia de conducir o una tarjeta
         identificación estatal, no puede continuar con %{app_name}.</strong> <a>Cancele
         la verificación de su identidad con %{app_name}</a> y podrá iniciar el proceso
-        de nuevo cuando esté listo."
-      header: "¿No tiene una licencia de conducir o una identificación estatal?"
+        de nuevo cuando esté listo.'
+      header: '¿No tiene una licencia de conducir o una identificación estatal?'
       optional:
         button: Enviar y salir de %{app_name}
         content: Ayúdenos a agregar más documentos de identificación a %{app_name}.
@@ -185,10 +185,10 @@ es:
         de usted
       front: Frente de su licencia de conducir o identificación estatal
       how_to_verify: Elija cómo desea verificar su identidad
-      hybrid_handoff: "¿Cómo desea añadir su identificación?"
+      hybrid_handoff: '¿Cómo desea añadir su identificación?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
-      no_ssn: "¿No tiene un número de Seguro Social?"
+      no_ssn: '¿No tiene un número de Seguro Social?'
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Proteja su cuenta
       selfie: Foto
@@ -224,14 +224,14 @@ es:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salga de la verificación de identidad y vaya a la página de su
           cuenta
-      getting_started_html: "%{sp_name} necesita asegurarse de que es usted y no es
-        alguien que se hace pasar por usted. %{link_html}"
+      getting_started_html: '%{sp_name} necesita asegurarse de que es usted y no es
+        alguien que se hace pasar por usted. %{link_html}'
       getting_started_learn_more: Obtén más información sobre la verificación de tu
         identidad
       how_to_verify: Tiene la opción de verificar su identidad en línea o en persona
         en una oficina de correos participante
-      how_to_verify_troubleshooting_options_header: "¿Desea obtener más información
-        sobre cómo verificar su identidad?"
+      how_to_verify_troubleshooting_options_header: '¿Desea obtener más información
+        sobre cómo verificar su identidad?'
       hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación
         emitida por el estado.
       image_loaded: Imagen cargada
@@ -261,8 +261,8 @@ es:
       ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha
         de nacimiento y dirección.
       tag: Recomendado
-      upload_from_computer: "¿No tiene un teléfono? Cargue fotos de su identificación
-        desde esta computadora."
+      upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación
+        desde esta computadora.'
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora
         después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador
         web.
@@ -318,7 +318,7 @@ es:
       most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su identificación emitida
         por el estado:'
-      review_issues_id_text1: "¿Usó un fondo de color oscuro?"
-      review_issues_id_text2: "¿Tomó la foto en una superficie plana?"
-      review_issues_id_text3: "¿Está apagado el flash de su cámara?"
-      review_issues_id_text4: "¿Todos los detalles se ven con precisión y claridad?"
+      review_issues_id_text1: '¿Usó un fondo de color oscuro?'
+      review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
+      review_issues_id_text3: '¿Está apagado el flash de su cámara?'
+      review_issues_id_text4: '¿Todos los detalles se ven con precisión y claridad?'

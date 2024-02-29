@@ -83,8 +83,8 @@ fr:
           adresse e-mail.
         unconfirmed: Merci d’avoir envoyé votre adresse e-mail.
       footer: Ce lien expirera dans %{confirmation_period}.
-      header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou faire un copier-coller
-        de l’ensemble du lien dans votre navigateur."
+      header: '%{intro} Veuillez cliquer sur le lien ci-dessous ou faire un copier-coller
+        de l’ensemble du lien dans votre navigateur.'
       link_text: Confirmer votre adresse e-mail
       request_with_diff_email: Vous pouvez demander votre mot de passe en utilisant
         une autre adresse e-mail connectée à votre compte %{app_name}.
@@ -215,10 +215,10 @@ fr:
         et en saisissant le code de vérification.
       subject: Nous avons posté une lettre à l’adresse que vous avez enregistrée
     letter_reminder_14_days:
-      body_html: "<p>Vous avez demandé une lettre avec un code de vérification le
+      body_html: '<p>Vous avez demandé une lettre avec un code de vérification le
         <strong>%{date_letter_was_sent}</strong>.</p><p>Reconnectez-vous à %{app_name}
         et saisissez le code de vérification pour terminer la vérification de votre
-        identité. %{help_link}.</p>"
+        identité. %{help_link}.</p>'
       did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
       finish: Terminer la vérification de votre identité
       sign_in_and_request_another_letter: connectez-vous pour en demander une autre

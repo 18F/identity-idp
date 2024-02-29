@@ -16,9 +16,9 @@ es:
         es %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un
         solo uso es %{code}. Este código vence en %{expiration} minutos.'
     confirmation_ipp_enrollment_result:
-      sms: "%{app_name}: Usted acudió a la oficina de correos el %{proof_date}. Revise
+      sms: '%{app_name}: Usted acudió a la oficina de correos el %{proof_date}. Revise
         el resultado en su correo electrónico. ¿No fue usted? Informe inmediatamente
-        de esto: %{contact_number}. Ref: %{reference_string}"
+        de esto: %{contact_number}. Ref: %{reference_string}'
     confirmation_otp:
       sms: |-
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
@@ -27,8 +27,8 @@ es:
       voice: 'Hola: Su código de un solo uso de seis %{format_type} de %{app_name}
         es %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un
         solo uso es %{code}. Este código vence en %{expiration} minutos.'
-    doc_auth_link: "%{app_name}: %{link} Está verificando su identidad para acceder
-      a %{sp_or_app_name}. Tome una foto de su identificación para continuar."
+    doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder
+      a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
     error:
       friendly_message:
         daily_voice_limit_reached: No se pudo enviar su código de un solo uso porque

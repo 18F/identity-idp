@@ -11,7 +11,7 @@ es:
       first_paragraph_end: con un vínculo para restablecer su contraseña. Siga el
         vínculo para continuar restableciendo su contraseña.
       first_paragraph_start: Enviamos un correo electrónico a
-      no_email_sent_explanation_start: "¿No recibió un correo electrónico?"
+      no_email_sent_explanation_start: '¿No recibió un correo electrónico?'
       resend_email_success: Enviamos otro correo electrónico para restablecer la contraseña.
     password_changed: Cambió su contraseña.
     phone_confirmed: Se agregó un teléfono a su cuenta.
@@ -30,7 +30,7 @@ es:
       first_paragraph_end: con un vínculo para confirmar su dirección de correo electrónico.
         Siga el vínculo para continuar agregando este correo electrónico a su cuenta.
       first_paragraph_start: Enviamos un correo electrónico a
-      no_email_sent_explanation_start: "¿No recibió un correo electrónico?"
+      no_email_sent_explanation_start: '¿No recibió un correo electrónico?'
     signed_up_but_unconfirmed:
       first_paragraph_end: con un vínculo para confirmar su dirección de correo electrónico.
         Siga el vínculo para continuar creando su cuenta.

@@ -13,4 +13,4 @@ fr:
       failure: Nous n’avons pas pu supprimer cette adresse e-mail.
       success: L’adresse e-mail a été supprimée.
       warning: Si vous supprimez votre adresse e-mail
-    unconfirmed: "(non confirmé)"
+    unconfirmed: '(non confirmé)'
