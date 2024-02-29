@@ -100,7 +100,7 @@ fr:
       strength:
         0: Très faible
         1: Faible
-        2: Moyen
+        2: Moyenne
         3: Bonne
         4: Excellente
         intro: 'Force du mot de passe : '

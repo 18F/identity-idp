@@ -95,7 +95,7 @@ es:
         1: Débil
         2: Promedio
         3: Buena
-        4: Muy buena
+        4: Excelente
         intro: 'Seguridad de la contraseña: '
     sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a
       %{app_name}. Contacte con %{sp_link} para obtener ayuda.
