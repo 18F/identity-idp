@@ -3,6 +3,7 @@ module ReauthenticationRequiredConcern
   include TwoFactorAuthenticatableMethods
 
   def confirm_recently_authenticated_2fa
+    puts('confirm_recently auth')
     return if !user_fully_authenticated? || recently_authenticated_2fa?
 
     analytics.user_2fa_reauthentication_required(
@@ -20,13 +21,17 @@ module ReauthenticationRequiredConcern
   private
 
   def prompt_for_second_factor
-    store_location(request.url)
+    store_location(request.path)
     user_session[:context] = 'reauthentication'
 
     redirect_to login_two_factor_options_path
   end
 
   def store_location(url)
-    user_session[:stored_location] = url
+    if url === backup_code_continue_path
+      user_session[:stored_location] = account_path
+    else
+      user_session[:stored_location] = url
+    end
   end
 end

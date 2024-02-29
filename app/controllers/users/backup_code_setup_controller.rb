@@ -11,6 +11,8 @@ module Users
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
+    before_action :confirm_recently_authenticated_2fa, except: [:reminder]
+    before_action :validate_internal_referer, only: [:index]
 
     helper_method :in_multi_mfa_selection_flow?
     helper_method :in_account_creation_flow?
@@ -73,6 +75,14 @@ module Users
 
     def analytics_properties_for_visit
       { in_account_creation_flow: in_account_creation_flow? }
+    end
+
+    def validate_internal_referer
+      redirect_to root_url unless internal_referer?
+    end
+    
+    def internal_referer?
+      UserSessionContext.reauthentication_context?(context) || in_account_creation_flow?
     end
 
     def track_backup_codes_created
