@@ -53,8 +53,6 @@ module Reports
             </div>
           </div>
         <% end %>
-        <p>
-        </p>
       ERB
     end
 

@@ -119,10 +119,8 @@ RSpec.describe Reports::FraudMetricsReport do
     let(:env) { 'prod' }
     subject(:preamble) { report.preamble(env:) }
 
-    it 'has a preamble that is valid HTML' do
-      expect(preamble).to be_html_safe
-
-      expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
+    it 'has a blank preamble' do
+      expect(preamble).to be_blank
     end
 
     context 'in a non-prod environment' do
