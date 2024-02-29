@@ -76,7 +76,8 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'terminal-table', require: false
-gem 'valid_email', '>= 0.1.3'
+# until a release includes https://github.com/hallelujah/valid_email/pull/126
+gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
 gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'

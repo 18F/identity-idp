@@ -65,5 +65,23 @@ RSpec.describe PasswordResetEmailForm do
         )
       end
     end
+
+    context 'disposable domains' do
+      before do
+        expect(BanDisposableEmailValidator).to receive(:config).and_return(%w[spamdomain.com])
+      end
+
+      it 'bans direct matches to disposable domains' do
+        form = PasswordResetEmailForm.new('foo@spamdomain.com')
+
+        expect(form.submit).to_not be_success
+      end
+
+      it 'bans subdomains of disposable domains' do
+        form = PasswordResetEmailForm.new('foo@sub.bar.spamdomain.com')
+
+        expect(form.submit).to_not be_success
+      end
+    end
   end
 end
