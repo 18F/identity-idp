@@ -6,11 +6,10 @@ fr:
       camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
       document_capture_dialog: Capture du document
     buttons:
-      add_new_photos: Ajoutez de nouvelles photos
-      continue: Continuer
-      take_or_upload_picture_html: '<lg-take-photo>Prendre une
-        photo</lg-take-photo><lg-or> ou </lg-or><lg-upload>Télécharger une
-        photo</lg-upload>'
+      add_new_photos: Ajouter de nouvelles photos
+      continue: Suite
+      take_or_upload_picture_html: "<lg-take-photo>Prendre une photo</lg-take-photo><lg-or>
+        ou </lg-or><lg-upload>Télécharger une photo</lg-upload>"
       take_picture: Prendre une photo
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
@@ -18,161 +17,154 @@ fr:
       alerts:
         address_check: Nous n’avons pas pu lire l’adresse sur votre pièce d’identité.
           Essayez de prendre de nouvelles photos.
-        barcode_content_check: Nous n’avons pas pu lire le code-barres au verso de votre
-          carte d’identité. Cela pourrait être dû à un problème avec le
-          code-barres, ou le code-barres est d’un type nouveau que nous ne
-          reconnaissons pas encore. Utilisez une autre carte d’identité délivrée
-          par l’État si vous en avez une.
+        barcode_content_check: Nous n’avons pas pu lire le code-barres au verso de
+          votre pièce d’identité. Cela pourrait être dû à un problème avec le code-barres,
+          ou le code-barres est d’un type nouveau que nous ne reconnaissons pas encore.
+          Utilisez une autre pièce d’identité délivrée par l’État si vous en avez
+          une.
         barcode_read_check: Nous n’avons pas pu lire le code-barres au verso de votre
-          carte d’identité. Essayez de prendre une nouvelle photo.
-        birth_date_checks: Nous n’avons pas pu lire la date de naissance sur votre pièce
-          d’identité. Essayez de prendre de nouvelles photos.
+          pièce d’identité. Essayez de prendre une nouvelle photo.
+        birth_date_checks: Nous n’avons pas pu lire la date de naissance sur votre
+          pièce d’identité. Essayez de prendre de nouvelles photos.
         control_number_check: Nous n’avons pas pu lire le numéro de référence au verso
           de votre carte d’identité. Essayez de prendre une nouvelle photo.
-        doc_crosscheck: Nous n’avons pas pu reconnaître votre pièce d’identité. Il se
-          peut qu’elle soit usée ou endommagée, ou que le recto et le verso de
-          la carte d’identité ne correspondent pas. Essayez de prendre de
-          nouvelles photos.
+        doc_crosscheck: Nous n’avons pas pu reconnaître votre pièce d’identité. Il
+          se peut qu’elle soit usée ou endommagée, ou que le recto et le verso de
+          la pièce d’identité ne correspondent pas. Essayez de prendre de nouvelles
+          photos.
         doc_number_checks: Nous n’avons pas pu lire le numéro du document sur votre
           carte d’identité. Essayez de prendre de nouvelles photos.
-        expiration_checks: Le document a expiré ou nous n’avons pas pu lire la date
-          d’expiration sur votre carte d’identité. Si votre pièce d’identité
-          n’est pas expirée, essayez de prendre de nouvelles photos.
-        full_name_check: Nous n’avons pas pu lire le nom complet sur votre pièce
-          d’identité. Essayez de prendre de nouvelles photos.
-        id_not_recognized: Nous n’avons pas pu reconnaître votre pièce d’identité. Elle
-          est peut-être usée ou endommagée, ou bien il s’agit d’un type de carte
-          d’identité que nous ne reconnaissons pas. Essayez de prendre de
-          nouvelles photos.
-        id_not_verified: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut
-          qu’elle ait bougé lorsque vous avez pris la photo. Essayez de prendre
+        expiration_checks: Le document est périmé ou nous n’avons pas pu lire la date
+          d’expiration sur votre pièce d’identité. Si votre pièce d’identité n’est
+          pas périmée, essayez de prendre de nouvelles photos.
+        full_name_check: Nous n’avons pas pu lire le nom complet sur votre pièce d’identité.
+          Essayez de prendre de nouvelles photos.
+        id_not_recognized: Nous n’avons pas pu reconnaître votre pièce d’identité.
+          Elle est peut-être usée ou endommagée, ou bien il s’agit d’un type de pièce
+          d’identité que nous ne reconnaissons pas. Essayez de prendre de nouvelles
+          photos.
+        id_not_verified: Nous n’avons pas pu vérifier votre pièce d’identité. Il se
+          peut qu’elle ait bougé lorsque vous avez pris la photo. Essayez de prendre
           de nouvelles photos.
         issue_date_checks: Nous n’avons pas pu lire la date d’émission sur votre pièce
           d’identité. Essayez de prendre de nouvelles photos.
-        ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
-          contrôle. Essayez de prendre de nouvelles photos.
-        selfie_not_live: 'Rééssayez de vous prendre en photo. Assurez-vous que lensemble
-          de votre visage est clair et visible sur la photo.'
-        selfie_poor_quality: 'Rééssayez de vous prendre en photo. Assurez-vous que
-          l’ensemble de votre visage est clair et visible sur la photo.'
+        ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro
+          de contrôle. Essayez de prendre de nouvelles photos.
+        selfie_not_live: Rééssayez de vous prendre en photo. Assurez-vous que lensemble
+          de votre visage est clair et visible sur la photo.
+        selfie_poor_quality: Rééssayez de vous prendre en photo. Assurez-vous que
+          l’ensemble de votre visage est clair et visible sur la photo.
         sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez
           de prendre de nouvelles photos.
-        visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Elle a
-          peut-être bougé lorsque vous avez pris la photo, ou la photo est trop
-          sombre. Essayez de prendre de nouvelles photos avec un éclairage plus
-          fort.
+        visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité.
+          Il se peut qu’elle ait bougé lorsque vous avez pris la photo, ou que la
+          photo soit trop sombre. Essayez de prendre de nouvelles photos avec un meilleur
+          éclairage.
         visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce
           d’identité. Essayez de prendre de nouvelles photos.
       barcode_attention:
-        confirm_info: Si les informations ci-dessous sont incorrectes, veuillez
-          télécharger de nouvelles photos de votre carte d’identité délivrée par
-          l’État.
+        confirm_info: Si les informations ci-dessous sont incorrectes, veuillez télécharger
+          de nouvelles photos de votre pièce d’identité délivrée par l’État.
         heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
       camera:
         blocked: Votre appareil photo est bloqué
         blocked_detail: Nous n’avons pas la permission d’accéder à l’appareil photo.
-          Veuillez vérifier les paramètres de votre navigateur ou de votre
-          système, recharger cette page ou télécharger une photo à la place.
+          Veuillez vérifier les paramètres de votre navigateur ou de votre système,
+          recharger cette page ou télécharger une photo à la place.
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
-      card_type: Réessayez avec votre permis de conduire ou carte d’identité délivrée
-        par l’État.
+      card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un
+        État.
       doc:
         doc_type_check: Votre permis de conduire ou votre carte d’identité doit être
-          établi par un État ou un territoire des États-Unis. Nous n’acceptons
-          pas les cartes d’identité militaires, les passeports américains ou
-          autres documents d’identification.
+          délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas
+          d’autres pièces d’identité, comme les passeports ou les cartes d’identité
+          militaires.
         resubmit_failed_image: Vous avez déjà essayé cette image et elle a échoué.
           Veuillez essayer d’ajouter une image différente.
         wrong_id_type_html: Nous n’acceptons qu’un permis de conduire ou une carte
-          d’identité délivrée par un état ou un territoire des États-Unis. Nous
-          n’acceptons pas les cartes d’identité militaires, les passeports
-          américains ou autres documents d’identification. <a>En savoir plus sur
-          les pièces d’identité acceptées</a>
+          d’identité délivré par un État ou un territoire des États-Unis. Nous n’acceptons
+          pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité
+          militaires. <a>En savoir plus sur les pièces d’identité acceptées</a>
       dpi:
-        failed_short: L’image est trop petite ou floue, veuillez réessayer.
-        top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre
-          image est peut-être trop petite ou il se peut que votre pièce
-          d’identité soit trop petite ou floue sur la photo. Assurez-vous que la
-          taille de votre pièce d’identité est grande et qu’elle est située dans
-          le cadre de l’image puis essayez de prendre une nouvelle photo.
-        top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. La taille de
-          vos images est peut-être trop petite ou il se peut que votre pièce
-          d’identité soit trop petite ou floue sur les photos. Assurez-vous que
-          la taille de votre pièce d’identité est grande et qu’elle est située
-          dans le cadre de l’image puis essayez de prendre des nouvelles photos.
+        failed_short: Image trop petite ou floue, veuillez réessayer.
+        top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre
+          image soit de trop petite taille ou que votre pièce d’identité soit trop
+          petite ou floue sur la photo. Assurez-vous que votre pièce d’identité remplisse
+          le cadre de l’image, puis essayez de prendre une nouvelle photo.
+        top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut
+          que votre image soit de trop petite taille ou que votre pièce d’identité
+          soit trop petite ou floue sur les photos. Assurez-vous que votre pièce d’identité
+          remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
       file_type:
-        invalid: Ce type de fichier n’est pas accepté, veuillez choisir un fichier JPG
-          ou PNG.
+        invalid: Ce type de fichier n’est pas accepté ; veuillez choisir un fichier
+          JPG ou PNG.
       general:
         fallback_field_level: Veuillez ajouter une nouvelle image
-        multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce
-          d’identité. Essayez de prendre une nouvelle photo.
-        multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre pièce
-          d’identité. Essayez de prendre une nouvelle photo.
-        network_error: Nous avons des difficultés techniques de notre côté. Veuillez
-          essayer de soumettre à nouveau vos images plus tard.
+        multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre
+          pièce d’identité. Essayez de prendre une nouvelle photo.
+        multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre
+          pièce d’identité. Essayez de prendre une nouvelle photo.
+        network_error: Nous rencontrons actuellement des difficultés techniques de
+          notre côté. Veuillez réessayer d’envoyer vos images ultérieurement.
         no_liveness: Essayez de prendre de nouvelles photos.
         selfie_failure: Nous n’avons pas réussi à vérifier votre photo. Essayez à
           nouveau avec une nouvelle photo.
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.
-        top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo peut avoir
-          des reflets. Assurez-vous que le flash de votre appareil photo est
-          désactivé puis essayez de prendre une nouvelle photo.
-        top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Vos photos
-          peuvent avoir des reflets. Assurez-vous que le flash de votre appareil
-          photo est désactivé puis essayez de prendre de nouvelles photos.
+        top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre
+          photo présente des reflets. Assurez-vous que le flash de votre appareil
+          photo soit désactivé, puis essayez de prendre une nouvelle photo.
+        top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut
+          que votre photo présente des reflets. Assurez-vous que le flash de votre
+          appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
       http:
         image_load:
           failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
           top_msg: Le fichier image que vous avez ajouté n’est pas pris en charge.
-            Veuillez prendre de nouvelles photos de votre pièce d’identité et
-            réessayer.
+            Veuillez prendre de nouvelles photos de votre pièce d’identité et réessayer.
         image_size:
           failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
           top_msg: La taille de votre image est trop grande ou trop petite. Veuillez
-            ajouter des images de votre pièce d’identité d’environ 2025 x 1275
-            pixels.
+            ajouter des images de votre pièce d’identité d’environ 2 025 x 1 275 pixels.
         pixel_depth:
           failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
-          top_msg: La profondeur de pixel de votre fichier image n’est pas supportée.
-            Veuillez prendre de nouvelles photos de votre pièce d’identité et
-            réessayer. La profondeur de pixel de l’image prise en charge est de
-            24 bits RGB.
+          top_msg: La profondeur de pixel de votre fichier image n’est pas prise en
+            charge. Veuillez prendre de nouvelles photos de votre pièce d’identité
+            et réessayer. La profondeur de pixel de l’image prise en charge est de
+            24 bits RGB.
       not_a_file: La sélection n’était pas un fichier valide.
       pii:
         birth_date_min_age: Votre anniversaire ne correspond pas à l’âge minimum requis.
       sharpness:
         failed_short: L’image est floue, veuillez réessayer.
-        top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo est
-          peut-être trop floue ou trop sombre. Essayez de prendre une nouvelle
-          photo dans un endroit lumineux.
-        top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Vos photos sont
-          peut-être trop floues ou trop sombres. Essayez de prendre de nouvelles
-          photos dans un endroit lumineux.
-      upload_error: Désolé, quelque chose a mal tourné de notre côté.
+        top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre
+          photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo
+          dans un endroit bien éclairé.
+        top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut
+          que vos photos soient trop floues ou trop sombres. Essayez de prendre de
+          nouvelles photos dans un endroit bien éclairé.
+      upload_error: Désolé, il y a eu un problème de notre côté.
     exit_survey:
-      content_html: <strong>Si vous n’avez pas de permis de conduire ou de carte
-        d’identité de l’État, vous ne pouvez pas continuer à utiliser
-        %{app_name}.</strong> Veuillez <a>quitter %{app_name} et contacter
-        %{sp_name}</a> pour savoir ce que vous pouvez faire.
-      content_nosp_html: <strong>Si vous n’avez pas de permis de conduire ou de carte
-        d’identité de l’État, vous ne pouvez pas continuer à utiliser
-        %{app_name}.</strong> <a>Annulez la vérification de votre identité avec
-        %{app_name}</a> et vous pourrez redémarrer le processus lorsque vous
-        serez prêt.
-      header: N’avez-vous pas de permis de conduire ou de carte d’identité de l’État?
+      content_html: "<strong>Si vous n’avez pas de permis de conduire ou de carte
+        d’identité d’un État, vous ne pouvez pas continuer à utiliser %{app_name}.</strong>
+        Veuillez <a>quitter %{app_name} et contacter %{sp_name}</a> pour savoir ce
+        que vous pouvez faire."
+      content_nosp_html: "<strong>Si vous n’avez pas de permis de conduire ou de carte
+        d’identité d’un État, vous ne pouvez pas continuer à utiliser %{app_name}.</strong>
+        <a>Annulez la vérification de votre identité avec %{app_name}</a> et vous
+        pourrez redémarrer le processus lorsque vous serez prêt."
+      header: Vous n’avez pas de permis de conduire ou de carte d’identité d’un État ?
       optional:
-        button: Soumettre et quitter %{app_name}
-        content: Aidez-nous à ajouter plus de documents d’identité à %{app_name}. Quels
-          types de documents d’identité avez-vous à la place?
+        button: Valider et quitter %{app_name}
+        content: Aidez-nous à ajouter d’autres pièces d’identité à %{app_name}. Quels
+          types de pièces d’identité avez-vous à la place ?
         id_types:
           military_id: Carte d’identité militaire (y compris la carte d’identité du
-            ministère de la défense, la carte d’identité médicale des anciens
-            combattants ou la carte d’identité des anciens combattants)
+            département de la Défense, la carte d’identité médicale des anciens combattants
+            ou la carte d’identité des anciens combattants)
           other: Quelque chose qui ne figure pas dans la liste
-          resident_card: Carte Verte américaine (également appelée Carte de Résident
-            Permanent)
+          resident_card: Carte verte des États-Unis (également appelée carte de résident
+            permanent)
           tribal_id: Carte d’identité tribale
           us_passport: Passeport américain
           voter_registration_card: Carte d’électeur
@@ -181,167 +173,168 @@ fr:
     forms:
       captured_image: Image capturée
       change_file: Changer de fichier
-      choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez un
-        dossier</lg-underline>
+      choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez
+        dans un dossier</lg-underline>
       doc_success: Nous avons vérifié vos informations
       selected_file: Fichier sélectionné
     headings:
       address: Mettre à jour votre adresse postale
-      back: Verso de votre permis de conduire ou de votre carte d’identité de l’État
-      capture_complete: Nous avons vérifié votre document d’identité
+      back: Verso de votre permis de conduire ou de votre carte d’identité d’un État
+      capture_complete: Nous avons vérifié votre pièce d’identité
       capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre
-        pièce d’identité. Si les informations ci-dessous sont incorrectes,
-        veuillez %{link_html} de votre carte d’identité délivrée par l’État.
+        pièce d’identité. Si les informations ci-dessous ne sont pas correctes, veuillez
+        %{link_html} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
-      document_capture: Ajoutez des photos de votre pièce d’identité
-      document_capture_back: Verso de votre carte d’identité
+      document_capture: Ajouter des photos de votre pièce d’identité
+      document_capture_back: Verso de votre pièce d’identité
       document_capture_front: Recto de votre carte d’identité
       document_capture_selfie: Une photo de vous
-      document_capture_subheader_id: Permis de conduire ou de carte d’identité d’État
+      document_capture_subheader_id: Permis de conduire ou carte d’identité d’un État
       document_capture_subheader_selfie: Photo de vous-même
-      document_capture_with_selfie: Ajoutez des photos de votre pièce d’identité et une photo de vous-même
-      front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
+      document_capture_with_selfie: Ajouter des photos de votre pièce d’identité et
+        une photo de vous-même
+      front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
       how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
-      hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
+      hybrid_handoff: Comment voulez-vous ajouter votre pièce d’identité ?
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
-      no_ssn: Vous n’avez pas de numéro de sécurité sociale?
+      no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
       selfie: Photo
-      ssn: Saisissez votre numéro de sécurité sociale
-      ssn_update: Mettre à jour votre numéro de Sécurité Sociale
+      ssn: Saisir votre numéro de sécurité sociale
+      ssn_update: Mettre à jour votre numéro de sécurité sociale
       text_message: Nous avons envoyé un message à votre téléphone
       upload_from_computer: Continuer sur cet ordinateur
-      upload_from_phone: Utilisez votre téléphone pour prendre des photos
-      verify_at_post_office: Confirmez votre identité un bureau de poste
-      verify_identity: Vérifier votre identité
-      verify_online: Confirmez votre identité en ligne
-      welcome: Vérifions votre identité pour %{sp_name}
+      upload_from_phone: Utiliser votre téléphone pour prendre des photos
+      verify_at_post_office: Confirmer votre identité dans un bureau de poste
+      verify_identity: Confirmer votre identité
+      verify_online: Confirmer votre identité en ligne
+      welcome: Commencer à confirmer votre identité
     hybrid_flow_warning:
-      explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
-        identité et accéder à <strong>%{service_provider_name}</strong> et à ses
-        services.
-      explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre identité.
-      only_add_if_text: 'N’AJOUTEZ VOTRE IDENTIFIANT QUE SI :'
+      explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer
+        votre identité et accéder à <strong>%{service_provider_name}</strong> et à
+        ses services.
+      explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer
+        votre identité.
+      only_add_if_text: 'N’AJOUTEZ VOTRE PIÈCE D’IDENTITÉ QUE SI :'
       only_add_own_account: Vous utilisez votre propre compte %{app_name}
-      only_add_phone_verify: Vous avez demandé à %{app_name} de vérifier votre
-        identité en utilisant votre téléphone
-      only_add_sp_services_html: Vous essayez d’accéder aux services de
-        <strong>%{service_provider_name}</strong>
+      only_add_phone_verify: Vous avez demandé à %{app_name} de confirmer votre identité
+        à l’aide de votre téléphone
+      only_add_sp_services_html: Vous essayez d’accéder aux services de <strong>%{service_provider_name}</strong>
     info:
-      address_guidance_puerto_rico_html: Résidents de Porto Rico:<br><br>Modifiez
-        votre adresse pour indiquer votre lotissement ou votre condominium à la
-        ligne 2.
+      address_guidance_puerto_rico_html: Résidents de Porto Rico :<br><br>modifiez
+        votre adresse pour indiquer votre lotissement ou votre condominium à la ligne
+        2.
       capture_status_big_document: Trop près
-      capture_status_capturing: Prendre la photo
+      capture_status_capturing: Prise de la photo
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
-      capture_status_tap_to_capture: Appuyez pour capturer
+      capture_status_tap_to_capture: Appuyez pour prendre la photo
       exit:
-        with_sp: Quittez %{app_name} et retournez à %{sp_name}
-        without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
-      getting_started_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
-        quelqu’un qui se fait passer pour vous. %{link_html}'
-      getting_started_learn_more: Pour plus d’informations sur la vérification de votre identité
-      how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne ou
-        en personne dans un bureau de poste participant.
-      how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de vérifier votre identité?
-      hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
-        d’identité délivrée par l’État.
+        with_sp: Quitter %{app_name} et revenir à %{sp_name}
+        without_sp: Quitter la vérification d’identité et accéder à la page de votre
+          compte
+      getting_started_html: "%{sp_name} doit s’assurer que vous êtes bien vous, et
+        non quelqu’un qui se fait passer pour vous. %{link_html}"
+      getting_started_learn_more: Pour plus d’informations sur la vérification de
+        votre identité
+      how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne
+        ou en personne dans un bureau de poste participant
+      how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur
+        la façon de confirmer votre identité ?
+      hybrid_handoff: Nous recueillerons des informations vous concernant en lisant
+        votre pièce d’identité délivrée par un État.
       image_loaded: Image chargée
-      image_loading: Chargement de l’image
+      image_loading: Image en cours de chargement
       image_updated: Image mise à jour
-      interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous
-        chargerons automatiquement l’étape suivante lorsqu’elle sera terminée.
-      interstitial_thanks: Merci de votre patience!
+      interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous chargerons
+        automatiquement l’étape suivante lorsqu’elle sera terminée.
+      interstitial_thanks: Merci de votre patience !
       keep_window_open: Ne fermez pas cette fenêtre.
       learn_more: En savoir plus sur la façon dont nous protégeons vos informations
         confidentielles
-      lets_go: La vérification de l’identité se fait en deux temps
+      lets_go: 'La vérification de l’identité se fait en deux temps :'
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
-        prendre une photo de votre identité émise par l’État.
-      link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Continuer »
+        prendre une photo de votre pièce d’identité délivrée par l’État.
+      link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite »
         ici pour terminer la vérification de votre identité.
-      link_sent_complete_polling: L’étape suivante se chargera automatiquement une
-        fois que vous aurez confirmé votre identifiant à l’aide de votre
-        téléphone.
-      no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la
-        vérification de votre identité.
-      review_examples_of_photos: Examinez des exemples de photos claires de votre pièce d’identité.
-      secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
-        chiffrage signifie que vos données sont protégées et que vous êtes le/la
-        seul(e) à pouvoir accéder à vos informations ou les modifier.
+      link_sent_complete_polling: L’étape suivante se chargera automatiquement.
+      no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification
+        de votre identité.
+      review_examples_of_photos: Voir des exemples qui montrent comment prendre des
+        photos nettes de votre pièce d’identité.
+      secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le chiffrement
+        signifie que vos données sont protégées et que vous êtes le seul à pouvoir
+        accéder à vos informations ou les modifier.
       selfie_capture_status:
         face_close_to_border: TROP PRÈS DU CADRE
         face_not_found: VISAGE NON TROUVÉ
         face_too_small: VISAGE TROP PETIT
         too_many_faces: TROP DE VISAGES
-      ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
+      ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos
         nom, date de naissance et adresse.
       tag: Recommandation
-      upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de
-        votre carte d’identité depuis cet ordinateur.
-      upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet
-        ordinateur après avoir pris des photos. Votre téléphone portable doit
+      upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos
+        de votre pièce d’identité depuis cet ordinateur.
+      upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur
+        cet ordinateur après avoir pris des photos. Votre téléphone portable doit
         être équipé d’un appareil photo et d’un navigateur web.
-      verify_at_post_office_description: Cette option est préférable si vous ne
-        disposez pas d’un appareil mobile ou d’un moyen facile de prendre des
-        photos de votre pièce d’identité.
-      verify_at_post_office_instruction: Vous saisissez vos données d’identification
-        en ligne et confirmez votre identité en personne dans un bureau de poste
+      verify_at_post_office_description: Cette option est préférable si vous ne disposez
+        pas d’un appareil mobile ou d’un moyen facile de prendre des photos de votre
+        pièce d’identité.
+      verify_at_post_office_instruction: Vous saisirez vos données d’identification
+        en ligne et confirmerez votre identité en personne dans un bureau de poste
         participant.
-      verify_at_post_office_link_text: En savoir plus sur la confirmation en personne
+      verify_at_post_office_link_text: En savoir plus sur la vérification en personne
       verify_identity: Nous vous demanderons vos informations personnelles afin de
-        vérifier votre identité par rapport aux registres publics.
-      verify_online_description: La plupart des utilisateurs terminent ce processus en
-        une seule fois. Cette option est préférable si vous disposez d’un
-        appareil mobile ou d’un moyen de prendre des photos de votre pièce
-        d’identité.
+        confirmer votre identité par rapport aux registres publics.
+      verify_online_description: Cette option est préférable si vous disposez d’un
+        appareil mobile ou d’un moyen de prendre des photos de votre pièce d’identité.
       verify_online_instruction: Vous prendrez des photos de votre pièce d’identité
-        pour confirmer votre identité entièrement en ligne.
-      verify_online_link_text: En savoir plus sur la confirmation en ligne
-      you_entered: 'Tu as soumis:'
+        pour confirmer votre identité entièrement en ligne. La plupart des utilisateurs
+        effectuent l’ensemble du processus en une seule fois.
+      verify_online_link_text: En savoir plus sur la vérification en ligne
+      you_entered: 'Vous avez saisi :'
     instructions:
-      bullet1: Prendre des photos de votre pièce d’identité
+      bullet1: Carte d’identité délivrée par l’État
       bullet1_with_selfie: Prenez des photos de vous et de vos pièces d’identité
-      bullet2: Saisissez votre numéro de sécurité sociale
-      bullet3: Faites correspondre votre numéro de téléphone
+      bullet2: Numéro de sécurité sociale
+      bullet3: Numéro de téléphone OU adresse physique
       bullet4: Saisissez à nouveau votre mot de passe %{app_name}
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
-        conserver et partager vos renseignements personnels. Nous les utilisons
-        pour vérifier votre identité.
+        conserver et partager vos renseignements personnels. Nous les utiliserons
+        pour confirmer votre identité.
       getting_started: 'Vous aurez besoin de :'
       learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
-      switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
+      switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité.
       switch_back_image: Flèche pointant du téléphone vers l’ordinateur
-      test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
-        “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
-        champ.
-      text1: Utilisez votre permis de conduire ou votre carte d’identité nationale.
-        Les autres pièces d’identité ne sont pas acceptées.
+      test_ssn: Dans l’environnement de test, seuls les numéros de sécurité sociale
+        commençant par “900-” ou “666-” sont considérés comme valides. Ne saisissez
+        pas de vraies IPI dans ce champ.
+      text1: Votre pièce d’identité ne doit pas être expirée.
       text1_with_selfie: Prenez une photo de vous et une de votre permis de conduire
-        ou carte d’identité nationale. Les autres pièces d’identité ne sont pas
-        acceptées.
-      text2: Vous n’aurez pas besoin de votre carte de sécurité sociale.
-      text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
-        fois la correspondance établie, nous vous enverrons un code.
+        ou carte d’identité nationale. Les autres pièces d’identité ne sont pas acceptées.
+      text2: Vous n’aurez pas besoin de la carte sur vous.
+      text3: Votre numéro de téléphone correspond à vos informations personnelles.
+        Une fois la correspondance établie, nous vous enverrons un code.
       text4: Votre mot de passe enregistre et crypte vos informations personnelles.
     tips:
-      document_capture_hint: Doit être un JPG ou PNG
-      document_capture_id_text1: Utilisez un fond sombre
+      document_capture_hint: Doit être au format JPG ou PNG
+      document_capture_id_text1: Utilisez un arrière-plan sombre
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
-      document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
-      document_capture_selfie_id_header_text: Conseils pour prendre des photos claires
-      document_capture_selfie_selfie_text: Conseils pour prendre un photo claires
+      document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
+      document_capture_selfie_id_header_text: Conseils pour prendre des photos nettes
+      document_capture_selfie_selfie_text: Conseils pour prendre un photo nette
       document_capture_selfie_text1: Tenez votre appareil à hauteur des yeux
-      document_capture_selfie_text2: Veillez à ce que l’ensemble de votre visage soit visible
+      document_capture_selfie_text2: Veillez à ce que l’ensemble de votre visage soit
+        visible
       document_capture_selfie_text3: Prenez votre photo dans un endroit bien éclairé
-      most_common: Le plus commun
-      review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
-      review_issues_id_text1: Avez-vous utilisé un fond sombre?
-      review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
-      review_issues_id_text3: Le flash de votre caméra est-il éteint?
-      review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
-        couvert par un chapeau ou des lunettes?
+      most_common: Le plus souvent
+      review_issues_id_header_text: 'Examinez les images de votre carte d’identité
+        délivrée par l’État :'
+      review_issues_id_text1: Avez-vous utilisé un arrière-plan de couleur sombre ?
+      review_issues_id_text2: Avez-vous pris la photo sur une surface plane ?
+      review_issues_id_text3: Le flash de votre appareil photo est-il éteint ?
+      review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles ?
