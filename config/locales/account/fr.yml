@@ -7,10 +7,10 @@ fr:
         sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez
         ci-dessous une liste de tous vos comptes actuellement connectés.
     email_language:
-      default: "%{language} (par défaut)"
+      default: '%{language} (par défaut)'
       edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
-      languages_list: "%{app_name} vous permet de recevoir des communications par
-        e-mail en %{list}."
+      languages_list: '%{app_name} vous permet de recevoir des communications par
+        e-mail en %{list}.'
       name:
         en: anglais
         es: espagnol
@@ -33,7 +33,7 @@ fr:
       backup_codes_no_exist: Non généré
       continue_to_service_provider: Continuer sur %{service_provider}
       default: défaut
-      device: "%{browser} sur %{os}"
+      device: '%{browser} sur %{os}'
       email: Adresse e-mail
       email_add: Ajouter une nouvelle adresse e-mail
       email_addresses: Adresses e-mail
@@ -65,8 +65,8 @@ fr:
       delete_account: Supprimer
       regenerate_personal_key: Réinitialiser
     login:
-      forced_reauthentication_notice_html: "<strong>%{sp_name}</strong> nécessite
-        que vous saisissiez à nouveau votre adresse e-mail et votre mot de passe."
+      forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> nécessite
+        que vous saisissiez à nouveau votre adresse e-mail et votre mot de passe.'
       piv_cac: Connectez-vous avec votre identifiant d’employé.
       tab_navigation: Onglets de création de compte
     navigation:

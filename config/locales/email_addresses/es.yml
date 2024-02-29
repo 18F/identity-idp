@@ -10,8 +10,8 @@ es:
         a su cuenta).
       bullet2: No recibirá notificaciones de la cuenta en esta dirección de correo
         electrónico.
-      confirm: "¿Está seguro de que desea eliminar %{email}?"
+      confirm: '¿Está seguro de que desea eliminar %{email}?'
       failure: No se puede eliminar esta dirección de correo electrónico.
       success: Se eliminó la dirección de correo electrónico.
       warning: Si elimina su dirección de correo electrónico
-    unconfirmed: "(sin confirmar)"
+    unconfirmed: '(sin confirmar)'

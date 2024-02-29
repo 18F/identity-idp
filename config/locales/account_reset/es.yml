@@ -2,8 +2,8 @@
 es:
   account_reset:
     cancel_request:
-      are_you_sure: "¿Está seguro de que desea cancelar su solicitud de eliminación
-        de cuenta?"
+      are_you_sure: '¿Está seguro de que desea cancelar su solicitud de eliminación
+        de cuenta?'
       cancel: Salir
       cancel_button: Cancelar la cuenta eliminada
       title: Cancelar la cuenta eliminada
@@ -21,7 +21,7 @@ es:
       security_note: Como medida de seguridad, también enviamos un mensaje de texto
         a su número de teléfono registrado.
     delete_account:
-      are_you_sure: "¿Está seguro de que desea eliminar su cuenta?"
+      are_you_sure: '¿Está seguro de que desea eliminar su cuenta?'
       info: Eliminar su cuenta debe ser su último recurso si el acceso a su cuenta
         está bloqueado. No podrá recuperar ninguna información vinculada a su cuenta.
         Notificaremos a las agencias a las que accede con %{app_name} que usted ya
@@ -42,7 +42,7 @@ es:
       check_webauthn_platform_info: Si configuró el desbloqueo facial o táctil cuando
         creó su cuenta, asegúrese de utilizar el mismo dispositivo en el que creó
         su cuenta de %{app_name}.
-      header: "¿Está seguro de que desea eliminar su cuenta?"
+      header: '¿Está seguro de que desea eliminar su cuenta?'
       help_text: Si su cuenta sigue bloqueada y todavía necesita acceder a %{app_name},
         intente seguir estos pasos.
       try_another_device: Pruebe otro dispositivo en el que podría haber seleccionado
@@ -52,8 +52,8 @@ es:
       use_same_device: De lo contrario, inténtalo con el mismo dispositivo en el que
         configuraste el desbloqueo facial o táctil.
     request:
-      are_you_sure: "¿Está seguro de que no tiene acceso a ninguno de sus métodos
-        de autenticación?"
+      are_you_sure: '¿Está seguro de que no tiene acceso a ninguno de sus métodos
+        de autenticación?'
       delete_account: Elimine su cuenta
       delete_account_info:
       - Eliminar su cuenta existente y crear una nueva le permite usar la misma dirección

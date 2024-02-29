@@ -10,8 +10,8 @@ es:
       pinpoint:
         idv:
           header: Estamos trabajando para corregir un error
-          message_html: "%{sp_name_html} necesita asegurarse de que se trata de usted
-            y no de alguien que se hace pasar por usted."
+          message_html: '%{sp_name_html} necesita asegurarse de que se trata de usted
+            y no de alguien que se hace pasar por usted.'
           options_html:
           - Continuar ahora y verificar por correo, lo cual tarda entre <strong>5
             y 10 días</strong>.

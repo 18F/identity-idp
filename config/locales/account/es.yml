@@ -7,10 +7,10 @@ es:
         a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas
         que tiene conectadas actualmente.
     email_language:
-      default: "%{language} (predeterminado)"
+      default: '%{language} (predeterminado)'
       edit_title: Editar la preferencia de idioma del correo electrónico
-      languages_list: "%{app_name} le permite recibir su comunicación por correo electrónico
-        en %{list}."
+      languages_list: '%{app_name} le permite recibir su comunicación por correo electrónico
+        en %{list}.'
       name:
         en: Inglés
         es: Español
@@ -33,7 +33,7 @@ es:
       backup_codes_no_exist: No generados
       continue_to_service_provider: Continuar con %{service_provider}
       default: predeterminado
-      device: "%{browser} en %{os}"
+      device: '%{browser} en %{os}'
       email: Dirección de correo electrónico
       email_add: Agregar nuevo correo electrónico
       email_addresses: Direcciones de correo electrónico
@@ -66,8 +66,8 @@ es:
       delete_account: Eliminar
       regenerate_personal_key: Restablecer
     login:
-      forced_reauthentication_notice_html: "<strong>%{sp_name}</strong> requiere que
-        vuelva a ingresar su correo electrónico y contraseña."
+      forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> requiere que
+        vuelva a ingresar su correo electrónico y contraseña.'
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
       tab_navigation: Pestañas para creación de cuentas
     navigation:

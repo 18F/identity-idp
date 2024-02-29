@@ -73,7 +73,7 @@ es:
         divulgar su identidad verificada
       completion_first_sign_in: Continuar con %{sp}
       completion_ial2: Conecte su información verificada a %{sp}
-      completion_new_attributes: "%{sp} está solicitando nueva información"
+      completion_new_attributes: '%{sp} está solicitando nueva información'
       completion_new_sp: Está iniciando sesión por primera vez
       completion_reverified_consent: Comunique su información actualizada a %{sp}
       confirmation: Continuar para iniciar sesión

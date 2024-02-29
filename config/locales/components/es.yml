@@ -24,7 +24,7 @@ es:
       cancel: Cancelar
       created_on: Creado el %{date}
       delete: Eliminar
-      delete_confirm: "¿Está seguro de que desea eliminar este método de autenticación?"
+      delete_confirm: '¿Está seguro de que desea eliminar este método de autenticación?'
       deleted: Se eliminó un método de autenticación
       deleting: Eliminando…
       done: Listo
@@ -73,5 +73,5 @@ es:
     print_button:
       label: Imprimir
     troubleshooting_options:
-      default_heading: "¿Tiene problemas? Esto es lo que puede hacer:"
+      default_heading: '¿Tiene problemas? Esto es lo que puede hacer:'
       ipp_heading: 'Otras opciones para la solución de problemas:'

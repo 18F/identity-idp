@@ -70,9 +70,9 @@ fr:
         retail_hours_weekday: 'Du lundi au vendredi :'
         selection: 'Voici le bureau que vous avez sélectionné :'
       prepare:
-        privacy_disclaimer: "%{app_name} est un site Web sécurisé de l’administration.
+        privacy_disclaimer: '%{app_name} est un site Web sécurisé de l’administration.
           La Poste des États-Unis et nous utilisons vos données pour confirmer votre
-          identité."
+          identité.'
         privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
         privacy_disclaimer_questions: Des questions ?
         verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres
@@ -100,7 +100,7 @@ fr:
         errors:
           unsupported_chars: 'Notre système ne parvient pas à lire les caractères
             suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
-        state_prompt: "- Sélectionnez -"
+        state_prompt: '- Sélectionnez -'
       state_id:
         address1: Adresse ligne 1
         address1_hint: 'Exemple : 150 Calle A Apt 3'
@@ -119,7 +119,7 @@ fr:
             de votre pièce d’identité.'
         first_name: Prénom
         identity_doc_address_state: État
-        identity_doc_address_state_prompt: "- Sélectionnez -"
+        identity_doc_address_state_prompt: '- Sélectionnez -'
         last_name: Nom de famille
         memorable_date:
           errors:
@@ -134,7 +134,7 @@ fr:
           émise par l’État
         state_id_jurisdiction: État d’émission
         state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
-        state_id_jurisdiction_prompt: "- Sélectionnez -"
+        state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro de la pièce d’identité
         state_id_number_florida_hint_html: Il s’agit du numéro de votre carte d’identité
           comportant une lettre et&nbsp;12 chiffres. Exemple:&nbsp;D123-456-78-901-2

@@ -29,8 +29,8 @@ es:
         la misma dirección de correo electrónico después de que se elimine su cuenta.<br><br>
       subject: Elimine su cuenta de %{app_name}
     account_reset_request:
-      cancel: "¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name}
-        para cancelar."
+      cancel: '¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name}
+        para cancelar.'
       header: Su cuenta será eliminada en 24 horas
       intro_html: 'Como medida de seguridad, %{app_name} usa un proceso de dos pasos
         para eliminar su cuenta:<br><br> Paso uno: hay un período de espera de 24 horas
@@ -76,13 +76,13 @@ es:
       create_new_account: cree una cuenta nueva.
       email_not_found: No se encontró el correo electrónico
       first_sentence:
-        confirmed: "¿Está intentando cambiar su dirección de correo electrónico?"
+        confirmed: '¿Está intentando cambiar su dirección de correo electrónico?'
         forgot_password: Intentó restablecer su contraseña de %{app_name}, pero no
           tenemos una cuenta vinculada a esta dirección de correo electrónico.
         unconfirmed: Gracias por enviar su dirección de correo electrónico.
       footer: Este vínculo vence en %{confirmation_period}.
-      header: "%{intro} Haga clic en el vínculo siguiente, o copie y pegue el vínculo
-        completo en su navegador."
+      header: '%{intro} Haga clic en el vínculo siguiente, o copie y pegue el vínculo
+        completo en su navegador.'
       link_text: Confirmar la dirección de correo electrónico
       request_with_diff_email: Puede solicitar su contraseña usando una dirección
         de correo electrónico diferente que esté conectada a su cuenta de %{app_name}.
@@ -207,9 +207,9 @@ es:
         de identidad, inicie sesión en %{link_html} e ingrese el código de verificación.
       subject: Enviamos una carta a la dirección de su expediente
     letter_reminder_14_days:
-      body_html: "<p>Usted solicitó una carta con un código de verificación el <strong>%{date_letter_was_sent}</strong>.</p><p>Inicie
+      body_html: '<p>Usted solicitó una carta con un código de verificación el <strong>%{date_letter_was_sent}</strong>.</p><p>Inicie
         sesión de nuevo en %{app_name} e ingrese el código de verificación para terminar
-        de verificar su identidad. %{help_link}.</p>"
+        de verificar su identidad. %{help_link}.</p>'
       did_not_get_a_letter_html: Si no recibió esta carta, %{another_letter_link_html}.
       finish: Termine de verificar su identidad
       sign_in_and_request_another_letter: inicie sesión para solicitar otra carta

@@ -3,10 +3,10 @@ fr:
   forms:
     backup_code:
       are_you_sure_desc_html:
-      - "<strong>Les codes de sauvegarde sont la méthode d’authentification la moins
+      - '<strong>Les codes de sauvegarde sont la méthode d’authentification la moins
         recommandée,</strong> car les codes peuvent facilement être perdus. Essayez
         une option plus sûre, comme une application d’authentification ou une clé
-        de sécurité."
+        de sécurité.'
       - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier
         ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
       are_you_sure_title: Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?
@@ -21,9 +21,9 @@ fr:
         codes la prochaine fois que vous vous connecterez.
       regenerate: Obtenir de nouveaux codes
       saved: J’ai placé mes codes de sauvegarde en lieu sûr.
-      subinfo_html: "<strong>Si vous perdez votre appareil, vous aurez besoin de ces
+      subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces
         codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les
-        et placez-les en lieu sûr."
+        et placez-les en lieu sûr.'
       title: Enregistrer ces codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
@@ -136,21 +136,21 @@ fr:
       continue: Suite
       info_text: Vous aurez besoin de configurer une autre méthode d’authentification
         après la configuration du déverrouillage facial ou tactile.
-      intro_html: "<p>Authentifiez-vous de la même manière que vous déverrouillez
+      intro_html: '<p>Authentifiez-vous de la même manière que vous déverrouillez
         votre appareil, que ce soit avec votre visage ou votre empreinte digitale,
         un mot de passe ou une autre méthode.</p><p>Si vous utilisez un gestionnaire
         de mots de passe tel que le trousseau iCloud ou le gestionnaire de mots de
         passe Google, il peut vous demander d’enregistrer une clé d’accès. Cela vous
         permet de vous authentifier sur n’importe quel appareil à l’aide de ce gestionnaire
-        de mots de passe. %{link}</p>"
+        de mots de passe. %{link}</p>'
       intro_link_text: En savoir plus sur l’utilisation de plusieurs appareils.
       nickname: Surnom de l’appareil
       nickname_hint: Au cas où vous ajouteriez d’autres appareils pour le déverrouillage
         facial ou tactile, vous saurez les différencier.
     webauthn_setup:
       continue: Suite
-      intro_html: "<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme méthode
+      intro_html: '<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme méthode
         d’authentification. Vous pouvez ajouter autant de clés de sécurité que vous
-        le souhaitez. Pour commencer, donnez d’abord un surnom à votre clé de sécurité.</p>"
+        le souhaitez. Pour commencer, donnez d’abord un surnom à votre clé de sécurité.</p>'
       nickname: Surnom de la clé de sécurité
       saving: Enregistrement de vos identifiants en cours...
