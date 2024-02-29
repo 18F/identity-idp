@@ -23,10 +23,10 @@ class PwnedPasswordDownloader
     @keep_threshold = keep_threshold
   end
 
-  def run!
+  def run!(start: '00000', finish: 'FFFFF')
     queue = Queue.new
 
-    ('00000'.to_i(16)..'FFFFF'.to_i(16)).each do |prefix_num|
+    (start.to_i(16)..finish.to_i(16)).each do |prefix_num|
       queue << prefix_num.to_s(16).upcase.rjust(5, '0')
     end
 
