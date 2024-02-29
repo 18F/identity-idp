@@ -11,6 +11,7 @@ module FormEmailValidator
               email: {
                 mx_with_fallback: !ENV['RAILS_OFFLINE'],
                 ban_disposable_email: true,
+                partial: true,
               }
     validate :validate_domain
   end
