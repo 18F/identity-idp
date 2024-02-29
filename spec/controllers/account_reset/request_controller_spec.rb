@@ -62,7 +62,7 @@ RSpec.describe AccountReset::RequestController, allowed_extra_analytics: [:*] do
           current_time,
           current_time + IdentityConfig.store.account_reset_fraud_user_wait_period_days.days,
           true,
-          accumulate_on: :hours,
+          accumulate_on: :days,
         )
         expect(controller.view_assigns['account_reset_deletion_period_interval']).
           to eq(time_in_hours)

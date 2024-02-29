@@ -39,7 +39,7 @@ RSpec.describe AccountResetConcern do
           current_time,
           current_time + IdentityConfig.store.account_reset_fraud_user_wait_period_days.days,
           true,
-          accumulate_on: :hours,
+          accumulate_on: :days,
         )
         expect(instance.account_reset_deletion_period_interval).
           to eq(time_in_hours)

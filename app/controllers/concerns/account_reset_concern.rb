@@ -7,7 +7,7 @@ module AccountResetConcern
       current_time,
       current_time + account_reset_wait_period_days,
       true,
-      accumulate_on: :hours,
+      accumulate_on: reset_accumulation_type,
     )
   end
 
@@ -23,5 +23,13 @@ module AccountResetConcern
     (current_user.fraud_review_pending? ||
       current_user.fraud_rejection?) &&
       (IdentityConfig.store.account_reset_fraud_user_wait_period_days.days > 0)
+  end
+
+  def reset_accumulation_type
+    if supports_fraud_account_reset?
+      :days
+    else
+      :hours
+    end
   end
 end
