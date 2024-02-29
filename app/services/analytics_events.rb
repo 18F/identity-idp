@@ -757,6 +757,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -780,14 +781,16 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_barcode_warning_continue_clicked(liveness_checking_required:)
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  def idv_barcode_warning_continue_clicked(liveness_checking_required:, **_extra)
     track_event(
       'Frontend: IdV: barcode warning continue clicked',
       liveness_checking_required: liveness_checking_required,
     )
   end
 
-  def idv_barcode_warning_retake_photos_clicked(liveness_checking_required:)
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  def idv_barcode_warning_retake_photos_clicked(liveness_checking_required:, **_extra)
     track_event(
       'Frontend: IdV: barcode warning retake photos clicked',
       liveness_checking_required: liveness_checking_required,
@@ -1430,6 +1433,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    liveness_checking_required: nil,
     **_extra
   )
     track_event(
