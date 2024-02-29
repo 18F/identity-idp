@@ -129,8 +129,10 @@ module SamlIdpAuthConcern
     end
   end
 
-  def requested_aal_authn_context
-    saml_request.requested_aal_authn_context || default_aal_context
+  def response_authn_context
+    saml_request.requested_vtr_authn_context ||
+      saml_request.requested_aal_authn_context ||
+      default_aal_context
   end
 
   def requested_ial_authn_context
@@ -186,7 +188,7 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       name_id_format: name_id_format,
-      authn_context_classref: requested_aal_authn_context,
+      authn_context_classref: response_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
       signature: saml_response_signature_options,
