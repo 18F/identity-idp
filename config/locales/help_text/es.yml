@@ -7,14 +7,15 @@ es:
       birthdate: Fecha de nacimiento
       email: Dirección de correo electrónico
       full_name: Nombre completo
-      ial1_consent_reminder_html: Debe dar su consentimiento cada año para divulgar
-        su información a <strong>%{sp}</strong>. Divulgaremos su información a <strong>%{sp}</strong>
-        para conectar su cuenta.
-      ial1_intro_html: Divulgaremos su información a <strong>%{sp}</strong> para conectar
-        su cuenta.
+      ial1_consent_reminder_html: Debe dar su consentimiento cada año para divulgar su
+        información a <strong>%{sp}</strong>. Divulgaremos su información a
+        <strong>%{sp}</strong> para conectar su cuenta.
+      ial1_intro_html: Divulgaremos su información a <strong>%{sp}</strong> para
+        conectar su cuenta.
       ial2_consent_reminder_html: 'Para conectar su cuenta, <strong>%{sp}</strong>
-        necesita saber quién es usted. Debe dar su consentimiento cada año para divulgar
-        su información verificada a <strong>%{sp}</strong>. Divulgaremos esta información: '
+        necesita saber quién es usted. Debe dar su consentimiento cada año para
+        divulgar su información verificada a <strong>%{sp}</strong>.
+        Divulgaremos esta información: '
       ial2_intro_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber
         quién es usted. Divulgaremos esta información a %{sp}: '
       ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos

@@ -3,7 +3,8 @@ fr:
   sign_up:
     agree_and_continue: Accepter et continuer
     cancel:
-      success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos informations.
+      success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos
+        informations.
       warning_header: 'Si vous annulez maintenant :'
     completed:
       smiling_image_alt: Une personne souriante avec une coche verte indiquant la

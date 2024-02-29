@@ -3,37 +3,39 @@ fr:
   forms:
     backup_code:
       are_you_sure_desc_html:
-      - '<strong>Les codes de sauvegarde sont la méthode d’authentification la moins
-        recommandée,</strong> car les codes peuvent facilement être perdus. Essayez
-        une option plus sûre, comme une application d’authentification ou une clé
-        de sécurité.'
-      - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier
-        ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
+        - '<strong>Les codes de sauvegarde sont la méthode d’authentification la
+          moins recommandée,</strong> car les codes peuvent facilement être
+          perdus. Essayez une option plus sûre, comme une application
+          d’authentification ou une clé de sécurité.'
+        - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
+          copier ou noter. Vous saisirez un code chaque fois que vous vous
+          connecterez.
       are_you_sure_title: Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?
       caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous
-        donnerons de nouveaux codes une fois que vous aurez utilisé les dix fournis.
+        donnerons de nouveaux codes une fois que vous aurez utilisé les dix
+        fournis.
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
       generate: Obtenir des codes
-      last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez imprimer,
-        copier ou télécharger les codes ci-dessous. Vous pourrez utiliser ces nouveaux
-        codes la prochaine fois que vous vous connecterez.
+      last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez
+        imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
+        utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
       regenerate: Obtenir de nouveaux codes
       saved: J’ai placé mes codes de sauvegarde en lieu sûr.
       subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces
-        codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les
-        et placez-les en lieu sûr.'
+        codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou
+        imprimez-les et placez-les en lieu sûr.'
       title: Enregistrer ces codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
-        ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne seront
-        plus valides.
+        ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
+        seront plus valides.
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde ?
     backup_code_reminder:
       body_info: Si vous perdez l’accès à votre méthode d’authentification principale,
-        vous pouvez utiliser des codes de sauvegarde pour accéder à nouveau à votre
-        compte.
+        vous pouvez utiliser des codes de sauvegarde pour accéder à nouveau à
+        votre compte.
       have_codes: J’ai mes codes
       heading: Avez-vous toujours vos codes de sauvegarde ?
       need_new_codes: J’ai besoin d’un nouvel ensemble de codes de sauvegarde
@@ -73,8 +75,8 @@ fr:
       alternative: Vous ne disposez pas de votre clé personnelle ?
       confirmation_label: Clé personnelle
       download: Télécharger (fichier texte)
-      instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
-        en la saisissant ci-dessous.
+      instructions: Veuillez confirmer que vous avez une copie de votre clé
+        personnelle en la saisissant ci-dessous.
       required_checkbox: J’ai conservé ma clé personnelle en lieu sûr.
       title: Saisir votre clé personnelle
     personal_key_partial:
@@ -82,8 +84,8 @@ fr:
         header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé
           personnelle. Gardez-la en sécurité et ne la partagez avec personne.
         help_link_text: En savoir plus sur la clé personnelle
-        text: Si vous réinitialisez votre mot de passe sans votre clé personnelle,
-          vous devrez à nouveau confirmer votre identité.
+        text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous
+          devrez à nouveau confirmer votre identité.
       header: Sauvegarder votre clé personnelle
     phone:
       buttons:
@@ -99,11 +101,11 @@ fr:
     piv_cac_setup:
       nickname: Surnom de la carte PIV/CAC
       no_thanks: Non, merci
-      piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC <strong>chaque
-        fois que vous vous connecterez sur</strong> dans le cadre de l’authentification
-        à deux facteurs.<br><br>Après avoir cliqué sur « Ajouter une carte PIV/CAC »,
-        votre navigateur vous demandera de saisir le NIP de votre PIV/CAC et de choisir
-        un certificat.
+      piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC
+        <strong>chaque fois que vous vous connecterez sur</strong> dans le cadre
+        de l’authentification à deux facteurs.<br><br>Après avoir cliqué sur
+        « Ajouter une carte PIV/CAC », votre navigateur vous demandera de saisir
+        le NIP de votre PIV/CAC et de choisir un certificat.
       submit: Ajouter une carte PIV/CAC
     registration:
       labels:
@@ -137,20 +139,22 @@ fr:
       info_text: Vous aurez besoin de configurer une autre méthode d’authentification
         après la configuration du déverrouillage facial ou tactile.
       intro_html: '<p>Authentifiez-vous de la même manière que vous déverrouillez
-        votre appareil, que ce soit avec votre visage ou votre empreinte digitale,
-        un mot de passe ou une autre méthode.</p><p>Si vous utilisez un gestionnaire
-        de mots de passe tel que le trousseau iCloud ou le gestionnaire de mots de
-        passe Google, il peut vous demander d’enregistrer une clé d’accès. Cela vous
-        permet de vous authentifier sur n’importe quel appareil à l’aide de ce gestionnaire
-        de mots de passe. %{link}</p>'
+        votre appareil, que ce soit avec votre visage ou votre empreinte
+        digitale, un mot de passe ou une autre méthode.</p><p>Si vous utilisez
+        un gestionnaire de mots de passe tel que le trousseau iCloud ou le
+        gestionnaire de mots de passe Google, il peut vous demander
+        d’enregistrer une clé d’accès. Cela vous permet de vous authentifier sur
+        n’importe quel appareil à l’aide de ce gestionnaire de mots de passe.
+        %{link}</p>'
       intro_link_text: En savoir plus sur l’utilisation de plusieurs appareils.
       nickname: Surnom de l’appareil
-      nickname_hint: Au cas où vous ajouteriez d’autres appareils pour le déverrouillage
-        facial ou tactile, vous saurez les différencier.
+      nickname_hint: Au cas où vous ajouteriez d’autres appareils pour le
+        déverrouillage facial ou tactile, vous saurez les différencier.
     webauthn_setup:
       continue: Suite
-      intro_html: '<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme méthode
-        d’authentification. Vous pouvez ajouter autant de clés de sécurité que vous
-        le souhaitez. Pour commencer, donnez d’abord un surnom à votre clé de sécurité.</p>'
+      intro_html: '<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme
+        méthode d’authentification. Vous pouvez ajouter autant de clés de
+        sécurité que vous le souhaitez. Pour commencer, donnez d’abord un surnom
+        à votre clé de sécurité.</p>'
       nickname: Surnom de la clé de sécurité
-      saving: Enregistrement de vos identifiants en cours...
+      saving: Enregistrement de vos identifiants en cours…

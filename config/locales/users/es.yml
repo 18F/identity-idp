@@ -6,11 +6,11 @@ es:
         cancel: Volver al perfil
         delete: Eliminar cuenta
       bullet_1: No tendrá una cuenta de %{app_name}.
-      bullet_2_basic: Eliminaremos su dirección de correo electrónico, contraseña
-        y número de teléfono.
+      bullet_2_basic: Eliminaremos su dirección de correo electrónico, contraseña y
+        número de teléfono.
       bullet_2_verified: '%{app_name} eliminará su dirección de correo electrónico,
-        contraseña, número de teléfono, nombre, dirección, fecha de nacimiento y número
-        de Seguro Social de nuestro sistema.'
+        contraseña, número de teléfono, nombre, dirección, fecha de nacimiento y
+        número de Seguro Social de nuestro sistema.'
       bullet_3: No podrá tener acceso seguro a su información usando %{app_name}.
       bullet_4: Notificaremos a las agencias a las que acceda con %{app_name} que
         usted ya no tiene una cuenta.
@@ -40,11 +40,11 @@ es:
     second_mfa_reminder:
       add_method: Agregar un método de autenticación
       continue: Continuar con %{sp_name}
-      description: Su cuenta tiene un solo método de autenticación. Para evitar que
-        su cuenta quede bloqueada, agregue otro método de autenticación.
+      description: Su cuenta tiene un solo método de autenticación. Para evitar que su
+        cuenta quede bloqueada, agregue otro método de autenticación.
       heading: Mejore la seguridad de su cuenta
     suspended_sign_in_account:
-      contact_details: No pudimos iniciar su sesión. Llame a nuestro centro de contacto
-        al %{contact_number}.
+      contact_details: No pudimos iniciar su sesión. Llame a nuestro centro de
+        contacto al %{contact_number}.
       error_details: Proporcione el código de error %{error_code}.
       heading: Llámenos

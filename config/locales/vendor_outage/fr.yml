@@ -4,47 +4,47 @@ fr:
     alerts:
       phone:
         default: Nous ne sommes pas actuellement en mesure de vérifier les téléphones.
-          Veuillez utiliser une autre méthode d’authentification si vous en avez une
-          ou réessayer ultérieurement.
+          Veuillez utiliser une autre méthode d’authentification si vous en avez
+          une ou réessayer ultérieurement.
         idv: Nous ne sommes pas actuellement en mesure de vérifier les téléphones.
-          Veuillez réessayer ultérieurement ou vérifier votre adresse par courrier.
+          Veuillez réessayer ultérieurement ou vérifier votre adresse par
+          courrier.
       pinpoint:
         idv:
           header: Nous travaillons à la résolution d’une erreur
-          message_html: '%{sp_name_html} doit s’assurer qu’il s’agit bien de vous,
-            et non de quelqu’un qui se fait passer pour vous.'
+          message_html: '%{sp_name_html} doit s’assurer qu’il s’agit bien de vous, et non
+            de quelqu’un qui se fait passer pour vous.'
           options_html:
-          - Continuer maintenant et effectuer la vérification par courrier, qui nécessite
-            <strong>5 à 10 jours</strong>.
-          - Quitter Login.gov.
+            - Continuer maintenant et effectuer la vérification par courrier,
+              qui nécessite <strong>5 à 10 jours</strong>.
+            - Quitter Login.gov.
           options_prompt: 'Vous pouvez :'
           status_page_html: Malheureusement, nous rencontrons actuellement des difficultés
             techniques. %{link_html} pour savoir quand l’erreur est résolue.
-          status_page_link: Obtenir les dernières informations sur notre page d’état
-            des systèmes.
+          status_page_link: Obtenir les dernières informations sur notre page d’état des
+            systèmes.
       sms:
         default: Nous ne sommes pas actuellement en mesure d’envoyer de SMS (textos).
-          Vous pouvez obtenir un code par appel téléphonique ou choisir une autre
-          méthode d’authentification si vous en avez une.
-        idv: Nous ne sommes pas actuellement en mesure d’envoyer de SMS (textos).
-          Vous pouvez obtenir un code par téléphone ou vérifier votre adresse par
+          Vous pouvez obtenir un code par appel téléphonique ou choisir une
+          autre méthode d’authentification si vous en avez une.
+        idv: Nous ne sommes pas actuellement en mesure d’envoyer de SMS (textos). Vous
+          pouvez obtenir un code par téléphone ou vérifier votre adresse par
           courrier à la place.
       voice:
-        default: Nous ne sommes pas actuellement en mesure de passer des appels téléphoniques.
-          Vous pouvez obtenir un code par SMS (texto) ou choisir une autre méthode
-          d’authentification si vous en avez une.
-        idv: Nous ne sommes pas actuellement en mesure de passer des appels téléphoniques.
-          Vous pouvez obtenir un code par SMS (texto) ou vérifier votre adresse par
-          courrier à la place.
+        default: Nous ne sommes pas actuellement en mesure de passer des appels
+          téléphoniques. Vous pouvez obtenir un code par SMS (texto) ou choisir
+          une autre méthode d’authentification si vous en avez une.
+        idv: Nous ne sommes pas actuellement en mesure de passer des appels
+          téléphoniques. Vous pouvez obtenir un code par SMS (texto) ou vérifier
+          votre adresse par courrier à la place.
     blocked:
       idv:
         generic: Nous rencontrons des difficultés techniques de notre côté et ne sommes
-          pas actuellement en mesure de vérifier votre identité. Veuillez réessayer
-          ultérieurement.
+          pas actuellement en mesure de vérifier votre identité. Veuillez
+          réessayer ultérieurement.
       phone:
         default: Nous ne sommes pas actuellement en mesure de vérifier les téléphones.
           Veuillez réessayer ultérieurement.
     get_updates: Obtenir les dernières informations
-    get_updates_on_status_page: Obtenir les dernières informations sur notre page
-      d’état des systèmes.
+    get_updates_on_status_page: Obtenir les dernières informations sur notre page d’état des systèmes.
     working: Nous travaillons à la résolution d’une erreur

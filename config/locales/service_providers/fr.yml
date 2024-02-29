@@ -7,8 +7,8 @@ fr:
         button_text: Voir mon compte %{app_name}
         heading: '%{sp_name} n’utilise plus %{app_name}'
         instructions: '%{sp_name} n’utilise plus %{app_name} comme service de connexion
-          pour son site Web. Si vous avez déjà créé un compte %{app_name}, sachez
-          qu’il est toujours actif et qu’il peut être utilisé pour accéder aux autres
-          sites Web participants de l’administration.'
-        instructions2: Pour plus d’informations, veuillez vous rendre sur le site
-          de l’organisme concerné pour le contacter.
+          pour son site Web. Si vous avez déjà créé un compte %{app_name},
+          sachez qu’il est toujours actif et qu’il peut être utilisé pour
+          accéder aux autres sites Web participants de l’administration.'
+        instructions2: Pour plus d’informations, veuillez vous rendre sur le site de
+          l’organisme concerné pour le contacter.

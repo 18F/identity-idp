@@ -67,8 +67,7 @@ es:
     revoke_consent: Revocar consentimiento
     rules_of_use: Reglas de uso
     sign_up:
-      completion_consent_expired_ial1: Hace un año que nos dio su consentimiento para
-        divulgar su información
+      completion_consent_expired_ial1: Hace un año que nos dio su consentimiento para divulgar su información
       completion_consent_expired_ial2: Hace un año que nos dio su consentimiento para
         divulgar su identidad verificada
       completion_first_sign_in: Continuar con %{sp}
