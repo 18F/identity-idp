@@ -208,7 +208,7 @@ fr:
         submit: Confirmer le compte
         title: Confirmez votre compte
       intro_html: "<p>Si vous avez reçu votre lettre, veuillez saisir votre code de
-        vérification ci-dessous. </><p>Les lettres mettent jusqu’à <strong>10 jours</strong>
+        vérification ci-dessous. </p><p>Les lettres mettent jusqu’à <strong>10 jours</strong>
         pour arriver. Par conséquent, si votre lettre ne vous est pas encore parvenue,
         veuillez patienter. Nous vous remercions de votre patience.</p>"
       request_another_letter:
