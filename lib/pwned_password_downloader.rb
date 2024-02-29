@@ -9,6 +9,7 @@ class PwnedPasswordDownloader
               :num_threads,
               :keep_threshold
 
+  RANGE_API_ROOT = 'https://api.pwnedpasswords.com/range/'
   SHA1_LENGTH = 40
   HASH_PREFIX_LENGTH = 5
   OCCURRENCE_OFFSET = SHA1_LENGTH - HASH_PREFIX_LENGTH + ':'.length
@@ -24,17 +25,9 @@ class PwnedPasswordDownloader
   end
 
   def run!(start: '00000', finish: 'FFFFF')
-    queue = Queue.new
-
     (start.to_i(16)..finish.to_i(16)).each do |prefix_num|
       queue << prefix_num.to_s(16).upcase.rjust(5, '0')
     end
-
-    bar = ProgressBar.create(
-      title: 'Downloading...',
-      total: queue.size,
-      format: '[ %t ] %p%% %B %a (%E)',
-    )
 
     FileUtils.mkdir_p(destination)
 
@@ -44,7 +37,7 @@ class PwnedPasswordDownloader
 
         while (prefix = queue.pop)
           if already_downloaded?(prefix)
-            bar.increment
+            progress_bar.increment
             next
           end
 
@@ -58,7 +51,7 @@ class PwnedPasswordDownloader
           rescue
             queue << prefix
           else
-            bar.increment
+            progress_bar.increment
           end
         end
       ensure
@@ -66,9 +59,25 @@ class PwnedPasswordDownloader
       end
     end
 
-    sleep 3 until queue.empty?
+    wait_for_progress until queue.empty?
   ensure
-    bar.stop
+    progress_bar.stop
+  end
+
+  def queue
+    @queue ||= Queue.new
+  end
+
+  def wait_for_progress
+    sleep 3
+  end
+
+  def progress_bar
+    @progress_bar ||= ProgressBar.create(
+      title: 'Downloading...',
+      total: queue.size,
+      format: '[ %t ] %p%% %B %a (%E)',
+    )
   end
 
   def already_downloaded?(prefix)
@@ -78,7 +87,7 @@ class PwnedPasswordDownloader
   # @return [String]
   def download_one(prefix:, net_http: Net::HTTP::Persistent.new, keep: keep_threshold)
     net_http.
-      request("https://api.pwnedpasswords.com/range/#{prefix}").
+      request(URI.join(RANGE_API_ROOT, prefix)).
       body.
       each_line(chomp: true).
       select { |line| line[OCCURRENCE_OFFSET..].to_i >= keep }.
