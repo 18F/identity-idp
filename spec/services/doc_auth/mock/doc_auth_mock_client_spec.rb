@@ -19,9 +19,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       instance_id: instance_id,
     )
 
-    expect(create_document_response.success?).to eq(true)
-    expect(create_document_response.instance_id).to_not be_blank
-
     expect(post_front_image_response.success?).to eq(true)
     expect(post_back_image_response.success?).to eq(true)
 
@@ -75,7 +72,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       image: yaml,
     )
     get_results_response = client.get_results(
-      instance_id: create_document_response.instance_id,
+      instance_id: instance_id,
     )
 
     expect(get_results_response.pii_from_doc).to eq(
@@ -113,7 +110,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       image: yaml,
     )
     get_results_response = client.get_results(
-      instance_id: create_document_response.instance_id,
+      instance_id: instance_id,
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
     errors = get_results_response.errors
