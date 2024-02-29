@@ -3,7 +3,6 @@ module ReauthenticationRequiredConcern
   include TwoFactorAuthenticatableMethods
 
   def confirm_recently_authenticated_2fa
-    puts('confirm_recently auth')
     return if !user_fully_authenticated? || recently_authenticated_2fa?
 
     analytics.user_2fa_reauthentication_required(

@@ -80,7 +80,7 @@ module Users
     def validate_internal_referer
       redirect_to root_url unless internal_referer?
     end
-    
+
     def internal_referer?
       UserSessionContext.reauthentication_context?(context) || in_account_creation_flow?
     end
