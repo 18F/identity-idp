@@ -9,7 +9,7 @@ es:
       para cancelar.
     authentication_otp:
       sms: |-
-        %{app_name}: Su código de un solo uso es %{code}. Vence en %{expiration} minutos. No lo comparta con nadie.
+        %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
       voice: 'Hola: Su código de un solo uso de seis %{format_type} de %{app_name}
@@ -21,7 +21,7 @@ es:
         de esto: %{contact_number}. Ref: %{reference_string}"
     confirmation_otp:
       sms: |-
-        %{app_name}: Su código de un solo uso es %{code}. Vence en %{expiration} minutos. No lo comparta con nadie.
+        %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
       voice: 'Hola: Su código de un solo uso de seis %{format_type} de %{app_name}
