@@ -2372,6 +2372,20 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # @param [String] enrollment_id
+  # A fraud user has been deactivated due to not visting the post office before the deadline
+  def idv_ipp_deactivated_for_never_visiting_post_office(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_deactivated_for_never_visiting_post_office,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+end
+
   # The user visited the "letter enqueued" page shown during the verify by mail flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @identity.idp.previous_event_name IdV: come back later visited
@@ -5007,16 +5021,4 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] enrollment_id
-  # A fraud user has been deactivated due to not visting the post office before the deadline
-  def idv_ipp_deactivated_for_never_visiting_post_office(
-    enrollment_id:,
-    **extra
-  )
-    track_event(
-      :idv_ipp_deactivated_for_never_visiting_post_office,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-end
+
