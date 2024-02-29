@@ -7,7 +7,7 @@ es:
         button_text: Ver mi cuenta de %{app_name}
         heading: '%{sp_name} ya no utiliza %{app_name}'
         instructions: '%{sp_name} ya no utiliza %{app_name} como servicio para iniciar
-          sesión en su sitio web. Si ya creó una cuenta de %{app_name}, todavía está
-          activa y se puede usar para acceder a otros sitios web participantes del
-          gobierno.'
+          sesión en su sitio web. Si ya creó una cuenta de %{app_name}, todavía
+          está activa y se puede usar para acceder a otros sitios web
+          participantes del gobierno.'
         instructions2: Visite la agencia para contactarlos y obtener más información.

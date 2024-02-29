@@ -8,9 +8,9 @@ fr:
       bullet_1: Vous n’aurez pas de compte %{app_name}.
       bullet_2_basic: Nous supprimerons votre adresse e-mail, votre mot de passe et
         votre numéro de téléphone
-      bullet_2_verified: '%{app_name} supprimera de notre système votre adresse e-mail,
-        votre mot de passe, votre numéro de téléphone, votre nom, votre adresse, votre
-        date de naissance et votre numéro de sécurité sociale.'
+      bullet_2_verified: '%{app_name} supprimera de notre système votre adresse
+        e-mail, votre mot de passe, votre numéro de téléphone, votre nom, votre
+        adresse, votre date de naissance et votre numéro de sécurité sociale.'
       bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations à
         l’aide de %{app_name}.
       bullet_4: Nous informerons les organismes auxquels vous accédez avec %{app_name}
@@ -28,8 +28,7 @@ fr:
     phones:
       error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.
     rules_of_use:
-      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation
-        de %{app_name}
+      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de %{app_name}
       details_html: |-
         <div class="bold margin-bottom-1">Règles d’utilisation:</div>
         <ul>
@@ -44,10 +43,11 @@ fr:
       add_method: Ajouter une méthode d’authentification
       continue: Continuer vers %{sp_name}
       description: Votre compte ne dispose que d’une seule méthode d’authentification.
-        Évitez le verrouillage de votre compte en ajoutant une autre méthode d’authentification.
+        Évitez le verrouillage de votre compte en ajoutant une autre méthode
+        d’authentification.
       heading: Améliorer la sécurité de votre compte
     suspended_sign_in_account:
-      contact_details: Nous n’avons pas pu vous connecter. Merci d’appeler notre centre
-        de contact au %{contact_number}.
+      contact_details: Nous n’avons pas pu vous connecter. Merci d’appeler notre
+        centre de contact au %{contact_number}.
       error_details: Veuillez communiquer le code d’erreur %{error_code}.
       heading: Veuillez nous appeler

@@ -23,16 +23,15 @@ es:
       new: Enviar otro correo electrónico de confirmación
     create_account_new_users: Crear una cuenta para usuarios nuevos
     create_account_with_sp:
-      sp_text: está usando %{app_name} para permitirle iniciar sesión en su cuenta
-        de forma segura.
+      sp_text: está usando %{app_name} para permitirle iniciar sesión en su cuenta de
+        forma segura.
     edit_info:
       password: Cambie su contraseña
       phone: Administre la configuración de su teléfono
     passwords:
       change: Cambie su contraseña
       confirm: Confirme su contraseña actual para continuar
-      confirm_for_personal_key: Introduzca la contraseña y obtenga una clave personal
-        nueva
+      confirm_for_personal_key: Introduzca la contraseña y obtenga una clave personal nueva
       forgot: '¿Olvidó su contraseña?'
     piv_cac:
       certificate:
@@ -41,8 +40,8 @@ es:
         invalid: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
         none: No podemos detectar un certificado en su tarjeta PIV o CAC
         not_auth_cert: Elija un certificado diferente para su tarjeta PIV o CAC
-        revoked: El certificado de la tarjeta PIV o CAC que seleccionó fue revocado
-          para su tarjeta
+        revoked: El certificado de la tarjeta PIV o CAC que seleccionó fue revocado para
+          su tarjeta
         unverified: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
       did_not_work: Su tarjeta PIV o CAC no funcionó
       token:
@@ -51,13 +50,12 @@ es:
         missing: Error interno
     piv_cac_login:
       account_not_found: Su tarjeta PIV o CAC no está conectada a una cuenta
-      add: Configure su tarjeta PIV o CAC como un método de autenticación de dos factores
-        para que pueda usarla para iniciar sesión.
+      add: Configure su tarjeta PIV o CAC como un método de autenticación de dos
+        factores para que pueda usarla para iniciar sesión.
       new: Inicie sesión con su tarjeta PIV o CAC
       success: Logró configurar su tarjeta PIV o CAC como un método de autenticación.
     piv_cac_setup:
-      already_associated: La tarjeta PIV o CAC que presentó está asociada con otro
-        usuario.
+      already_associated: La tarjeta PIV o CAC que presentó está asociada con otro usuario.
       new: Use su tarjeta PIV o CAC para proteger su cuenta
     redirecting: Redirigiendo
     residential_address: Domicilio actual

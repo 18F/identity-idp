@@ -22,35 +22,37 @@ es:
       security_and_privacy_practices: Prácticas de seguridad y declaración de privacidad
     resend_confirmation_email:
       success: Enviamos otro correo electrónico de confirmación.
-    session_cleared: Por su seguridad, borramos lo que usted ingresó si usted no pasa
-      a una página nueva en %{minutes} minutos.
+    session_cleared: Por su seguridad, borramos lo que usted ingresó si usted no
+      pasa a una página nueva en %{minutes} minutos.
     session_timedout: Cerramos su sesión. Por su seguridad, %{app_name} cierra su
       sesión cuando usted no pasa a una página nueva en %{minutes} minutos.
     signed_up_and_confirmed:
-      first_paragraph_end: con un vínculo para confirmar su dirección de correo electrónico.
-        Siga el vínculo para continuar agregando este correo electrónico a su cuenta.
+      first_paragraph_end: con un vínculo para confirmar su dirección de correo
+        electrónico. Siga el vínculo para continuar agregando este correo
+        electrónico a su cuenta.
       first_paragraph_start: Enviamos un correo electrónico a
       no_email_sent_explanation_start: '¿No recibió un correo electrónico?'
     signed_up_but_unconfirmed:
-      first_paragraph_end: con un vínculo para confirmar su dirección de correo electrónico.
-        Siga el vínculo para continuar creando su cuenta.
+      first_paragraph_end: con un vínculo para confirmar su dirección de correo
+        electrónico. Siga el vínculo para continuar creando su cuenta.
       first_paragraph_start: Enviamos un correo electrónico a
       resend_confirmation_email: Reenviar el correo electrónico de confirmación
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión
         live_region_message_html: Su sesión se cerrará en %{time_left_in_session_html}.
-          Seleccione “Mantener mi sesión iniciada” para seguir conectado. Seleccione
-          “Cerrar mi sesión” para salir.
-        message_html: Por su seguridad, cerraremos su sesión iniciada en %{time_left_in_session_html}.
+          Seleccione “Mantener mi sesión iniciada” para seguir conectado.
+          Seleccione “Cerrar mi sesión” para salir.
+        message_html: Por su seguridad, cerraremos su sesión iniciada en
+          %{time_left_in_session_html}.
         sign_out: Cancelar el inicio de sesión
       signed_in:
         continue: Mantener mi sesión iniciada
         live_region_message_html: Su sesión se cerrará en %{time_left_in_session_html}.
-          Seleccione “Mantener mi sesión iniciada” para seguir conectado. Seleccione
-          “Cerrar mi sesión” para salir.
-        message_html: Por su seguridad, cerraremos su sesión iniciada en %{time_left_in_session_html},
-          a menos que nos indique lo contrario.
+          Seleccione “Mantener mi sesión iniciada” para seguir conectado.
+          Seleccione “Cerrar mi sesión” para salir.
+        message_html: Por su seguridad, cerraremos su sesión iniciada en
+          %{time_left_in_session_html}, a menos que nos indique lo contrario.
         sign_out: Cerrar mi sesión
     totp_configured: Se agregó una aplicación de autenticación a su cuenta.
     totp_disabled: Se eliminó su aplicación de autenticación de su cuenta.

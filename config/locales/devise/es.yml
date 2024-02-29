@@ -5,10 +5,11 @@ es:
       already_confirmed: Su dirección de correo electrónico fue confirmada. %{action}
       confirmed: Usted confirmó su dirección de correo electrónico
       confirmed_but_must_set_password: Usted confirmó su dirección de correo electrónico
-      confirmed_but_remove_from_other_account: Esta dirección de correo electrónico
-        ya está asociada con una cuenta de %{app_name}, por lo que no podemos agregarla
-        a otra cuenta. Primero, debe eliminarla o quitarla de la cuenta con la que
-        está asociada. Para ello, inicie sesión con esta dirección de correo electrónico.
+      confirmed_but_remove_from_other_account: Esta dirección de correo electrónico ya
+        está asociada con una cuenta de %{app_name}, por lo que no podemos
+        agregarla a otra cuenta. Primero, debe eliminarla o quitarla de la
+        cuenta con la que está asociada. Para ello, inicie sesión con esta
+        dirección de correo electrónico.
       confirmed_but_sign_in: Usted confirmó su dirección de correo electrónico. Inicie
         sesión para ver su perfil.
       sign_in: Inicie sesión.
@@ -33,15 +34,14 @@ es:
         subject: Su contraseña cambió
     passwords:
       choose_new_password: Elija una contraseña nueva.
-      invalid_token: El token para restablecer la contraseña no es válido. Inténtelo
-        de nuevo.
-      no_token: Use el vínculo del correo electrónico que recibió para restablecer
-        su contraseña. Si pega el vínculo en su navegador, cerciórese de pegar el
+      invalid_token: El token para restablecer la contraseña no es válido. Inténtelo de nuevo.
+      no_token: Use el vínculo del correo electrónico que recibió para restablecer su
+        contraseña. Si pega el vínculo en su navegador, cerciórese de pegar el
         vínculo completo.
-      send_instructions: En unos minutos, recibirá un correo electrónico con instrucciones
-        para restablecer su contraseña.
-      send_paranoid_instructions: En unos minutos, recibirá un correo electrónico
-        con instrucciones para restablecer su contraseña.
+      send_instructions: En unos minutos, recibirá un correo electrónico con
+        instrucciones para restablecer su contraseña.
+      send_paranoid_instructions: En unos minutos, recibirá un correo electrónico con
+        instrucciones para restablecer su contraseña.
       token_expired: Tardó demasiado en restablecer su contraseña. Inténtelo de nuevo.
       updated: Su contraseña cambió. Inició su sesión.
       updated_not_active: Su contraseña cambió. Inicie sesión con su contraseña nueva.
