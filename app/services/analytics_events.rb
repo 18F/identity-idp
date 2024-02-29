@@ -2386,462 +2386,462 @@ module AnalyticsEvents
   end
 end
 
-  # The user visited the "letter enqueued" page shown during the verify by mail flow
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @identity.idp.previous_event_name IdV: come back later visited
-  def idv_letter_enqueued_visit(proofing_components: nil, **extra)
-    track_event(
-      'IdV: letter enqueued visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] isCancelled
-  # @param [Boolean] isRateLimited
-  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_link_sent_capture_doc_polling_complete(
-    isCancelled:,
-    isRateLimited:,
-    **_extra
+# The user visited the "letter enqueued" page shown during the verify by mail flow
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# @identity.idp.previous_event_name IdV: come back later visited
+def idv_letter_enqueued_visit(proofing_components: nil, **extra)
+  track_event(
+    'IdV: letter enqueued visited',
+    proofing_components: proofing_components,
+    **extra,
   )
-    track_event(
-      'Frontend: IdV: Link sent capture doc polling complete',
-      isCancelled: isCancelled,
-      isRateLimited: isRateLimited,
-    )
-  end
+end
 
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
-
-  def idv_link_sent_capture_doc_polling_started(**_extra)
-    track_event(
-      'Frontend: IdV: Link sent capture doc polling started',
-    )
-  end
-
-  # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
-  def idv_mail_only_warning_visited(**extra)
-    track_event(
-      'IdV: Mail only warning visited',
-      **extra,
-    )
-  end
-
-  # Tracks whether the user's device appears to be mobile device with a camera attached.
-  # @param [Boolean] is_camera_capable_mobile Whether we think the device _could_ have a camera.
-  # @param [Boolean,nil] camera_present Whether the user's device _actually_ has a camera available.
-  # @param [Integer,nil] grace_time Extra time allowed for browser to report camera availability.
-  # @param [Integer,nil] duration Time taken for browser to report camera availability.
-  def idv_mobile_device_and_camera_check(
-    is_camera_capable_mobile:,
-    camera_present: nil,
-    grace_time: nil,
-    duration: nil,
-    **extra
+# @param [Boolean] isCancelled
+# @param [Boolean] isRateLimited
+# rubocop:disable Naming/VariableName,Naming/MethodParameterName
+def idv_link_sent_capture_doc_polling_complete(
+  isCancelled:,
+  isRateLimited:,
+  **_extra
+)
+  track_event(
+    'Frontend: IdV: Link sent capture doc polling complete',
+    isCancelled: isCancelled,
+    isRateLimited: isRateLimited,
   )
-    track_event(
-      'IdV: Mobile device and camera check',
-      is_camera_capable_mobile: is_camera_capable_mobile,
-      camera_present: camera_present,
-      grace_time: grace_time,
-      duration: duration,
-      **extra,
-    )
-  end
+end
 
-  # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
-  # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
-  # @param [String] field Image form field
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
-  # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
-  # camera, on mobile devices.
-  def idv_native_camera_forced(
-    failed_capture_attempts:,
-    failed_submission_attempts:,
-    field:,
-    flow_path:,
-    **extra
+# rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
+def idv_link_sent_capture_doc_polling_started(**_extra)
+  track_event(
+    'Frontend: IdV: Link sent capture doc polling started',
   )
-    track_event(
-      'IdV: Native camera forced after failed attempts',
-      failed_capture_attempts: failed_capture_attempts,
-      failed_submission_attempts: failed_submission_attempts,
-      field: field,
-      flow_path: flow_path,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when user reaches verify errors due to being rejected due to fraud
-  def idv_not_verified_visited
-    track_event('IdV: Not verified visited')
-  end
-
-  # Tracks if a user clicks the 'acknowledge' checkbox during personal
-  # key creation
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [boolean] checked whether the user checked or un-checked
-  #                  the box with this click
-  def idv_personal_key_acknowledgment_toggled(checked:, proofing_components:, **extra)
-    track_event(
-      'IdV: personal key acknowledgment toggled',
-      checked: checked,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # A user has downloaded their personal key. This event is no longer emitted.
-  # @identity.idp.previous_event_name IdV: download personal key
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_personal_key_downloaded(proofing_components: nil, **extra)
-    track_event(
-      'IdV: personal key downloaded',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String, nil] deactivation_reason Reason profile was deactivated.
-  # @param [Boolean] fraud_review_pending Profile is under review for fraud
-  # @param [Boolean] fraud_rejection Profile is rejected due to fraud
-  # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
-  # User submitted IDV personal key page
-  def idv_personal_key_submitted(
-    fraud_review_pending:,
-    fraud_rejection:,
-    in_person_verification_pending:,
-    proofing_components: nil,
-    deactivation_reason: nil,
-    **extra
+# Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
+def idv_mail_only_warning_visited(**extra)
+  track_event(
+    'IdV: Mail only warning visited',
+    **extra,
   )
-    track_event(
-      'IdV: personal key submitted',
-      in_person_verification_pending: in_person_verification_pending,
-      deactivation_reason: deactivation_reason,
-      fraud_review_pending: fraud_review_pending,
-      fraud_rejection: fraud_rejection,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
+end
 
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # User visited IDV personal key page
-  def idv_personal_key_visited(proofing_components: nil, **extra)
-    track_event(
-      'IdV: personal key visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param ["sms", "voice"] otp_delivery_preference
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # The user submitted their phone on the phone confirmation page
-  def idv_phone_confirmation_form_submitted(
-    success:,
-    otp_delivery_preference:,
-    errors:,
-    proofing_components: nil,
-    **extra
+# Tracks whether the user's device appears to be mobile device with a camera attached.
+# @param [Boolean] is_camera_capable_mobile Whether we think the device _could_ have a camera.
+# @param [Boolean,nil] camera_present Whether the user's device _actually_ has a camera available.
+# @param [Integer,nil] grace_time Extra time allowed for browser to report camera availability.
+# @param [Integer,nil] duration Time taken for browser to report camera availability.
+def idv_mobile_device_and_camera_check(
+  is_camera_capable_mobile:,
+  camera_present: nil,
+  grace_time: nil,
+  duration: nil,
+  **extra
+)
+  track_event(
+    'IdV: Mobile device and camera check',
+    is_camera_capable_mobile: is_camera_capable_mobile,
+    camera_present: camera_present,
+    grace_time: grace_time,
+    duration: duration,
+    **extra,
   )
-    track_event(
-      'IdV: phone confirmation form',
+end
+
+# @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
+# @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
+# @param [String] field Image form field
+# @param [String] flow_path Document capture path ("hybrid" or "standard")
+# The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
+# or exceeded, and the system has forced the use of the native camera, rather than Acuant's
+# camera, on mobile devices.
+def idv_native_camera_forced(
+  failed_capture_attempts:,
+  failed_submission_attempts:,
+  field:,
+  flow_path:,
+  **extra
+)
+  track_event(
+    'IdV: Native camera forced after failed attempts',
+    failed_capture_attempts: failed_capture_attempts,
+    failed_submission_attempts: failed_submission_attempts,
+    field: field,
+    flow_path: flow_path,
+    **extra,
+  )
+end
+
+# Tracks when user reaches verify errors due to being rejected due to fraud
+def idv_not_verified_visited
+  track_event('IdV: Not verified visited')
+end
+
+# Tracks if a user clicks the 'acknowledge' checkbox during personal
+# key creation
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# @param [boolean] checked whether the user checked or un-checked
+#                  the box with this click
+def idv_personal_key_acknowledgment_toggled(checked:, proofing_components:, **extra)
+  track_event(
+    'IdV: personal key acknowledgment toggled',
+    checked: checked,
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# A user has downloaded their personal key. This event is no longer emitted.
+# @identity.idp.previous_event_name IdV: download personal key
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+def idv_personal_key_downloaded(proofing_components: nil, **extra)
+  track_event(
+    'IdV: personal key downloaded',
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# @param [String, nil] deactivation_reason Reason profile was deactivated.
+# @param [Boolean] fraud_review_pending Profile is under review for fraud
+# @param [Boolean] fraud_rejection Profile is rejected due to fraud
+# @param [Boolean] in_person_verification_pending Profile is pending in-person verification
+# User submitted IDV personal key page
+def idv_personal_key_submitted(
+  fraud_review_pending:,
+  fraud_rejection:,
+  in_person_verification_pending:,
+  proofing_components: nil,
+  deactivation_reason: nil,
+  **extra
+)
+  track_event(
+    'IdV: personal key submitted',
+    in_person_verification_pending: in_person_verification_pending,
+    deactivation_reason: deactivation_reason,
+    fraud_review_pending: fraud_review_pending,
+    fraud_rejection: fraud_rejection,
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# User visited IDV personal key page
+def idv_personal_key_visited(proofing_components: nil, **extra)
+  track_event(
+    'IdV: personal key visited',
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# @param ["sms", "voice"] otp_delivery_preference
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# The user submitted their phone on the phone confirmation page
+def idv_phone_confirmation_form_submitted(
+  success:,
+  otp_delivery_preference:,
+  errors:,
+  proofing_components: nil,
+  **extra
+)
+  track_event(
+    'IdV: phone confirmation form',
+    success: success,
+    errors: errors,
+    otp_delivery_preference: otp_delivery_preference,
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# The user was rate limited for submitting too many OTPs during the IDV phone step
+def idv_phone_confirmation_otp_rate_limit_attempts(proofing_components: nil, **extra)
+  track_event(
+    'Idv: Phone OTP attempts rate limited',
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# The user was locked out for hitting the phone OTP rate limit during IDV
+def idv_phone_confirmation_otp_rate_limit_locked_out(proofing_components: nil, **extra)
+  track_event(
+    'Idv: Phone OTP rate limited user',
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# The user was rate limited for requesting too many OTPs during the IDV phone step
+def idv_phone_confirmation_otp_rate_limit_sends(proofing_components: nil, **extra)
+  track_event(
+    'Idv: Phone OTP sends rate limited',
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
+# @param [String] country_code country code of phone number
+# @param [String] area_code area code of phone number
+# @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+# @param [Hash] telephony_response response from Telephony gem
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# The user resent an OTP during the IDV phone step
+def idv_phone_confirmation_otp_resent(
+  success:,
+  errors:,
+  otp_delivery_preference:,
+  country_code:,
+  area_code:,
+  rate_limit_exceeded:,
+  telephony_response:,
+  proofing_components: nil,
+  **extra
+)
+  track_event(
+    'IdV: phone confirmation otp resent',
+    success: success,
+    errors: errors,
+    otp_delivery_preference: otp_delivery_preference,
+    country_code: country_code,
+    area_code: area_code,
+    rate_limit_exceeded: rate_limit_exceeded,
+    telephony_response: telephony_response,
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
+# @param [String] country_code country code of phone number
+# @param [String] area_code area code of phone number
+# @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+# @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+# @param [Hash] telephony_response response from Telephony gem
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
+# The user requested an OTP to confirm their phone during the IDV phone step
+def idv_phone_confirmation_otp_sent(
+  success:,
+  errors:,
+  otp_delivery_preference:,
+  country_code:,
+  area_code:,
+  rate_limit_exceeded:,
+  phone_fingerprint:,
+  telephony_response:,
+  adapter:,
+  proofing_components: nil,
+  **extra
+)
+  track_event(
+    'IdV: phone confirmation otp sent',
+    success: success,
+    errors: errors,
+    otp_delivery_preference: otp_delivery_preference,
+    country_code: country_code,
+    area_code: area_code,
+    rate_limit_exceeded: rate_limit_exceeded,
+    phone_fingerprint: phone_fingerprint,
+    telephony_response: telephony_response,
+    adapter: adapter,
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Boolean] code_expired if the one-time code expired
+# @param [Boolean] code_matches
+# @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
+# @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# When a user attempts to confirm posession of a new phone number during the IDV process
+def idv_phone_confirmation_otp_submitted(
+  success:,
+  errors:,
+  code_expired:,
+  code_matches:,
+  second_factor_attempts_count:,
+  second_factor_locked_at:,
+  proofing_components: nil,
+  **extra
+)
+  track_event(
+    'IdV: phone confirmation otp submitted',
+    success: success,
+    errors: errors,
+    code_expired: code_expired,
+    code_matches: code_matches,
+    second_factor_attempts_count: second_factor_attempts_count,
+    second_factor_locked_at: second_factor_locked_at,
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# When a user visits the page to confirm posession of a new phone number during the IDV process
+def idv_phone_confirmation_otp_visit(proofing_components: nil, **extra)
+  track_event(
+    'IdV: phone confirmation otp visited',
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# The vendor finished the process of confirming the users phone
+def idv_phone_confirmation_vendor_submitted(
+  success:,
+  errors:,
+  proofing_components: nil,
+  **extra
+)
+  track_event(
+    'IdV: phone confirmation vendor',
+    success: success,
+    errors: errors,
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param ['warning','jobfail','failure'] type
+# @param [Time] limiter_expires_at when the rate limit expires
+# @param [Integer] remaining_submit_attempts number of submit attempts remaining
+#                  (previously called "remaining_attempts")
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# When a user gets an error during the phone finder flow of IDV
+def idv_phone_error_visited(
+  type:,
+  proofing_components: nil,
+  limiter_expires_at: nil,
+  remaining_submit_attempts: nil,
+  **extra
+)
+  track_event(
+    'IdV: phone error visited',
+    {
+      type: type,
+      proofing_components: proofing_components,
+      limiter_expires_at: limiter_expires_at,
+      remaining_submit_attempts: remaining_submit_attempts,
+      **extra,
+    }.compact,
+  )
+end
+
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# User visited idv phone of record
+def idv_phone_of_record_visited(proofing_components: nil, **extra)
+  track_event(
+    'IdV: phone of record visited',
+    proofing_components: proofing_components,
+    **extra,
+  )
+end
+
+# @param ["sms", "voice"] otp_delivery_preference
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Hash] error_details
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+def idv_phone_otp_delivery_selection_submitted(
+  success:,
+  otp_delivery_preference:,
+  proofing_components: nil,
+  errors: nil,
+  error_details: nil,
+  **extra
+)
+  track_event(
+    'IdV: Phone OTP Delivery Selection Submitted',
+    {
       success: success,
       errors: errors,
+      error_details: error_details,
       otp_delivery_preference: otp_delivery_preference,
       proofing_components: proofing_components,
       **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # The user was rate limited for submitting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_attempts(proofing_components: nil, **extra)
-    track_event(
-      'Idv: Phone OTP attempts rate limited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # The user was locked out for hitting the phone OTP rate limit during IDV
-  def idv_phone_confirmation_otp_rate_limit_locked_out(proofing_components: nil, **extra)
-    track_event(
-      'Idv: Phone OTP rate limited user',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # The user was rate limited for requesting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_sends(proofing_components: nil, **extra)
-    track_event(
-      'Idv: Phone OTP sends rate limited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
-  # @param [String] country_code country code of phone number
-  # @param [String] area_code area code of phone number
-  # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
-  # @param [Hash] telephony_response response from Telephony gem
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # The user resent an OTP during the IDV phone step
-  def idv_phone_confirmation_otp_resent(
-    success:,
-    errors:,
-    otp_delivery_preference:,
-    country_code:,
-    area_code:,
-    rate_limit_exceeded:,
-    telephony_response:,
-    proofing_components: nil,
-    **extra
+    }.compact,
   )
-    track_event(
-      'IdV: phone confirmation otp resent',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      country_code: country_code,
-      area_code: area_code,
-      rate_limit_exceeded: rate_limit_exceeded,
-      telephony_response: telephony_response,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
-  # @param [String] country_code country code of phone number
-  # @param [String] area_code area code of phone number
-  # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
-  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
-  # @param [Hash] telephony_response response from Telephony gem
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
-  # The user requested an OTP to confirm their phone during the IDV phone step
-  def idv_phone_confirmation_otp_sent(
-    success:,
-    errors:,
-    otp_delivery_preference:,
-    country_code:,
-    area_code:,
-    rate_limit_exceeded:,
-    phone_fingerprint:,
-    telephony_response:,
-    adapter:,
-    proofing_components: nil,
-    **extra
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# User visited idv phone OTP delivery selection
+def idv_phone_otp_delivery_selection_visit(proofing_components: nil, **extra)
+  track_event(
+    'IdV: Phone OTP delivery Selection Visited',
+    proofing_components: proofing_components,
+    **extra,
   )
-    track_event(
-      'IdV: phone confirmation otp sent',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      country_code: country_code,
-      area_code: area_code,
-      rate_limit_exceeded: rate_limit_exceeded,
-      phone_fingerprint: phone_fingerprint,
-      telephony_response: telephony_response,
-      adapter: adapter,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] code_expired if the one-time code expired
-  # @param [Boolean] code_matches
-  # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
-  # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # When a user attempts to confirm posession of a new phone number during the IDV process
-  def idv_phone_confirmation_otp_submitted(
-    success:,
-    errors:,
-    code_expired:,
-    code_matches:,
-    second_factor_attempts_count:,
-    second_factor_locked_at:,
-    proofing_components: nil,
-    **extra
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# @param [String] step the step the user was on when they clicked use a different phone number
+# User decided to use a different phone number in idv
+def idv_phone_use_different(step:, proofing_components: nil, **extra)
+  track_event(
+    'IdV: use different phone number',
+    step: step,
+    proofing_components: proofing_components,
+    **extra,
   )
-    track_event(
-      'IdV: phone confirmation otp submitted',
-      success: success,
-      errors: errors,
-      code_expired: code_expired,
-      code_matches: code_matches,
-      second_factor_attempts_count: second_factor_attempts_count,
-      second_factor_locked_at: second_factor_locked_at,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
+end
 
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # When a user visits the page to confirm posession of a new phone number during the IDV process
-  def idv_phone_confirmation_otp_visit(proofing_components: nil, **extra)
-    track_event(
-      'IdV: phone confirmation otp visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # The vendor finished the process of confirming the users phone
-  def idv_phone_confirmation_vendor_submitted(
-    success:,
-    errors:,
-    proofing_components: nil,
-    **extra
+# @identity.idp.previous_event_name IdV: Verify setup errors visited
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# Tracks when the user reaches the verify please call page after failing proofing
+def idv_please_call_visited(proofing_components: nil, **extra)
+  track_event(
+    'IdV: Verify please call visited',
+    proofing_components: proofing_components,
+    **extra,
   )
-    track_event(
-      'IdV: phone confirmation vendor',
-      success: success,
-      errors: errors,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
+end
 
-  # @param ['warning','jobfail','failure'] type
-  # @param [Time] limiter_expires_at when the rate limit expires
-  # @param [Integer] remaining_submit_attempts number of submit attempts remaining
-  #                  (previously called "remaining_attempts")
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # When a user gets an error during the phone finder flow of IDV
-  def idv_phone_error_visited(
-    type:,
-    proofing_components: nil,
-    limiter_expires_at: nil,
-    remaining_submit_attempts: nil,
-    **extra
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# The system encountered an error and the proofing results are missing
+def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
+  track_event(
+    'IdV: proofing resolution result missing',
+    proofing_components: proofing_components,
+    **extra,
   )
-    track_event(
-      'IdV: phone error visited',
-      {
-        type: type,
-        proofing_components: proofing_components,
-        limiter_expires_at: limiter_expires_at,
-        remaining_submit_attempts: remaining_submit_attempts,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # User visited idv phone of record
-  def idv_phone_of_record_visited(proofing_components: nil, **extra)
-    track_event(
-      'IdV: phone of record visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param ["sms", "voice"] otp_delivery_preference
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_phone_otp_delivery_selection_submitted(
-    success:,
-    otp_delivery_preference:,
-    proofing_components: nil,
-    errors: nil,
-    error_details: nil,
-    **extra
+# @param [Boolean] letter_already_sent
+# GPO "request letter" page visited
+# @identity.idp.previous_event_name IdV: USPS address visited
+def idv_request_letter_visited(
+  letter_already_sent:,
+  **extra
+)
+  track_event(
+    'IdV: request letter visited',
+    letter_already_sent: letter_already_sent,
+    **extra,
   )
-    track_event(
-      'IdV: Phone OTP Delivery Selection Submitted',
-      {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        otp_delivery_preference: otp_delivery_preference,
-        proofing_components: proofing_components,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # User visited idv phone OTP delivery selection
-  def idv_phone_otp_delivery_selection_visit(proofing_components: nil, **extra)
-    track_event(
-      'IdV: Phone OTP delivery Selection Visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String] step the step the user was on when they clicked use a different phone number
-  # User decided to use a different phone number in idv
-  def idv_phone_use_different(step:, proofing_components: nil, **extra)
-    track_event(
-      'IdV: use different phone number',
-      step: step,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name IdV: Verify setup errors visited
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # Tracks when the user reaches the verify please call page after failing proofing
-  def idv_please_call_visited(proofing_components: nil, **extra)
-    track_event(
-      'IdV: Verify please call visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # The system encountered an error and the proofing results are missing
-  def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
-    track_event(
-      'IdV: proofing resolution result missing',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] letter_already_sent
-  # GPO "request letter" page visited
-  # @identity.idp.previous_event_name IdV: USPS address visited
-  def idv_request_letter_visited(
-    letter_already_sent:,
-    **extra
-  )
-    track_event(
-      'IdV: request letter visited',
-      letter_already_sent: letter_already_sent,
-      **extra,
-    )
-  end
+end
 
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
@@ -2928,1795 +2928,1753 @@ end
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # Tracks when the user visits one of the the session error pages.
-  # @param [String] type
-  # @param [Integer,nil] submit_attempts_remaining (previously called "attempts_remaining")
-  def idv_session_error_visited(
-    type:,
-    submit_attempts_remaining: nil,
-    **extra
+# Tracks when the user visits one of the the session error pages.
+# @param [String] type
+# @param [Integer,nil] submit_attempts_remaining (previously called "attempts_remaining")
+def idv_session_error_visited(
+  type:,
+  submit_attempts_remaining: nil,
+  **extra
+)
+  track_event(
+    'IdV: session error visited',
+    type: type,
+    submit_attempts_remaining: submit_attempts_remaining,
+    **extra,
   )
-    track_event(
-      'IdV: session error visited',
-      type: type,
-      submit_attempts_remaining: submit_attempts_remaining,
-      **extra,
-    )
-  end
+end
 
-  # @param [String] step
-  # @param [String] location
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # User started over idv
-  def idv_start_over(
-    step:,
-    location:,
-    proofing_components: nil,
-    **extra
+# @param [String] step
+# @param [String] location
+# @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+# User started over idv
+def idv_start_over(
+  step:,
+  location:,
+  proofing_components: nil,
+  **extra
+)
+  track_event(
+    'IdV: start over',
+    step: step,
+    location: location,
+    proofing_components: proofing_components,
+    **extra,
   )
-    track_event(
-      'IdV: start over',
-      step: step,
-      location: location,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
+end
 
-  # Track when USPS auth token refresh job completed
-  def idv_usps_auth_token_refresh_job_completed(**extra)
-    track_event(
-      'UspsAuthTokenRefreshJob: Completed',
-      **extra,
-    )
-  end
-
-  # Track when USPS auth token refresh job encounters a network error
-  # @param [String] exception_class
-  # @param [String] exception_message
-  def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
-    track_event(
-      'UspsAuthTokenRefreshJob: Network error',
-      exception_class: exception_class,
-      exception_message: exception_message,
-      **extra,
-    )
-  end
-
-  # Track when USPS auth token refresh job started
-  def idv_usps_auth_token_refresh_job_started(**extra)
-    track_event(
-      'UspsAuthTokenRefreshJob: Started',
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name Account verification submitted
-  # @identity.idp.previous_event_name IdV: GPO verification submitted
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] pii_like_keypaths
-  # @param [DateTime] enqueued_at When was this letter enqueued
-  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
-  # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] submit_attempts Number of attempts to enter a correct code
-  #                  (previously called "attempts")
-  # @param [Boolean] pending_in_person_enrollment
-  # @param [Boolean] fraud_check_failed
-  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
-  #       report. Changes here should be reflected there.
-  # GPO verification submitted
-  def idv_verify_by_mail_enter_code_submitted(
-    success:,
-    errors:,
-    pii_like_keypaths:,
-    enqueued_at:,
-    which_letter:,
-    letter_count:,
-    submit_attempts:,
-    pending_in_person_enrollment:,
-    fraud_check_failed:,
-    **extra
+# Track when USPS auth token refresh job completed
+def idv_usps_auth_token_refresh_job_completed(**extra)
+  track_event(
+    'UspsAuthTokenRefreshJob: Completed',
+    **extra,
   )
-    track_event(
-      'IdV: enter verify by mail code submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
-      enqueued_at: enqueued_at,
-      which_letter: which_letter,
-      letter_count: letter_count,
-      submit_attempts: submit_attempts,
-      pending_in_person_enrollment: pending_in_person_enrollment,
-      fraud_check_failed: fraud_check_failed,
-      **extra,
-    )
-  end
+end
 
-  # @identity.idp.previous_event_name Account verification visited
-  # @identity.idp.previous_event_name IdV: GPO verification visited
-  # Visited page used to enter address verification code received via US mail.
-  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
-  def idv_verify_by_mail_enter_code_visited(
-    source: nil,
-    **extra
+# Track when USPS auth token refresh job encounters a network error
+# @param [String] exception_class
+# @param [String] exception_message
+def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
+  track_event(
+    'UspsAuthTokenRefreshJob: Network error',
+    exception_class: exception_class,
+    exception_message: exception_message,
+    **extra,
   )
-    track_event(
-      'IdV: enter verify by mail code visited',
-      source: source,
-      **extra,
-    )
-  end
+end
 
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(
-    flow_path:,
-    opted_in_to_in_person_proofing:,
-    **extra
+# Track when USPS auth token refresh job started
+def idv_usps_auth_token_refresh_job_started(**extra)
+  track_event(
+    'UspsAuthTokenRefreshJob: Started',
+    **extra,
   )
-    track_event(
-      'IdV: verify in person troubleshooting option clicked',
-      flow_path: flow_path,
-      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
-  # @param [String] acuant_version
-  # @param [String] flow_path
-  # @param [String] location
-  # @param [Boolean] use_alternate_sdk
-  def idv_warning_action_triggered(
-    acuant_sdk_upgrade_a_b_testing_enabled:,
-    acuant_version:,
-    flow_path:,
-    location:,
-    use_alternate_sdk:,
-    **_extra
+# @identity.idp.previous_event_name Account verification submitted
+# @identity.idp.previous_event_name IdV: GPO verification submitted
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Hash] pii_like_keypaths
+# @param [DateTime] enqueued_at When was this letter enqueued
+# @param [Integer] which_letter Sorted by enqueue time, which letter had this code
+# @param [Integer] letter_count How many letters did the user enqueue for this profile
+# @param [Integer] submit_attempts Number of attempts to enter a correct code
+#                  (previously called "attempts")
+# @param [Boolean] pending_in_person_enrollment
+# @param [Boolean] fraud_check_failed
+# @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+#       report. Changes here should be reflected there.
+# GPO verification submitted
+def idv_verify_by_mail_enter_code_submitted(
+  success:,
+  errors:,
+  pii_like_keypaths:,
+  enqueued_at:,
+  which_letter:,
+  letter_count:,
+  submit_attempts:,
+  pending_in_person_enrollment:,
+  fraud_check_failed:,
+  **extra
+)
+  track_event(
+    'IdV: enter verify by mail code submitted',
+    success: success,
+    errors: errors,
+    pii_like_keypaths: pii_like_keypaths,
+    enqueued_at: enqueued_at,
+    which_letter: which_letter,
+    letter_count: letter_count,
+    submit_attempts: submit_attempts,
+    pending_in_person_enrollment: pending_in_person_enrollment,
+    fraud_check_failed: fraud_check_failed,
+    **extra,
   )
-    track_event(
-      'Frontend: IdV: warning action triggered',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      location: location,
-      use_alternate_sdk: use_alternate_sdk,
-    )
-  end
+end
 
-  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
-  # @param [String] acuant_version
-  # @param [String] error_message_displayed
-  # @param [String] flow_path
-  # @param [String] heading
-  # @param [String] location
-  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
-  # @param [String] subheading
-  # @param [Boolean] use_alternate_sdk
-  def idv_warning_shown(
-    acuant_sdk_upgrade_a_b_testing_enabled:,
-    acuant_version:,
-    error_message_displayed:,
-    flow_path:,
-    heading:,
-    location:,
-    remaining_submit_attempts:,
-    subheading:,
-    use_alternate_sdk:,
-    **_extra
+# @identity.idp.previous_event_name Account verification visited
+# @identity.idp.previous_event_name IdV: GPO verification visited
+# Visited page used to enter address verification code received via US mail.
+# @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+def idv_verify_by_mail_enter_code_visited(
+  source: nil,
+  **extra
+)
+  track_event(
+    'IdV: enter verify by mail code visited',
+    source: source,
+    **extra,
   )
-    track_event(
-      'Frontend: IdV: warning shown',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      error_message_displayed: error_message_displayed,
-      flow_path: flow_path,
-      heading: heading,
-      location: location,
-      remaining_submit_attempts: remaining_submit_attempts,
-      subheading: subheading,
-      use_alternate_sdk: use_alternate_sdk,
-    )
-  end
+end
 
-  # @param [String] controller
-  # @param [Boolean] user_signed_in
-  # Authenticity token (CSRF) is invalid
-  def invalid_authenticity_token(
-    controller:,
-    user_signed_in: nil,
-    **extra
+# @param [String] flow_path Document capture path ("hybrid" or "standard")
+# @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+# The user clicked the troubleshooting option to start in-person proofing
+def idv_verify_in_person_troubleshooting_option_clicked(
+  flow_path:,
+  opted_in_to_in_person_proofing:,
+  **extra
+)
+  track_event(
+    'IdV: verify in person troubleshooting option clicked',
+    flow_path: flow_path,
+    opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+    **extra,
   )
-    track_event(
-      'Invalid Authenticity Token',
-      controller: controller,
-      user_signed_in: user_signed_in,
-      **extra,
-    )
-  end
+end
 
-  # @param [Integer] rendered_event_count how many events were rendered in the API response
-  # @param [Boolean] authenticated whether the request was successfully authenticated
-  # @param [Float] elapsed_time the amount of time the function took to run
-  # @param [Boolean] success
-  # An IRS Attempt API client has requested events
-  def irs_attempts_api_events(
-    rendered_event_count:,
-    authenticated:,
-    elapsed_time:,
-    success:,
-    **extra
+# @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+# @param [String] acuant_version
+# @param [String] flow_path
+# @param [String] location
+# @param [Boolean] use_alternate_sdk
+def idv_warning_action_triggered(
+  acuant_sdk_upgrade_a_b_testing_enabled:,
+  acuant_version:,
+  flow_path:,
+  location:,
+  use_alternate_sdk:,
+  **_extra
+)
+  track_event(
+    'Frontend: IdV: warning action triggered',
+    acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+    acuant_version: acuant_version,
+    flow_path: flow_path,
+    location: location,
+    use_alternate_sdk: use_alternate_sdk,
   )
-    track_event(
-      'IRS Attempt API: Events submitted',
-      rendered_event_count: rendered_event_count,
-      authenticated: authenticated,
-      elapsed_time: elapsed_time,
-      success: success,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # @param [String] client_id
-  # @param [Boolean] client_id_parameter_present
-  # @param [Boolean] id_token_hint_parameter_present
-  # @param [Boolean] sp_initiated
-  # @param [Boolean] oidc
-  # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] method
-  # Logout Initiated
-  def logout_initiated(
-    success: nil,
-    client_id: nil,
-    sp_initiated: nil,
-    oidc: nil,
-    client_id_parameter_present: nil,
-    id_token_hint_parameter_present: nil,
-    saml_request_valid: nil,
-    errors: nil,
-    error_details: nil,
-    method: nil,
-    **extra
+# @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+# @param [String] acuant_version
+# @param [String] error_message_displayed
+# @param [String] flow_path
+# @param [String] heading
+# @param [String] location
+# @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+# @param [String] subheading
+# @param [Boolean] use_alternate_sdk
+def idv_warning_shown(
+  acuant_sdk_upgrade_a_b_testing_enabled:,
+  acuant_version:,
+  error_message_displayed:,
+  flow_path:,
+  heading:,
+  location:,
+  remaining_submit_attempts:,
+  subheading:,
+  use_alternate_sdk:,
+  **_extra
+)
+  track_event(
+    'Frontend: IdV: warning shown',
+    acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+    acuant_version: acuant_version,
+    error_message_displayed: error_message_displayed,
+    flow_path: flow_path,
+    heading: heading,
+    location: location,
+    remaining_submit_attempts: remaining_submit_attempts,
+    subheading: subheading,
+    use_alternate_sdk: use_alternate_sdk,
   )
-    track_event(
-      'Logout Initiated',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success Whether authentication was successful
-  # @param [Hash] errors Authentication error reasons, if unsuccessful
-  # @param [String] context
-  # @param [Boolean] new_device
-  # @param [String] multi_factor_auth_method
-  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
-  # @param [Integer] auth_app_configuration_id
-  # @param [Integer] piv_cac_configuration_id
-  # @param [Integer] key_id
-  # @param [Integer] webauthn_configuration_id
-  # @param [Integer] phone_configuration_id
-  # @param [Boolean] confirmation_for_add_phone
-  # @param [String] area_code
-  # @param [String] country_code
-  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
-  # @param [String] frontend_error Name of error that occurred in frontend during submission
-  # Multi-Factor Authentication
-  def multi_factor_auth(
-    success:,
-    errors: nil,
-    context: nil,
-    new_device: nil,
-    multi_factor_auth_method: nil,
-    multi_factor_auth_method_created_at: nil,
-    auth_app_configuration_id: nil,
-    piv_cac_configuration_id: nil,
-    key_id: nil,
-    webauthn_configuration_id: nil,
-    confirmation_for_add_phone: nil,
-    phone_configuration_id: nil,
-    pii_like_keypaths: nil,
-    area_code: nil,
-    country_code: nil,
-    phone_fingerprint: nil,
-    frontend_error: nil,
-    **extra
+# @param [String] controller
+# @param [Boolean] user_signed_in
+# Authenticity token (CSRF) is invalid
+def invalid_authenticity_token(
+  controller:,
+  user_signed_in: nil,
+  **extra
+)
+  track_event(
+    'Invalid Authenticity Token',
+    controller: controller,
+    user_signed_in: user_signed_in,
+    **extra,
   )
-    track_event(
-      'Multi-Factor Authentication',
-      success: success,
-      errors: errors,
-      context: context,
-      new_device: new_device,
-      multi_factor_auth_method: multi_factor_auth_method,
-      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
-      auth_app_configuration_id: auth_app_configuration_id,
-      piv_cac_configuration_id: piv_cac_configuration_id,
-      key_id: key_id,
-      webauthn_configuration_id: webauthn_configuration_id,
-      confirmation_for_add_phone: confirmation_for_add_phone,
-      phone_configuration_id: phone_configuration_id,
-      pii_like_keypaths: pii_like_keypaths,
-      area_code: area_code,
-      country_code: country_code,
-      phone_fingerprint: phone_fingerprint,
-      frontend_error:,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when the the user has added the MFA method phone to their account
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
-    track_event(
-      'Multi-Factor Authentication: Added phone',
-      {
-        method_name: :phone,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
-  # Tracks when the user has added the MFA method piv_cac to their account
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
-                                      **extra)
-    track_event(
-      :multi_factor_auth_added_piv_cac,
-      {
-        method_name: :piv_cac,
-        enabled_mfa_methods_count:,
-        in_account_creation_flow:,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # Tracks when the user has added the MFA method TOTP to their account
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
-                                   **extra)
-    track_event(
-      'Multi-Factor Authentication: Added TOTP',
-      {
-        method_name: :totp,
-        in_account_creation_flow:,
-        enabled_mfa_methods_count:,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # A user has downloaded their backup codes
-  def multi_factor_auth_backup_code_download
-    track_event('Multi-Factor Authentication: download backup code')
-  end
-
-  # Tracks when the user visits the backup code confirmation setup page
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_enter_backup_code_confirmation_visit(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    **extra
+# @param [Integer] rendered_event_count how many events were rendered in the API response
+# @param [Boolean] authenticated whether the request was successfully authenticated
+# @param [Float] elapsed_time the amount of time the function took to run
+# @param [Boolean] success
+# An IRS Attempt API client has requested events
+def irs_attempts_api_events(
+  rendered_event_count:,
+  authenticated:,
+  elapsed_time:,
+  success:,
+  **extra
+)
+  track_event(
+    'IRS Attempt API: Events submitted',
+    rendered_event_count: rendered_event_count,
+    authenticated: authenticated,
+    elapsed_time: elapsed_time,
+    success: success,
+    **extra,
   )
-    track_event(
-      'Multi-Factor Authentication: enter backup code confirmation visited',
-      {
-        enabled_mfa_methods_count:,
-        in_account_creation_flow:,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  # User visited the page to enter a backup code as their MFA
-  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
-    track_event(
-      'Multi-Factor Authentication: enter backup code visited',
-      context: context,
-      **extra,
-    )
-  end
-
-  # @param [String] context
-  # @param [String] multi_factor_auth_method
-  # @param [Boolean] confirmation_for_add_phone
-  # @param [Integer] phone_configuration_id
-  # Multi-Factor Authentication enter OTP visited
-  def multi_factor_auth_enter_otp_visit(
-    context:,
-    multi_factor_auth_method:,
-    confirmation_for_add_phone:,
-    phone_configuration_id:,
-    **extra
+# @param [Boolean] success
+# @param [String] client_id
+# @param [Boolean] client_id_parameter_present
+# @param [Boolean] id_token_hint_parameter_present
+# @param [Boolean] sp_initiated
+# @param [Boolean] oidc
+# @param [Boolean] saml_request_valid
+# @param [Hash] errors
+# @param [Hash] error_details
+# @param [String] method
+# Logout Initiated
+def logout_initiated(
+  success: nil,
+  client_id: nil,
+  sp_initiated: nil,
+  oidc: nil,
+  client_id_parameter_present: nil,
+  id_token_hint_parameter_present: nil,
+  saml_request_valid: nil,
+  errors: nil,
+  error_details: nil,
+  method: nil,
+  **extra
+)
+  track_event(
+    'Logout Initiated',
+    success: success,
+    client_id: client_id,
+    client_id_parameter_present: client_id_parameter_present,
+    id_token_hint_parameter_present: id_token_hint_parameter_present,
+    errors: errors,
+    error_details: error_details,
+    sp_initiated: sp_initiated,
+    oidc: oidc,
+    saml_request_valid: saml_request_valid,
+    method: method,
+    **extra,
   )
-    track_event(
-      'Multi-Factor Authentication: enter OTP visited',
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      confirmation_for_add_phone: confirmation_for_add_phone,
-      phone_configuration_id: phone_configuration_id,
-      **extra,
-    )
-  end
+end
 
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  # User visited the page to enter a personal key as their mfa (legacy flow)
-  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
-    track_event(
-      'Multi-Factor Authentication: enter personal key visited',
-      context: context,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  # @param ["piv_cac"] multi_factor_auth_method
-  # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
-  # User used a PIV/CAC as their mfa
-  def multi_factor_auth_enter_piv_cac(
-    context:,
-    multi_factor_auth_method:,
-    piv_cac_configuration_id:,
-    **extra
+# @param [Boolean] success Whether authentication was successful
+# @param [Hash] errors Authentication error reasons, if unsuccessful
+# @param [String] context
+# @param [Boolean] new_device
+# @param [String] multi_factor_auth_method
+# @param [DateTime] multi_factor_auth_method_created_at time auth method was created
+# @param [Integer] auth_app_configuration_id
+# @param [Integer] piv_cac_configuration_id
+# @param [Integer] key_id
+# @param [Integer] webauthn_configuration_id
+# @param [Integer] phone_configuration_id
+# @param [Boolean] confirmation_for_add_phone
+# @param [String] area_code
+# @param [String] country_code
+# @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+# @param [String] frontend_error Name of error that occurred in frontend during submission
+# Multi-Factor Authentication
+def multi_factor_auth(
+  success:,
+  errors: nil,
+  context: nil,
+  new_device: nil,
+  multi_factor_auth_method: nil,
+  multi_factor_auth_method_created_at: nil,
+  auth_app_configuration_id: nil,
+  piv_cac_configuration_id: nil,
+  key_id: nil,
+  webauthn_configuration_id: nil,
+  confirmation_for_add_phone: nil,
+  phone_configuration_id: nil,
+  pii_like_keypaths: nil,
+  area_code: nil,
+  country_code: nil,
+  phone_fingerprint: nil,
+  frontend_error: nil,
+  **extra
+)
+  track_event(
+    'Multi-Factor Authentication',
+    success: success,
+    errors: errors,
+    context: context,
+    new_device: new_device,
+    multi_factor_auth_method: multi_factor_auth_method,
+    multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
+    auth_app_configuration_id: auth_app_configuration_id,
+    piv_cac_configuration_id: piv_cac_configuration_id,
+    key_id: key_id,
+    webauthn_configuration_id: webauthn_configuration_id,
+    confirmation_for_add_phone: confirmation_for_add_phone,
+    phone_configuration_id: phone_configuration_id,
+    pii_like_keypaths: pii_like_keypaths,
+    area_code: area_code,
+    country_code: country_code,
+    phone_fingerprint: phone_fingerprint,
+    frontend_error:,
+    **extra,
   )
-    track_event(
-      :multi_factor_auth_enter_piv_cac,
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      piv_cac_configuration_id: piv_cac_configuration_id,
-      **extra,
-    )
-  end
+end
 
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  # User visited the page to enter a TOTP as their mfa
-  def multi_factor_auth_enter_totp_visit(context:, **extra)
-    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
-  end
-
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  # @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
-  # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
-  # authenticator like face or touch ID
-  # @param [Integer, nil] webauthn_configuration_id webauthn database ID
-  # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
-  def multi_factor_auth_enter_webauthn_visit(
-    context:,
-    multi_factor_auth_method:,
-    webauthn_configuration_id:,
-    **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: enter webAuthn authentication visited',
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      webauthn_configuration_id: webauthn_configuration_id,
-      **extra,
-    )
-  end
-
-  # Max multi factor auth attempts met
-  def multi_factor_auth_max_attempts
-    track_event('Multi-Factor Authentication: max attempts reached')
-  end
-
-  # Max multi factor max otp sends reached
-  def multi_factor_auth_max_sends
-    track_event('Multi-Factor Authentication: max otp sends reached')
-  end
-
-  # Multi factor selected from auth options list
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] selection
-  def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
-    track_event(
-      'Multi-Factor Authentication: option list',
-      success: success,
-      errors: errors,
-      selection: selection,
-      **extra,
-    )
-  end
-
-  # User visited the list of multi-factor options to use
-  def multi_factor_auth_option_list_visit
-    track_event('Multi-Factor Authentication: option list visited')
-  end
-
-  # Multi factor auth phone setup
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] otp_delivery_preference
-  # @param [String] area_code
-  # @param [String] carrier
-  # @param [String] country_code
-  # @param [String] phone_type
-  # @param [Hash] types
-  def multi_factor_auth_phone_setup(success:,
-                                    errors:,
-                                    otp_delivery_preference:,
-                                    area_code:,
-                                    carrier:,
-                                    country_code:,
-                                    phone_type:,
-                                    types:,
-                                    **extra)
-    track_event(
-      'Multi-Factor Authentication: phone setup',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      area_code: area_code,
-      carrier: carrier,
-      country_code: country_code,
-      phone_type: phone_type,
-      types: types,
-      **extra,
-    )
-  end
-
-  # Tracks when a user sets up a multi factor auth method
-  # @param [Boolean] success Whether authenticator setup was successful
-  # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
-  # @param [String] multi_factor_auth_method
-  # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
-  # @param [integer] enabled_mfa_methods_count
-  def multi_factor_auth_setup(
-    success:,
-    multi_factor_auth_method:,
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    errors: nil,
-    **extra
-  )
-    track_event(
-      'Multi-Factor Authentication Setup',
-      success: success,
-      errors: errors,
-      multi_factor_auth_method: multi_factor_auth_method,
-      in_account_creation_flow: in_account_creation_flow,
+# Tracks when the the user has added the MFA method phone to their account
+# @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+  track_event(
+    'Multi-Factor Authentication: Added phone',
+    {
+      method_name: :phone,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
-    )
-  end
-
-  # @param [String] location Placement location
-  # Logged when a browser with JavaScript disabled loads the detection stylesheet
-  def no_js_detect_stylesheet_loaded(location:, **extra)
-    track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
-  end
-
-  # @param [Boolean] success
-  # @param [String] client_id
-  # @param [Boolean] client_id_parameter_present
-  # @param [Boolean] id_token_hint_parameter_present
-  # @param [Boolean] sp_initiated
-  # @param [Boolean] oidc
-  # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] method
-  # OIDC Logout Requested
-  def oidc_logout_requested(
-    success: nil,
-    client_id: nil,
-    sp_initiated: nil,
-    oidc: nil,
-    client_id_parameter_present: nil,
-    id_token_hint_parameter_present: nil,
-    saml_request_valid: nil,
-    errors: nil,
-    error_details: nil,
-    method: nil,
-    **extra
+    }.compact,
   )
-    track_event(
-      'OIDC Logout Requested',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # @param [String] client_id
-  # @param [Boolean] client_id_parameter_present
-  # @param [Boolean] id_token_hint_parameter_present
-  # @param [Boolean] sp_initiated
-  # @param [Boolean] oidc
-  # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] method
-  # OIDC Logout Submitted
-  def oidc_logout_submitted(
-    success: nil,
-    client_id: nil,
-    sp_initiated: nil,
-    oidc: nil,
-    client_id_parameter_present: nil,
-    id_token_hint_parameter_present: nil,
-    saml_request_valid: nil,
-    errors: nil,
-    error_details: nil,
-    method: nil,
-    **extra
+# @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
+# Tracks when the user has added the MFA method piv_cac to their account
+# @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+# @param [Boolean] in_account_creation_flow whether user is going through creation flow
+def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
+                                    **extra)
+  track_event(
+    :multi_factor_auth_added_piv_cac,
+    {
+      method_name: :piv_cac,
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
+      **extra,
+    }.compact,
   )
-    track_event(
-      'OIDC Logout Submitted',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # @param [String] client_id
-  # @param [Boolean] client_id_parameter_present
-  # @param [Boolean] id_token_hint_parameter_present
-  # @param [Boolean] sp_initiated
-  # @param [Boolean] oidc
-  # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] method
-  # OIDC Logout Visited
-  def oidc_logout_visited(
-    success: nil,
-    client_id: nil,
-    sp_initiated: nil,
-    oidc: nil,
-    client_id_parameter_present: nil,
-    id_token_hint_parameter_present: nil,
-    saml_request_valid: nil,
-    errors: nil,
-    error_details: nil,
-    method: nil,
-    **extra
+# Tracks when the user has added the MFA method TOTP to their account
+# @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+# @param [Boolean] in_account_creation_flow whether user is going through creation flow
+def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
+                                 **extra)
+  track_event(
+    'Multi-Factor Authentication: Added TOTP',
+    {
+      method_name: :totp,
+      in_account_creation_flow:,
+      enabled_mfa_methods_count:,
+      **extra,
+    }.compact,
   )
-    track_event(
-      'OIDC Logout Page Visited',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when a sucessful openid authorization request is returned
-  # @param [String] client_id
-  # @param [String] code_digest hash of returned "code" param
-  def openid_connect_authorization_handoff(
-    client_id:,
-    code_digest:,
-    **extra
+# A user has downloaded their backup codes
+def multi_factor_auth_backup_code_download
+  track_event('Multi-Factor Authentication: download backup code')
+end
+
+# Tracks when the user visits the backup code confirmation setup page
+# @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+# @param [Boolean] in_account_creation_flow whether user is going through creation flow
+def multi_factor_auth_enter_backup_code_confirmation_visit(
+  enabled_mfa_methods_count:,
+  in_account_creation_flow:,
+  **extra
+)
+  track_event(
+    'Multi-Factor Authentication: enter backup code confirmation visited',
+    {
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
+      **extra,
+    }.compact,
   )
-    track_event(
-      'OpenID Connect: authorization request handoff',
-      client_id: client_id,
-      code_digest: code_digest,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when an openid connect bearer token authentication request is made
-  # @param [Boolean] success
-  # @param [Integer] ial
-  # @param [String] client_id Service Provider issuer
-  # @param [Hash] errors
-  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
-    track_event(
-      'OpenID Connect: bearer token authentication',
-      success: success,
-      ial: ial,
-      client_id: client_id,
-      errors: errors,
-      **extra,
-    )
-  end
-
-  # Tracks when openid authorization request is made
-  # @param [String] client_id
-  # @param [String] scope
-  # @param [Array] acr_values
-  # @param [Array] vtr
-  # @param [Boolean] unauthorized_scope
-  # @param [Boolean] user_fully_authenticated
-  def openid_connect_request_authorization(
-    client_id:,
-    scope:,
-    acr_values:,
-    vtr:,
-    unauthorized_scope:,
-    user_fully_authenticated:,
-    **extra
+# @param ["authentication","reauthentication","confirmation"] context user session context
+# User visited the page to enter a backup code as their MFA
+def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+  track_event(
+    'Multi-Factor Authentication: enter backup code visited',
+    context: context,
+    **extra,
   )
-    track_event(
-      'OpenID Connect: authorization request',
-      client_id: client_id,
-      scope: scope,
-      acr_values: acr_values,
-      vtr: vtr,
-      unauthorized_scope: unauthorized_scope,
-      user_fully_authenticated: user_fully_authenticated,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when an openid connect token request is made
-  # @param [String] client_id
-  # @param [String] user_id
-  # @param [String] code_digest hash of "code" param
-  # @param [Integer, nil] expires_in time to expiration of token
-  # @param [Integer, nil] ial ial level of identity
-  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
-    track_event(
-      'OpenID Connect: token',
-      client_id: client_id,
-      user_id: user_id,
-      code_digest: code_digest,
-      expires_in: expires_in,
-      ial: ial,
-      **extra,
-    )
-  end
-
-  # Tracks when user makes an otp delivery selection
-  # @param [String] otp_delivery_preference (sms or voice)
-  # @param [Boolean] resend
-  # @param [String] country_code
-  # @param [String] area_code
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  # @param [Hash] pii_like_keypaths
-  def otp_delivery_selection(
-    otp_delivery_preference:,
-    resend:,
-    country_code:,
-    area_code:,
-    context:,
-    pii_like_keypaths:,
-    **extra
+# @param [String] context
+# @param [String] multi_factor_auth_method
+# @param [Boolean] confirmation_for_add_phone
+# @param [Integer] phone_configuration_id
+# Multi-Factor Authentication enter OTP visited
+def multi_factor_auth_enter_otp_visit(
+  context:,
+  multi_factor_auth_method:,
+  confirmation_for_add_phone:,
+  phone_configuration_id:,
+  **extra
+)
+  track_event(
+    'Multi-Factor Authentication: enter OTP visited',
+    context: context,
+    multi_factor_auth_method: multi_factor_auth_method,
+    confirmation_for_add_phone: confirmation_for_add_phone,
+    phone_configuration_id: phone_configuration_id,
+    **extra,
   )
-    track_event(
-      'OTP: Delivery Selection',
-      otp_delivery_preference: otp_delivery_preference,
-      resend: resend,
-      country_code: country_code,
-      area_code: area_code,
-      context: context,
-      pii_like_keypaths: pii_like_keypaths,
-      **extra,
-    )
-  end
+end
 
-  # Tracks if otp phone validation failed
-  # @identity.idp.previous_event_name Twilio Phone Validation Failed
-  # @param [String] error
-  # @param [String] context
-  # @param [String] country
-  def otp_phone_validation_failed(error:, context:, country:, **extra)
-    track_event(
-      'Vendor Phone Validation failed',
-      error: error,
-      context: context,
-      country: country,
-      **extra,
-    )
-  end
+# @param ["authentication","reauthentication","confirmation"] context user session context
+# User visited the page to enter a personal key as their mfa (legacy flow)
+def multi_factor_auth_enter_personal_key_visit(context:, **extra)
+  track_event(
+    'Multi-Factor Authentication: enter personal key visited',
+    context: context,
+    **extra,
+  )
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # The user updated their password
-  def password_changed(success:, errors:, **extra)
-    track_event('Password Changed', success: success, errors: errors, **extra)
-  end
+# @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
+# @param ["authentication","reauthentication","confirmation"] context user session context
+# @param ["piv_cac"] multi_factor_auth_method
+# @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
+# User used a PIV/CAC as their mfa
+def multi_factor_auth_enter_piv_cac(
+  context:,
+  multi_factor_auth_method:,
+  piv_cac_configuration_id:,
+  **extra
+)
+  track_event(
+    :multi_factor_auth_enter_piv_cac,
+    context: context,
+    multi_factor_auth_method: multi_factor_auth_method,
+    piv_cac_configuration_id: piv_cac_configuration_id,
+    **extra,
+  )
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # The user added a password after verifying their email for account creation
-  def password_creation(success:, errors:, **extra)
-    track_event('Password Creation', success: success, errors: errors, **extra)
-  end
+# @param ["authentication","reauthentication","confirmation"] context user session context
+# User visited the page to enter a TOTP as their mfa
+def multi_factor_auth_enter_totp_visit(context:, **extra)
+  track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+end
 
-  # The user got their password incorrect the max number of times, their session was terminated
-  def password_max_attempts
-    track_event('Password Max Attempts Reached')
-  end
+# @param ["authentication","reauthentication","confirmation"] context user session context
+# @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
+# webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
+# authenticator like face or touch ID
+# @param [Integer, nil] webauthn_configuration_id webauthn database ID
+# User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
+def multi_factor_auth_enter_webauthn_visit(
+  context:,
+  multi_factor_auth_method:,
+  webauthn_configuration_id:,
+  **extra
+)
+  track_event(
+    'Multi-Factor Authentication: enter webAuthn authentication visited',
+    context: context,
+    multi_factor_auth_method: multi_factor_auth_method,
+    webauthn_configuration_id: webauthn_configuration_id,
+    **extra,
+  )
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
-  # confirmed email
-  # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
-  # active proofed profile
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
-  # The user entered an email address to request a password reset
-  def password_reset_email(
+# Max multi factor auth attempts met
+def multi_factor_auth_max_attempts
+  track_event('Multi-Factor Authentication: max attempts reached')
+end
+
+# Max multi factor max otp sends reached
+def multi_factor_auth_max_sends
+  track_event('Multi-Factor Authentication: max otp sends reached')
+end
+
+# Multi factor selected from auth options list
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [String] selection
+def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
+  track_event(
+    'Multi-Factor Authentication: option list',
+    success: success,
+    errors: errors,
+    selection: selection,
+    **extra,
+  )
+end
+
+# User visited the list of multi-factor options to use
+def multi_factor_auth_option_list_visit
+  track_event('Multi-Factor Authentication: option list visited')
+end
+
+# Multi factor auth phone setup
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [String] otp_delivery_preference
+# @param [String] area_code
+# @param [String] carrier
+# @param [String] country_code
+# @param [String] phone_type
+# @param [Hash] types
+def multi_factor_auth_phone_setup(success:,
+                                  errors:,
+                                  otp_delivery_preference:,
+                                  area_code:,
+                                  carrier:,
+                                  country_code:,
+                                  phone_type:,
+                                  types:,
+                                  **extra)
+  track_event(
+    'Multi-Factor Authentication: phone setup',
+    success: success,
+    errors: errors,
+    otp_delivery_preference: otp_delivery_preference,
+    area_code: area_code,
+    carrier: carrier,
+    country_code: country_code,
+    phone_type: phone_type,
+    types: types,
+    **extra,
+  )
+end
+
+# Tracks when a user sets up a multi factor auth method
+# @param [Boolean] success Whether authenticator setup was successful
+# @param [Hash] errors Authenticator setup error reasons, if unsuccessful
+# @param [String] multi_factor_auth_method
+# @param [Boolean] in_account_creation_flow whether user is going through account creation flow
+# @param [integer] enabled_mfa_methods_count
+def multi_factor_auth_setup(
+  success:,
+  multi_factor_auth_method:,
+  enabled_mfa_methods_count:,
+  in_account_creation_flow:,
+  errors: nil,
+  **extra
+)
+  track_event(
+    'Multi-Factor Authentication Setup',
+    success: success,
+    errors: errors,
+    multi_factor_auth_method: multi_factor_auth_method,
+    in_account_creation_flow: in_account_creation_flow,
+    enabled_mfa_methods_count: enabled_mfa_methods_count,
+    **extra,
+  )
+end
+
+# @param [String] location Placement location
+# Logged when a browser with JavaScript disabled loads the detection stylesheet
+def no_js_detect_stylesheet_loaded(location:, **extra)
+  track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
+end
+
+# @param [Boolean] success
+# @param [String] client_id
+# @param [Boolean] client_id_parameter_present
+# @param [Boolean] id_token_hint_parameter_present
+# @param [Boolean] sp_initiated
+# @param [Boolean] oidc
+# @param [Boolean] saml_request_valid
+# @param [Hash] errors
+# @param [Hash] error_details
+# @param [String] method
+# OIDC Logout Requested
+def oidc_logout_requested(
+  success: nil,
+  client_id: nil,
+  sp_initiated: nil,
+  oidc: nil,
+  client_id_parameter_present: nil,
+  id_token_hint_parameter_present: nil,
+  saml_request_valid: nil,
+  errors: nil,
+  error_details: nil,
+  method: nil,
+  **extra
+)
+  track_event(
+    'OIDC Logout Requested',
+    success: success,
+    client_id: client_id,
+    client_id_parameter_present: client_id_parameter_present,
+    id_token_hint_parameter_present: id_token_hint_parameter_present,
+    errors: errors,
+    error_details: error_details,
+    sp_initiated: sp_initiated,
+    oidc: oidc,
+    saml_request_valid: saml_request_valid,
+    method: method,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [String] client_id
+# @param [Boolean] client_id_parameter_present
+# @param [Boolean] id_token_hint_parameter_present
+# @param [Boolean] sp_initiated
+# @param [Boolean] oidc
+# @param [Boolean] saml_request_valid
+# @param [Hash] errors
+# @param [Hash] error_details
+# @param [String] method
+# OIDC Logout Submitted
+def oidc_logout_submitted(
+  success: nil,
+  client_id: nil,
+  sp_initiated: nil,
+  oidc: nil,
+  client_id_parameter_present: nil,
+  id_token_hint_parameter_present: nil,
+  saml_request_valid: nil,
+  errors: nil,
+  error_details: nil,
+  method: nil,
+  **extra
+)
+  track_event(
+    'OIDC Logout Submitted',
+    success: success,
+    client_id: client_id,
+    client_id_parameter_present: client_id_parameter_present,
+    id_token_hint_parameter_present: id_token_hint_parameter_present,
+    errors: errors,
+    error_details: error_details,
+    sp_initiated: sp_initiated,
+    oidc: oidc,
+    saml_request_valid: saml_request_valid,
+    method: method,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [String] client_id
+# @param [Boolean] client_id_parameter_present
+# @param [Boolean] id_token_hint_parameter_present
+# @param [Boolean] sp_initiated
+# @param [Boolean] oidc
+# @param [Boolean] saml_request_valid
+# @param [Hash] errors
+# @param [Hash] error_details
+# @param [String] method
+# OIDC Logout Visited
+def oidc_logout_visited(
+  success: nil,
+  client_id: nil,
+  sp_initiated: nil,
+  oidc: nil,
+  client_id_parameter_present: nil,
+  id_token_hint_parameter_present: nil,
+  saml_request_valid: nil,
+  errors: nil,
+  error_details: nil,
+  method: nil,
+  **extra
+)
+  track_event(
+    'OIDC Logout Page Visited',
+    success: success,
+    client_id: client_id,
+    client_id_parameter_present: client_id_parameter_present,
+    id_token_hint_parameter_present: id_token_hint_parameter_present,
+    errors: errors,
+    error_details: error_details,
+    sp_initiated: sp_initiated,
+    oidc: oidc,
+    saml_request_valid: saml_request_valid,
+    method: method,
+    **extra,
+  )
+end
+
+# Tracks when a sucessful openid authorization request is returned
+# @param [String] client_id
+# @param [String] code_digest hash of returned "code" param
+def openid_connect_authorization_handoff(
+  client_id:,
+  code_digest:,
+  **extra
+)
+  track_event(
+    'OpenID Connect: authorization request handoff',
+    client_id: client_id,
+    code_digest: code_digest,
+    **extra,
+  )
+end
+
+# Tracks when an openid connect bearer token authentication request is made
+# @param [Boolean] success
+# @param [Integer] ial
+# @param [String] client_id Service Provider issuer
+# @param [Hash] errors
+def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
+  track_event(
+    'OpenID Connect: bearer token authentication',
+    success: success,
+    ial: ial,
+    client_id: client_id,
+    errors: errors,
+    **extra,
+  )
+end
+
+# Tracks when openid authorization request is made
+# @param [String] client_id
+# @param [String] scope
+# @param [Array] acr_values
+# @param [Array] vtr
+# @param [Boolean] unauthorized_scope
+# @param [Boolean] user_fully_authenticated
+def openid_connect_request_authorization(
+  client_id:,
+  scope:,
+  acr_values:,
+  vtr:,
+  unauthorized_scope:,
+  user_fully_authenticated:,
+  **extra
+)
+  track_event(
+    'OpenID Connect: authorization request',
+    client_id: client_id,
+    scope: scope,
+    acr_values: acr_values,
+    vtr: vtr,
+    unauthorized_scope: unauthorized_scope,
+    user_fully_authenticated: user_fully_authenticated,
+    **extra,
+  )
+end
+
+# Tracks when an openid connect token request is made
+# @param [String] client_id
+# @param [String] user_id
+# @param [String] code_digest hash of "code" param
+# @param [Integer, nil] expires_in time to expiration of token
+# @param [Integer, nil] ial ial level of identity
+def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
+  track_event(
+    'OpenID Connect: token',
+    client_id: client_id,
+    user_id: user_id,
+    code_digest: code_digest,
+    expires_in: expires_in,
+    ial: ial,
+    **extra,
+  )
+end
+
+# Tracks when user makes an otp delivery selection
+# @param [String] otp_delivery_preference (sms or voice)
+# @param [Boolean] resend
+# @param [String] country_code
+# @param [String] area_code
+# @param ["authentication","reauthentication","confirmation"] context user session context
+# @param [Hash] pii_like_keypaths
+def otp_delivery_selection(
+  otp_delivery_preference:,
+  resend:,
+  country_code:,
+  area_code:,
+  context:,
+  pii_like_keypaths:,
+  **extra
+)
+  track_event(
+    'OTP: Delivery Selection',
+    otp_delivery_preference: otp_delivery_preference,
+    resend: resend,
+    country_code: country_code,
+    area_code: area_code,
+    context: context,
+    pii_like_keypaths: pii_like_keypaths,
+    **extra,
+  )
+end
+
+# Tracks if otp phone validation failed
+# @identity.idp.previous_event_name Twilio Phone Validation Failed
+# @param [String] error
+# @param [String] context
+# @param [String] country
+def otp_phone_validation_failed(error:, context:, country:, **extra)
+  track_event(
+    'Vendor Phone Validation failed',
+    error: error,
+    context: context,
+    country: country,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# The user updated their password
+def password_changed(success:, errors:, **extra)
+  track_event('Password Changed', success: success, errors: errors, **extra)
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# The user added a password after verifying their email for account creation
+def password_creation(success:, errors:, **extra)
+  track_event('Password Creation', success: success, errors: errors, **extra)
+end
+
+# The user got their password incorrect the max number of times, their session was terminated
+def password_max_attempts
+  track_event('Password Max Attempts Reached')
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Boolean, nil] confirmed if the account the reset is being requested for has a
+# confirmed email
+# @param [Boolean, nil] active_profile if the account the reset is being requested for has an
+# active proofed profile
+# @param [Hash] error_details Details for error that occurred in unsuccessful submission
+# The user entered an email address to request a password reset
+def password_reset_email(
+  success:,
+  errors:,
+  confirmed:,
+  active_profile:,
+  error_details: {},
+  **extra
+)
+  track_event(
+    'Password Reset: Email Submitted',
     success:,
     errors:,
+    error_details:,
     confirmed:,
     active_profile:,
-    error_details: {},
-    **extra
+    **extra,
   )
-    track_event(
-      'Password Reset: Email Submitted',
-      success:,
-      errors:,
-      error_details:,
-      confirmed:,
-      active_profile:,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
-  # (the user will need to use their personal key to reactivate their profile)
-  # @param [Boolean] pending_profile_invalidated Whether a pending profile was invalidated as a
-  # result of the password reset
-  # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
-  # associated with the associated profile.
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
-  # The user changed the password for their account via the password reset flow
-  def password_reset_password(
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Boolean] profile_deactivated if the active profile for the account was deactivated
+# (the user will need to use their personal key to reactivate their profile)
+# @param [Boolean] pending_profile_invalidated Whether a pending profile was invalidated as a
+# result of the password reset
+# @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
+# associated with the associated profile.
+# @param [Hash] error_details Details for error that occurred in unsuccessful submission
+# The user changed the password for their account via the password reset flow
+def password_reset_password(
+  success:,
+  errors:,
+  profile_deactivated:,
+  pending_profile_invalidated:,
+  pending_profile_pending_reasons:,
+  error_details: {},
+  **extra
+)
+  track_event(
+    'Password Reset: Password Submitted',
     success:,
     errors:,
+    error_details:,
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
-    error_details: {},
-    **extra
+    **extra,
   )
-    track_event(
-      'Password Reset: Password Submitted',
-      success:,
-      errors:,
-      error_details:,
-      profile_deactivated:,
-      pending_profile_invalidated:,
-      pending_profile_pending_reasons:,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] user_id UUID of the user to receive password token
-  # A password token has been sent for user
-  def password_reset_token(success:, errors:, user_id:, **extra)
-    track_event(
-      'Password Reset: Token Submitted',
-      success: success,
-      errors: errors,
-      user_id: user_id,
-      **extra,
-    )
-  end
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [String] user_id UUID of the user to receive password token
+# A password token has been sent for user
+def password_reset_token(success:, errors:, user_id:, **extra)
+  track_event(
+    'Password Reset: Token Submitted',
+    success: success,
+    errors: errors,
+    user_id: user_id,
+    **extra,
+  )
+end
 
-  # Password reset form has been visited.
-  def password_reset_visit
-    track_event('Password Reset: Email Form Visited')
-  end
+# Password reset form has been visited.
+def password_reset_visit
+  track_event('Password Reset: Email Form Visited')
+end
 
-  # Pending account reset cancelled
-  def pending_account_reset_cancelled
-    track_event('Pending account reset cancelled')
-  end
+# Pending account reset cancelled
+def pending_account_reset_cancelled
+  track_event('Pending account reset cancelled')
+end
 
-  # Pending account reset visited
-  def pending_account_reset_visited
-    track_event('Pending account reset visited')
-  end
+# Pending account reset visited
+def pending_account_reset_visited
+  track_event('Pending account reset visited')
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # Alert user if a personal key was used to sign in
-  def personal_key_alert_about_sign_in(success:, errors:, **extra)
-    track_event(
-      'Personal key: Alert user about sign in',
-      success: success,
-      errors: errors,
-      **extra,
-    )
-  end
+# @param [Boolean] success
+# @param [Hash] errors
+# Alert user if a personal key was used to sign in
+def personal_key_alert_about_sign_in(success:, errors:, **extra)
+  track_event(
+    'Personal key: Alert user about sign in',
+    success: success,
+    errors: errors,
+    **extra,
+  )
+end
 
-  # Account reactivated with personal key
-  def personal_key_reactivation
-    track_event('Personal key reactivation: Account reactivated with personal key')
-  end
+# Account reactivated with personal key
+def personal_key_reactivation
+  track_event('Personal key reactivation: Account reactivated with personal key')
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] pii_like_keypaths
-  # Personal key form submitted
-  def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
-    track_event(
-      'Personal key reactivation: Personal key form submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
-      **extra,
-    )
-  end
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Hash] pii_like_keypaths
+# Personal key form submitted
+def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
+  track_event(
+    'Personal key reactivation: Personal key form submitted',
+    success: success,
+    errors: errors,
+    pii_like_keypaths: pii_like_keypaths,
+    **extra,
+  )
+end
 
-  # Personal key reactivation visited
-  def personal_key_reactivation_visited
-    track_event('Personal key reactivation: Personal key form visited')
-  end
+# Personal key reactivation visited
+def personal_key_reactivation_visited
+  track_event('Personal key reactivation: Personal key form visited')
+end
 
-  # @param [Boolean] personal_key_present if personal key is present
-  # Personal key viewed
-  def personal_key_viewed(personal_key_present:, **extra)
-    track_event(
-      'Personal key viewed',
-      personal_key_present: personal_key_present,
-      **extra,
-    )
-  end
+# @param [Boolean] personal_key_present if personal key is present
+# Personal key viewed
+def personal_key_viewed(personal_key_present:, **extra)
+  track_event(
+    'Personal key viewed',
+    personal_key_present: personal_key_present,
+    **extra,
+  )
+end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] delivery_preference
-  # @param [Integer] phone_configuration_id
-  # @param [Boolean] make_default_number
-  # User has submitted a change in phone number
-  def phone_change_submitted(
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [String] delivery_preference
+# @param [Integer] phone_configuration_id
+# @param [Boolean] make_default_number
+# User has submitted a change in phone number
+def phone_change_submitted(
+  success:,
+  errors:,
+  delivery_preference:,
+  phone_configuration_id:,
+  make_default_number:,
+  **extra
+)
+  track_event(
+    'Phone Number Change: Form submitted',
+    success: success,
+    errors: errors,
+    delivery_preference: delivery_preference,
+    phone_configuration_id: phone_configuration_id,
+    make_default_number: make_default_number,
+    **extra,
+  )
+end
+
+# User has viewed the page to change their phone number
+def phone_change_viewed
+  track_event('Phone Number Change: Visited')
+end
+
+# @param [Boolean] success
+# @param [Integer] phone_configuration_id
+# tracks a phone number deletion event
+def phone_deletion(success:, phone_configuration_id:, **extra)
+  track_event(
+    'Phone Number Deletion: Submitted',
+    success: success,
+    phone_configuration_id: phone_configuration_id,
+    **extra,
+  )
+end
+
+# @param [String] country_code The new selected country code
+# User changes the selected country in the frontend phone input component
+def phone_input_country_changed(country_code:, **extra)
+  track_event(:phone_input_country_changed, country_code:, **extra)
+end
+
+# @param [Boolean] success
+# @param [Hash] error_details
+# @param [Integer] configuration_id
+# Tracks when user attempts to delete a PIV/CAC configuraton
+def piv_cac_delete_submitted(
+  success:,
+  configuration_id:,
+  error_details: nil,
+  **extra
+)
+  track_event(
+    :piv_cac_delete_submitted,
     success:,
-    errors:,
-    delivery_preference:,
-    phone_configuration_id:,
-    make_default_number:,
-    **extra
+    error_details:,
+    configuration_id:,
+    **extra,
   )
-    track_event(
-      'Phone Number Change: Form submitted',
-      success: success,
-      errors: errors,
-      delivery_preference: delivery_preference,
-      phone_configuration_id: phone_configuration_id,
-      make_default_number: make_default_number,
-      **extra,
-    )
-  end
+end
 
-  # User has viewed the page to change their phone number
-  def phone_change_viewed
-    track_event('Phone Number Change: Visited')
-  end
+# @identity.idp.previous_event_name User Registration: piv cac disabled
+# @identity.idp.previous_event_name PIV CAC disabled
+# Tracks when user's piv cac is disabled
+def piv_cac_disabled
+  track_event(:piv_cac_disabled)
+end
 
-  # @param [Boolean] success
-  # @param [Integer] phone_configuration_id
-  # tracks a phone number deletion event
-  def phone_deletion(success:, phone_configuration_id:, **extra)
-    track_event(
-      'Phone Number Deletion: Submitted',
-      success: success,
-      phone_configuration_id: phone_configuration_id,
-      **extra,
-    )
-  end
+# @identity.idp.previous_event_name PIV/CAC login
+# @param [Boolean] success
+# @param [Hash] errors
+# tracks piv cac login event
+def piv_cac_login(success:, errors:, **extra)
+  track_event(
+    :piv_cac_login,
+    success: success,
+    errors: errors,
+    **extra,
+  )
+end
 
-  # @param [String] country_code The new selected country code
-  # User changes the selected country in the frontend phone input component
-  def phone_input_country_changed(country_code:, **extra)
-    track_event(:phone_input_country_changed, country_code:, **extra)
-  end
+def piv_cac_login_visited
+  track_event(:piv_cac_login_visited)
+end
 
-  # @param [Boolean] success
-  # @param [Hash] error_details
-  # @param [Integer] configuration_id
-  # Tracks when user attempts to delete a PIV/CAC configuraton
-  def piv_cac_delete_submitted(
+# @identity.idp.previous_event_name User Registration: piv cac setup visited
+# @identity.idp.previous_event_name PIV CAC setup visited
+# Tracks when user's piv cac setup
+# @param [Boolean] in_account_creation_flow
+def piv_cac_setup_visited(in_account_creation_flow:, **extra)
+  track_event(
+    :piv_cac_setup_visited,
+    in_account_creation_flow:,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] error_details
+# @param [Integer] configuration_id
+# Tracks when user submits a name change for a PIV/CAC configuraton
+def piv_cac_update_name_submitted(
     success:,
     configuration_id:,
     error_details: nil,
     **extra
   )
-    track_event(
-      :piv_cac_delete_submitted,
-      success:,
-      error_details:,
-      configuration_id:,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name User Registration: piv cac disabled
-  # @identity.idp.previous_event_name PIV CAC disabled
-  # Tracks when user's piv cac is disabled
-  def piv_cac_disabled
-    track_event(:piv_cac_disabled)
-  end
-
-  # @identity.idp.previous_event_name PIV/CAC login
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # tracks piv cac login event
-  def piv_cac_login(success:, errors:, **extra)
-    track_event(
-      :piv_cac_login,
-      success: success,
-      errors: errors,
-      **extra,
-    )
-  end
-
-  def piv_cac_login_visited
-    track_event(:piv_cac_login_visited)
-  end
-
-  # @identity.idp.previous_event_name User Registration: piv cac setup visited
-  # @identity.idp.previous_event_name PIV CAC setup visited
-  # Tracks when user's piv cac setup
-  # @param [Boolean] in_account_creation_flow
-  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
-    track_event(
-      :piv_cac_setup_visited,
-      in_account_creation_flow:,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] error_details
-  # @param [Integer] configuration_id
-  # Tracks when user submits a name change for a PIV/CAC configuraton
-  def piv_cac_update_name_submitted(
-      success:,
-      configuration_id:,
-      error_details: nil,
-      **extra
-    )
-    track_event(
-      :piv_cac_update_name_submitted,
-      success:,
-      error_details:,
-      configuration_id:,
-      **extra,
-    )
-  end
-
-  # @param [String] redirect_url URL user was directed to
-  # @param [String, nil] step which step
-  # @param [String, nil] location which part of a step, if applicable
-  # @param ["idv", String, nil] flow which flow
-  # User was redirected to the login.gov policy page
-  def policy_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
-    track_event(
-      'Policy Page Redirect',
-      redirect_url: redirect_url,
-      step: step,
-      location: location,
-      flow: flow,
-      **extra,
-    )
-  end
-
-  # @param [String] error
-  # Tracks if a Profile encryption is invalid
-  def profile_encryption_invalid(error:, **extra)
-    track_event('Profile Encryption: Invalid', error: error, **extra)
-  end
-
-  # @see #profile_personal_key_create_notifications
-  # User has chosen to receive a new personal key
-  def profile_personal_key_create
-    track_event('Profile: Created new personal key')
-  end
-
-  # @param [true] success this event always succeeds
-  # @param [Integer] emails number of email addresses the notification was sent to
-  # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
-  # was notified
-  # User has chosen to receive a new personal key, contains stats about notifications that
-  # were sent to phone numbers and email addresses for the user
-  def profile_personal_key_create_notifications(success:, emails:, sms_message_ids:, **extra)
-    track_event(
-      'Profile: Created new personal key notifications',
-      success: success,
-      emails: emails,
-      sms_message_ids: sms_message_ids,
-      **extra,
-    )
-  end
-
-  # User has visited the page that lets them confirm if they want a new personal key
-  def profile_personal_key_visit
-    track_event('Profile: Visited new personal key')
-  end
-
-  # @identity.idp.previous_event_name Proofing Address Timeout
-  # The job for address verification (PhoneFinder) did not record a result in the expected
-  # place during the expected time frame
-  def proofing_address_result_missing
-    track_event('Proofing Address Result Missing')
-  end
-
-  # @identity.idp.previous_event_name Proofing Document Timeout
-  # The job for document authentication did not record a result in the expected
-  # place during the expected time frame
-  def proofing_document_result_missing
-    track_event('Proofing Document Result Missing')
-  end
-
-  # Tracks when a user triggered a rate limiter
-  # @param [String] limiter_type
-  # @identity.idp.previous_event_name Throttler Rate Limit Triggered
-  def rate_limit_reached(limiter_type:, **extra)
-    track_event(
-      'Rate Limit Reached',
-      limiter_type: limiter_type,
-      **extra,
-    )
-  end
-
-  # Rate limit triggered
-  # @param [String] type
-  def rate_limit_triggered(type:, **extra)
-    track_event('Rate Limit Triggered', type: type, **extra)
-  end
-
-  # Account profile reactivation submitted
-  def reactivate_account_submit
-    track_event('Reactivate Account Submitted')
-  end
-
-  # Submission event for the "verify password" page the user sees after entering their personal key.
-  # @param [Boolean] success Whether the form was submitted successfully.
-  def reactivate_account_verify_password_submitted(success:, **extra)
-    track_event(:reactivate_account_verify_password_submitted, success: success, **extra)
-  end
-
-  # Visit event for the "verify password" page the user sees after entering their personal key.
-  def reactivate_account_verify_password_visited(**extra)
-    track_event(:reactivate_account_verify_password_visited, **extra)
-  end
-
-  # Account profile reactivation page visited
-  def reactivate_account_visit
-    track_event('Reactivate Account Visited')
-  end
-
-  # The result of a reCAPTCHA verification request was received
-  # @param [Hash] recaptcha_result Full reCAPTCHA response body
-  # @param [Float] score_threshold Minimum value for considering passing result
-  # @param [Boolean] evaluated_as_valid Whether result was considered valid
-  # @param [String] validator_class Class name of validator
-  # @param [String, nil] exception_class Class name of exception, if error occurred
-  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
-  # @param [String] recaptcha_version
-  def recaptcha_verify_result_received(
-    recaptcha_result:,
-    score_threshold:,
-    evaluated_as_valid:,
-    validator_class:,
-    exception_class:,
-    phone_country_code: nil,
-    recaptcha_version: nil,
-    **extra
+  track_event(
+    :piv_cac_update_name_submitted,
+    success:,
+    error_details:,
+    configuration_id:,
+    **extra,
   )
-    track_event(
-      'reCAPTCHA verify result received',
-      {
-        recaptcha_result:,
-        score_threshold:,
-        evaluated_as_valid:,
-        validator_class:,
-        exception_class:,
-        phone_country_code:,
-        recaptcha_version:,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # User authenticated by a remembered device
-  # @param [DateTime] cookie_created_at time the remember device cookie was created
-  # @param [Integer] cookie_age_seconds age of the cookie in seconds
-  def remembered_device_used_for_authentication(
-    cookie_created_at:,
-    cookie_age_seconds:,
-    **extra
+# @param [String] redirect_url URL user was directed to
+# @param [String, nil] step which step
+# @param [String, nil] location which part of a step, if applicable
+# @param ["idv", String, nil] flow which flow
+# User was redirected to the login.gov policy page
+def policy_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+  track_event(
+    'Policy Page Redirect',
+    redirect_url: redirect_url,
+    step: step,
+    location: location,
+    flow: flow,
+    **extra,
   )
-    track_event(
-      'Remembered device used for authentication',
-      cookie_created_at: cookie_created_at,
-      cookie_age_seconds: cookie_age_seconds,
-      **extra,
-    )
-  end
+end
 
-  # Service provider completed remote logout
-  # @param [String] service_provider
-  # @param [String] user_id
-  def remote_logout_completed(
-    service_provider:,
-    user_id:,
-    **extra
+# @param [String] error
+# Tracks if a Profile encryption is invalid
+def profile_encryption_invalid(error:, **extra)
+  track_event('Profile Encryption: Invalid', error: error, **extra)
+end
+
+# @see #profile_personal_key_create_notifications
+# User has chosen to receive a new personal key
+def profile_personal_key_create
+  track_event('Profile: Created new personal key')
+end
+
+# @param [true] success this event always succeeds
+# @param [Integer] emails number of email addresses the notification was sent to
+# @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
+# was notified
+# User has chosen to receive a new personal key, contains stats about notifications that
+# were sent to phone numbers and email addresses for the user
+def profile_personal_key_create_notifications(success:, emails:, sms_message_ids:, **extra)
+  track_event(
+    'Profile: Created new personal key notifications',
+    success: success,
+    emails: emails,
+    sms_message_ids: sms_message_ids,
+    **extra,
   )
-    track_event(
-      'Remote Logout completed',
-      service_provider: service_provider,
-      user_id: user_id,
-      **extra,
-    )
-  end
+end
 
-  # Service provider initiated remote logout
-  # @param [String] service_provider
-  # @param [Boolean] saml_request_valid
-  def remote_logout_initiated(
-    service_provider:,
-    saml_request_valid:,
-    **extra
+# User has visited the page that lets them confirm if they want a new personal key
+def profile_personal_key_visit
+  track_event('Profile: Visited new personal key')
+end
+
+# @identity.idp.previous_event_name Proofing Address Timeout
+# The job for address verification (PhoneFinder) did not record a result in the expected
+# place during the expected time frame
+def proofing_address_result_missing
+  track_event('Proofing Address Result Missing')
+end
+
+# @identity.idp.previous_event_name Proofing Document Timeout
+# The job for document authentication did not record a result in the expected
+# place during the expected time frame
+def proofing_document_result_missing
+  track_event('Proofing Document Result Missing')
+end
+
+# Tracks when a user triggered a rate limiter
+# @param [String] limiter_type
+# @identity.idp.previous_event_name Throttler Rate Limit Triggered
+def rate_limit_reached(limiter_type:, **extra)
+  track_event(
+    'Rate Limit Reached',
+    limiter_type: limiter_type,
+    **extra,
   )
-    track_event(
-      'Remote Logout initiated',
-      service_provider: service_provider,
-      saml_request_valid: saml_request_valid,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success
-  # Tracks request for resending confirmation for new emails to an account
-  def resend_add_email_request(success:, **extra)
-    track_event(
-      'Resend Add Email Requested',
-      success: success,
-      **extra,
-    )
-  end
+# Rate limit triggered
+# @param [String] type
+def rate_limit_triggered(type:, **extra)
+  track_event('Rate Limit Triggered', type: type, **extra)
+end
 
-  # A response timed out
-  # @param [String] backtrace
-  # @param [String] exception_message
-  # @param [String] exception_class
-  def response_timed_out(
-    backtrace:,
-    exception_message:,
-    exception_class:,
-    **extra
+# Account profile reactivation submitted
+def reactivate_account_submit
+  track_event('Reactivate Account Submitted')
+end
+
+# Submission event for the "verify password" page the user sees after entering their personal key.
+# @param [Boolean] success Whether the form was submitted successfully.
+def reactivate_account_verify_password_submitted(success:, **extra)
+  track_event(:reactivate_account_verify_password_submitted, success: success, **extra)
+end
+
+# Visit event for the "verify password" page the user sees after entering their personal key.
+def reactivate_account_verify_password_visited(**extra)
+  track_event(:reactivate_account_verify_password_visited, **extra)
+end
+
+# Account profile reactivation page visited
+def reactivate_account_visit
+  track_event('Reactivate Account Visited')
+end
+
+# The result of a reCAPTCHA verification request was received
+# @param [Hash] recaptcha_result Full reCAPTCHA response body
+# @param [Float] score_threshold Minimum value for considering passing result
+# @param [Boolean] evaluated_as_valid Whether result was considered valid
+# @param [String] validator_class Class name of validator
+# @param [String, nil] exception_class Class name of exception, if error occurred
+# @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+# @param [String] recaptcha_version
+def recaptcha_verify_result_received(
+  recaptcha_result:,
+  score_threshold:,
+  evaluated_as_valid:,
+  validator_class:,
+  exception_class:,
+  phone_country_code: nil,
+  recaptcha_version: nil,
+  **extra
+)
+  track_event(
+    'reCAPTCHA verify result received',
+    {
+      recaptcha_result:,
+      score_threshold:,
+      evaluated_as_valid:,
+      validator_class:,
+      exception_class:,
+      phone_country_code:,
+      recaptcha_version:,
+      **extra,
+    }.compact,
   )
-    track_event(
-      'Response Timed Out',
-      backtrace: backtrace,
-      exception_message: exception_message,
-      exception_class: exception_class,
-      **extra,
-    )
-  end
+end
 
-  # User cancelled the process and returned to the sp
-  # @param [String] redirect_url the url of the service provider
-  # @param [String] flow
-  # @param [String] step
-  # @param [String] location
-  def return_to_sp_cancelled(
-    redirect_url:,
-    step: nil,
-    location: nil,
-    flow: nil,
-    **extra
+# User authenticated by a remembered device
+# @param [DateTime] cookie_created_at time the remember device cookie was created
+# @param [Integer] cookie_age_seconds age of the cookie in seconds
+def remembered_device_used_for_authentication(
+  cookie_created_at:,
+  cookie_age_seconds:,
+  **extra
+)
+  track_event(
+    'Remembered device used for authentication',
+    cookie_created_at: cookie_created_at,
+    cookie_age_seconds: cookie_age_seconds,
+    **extra,
   )
-    track_event(
-      'Return to SP: Cancelled',
-      redirect_url: redirect_url,
-      step: step,
-      location: location,
-      flow: flow,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when a user is redirected back to the service provider after failing to proof.
-  # @param [String] redirect_url the url of the service provider
-  # @param [String] flow
-  # @param [String] step
-  # @param [String] location
-  def return_to_sp_failure_to_proof(redirect_url:, flow: nil, step: nil, location: nil, **extra)
-    track_event(
-      'Return to SP: Failed to proof',
-      redirect_url: redirect_url,
-      flow: flow,
-      step: step,
-      location: location,
-      **extra,
-    )
-  end
+# Service provider completed remote logout
+# @param [String] service_provider
+# @param [String] user_id
+def remote_logout_completed(
+  service_provider:,
+  user_id:,
+  **extra
+)
+  track_event(
+    'Remote Logout completed',
+    service_provider: service_provider,
+    user_id: user_id,
+    **extra,
+  )
+end
 
-  # Tracks when risc security event is pushed
-  # @param [String] client_id
-  # @param [String] event_type
-  # @param [Boolean] success
-  # @param ['async'|'direct'] transport
-  # @param [Integer] status
-  # @param [String] error
-  def risc_security_event_pushed(
+# Service provider initiated remote logout
+# @param [String] service_provider
+# @param [Boolean] saml_request_valid
+def remote_logout_initiated(
+  service_provider:,
+  saml_request_valid:,
+  **extra
+)
+  track_event(
+    'Remote Logout initiated',
+    service_provider: service_provider,
+    saml_request_valid: saml_request_valid,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# Tracks request for resending confirmation for new emails to an account
+def resend_add_email_request(success:, **extra)
+  track_event(
+    'Resend Add Email Requested',
+    success: success,
+    **extra,
+  )
+end
+
+# A response timed out
+# @param [String] backtrace
+# @param [String] exception_message
+# @param [String] exception_class
+def response_timed_out(
+  backtrace:,
+  exception_message:,
+  exception_class:,
+  **extra
+)
+  track_event(
+    'Response Timed Out',
+    backtrace: backtrace,
+    exception_message: exception_message,
+    exception_class: exception_class,
+    **extra,
+  )
+end
+
+# User cancelled the process and returned to the sp
+# @param [String] redirect_url the url of the service provider
+# @param [String] flow
+# @param [String] step
+# @param [String] location
+def return_to_sp_cancelled(
+  redirect_url:,
+  step: nil,
+  location: nil,
+  flow: nil,
+  **extra
+)
+  track_event(
+    'Return to SP: Cancelled',
+    redirect_url: redirect_url,
+    step: step,
+    location: location,
+    flow: flow,
+    **extra,
+  )
+end
+
+# Tracks when a user is redirected back to the service provider after failing to proof.
+# @param [String] redirect_url the url of the service provider
+# @param [String] flow
+# @param [String] step
+# @param [String] location
+def return_to_sp_failure_to_proof(redirect_url:, flow: nil, step: nil, location: nil, **extra)
+  track_event(
+    'Return to SP: Failed to proof',
+    redirect_url: redirect_url,
+    flow: flow,
+    step: step,
+    location: location,
+    **extra,
+  )
+end
+
+# Tracks when risc security event is pushed
+# @param [String] client_id
+# @param [String] event_type
+# @param [Boolean] success
+# @param ['async'|'direct'] transport
+# @param [Integer] status
+# @param [String] error
+def risc_security_event_pushed(
+  client_id:,
+  event_type:,
+  success:,
+  transport:,
+  status: nil,
+  error: nil,
+  **extra
+)
+  track_event(
+    :risc_security_event_pushed,
     client_id:,
+    error:,
     event_type:,
+    status:,
     success:,
     transport:,
-    status: nil,
-    error: nil,
-    **extra
+    **extra,
   )
-    track_event(
-      :risc_security_event_pushed,
-      client_id:,
-      error:,
-      event_type:,
-      status:,
-      success:,
-      transport:,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when rules of use is submitted with a success or failure
-  # @param [Boolean] success
-  # @param [Hash] errors
-  def rules_of_use_submitted(success: nil, errors: nil, **extra)
-    track_event(
-      'Rules of Use Submitted',
-      success: success,
-      errors: errors,
-      **extra,
-    )
-  end
-
-  # Tracks when rules of use is visited
-  def rules_of_use_visit
-    track_event('Rules of Use Visited')
-  end
-
-  # Record SAML authentication payload Hash
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] nameid_format
-  # @param [Array] authn_context
-  # @param [String] authn_context_comparison
-  # @param [String] service_provider
-  def saml_auth(
-    success:,
-    errors:,
-    nameid_format:,
-    authn_context:,
-    authn_context_comparison:,
-    service_provider:,
-    **extra
+# Tracks when rules of use is submitted with a success or failure
+# @param [Boolean] success
+# @param [Hash] errors
+def rules_of_use_submitted(success: nil, errors: nil, **extra)
+  track_event(
+    'Rules of Use Submitted',
+    success: success,
+    errors: errors,
+    **extra,
   )
-    track_event(
-      'SAML Auth',
-      success: success,
-      errors: errors,
-      nameid_format: nameid_format,
-      authn_context: authn_context,
-      authn_context_comparison: authn_context_comparison,
+end
+
+# Tracks when rules of use is visited
+def rules_of_use_visit
+  track_event('Rules of Use Visited')
+end
+
+# Record SAML authentication payload Hash
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [String] nameid_format
+# @param [Array] authn_context
+# @param [String] authn_context_comparison
+# @param [String] service_provider
+def saml_auth(
+  success:,
+  errors:,
+  nameid_format:,
+  authn_context:,
+  authn_context_comparison:,
+  service_provider:,
+  **extra
+)
+  track_event(
+    'SAML Auth',
+    success: success,
+    errors: errors,
+    nameid_format: nameid_format,
+    authn_context: authn_context,
+    authn_context_comparison: authn_context_comparison,
+    service_provider: service_provider,
+    **extra,
+  )
+end
+
+# @param [Integer] requested_ial
+# @param [String,nil] requested_aal_authn_context
+# @param [Boolean,nil] force_authn
+# @param [String] service_provider
+# An external request for SAML Authentication was received
+def saml_auth_request(
+  requested_ial:,
+  requested_aal_authn_context:,
+  force_authn:,
+  service_provider:,
+  **extra
+)
+  track_event(
+    'SAML Auth Request',
+    {
+      requested_ial: requested_ial,
+      requested_aal_authn_context: requested_aal_authn_context,
+      force_authn: force_authn,
       service_provider: service_provider,
       **extra,
-    )
-  end
-
-  # @param [Integer] requested_ial
-  # @param [String,nil] requested_aal_authn_context
-  # @param [Boolean,nil] force_authn
-  # @param [String] service_provider
-  # An external request for SAML Authentication was received
-  def saml_auth_request(
-    requested_ial:,
-    requested_aal_authn_context:,
-    force_authn:,
-    service_provider:,
-    **extra
+    }.compact,
   )
-    track_event(
-      'SAML Auth Request',
-      {
-        requested_ial: requested_ial,
-        requested_aal_authn_context: requested_aal_authn_context,
-        force_authn: force_authn,
-        service_provider: service_provider,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # User dismissed the second MFA reminder page
-  # @param [Boolean] opted_to_add Whether the user chose to add a method
-  def second_mfa_reminder_dismissed(opted_to_add:, **extra)
-    track_event('Second MFA Reminder Dismissed', opted_to_add:, **extra)
-  end
+# User dismissed the second MFA reminder page
+# @param [Boolean] opted_to_add Whether the user chose to add a method
+def second_mfa_reminder_dismissed(opted_to_add:, **extra)
+  track_event('Second MFA Reminder Dismissed', opted_to_add:, **extra)
+end
 
-  # User visited the second MFA reminder page
-  def second_mfa_reminder_visit
-    track_event('Second MFA Reminder Visited')
-  end
+# User visited the second MFA reminder page
+def second_mfa_reminder_visit
+  track_event('Second MFA Reminder Visited')
+end
 
-  # Tracks when security event is received
-  # @param [Boolean] success
-  # @param [String] error_code
-  # @param [Hash] errors
-  # @param [String] jti
-  # @param [String] user_id
-  # @param [String] client_id
-  def security_event_received(
-    success:,
-    error_code: nil,
-    errors: nil,
-    jti: nil,
-    user_id: nil,
-    client_id: nil,
-    **extra
+# Tracks when security event is received
+# @param [Boolean] success
+# @param [String] error_code
+# @param [Hash] errors
+# @param [String] jti
+# @param [String] user_id
+# @param [String] client_id
+def security_event_received(
+  success:,
+  error_code: nil,
+  errors: nil,
+  jti: nil,
+  user_id: nil,
+  client_id: nil,
+  **extra
+)
+  track_event(
+    'RISC: Security event received',
+    success: success,
+    error_code: error_code,
+    errors: errors,
+    jti: jti,
+    user_id: user_id,
+    client_id: client_id,
+    **extra,
   )
-    track_event(
-      'RISC: Security event received',
+end
+
+# tracks if the session is kept alive
+def session_kept_alive
+  track_event('Session Kept Alive')
+end
+
+# tracks if the session timed out
+def session_timed_out
+  track_event('Session Timed Out')
+end
+
+# tracks when a user's session is timed out
+def session_total_duration_timeout
+  track_event('User Maximum Session Length Exceeded')
+end
+
+# @param [String] flash
+# tracks when a user visits the sign in page
+def sign_in_page_visit(flash:, **extra)
+  track_event('Sign in page visited', flash:, **extra)
+end
+
+# @param [Boolean] success
+# @param [Boolean] new_user
+# @param [Boolean] has_other_auth_methods
+# @param [Integer] phone_configuration_id
+# tracks when a user opts into SMS
+def sms_opt_in_submitted(
+  success:,
+  new_user:,
+  has_other_auth_methods:,
+  phone_configuration_id:,
+  **extra
+)
+  track_event(
+    'SMS Opt-In: Submitted',
+    success: success,
+    new_user: new_user,
+    has_other_auth_methods: has_other_auth_methods,
+    phone_configuration_id: phone_configuration_id,
+    **extra,
+  )
+end
+
+# @param [Boolean] new_user
+# @param [Boolean] has_other_auth_methods
+# @param [Integer] phone_configuration_id
+# tracks when a user visits the sms opt in page
+def sms_opt_in_visit(
+  new_user:,
+  has_other_auth_methods:,
+  phone_configuration_id:,
+  **extra
+)
+  track_event(
+    'SMS Opt-In: Visited',
+    new_user: new_user,
+    has_other_auth_methods: has_other_auth_methods,
+    phone_configuration_id: phone_configuration_id,
+    **extra,
+  )
+end
+
+# Tracks when a user is bounced back from the service provider due to an integration issue.
+def sp_handoff_bounced_detected
+  track_event('SP handoff bounced detected')
+end
+
+# Tracks when a user visits the bounced page.
+def sp_handoff_bounced_visit
+  track_event('SP handoff bounced visited')
+end
+
+# Tracks when a user visits the "This agency no longer uses Login.gov" page.
+def sp_inactive_visit
+  track_event('SP inactive visited')
+end
+
+# Tracks when a user is redirected back to the service provider
+# @param [Integer] ial
+# @param [Integer] billed_ial
+# @param [String, nil] sign_in_flow
+def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, **extra)
+  track_event(
+    'SP redirect initiated',
+    ial:,
+    billed_ial:,
+    sign_in_flow:,
+    **extra,
+  )
+end
+
+# Tracks when service provider consent is revoked
+# @param [String] issuer issuer of the service provider consent to be revoked
+def sp_revoke_consent_revoked(issuer:, **extra)
+  track_event(
+    'SP Revoke Consent: Revoked',
+    issuer: issuer,
+    **extra,
+  )
+end
+
+# Tracks when the page to revoke consent (unlink from) a service provider visited
+# @param [String] issuer which issuer
+def sp_revoke_consent_visited(issuer:, **extra)
+  track_event(
+    'SP Revoke Consent: Visited',
+    issuer: issuer,
+    **extra,
+  )
+end
+
+# @param [String] area_code
+# @param [String] country_code
+# @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+# @param [String] context the context of the OTP, either "authentication" for confirmed phones
+# or "confirmation" for unconfirmed
+# @param ["sms","voice"] otp_delivery_preference the channel used to send the message
+# @param [Boolean] resend
+# @param [Hash] telephony_response
+# @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
+# @param [Boolean] success
+# A phone one-time password send was attempted
+def telephony_otp_sent(
+  area_code:,
+  country_code:,
+  phone_fingerprint:,
+  context:,
+  otp_delivery_preference:,
+  resend:,
+  telephony_response:,
+  adapter:,
+  success:,
+  **extra
+)
+  track_event(
+    'Telephony: OTP sent',
+    {
+      area_code: area_code,
+      country_code: country_code,
+      phone_fingerprint: phone_fingerprint,
+      context: context,
+      otp_delivery_preference: otp_delivery_preference,
+      resend: resend,
+      telephony_response: telephony_response,
+      adapter: adapter,
       success: success,
-      error_code: error_code,
-      errors: errors,
-      jti: jti,
-      user_id: user_id,
-      client_id: client_id,
       **extra,
-    )
-  end
-
-  # tracks if the session is kept alive
-  def session_kept_alive
-    track_event('Session Kept Alive')
-  end
-
-  # tracks if the session timed out
-  def session_timed_out
-    track_event('Session Timed Out')
-  end
-
-  # tracks when a user's session is timed out
-  def session_total_duration_timeout
-    track_event('User Maximum Session Length Exceeded')
-  end
-
-  # @param [String] flash
-  # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, **extra)
-    track_event('Sign in page visited', flash:, **extra)
-  end
-
-  # @param [Boolean] success
-  # @param [Boolean] new_user
-  # @param [Boolean] has_other_auth_methods
-  # @param [Integer] phone_configuration_id
-  # tracks when a user opts into SMS
-  def sms_opt_in_submitted(
-    success:,
-    new_user:,
-    has_other_auth_methods:,
-    phone_configuration_id:,
-    **extra
+    },
   )
-    track_event(
-      'SMS Opt-In: Submitted',
-      success: success,
-      new_user: new_user,
-      has_other_auth_methods: has_other_auth_methods,
-      phone_configuration_id: phone_configuration_id,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] new_user
-  # @param [Boolean] has_other_auth_methods
-  # @param [Integer] phone_configuration_id
-  # tracks when a user visits the sms opt in page
-  def sms_opt_in_visit(
-    new_user:,
-    has_other_auth_methods:,
-    phone_configuration_id:,
-    **extra
-  )
-    track_event(
-      'SMS Opt-In: Visited',
-      new_user: new_user,
-      has_other_auth_methods: has_other_auth_methods,
-      phone_configuration_id: phone_configuration_id,
-      **extra,
-    )
-  end
-
-  # Tracks when a user is bounced back from the service provider due to an integration issue.
-  def sp_handoff_bounced_detected
-    track_event('SP handoff bounced detected')
-  end
-
-  # Tracks when a user visits the bounced page.
-  def sp_handoff_bounced_visit
-    track_event('SP handoff bounced visited')
-  end
-
-  # Tracks when a user visits the "This agency no longer uses Login.gov" page.
-  def sp_inactive_visit
-    track_event('SP inactive visited')
-  end
-
-  # Tracks when a user is redirected back to the service provider
-  # @param [Integer] ial
-  # @param [Integer] billed_ial
-  # @param [String, nil] sign_in_flow
-  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, **extra)
-    track_event(
-      'SP redirect initiated',
-      ial:,
-      billed_ial:,
-      sign_in_flow:,
-      **extra,
-    )
-  end
-
-  # Tracks when service provider consent is revoked
-  # @param [String] issuer issuer of the service provider consent to be revoked
-  def sp_revoke_consent_revoked(issuer:, **extra)
-    track_event(
-      'SP Revoke Consent: Revoked',
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # Tracks when the page to revoke consent (unlink from) a service provider visited
-  # @param [String] issuer which issuer
-  def sp_revoke_consent_visited(issuer:, **extra)
-    track_event(
-      'SP Revoke Consent: Visited',
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  # @param [String] area_code
-  # @param [String] country_code
-  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
-  # @param [String] context the context of the OTP, either "authentication" for confirmed phones
-  # or "confirmation" for unconfirmed
-  # @param ["sms","voice"] otp_delivery_preference the channel used to send the message
-  # @param [Boolean] resend
-  # @param [Hash] telephony_response
-  # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
-  # @param [Boolean] success
-  # A phone one-time password send was attempted
-  def telephony_otp_sent(
-    area_code:,
-    country_code:,
-    phone_fingerprint:,
-    context:,
-    otp_delivery_preference:,
-    resend:,
-    telephony_response:,
-    adapter:,
-    success:,
-    **extra
-  )
-    track_event(
-      'Telephony: OTP sent',
-      {
-        area_code: area_code,
-        country_code: country_code,
-        phone_fingerprint: phone_fingerprint,
-        context: context,
-        otp_delivery_preference: otp_delivery_preference,
-        resend: resend,
-        telephony_response: telephony_response,
-        adapter: adapter,
-        success: success,
-        **extra,
-      },
-    )
-  end
-
-  # Tracks when a user visits TOTP device setup
-  # @param [Boolean] user_signed_up
-  # @param [Boolean] totp_secret_present
-  # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] in_account_creation_flow
-  def totp_setup_visit(
+# Tracks when a user visits TOTP device setup
+# @param [Boolean] user_signed_up
+# @param [Boolean] totp_secret_present
+# @param [Integer] enabled_mfa_methods_count
+# @param [Boolean] in_account_creation_flow
+def totp_setup_visit(
+  user_signed_up:,
+  totp_secret_present:,
+  enabled_mfa_methods_count:,
+  in_account_creation_flow:,
+  **extra
+)
+  track_event(
+    'TOTP Setup Visited',
     user_signed_up:,
     totp_secret_present:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
-    **extra
+    **extra,
   )
-    track_event(
-      'TOTP Setup Visited',
-      user_signed_up:,
-      totp_secret_present:,
-      enabled_mfa_methods_count:,
-      in_account_creation_flow:,
-      **extra,
-    )
-  end
+end
 
-  # Tracks when a user disabled a TOTP device
-  def totp_user_disabled
-    track_event('TOTP: User Disabled')
-  end
+# Tracks when a user disabled a TOTP device
+def totp_user_disabled
+  track_event('TOTP: User Disabled')
+end
 
-  # @param [String] controller
-  # @param [String] referer
-  # @param [Boolean] user_signed_in
-  # Redirect was almost sent to an invalid external host unexpectedly
-  def unsafe_redirect_error(
-    controller:,
-    referer:,
-    user_signed_in: nil,
-    **extra
+# @param [String] controller
+# @param [String] referer
+# @param [Boolean] user_signed_in
+# Redirect was almost sent to an invalid external host unexpectedly
+def unsafe_redirect_error(
+  controller:,
+  referer:,
+  user_signed_in: nil,
+  **extra
+)
+  track_event(
+    'Unsafe Redirect',
+    controller: controller,
+    referer: referer,
+    user_signed_in: user_signed_in,
+    **extra,
   )
-    track_event(
-      'Unsafe Redirect',
-      controller: controller,
-      referer: referer,
-      user_signed_in: user_signed_in,
-      **extra,
-    )
-  end
+end
 
-  # User has attempted to access an action that requires re-authenticating
-  # @param [String] auth_method
-  # @param [String] authenticated_at
-  def user_2fa_reauthentication_required(auth_method:, authenticated_at:, **extra)
-    track_event(
-      'User 2FA Reauthentication Required',
-      auth_method: auth_method,
-      authenticated_at: authenticated_at,
-      **extra,
-    )
-  end
-
-  # User has been marked as authenticated
-  # @param [String] authentication_type
-  def user_marked_authed(authentication_type:, **extra)
-    track_event(
-      'User marked authenticated',
-      authentication_type: authentication_type,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Integer] enabled_mfa_methods_count
-  # @param [Integer] selected_mfa_count
-  # @param ['voice', 'auth_app'] selection
-  # Tracks when the the user has selected and submitted MFA auth methods on user registration
-  def user_registration_2fa_setup(
-    success:,
-    errors: nil,
-    selected_mfa_count: nil,
-    enabled_mfa_methods_count: nil,
-    selection: nil,
-    **extra
+# User has attempted to access an action that requires re-authenticating
+# @param [String] auth_method
+# @param [String] authenticated_at
+def user_2fa_reauthentication_required(auth_method:, authenticated_at:, **extra)
+  track_event(
+    'User 2FA Reauthentication Required',
+    auth_method: auth_method,
+    authenticated_at: authenticated_at,
+    **extra,
   )
-    track_event(
-      'User Registration: 2FA Setup',
-      {
-        success: success,
-        errors: errors,
-        selected_mfa_count: selected_mfa_count,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        selection: selection,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # Tracks when user visits MFA selection page
-  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
-  def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
-    track_event(
-      'User Registration: 2FA Setup visited',
-      enabled_mfa_methods_count:,
+# User has been marked as authenticated
+# @param [String] authentication_type
+def user_marked_authed(authentication_type:, **extra)
+  track_event(
+    'User marked authenticated',
+    authentication_type: authentication_type,
+    **extra,
+  )
+end
+
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Integer] enabled_mfa_methods_count
+# @param [Integer] selected_mfa_count
+# @param ['voice', 'auth_app'] selection
+# Tracks when the the user has selected and submitted MFA auth methods on user registration
+def user_registration_2fa_setup(
+  success:,
+  errors: nil,
+  selected_mfa_count: nil,
+  enabled_mfa_methods_count: nil,
+  selection: nil,
+  **extra
+)
+  track_event(
+    'User Registration: 2FA Setup',
+    {
+      success: success,
+      errors: errors,
+      selected_mfa_count: selected_mfa_count,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      selection: selection,
       **extra,
-    )
-  end
+    }.compact,
+  )
+end
 
-  # User registration has been handed off to agency page
-  # @param [Boolean] ial2
-  # @param [Integer] ialmax
-  # @param [String] service_provider_name
-  # @param [String] page_occurence
-  # @param [String] needs_completion_screen_reason
-  # @param [Array] sp_request_requested_attributes
-  # @param [Array] sp_session_requested_attributes
-  def user_registration_agency_handoff_page_visit(
-      ial2:,
-      service_provider_name:,
-      page_occurence:,
-      needs_completion_screen_reason:,
-      sp_session_requested_attributes:,
-      sp_request_requested_attributes: nil,
-      ialmax: nil,
-      **extra
-    )
-    track_event(
-      'User registration: agency handoff visited',
-      ial2: ial2,
-      ialmax: ialmax,
-      service_provider_name: service_provider_name,
-      page_occurence: page_occurence,
-      needs_completion_screen_reason: needs_completion_screen_reason,
-      sp_request_requested_attributes: sp_request_requested_attributes,
-      sp_session_requested_attributes: sp_session_requested_attributes,
-      **extra,
-    )
-  end
+# Tracks when user visits MFA selection page
+# @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
+def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
+  track_event(
+    'User Registration: 2FA Setup visited',
+    enabled_mfa_methods_count:,
+    **extra,
+  )
+end
 
-  # Tracks when user cancels registration
-  # @param [String] request_came_from the controller/action the request came from
-  def user_registration_cancellation(request_came_from:, **extra)
-    track_event(
-      'User registration: cancellation visited',
-      request_came_from: request_came_from,
-      **extra,
-    )
-  end
-
-  # Tracks when user completes registration
-  # @param [Boolean] ial2
-  # @param [Boolean] ialmax
-  # @param [String] service_provider_name
-  # @param [String] page_occurence
-  # @param [String] needs_completion_screen_reason
-  # @param [Array] sp_request_requested_attributes
-  # @param [Array] sp_session_requested_attributes
-  # @param [String, nil] disposable_email_domain Disposable email domain used for registration
-  def user_registration_complete(
+# User registration has been handed off to agency page
+# @param [Boolean] ial2
+# @param [Integer] ialmax
+# @param [String] service_provider_name
+# @param [String] page_occurence
+# @param [String] needs_completion_screen_reason
+# @param [Array] sp_request_requested_attributes
+# @param [Array] sp_session_requested_attributes
+def user_registration_agency_handoff_page_visit(
     ial2:,
     service_provider_name:,
     page_occurence:,
@@ -4724,301 +4682,341 @@ end
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
-    disposable_email_domain: nil,
     **extra
   )
-    track_event(
-      'User registration: complete',
-      ial2: ial2,
-      ialmax: ialmax,
-      service_provider_name: service_provider_name,
-      page_occurence: page_occurence,
-      needs_completion_screen_reason: needs_completion_screen_reason,
-      sp_request_requested_attributes: sp_request_requested_attributes,
-      sp_session_requested_attributes: sp_session_requested_attributes,
-      disposable_email_domain: disposable_email_domain,
+  track_event(
+    'User registration: agency handoff visited',
+    ial2: ial2,
+    ialmax: ialmax,
+    service_provider_name: service_provider_name,
+    page_occurence: page_occurence,
+    needs_completion_screen_reason: needs_completion_screen_reason,
+    sp_request_requested_attributes: sp_request_requested_attributes,
+    sp_session_requested_attributes: sp_session_requested_attributes,
+    **extra,
+  )
+end
+
+# Tracks when user cancels registration
+# @param [String] request_came_from the controller/action the request came from
+def user_registration_cancellation(request_came_from:, **extra)
+  track_event(
+    'User registration: cancellation visited',
+    request_came_from: request_came_from,
+    **extra,
+  )
+end
+
+# Tracks when user completes registration
+# @param [Boolean] ial2
+# @param [Boolean] ialmax
+# @param [String] service_provider_name
+# @param [String] page_occurence
+# @param [String] needs_completion_screen_reason
+# @param [Array] sp_request_requested_attributes
+# @param [Array] sp_session_requested_attributes
+# @param [String, nil] disposable_email_domain Disposable email domain used for registration
+def user_registration_complete(
+  ial2:,
+  service_provider_name:,
+  page_occurence:,
+  needs_completion_screen_reason:,
+  sp_session_requested_attributes:,
+  sp_request_requested_attributes: nil,
+  ialmax: nil,
+  disposable_email_domain: nil,
+  **extra
+)
+  track_event(
+    'User registration: complete',
+    ial2: ial2,
+    ialmax: ialmax,
+    service_provider_name: service_provider_name,
+    page_occurence: page_occurence,
+    needs_completion_screen_reason: needs_completion_screen_reason,
+    sp_request_requested_attributes: sp_request_requested_attributes,
+    sp_session_requested_attributes: sp_session_requested_attributes,
+    disposable_email_domain: disposable_email_domain,
+    **extra,
+  )
+end
+
+# Tracks when user submits registration email
+# @param [Boolean] success
+# @param [Boolean] rate_limited
+# @param [Hash] errors
+# @param [Hash] error_details
+# @param [String] user_id
+# @param [Boolean] email_already_exists
+# @param [String] domain_name
+def user_registration_email(
+  success:,
+  rate_limited:,
+  errors:,
+  error_details: nil,
+  user_id: nil,
+  email_already_exists: nil,
+  domain_name: nil,
+  **extra
+)
+  track_event(
+    'User Registration: Email Submitted',
+    {
+      success:,
+      rate_limited:,
+      errors:,
+      error_details:,
+      user_id:,
+      email_already_exists:,
+      domain_name:,
       **extra,
-    )
-  end
-
-  # Tracks when user submits registration email
-  # @param [Boolean] success
-  # @param [Boolean] rate_limited
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] user_id
-  # @param [Boolean] email_already_exists
-  # @param [String] domain_name
-  def user_registration_email(
-    success:,
-    rate_limited:,
-    errors:,
-    error_details: nil,
-    user_id: nil,
-    email_already_exists: nil,
-    domain_name: nil,
-    **extra
+    }.compact,
   )
-    track_event(
-      'User Registration: Email Submitted',
-      {
-        success:,
-        rate_limited:,
-        errors:,
-        error_details:,
-        user_id:,
-        email_already_exists:,
-        domain_name:,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # Tracks when user confirms registration email
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] user_id
-  def user_registration_email_confirmation(
-    success:,
-    errors:,
-    error_details: nil,
-    user_id: nil,
-    **extra
+# Tracks when user confirms registration email
+# @param [Boolean] success
+# @param [Hash] errors
+# @param [Hash] error_details
+# @param [String] user_id
+def user_registration_email_confirmation(
+  success:,
+  errors:,
+  error_details: nil,
+  user_id: nil,
+  **extra
+)
+  track_event(
+    'User Registration: Email Confirmation',
+    success: success,
+    errors: errors,
+    error_details: error_details,
+    user_id: user_id,
+    **extra,
   )
-    track_event(
-      'User Registration: Email Confirmation',
+end
+
+# Tracks when user visits enter email page
+def user_registration_enter_email_visit
+  track_event('User Registration: enter email visited')
+end
+
+# @param [Boolean] success
+# @param [Hash] mfa_method_counts
+# @param [Integer] enabled_mfa_methods_count
+# @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
+# @param [Hash] pii_like_keypaths
+# Tracks when a user has completed MFA setup
+def user_registration_mfa_setup_complete(
+  success:,
+  mfa_method_counts:,
+  enabled_mfa_methods_count:,
+  pii_like_keypaths:,
+  second_mfa_reminder_conversion: nil,
+  **extra
+)
+  track_event(
+    'User Registration: MFA Setup Complete',
+    {
       success: success,
-      errors: errors,
-      error_details: error_details,
-      user_id: user_id,
-      **extra,
-    )
-  end
-
-  # Tracks when user visits enter email page
-  def user_registration_enter_email_visit
-    track_event('User Registration: enter email visited')
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] mfa_method_counts
-  # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
-  # @param [Hash] pii_like_keypaths
-  # Tracks when a user has completed MFA setup
-  def user_registration_mfa_setup_complete(
-    success:,
-    mfa_method_counts:,
-    enabled_mfa_methods_count:,
-    pii_like_keypaths:,
-    second_mfa_reminder_conversion: nil,
-    **extra
-  )
-    track_event(
-      'User Registration: MFA Setup Complete',
-      {
-        success: success,
-        mfa_method_counts: mfa_method_counts,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        pii_like_keypaths: pii_like_keypaths,
-        second_mfa_reminder_conversion:,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # @param [Integer] enabled_mfa_methods_count
-  # Tracks when user visits the phone setup step during registration
-  def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
-    track_event(
-      'User Registration: phone setup visited',
+      mfa_method_counts: mfa_method_counts,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      pii_like_keypaths: pii_like_keypaths,
+      second_mfa_reminder_conversion:,
       **extra,
-    )
-  end
-
-  # Tracks when user skips Suggest Another MFA Page
-  def user_registration_suggest_another_mfa_notice_skipped
-    track_event('User Registration: Suggest Another MFA Notice Skipped')
-  end
-
-  # Tracks when user visits Suggest Another MFA Page
-  def user_registration_suggest_another_mfa_notice_visited
-    track_event('User Registration: Suggest Another MFA Notice visited')
-  end
-
-  # @param [String] mfa_method
-  # Tracks when the the user fully registered by submitting their first MFA method into the system
-  def user_registration_user_fully_registered(
-    mfa_method:,
-    **extra
+    }.compact,
   )
-    track_event(
-      'User Registration: User Fully Registered',
-      {
-        mfa_method: mfa_method,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # Tracks when user reinstated
-  # @param [Boolean] success
-  # @param [String] error_message
-  def user_reinstated(
-    success:,
-    error_message: nil,
-    **extra
+# @param [Integer] enabled_mfa_methods_count
+# Tracks when user visits the phone setup step during registration
+def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
+  track_event(
+    'User Registration: phone setup visited',
+    enabled_mfa_methods_count: enabled_mfa_methods_count,
+    **extra,
   )
-    track_event(
-      'User Suspension: Reinstated',
-      {
-        success: success,
-        error_message: error_message,
-        **extra,
-      }.compact,
-    )
-  end
+end
 
-  # Tracks when user suspended
-  # @param [Boolean] success
-  # @param [String] error_message
-  def user_suspended(
-    success:,
-    error_message: nil,
-    **extra
-  )
-    track_event(
-      'User Suspension: Suspended',
-      {
-        success: success,
-        error_message: error_message,
-        **extra,
-      }.compact,
-    )
-  end
+# Tracks when user skips Suggest Another MFA Page
+def user_registration_suggest_another_mfa_notice_skipped
+  track_event('User Registration: Suggest Another MFA Notice Skipped')
+end
 
-  # Tracks when the user is suspended and attempts to sign in, triggering the please call page.
-  def user_suspended_please_call_visited(**extra)
-    track_event(
-      'User Suspension: Please call visited',
+# Tracks when user visits Suggest Another MFA Page
+def user_registration_suggest_another_mfa_notice_visited
+  track_event('User Registration: Suggest Another MFA Notice visited')
+end
+
+# @param [String] mfa_method
+# Tracks when the the user fully registered by submitting their first MFA method into the system
+def user_registration_user_fully_registered(
+  mfa_method:,
+  **extra
+)
+  track_event(
+    'User Registration: User Fully Registered',
+    {
+      mfa_method: mfa_method,
       **extra,
-    )
-  end
-
-  # We sent an email to the user confirming that they will remain suspended
-  def user_suspension_confirmed
-    track_event(:user_suspension_confirmed)
-  end
-
-  # Tracks when USPS in-person proofing enrollment is created
-  # @param [String] enrollment_code
-  # @param [Integer] enrollment_id
-  # @param [Boolean] second_address_line_present
-  # @param [String] service_provider
-  def usps_ippaas_enrollment_created(
-    enrollment_code:,
-    enrollment_id:,
-    second_address_line_present:,
-    service_provider:,
-    **extra
+    }.compact,
   )
-    track_event(
-      'USPS IPPaaS enrollment created',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      second_address_line_present: second_address_line_present,
-      service_provider: service_provider,
-      **extra,
-    )
-  end
+end
 
-  # @param [Hash] vendor_status
-  # @param [String,nil] redirect_from
-  # Tracks when vendor has outage
-  def vendor_outage(
-    vendor_status:,
-    redirect_from: nil,
-    **extra
+# Tracks when user reinstated
+# @param [Boolean] success
+# @param [String] error_message
+def user_reinstated(
+  success:,
+  error_message: nil,
+  **extra
+)
+  track_event(
+    'User Suspension: Reinstated',
+    {
+      success: success,
+      error_message: error_message,
+      **extra,
+    }.compact,
   )
-    track_event(
-      'Vendor Outage',
-      redirect_from: redirect_from,
-      vendor_status: vendor_status,
-      **extra,
-    )
-  end
+end
 
-  # @param [Boolean] success Whether the submission was successful
-  # @param [Integer] configuration_id Database ID for the configuration
-  # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
-  # Tracks when user attempts to delete a WebAuthn configuration
-  # @identity.idp.previous_event_name WebAuthn Deleted
-  def webauthn_delete_submitted(
+# Tracks when user suspended
+# @param [Boolean] success
+# @param [String] error_message
+def user_suspended(
+  success:,
+  error_message: nil,
+  **extra
+)
+  track_event(
+    'User Suspension: Suspended',
+    {
+      success: success,
+      error_message: error_message,
+      **extra,
+    }.compact,
+  )
+end
+
+# Tracks when the user is suspended and attempts to sign in, triggering the please call page.
+def user_suspended_please_call_visited(**extra)
+  track_event(
+    'User Suspension: Please call visited',
+    **extra,
+  )
+end
+
+# We sent an email to the user confirming that they will remain suspended
+def user_suspension_confirmed
+  track_event(:user_suspension_confirmed)
+end
+
+# Tracks when USPS in-person proofing enrollment is created
+# @param [String] enrollment_code
+# @param [Integer] enrollment_id
+# @param [Boolean] second_address_line_present
+# @param [String] service_provider
+def usps_ippaas_enrollment_created(
+  enrollment_code:,
+  enrollment_id:,
+  second_address_line_present:,
+  service_provider:,
+  **extra
+)
+  track_event(
+    'USPS IPPaaS enrollment created',
+    enrollment_code: enrollment_code,
+    enrollment_id: enrollment_id,
+    second_address_line_present: second_address_line_present,
+    service_provider: service_provider,
+    **extra,
+  )
+end
+
+# @param [Hash] vendor_status
+# @param [String,nil] redirect_from
+# Tracks when vendor has outage
+def vendor_outage(
+  vendor_status:,
+  redirect_from: nil,
+  **extra
+)
+  track_event(
+    'Vendor Outage',
+    redirect_from: redirect_from,
+    vendor_status: vendor_status,
+    **extra,
+  )
+end
+
+# @param [Boolean] success Whether the submission was successful
+# @param [Integer] configuration_id Database ID for the configuration
+# @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
+# @param [Hash] error_details Details for error that occurred in unsuccessful submission
+# Tracks when user attempts to delete a WebAuthn configuration
+# @identity.idp.previous_event_name WebAuthn Deleted
+def webauthn_delete_submitted(
+  success:,
+  configuration_id:,
+  platform_authenticator:,
+  error_details: nil,
+  **extra
+)
+  track_event(
+    :webauthn_delete_submitted,
     success:,
     configuration_id:,
     platform_authenticator:,
-    error_details: nil,
-    **extra
+    error_details:,
+    **extra,
   )
-    track_event(
-      :webauthn_delete_submitted,
-      success:,
-      configuration_id:,
-      platform_authenticator:,
-      error_details:,
-      **extra,
-    )
-  end
+end
 
-  # @param [Hash] platform_authenticator
-  # @param [Boolean] success
-  # @param [Hash, nil] errors
-  # Tracks whether or not Webauthn setup was successful
-  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
-    track_event(
-      :webauthn_setup_submitted,
-      platform_authenticator: platform_authenticator,
-      success: success,
-      errors: errors,
-      **extra,
-    )
-  end
+# @param [Hash] platform_authenticator
+# @param [Boolean] success
+# @param [Hash, nil] errors
+# Tracks whether or not Webauthn setup was successful
+def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
+  track_event(
+    :webauthn_setup_submitted,
+    platform_authenticator: platform_authenticator,
+    success: success,
+    errors: errors,
+    **extra,
+  )
+end
 
-  # @param [Hash] platform_authenticator
-  # @param [Integer] enabled_mfa_methods_count
-  # Tracks when WebAuthn setup is visited
-  def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
-    track_event(
-      'WebAuthn Setup Visited',
-      platform_authenticator: platform_authenticator,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
-      **extra,
-    )
-  end
+# @param [Hash] platform_authenticator
+# @param [Integer] enabled_mfa_methods_count
+# Tracks when WebAuthn setup is visited
+def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
+  track_event(
+    'WebAuthn Setup Visited',
+    platform_authenticator: platform_authenticator,
+    enabled_mfa_methods_count: enabled_mfa_methods_count,
+    **extra,
+  )
+end
 
-  # @param [Boolean] success Whether the submission was successful
-  # @param [Integer] configuration_id Database ID for the configuration
-  # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
-  # Tracks when user submits a name change for a WebAuthn configuration
-  def webauthn_update_name_submitted(
+# @param [Boolean] success Whether the submission was successful
+# @param [Integer] configuration_id Database ID for the configuration
+# @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
+# @param [Hash] error_details Details for error that occurred in unsuccessful submission
+# Tracks when user submits a name change for a WebAuthn configuration
+def webauthn_update_name_submitted(
+  success:,
+  configuration_id:,
+  platform_authenticator:,
+  error_details: nil,
+  **extra
+)
+  track_event(
+    :webauthn_update_name_submitted,
     success:,
-    configuration_id:,
     platform_authenticator:,
-    error_details: nil,
-    **extra
+    configuration_id:,
+    error_details:,
+    **extra,
   )
-    track_event(
-      :webauthn_update_name_submitted,
-      success:,
-      platform_authenticator:,
-      configuration_id:,
-      error_details:,
-      **extra,
-    )
-  end
-
-
+end
