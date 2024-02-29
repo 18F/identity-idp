@@ -84,7 +84,7 @@ es:
             body: Todavía puede acudir a una oficina de correos para completar el
               proceso de verificación de su identidad. Si necesita acceso urgente
               a los servicios, contacte directamente con su agencia.
-            contact_html: <a href=\"%{help_url}\" target=\"_blank\">Contacte con el
+            contact_html: <a href="%{help_url}" target="_blank">Contacte con el
               servicio de asistencia de %{app_name}</a> si no ha recibido un correo
               electrónico con los resultados de su verificación antes del %{date}.
             title: Estamos resolviendo un problema técnico. Es posible que los resultados

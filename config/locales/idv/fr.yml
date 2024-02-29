@@ -85,7 +85,7 @@ fr:
             body: Vous pouvez toujours vous rendre dans un bureau de poste pour achever
               la vérification de votre identité. Si vous avez un besoin urgent d’accès
               aux services, veuillez contacter directement l’organisme concerné.
-            contact_html: <a href=\"%{help_url}\" target=\"_blank\">Contactez l’assistance
+            contact_html: <a href="%{help_url}" target="_blank">Contactez l’assistance
               %{app_name}</a> si vous n’avez pas reçu d’e-mail contenant les résultats
               de votre vérification d’ici le %{date}.
             title: Nous travaillons à la résolution d’un problème technique. Il se
