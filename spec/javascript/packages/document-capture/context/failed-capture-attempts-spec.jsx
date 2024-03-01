@@ -1,7 +1,11 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
-import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
+import {
+  DeviceContext,
+  AnalyticsContext,
+  SelfieCaptureContext,
+} from '@18f/identity-document-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import FailedCaptureAttemptsContext, {
@@ -163,6 +167,58 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
     expect(result.current.failedSubmissionAttempts).to.equal(2);
     expect(result.current.failedCaptureAttempts).to.equal(1);
     expect(result.current.forceNativeCamera).to.equal(false);
+  });
+
+  describe('when selfie is enabled', () => {
+    it('forceNativeCamera is always false, no matter how many times any attempt fails', () => {
+      const trackEvent = sinon.spy();
+      const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+        wrapper: ({ children }) => (
+          <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={2}
+              maxSubmissionAttemptsBeforeNativeCamera={2}
+            >
+              {children}
+            </Provider>
+          </SelfieCaptureContext.Provider>
+        ),
+      });
+
+      result.current.onFailedCaptureAttempt({
+        isAssessedAsGlare: true,
+        isAssessedAsBlurry: false,
+      });
+      rerender(true);
+      expect(result.current.forceNativeCamera).to.equal(false);
+      result.current.onFailedCaptureAttempt({
+        isAssessedAsGlare: false,
+        isAssessedAsBlurry: true,
+      });
+      rerender(true);
+      expect(result.current.forceNativeCamera).to.equal(false);
+      result.current.onFailedCaptureAttempt({
+        isAssessedAsGlare: false,
+        isAssessedAsBlurry: true,
+      });
+      rerender({});
+      expect(result.current.failedCaptureAttempts).to.equal(3);
+      expect(result.current.forceNativeCamera).to.equal(false);
+
+      result.current.onFailedSubmissionAttempt();
+      rerender(true);
+      expect(result.current.forceNativeCamera).to.equal(false);
+      result.current.onFailedSubmissionAttempt();
+      rerender(true);
+      expect(result.current.forceNativeCamera).to.equal(false);
+      result.current.onFailedSubmissionAttempt();
+      rerender({});
+      expect(result.current.failedSubmissionAttempts).to.equal(3);
+      expect(result.current.forceNativeCamera).to.equal(false);
+      expect(trackEvent).to.not.have.been.calledWith(
+        'IdV: Native camera forced after failed attempts',
+      );
+    });
   });
 });
 

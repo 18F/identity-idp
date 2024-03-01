@@ -1,6 +1,7 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import useCounter from '../hooks/use-counter';
+import SelfieCaptureContext from './selfie-capture';
 
 interface CaptureAttemptMetadata {
   isAssessedAsGlare: boolean;
@@ -125,6 +126,7 @@ function FailedCaptureAttemptsContextProvider({
     useCounter();
   const [failedSubmissionAttempts, incrementFailedSubmissionAttempts] = useCounter();
   const [failedCameraPermissionAttempts, incrementFailedCameraPermissionAttempts] = useCounter();
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const [failedSubmissionImageFingerprints, setFailedSubmissionImageFingerprints] =
     useState<UploadedImageFingerprints>(failedFingerprints);
@@ -143,9 +145,13 @@ function FailedCaptureAttemptsContextProvider({
     incrementFailedCameraPermissionAttempts();
   }
 
-  const forceNativeCamera =
+  const failedAttemptsGreaterThanOrEqualToMaxAttempts =
     failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
     failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
+
+  const forceNativeCamera = isSelfieCaptureEnabled
+    ? false
+    : failedAttemptsGreaterThanOrEqualToMaxAttempts;
 
   return (
     <FailedCaptureAttemptsContext.Provider
