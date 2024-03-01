@@ -39,7 +39,7 @@ RSpec.describe PwnedPasswordDownloader do
     it 'downloads the given range' do
       run
 
-      expect(Dir.entries(@destination)).to eq(['.', '..', '00000', '00001'])
+      expect(Dir.entries(@destination)).to match_array(['.', '..', '00000', '00001'])
       expect(File.readlines(File.join(@destination, '00000'))).to eq [
         "000000005AD76BD555C1D6D771DE417A4B87E4B4:10\n",
         "0000003643C928B2BCD37475C574E6F31B4650AD:22\n",
