@@ -44,6 +44,8 @@ class PwnedPasswordDownloader
       format: '[ %t ] %p%% %B %a (%E)',
     )
 
+    failed_prefixes = Queue.new
+
     [num_threads, queue.size].min.times do
       Thread.new do |thread_id|
         net_http = Net::HTTP::Persistent.new(name: "thread_id_#{thread_id}")
@@ -57,13 +59,12 @@ class PwnedPasswordDownloader
           begin
             write_one(
               prefix:,
-              content: with_retries(
-                max_tries: HASH_PREFIX_LENGTH,
-                rescue: Socket::ResolutionError,
-              ) { download_one(prefix:, net_http:) },
+              content: with_retries(max_tries: 5, rescue: Socket::ResolutionError) do
+                download_one(prefix:, net_http:)
+              end,
             )
           rescue
-            queue << prefix
+            failed_prefixes << prefix
           else
             progress_bar.increment
           end
@@ -73,7 +74,8 @@ class PwnedPasswordDownloader
       end
     end
 
-    wait_for_progress until progress_bar.finished?
+    wait_for_progress until progress_bar.finished? || failed_prefixes.present?
+    raise "Error: Failed to download prefix #{failed_prefixes.pop}" if failed_prefixes.present?
   ensure
     progress_bar.stop
   end

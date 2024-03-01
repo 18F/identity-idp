@@ -51,5 +51,39 @@ RSpec.describe PwnedPasswordDownloader do
         "0000100C271B56ABE9E5C137217BF2DE657C7B2F:5\n",
       ]
     end
+
+    context 'when server connection fails once' do
+      before do
+        already_called = false
+        expect(downloader).to receive(:download_one).
+          exactly(3).times.
+          and_wrap_original do |original, **kwargs|
+            if already_called
+              original.call(**kwargs)
+            else
+              already_called = true
+              raise Socket::ResolutionError
+            end
+          end
+      end
+
+      it 'downloads the given range after retrying' do
+        run
+
+        expect(Dir.entries(@destination)).to match_array(['.', '..', '00000', '00001'])
+      end
+    end
+
+    context 'when server connection fails repeatedly' do
+      before do
+        expect(downloader).to receive(:download_one).
+          at_least(9).times.
+          and_raise(Socket::ResolutionError)
+      end
+
+      it 'downloads the given range after retrying' do
+        expect { run }.to raise_error(/Error: Failed to download prefix 0000[01]/)
+      end
+    end
   end
 end
