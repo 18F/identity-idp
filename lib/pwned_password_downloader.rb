@@ -32,7 +32,7 @@ class PwnedPasswordDownloader
 
   def run!(start: '00000', finish: 'FFFFF')
     (start.to_i(16)..finish.to_i(16)).each do |prefix_num|
-      queue << prefix_num.to_s(16).upcase.rjust(5, '0')
+      queue << prefix_num.to_s(16).upcase.rjust(HASH_PREFIX_LENGTH, '0')
     end
 
     FileUtils.mkdir_p(destination)
