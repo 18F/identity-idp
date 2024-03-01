@@ -26,7 +26,7 @@ module Idv
       document_capture_session.confirm_ocr
 
       form_response = handle_stored_result
-      analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
+      analytics.idv_doc_auth_document_capture_submitted(**form_response.to_h.merge(analytics_arguments))
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
