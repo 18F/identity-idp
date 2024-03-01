@@ -102,7 +102,7 @@ cleanup() {
   read -p "Do you want to remove ${pwned_tmp_directory}? (y/n) " -n 1 -r yn
   if [[ $yn =~ ^[Yy]$ ]]; then
     echo "Removing pwned passwords hashes directory"
-    rmdir $pwned_tmp_directory
+    rm -rf $pwned_tmp_directory
   else
     echo "  Goodbye."
     exit 0
