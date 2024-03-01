@@ -72,7 +72,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
-  xscenario 'sign in with VTR request for HSDP12 auth requires PIV/CAC setup', :js do
+  scenario 'sign in with VTR request for HSDP12 auth requires PIV/CAC setup' do
     allow(Identity::Hostdata).to receive(:env).and_return('test')
     allow(Identity::Hostdata).to receive(:domain).and_return('example.com')
 
@@ -81,12 +81,6 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     user = create(:user, :fully_registered)
 
     visit_idp_from_oidc_sp_with_vtr(vtr: 'C1.Cb')
-    # visit_saml_authn_request_url(
-    #   overrides: {
-    #     authn_context: 'C1.Cb',
-    #   },
-    # )
-
     sign_in_live_with_2fa(user)
 
     # More secure MFA is required
@@ -95,6 +89,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
 
     # User must setup PIV/CAC before continuing
     visit setup_piv_cac_path
+
     nonce = piv_cac_nonce_from_form_action
     visit_piv_cac_service(
       setup_piv_cac_url,
@@ -103,9 +98,8 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
       subject: 'SomeIgnoredSubject',
     )
 
-    binding.pry
-
     click_agree_and_continue
+    click_on 'Continue'
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
