@@ -95,7 +95,6 @@ group :development do
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
-  gem 'net-http-persistent', '~> 4.0.2', require: false
 end
 
 group :development, :test do
@@ -106,6 +105,7 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
+  gem 'net-http-persistent', '~> 4.0.2', require: false
   gem 'nokogiri', '~> 1.16.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
