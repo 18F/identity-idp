@@ -40,7 +40,7 @@ RSpec.describe Reports::FraudMetricsReport do
 
     allow(IdentityConfig.store).to receive(:team_daily_fraud_metrics_emails).
       and_return(mock_test_fraud_emails)
-    allow(IdentityConfig.store).to receive(:team_fraud_metrics_emails).
+    allow(IdentityConfig.store).to receive(:team_monthly_fraud_metrics_emails).
       and_return(mock_team_fraud_emails)
   end
 

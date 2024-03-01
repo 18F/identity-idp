@@ -459,7 +459,7 @@ class IdentityConfig
     config.add(:team_all_login_emails, type: :json)
     config.add(:team_daily_fraud_metrics_emails, type: :json)
     config.add(:team_daily_reports_emails, type: :json)
-    config.add(:team_fraud_metrics_emails, type: :json)
+    config.add(:team_monthly_fraud_metrics_emails, type: :json)
     config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)

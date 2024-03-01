@@ -63,7 +63,7 @@ module Reports
     def emails
       emails = [*IdentityConfig.store.team_daily_fraud_metrics_emails]
       if report_date.next_day.day == 1
-        emails += IdentityConfig.store.team_fraud_metrics_emails
+        emails += IdentityConfig.store.team_monthly_fraud_metrics_emails
       end
       emails
     end
