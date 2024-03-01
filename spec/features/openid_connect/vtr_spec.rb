@@ -104,6 +104,37 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
-  scenario 'sign in with VTR request for idv requires idv'
-  scenario 'sign in with VTR request for idv with biometric requires idv with biometric'
+  scenario 'sign in with VTR request for idv requires idv', :js do
+    user = create(:user, :fully_registered)
+
+    visit_idp_from_oidc_sp_with_vtr(vtr: 'P1')
+
+    expect(page).to have_content(t('headings.sign_in_existing_users'))
+
+    sign_in_live_with_2fa(user)
+
+    expect(current_path).to eq(idv_welcome_path)
+  end
+
+  scenario 'sign in with VTR request for idv with biometric requires idv with biometric', :js do
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+
+    user = create(:user, :fully_registered)
+
+    visit_idp_from_oidc_sp_with_vtr(vtr: 'Pb')
+
+    expect(page).to have_content(t('headings.sign_in_existing_users'))
+
+    sign_in_live_with_2fa(user)
+
+    expect(current_path).to eq(idv_welcome_path)
+
+    click_continue
+    check t('doc_auth.instructions.consent', app_name: APP_NAME)
+    click_continue
+
+    click_button(t('doc_auth.buttons.upload_picture'))
+
+    expect(page).to have_content(t('doc_auth.headings.document_capture_subheader_selfie'))
+  end
 end
