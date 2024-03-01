@@ -27,7 +27,7 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt login and no prior session' do
-      oidc_end_client_secret_jwt(vtr: 'C2', prompt: 'login')
+      oidc_end_client_secret_jwt(prompt: 'login')
     end
 
     it 'succeeds in forcing login with prompt login and prior session' do
@@ -55,11 +55,6 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
 
       expect(current_path).to eq(openid_connect_authorize_path)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
-    end
-
-    it 'succeeds with a vtr param' do
-      allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      oidc_end_client_secret_jwt(vtr: 'C1.C2.P1')
     end
   end
 
@@ -1163,18 +1158,8 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
+    visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
 
-    if vtr.present?
-      visit_idp_from_oidc_sp_with_vtr(
-        vtr: vtr,
-        prompt: prompt,
-        state: state,
-        nonce: nonce,
-        client_id: client_id,
-      )
-    else
-      visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
-    end
     continue_as(user.email) if user
     if redirs_to
       expect(URI(oidc_redirect_url).path).to eq(redirs_to)
@@ -1234,13 +1219,7 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     expect(decoded_id_token[:given_name]).to eq('John')
     expect(decoded_id_token[:social_security_number]).to eq('111223333')
 
-    if vtr.present?
-      expect(decoded_id_token[:acr]).to eq(nil)
-      expect(decoded_id_token[:vot]).to eq(Array(vtr).first)
-    else
-      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
-      expect(decoded_id_token[:vot]).to eq(nil)
-    end
+    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
 
     access_token = token_response[:access_token]
     expect(access_token).to be_present
