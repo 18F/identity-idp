@@ -51,7 +51,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
-  scenario 'sign in with VTR request for phishing-resistance requires phishing-resistanc auth', :js do
+  scenario 'sign in with VTR for phishing-resistance requires phishing-resistanc auth', :js do
     mock_webauthn_setup_challenge
     user = create(:user, :fully_registered)
 
