@@ -108,7 +108,7 @@ module DocAuth
         #   return :success if selfie check result == 'Pass'
         #   return :fail
         def selfie_status
-          return :not_processed if selfie_result.nil?
+          return :not_processed if selfie_result.nil? || !@liveness_checking_enabled
           selfie_result == 'Pass' ? :success : :fail
         end
 
