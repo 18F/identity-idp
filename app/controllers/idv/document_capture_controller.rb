@@ -25,7 +25,7 @@ module Idv
       # Not used in standard flow, here for data consistency with hybrid flow.
       document_capture_session.confirm_ocr
 
-      result = handle_stored_result
+      form_response = handle_stored_result
       analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -33,7 +33,7 @@ module Idv
 
       cancel_establishing_in_person_enrollments
 
-      if result.success?
+      if form_response.success?
         redirect_to idv_ssn_url
       else
         redirect_to idv_document_capture_url
@@ -98,7 +98,8 @@ module Idv
     end
 
     def handle_stored_result
-      if stored_result&.success? && selfie_requirement_met?
+      if stored_result&.success?(selfie_required: decorated_sp_session.selfie_required?) &&
+         selfie_requirement_met?
         save_proofing_components(current_user)
         extract_pii_from_doc(current_user, store_in_session: true)
         flash[:success] = t('doc_auth.headings.capture_complete')

@@ -33,7 +33,7 @@ module Idv
         elsif session_result.blank? || pending_barcode_attention_confirmation? ||
               redo_document_capture_pending?
           :accepted
-        elsif !session_result.success?
+        elsif !session_result.success?(selfie_required: decorated_sp_session.selfie_required?)
           :unauthorized
         else
           :ok

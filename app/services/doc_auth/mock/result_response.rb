@@ -86,7 +86,7 @@ module DocAuth
       end
 
       def success?
-        doc_auth_success? && (selfie_check_performed? ? selfie_passed? : true)
+        doc_auth_success? && (@selfie_required ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
@@ -142,12 +142,12 @@ module DocAuth
       end
 
       def selfie_status
-        if @selfie_required
-          return :success if portrait_match_results&.dig(:FaceMatchResult).nil?
-          portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
-        else
-          :not_processed
+        if portrait_match_results&.dig(:FaceMatchResult).nil?
+          return :success if @selfie_required
+          return :not_processed
         end
+
+        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
       end
 
       def workflow

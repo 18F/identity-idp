@@ -80,7 +80,8 @@ module Idv
     end
 
     def take_photo_with_phone_successful?
-      stored_result&.success? && selfie_requirement_met?
+      stored_result&.success?(selfie_required: decorated_sp_session.selfie_required?) &&
+        selfie_requirement_met?
     end
   end
 end

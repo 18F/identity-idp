@@ -20,7 +20,7 @@ module Idv
 
       def update
         document_capture_session.confirm_ocr
-        result = handle_stored_result
+        form_response = handle_stored_result
 
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
@@ -28,7 +28,7 @@ module Idv
           call('document_capture', :update, true)
 
         # rate limiting redirect is in ImageUploadResponsePresenter
-        if result.success?
+        if form_response.success?
           flash[:success] = t('doc_auth.headings.capture_complete')
           redirect_to idv_hybrid_mobile_capture_complete_url
         else
@@ -63,7 +63,8 @@ module Idv
       end
 
       def handle_stored_result
-        if stored_result&.success? && selfie_requirement_met?
+        if stored_result&.success?(selfie_required: decorated_sp_session.selfie_required?) &&
+           selfie_requirement_met?
           save_proofing_components(document_capture_user)
           extract_pii_from_doc(document_capture_user)
           successful_response
@@ -74,7 +75,7 @@ module Idv
       end
 
       def confirm_document_capture_needed
-        return unless stored_result&.success?
+        return unless stored_result&.success?(selfie_required: decorated_sp_session.selfie_required?)
         return if redo_document_capture_pending?
 
         redirect_to idv_hybrid_mobile_capture_complete_url
