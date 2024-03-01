@@ -38,9 +38,9 @@ RSpec.describe Reports::FraudMetricsReport do
       },
     }
 
-    allow(IdentityConfig.store).to receive(:test_fraud_reports_emails).
+    allow(IdentityConfig.store).to receive(:team_daily_fraud_metrics_emails).
       and_return(mock_test_fraud_emails)
-    allow(IdentityConfig.store).to receive(:team_fraud_reports_emails).
+    allow(IdentityConfig.store).to receive(:team_fraud_metrics_emails).
       and_return(mock_team_fraud_emails)
   end
 
@@ -73,7 +73,7 @@ RSpec.describe Reports::FraudMetricsReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:test_fraud_reports_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:team_daily_fraud_metrics_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 
