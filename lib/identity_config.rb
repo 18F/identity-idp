@@ -187,6 +187,7 @@ class IdentityConfig
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
     config.add(:doc_auth_selfie_capture_enabled, type: :boolean)
+    config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_sdk_capture_orientation, type: :json, options: { symbolize_names: true })
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
@@ -321,7 +322,6 @@ class IdentityConfig
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:newrelic_license_key, type: :string)
-    config.add(:nonessential_email_banlist, type: :json)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -499,6 +499,7 @@ class IdentityConfig
     config.add(:version_headers_enabled, type: :boolean)
     config.add(:voice_otp_pause_time)
     config.add(:voice_otp_speech_rate)
+    config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types

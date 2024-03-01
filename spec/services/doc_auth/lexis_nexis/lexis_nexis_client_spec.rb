@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
-  let(:image_source) { nil }
+  let(:images_cropped) { false }
   let(:workflow) { 'NOLIVENESS.CROPPING.WORKFLOW' }
   let(:image_upload_url) do
     URI.join(
@@ -29,15 +29,15 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       )
     end
 
-    context 'with acuant image source' do
-      let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+    context 'with cropped images' do
+      let(:images_cropped) { true }
       let(:workflow) { 'NOLIVENESS.NOCROPPING.WORKFLOW' }
 
       it 'sends an upload image request for the front and back DL images' do
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          images_cropped: images_cropped,
         )
 
         expect(result.success?).to eq(true)
@@ -45,15 +45,14 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       end
     end
 
-    context 'with unknown image source' do
-      let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+    context 'with non-cropped images' do
       let(:workflow) { 'NOLIVENESS.CROPPING.WORKFLOW' }
 
       it 'sends an upload image request for the front and back DL images' do
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          images_cropped: images_cropped,
         )
 
         expect(result.success?).to eq(true)
@@ -70,7 +69,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          images_cropped: images_cropped,
         )
 
         expect(result.success?).to eq(false)
@@ -85,7 +84,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       result = client.post_images(
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
-        image_source: image_source,
+        images_cropped: images_cropped,
       )
 
       expect(result.success?).to eq(false)
@@ -103,7 +102,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       result = client.post_images(
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
-        image_source: image_source,
+        images_cropped: images_cropped,
       )
 
       expect(result.success?).to eq(false)
@@ -130,7 +129,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          images_cropped: images_cropped,
           selfie_image: DocAuthImageFixtures.selfie_image,
           liveness_checking_required: true,
         )
@@ -154,7 +153,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          images_cropped: images_cropped,
           selfie_image: DocAuthImageFixtures.selfie_image,
           liveness_checking_required: true,
         )
@@ -188,7 +187,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          images_cropped: images_cropped,
           selfie_image: DocAuthImageFixtures.selfie_image,
           liveness_checking_required: true,
         )
@@ -219,7 +218,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
           result = client.post_images(
             front_image: DocAuthImageFixtures.document_front_image,
             back_image: DocAuthImageFixtures.document_back_image,
-            image_source: image_source,
+            images_cropped: images_cropped,
             selfie_image: DocAuthImageFixtures.selfie_image,
             liveness_checking_required: true,
           )

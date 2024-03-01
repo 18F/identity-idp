@@ -83,7 +83,7 @@ RSpec.describe ButtonComponent, type: :component do
     it 'renders an icon' do
       rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
 
-      expect(rendered).to have_css('use[href$="#print"]')
+      expect(rendered).to have_xpath('//style[contains(text(), "/print-")]')
       expect(rendered.first_element_child.xpath('./text()').text).to eq(content)
     end
 
@@ -93,7 +93,7 @@ RSpec.describe ButtonComponent, type: :component do
       it 'trims text of the content, maintaining html safety' do
         rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
 
-        expect(rendered.to_html).to include('</svg><span class="example">Button</span>')
+        expect(rendered.to_html).to include('</span><span class="example">Button</span>')
       end
     end
 
@@ -103,7 +103,9 @@ RSpec.describe ButtonComponent, type: :component do
       it 'trims text of the content, maintaining html safety' do
         rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
 
-        expect(rendered.to_html).to include('</svg>&lt;span class="example"&gt;Button&lt;/span&gt;')
+        expect(rendered.to_html).to include(
+          '</span>&lt;span class="example"&gt;Button&lt;/span&gt;',
+        )
       end
     end
 

@@ -13,6 +13,7 @@ module DocAuth
         back_image:,
         selfie_image: nil,
         image_source: nil,
+        images_cropped: false,
         user_uuid: nil,
         uuid_prefix: nil,
         liveness_checking_required: false
@@ -25,6 +26,7 @@ module DocAuth
           back_image: back_image,
           selfie_image: selfie_image,
           image_source: image_source,
+          images_cropped: images_cropped,
           liveness_checking_required: liveness_checking_required,
         ).fetch
       end

@@ -1,21 +1,15 @@
 class ServiceProviderMfaPolicy
-  attr_reader :mfa_context, :auth_methods_session, :service_provider
+  attr_reader :mfa_context, :auth_methods_session, :resolved_authn_context_result
 
   def initialize(
     user:,
-    service_provider:,
     auth_methods_session:,
-    aal_level_requested:,
-    piv_cac_requested:,
-    phishing_resistant_requested:
+    resolved_authn_context_result:
   )
     @user = user
     @mfa_context = MfaContext.new(user)
     @auth_methods_session = auth_methods_session
-    @service_provider = service_provider
-    @aal_level_requested = aal_level_requested
-    @piv_cac_requested = piv_cac_requested
-    @phishing_resistant_requested = phishing_resistant_requested
+    @resolved_authn_context_result = resolved_authn_context_result
   end
 
   def user_needs_sp_auth_method_verification?
@@ -44,15 +38,11 @@ class ServiceProviderMfaPolicy
   end
 
   def phishing_resistant_required?
-    if phishing_resistant_requested? || aal_requested?
-      !!phishing_resistant_requested?
-    else
-      service_provider&.default_aal == 3
-    end
+    resolved_authn_context_result.phishing_resistant?
   end
 
   def piv_cac_required?
-    piv_cac_requested?
+    resolved_authn_context_result.hspd12?
   end
 
   def multiple_factors_enabled?
@@ -65,21 +55,8 @@ class ServiceProviderMfaPolicy
     piv_cac_enabled? || webauthn_enabled?
   end
 
-  def aal_requested?
-    @aal_level_requested.present?
-  end
-
-  def phishing_resistant_requested?
-    @aal_level_requested == 3 ||
-      @phishing_resistant_requested
-  end
-
   def piv_cac_enabled?
     mfa_context.piv_cac_configurations.any?(&:mfa_enabled?)
-  end
-
-  def piv_cac_requested?
-    @piv_cac_requested
   end
 
   def webauthn_enabled?

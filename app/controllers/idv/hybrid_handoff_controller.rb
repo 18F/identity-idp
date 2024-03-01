@@ -10,6 +10,9 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
+      @upload_disabled = idv_session.selfie_check_required &&
+                         !idv_session.desktop_selfie_test_mode_enabled?
+
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -168,6 +171,7 @@ module Idv
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
+        selfie_check_required: idv_session.selfie_check_required,
       }.merge(ab_test_analytics_buckets)
     end
 
