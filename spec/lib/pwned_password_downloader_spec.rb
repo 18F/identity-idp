@@ -81,7 +81,7 @@ RSpec.describe PwnedPasswordDownloader do
           and_raise(Socket::ResolutionError)
       end
 
-      it 'downloads the given range after retrying' do
+      it 'eventually raises an error that the download failed' do
         expect { run }.to raise_error(/Error: Failed to download prefix 0000[01]/)
       end
     end
