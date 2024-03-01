@@ -44,7 +44,7 @@ class PwnedPasswordDownloader
       format: '[ %t ] %p%% %B %a (%E)',
     )
 
-    [num_threads, queue.size].min.times.map do
+    [num_threads, queue.size].min.times do
       Thread.new do |thread_id|
         net_http = Net::HTTP::Persistent.new(name: "thread_id_#{thread_id}")
 
