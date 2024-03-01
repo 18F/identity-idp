@@ -1154,7 +1154,7 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     end
   end
 
-  def oidc_end_client_secret_jwt(vtr: nil, prompt: nil, user: nil, redirs_to: nil)
+  def oidc_end_client_secret_jwt(prompt: nil, user: nil, redirs_to: nil)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
