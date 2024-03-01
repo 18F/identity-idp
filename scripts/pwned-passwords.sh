@@ -6,7 +6,7 @@ submit_to_s3='false'
 pwned_directory="pwned_passwords"
 number_of_passwords=3000000
 pwned_tmp_directory="tmp/pwned"
-pwned_file="${pwned_directory}/pwned-passwords.txt"
+pwned_file="${pwned_directory}/pwned_passwords.txt"
 aws_prod="false"
 
 usage() {
