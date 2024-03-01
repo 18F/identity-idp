@@ -31,7 +31,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
   describe '#index' do
     subject(:action) do
-      puts "params: #{params.inspect}"
       get :index, params: params
     end
 
