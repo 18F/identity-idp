@@ -74,8 +74,8 @@ class PwnedPasswordDownloader
       end
     end
 
-    wait_for_progress until progress_bar.finished? || failed_prefixes.present?
-    raise "Error: Failed to download prefix #{failed_prefixes.pop}" if failed_prefixes.present?
+    wait_for_progress until progress_bar.finished? || !failed_prefixes.empty?
+    raise "Error: Failed to download prefix #{failed_prefixes.pop}" if !failed_prefixes.empty?
   ensure
     progress_bar.stop
   end
