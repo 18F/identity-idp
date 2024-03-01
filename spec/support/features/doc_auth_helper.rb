@@ -361,20 +361,6 @@ module DocAuthHelper
     )
   end
 
-  def mock_doc_auth_lexis_nexis_error_unknown
-    failed_http_response = instance_double(
-      Faraday::Response,
-      body: LexisNexisFixtures.true_id_get_results_response_failure,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        failed_http_response,
-        DocAuth::LexisNexis::Config.new,
-      ),
-    )
-  end
-
   def verify_phone_otp
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp

@@ -202,10 +202,6 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_tampering_failure.json')
     end
 
-    def true_id_get_results_response_failure
-      read_fixture_file_at_path('true_id/get_results_response_failure.json')
-    end
-
     private
 
     def read_fixture_file_at_path(filepath)

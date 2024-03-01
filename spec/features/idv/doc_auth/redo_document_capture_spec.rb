@@ -204,7 +204,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
     before do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_document_capture_step
-      mock_doc_auth_lexis_nexis_error_unknown
+      mock_general_doc_auth_client_error(:get_results)
       attach_and_submit_images
       click_try_again
     end
@@ -263,18 +263,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
     it_behaves_like 'image re-upload allowed'
   end
 
-  context 'unknown error for acuant', allow_browser_log: true do
-    before do
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_document_capture_step
-      mock_doc_auth_lexis_nexis_error_unknown
-      attach_and_submit_images
-      click_try_again
-    end
-
-    it_behaves_like 'image re-upload not allowed'
-  end
-
   context 'when selfie is enabled' do
     context 'error due to data issue with 2xx status code', allow_browser_log: true do
       before do
@@ -286,7 +274,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         start_idv_from_sp
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
-        mock_doc_auth_lexis_nexis_error_unknown
+        mock_doc_auth_success_face_match_fail
         attach_images
         attach_selfie
         submit_images
@@ -405,12 +393,10 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-        allow(IdentityConfig.store).to receive(:doc_auth_check_failed_image_resubmission_enabled).
-          and_return(false)
         start_idv_from_sp
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
-        mock_doc_auth_lexis_nexis_error_unknown
+        mock_doc_auth_success_face_match_fail
         attach_images
         attach_selfie
         submit_images
