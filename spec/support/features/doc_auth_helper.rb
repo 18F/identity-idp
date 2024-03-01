@@ -225,23 +225,6 @@ module DocAuthHelper
     click_agree_and_continue
   end
 
-  def mock_doc_auth_no_name_pii(method)
-    pii_with_no_name = Idp::Constants::MOCK_IDV_APPLICANT.dup
-    pii_with_no_name[:last_name] = nil
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
-      response: DocAuth::Response.new(
-        pii_from_doc: pii_with_no_name,
-        extra: {
-          doc_auth_result: 'Passed',
-          billed: true,
-        },
-        success: true,
-        errors: {},
-      ),
-    )
-  end
-
   def mock_general_doc_auth_client_error(method)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
@@ -272,22 +255,6 @@ module DocAuthHelper
       Faraday::Response,
       status: 200,
       body: LexisNexisFixtures.true_id_response_with_face_match_fail,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        failure_response,
-        DocAuth::LexisNexis::Config.new,
-        true, # liveness_checking_enabled
-      ),
-    )
-  end
-
-  def mock_doc_auth_failure_face_match_fail
-    failure_response = instance_double(
-      Faraday::Response,
-      status: 200,
-      body: LexisNexisFixtures.true_id_response_failure_no_liveness,
     )
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
@@ -343,21 +310,6 @@ module DocAuthHelper
         network_error_response,
         DocAuth::LexisNexis::Config.new,
       ),
-    )
-  end
-
-  # @param [Object] status one of 440, 438, 439
-  def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
-      response: DocAuth::Mock::ResultResponse.create_image_error_response(status, 'front'),
-    )
-  end
-
-  def mock_doc_auth_acuant_http_5xx_status(method = :post_front_image)
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
-      response: DocAuth::Mock::ResultResponse.create_network_error_response,
     )
   end
 
