@@ -500,13 +500,13 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureOpen() {
-    trackEvent('idv_sdk_selfie_image_capture_opened');
+    trackEvent('idv_sdk_selfie_image_capture_opened', { captureAttempts });
 
     setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {
-    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo');
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', { captureAttempts });
 
     setIsCapturingEnvironment(false);
   }
@@ -530,6 +530,7 @@ function AcuantCapture(
     trackEvent('idv_sdk_selfie_image_capture_failed', {
       sdk_error_code: error.code,
       sdk_error_message: error.message,
+      captureAttempts,
     });
 
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had

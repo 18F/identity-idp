@@ -102,8 +102,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def password_changed(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
@@ -111,8 +109,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def phone_added(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
@@ -120,8 +116,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def personal_key_sign_in(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('user_mailer.personal_key_sign_in.subject'))
@@ -129,8 +123,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def new_device_sign_in(date:, location:, device_name:, disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @login_date = date
       @login_location = location
@@ -144,8 +136,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def personal_key_regenerated
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.personal_key_regenerated.subject'))
     end
@@ -207,8 +197,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def letter_reminder
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
     end
@@ -228,16 +216,12 @@ class UserMailer < ActionMailer::Base
   end
 
   def email_added
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.email_added.subject'))
     end
   end
 
   def email_deleted
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.email_deleted.subject'))
     end
@@ -252,8 +236,6 @@ class UserMailer < ActionMailer::Base
 
   # remove disavowal_token after next deploy
   def account_verified(date_time:, sp_name:, disavowal_token: nil) # rubocop:disable Lint/UnusedMethodArgument
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @date = I18n.l(date_time, format: :event_date)
       @sp_name = sp_name
@@ -448,13 +430,6 @@ class UserMailer < ActionMailer::Base
   end
 
   private
-
-  def email_should_receive_nonessential_notifications?(email)
-    banlist = IdentityConfig.store.nonessential_email_banlist
-    return true if banlist.empty?
-    modified_email = email.gsub(/\+[^@]+@/, '@')
-    !banlist.include?(modified_email)
-  end
 
   def account_reset_deletion_period_interval
     current_time = Time.zone.now

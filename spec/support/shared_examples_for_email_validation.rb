@@ -4,6 +4,6 @@ RSpec.shared_examples 'email validation' do
       detect { |v| v.instance_of?(EmailValidator) }
 
     expect(email_validator.options).
-      to eq(mx_with_fallback: true, ban_disposable_email: true)
+      to eq(mx_with_fallback: true, ban_disposable_email: true, partial: true)
   end
 end

@@ -122,6 +122,10 @@ module DocAuth
           @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
         end
 
+        def request_id
+          @request_id ||= parsed_response_body.dig(:Status, :RequestId)
+        end
+
         def parsed_response_body
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
@@ -193,6 +197,7 @@ module DocAuth
         def basic_logging_info
           {
             conversation_id: conversation_id,
+            request_id: request_id,
             reference: reference,
             vendor: 'TrueID',
             billed: billed?,

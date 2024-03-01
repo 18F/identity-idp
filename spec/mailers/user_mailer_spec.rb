@@ -114,12 +114,6 @@ RSpec.describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        password_changed(disavowal_token: '123abc')
-      expect(mail.to).to eq(nil)
-    end
   end
 
   describe '#personal_key_sign_in' do
@@ -146,13 +140,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=asdf1234',
       )
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        personal_key_sign_in(disavowal_token: 'asdf1234')
-
-      expect(mail.to).to eq(nil)
     end
   end
 
@@ -216,17 +203,6 @@ RSpec.describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
-        date: date,
-        location: location,
-        device_name: device_name,
-        disavowal_token: disavowal_token,
-      )
-      expect(mail.to).to eq(nil)
-    end
   end
 
   describe '#personal_key_regenerated' do
@@ -249,12 +225,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.personal_key_regenerated.intro'),
       )
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        personal_key_regenerated
-      expect(mail.to).to eq(nil)
     end
   end
 
@@ -315,12 +285,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.phone_added.intro', app_name: APP_NAME),
       )
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        phone_added(disavowal_token: disavowal_token)
-      expect(mail.to).to eq(nil)
     end
   end
 
@@ -568,11 +532,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.letter_reminder.info_html', link_html: APP_NAME)))
     end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).letter_reminder
-      expect(mail.to).to eq(nil)
-    end
   end
 
   describe '#account_verified' do
@@ -596,16 +555,6 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the subject' do
       expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        account_verified(
-          date_time: date_time,
-          sp_name: sp_name,
-          disavowal_token: disavowal_token,
-        )
-      expect(mail.to).to eq(nil)
     end
 
     it 'links to the forgot password page' do
