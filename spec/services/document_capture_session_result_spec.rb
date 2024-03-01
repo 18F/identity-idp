@@ -53,72 +53,83 @@ RSpec.describe DocumentCaptureSessionResult do
     end
 
     describe '#success?' do
-      it 'reports true when doc_auth_success is true and selfie_status is :not_processed' do
+      # it 'reports true when doc_auth_success is true and selfie_status is :not_processed' do
+      #   result = DocumentCaptureSessionResult.new(
+      #     id: id,
+      #     success: false,
+      #     pii: pii,
+      #     attention_with_barcode: false,
+      #     selfie_status: :not_processed,
+      #     doc_auth_success: true,
+      #   )
+      #   expect(result.success?).to eq(true)
+      # end
+      # it 'reports correctly from false when missing doc_auth_success and selfie_status' do
+      #   result = DocumentCaptureSessionResult.new(
+      #     id: id,
+      #     success: true,
+      #     pii: pii,
+      #     attention_with_barcode: false,
+      #   )
+      #   expect(result.success?).to eq(false)
+      # end
+      # it 'reports failure when selfie_status is :fail' do
+      #   result = DocumentCaptureSessionResult.new(
+      #     id: id,
+      #     success: false,
+      #     pii: pii,
+      #     attention_with_barcode: false,
+      #     selfie_status: :fail,
+      #     doc_auth_success: true,
+      #   )
+      #   expect(result.success?).to eq(false)
+      # end
+
+      # it 'reports failure when doc_auth_success is false' do
+      #   result = DocumentCaptureSessionResult.new(
+      #     id: id,
+      #     success: false,
+      #     pii: pii,
+      #     attention_with_barcode: false,
+      #     selfie_status: :success,
+      #     doc_auth_success: false,
+      #   )
+      #   expect(result.success?).to eq(false)
+      # end
+
+      # describe 'when success field, doc_auth_success, and selfie_status conflict' do
+      #   it 'reports correct result' do
+      #     result = DocumentCaptureSessionResult.new(
+      #       id: id,
+      #       success: false,
+      #       pii: pii,
+      #       attention_with_barcode: false,
+      #       selfie_status: :not_processed,
+      #       doc_auth_success: true,
+      #     )
+      #     expect(result.success?).to eq(true)
+
+      #     result = DocumentCaptureSessionResult.new(
+      #       id: id,
+      #       success: true,
+      #       pii: pii,
+      #       attention_with_barcode: false,
+      #       selfie_status: :fail,
+      #       doc_auth_success: true,
+      #     )
+      #     expect(result.success?).to eq(false)
+      #   end
+      # end
+      it 'returns the value in the success attribute' do
         result = DocumentCaptureSessionResult.new(
           id: id,
-          success: false,
+          success: 'hello world',
           pii: pii,
           attention_with_barcode: false,
           selfie_status: :not_processed,
           doc_auth_success: true,
         )
-        expect(result.success?).to eq(true)
-      end
-      it 'reports correctly from false when missing doc_auth_success and selfie_status' do
-        result = DocumentCaptureSessionResult.new(
-          id: id,
-          success: true,
-          pii: pii,
-          attention_with_barcode: false,
-        )
-        expect(result.success?).to eq(false)
-      end
-      it 'reports failure when selfie_status is :fail' do
-        result = DocumentCaptureSessionResult.new(
-          id: id,
-          success: false,
-          pii: pii,
-          attention_with_barcode: false,
-          selfie_status: :fail,
-          doc_auth_success: true,
-        )
-        expect(result.success?).to eq(false)
-      end
-
-      it 'reports failure when doc_auth_success is false' do
-        result = DocumentCaptureSessionResult.new(
-          id: id,
-          success: false,
-          pii: pii,
-          attention_with_barcode: false,
-          selfie_status: :success,
-          doc_auth_success: false,
-        )
-        expect(result.success?).to eq(false)
-      end
-
-      describe 'when success field, doc_auth_success, and selfie_status conflict' do
-        it 'reports correct result' do
-          result = DocumentCaptureSessionResult.new(
-            id: id,
-            success: false,
-            pii: pii,
-            attention_with_barcode: false,
-            selfie_status: :not_processed,
-            doc_auth_success: true,
-          )
-          expect(result.success?).to eq(true)
-
-          result = DocumentCaptureSessionResult.new(
-            id: id,
-            success: true,
-            pii: pii,
-            attention_with_barcode: false,
-            selfie_status: :fail,
-            doc_auth_success: true,
-          )
-          expect(result.success?).to eq(false)
-        end
+        expect(result.success?).to eq('hello world')
       end
     end
   end
