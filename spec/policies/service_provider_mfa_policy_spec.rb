@@ -2,21 +2,28 @@ require 'rails_helper'
 
 RSpec.describe ServiceProviderMfaPolicy do
   let(:user) { create(:user) }
-  let(:service_provider) { create(:service_provider) }
   let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
-  let(:aal_level_requested) { 1 }
-  let(:piv_cac_requested) { false }
-  let(:phishing_resistant_requested) { nil }
+  let(:aal2) { false }
+  let(:hspd12) { false }
+  let(:phishing_resistant) { false }
+  let(:resolved_authn_context_result) do
+    Vot::Parser::Result.new(
+      component_values: [],
+      aal2?: aal2,
+      hspd12?: hspd12,
+      phishing_resistant?: phishing_resistant,
+      identity_proofing?: false,
+      biometric_comparison?: false,
+      ialmax?: false,
+    )
+  end
   let(:auth_methods_session) { AuthMethodsSession.new(user_session: {}) }
 
   subject(:policy) do
     described_class.new(
       user: user,
-      service_provider: service_provider,
       auth_methods_session: auth_methods_session,
-      aal_level_requested: aal_level_requested,
-      piv_cac_requested: piv_cac_requested,
-      phishing_resistant_requested: phishing_resistant_requested,
+      resolved_authn_context_result: resolved_authn_context_result,
     )
   end
 
@@ -25,47 +32,26 @@ RSpec.describe ServiceProviderMfaPolicy do
   end
 
   describe '#phishing_resistant_required?' do
-    context 'AAL 3 requested' do
-      let(:aal_level_requested) { 3 }
-      before { service_provider.default_aal = nil }
-
-      it { expect(policy.phishing_resistant_required?).to eq(true) }
-    end
-
     context 'phishing-resistant requested' do
-      let(:phishing_resistant_requested) { true }
-      before { service_provider.default_aal = nil }
+      let(:aal2) { true }
+      let(:phishing_resistant) { true }
 
       it { expect(policy.phishing_resistant_required?).to eq(true) }
     end
 
-    context 'no aal level requested, SP default is aal3' do
-      let(:aal_level_requested) { nil }
-      before { service_provider.default_aal = 3 }
-
-      it { expect(policy.phishing_resistant_required?).to eq(true) }
-    end
-
-    context 'aal2 requested, no default set' do
-      let(:aal_level_requested) { 2 }
-      before { service_provider.default_aal = nil }
-
-      it { expect(policy.phishing_resistant_required?).to eq(false) }
-    end
-
-    context 'aal2 level requested, SP default is aal3' do
-      let(:aal_level_requested) { 2 }
-      before { service_provider.default_aal = 3 }
+    context 'phishing-resistant not requested' do
+      let(:phishing_resistant) { false }
 
       it { expect(policy.phishing_resistant_required?).to eq(false) }
     end
   end
 
   describe '#user_needs_sp_auth_method_verification?' do
-    context 'aal3 required' do
-      let(:aal_level_requested) { 3 }
+    context 'phishing-resistant required' do
+      let(:aal2) { true }
+      let(:phishing_resistant) { true }
 
-      context 'the user needs to setup an AAL3 method' do
+      context 'the user needs to setup a phishing-resistant method' do
         before { setup_user_phone }
 
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
@@ -98,7 +84,7 @@ RSpec.describe ServiceProviderMfaPolicy do
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
       end
 
-      context 'the user did not use an AAL3 method' do
+      context 'the user did not use a phishing-resistant method' do
         let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
 
         before do
@@ -111,8 +97,7 @@ RSpec.describe ServiceProviderMfaPolicy do
     end
 
     context 'piv/cac required' do
-      let(:aal_level_requested) { 3 }
-      let(:piv_cac_requested) { true }
+      let(:hspd12) { true }
 
       context 'the user needs to setup a PIV' do
         before { setup_user_phone }
@@ -147,7 +132,7 @@ RSpec.describe ServiceProviderMfaPolicy do
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(true) }
       end
 
-      context 'the user did not use an AAL3 method' do
+      context 'the user did not use a PIV' do
         let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
 
         before do
@@ -175,8 +160,8 @@ RSpec.describe ServiceProviderMfaPolicy do
   end
 
   describe '#user_needs_sp_auth_method_setup?' do
-    context 'aal3 required' do
-      let(:aal_level_requested) { 3 }
+    context 'phishing-resistant required' do
+      let(:phishing_resistant) { true }
 
       context 'the user has PIV/CAC configured' do
         before { setup_user_piv }
@@ -198,8 +183,7 @@ RSpec.describe ServiceProviderMfaPolicy do
     end
 
     context 'piv/cac required' do
-      let(:aal_level_requested) { 3 }
-      let(:piv_cac_requested) { true }
+      let(:hspd12) { true }
 
       context 'the user has PIV/CAC configured' do
         before { setup_user_piv }
