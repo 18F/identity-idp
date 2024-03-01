@@ -147,7 +147,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         end
 
         context 'sends a message that respects the user email locale preference' do
-          let(:proofed_date) { Time.zone.now.strftime('%m/%d/%Y') }
+          let(:proofed_date) { I18n.l(Time.zone.now, format: :sms_date) }
           let(:phone_number) { passed_enrollment.notification_phone_configuration.formatted_phone }
           let(:contact_number) { '(844) 555-5555' }
           let(:reference_string) { passed_enrollment.enrollment_code }
