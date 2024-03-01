@@ -12,10 +12,12 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
   context 'ThreatMetrix review pending' do
     let(:user) { user_with_2fa }
+    let(:tmx_status) { 'Review' }
 
     before do
       allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(true)
     end
 
     it 'allows the user to continue down the happy path', allow_browser_log: true do
@@ -136,6 +138,27 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       profile.reload
       expect(profile.fraud_review_pending_at).to be(nil)
       expect(profile.fraud_rejection_at).to be_truthy
+    end
+
+    it 'handles when users pass IPP and pass TMX review' do
+      sign_in_and_2fa_user
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps(user, tmx_status)
+      complete_phone_step(user)
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+    end
+
+    it 'handles when users pass IPP and fail TMX review' do
+    end
+
+    it 'handles when users fail IPP and pass TMX review' do
+    end
+
+    it 'handles when users fail IPP and fail TMX review' do
+    end
+
+    it 'handles when users cancel IPP and fail TMX review' do
     end
   end
 
