@@ -203,7 +203,7 @@ else
       fraud_metrics_report: {
         class: 'Reports::FraudMetricsReport',
         cron: cron_24h,
-        args: -> { [Time.zone.now] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact
   end
