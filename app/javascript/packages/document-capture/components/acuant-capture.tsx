@@ -408,7 +408,7 @@ function AcuantCapture(
       });
 
       trackEvent(
-        name === 'selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`,
+        name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
         analyticsPayload,
       );
     }
@@ -519,7 +519,7 @@ function AcuantCapture(
       failedImageResubmission: false,
     });
 
-    trackEvent('idv_sdk_selfie_image_added', { captureAttempts });
+    trackEvent('idv_selfie_image_added', { captureAttempts });
 
     onChangeAndResetError(image, analyticsPayload);
     onResetFailedCaptureAttempts();
@@ -593,7 +593,10 @@ function AcuantCapture(
       failedImageResubmission: false,
     });
 
-    trackEvent(`IdV: ${name} image added`, analyticsPayload);
+    trackEvent(
+      name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
+      analyticsPayload,
+    );
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
