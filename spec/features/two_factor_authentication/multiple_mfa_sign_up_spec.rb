@@ -11,7 +11,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     end
 
     scenario 'user can set up 2 MFA methods properly' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(current_path).to eq authentication_methods_setup_path
 
@@ -86,7 +86,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
     scenario 'user can select 2 MFA methods and complete after reauthn window' do
       allow(IdentityConfig.store).to receive(:reauthn_window).and_return(10)
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(current_path).to eq authentication_methods_setup_path
 
@@ -109,7 +109,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       expect(current_path).to eq backup_code_setup_path
       travel_to((IdentityConfig.store.reauthn_window + 5).seconds.from_now) do
         click_continue
-        expect(current_path).to eq account_path
+        expect(current_path).to eq login_two_factor_options_path
       end
     end
 
@@ -145,7 +145,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     describe 'skipping second mfa' do
       context 'with skippable mfa method' do
         it 'allows user to skip using skip link' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
@@ -165,7 +165,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
         end
 
         it 'allows user to skip by clicking continue without selection' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
