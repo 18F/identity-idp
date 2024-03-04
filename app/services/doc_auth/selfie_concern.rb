@@ -29,7 +29,7 @@ module DocAuth
       SELFIE_PERFORMED_STATUSES.include?(selfie_status)
     end
 
-  private
+    private
 
     SELFIE_PERFORMED_STATUSES = %i[success fail]
 
@@ -43,5 +43,5 @@ module DocAuth
     def get_portrait_error(portrait_match_results)
       portrait_match_results&.with_indifferent_access&.dig(:FaceErrorMessage)
     end
-end
+  end
 end
