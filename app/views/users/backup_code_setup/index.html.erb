@@ -1,5 +1,5 @@
 <% self.title = t('forms.backup_code.are_you_sure_title') %>
-<%= extends_layout :base do %>
+
   <div class="no-js">
     <%= render PageHeadingComponent.new.with_content(t('forms.backup_code.are_you_sure_title')) %>
 
@@ -19,4 +19,4 @@
   </div>
   
 <%= render_javascript_pack_once_tags 'click-immediate' %>
-<% end %>
+
