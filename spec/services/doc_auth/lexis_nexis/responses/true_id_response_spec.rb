@@ -371,13 +371,19 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when liveness enabled' do
       let(:liveness_checking_enabled) { true }
       it 'returns Failed for visible_pattern when it gets passed and failed value ' do
-        output = described_class.new(failure_response_no_liveness, config, liveness_checking_enabled).to_h
+        output = described_class.new(
+          failure_response_no_liveness, config,
+          liveness_checking_enabled
+        ).to_h
         expect(output.to_h[:log_alert_results]).
           to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
       end
 
       it 'returns Failed for liveness failure' do
-        response = described_class.new(failure_response_with_liveness, config, liveness_checking_enabled)
+        response = described_class.new(
+          failure_response_with_liveness, config,
+          liveness_checking_enabled
+        )
         output = response.to_h
         expect(output[:success]).to eq(false)
         expect(response.doc_auth_success?).to eq(false)
@@ -753,7 +759,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
             workflow: 'selfie_workflow',
           }
         end
-        let(:response) { described_class.new(success_response, config, liveness_checking_enabled, request_context) }
+        let(:response) do
+          described_class.new(success_response, config, liveness_checking_enabled, request_context)
+        end
         it 'returns :not_processed when missing selfie in response' do
           expect(response.selfie_status).to eq(:not_processed)
         end
@@ -764,13 +772,17 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         end
       end
       context 'when selfie passed' do
-        let(:response) { described_class.new(success_with_liveness_response, config, liveness_checking_enabled) }
+        let(:response) do
+          described_class.new(success_with_liveness_response, config, liveness_checking_enabled)
+        end
         it 'returns :success' do
           expect(response.selfie_status).to eq(:success)
         end
       end
       context 'when selfie failed' do
-        let(:response) { described_class.new(failure_response_with_liveness, config, liveness_checking_enabled) }
+        let(:response) do
+          described_class.new(failure_response_with_liveness, config, liveness_checking_enabled)
+        end
         it 'returns :fail' do
           expect(response.selfie_status).to eq(:fail)
         end
