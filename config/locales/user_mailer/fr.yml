@@ -22,7 +22,7 @@ fr:
       cancel_link_text: veuillez annuler
       help_html: Si vous ne souhaitez pas supprimer votre compte,
         %{cancel_account_reset_html}.
-      intro_html: Votre période d’attente de %{hours} heures est terminée. Veuillez
+      intro_html: Votre période d’attente de %{waiting_period} est terminée. Veuillez
         terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à
         localiser vos méthodes d’authentification, sélectionnez “confirmer la
         suppression” pour supprimer votre compte %{app_name}.<br><br> À
@@ -37,11 +37,11 @@ fr:
       header: Votre compte sera supprimé dans %{interval}
       intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux
         étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a une
-        période d’attente de %{hours} heures si vous avez perdu l’accès à vos
+        période d’attente de %{waiting_period} si vous avez perdu l’accès à vos
         méthodes d’authentification et devez supprimer votre compte. Si vous
         trouvez vos méthodes d’authentification, vous pouvez vous connecter à
         votre compte %{app_name} pour annuler cette demande. <br> <br> Deuxième
-        étape: après votre période d’attente de %{hours} heures, vous recevrez
+        étape: après votre période d’attente de %{waiting_period}, vous recevrez
         un e-mail qui vous demandera de confirmer la suppression de votre compte
         %{app_name}. Votre compte ne sera pas supprimé tant que vous ne l’aurez
         pas confirmé.'

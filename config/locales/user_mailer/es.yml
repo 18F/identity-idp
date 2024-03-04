@@ -22,7 +22,7 @@ es:
       button: Sí, continúa eliminando
       cancel_link_text: por favor cancele
       help_html: Si no desea eliminar su cuenta, %{cancel_account_reset_html}.
-      intro_html: Su período de espera de %{hours} horas ha finalizado. Complete el
+      intro_html: Su período de espera de %{waiting_period} ha finalizado. Complete el
         paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de
         autenticación, seleccione “confirmar eliminación” para eliminar su
         cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los
@@ -36,11 +36,11 @@ es:
       header: Su cuenta será eliminada en %{interval}
       intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos
         pasos para eliminar su cuenta:<br><br> Paso uno: hay un período de
-        espera de %{hours} horas si ha perdido el acceso a sus métodos de
+        espera de %{waiting_period} si ha perdido el acceso a sus métodos de
         autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de
         autenticación, puede iniciar sesión en su cuenta %{app_name} para
         cancelar esta solicitud.<br><br> Paso dos: Después de su período de
-        espera de %{hours} horas, recibirá un correo electrónico que le pedirá
+        espera de %{waiting_period}, recibirá un correo electrónico que le pedirá
         que confirme la eliminación de su cuenta %{app_name}. Su cuenta no se
         eliminará hasta que confirme.'
       subject: Cómo eliminar su cuenta de %{app_name}

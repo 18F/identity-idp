@@ -323,7 +323,7 @@ RSpec.describe UserMailer, type: :mailer do
           t(
             'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
                                                             interval: interval,
-                                                            hours:
+                                                            waiting_period:
                                                               account_reset_deletion_period_hours
           ),
         ),
@@ -377,7 +377,7 @@ RSpec.describe UserMailer, type: :mailer do
           strip_tags(
             t(
               'user_mailer.account_reset_granted.intro_html', app_name: APP_NAME,
-                                                              hours:
+                                                              waiting_period:
                                                               account_reset_deletion_period_hours
             ),
           ),

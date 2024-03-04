@@ -144,7 +144,7 @@ class UserMailer < ActionMailer::Base
   def account_reset_request(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token
-      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval
       @header = t(
         'user_mailer.account_reset_request.header',
         interval: account_reset_deletion_period_interval,
@@ -160,7 +160,7 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
-      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval
       @account_reset_token_valid_period = account_reset_token_valid_period
       mail(
         to: email_address.email,
@@ -438,7 +438,7 @@ class UserMailer < ActionMailer::Base
       current_time,
       current_time + account_reset_wait_period_days,
       true,
-      accumulate_on: :hours,
+      accumulate_on: reset_accumulation_type,
     )
   end
 
@@ -456,10 +456,6 @@ class UserMailer < ActionMailer::Base
       (IdentityConfig.store.account_reset_fraud_user_wait_period_days.days > 0)
   end
 
-  def account_reset_deletion_period_hours
-    account_reset_wait_period_days.in_hours.to_i
-  end
-
   def account_reset_token_valid_period
     current_time = Time.zone.now
 
@@ -469,5 +465,13 @@ class UserMailer < ActionMailer::Base
       true,
       accumulate_on: :hours,
     )
+  end
+
+  def reset_accumulation_type
+    if supports_fraud_account_reset?
+      :days
+    else
+      :hours
+    end
   end
 end

@@ -33,7 +33,7 @@ en:
       confirm: If you cancel now, you must create a new request and wait another
         %{interval} to delete your account.
       header: You requested to delete your account
-      wait_html: There is a %{hours}-hour waiting period to delete your account. In
+      wait_html: There is a %{waiting_period} waiting period to delete your account. In
         <strong>%{interval}</strong>, you will receive an email with
         instructions to complete the deletion.
     recovery_options:
