@@ -25,7 +25,6 @@ RSpec.describe Idv::UnavailableController, type: :controller do
         'Vendor Outage',
         redirect_from: nil,
         vendor_status: {
-          acuant: :operational,
           lexisnexis_instant_verify: :operational,
           lexisnexis_trueid: :operational,
           sms: :operational,
@@ -48,7 +47,6 @@ RSpec.describe Idv::UnavailableController, type: :controller do
           'Vendor Outage',
           redirect_from: SignUp::RegistrationsController::CREATE_ACCOUNT,
           vendor_status: {
-            acuant: :operational,
             lexisnexis_instant_verify: :operational,
             lexisnexis_trueid: :operational,
             sms: :operational,

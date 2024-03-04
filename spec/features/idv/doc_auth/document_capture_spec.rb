@@ -79,7 +79,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
       end
     end
 
-    context 'rate limits calls to acuant', allow_browser_log: true do
+    context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
       let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do
         allow_any_instance_of(ApplicationController).to receive(

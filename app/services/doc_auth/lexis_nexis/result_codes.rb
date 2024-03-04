@@ -1,5 +1,5 @@
 module DocAuth
-  module Acuant
+  module LexisNexis
     module ResultCodes
       ResultCode = Struct.new(:code, :name, :billed) do
         alias_method :billed?, :billed
