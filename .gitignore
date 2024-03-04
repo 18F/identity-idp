@@ -99,3 +99,5 @@ saml_*.key
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity
+
+11892Notes.txt

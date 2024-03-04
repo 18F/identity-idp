@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DocAuth::IssuerTypes do
+RSpec.describe DocAuth::LexisNexis::IssuerTypes do
   describe '.from_int' do
     it 'is a result code for the int' do
       issuer_type = DocAuth::IssuerTypes.from_int(1)
