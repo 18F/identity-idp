@@ -56,7 +56,8 @@ class AuthnContextResolver
 
   def acr_aal_component_values
     vot_parser_result.component_values.filter do |component_value|
-      component_value.name.include?('aal')
+      component_value.name.include?('aal') ||
+        component_value.name == 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo'
     end
   end
 

@@ -120,7 +120,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.aal2?).to eq(false)
       end
 
-      it 'uses the default AAL at AAL 2 if no AAL ACR is present' do
+      it 'uses the default SP AAL at AAL 2 if no AAL ACR is present' do
         service_provider = build(:service_provider, default_aal: 2)
 
         acr_values = [
@@ -137,7 +137,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.phishing_resistant?).to eq(false)
       end
 
-      it 'uses the default AAL at AAL 3 if no AAL ACR is present' do
+      it 'uses the default SP AAL at AAL 3 if no AAL ACR is present' do
         service_provider = build(:service_provider, default_aal: 3)
 
         acr_values = [
@@ -152,6 +152,24 @@ RSpec.describe AuthnContextResolver do
 
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(true)
+      end
+
+      it 'supports default AAL and overrides SP default' do
+        service_provider = build(:service_provider, default_aal: 3)
+
+        acr_values = [
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          'http://idmanagement.gov/ns/assurance/ial/1',
+        ].join(' ')
+
+        result = AuthnContextResolver.new(
+          service_provider: service_provider,
+          vtr: nil,
+          acr_values: acr_values,
+        ).resolve
+
+        expect(result.aal2?).to eq(false)
+        expect(result.phishing_resistant?).to eq(false)
       end
     end
 
