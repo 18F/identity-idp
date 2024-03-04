@@ -66,7 +66,7 @@ class ImageUploadResponsePresenter
   private
 
   def doc_auth_result_failed?
-    @form_response.to_h[:doc_auth_result] == DocAuth::ResultCodes::FAILED.name
+    @form_response.to_h[:doc_auth_result] == DocAuth::LexisNexis::ResultCodes::FAILED.name
   end
 
   def show_hints?

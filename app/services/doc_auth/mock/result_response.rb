@@ -156,9 +156,9 @@ module DocAuth
 
       def doc_auth_result_from_success
         if success?
-          DocAuth::ResultCodes::PASSED.name
+          DocAuth::LexisNexis::ResultCodes::PASSED.name
         else
-          DocAuth::ResultCodes::CAUTION.name
+          DocAuth::LexisNexis::ResultCodes::CAUTION.name
         end
       end
 
