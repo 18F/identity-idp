@@ -143,6 +143,7 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
+
       analytics.openid_connect_request_authorization(
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,
