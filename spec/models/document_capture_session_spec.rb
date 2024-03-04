@@ -54,7 +54,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_result_from_response(doc_auth_response)
       result = record.load_result
 
-      expect(result.success?).to eq(doc_auth_response.success?)
+      expect(result.success?(selfie_required: true)).to eq(doc_auth_response.success?)
       expect(result.pii).to eq(doc_auth_response.pii_from_doc.deep_symbolize_keys)
     end
 
