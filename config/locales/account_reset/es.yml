@@ -34,7 +34,7 @@ es:
       confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras
         %{interval} para eliminar su cuenta.
       header: Solicitaste eliminar tu cuenta
-      wait_html: Hay un período de espera de %{hours} para eliminar su cuenta. En
+      wait_html: Hay un período de espera de %{waiting_period} para eliminar su cuenta. En
         <strong>%{interval}</strong>, recibirá un correo electrónico con
         instrucciones para completar la eliminación.
     recovery_options:
