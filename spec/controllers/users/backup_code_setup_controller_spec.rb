@@ -8,6 +8,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
         :apply_secure_headers_override,
+        [:confirm_recently_authenticated_2fa, except: ['reminder']],
       )
     end
   end
@@ -23,7 +24,6 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
     expect(@analytics).to receive(:track_event).
       with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
-
     expect(@analytics).to receive(:track_event).
       with('Backup Code Setup Visited', {
         success: true,
@@ -41,6 +41,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
       })
     expect(@irs_attempts_api_tracker).to receive(:track_event).
       with(:mfa_enroll_backup_code, success: true)
+
     post :create
 
     expect(response).to render_template('create')

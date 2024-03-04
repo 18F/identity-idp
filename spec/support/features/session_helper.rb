@@ -29,6 +29,7 @@ module Features
     def select_2fa_option(option, **find_options)
       find("label[for='two_factor_options_form_selection_#{option}']", **find_options).click
       click_on t('forms.buttons.continue')
+      click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
 
     def select_phone_delivery_option(delivery_option)
@@ -513,6 +514,7 @@ module Features
 
     def set_up_mfa_with_backup_codes
       click_on t('forms.buttons.continue')
+      click_on t('forms.buttons.continue')
     end
 
     def register_user(email = 'test@test.com')
@@ -560,6 +562,7 @@ module Features
       select_2fa_option('backup_code')
 
       expect(page).to have_current_path backup_code_setup_path
+
       check t('forms.backup_code.saved')
       click_button 'Continue'
     end

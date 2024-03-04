@@ -20,17 +20,13 @@ module ReauthenticationRequiredConcern
   private
 
   def prompt_for_second_factor
-    store_location(request.path)
+    store_location(request.url)
     user_session[:context] = 'reauthentication'
 
     redirect_to login_two_factor_options_path
   end
 
   def store_location(url)
-    if request.method != :get
-      user_session[:stored_location] = account_path
-    else
-      user_session[:stored_location] = url
-    end
+    user_session[:stored_location] = url
   end
 end

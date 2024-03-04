@@ -35,6 +35,7 @@ RSpec.feature 'mfa cta banner', allowed_extra_analytics: [:*] do
       expect(page).to have_current_path(confirm_backup_codes_path)
 
       click_on t('forms.buttons.continue')
+
       expect(page).to have_content(t('mfa.second_method_warning.text'))
     end
 

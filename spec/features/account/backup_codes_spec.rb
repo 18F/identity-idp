@@ -61,6 +61,9 @@ RSpec.feature 'Backup codes', allowed_extra_analytics: [:*] do
 
       expected_message = "#{t('account.index.backup_codes_exist')} #{formatted_generated_at}"
 
+      expect(page).to have_current_path(backup_code_setup_path)
+      click_continue
+
       expect(page).to have_content(t('notices.backup_codes_configured'))
       expect(page).to have_current_path(account_two_factor_authentication_path)
 
