@@ -402,11 +402,8 @@ class ApplicationController < ActionController::Base
   def service_provider_mfa_policy
     @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
       user: current_user,
-      service_provider: sp_from_sp_session,
       auth_methods_session:,
-      aal_level_requested: sp_session[:aal_level_requested],
-      piv_cac_requested: resolved_authn_context_result.hspd12?,
-      phishing_resistant_requested: resolved_authn_context_result.phishing_resistant?,
+      resolved_authn_context_result:,
     )
   end
   delegate :user_needs_sp_auth_method_setup?, to: :service_provider_mfa_policy

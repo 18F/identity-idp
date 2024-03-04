@@ -8,11 +8,11 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       ActionController::Parameters.new(
         {
           front: front_image,
-          front_image_metadata: front_image_metadata,
+          front_image_metadata: front_image_metadata.to_json,
           back: back_image,
-          back_image_metadata: back_image_metadata,
+          back_image_metadata: back_image_metadata.to_json,
           selfie: selfie_image,
-          selfie_image_metadata: selfie_image_metadata,
+          selfie_image_metadata: selfie_image_metadata.to_json,
           document_capture_session_uuid: document_capture_session_uuid,
         }.compact,
       ),
@@ -29,10 +29,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
   let(:front_image_metadata) do
-    { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }.to_json
+    { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }
   end
   let(:back_image_metadata) do
-    { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }.to_json
+    { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }
   end
   let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
@@ -91,6 +91,43 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         it 'is valid' do
           expect(form.valid?).to eq(true)
+        end
+
+        context 'validates image source' do
+          let(:selfie_image_metadata) do
+            { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }
+          end
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+              and_return(false)
+          end
+
+          context 'id images are uploaded' do
+            it 'is invalid' do
+              expect(form.valid?).to eq(false)
+            end
+          end
+
+          context 'images sourced by acuant sdk' do
+            let(:front_image_metadata) do
+              { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }
+            end
+            let(:back_image_metadata) do
+              { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }
+            end
+            it 'is valid' do
+              expect(form.valid?).to eq(true)
+            end
+
+            context 'selfie is uploaded' do
+              let(:selfie_image_metadata) do
+                { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }
+              end
+              it 'is invalid' do
+                expect(form.valid?).to eq(false)
+              end
+            end
+          end
         end
       end
     end
@@ -156,6 +193,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           },
           image_metrics: nil,
           conversation_id: nil,
+          request_id: nil,
           doc_auth_result: 'Passed',
           decision_product_status: nil,
           errors: {},
@@ -205,7 +243,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:selfie_image_metadata) do
-          { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }.to_json
+          { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }
         end
 
         it 'logs analytics' do
@@ -271,6 +309,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
               },
             },
             conversation_id: nil,
+            request_id: nil,
             decision_product_status: nil,
             doc_auth_result: 'Passed',
             errors: {},
@@ -658,17 +697,18 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
     describe 'image source' do
       let(:source) { nil }
       let(:front_image_metadata) do
-        { width: 40, height: 40, mimeType: 'image/png', source: source }.to_json
+        { width: 40, height: 40, mimeType: 'image/png', source: source }.compact
       end
       let(:back_image_metadata) do
-        { width: 20, height: 20, mimeType: 'image/png', source: source }.to_json
+        { width: 20, height: 20, mimeType: 'image/png', source: source }.compact
       end
       let(:image_source) { nil }
+      let(:images_cropped) { false }
 
       before do
         expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).
-          with(hash_including(image_source: image_source)).
+          with(hash_including(image_source: image_source, images_cropped: images_cropped)).
           and_call_original
       end
 
@@ -684,7 +724,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       context 'mixed sources' do
         let(:source) { 'upload' }
         let(:back_image_metadata) do
-          { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
+          { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }
         end
         let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
@@ -697,8 +737,16 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         let(:source) { 'acuant' }
         let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
 
-        it 'sets image source to acuant sdk' do
-          form.submit
+        context 'when both images are captured via autocapture' do
+          let(:images_cropped) { true }
+          before do
+            front_image_metadata[:acuantCaptureMode] = 'AUTO'
+            back_image_metadata[:acuantCaptureMode] = 'AUTO'
+          end
+
+          it 'sets image source to acuant sdk' do
+            form.submit
+          end
         end
 
         context 'selfie is submitted' do
@@ -706,7 +754,11 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
           context 'captured with acuant sdk' do
             let(:selfie_image_metadata) do
-              { width: 10, height: 10, mimeType: 'image/png', source: source }.to_json
+              { width: 10, height: 10, mimeType: 'image/png', source: source }
+            end
+
+            before do
+              front_image_metadata.merge!(acuantCaptureMode: 'AUTO')
             end
 
             it 'sets image source to acuant sdk' do
@@ -716,11 +768,14 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
           context 'add using file upload' do
             let(:selfie_image_metadata) do
-              { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }.to_json
+              { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }
             end
-            let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
-            it 'sets image source to unknown' do
+            before do
+              back_image_metadata.merge!(acuantCaptureMode: 'AUTO')
+            end
+
+            it 'sets image source to acuant sdk' do
               form.submit
             end
           end
@@ -729,7 +784,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
       context 'malformed image metadata' do
         let(:source) { 'upload' }
-        let(:front_image_metadata) { nil.to_json }
+        let(:front_image_metadata) { nil }
         let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
         it 'sets image source to unknown' do

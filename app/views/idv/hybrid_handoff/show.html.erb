@@ -54,34 +54,35 @@
   </div>
 </div>
 
-<hr class="margin-y-4" />
-<div class="grid-row grid-gap grid-gap-2">
-  <div class="grid-col-12 tablet:grid-col-auto">
-    <%= image_tag(
-          asset_url('idv/laptop-icon.svg'),
-          alt: t('image_description.laptop'),
-          width: 88,
-          height: 88,
-        ) %>
+<% unless @upload_disabled %>
+  <hr class="margin-y-4" />
+  <div class="grid-row grid-gap grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-auto">
+      <%= image_tag(
+            asset_url('idv/laptop-icon.svg'),
+            alt: t('image_description.laptop'),
+            width: 88,
+            height: 88,
+          ) %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-fill">
+      <h2 class="margin-y-105">
+        <%= t('doc_auth.headings.upload_from_computer') %>
+      </h2>
+      <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
+      <%= simple_form_for(
+            :doc_auth,
+            url: url_for(type: :desktop),
+            method: 'PUT',
+            class: 'margin-bottom-4',
+            html: {
+              id: 'form-to-submit-photos-through-desktop',
+              'aria-label': t('forms.buttons.upload_photos'),
+            },
+          ) do |f| %>
+        <%= f.submit t('forms.buttons.upload_photos'), outline: true %>
+      <% end %>
+    </div>
   </div>
-  <div class="grid-col-12 tablet:grid-col-fill">
-    <h2 class="margin-y-105">
-      <%= t('doc_auth.headings.upload_from_computer') %>
-    </h2>
-    <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
-    <%= simple_form_for(
-          :doc_auth,
-          url: url_for(type: :desktop),
-          method: 'PUT',
-          class: 'margin-bottom-4',
-          html: {
-            id: 'form-to-submit-photos-through-desktop',
-            'aria-label': t('forms.buttons.upload_photos'),
-          },
-        ) do |f| %>
-      <%= f.submit t('forms.buttons.upload_photos'), outline: true %>
-    <% end %>
-  </div>
-</div>
-
+<% end %>
 <%= render 'idv/doc_auth/cancel', step: 'hybrid_handoff' %>

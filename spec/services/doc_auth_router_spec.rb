@@ -6,15 +6,6 @@ RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
     end
 
-    context 'for acuant' do
-      let(:doc_auth_vendor) { Idp::Constants::Vendors::ACUANT }
-
-      it 'is a translation-proxied acuant client' do
-        expect(DocAuthRouter.client).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
-        expect(DocAuthRouter.client.client).to be_a(DocAuth::Acuant::AcuantClient)
-      end
-    end
-
     context 'for lexisnexis' do
       let(:doc_auth_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
 

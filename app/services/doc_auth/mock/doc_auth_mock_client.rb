@@ -25,17 +25,6 @@ module DocAuth
         @last_uploaded_back_image = nil
       end
 
-      def create_document
-        return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
-        instance_id = SecureRandom.uuid
-        Responses::CreateDocumentResponse.new(
-          success: true,
-          errors: {},
-          instance_id: instance_id,
-        )
-      end
-
       # rubocop:disable Lint/UnusedMethodArgument
       def post_front_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
@@ -58,17 +47,14 @@ module DocAuth
         back_image:,
         selfie_image: nil,
         image_source: nil,
+        images_cropped: false,
         user_uuid: nil,
         uuid_prefix: nil,
         liveness_checking_required: false
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
-        document_response = create_document
-        return document_response unless document_response.success?
-
-        instance_id = document_response.instance_id
-
+        instance_id = SecureRandom.uuid
         front_image_response = post_front_image(image: front_image, instance_id: instance_id)
         return front_image_response unless front_image_response.success?
 

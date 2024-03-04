@@ -1,6 +1,7 @@
 module Vot
   class Parser
     class ParseException < StandardError; end
+
     Result = Data.define(
       :component_values,
       :aal2?,

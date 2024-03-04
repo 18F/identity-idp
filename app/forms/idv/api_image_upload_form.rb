@@ -2,7 +2,6 @@ module Idv
   class ApiImageUploadForm
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
-    include ApplicationHelper
 
     validates_presence_of :front
     validates_presence_of :back
@@ -86,6 +85,7 @@ module Idv
           back_image: back_image_bytes,
           selfie_image: liveness_checking_required ? selfie_image_bytes : nil,
           image_source: image_source,
+          images_cropped: acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
@@ -205,7 +205,7 @@ module Idv
     end
 
     def image_source
-      if acuant_sdk_capture?
+      if acuant_sdk_captured_id?
         DocAuth::ImageSources::ACUANT_SDK
       else
         DocAuth::ImageSources::UNKNOWN
@@ -244,6 +244,14 @@ module Idv
         )
       end
       if selfie.is_a? DataUrlImage::InvalidUrlFormatError
+        errors.add(
+          :selfie, t('doc_auth.errors.not_a_file'),
+          type: :not_a_file
+        )
+      end
+
+      if !IdentityConfig.store.doc_auth_selfie_desktop_test_mode &&
+         liveness_checking_required && !acuant_sdk_captured?
         errors.add(
           :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
@@ -370,12 +378,23 @@ module Idv
       }
     end
 
-    def acuant_sdk_capture?
+    def acuant_sdk_captured?
+      acuant_sdk_captured_id? &&
+        (liveness_checking_required ? acuant_sdk_captured_selfie? : true)
+    end
+
+    def acuant_sdk_captured_id?
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
-        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT &&
-        (liveness_checking_required ?
-          image_metadata.dig(:selfie, :source) == Idp::Constants::Vendors::ACUANT :
-           true)
+        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
+    end
+
+    def acuant_sdk_captured_selfie?
+      image_metadata.dig(:selfie, :source) == Idp::Constants::Vendors::ACUANT
+    end
+
+    def acuant_sdk_autocaptured_id?
+      image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
+        image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO'
     end
 
     def image_metadata

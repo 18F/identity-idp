@@ -16,9 +16,11 @@ module RememberDeviceConcern
   def check_remember_device_preference
     return unless UserSessionContext.authentication_context?(context)
     return if remember_device_cookie.nil?
+
+    expiration_time = decorated_sp_session.mfa_expiration_interval
     return unless remember_device_cookie.valid_for_user?(
       user: current_user,
-      expiration_interval: decorated_sp_session.mfa_expiration_interval,
+      expiration_interval: expiration_time,
     )
 
     handle_valid_remember_device_cookie(remember_device_cookie: remember_device_cookie)

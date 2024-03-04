@@ -964,6 +964,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
   # @param [String] flow_path
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # The document capture image uploaded was locally validated during the IDV process
@@ -972,6 +973,7 @@ module AnalyticsEvents
     errors:,
     remaining_submit_attempts:,
     flow_path:,
+    liveness_checking_required:,
     submit_attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
@@ -988,6 +990,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      liveness_checking_required: liveness_checking_required,
       **extra,
     )
   end
@@ -1010,9 +1013,11 @@ module AnalyticsEvents
   # @param [Boolean] attention_with_barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
+  # @param [String] request_id RequestId from TrueID
   # @param [String] reference
   # @param [String] transaction_status
   # @param [String] transaction_reason_code
@@ -1050,6 +1055,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     client_image_metrics:,
     flow_path:,
+    liveness_checking_required:,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
@@ -1061,6 +1067,7 @@ module AnalyticsEvents
     selfie_status: nil,
     vendor: nil,
     conversation_id: nil,
+    request_id: nil,
     reference: nil,
     transaction_status: nil,
     transaction_reason_code: nil,
@@ -1097,6 +1104,7 @@ module AnalyticsEvents
       selfie_status:,
       vendor:,
       conversation_id:,
+      request_id:,
       reference:,
       transaction_status:,
       transaction_reason_code:,
@@ -1108,6 +1116,7 @@ module AnalyticsEvents
       portrait_match_results:,
       image_metrics:,
       address_line2_present:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -1118,6 +1127,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
@@ -1128,6 +1138,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     pii_like_keypaths:,
     flow_path:,
+    liveness_checking_required:,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
@@ -1145,6 +1156,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
+      liveness_checking_required: liveness_checking_required,
       **extra,
     )
   end
@@ -2360,6 +2372,19 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # @param [String] enrollment_id
+  # A fraud user has been deactivated due to not visting the post office before the deadline
+  def idv_ipp_deactivated_for_never_visiting_post_office(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_deactivated_for_never_visiting_post_office,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
   # The user visited the "letter enqueued" page shown during the verify by mail flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @identity.idp.previous_event_name IdV: come back later visited
@@ -2821,33 +2846,47 @@ module AnalyticsEvents
   #                  (previously called "attempt")
   # User captured and approved of their selfie
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_added(captureAttempts:, **extra)
+  def idv_sdk_selfie_image_added(captureAttempts: nil, **extra)
     track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
   end
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # User closed the SDK for taking a selfie without submitting a photo
-  def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
-    track_event(:idv_sdk_selfie_image_capture_closed_without_photo, **extra)
-  end
-
-  # @param [Integer] sdk_error_code SDK code for the error encountered
-  # @param [String] sdk_error_message SDK message for the error encountered
-  # User encountered an error with the SDK selfie process
-  # Error code 1: camera permission not granted
-  # Error code 2: unexpected errors
-  def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
+  def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts: nil, **extra)
     track_event(
-      :idv_sdk_selfie_image_capture_failed,
-      sdk_error_code: sdk_error_code,
-      sdk_error_message: sdk_error_message,
+      :idv_sdk_selfie_image_capture_closed_without_photo,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
 
+  # @param [Integer] sdk_error_code SDK code for the error encountered
+  # @param [String] sdk_error_message SDK message for the error encountered
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # User encountered an error with the SDK selfie process
+  # Error code 1: camera permission not granted
+  # Error code 2: unexpected errors
+  def idv_sdk_selfie_image_capture_failed(
+    sdk_error_code:,
+    sdk_error_message:,
+    captureAttempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_capture_failed,
+      sdk_error_code: sdk_error_code,
+      sdk_error_message: sdk_error_message,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
+  end
+
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # User opened the SDK to take a selfie
-  def idv_sdk_selfie_image_capture_opened(**extra)
-    track_event(:idv_sdk_selfie_image_capture_opened, **extra)
+  def idv_sdk_selfie_image_capture_opened(captureAttempts: nil, **extra)
+    track_event(:idv_sdk_selfie_image_capture_opened, captureAttempts: captureAttempts, **extra)
   end
 
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
@@ -2861,7 +2900,6 @@ module AnalyticsEvents
   # @param [String] source
   # @param [Integer] width width of image added in pixels
   # User uploaded a selfie using the file picker
-  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_file_uploaded(
     captureAttempts:,
     failedImageResubmission:,
