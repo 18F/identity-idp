@@ -53,7 +53,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
-  let(:liveness_enabled) { false }
+  let(:liveness_checking_enabled) { false }
   let(:workflow) { 'default_workflow' }
   let(:request_context) do
     {
@@ -62,7 +62,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   context 'when the response is a success' do
     let(:response) do
-      described_class.new(success_response, config, liveness_enabled, request_context)
+      described_class.new(success_response, config, liveness_checking_enabled, request_context)
     end
 
     it 'is a successful result' do
@@ -71,11 +71,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     context 'when a portrait match is returned' do
-      let(:liveness_enabled) { true }
+      let(:liveness_checking_enabled) { true }
       context 'when selfie status is failed' do
         let(:response) do
           described_class.new(
-            doc_auth_success_with_face_match_fail, config, liveness_enabled,
+            doc_auth_success_with_face_match_fail, config, liveness_checking_enabled,
             request_context
           )
         end
@@ -86,7 +86,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         end
 
         context 'when a liveness check was not requested' do
-          let(:liveness_enabled) { false }
+          let(:liveness_checking_enabled) { false }
           it 'is a successful result' do
             expect(response.selfie_status).to eq(:not_processed)
             expect(response.success?).to eq(true)
@@ -97,7 +97,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       context 'when selfie status passes' do
         let(:response) do
           described_class.new(
-            success_with_liveness_response, config, liveness_enabled,
+            success_with_liveness_response, config, liveness_checking_enabled,
             request_context
           )
         end
@@ -369,15 +369,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:hints]).to eq(true)
     end
     context 'when liveness enabled' do
-      let(:liveness_enabled) { true }
+      let(:liveness_checking_enabled) { true }
       it 'returns Failed for visible_pattern when it gets passed and failed value ' do
-        output = described_class.new(failure_response_no_liveness, config, liveness_enabled).to_h
+        output = described_class.new(failure_response_no_liveness, config, liveness_checking_enabled).to_h
         expect(output.to_h[:log_alert_results]).
           to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
       end
 
       it 'returns Failed for liveness failure' do
-        response = described_class.new(failure_response_with_liveness, config, liveness_enabled)
+        response = described_class.new(failure_response_with_liveness, config, liveness_checking_enabled)
         output = response.to_h
         expect(output[:success]).to eq(false)
         expect(response.doc_auth_success?).to eq(false)
@@ -386,7 +386,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
       it 'produces expected hash output' do
         output = described_class.new(
-          failure_response_with_all_failures, config, liveness_enabled,
+          failure_response_with_all_failures, config, liveness_checking_enabled,
           request_context
         ).to_h
 
@@ -485,7 +485,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'produces reasonable output for a TrueID failure without details' do
       output = described_class.new(
-        failure_response_empty, config, liveness_enabled,
+        failure_response_empty, config, liveness_checking_enabled,
         request_context
       ).to_h
 
@@ -502,7 +502,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'produces reasonable output for a malformed TrueID response' do
       allow(NewRelic::Agent).to receive(:notice_error)
       output = described_class.new(
-        failure_response_malformed, config, liveness_enabled,
+        failure_response_malformed, config, liveness_checking_enabled,
         request_context
       ).to_h
 
@@ -780,11 +780,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   describe '#successful_result?' do
     context 'and liveness check is enabled' do
-      let(:liveness_enabled) { true }
+      let(:liveness_checking_enabled) { true }
 
       it 'returns true with a passing selfie' do
         response = described_class.new(
-          success_with_liveness_response, config, liveness_enabled
+          success_with_liveness_response, config, liveness_checking_enabled
         )
 
         expect(response.successful_result?).to eq(true)
@@ -792,7 +792,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       context 'when portrait match fails' do
         it 'returns false with a failing selfie' do
           response = described_class.new(
-            failure_response_face_match_fail, config, liveness_enabled
+            failure_response_face_match_fail, config, liveness_checking_enabled
           )
 
           expect(response.successful_result?).to eq(false)
@@ -802,7 +802,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
             described_class.new(
               attention_barcode_read_with_face_match_fail,
               config,
-              liveness_enabled,
+              liveness_checking_enabled,
             )
           end
 
@@ -815,7 +815,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         context 'when a portrait match result is not returned' do
           let(:response) do
             described_class.new(
-              success_response, config, liveness_enabled
+              success_response, config, liveness_checking_enabled
             )
           end
 
