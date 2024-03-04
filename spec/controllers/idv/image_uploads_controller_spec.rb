@@ -8,6 +8,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_img) { nil }
   let(:state_id_number) { 'S59397998' }
+  let(:liveness_checking_required) { false }
 
   describe '#create' do
     subject(:action) do
@@ -354,6 +355,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
       context 'selfie included' do
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
+        let(:liveness_checking_required) { true }
 
         before do
           allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
@@ -368,7 +370,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               image_source: :unknown,
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
-              liveness_checking_required: true,
+              liveness_checking_required: liveness_checking_required,
               images_cropped: false,
             ).and_call_original
 
@@ -376,7 +378,11 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
           expect(response.status).to eq(200)
           expect(json[:success]).to eq(true)
-          expect(document_capture_session.reload.load_result.success?).to eq(true)
+          expect(
+            document_capture_session.reload.load_result.success?(
+              selfie_required: liveness_checking_required,
+            ),
+          ).to eq(true)
           expect(document_capture_session.reload.load_result.selfie_check_performed?).to eq(true)
         end
       end
@@ -390,7 +396,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
-            liveness_checking_required: false,
+            liveness_checking_required: liveness_checking_required,
             images_cropped: false,
           ).and_call_original
 
@@ -398,7 +404,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
-        expect(document_capture_session.reload.load_result.success?).to eq(true)
+        expect(
+          document_capture_session.reload.load_result.
+            success?(selfie_required: liveness_checking_required),
+        ).to eq(true)
       end
 
       it 'tracks events' do
@@ -1271,12 +1280,17 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
       let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
       let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
+      let(:liveness_checking_required) { true }
 
       it 'returns a successful response' do
         action
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
-        expect(document_capture_session.reload.load_result.success?).to eq(true)
+        expect(
+          document_capture_session.reload.load_result.success?(
+            selfie_required: liveness_checking_required,
+          ),
+        ).to eq(true)
         expect(document_capture_session.reload.load_result.selfie_check_performed?).to eq(true)
       end
 
@@ -1296,7 +1310,11 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         action
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
-        expect(document_capture_session.reload.load_result.success?).to eq(true)
+        expect(
+          document_capture_session.reload.load_result.success?(
+            selfie_required: liveness_checking_required,
+          ),
+        ).to eq(true)
       end
     end
   end
