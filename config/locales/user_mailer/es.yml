@@ -40,9 +40,9 @@ es:
         autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de
         autenticación, puede iniciar sesión en su cuenta %{app_name} para
         cancelar esta solicitud.<br><br> Paso dos: Después de su período de
-        espera de %{waiting_period}, recibirá un correo electrónico que le pedirá
-        que confirme la eliminación de su cuenta %{app_name}. Su cuenta no se
-        eliminará hasta que confirme.'
+        espera de %{waiting_period}, recibirá un correo electrónico que le
+        pedirá que confirme la eliminación de su cuenta %{app_name}. Su cuenta
+        no se eliminará hasta que confirme.'
       subject: Cómo eliminar su cuenta de %{app_name}
     account_verified:
       change_password_link: cambiar tu contraseña
