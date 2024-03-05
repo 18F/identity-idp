@@ -26,7 +26,7 @@ module AccountResetConcern
   end
 
   def reset_accumulation_type
-    if supports_fraud_account_reset?
+    if account_reset_wait_period_days > 3
       :days
     else
       :hours
