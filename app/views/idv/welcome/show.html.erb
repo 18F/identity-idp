@@ -7,24 +7,36 @@
 <%= render PageHeadingComponent.new.with_content(@title) %>
   <p>
     <% if decorated_sp_session.selfie_required? then %>
-      <% @info_message = 'doc_auth.info.stepping_up_html' %>
-    <% else %>
-      <% @info_message = 'doc_auth.info.getting_started_html' %>
-    <% end %>
-    <%= t(
-          @info_message,
-          sp_name: @sp_name,
-          link_html: new_tab_link_to(
-            t('doc_auth.info.getting_started_learn_more'),
-            help_center_redirect_path(
-              category: 'verify-your-identity',
-              article: 'how-to-verify-your-identity',
-              flow: :idv,
-              step: :welcome,
-              location: 'intro_paragraph',
-            ),
+      <%= t(
+        'doc_auth.info.stepping_up_html',
+        sp_name: @sp_name,
+        link_html: new_tab_link_to(
+          t('doc_auth.info.getting_started_learn_more'),
+          help_center_redirect_path(
+            category: 'verify-your-identity',
+            article: 'how-to-verify-your-identity',
+            flow: :idv,
+            step: :welcome,
+            location: 'intro_paragraph',
           ),
-        ) %>
+        ),
+      ) %>
+    <% else %>
+      <%= t(
+        'doc_auth.info.getting_started_html',
+        sp_name: @sp_name,
+        link_html: new_tab_link_to(
+          t('doc_auth.info.getting_started_learn_more'),
+          help_center_redirect_path(
+            category: 'verify-your-identity',
+            article: 'how-to-verify-your-identity',
+            flow: :idv,
+            step: :welcome,
+            location: 'intro_paragraph',
+          ),
+        ),
+      ) %>
+    <% end %>
   </p>
 
   <h2><%= t('doc_auth.instructions.getting_started') %></h2>
