@@ -7,7 +7,7 @@ module AccountReset
 
     def show
       analytics.account_reset_visit
-      @account_reset_deletion_period_interval = account_reset_deletion_period_interval
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(current_user)
     end
 
     def create

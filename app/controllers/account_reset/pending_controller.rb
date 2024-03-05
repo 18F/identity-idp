@@ -12,7 +12,7 @@ module AccountReset
     end
 
     def confirm
-      @account_reset_deletion_period_interval = account_reset_deletion_period_interval
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(current_user)
     end
 
     def cancel

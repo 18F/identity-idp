@@ -15,6 +15,7 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
+  include AccountResetConcern
   include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
@@ -144,7 +145,7 @@ class UserMailer < ActionMailer::Base
   def account_reset_request(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token
-      @account_reset_deletion_period_interval = account_reset_deletion_period_interval
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
       @header = t(
         'user_mailer.account_reset_request.header',
         interval: account_reset_deletion_period_interval,
@@ -160,7 +161,7 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
-      @account_reset_deletion_period_interval = account_reset_deletion_period_interval
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
       @account_reset_token_valid_period = account_reset_token_valid_period
       mail(
         to: email_address.email,
@@ -431,31 +432,6 @@ class UserMailer < ActionMailer::Base
 
   private
 
-  def account_reset_deletion_period_interval
-    current_time = Time.zone.now
-
-    distance_of_time_in_words(
-      current_time,
-      current_time + account_reset_wait_period_days,
-      true,
-      accumulate_on: reset_accumulation_type,
-    )
-  end
-
-  def account_reset_wait_period_days
-    if supports_fraud_account_reset?
-      IdentityConfig.store.account_reset_fraud_user_wait_period_days.days
-    else
-      IdentityConfig.store.account_reset_wait_period_days.days
-    end
-  end
-
-  def supports_fraud_account_reset?
-    (user.fraud_review_pending? ||
-      user.fraud_rejection?) &&
-      (IdentityConfig.store.account_reset_fraud_user_wait_period_days.present?)
-  end
-
   def account_reset_token_valid_period
     current_time = Time.zone.now
 
@@ -465,13 +441,5 @@ class UserMailer < ActionMailer::Base
       true,
       accumulate_on: :hours,
     )
-  end
-
-  def reset_accumulation_type
-    if account_reset_wait_period_days > 3
-      :days
-    else
-      :hours
-    end
   end
 end

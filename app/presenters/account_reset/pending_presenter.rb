@@ -41,7 +41,7 @@ module AccountReset
     def supports_fraud_account_reset?
       (account_reset_request_user.fraud_review_pending? ||
         account_reset_request_user.fraud_rejection?) &&
-        (IdentityConfig.store.account_reset_fraud_user_wait_period_days.present?)
+        IdentityConfig.store.account_reset_fraud_user_wait_period_days.present?
     end
 
     def account_reset_request_user

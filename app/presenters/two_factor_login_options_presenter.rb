@@ -1,4 +1,5 @@
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
+  include AccountResetConcern
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :user, :reauthentication_context, :phishing_resistant_required, :piv_cac_required
@@ -117,7 +118,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       [
         t(
           'two_factor_authentication.account_reset.pending',
-          interval: account_reset_deletion_period_interval,
+          interval: account_reset_deletion_period_interval(user),
         ),
         @view.link_to(
           t('two_factor_authentication.account_reset.cancel_link'),
@@ -142,30 +143,5 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     else
       APP_NAME
     end
-  end
-
-  def account_reset_deletion_period_interval
-    current_time = Time.zone.now
-
-    view.distance_of_time_in_words(
-      current_time,
-      current_time + account_reset_wait_period_days,
-      true,
-      accumulate_on: :hours,
-    )
-  end
-
-  def account_reset_wait_period_days
-    if supports_fraud_account_reset?
-      IdentityConfig.store.account_reset_fraud_user_wait_period_days.days
-    else
-      IdentityConfig.store.account_reset_wait_period_days.days
-    end
-  end
-
-  def supports_fraud_account_reset?
-    (user.fraud_review_pending? ||
-      user.fraud_rejection?) &&
-      (IdentityConfig.store.account_reset_fraud_user_wait_period_days.present?)
   end
 end
