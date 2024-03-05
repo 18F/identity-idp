@@ -148,7 +148,7 @@ class UserMailer < ActionMailer::Base
       @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
       @header = t(
         'user_mailer.account_reset_request.header',
-        interval: account_reset_deletion_period_interval,
+        interval: @account_reset_deletion_period_interval,
       )
       mail(
         to: email_address.email,
