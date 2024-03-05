@@ -11,7 +11,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     end
 
     scenario 'user can set up 2 MFA methods properly' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(current_path).to eq authentication_methods_setup_path
 
@@ -32,8 +32,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       click_submit_default
 
       expect(current_path).to eq backup_code_setup_path
-
-      click_continue
 
       expect(page).to have_link(t('components.download_button.label'))
 
@@ -45,7 +43,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     end
 
     scenario 'user can select 2 MFA methods and then chooses another method during' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(current_path).to eq authentication_methods_setup_path
 
@@ -67,7 +65,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(current_path).to eq backup_code_setup_path
 
-      click_link t('two_factor_authentication.choose_another_option')
+      click_link t('two_factor_authentication.backup_codes.add_another_authentication_option')
 
       expect(page).to have_current_path(authentication_methods_setup_path)
 
@@ -88,7 +86,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
     scenario 'user can select 2 MFA methods and complete after reauthn window' do
       allow(IdentityConfig.store).to receive(:reauthn_window).and_return(10)
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(current_path).to eq authentication_methods_setup_path
 
@@ -120,10 +118,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
         fill_in :code, with: totp
 
         click_submit_default
-        click_continue
-
-        expect(page).to have_link(t('components.download_button.label'))
-
         click_continue
 
         expect(page).to have_content(t('notices.backup_codes_configured'))
@@ -164,13 +158,12 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     describe 'skipping second mfa' do
       context 'with skippable mfa method' do
         it 'allows user to skip using skip link' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
           expect(current_path).to eq backup_code_setup_path
 
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
@@ -185,13 +178,12 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
         end
 
         it 'allows user to skip by clicking continue without selection' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
           expect(current_path).to eq backup_code_setup_path
 
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
@@ -251,8 +243,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       click_continue
 
       expect(current_path).to eq backup_code_setup_path
-
-      click_continue
 
       expect(page).to have_link(t('components.download_button.label'))
     end

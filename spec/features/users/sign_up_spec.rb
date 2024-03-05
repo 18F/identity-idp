@@ -248,7 +248,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
 
     it 'allows a user to sign up with backup codes and add methods without reauthentication' do
       sign_in_user
-      set_up_2fa_with_backup_codes
+      select_2fa_option('backup_code')
 
       visit phone_setup_path
       expect(page).to have_current_path phone_setup_path

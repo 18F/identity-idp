@@ -57,15 +57,3 @@
       ) %>
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-2' %>
 <% end %>
-
-<% if in_account_creation_flow? %>
-  <%= render PageFooterComponent.new do %>
-    <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), authentication_methods_setup_path %>
-
-    <%= form_tag(backup_code_delete_path, method: :delete, class: 'margin-top-5') do %>
-
-      <%= button_tag t('links.cancel'), type: 'submit', class: 'usa-button usa-button--unstyled' %>
-
-    <% end %>
-  <% end %>
-<% end %>

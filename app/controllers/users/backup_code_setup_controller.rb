@@ -12,12 +12,20 @@ module Users
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
     before_action :confirm_recently_authenticated_2fa, except: [:reminder]
+    before_action :validate_internal_referrer?, only: [:index]
 
     helper_method :in_multi_mfa_selection_flow?
     helper_method :in_account_creation_flow?
 
     def index
-      track_backup_codes_confirmation_setup_visit
+      generate_codes
+      result = BackupCodeSetupForm.new(current_user).submit
+      visit_result = result.to_h.merge(analytics_properties_for_visit)
+      analytics.backup_code_setup_visit(**visit_result)
+      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
+
+      save_backup_codes
+      track_backup_codes_created
     end
 
     def create
@@ -45,7 +53,7 @@ module Users
 
     def refreshed
       @codes = user_session[:backup_codes]
-      render 'create'
+      render 'index'
     end
 
     def delete
@@ -64,6 +72,16 @@ module Users
     def confirm_backup_codes; end
 
     private
+
+    def validate_internal_referrer?
+      redirect_to root_url unless internal_referrer?
+    end
+
+    def internal_referrer?
+      UserSessionContext.reauthentication_context?(context) ||
+        in_account_creation_flow? ||
+        session[:account_redirect_path]
+    end
 
     def analytics_properties_for_visit
       { in_account_creation_flow: in_account_creation_flow? }
@@ -122,7 +140,7 @@ module Users
     end
 
     def authorize_backup_code_disable
-      return if MfaPolicy.new(current_user).multiple_factors_enabled? || in_account_creation_flow?
+      return if MfaPolicy.new(current_user).multiple_factors_enabled?
       redirect_to account_two_factor_authentication_path
     end
 

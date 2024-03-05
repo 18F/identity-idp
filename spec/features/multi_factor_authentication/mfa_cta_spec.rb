@@ -29,8 +29,6 @@ RSpec.feature 'mfa cta banner', allowed_extra_analytics: [:*] do
       visit_idp_from_sp_with_ial1(:oidc)
       user = sign_up_and_set_password
       select_2fa_option('backup_code')
-      click_continue
-
       expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
       expect(page).to have_current_path(confirm_backup_codes_path)
 
@@ -50,7 +48,7 @@ RSpec.feature 'mfa cta banner', allowed_extra_analytics: [:*] do
       set_up_mfa_with_valid_phone
 
       expect(page).to have_current_path(backup_code_setup_path)
-      set_up_mfa_with_backup_codes
+      click_continue
       expect(page).to have_current_path(sign_up_completed_path)
       expect(page).not_to have_content(t('mfa.second_method_warning.text'))
     end
@@ -59,7 +57,6 @@ RSpec.feature 'mfa cta banner', allowed_extra_analytics: [:*] do
       visit_idp_from_sp_with_ial1(:oidc)
       sign_up_and_set_password
       check t('two_factor_authentication.two_factor_choice_options.backup_code')
-      click_continue
 
       set_up_mfa_with_backup_codes
 

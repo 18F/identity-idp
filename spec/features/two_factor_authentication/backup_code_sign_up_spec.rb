@@ -74,7 +74,6 @@ RSpec.feature 'sign up with backup code', allowed_extra_analytics: [:*] do
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password
     select_2fa_option('backup_code')
-    click_continue
 
     expect(page).to have_current_path(confirm_backup_codes_path)
 
