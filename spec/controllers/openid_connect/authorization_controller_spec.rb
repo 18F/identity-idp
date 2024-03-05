@@ -380,10 +380,12 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(sp_return_log.ial).to eq(2)
             end
 
-            context 'SP has biometric_comparison_required' do
+            context 'SP requests biometric_comparison_required' do
               let(:selfie_capture_enabled) { true }
+              let(:biometric_comparison_required) { 'true' }
+
               before do
-                params[:biometric_comparison_required] = 'true'
+                params[:biometric_comparison_required] = biometric_comparison_required.to_s
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
@@ -412,12 +414,22 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 end
               end
 
-              context 'selfie capture not enabled, biometric_comparison_check requested by sp' do
+              context 'selfie capture not enabled, biometric_comparison_required requested by sp' do
                 let(:selfie_capture_enabled) { false }
                 it 'returns status not_acceptable' do
                   action
 
                   expect(response.status).to eq(406)
+                end
+              end
+
+              context 'selfie capture not enabled, biometric_comparison_required param is false' do
+                let(:selfie_capture_enabled) { false }
+                let(:biometric_comparison_required) { 'false' }
+
+                it 'redirects to the service provider' do
+                  action
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 end
               end
             end
