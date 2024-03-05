@@ -2,7 +2,6 @@ class OutageStatus
   include ActionView::Helpers::TranslationHelper
 
   IDV_VENDORS = %i[
-    acuant
     lexisnexis_instant_verify
     lexisnexis_trueid
     idv_scheduled_maintenance
@@ -12,8 +11,6 @@ class OutageStatus
 
   def vendor_outage?(vendor)
     status = case vendor
-    when :acuant
-      IdentityConfig.store.vendor_status_acuant
     when :lexisnexis_instant_verify
       IdentityConfig.store.vendor_status_lexisnexis_instant_verify
     when :lexisnexis_trueid
@@ -91,7 +88,6 @@ class OutageStatus
 
     analytics.vendor_outage(
       vendor_status: {
-        acuant: IdentityConfig.store.vendor_status_acuant,
         lexisnexis_instant_verify: IdentityConfig.store.vendor_status_lexisnexis_instant_verify,
         lexisnexis_trueid: IdentityConfig.store.vendor_status_lexisnexis_trueid,
         sms: IdentityConfig.store.vendor_status_sms,

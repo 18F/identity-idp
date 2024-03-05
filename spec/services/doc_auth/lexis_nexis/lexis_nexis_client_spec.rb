@@ -22,12 +22,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
     )
   end
 
-  describe '#create_document' do
-    it 'raises a NotImplemented error' do
-      expect { client.create_document }.to raise_error(NotImplementedError)
-    end
-  end
-
   describe '#post_images' do
     before do
       stub_request(:post, image_upload_url).to_return(

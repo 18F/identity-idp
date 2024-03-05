@@ -300,7 +300,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
         workflow: 'test_non_liveness_workflow',
@@ -331,7 +331,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).to eq({})
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::CAUTION.name,
         billed: true,
         classification_info: {},
         liveness_checking_required: false,
@@ -358,7 +358,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).to eq({})
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
         classification_info: {},
         liveness_checking_required: false,
@@ -406,7 +406,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
         liveness_checking_required: false,
