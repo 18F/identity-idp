@@ -53,7 +53,7 @@ module AccountReset
     def fraud_wait_period_not_met?(arr, now)
       if (arr.user.fraud_review_pending? ||
         arr.user.fraud_rejection?) &&
-         (fraud_wait_period_days.present?)
+         fraud_wait_period_days.present?
         return arr.requested_at > (now - fraud_wait_period_days.days)
       end
     end

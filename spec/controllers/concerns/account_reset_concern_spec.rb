@@ -26,7 +26,7 @@ RSpec.describe AccountResetConcern do
           true,
           accumulate_on: :hours,
         )
-        expect(instance.account_reset_deletion_period_interval).
+        expect(instance.account_reset_deletion_period_interval(user)).
           to eq(time_in_hours)
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe AccountResetConcern do
           true,
           accumulate_on: :days,
         )
-        expect(instance.account_reset_deletion_period_interval).
+        expect(instance.account_reset_deletion_period_interval(user)).
           to eq(time_in_hours)
       end
     end
