@@ -217,6 +217,16 @@ RSpec.describe User do
         end
       end
     end
+
+    describe '#active_legacy_profile' do
+      it 'returns the active_legacy_profile' do
+        user = create(:user, :fully_registered)
+        profile1 = create(:profile, :active, :verified, user: user, idv_level: :legacy_unsupervised)
+        _profile2 = create(:profile, :verified, user: user, idv_level: :unsupervised_with_selfie)
+
+        expect(user.active_legacy_profile).to eq profile1
+      end
+    end
   end
 
   context 'when user has IPP enrollments' do

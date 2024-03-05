@@ -48,7 +48,7 @@ module OpenidConnect
     private
 
     def user_has_correct_pending_profile?
-      return false if current_user.active_profile.present? && !biometric_comparison_requested?
+      return false if current_user.active_legacy_profile? && !biometric_comparison_requested?
       user_has_pending_profile?
     end
 
