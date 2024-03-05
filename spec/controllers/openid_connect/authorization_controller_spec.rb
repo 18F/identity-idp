@@ -411,6 +411,49 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             end
           end
 
+          context 'verified non-biometric profile with pending biometric profile' do
+            before do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return('server_side')
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+            end
+
+            context 'sp does not request biometrics' do
+              let(:selfie_capture_enabled) { false }
+              let(:user) { create(:profile, :active, :verified).user }
+              it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                profile2 = create(:profile, :verify_by_mail_pending, user: user)
+                user.active_profile.idv_level = :legacy_unsupervised
+                profile2.idv_level = :unsupervised_with_selfie
+
+                action
+
+                expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+              end
+            end
+
+            context 'sp requests biometrics' do
+              let(:selfie_capture_enabled) { true }
+              let(:user) { create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie).user }
+
+              before do
+                params[:biometric_comparison_required] = 'true'
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+                  and_return(selfie_capture_enabled)
+              end
+
+              it 'redirects to gpo enter code page' do
+                action
+
+                expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
+              end
+            end
+          end
+
           context 'account is not already verified' do
             it 'redirects to have the user verify their account' do
               action
