@@ -33,8 +33,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_state_id_step(user)
 
       # ssn page
-      select 'Reject', from: :mock_profiling_result
-      complete_ssn_step(user)
+      complete_ssn_step(user, 'Reject')
 
       # verify page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
@@ -120,8 +119,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_state_id_step(user)
 
       # ssn page
-      select 'Review', from: :mock_profiling_result
-      complete_ssn_step(user)
+      complete_ssn_step(user, 'Review')
       complete_verify_step(user)
       complete_phone_step(user)
       complete_enter_password_step(user)
@@ -147,18 +145,6 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_phone_step(user)
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
-    end
-
-    it 'handles when users pass IPP and fail TMX review' do
-    end
-
-    it 'handles when users fail IPP and pass TMX review' do
-    end
-
-    it 'handles when users fail IPP and fail TMX review' do
-    end
-
-    it 'handles when users cancel IPP and fail TMX review' do
     end
   end
 
@@ -609,8 +595,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_address_step(user, same_address_as_id: false)
 
       # ssn page
-      select 'Reject', from: :mock_profiling_result
-      complete_ssn_step(user)
+      complete_ssn_step(user, 'Reject')
 
       # verify page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
