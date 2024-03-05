@@ -9,7 +9,10 @@
           <ul class="usa-sidenav__sublist">
             <% nav_item.children.each do |child_nav_item| %>
               <li class="usa-sidenav__item">
-                <%= link_to child_nav_item.title, child_nav_item.href, class: current_page?(child_nav_item.href) ? 'usa-current' : '' %>
+                <%= render FormLinkComponent.new(href: child_nav_item.href, class: current_page?(child_nav_item.href) ? 'usa-current' : '') do %>
+                  <%= form_with(url: child_nav_item.href, method: child_nav_item.method) {} %>
+                  <%= child_nav_item.title %>
+                <% end %>
               </li>
             <% end %>
           </ul>

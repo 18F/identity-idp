@@ -15,11 +15,9 @@ module Users
 
     helper_method :in_multi_mfa_selection_flow?
 
-    def index
-      track_backup_codes_confirmation_setup_visit
-    end
+    before_action :validate_internal_referrer?, only: [:index]
 
-    def create
+    def index
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       visit_result = result.to_h.merge(analytics_properties_for_visit)
@@ -28,6 +26,11 @@ module Users
 
       save_backup_codes
       track_backup_codes_created
+    end
+
+    def create
+      user_session[:create_backup_codes] = true
+      redirect_to backup_code_create_path, status: :see_other
     end
 
     def edit
@@ -63,6 +66,16 @@ module Users
     def confirm_backup_codes; end
 
     private
+
+    def validate_internal_referrer?
+      redirect_to root_url unless internal_referrer?
+    end
+
+    def internal_referrer?
+      UserSessionContext.reauthentication_context?(context) ||
+        in_account_creation_flow? ||
+        user_session.delete(:create_backup_codes)
+    end
 
     def analytics_properties_for_visit
       { in_account_creation_flow: in_account_creation_flow? }

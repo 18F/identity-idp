@@ -1,7 +1,7 @@
 class NavigationPresenter
   include Rails.application.routes.url_helpers
 
-  NavItem = Struct.new(:title, :href, :children)
+  NavItem = Struct.new(:title, :href, :children, :method)
 
   attr_reader :user, :url_options
 
@@ -39,6 +39,8 @@ class NavigationPresenter
           NavItem.new(
             I18n.t('account.navigation.get_backup_codes'),
             backup_codes_path,
+            [],
+            :patch,
           ),
         ].compact
       ),
