@@ -148,8 +148,6 @@ module DocAuth
         else
           :not_processed
         end
-
-        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
       end
 
       def workflow
