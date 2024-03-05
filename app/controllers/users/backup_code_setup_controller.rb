@@ -53,7 +53,7 @@ module Users
 
     def refreshed
       @codes = user_session[:backup_codes]
-      render 'create'
+      render 'index'
     end
 
     def delete
