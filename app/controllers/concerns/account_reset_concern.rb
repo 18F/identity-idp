@@ -29,7 +29,7 @@ module AccountResetConcern
   end
 
   def account_reset_time_accumulation(user)
-    if account_reset_wait_period_days(user) > 3
+    if account_reset_wait_period_days(user) > 3.days
       :days
     else
       :hours
