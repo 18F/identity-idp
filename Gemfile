@@ -69,7 +69,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.3-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.19.1-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -105,6 +105,7 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
+  gem 'net-http-persistent', '~> 4.0.2', require: false
   gem 'nokogiri', '~> 1.16.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'

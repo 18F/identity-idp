@@ -31,7 +31,7 @@ RSpec.describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
     let(:user) { create(:user, :proofed) }
 
     it 'destroys the proofing component' do
-      ProofingComponent.create(user_id: user.id, document_check: 'acuant')
+      ProofingComponent.create(user_id: user.id, document_check: 'mock')
 
       subject.submit(password: new_password)
 
@@ -41,7 +41,7 @@ RSpec.describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
 
   context 'user does not have an active profile' do
     it 'does not destroy the proofing component' do
-      ProofingComponent.create(user_id: user.id, document_check: 'acuant')
+      ProofingComponent.create(user_id: user.id, document_check: 'mock')
 
       subject.submit(password: new_password)
 

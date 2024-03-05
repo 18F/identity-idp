@@ -210,6 +210,14 @@ class Profile < ApplicationRecord
     )
   end
 
+  def deactivate_due_to_ipp_expiration_during_fraud_review
+    update!(
+      active: false,
+      in_person_verification_pending_at: nil,
+      fraud_rejection_at: Time.zone.now,
+    )
+  end
+
   def reject_for_fraud(notify_user:)
     update!(
       active: false,

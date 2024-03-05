@@ -2,7 +2,6 @@ module Idv
   class ApiImageUploadForm
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
-    include ApplicationHelper
 
     validates_presence_of :front
     validates_presence_of :back

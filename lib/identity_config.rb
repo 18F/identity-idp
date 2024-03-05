@@ -322,7 +322,6 @@ class IdentityConfig
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:newrelic_license_key, type: :string)
-    config.add(:nonessential_email_banlist, type: :json)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -457,7 +456,9 @@ class IdentityConfig
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:team_ada_email, type: :string)
     config.add(:team_all_login_emails, type: :json)
+    config.add(:team_daily_fraud_metrics_emails, type: :json)
     config.add(:team_daily_reports_emails, type: :json)
+    config.add(:team_monthly_fraud_metrics_emails, type: :json)
     config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)

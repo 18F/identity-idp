@@ -493,13 +493,11 @@ RSpec.describe 'FeatureManagement' do
 
   describe '#idv_available?' do
     let(:idv_available) { true }
-    let(:vendor_status_acuant) { :operational }
     let(:vendor_status_lexisnexis_instant_verify) { :operational }
     let(:vendor_status_lexisnexis_trueid) { :operational }
 
     before do
       allow(IdentityConfig.store).to receive(:idv_available).and_return(idv_available)
-      allow(IdentityConfig.store).to receive(:vendor_status_acuant).and_return(vendor_status_acuant)
       allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_instant_verify).
         and_return(vendor_status_lexisnexis_instant_verify)
       allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid).
@@ -517,7 +515,7 @@ RSpec.describe 'FeatureManagement' do
       end
     end
 
-    %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
+    %w[lexisnexis_instant_verify lexisnexis_trueid].each do |service|
       context "#{service} is in :full_outage" do
         let(:"vendor_status_#{service}") { :full_outage }
         it 'returns false' do

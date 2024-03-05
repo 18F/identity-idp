@@ -153,6 +153,22 @@ RSpec.describe AuthnContextResolver do
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(true)
       end
+
+      it 'does not use the default AAL if the default AAL ACR value is present' do
+        service_provider = build(:service_provider, default_aal: 2)
+
+        acr_values = [
+          'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo',
+        ].join(' ')
+
+        result = AuthnContextResolver.new(
+          service_provider: service_provider,
+          vtr: nil,
+          acr_values: acr_values,
+        ).resolve
+
+        expect(result.aal2?).to eq(false)
+      end
     end
 
     context 'IAL2 service provider' do

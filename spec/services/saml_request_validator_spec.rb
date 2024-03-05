@@ -23,6 +23,15 @@ RSpec.describe SamlRequestValidator do
       )
     end
 
+    let(:use_vot_in_sp_requests) { true }
+    before do
+      allow(IdentityConfig.store).to receive(
+        :use_vot_in_sp_requests,
+      ).and_return(
+        use_vot_in_sp_requests,
+      )
+    end
+
     context 'valid authn context and sp and authorized nameID format' do
       it 'returns FormResponse with success: true' do
         expect(response.to_h).to include(
@@ -239,6 +248,84 @@ RSpec.describe SamlRequestValidator do
       it 'returns FormResponse with success: false with unauthorized nameid format' do
         errors = {
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],
+        }
+
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+      end
+    end
+
+    context 'valid VTR and valid SP' do
+      let(:authn_context) { ['C1'] }
+
+      it 'returns FormResponse with success true' do
+        expect(response.to_h).to include(
+          success: true,
+          errors: {},
+          **extra,
+        )
+      end
+    end
+
+    context 'valid VTR for identity proofing with authorized SP for identity proofing' do
+      let(:authn_context) { ['C1.P1'] }
+      before { sp.update!(ial: 2) }
+
+      it 'returns FormResponse with success true' do
+        expect(response.to_h).to include(
+          success: true,
+          errors: {},
+          **extra,
+        )
+      end
+    end
+
+    context 'valid VTR for identity proofing with unauthorized SP for identity proofing' do
+      let(:authn_context) { ['C1.P1'] }
+      before { sp.update!(ial: 1) }
+
+      it 'returns FormResponse with success false' do
+        errors = {
+          authn_context: [t('errors.messages.unauthorized_authn_context')],
+        }
+
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+      end
+    end
+
+    context 'valid VTR but VTR is disallowed by config' do
+      let(:use_vot_in_sp_requests) { false }
+      let(:authn_context) { ['C1'] }
+
+      it 'returns FormResponse with success false' do
+        errors = {
+          authn_context: [t('errors.messages.unauthorized_authn_context')],
+        }
+
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+      end
+    end
+
+    context 'unparsable VTR' do
+      let(:authn_context) { ['Fa.Ke.Va.Lu.E0'] }
+
+      it 'returns FormResponse with success false' do
+        errors = {
+          authn_context: [t('errors.messages.unauthorized_authn_context')],
         }
 
         expect(response.to_h).to include(

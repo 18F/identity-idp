@@ -11,7 +11,7 @@ RSpec.describe ServiceProviderSession do
     )
   end
   let(:sp) { build_stubbed(:service_provider) }
-  let(:sp_session) { {} }
+  let(:sp_session) { { acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF } }
   let(:service_provider_request) { ServiceProviderRequest.new }
   let(:sp_name) { subject.sp_name }
   let(:sp_create_link) { '/sign_up/enter_email' }
@@ -241,24 +241,12 @@ RSpec.describe ServiceProviderSession do
   end
 
   describe '#mfa_expiration_interval' do
-    let(:authorization_context) do
-      Vot::Parser::Result.new(
-        component_values: [],
-        aal2?: false,
-        phishing_resistant?: false,
-        hspd12?: false,
-        identity_proofing?: false,
-        biometric_comparison?: false,
-        ialmax?: false,
-      )
-    end
-
     context 'with an AAL2 sp' do
       before do
         allow(sp).to receive(:default_aal).and_return(2)
       end
 
-      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
+      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
     end
 
     context 'with an IAL2 sp' do
@@ -266,11 +254,16 @@ RSpec.describe ServiceProviderSession do
         allow(sp).to receive(:ial).and_return(2)
       end
 
-      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(0.hours) }
+      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
     end
 
-    context 'with an sp that is not AAL2 or IAL2' do
-      it { expect(subject.mfa_expiration_interval(authorization_context)).to eq(30.days) }
+    context 'with an sp that is not AAL2 or IAL2 and AAL1 requested' do
+      it { expect(subject.mfa_expiration_interval).to eq(30.days) }
+    end
+
+    context 'with an sp that is not AAL2 or IAL2 and AAL2 requested' do
+      let(:sp_session) { { acr_values: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF } }
+      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
     end
   end
 
