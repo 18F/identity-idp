@@ -265,7 +265,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             complete_doc_auth_steps_before_document_capture_step
 
             expect(page).to have_current_path(idv_document_capture_url)
-            expect(max_capture_attempts_before_native_camera).to eq('65535')
+            expect(max_capture_attempts_before_native_camera.to_i).
+              to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+            expect(max_submission_attempts_before_native_camera.to_i).
+              to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
             expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
             expect_doc_capture_id_subheader

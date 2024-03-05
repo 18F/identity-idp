@@ -64,4 +64,10 @@ module DocCaptureHelper
     return nil unless form
     form['data-max-capture-attempts-before-native-camera']
   end
+
+  def max_submission_attempts_before_native_camera
+    form = page.find_by_id('document-capture-form')
+    return nil unless form
+    form['data-max-submission-attempts-before-native-camera']
+  end
 end
