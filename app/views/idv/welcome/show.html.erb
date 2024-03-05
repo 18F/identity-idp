@@ -12,19 +12,19 @@
       <% @info_message = 'doc_auth.info.getting_started_html' %>
     <% end %>
     <%= t(
-      @info_message,
-      sp_name: @sp_name,
-      link_html: new_tab_link_to(
-        t('doc_auth.info.getting_started_learn_more'),
-        help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'how-to-verify-your-identity',
-          flow: :idv,
-          step: :welcome,
-          location: 'intro_paragraph',
-        ),
-      ),
-    ) %>
+          @info_message,
+          sp_name: @sp_name,
+          link_html: new_tab_link_to(
+            t('doc_auth.info.getting_started_learn_more'),
+            help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'how-to-verify-your-identity',
+              flow: :idv,
+              step: :welcome,
+              location: 'intro_paragraph',
+            ),
+          ),
+        ) %>
   </p>
 
   <h2><%= t('doc_auth.instructions.getting_started') %></h2>

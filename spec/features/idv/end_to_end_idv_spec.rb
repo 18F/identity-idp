@@ -150,7 +150,11 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_current_path(idv_welcome_path)
 
     expect(page).to have_content t('doc_auth.headings.welcome', sp_name: sp_name)
-    expect(page).not_to have_content('Verify your identity again and take a photo of yourself to access this service')
+
+    stepping_up_info_message = t('doc_auth.info.stepping_up_html',
+                                 sp_name: sp.name,
+                                 link_html: '')
+    expect(page).not_to have_content(stepping_up_info_message)
   end
 
   def validate_agreement_page
