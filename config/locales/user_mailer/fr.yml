@@ -179,8 +179,8 @@ fr:
       subject: Les résultats de la vérification en personne de %{app_name} sont reportés
     in_person_please_call:
       body:
-        contact_message_html: Appelez le <strong>%{contact_number}</strong> pour leur communiquer
-          le code d’erreur <strong>%{support_code}</strong>.
+        contact_message_html: Appelez le <strong>%{contact_number}</strong> pour leur
+          communiquer le code d’erreur <strong>%{support_code}</strong>.
         intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong>
           pour continuer la vérification de votre identité.
       header: Veuillez nous appeler par téléphone
