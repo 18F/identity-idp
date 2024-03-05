@@ -279,6 +279,7 @@ fr:
         too_many_faces: TROP DE VISAGES
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
         nom, date de naissance et adresse.
+      stepping_up_html: 'Vérifiez à nouveau votre identité et prenez une photo de vous pour accéder à ce service. %{link_html}'
       tag: Recommandation
       upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de
         votre carte d’identité depuis cet ordinateur.
