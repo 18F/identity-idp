@@ -34,9 +34,9 @@ es:
       confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras
         %{interval} para eliminar su cuenta.
       header: Solicitaste eliminar tu cuenta
-      wait_html: Hay un período de espera de %{waiting_period} para eliminar su cuenta. En
-        <strong>%{interval}</strong>, recibirá un correo electrónico con
-        instrucciones para completar la eliminación.
+      wait_html: Hay un período de espera de %{waiting_period} para eliminar su
+        cuenta. En <strong>%{interval}</strong>, recibirá un correo electrónico
+        con instrucciones para completar la eliminación.
     recovery_options:
       check_saved_credential: Verifica si tienes una credencial almacenada
       check_webauthn_platform_info: Si has habilitado el desbloqueo facial o táctil,
