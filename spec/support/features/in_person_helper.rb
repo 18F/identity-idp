@@ -166,6 +166,17 @@ module InPersonHelper
     complete_verify_step(user)
   end
 
+  def complete_entire_ipp_flow(user = user_with_2fa, tmx_status = nil, same_address_as_id: true)
+    sign_in_and_2fa_user(user)
+    begin_in_person_proofing(user)
+    complete_all_in_person_proofing_steps(user, tmx_status, same_address_as_id: same_address_as_id)
+    click_idv_send_security_code
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    complete_enter_password_step(user)
+    acknowledge_and_confirm_personal_key
+  end
+
   def expect_in_person_step_indicator_current_step(text)
     # Normally we're only concerned with the "current" step, but since some steps are shared between
     # flows, we also want to make sure that at least one of the in-person-specific steps exists in
