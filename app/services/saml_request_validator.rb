@@ -55,7 +55,7 @@ class SamlRequestValidator
 
   def authorized_authn_context
     if !valid_authn_context? ||
-       (identity_proofing_context_requested? && service_provider&.ial != 2) ||
+       (identity_proofing_requested? && service_provider&.ial != 2) ||
        (ial_max_requested? &&
         !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer))
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
@@ -92,9 +92,10 @@ class SamlRequestValidator
     %w[minimum better].include? authn_context_comparison
   end
 
-  def identity_proofing_context_requested?
+  def identity_proofing_requested?
+    return true if parsed_vector_of_trust&.identity_proofing?
+
     authn_context.each do |classref|
-      return true if parsed_vector_of_trust&.identity_proofing?
       return true if Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)
     end
     false

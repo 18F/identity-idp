@@ -523,14 +523,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
     let(:aal_level) { 1 }
-    let(:identity_proofing_vtr_settings) do
-      saml_settings(
-        overrides: {
-          issuer: sp1_issuer,
-          authn_context: 'C1.C2.P1',
-        },
-      )
-    end
     let(:ial2_settings) do
       saml_settings(
         overrides: {
