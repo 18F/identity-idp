@@ -29,8 +29,14 @@ module Users
     end
 
     def create
-      user_session[:create_backup_codes] = true
-      redirect_to backup_code_create_path, status: :see_other
+      generate_codes
+      result = BackupCodeSetupForm.new(current_user).submit
+      visit_result = result.to_h.merge(analytics_properties_for_visit)
+      analytics.backup_code_setup_visit(**visit_result)
+      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
+
+      save_backup_codes
+      track_backup_codes_created
     end
 
     def edit
@@ -74,7 +80,7 @@ module Users
     def internal_referrer?
       UserSessionContext.reauthentication_context?(context) ||
         in_account_creation_flow? ||
-        user_session.delete(:create_backup_codes)
+        session[:account_redirect_path]
     end
 
     def analytics_properties_for_visit
