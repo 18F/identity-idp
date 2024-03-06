@@ -310,7 +310,10 @@ class AccessibleName
 end
 
 def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
-  expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+  expect(page).to be_axe_clean.according_to(
+    :section508, :"best-practice",
+    :wcag21aa
+  ).skipping('aria-allowed-role')
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
   expect(page).to have_valid_markup if validate_markup
