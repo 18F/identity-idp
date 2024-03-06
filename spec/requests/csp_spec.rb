@@ -115,6 +115,48 @@ RSpec.describe 'content security policy', allowed_extra_analytics: [:*] do
     end
   end
 
+  context 'DAP/Google Analytics' do
+    before do
+      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
+    end
+
+    context 'on the sign in page' do
+      it 'allows DAP/Google Analytics' do
+        get new_user_session_path
+
+        content_security_policy = parse_content_security_policy
+
+        # see GA4 docs for directives
+        # https://developers.google.com/tag-platform/security/guides/csp#google_analytics_4_google_analytics
+        expect(content_security_policy['script-src']).to include('*.googletagmanager.com')
+
+        expect(content_security_policy['img-src']).to include('*.google-analytics.com')
+        expect(content_security_policy['img-src']).to include('*.googletagmanager.com')
+
+        expect(content_security_policy['connect-src']).to include('*.google-analytics.com')
+        expect(content_security_policy['connect-src']).to include('*.analytics.google.com')
+        expect(content_security_policy['connect-src']).to include('*.googletagmanager.com')
+      end
+    end
+
+    context 'on any other page' do
+      it 'does not allow DAP/Google Analytics' do
+        get sign_up_create_password_path
+
+        content_security_policy = parse_content_security_policy
+
+        expect(content_security_policy['script-src']).to_not include('*.googletagmanager.com')
+
+        expect(content_security_policy['img-src']).to_not include('*.google-analytics.com')
+        expect(content_security_policy['img-src']).to_not include('*.googletagmanager.com')
+
+        expect(content_security_policy['connect-src']).to_not include('*.google-analytics.com')
+        expect(content_security_policy['connect-src']).to_not include('*.analytics.google.com')
+        expect(content_security_policy['connect-src']).to_not include('*.googletagmanager.com')
+      end
+    end
+  end
+
   def parse_content_security_policy
     header = response.headers['Content-Security-Policy']
     header.split(';').each_with_object({}) do |directive, result|
