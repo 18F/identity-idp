@@ -109,7 +109,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       expect(current_path).to eq backup_code_setup_path
       travel_to((IdentityConfig.store.reauthn_window + 5).seconds.from_now) do
         click_continue
-        expect(current_path).to eq login_two_factor_options_path  
+        expect(current_path).to eq login_two_factor_options_path
 
         find("label[for='two_factor_options_form_selection_auth_app']").click
         click_on t('forms.buttons.continue')
