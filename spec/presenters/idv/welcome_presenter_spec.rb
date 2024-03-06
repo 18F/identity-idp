@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Idv::WelcomePresenter do
+  # include ActionView::Helpers::UrlHelper
+  # include ActionView::Helpers::TagHelper
+  # include Rails.application.routes.url_helpers
+  # include LinkHelper
+
   subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session) }
 
   let(:sp) do
@@ -34,6 +39,30 @@ RSpec.describe Idv::WelcomePresenter do
     end
   end
 
+  context 'when a selfie is not required' do
+    it 'renders the getting started message' do
+      help_link = '<a target="_blank" class="usa-link--external" rel="noopener noreferrer" href="https://www.example.com">Learn more about verifying your identity<span class="usa-sr-only">(opens new tab)</span></a>'.html_safe
+
+      puts
+      puts presenter.explanation_text(help_link)
+      puts
+      puts t(
+        'doc_auth.info.getting_started_html',
+        sp_name: 'Test Service Provider',
+        link_html: help_link,
+      )
+      puts
+
+      expect(presenter.explanation_text(help_link)).to eq(
+        t(
+          'doc_auth.info.getting_started_html',
+          sp_name: 'Test Service Provider',
+          link_html: help_link,
+        ),
+      )
+    end
+  end
+
   context 'when a selfie is required' do
     let(:sp_session) do
       { biometric_comparison_required: true }
@@ -41,6 +70,16 @@ RSpec.describe Idv::WelcomePresenter do
 
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+    end
+
+    xit 'renders the stepping up message' do
+      expect(presenter.explanation_text).to eq(
+        t(
+          'doc_auth.info.stepping_up_html',
+          sp_name: 'Test Service Provider',
+          link_html: t('doc_auth.info.getting_started_learn_more'),
+        ),
+      )
     end
 
     it 'says so' do

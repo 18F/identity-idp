@@ -8,24 +8,22 @@
   <p>
     <% if @presenter.selfie_required? then %>
       <%= t(
-            'doc_auth.info.stepping_up_html',
-            sp_name: @presenter.sp_name,
-            link_html: new_tab_link_to(
-              t('doc_auth.info.getting_started_learn_more'),
-              help_center_redirect_path(
-                category: 'verify-your-identity',
-                article: 'how-to-verify-your-identity',
-                flow: :idv,
-                step: :welcome,
-                location: 'intro_paragraph',
-              ),
-            ),
-          ) %>
+        'doc_auth.info.stepping_up_html',
+        sp_name: @presenter.sp_name,
+        link_html: new_tab_link_to(
+          t('doc_auth.info.getting_started_learn_more'),
+          help_center_redirect_path(
+            category: 'verify-your-identity',
+            article: 'how-to-verify-your-identity',
+            flow: :idv,
+            step: :welcome,
+            location: 'intro_paragraph',
+          ),
+        ),
+      ) %>
     <% else %>
-      <%= t(
-            'doc_auth.info.getting_started_html',
-            sp_name: @presenter.sp_name,
-            link_html: new_tab_link_to(
+      <%= @presenter.explanation_text(
+            new_tab_link_to(
               t('doc_auth.info.getting_started_learn_more'),
               help_center_redirect_path(
                 category: 'verify-your-identity',
@@ -33,9 +31,9 @@
                 flow: :idv,
                 step: :welcome,
                 location: 'intro_paragraph',
-              ),
-            ),
-          ) %>
+              )
+            )
+          )%>
     <% end %>
   </p>
 
