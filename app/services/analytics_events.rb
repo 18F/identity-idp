@@ -2842,17 +2842,10 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
-  #                  (previously called "attempt")
-  # User captured and approved of their selfie
-  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_added(captureAttempts: nil, **extra)
-    track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
-  end
-
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
-  #                  (previously called "attempt")
   # User closed the SDK for taking a selfie without submitting a photo
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts: nil, **extra)
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
@@ -2860,14 +2853,16 @@ module AnalyticsEvents
       **extra,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # User encountered an error with the SDK selfie process
+  #   Error code 1: camera permission not granted
+  #   Error code 2: unexpected errors
   # @param [Integer] sdk_error_code SDK code for the error encountered
   # @param [String] sdk_error_message SDK message for the error encountered
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
-  # User encountered an error with the SDK selfie process
-  # Error code 1: camera permission not granted
-  # Error code 2: unexpected errors
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
     sdk_error_code:,
     sdk_error_message:,
@@ -2882,13 +2877,17 @@ module AnalyticsEvents
       **extra,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # User opened the SDK to take a selfie
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_opened(captureAttempts: nil, **extra)
     track_event(:idv_sdk_selfie_image_capture_opened, captureAttempts: captureAttempts, **extra)
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # User took a selfie image with the SDK, or uploaded a selfie using the file picker
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] failedImageResubmission
@@ -2899,8 +2898,8 @@ module AnalyticsEvents
   # @param [Integer] size size of image added in bytes
   # @param [String] source
   # @param [Integer] width width of image added in pixels
-  # User uploaded a selfie using the file picker
-  def idv_selfie_image_file_uploaded(
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_selfie_image_added(
     captureAttempts:,
     failedImageResubmission:,
     fingerprint:,
@@ -2913,7 +2912,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      :idv_selfie_image_file_uploaded,
+      :idv_selfie_image_added,
       captureAttempts: captureAttempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
