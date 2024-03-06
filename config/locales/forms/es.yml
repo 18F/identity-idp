@@ -2,14 +2,6 @@
 es:
   forms:
     backup_code:
-      are_you_sure_desc_html:
-        - '<strong>Los códigos de respaldo son el método de autenticación menos
-          utilizado,</strong> ya que se pueden perder con facilidad. Prueba una
-          opción más segura, como una aplicación de autenticación o una clave de
-          seguridad.'
-        - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o
-          escribir. Ingresará un código cada vez que inicie sesión.
-      are_you_sure_title: '¿Está seguro de que desea usar códigos de respaldo?'
       caution_codes: Cada código solo puede usarse una vez. Te daremos nuevos códigos
         una vez que hayas usado los diez.
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
