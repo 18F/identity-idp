@@ -180,9 +180,9 @@ RSpec::Matchers.define :tag_decorative_svgs_with_role do
   end
 
   failure_message do |page|
-    img_tags = decorative_svgs(page).reject { |img| img[:role] == 'img' }
-                .map { |img| %|<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">| }
-                .join("\n")
+    img_tags = decorative_svgs(page).reject { |img| img[:role] == 'img' }.
+      map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }.
+      join("\n")
 
     <<~STR
       Expect all decorative SVGs to have role="img", but found ones without:
