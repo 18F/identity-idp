@@ -14,6 +14,10 @@ module Idv
       t('doc_auth.headings.welcome', sp_name: sp_name)
     end
 
+    def selfie_required?
+      sp_session.selfie_required?
+    end
+
     private
 
     attr_accessor :sp_session
