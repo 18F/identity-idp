@@ -112,8 +112,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
 
       expect(current_path).to eq backup_code_setup_path
 
-      click_continue
-
       expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
@@ -465,8 +463,8 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   it 'allows a user to sign up with backup codes and add methods after without reauthentication' do
-    sign_in_user
-    set_up_2fa_with_backup_codes
+    sign_up_and_set_password
+    select_2fa_option('backup_code')
 
     click_button t('forms.buttons.continue')
 
