@@ -19,4 +19,8 @@ RSpec.describe Idv::WelcomePresenter do
   it 'gives us the correct sp_name' do
     expect(presenter.sp_name).to eq('Test Service Provider')
   end
+
+  it 'gives us the correct title' do
+    expect(presenter.title).to eq(t('doc_auth.headings.welcome', sp_name: 'Test Service Provider'))
+  end
 end
