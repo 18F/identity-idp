@@ -176,16 +176,16 @@ RSpec::Matchers.define :tag_decorative_svgs_with_role do
   end
 
   match do |page|
-    expect(decorative_svgs(page)).to all satisfy { |img| img[:role] == 'img' }
+    expect(decorative_svgs(page)).to all satisfy { |img| img[:role] == 'presentation' }
   end
 
   failure_message do |page|
-    img_tags = decorative_svgs(page).reject { |img| img[:role] == 'img' }
+    img_tags = decorative_svgs(page).reject { |img| img[:role] == 'presentation' }
                 .map { |img| %|<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">| }
                 .join("\n")
 
     <<~STR
-      Expect all decorative SVGs to have role="img", but found ones without:
+      Expect all decorative SVGs to have role="presentation", but found ones without:
       #{img_tags}
     STR
   end
