@@ -1,15 +1,15 @@
 <% self.title = @title %>
 <%= render JavascriptRequiredComponent.new(
       header: t('idv.welcome.no_js_header'),
-      intro: t('idv.welcome.no_js_intro', sp_name: @sp_name),
+      intro: t('idv.welcome.no_js_intro', sp_name: @presenter.sp_name),
       location: :idv_welcome,
     ) do %>
-<%= render PageHeadingComponent.new.with_content(@title) %>
+<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
   <p>
-    <% if decorated_sp_session.selfie_required? then %>
+    <% if @presenter.selfie_required? then %>
       <%= t(
             'doc_auth.info.stepping_up_html',
-            sp_name: @sp_name,
+            sp_name: @presenter.sp_name,
             link_html: new_tab_link_to(
               t('doc_auth.info.getting_started_learn_more'),
               help_center_redirect_path(
@@ -24,7 +24,7 @@
     <% else %>
       <%= t(
             'doc_auth.info.getting_started_html',
-            sp_name: @sp_name,
+            sp_name: @presenter.sp_name,
             link_html: new_tab_link_to(
               t('doc_auth.info.getting_started_learn_more'),
               help_center_redirect_path(
@@ -42,7 +42,7 @@
   <h2><%= t('doc_auth.instructions.getting_started') %></h2>
 
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <% if decorated_sp_session.selfie_required? %>
+    <% if @presenter.selfie_required? %>
       <%= c.with_item(heading: t('doc_auth.instructions.bullet1_with_selfie')) do %>
         <p><%= t('doc_auth.instructions.text1_with_selfie') %></p>
       <% end %>
