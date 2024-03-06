@@ -48,7 +48,10 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         # set fraud review to pending: 
         profile.deactivate_for_fraud_review
         # pass the enrollment:
-        enrollment.update(status: 'passed')
+        enrollment.update(status: :passed,
+          proofed_at: Time.zone.now,
+          status_check_completed_at: Time.zone.now
+        )
         
         profile.reload
         enrollment.reload
@@ -64,7 +67,10 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         # set fraud review to pending: 
         profile.deactivate_for_fraud_review
         # pass the enrollment:
-        enrollment.update(status: 'passed')
+        enrollment.update(status: :passed,
+          proofed_at: Time.zone.now,
+          status_check_completed_at: Time.zone.now
+        )
         
         profile.reload
         enrollment.reload
@@ -84,7 +90,10 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         # set fraud review to pending: 
         profile.deactivate_for_fraud_review
         # pass the enrollment:
-        enrollment.update(status: 'passed')
+        enrollment.update(status: :passed,
+          proofed_at: Time.zone.now,
+          status_check_completed_at: Time.zone.now
+        )
         
         profile.reload
         enrollment.reload
@@ -130,6 +139,24 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       end 
     end
+
+    context 'User cancels IPP after being deactivated for TMX review', allow_browser_log: true do
+      it 'allows the user to restart IPP' do
+        enrollment = InPersonEnrollment.last
+        profile = enrollment.profile
+        
+        # set fraud review to pending: 
+        profile.deactivate_for_fraud_review
+        profile.reload
+
+        # cancel the enrollment
+        click_link t('links.cancel')
+        # user can restart
+        click_on t('idv.cancel.actions.start_over')
+
+        expect(page).to have_current_path(idv_welcome_path)
+      end
+    end
   end
 
   context 'ThreatMetrix determination of Reject' do
@@ -158,7 +185,10 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         # set fraud review to pending: 
         profile.deactivate_for_fraud_review
         # pass the enrollment:
-        enrollment.update(status: 'passed')
+        enrollment.update(status: :passed,
+          proofed_at: Time.zone.now,
+          status_check_completed_at: Time.zone.now
+        )
         
         profile.reload
         enrollment.reload
@@ -179,7 +209,10 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         # set fraud review to pending: 
         profile.deactivate_for_fraud_review
         # pass the enrollment:
-        enrollment.update(status: 'passed')
+        enrollment.update(status: :passed,
+          proofed_at: Time.zone.now,
+          status_check_completed_at: Time.zone.now
+        )
         
         profile.reload
         enrollment.reload
