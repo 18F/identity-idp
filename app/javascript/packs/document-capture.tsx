@@ -2,7 +2,7 @@ import { render } from 'react-dom';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
   DocumentCapture,
-  DeviceContext,
+  DeviceContextProvider,
   AcuantContextProvider,
   UploadContextProvider,
   ServiceProviderContextProvider,
@@ -62,8 +62,6 @@ function getMetaContent(name): string | null {
   return meta?.content ?? null;
 }
 
-const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
-
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const {
     flowPath,
@@ -115,7 +113,7 @@ try {
 
 const App = composeComponents(
   [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
-  [DeviceContext.Provider, { value: device }],
+  [DeviceContextProvider, { value: { isMobile: isCameraCapableMobile() } }],
   [
     InPersonContext.Provider,
     {
