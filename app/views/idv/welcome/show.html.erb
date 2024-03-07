@@ -23,31 +23,19 @@
   <h2><%= t('doc_auth.instructions.getting_started') %></h2>
 
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <% if @presenter.selfie_required? %>
-      <%= c.with_item(heading: t('doc_auth.instructions.bullet1_with_selfie')) do %>
-        <p><%= t('doc_auth.instructions.text1_with_selfie') %></p>
+    <% 4.times do |i| %>
+      <%= c.with_item(heading: @presenter.bullet_header(i)) do %>
+        <p><%= @presenter.bullet_text(i) %></p>
       <% end %>
-    <% else %>
-      <%= c.with_item(heading: t('doc_auth.instructions.bullet1')) do %>
-        <p><%= t('doc_auth.instructions.text1') %></p>
-      <% end %>
-    <% end %>
-    <%= c.with_item(heading: t('doc_auth.instructions.bullet2')) do %>
-      <p><%= t('doc_auth.instructions.text2') %></p>
-    <% end %>
-    <%= c.with_item(heading: t('doc_auth.instructions.bullet3')) do %>
-      <p><%= t('doc_auth.instructions.text3') %></p>
-    <% end %>
-    <%= c.with_item(heading: t('doc_auth.instructions.bullet4', app_name: APP_NAME)) do %>
-      <p><%= t('doc_auth.instructions.text4') %></p>
     <% end %>
   <% end %>
-<%= simple_form_for(
-      :doc_auth,
-      url: url_for,
-      method: 'put',
-      html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
-    ) do |f| %>
+
+  <%= simple_form_for(
+    :doc_auth,
+    url: url_for,
+    method: 'put',
+    html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
+  ) do |f| %>
 
   <div class="margin-top-4">
     <%= render(
