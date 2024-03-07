@@ -1254,6 +1254,11 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     expect(userinfo_response[:email]).to eq(user.email)
     expect(userinfo_response[:given_name]).to eq('John')
     expect(userinfo_response[:social_security_number]).to eq('111223333')
+
+    # ToDo
+    # expect(aal stuff)
+    # expect(ial_stuff)
+    # expect(vtr)
     user
   end
 end

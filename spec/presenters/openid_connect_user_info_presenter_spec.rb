@@ -41,6 +41,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
             expect(user_info[:ial]).to eq(ial)
             expect(user_info[:aal]).to eq(aal)
+            expect(user_info).not_to have_key(:vtr)
           end
         end
       end
@@ -60,6 +61,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
             expect(user_info[:ial]).to eq(ial_value)
             expect(user_info[:aal]).to eq(aal)
+            expect(user_info).not_to have_key(:vtr)
           end
         end
 
@@ -71,6 +73,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:phone]).to eq(nil)
             expect(user_info[:phone_verified]).to eq(nil)
             expect(user_info[:address]).to eq(nil)
+            expect(user_info).not_to have_key(:vtr)
           end
         end
       end
@@ -281,6 +284,33 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               end
             end
           end
+        end
+      end
+    end
+
+    context 'with a vtr parameter' do
+      let(:identity) do
+        build(
+          :service_provider_identity,
+          rails_session_id: rails_session_id,
+          user: create(:user, profiles: [profile]),
+          service_provider: service_provider.issuer,
+          scope: scope,
+          aal: 2,
+          vtr: ['C1'].to_json,
+        )
+      end
+
+      it 'has basic attributes' do
+        aggregate_failures do
+          expect(user_info[:sub]).to eq(identity.uuid)
+          expect(user_info[:iss]).to eq(root_url)
+          expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
+          expect(user_info[:email_verified]).to eq(true)
+          expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+          expect(user_info).not_to have_key(:ial)
+          expect(user_info).not_to have_key(:aal)
+          expect(user_info[:vtr]).to eq(['C1'].to_json)
         end
       end
     end
