@@ -58,7 +58,6 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     end
 
     it 'succeeds with a vtr param' do
-      allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
       oidc_end_client_secret_jwt(vtr: 'C1.C2.P1')
     end
   end
