@@ -7,7 +7,7 @@ import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
-  FeatureFlagContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { composeComponents } from '@18f/identity-compose-components';
@@ -90,13 +90,13 @@ describe('document-capture/components/documents-step', () => {
   });
 
   context('selfie capture', () => {
-    it('renders with front, back, and selfie inputs when featureflag is on', () => {
+    it('renders with front, back, and selfie inputs when isSelfieCaptureEnabled is true', () => {
       const App = composeComponents(
         [
-          FeatureFlagContext.Provider,
+          SelfieCaptureContext.Provider,
           {
             value: {
-              selfieCaptureEnabled: true,
+              isSelfieCaptureEnabled: true,
             },
           },
         ],
@@ -140,13 +140,13 @@ describe('document-capture/components/documents-step', () => {
     });
   });
 
-  it('renders with front, back when featureflag is off', () => {
+  it('renders with front, back when isSelfieCaptureEnabled is false', () => {
     const App = composeComponents(
       [
-        FeatureFlagContext.Provider,
+        SelfieCaptureContext.Provider,
         {
           value: {
-            selfieCaptureEnabled: false,
+            isSelfieCaptureEnabled: false,
           },
         },
       ],

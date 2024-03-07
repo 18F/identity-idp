@@ -251,7 +251,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
       context 'on mobile platform' do
         before do
-          # mock mobile device as cameraCapable, this allows us to proce
+          # mock mobile device as cameraCapable, this allows us to process
           allow_any_instance_of(ActionController::Parameters).
             to receive(:[]).and_wrap_original do |impl, param_name|
             param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
@@ -265,6 +265,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             complete_doc_auth_steps_before_document_capture_step
 
             expect(page).to have_current_path(idv_document_capture_url)
+            expect(max_capture_attempts_before_native_camera.to_i).
+              to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+            expect(max_submission_attempts_before_native_camera.to_i).
+              to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
             expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
             expect_doc_capture_id_subheader
@@ -480,6 +484,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               complete_doc_auth_steps_before_document_capture_step
 
               expect(page).to have_current_path(idv_document_capture_url)
+              expect(max_capture_attempts_before_native_camera).to eq(
+                IdentityConfig.store.doc_auth_max_capture_attempts_before_native_camera.to_s,
+              )
               expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))

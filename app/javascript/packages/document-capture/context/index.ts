@@ -17,3 +17,4 @@ export {
 export type { DeviceContextValue } from './device';
 export { default as InPersonContext } from './in-person';
 export { default as FeatureFlagContext } from './feature-flag';
+export { default as SelfieCaptureContext } from './selfie-capture';
