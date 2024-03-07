@@ -137,4 +137,44 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       end
     end
   end
+
+  describe 'profile_history' do
+    let(:profiles) { nil }
+
+    context 'user has no profiles' do
+      it 'logs an empty array' do
+        analytics.idv_test_method(extra: true)
+        expect(analytics.called_kwargs).to eq(extra: true)
+      end
+    end
+
+    context 'user has profiles' do
+      let(:user) { create(:user) }
+      let!(:profiles) do
+        [
+          create(:profile, :active, user:, created_at: 10.days.ago),
+          create(:profile, :verify_by_mail_pending, user:, created_at: 11.days.ago),
+        ]
+      end
+
+      it 'logs Profiles in created_at order' do
+        analytics.idv_test_method(extra: true)
+        expect(analytics.called_kwargs).to include(:profile_history)
+        expect(analytics.called_kwargs[:profile_history].map { |h| h.profile.id }).to eql(
+          [
+            profiles.last.id,
+            profiles.first.id,
+          ],
+        )
+      end
+
+      it 'logs Profiles using ProfileLogging' do
+        analytics.idv_test_method(extra: true)
+        expect(analytics.called_kwargs).to include(
+          active_profile_idv_level: 'legacy_unsupervised',
+          profile_history: all(be_instance_of(Idv::ProfileLogging)),
+        )
+      end
+    end
+  end
 end

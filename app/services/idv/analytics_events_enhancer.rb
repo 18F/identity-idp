@@ -136,6 +136,7 @@ module Idv
         proofing_components: proofing_components,
         active_profile_idv_level: active_profile&.idv_level,
         pending_profile_idv_level: pending_profile&.idv_level,
+        profile_history: profile_history,
       }.compact
     end
 
@@ -147,6 +148,15 @@ module Idv
     def pending_profile
       return if !user&.respond_to?(:pending_profile) || !user.pending_profile
       user.pending_profile
+    end
+
+    def profile_history
+      return if !user&.respond_to?(:profiles)
+
+      (user&.profiles || []).
+        sort_by { |profile| profile.created_at }.
+        map { |profile| ProfileLogging.new(profile) }.
+        presence
     end
 
     def proofing_components
