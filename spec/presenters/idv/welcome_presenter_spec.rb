@@ -17,11 +17,11 @@ RSpec.describe Idv::WelcomePresenter do
   end
 
   it 'gives us the correct sp_name' do
-    expect(presenter.sp_name).to eq(sp.name)
+    expect(presenter.sp_name).to eq(sp.friendly_name)
   end
 
   it 'gives us the correct title' do
-    expect(presenter.title).to eq(t('doc_auth.headings.welcome', sp_name: sp.name))
+    expect(presenter.title).to eq(t('doc_auth.headings.welcome', sp_name: sp.friendly_name))
   end
 
   describe 'the explanation' do
@@ -32,7 +32,7 @@ RSpec.describe Idv::WelcomePresenter do
         expect(presenter.explanation_text(help_link)).to eq(
           t(
             'doc_auth.info.getting_started_html',
-            sp_name: sp.name,
+            sp_name: sp.friendly_name,
             link_html: help_link,
           ),
         )
@@ -52,7 +52,7 @@ RSpec.describe Idv::WelcomePresenter do
         expect(presenter.explanation_text(help_link)).to eq(
           t(
             'doc_auth.info.stepping_up_html',
-            sp_name: sp.name,
+            sp_name: sp.friendly_name,
             link_html: help_link,
           ),
         )
@@ -123,7 +123,7 @@ RSpec.describe Idv::WelcomePresenter do
 
     it 'shows the bullet point 4 header' do
       expect(presenter.bullet_header(4)).to eq(
-        t('doc_auth.instructions.bullet4', app_name: sp.name),
+        t('doc_auth.instructions.bullet4', app_name: sp.friendly_name),
       )
     end
 
