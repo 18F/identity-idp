@@ -313,7 +313,10 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
   expect(page).to be_axe_clean.according_to(
     :section508, :"best-practice",
     :wcag21aa
-  ).excluding('img[alt=""][src$=".svg" i]')
+  ).
+    # Axe flags redundant img role on img elements, but is necessary for a Safari bug
+    # See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#identifying_svg_as_an_image
+    excluding('img[alt=""][src$=".svg" i]')
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
   expect(page).to have_valid_markup if validate_markup
