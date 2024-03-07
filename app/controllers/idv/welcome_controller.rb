@@ -13,6 +13,7 @@ module Idv
         call('welcome', :view, true)
 
       @presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+      @title = @presenter.title
     end
 
     def update

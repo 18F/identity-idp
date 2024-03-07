@@ -53,7 +53,7 @@ module Idv
       when 3
         t('doc_auth.instructions.bullet3')
       when 4
-        t('doc_auth.instructions.bullet4')
+        t('doc_auth.instructions.bullet4', app_name: sp_name)
       end
     end
 
