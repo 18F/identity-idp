@@ -30,19 +30,18 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
     ).to eq([Idv::AnalyticsEventsEnhancer.const_source_location(:DECORATED_METHODS).first])
   end
 
-  it 'calls analytics method with original and decorated attributes' do
+  it 'calls analytics method with original attributes' do
     analytics.idv_final(extra: true)
-
-    expect(analytics.called_kwargs).to eq(extra: true, proofing_components: nil)
+    expect(analytics.called_kwargs).to eq(extra: true)
   end
 
   context 'with anonymous analytics user' do
     let(:user) { AnonymousUser.new }
 
-    it 'calls analytics method with original and decorated attributes' do
+    it 'calls analytics method with original attributes' do
       analytics.idv_final(extra: true)
 
-      expect(analytics.called_kwargs).to eq(extra: true, proofing_components: nil)
+      expect(analytics.called_kwargs).to eq(extra: true)
     end
   end
 

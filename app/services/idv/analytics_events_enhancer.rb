@@ -50,7 +50,7 @@ module Idv
     def common_analytics_attributes
       {
         proofing_components: proofing_components,
-      }
+      }.compact
     end
 
     def proofing_components
