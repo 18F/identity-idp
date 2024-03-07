@@ -39,6 +39,11 @@ module I18n
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.formats.sms_date' }, # for us date format
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'date.formats.long' }, # Format is same in English and Spanish
+        { key: 'date.formats.short' }, # Format is same in English and Spanish
+        { key: 'time.formats.event_date' }, # Format is same in English and Spanish
+        { key: 'time.formats.event_time' }, # Format is same in English and Spanish
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish

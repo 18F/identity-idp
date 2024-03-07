@@ -1,0 +1,11 @@
+---
+en:
+  mfa:
+    account_info: Agregar otro método de autenticación evita que el acceso a su cuenta quede bloqueado si pierde uno de sus métodos.
+    add: Agregar otro método
+    info: Agregue otro nivel de seguridad seleccionando un método de autenticación multifactor. Le recomendamos que seleccione al menos dos opciones diferentes en caso de que pierda uno de sus métodos.
+    second_method_warning:
+      link: Agregue un segundo método de autenticación.
+      text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
+    skip: Omitir por ahora
+    webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.

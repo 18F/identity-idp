@@ -7,7 +7,7 @@ es:
     shared:
       saml_post_binding:
         heading: Enviar para continuar
-        no_js: JavaScript parece estar desactivado en su navegador. Normalmente, este
-          paso se realiza automáticamente, pero debido a que tiene JavaScript
-          desactivado, haga clic en el botón Enviar para continuar iniciando o
-          cerrando la sesión.
+        no_js: JavaScript parece estar desactivado en su navegador. Por lo general, este
+          paso es automático, pero, debido a que tiene JavaScript desactivado,
+          haga clic en el botón Enviar para continuar iniciando sesión o
+          cerrándola.

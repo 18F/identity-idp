@@ -2,53 +2,52 @@
 fr:
   devise:
     confirmations:
-      already_confirmed: Votre adresse courriel a déjà été confirmée. %{action}
-      confirmed: Vous avez confirmé votre adresse courriel
-      confirmed_but_must_set_password: Vous avez confirmé votre adresse courriel
-      confirmed_but_remove_from_other_account: Cette adresse électronique est déjà
-        associée à un compte %{app_name}, nous ne pouvons donc pas l’ajouter à
-        un autre compte. Vous devez d’abord le supprimer ou le supprimer du
-        compte auquel il est associé. Pour ce faire, connectez-vous avec cette
-        adresse e-mail.
-      confirmed_but_sign_in: Vous avez confirmé votre adresse email. Veuillez vous
+      already_confirmed: Votre adresse e-mail a déjà été confirmée. %{action}
+      confirmed: Vous avez confirmé votre adresse e-mail
+      confirmed_but_must_set_password: Vous avez confirmé votre adresse e-mail
+      confirmed_but_remove_from_other_account: Cette adresse e-mail est déjà associée
+        à un compte %{app_name}, nous ne pouvons donc pas l’ajouter à un autre
+        compte. Vous devez d’abord la supprimer ou la retirer du compte auquel
+        elle est associée. Pour ce faire, connectez-vous avec cette adresse
+        e-mail.
+      confirmed_but_sign_in: Vous avez confirmé votre adresse e-mail. Veuillez vous
         connecter pour voir votre profil.
-      sign_in: Veuillez vous connecter de nouveau.
+      sign_in: Veuillez vous connecter.
     failure:
       already_authenticated: ''
-      inactive: Votre compte n’est pas encore activé.
-      invalid_html: L’adresse courriel ou le mot de passe que vous avez entré est
+      inactive: Votre compte n’est pas activé.
+      invalid_html: L’adresse e-mail ou le mot de passe que vous avez saisi est
         erroné. Essayez de %{link_html}.
       invalid_link_text: réinitialiser votre mot de passe
       last_attempt: Il vous reste un essai avant que votre compte ne soit verrouillé.
       locked: Votre compte est maintenant verrouillé.
-      not_found_in_database_html: L’adresse courriel ou le mot de passe que vous avez
-        entré est erroné. Essayez de %{link_html}.
+      not_found_in_database_html: L’adresse e-mail ou le mot de passe que vous avez
+        saisi est erroné. Essayez de %{link_html}.
       not_found_in_database_link_text: réinitialiser votre mot de passe
-      session_limited: Vos authentifiants ont été utilisés dans un autre navigateur.
-        Veuillez vous connecter de nouveau pour continuer avec ce navigateur.
-      timeout: Votre session est expirée. Veuillez vous connecter de nouveau pour
-        continuer.
-      unauthenticated: Votre session est expirée. Veuillez vous connecter de nouveau
-        pour continuer.
-      unconfirmed: Vous devez confirmer votre adresse courriel avant de continuer.
+      session_limited: Vos identifiants de connexion ont été utilisés dans un autre
+        navigateur. Veuillez vous reconnecter pour continuer avec ce navigateur.
+      timeout: Votre session a expiré. Veuillez vous reconnecter pour continuer.
+      unauthenticated: Votre session a expiré. Veuillez vous reconnecter pour continuer.
+      unconfirmed: Vous devez confirmer votre adresse e-mail avant de continuer.
     mailer:
       password_updated:
         subject: Votre mot de passe a été modifié
     passwords:
       choose_new_password: Choisissez un nouveau mot de passe.
       invalid_token: Le jeton de réinitialisation de mot de passe n’est pas valide.
-        Veuillez essayer de nouveau.
-      no_token: Vous ne pouvez accéder à cette page que depuis un courriel de
-        réinitialisation de mot de passe. Si vous avez été redirigé à partir
-        d’un courriel de réinitialisation de mot de passe, veuillez vous assurer
-        que vous avez utilisé le lien fourni complet.
-      send_instructions: Vous recevrez dans quelques instants un courriel avec des
-        instructions pour réinitialiser votre mot de passe.
-      send_paranoid_instructions: Vous recevrez dans quelques instants un courriel
-        avec des instructions pour réinitialiser votre mot de passe.
-      token_expired: Vous avez pris trop de temps pour réinitialiser votre mot de
-        passe. Veuillez essayer de nouveau.
-      updated: Votre mot de passe a été modifié. Vous êtes maintenant connectée(e).
+        Veuillez réessayer.
+      no_token: Pour réinitialiser votre mot de passe, veuillez utiliser le lien
+        contenu dans l’e-mail de réinitialisation de mot de passe que vous avez
+        reçu. Si vous collez ce lien dans votre navigateur, veuillez vous
+        assurer que vous l’avez collé dans son intégralité.
+      send_instructions: Vous recevrez dans quelques minutes un e-mail contenant des
+        instructions pour procéder à la réinitialisation de votre mot de passe.
+      send_paranoid_instructions: Vous recevrez dans quelques minutes un e-mail
+        contenant des instructions pour procéder à la réinitialisation de votre
+        mot de passe.
+      token_expired: Vous avez mis trop de temps à réinitialiser votre mot de passe.
+        Veuillez réessayer.
+      updated: Votre mot de passe a été modifié. Vous êtes maintenant connecté.
       updated_not_active: Votre mot de passe a été modifié. Veuillez vous connecter
         avec votre nouveau mot de passe.
     registrations:
@@ -56,4 +55,4 @@ fr:
       destroyed: Votre compte a bien été supprimé.
     sessions:
       signed_in: ''
-      signed_out: Vous êtes maintenant déconnecté(e).
+      signed_out: Vous êtes maintenant déconnecté.

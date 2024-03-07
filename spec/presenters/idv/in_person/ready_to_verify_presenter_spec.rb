@@ -91,8 +91,20 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       before { I18n.locale = :es }
 
       it 'returns localized location hours for weekdays and weekends by prefix' do
-        expect(presenter.selected_location_hours(:weekday)).to eq '08:00 – 16:30'
-        expect(presenter.selected_location_hours(:saturday)).to eq '08:00 – 16:30'
+        expect(presenter.selected_location_hours(:weekday)).to eq '8:00 AM – 4:30 PM'
+        expect(presenter.selected_location_hours(:saturday)).to eq '8:00 AM – 4:30 PM'
+        expect(presenter.selected_location_hours(:sunday)).to eq(
+          I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
+        )
+      end
+    end
+
+    context 'with French locale' do
+      before { I18n.locale = :fr }
+
+      it 'returns localized location hours for weekdays and weekends by prefix' do
+        expect(presenter.selected_location_hours(:weekday)).to eq '8 h 00 AM – 4 h 30 PM'
+        expect(presenter.selected_location_hours(:saturday)).to eq '8 h 00 AM – 4 h 30 PM'
         expect(presenter.selected_location_hours(:sunday)).to eq(
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
         )

@@ -1,18 +1,18 @@
 ---
 es:
   step_indicator:
-    accessible_label: Progreso por pasos
+    accessible_label: Avance por pasos
     flows:
       idv:
-        find_a_post_office: Encuentre una oficina de correos
-        get_a_letter: Reciba una carta por correo
+        find_a_post_office: Busque una oficina de correos
+        get_a_letter: Obtenga una carta por correo
         getting_started: Inicio
         go_to_the_post_office: Vaya a la oficina de correos
         secure_account: Proteja su cuenta
-        verify_id: Verifica tu identificación
-        verify_info: Verifique sus datos
+        verify_id: Verifique su identidad
+        verify_info: Verifique su información
         verify_phone_or_address: Verifique su teléfono o dirección
     status:
-      complete: Completo
-      current: Siguiente paso
-      not_complete: No se ha completado
+      complete: Completado
+      current: Este paso
+      not_complete: No completado

@@ -1,0 +1,136 @@
+---
+en:
+  in_person_proofing:
+    body:
+      barcode:
+        cancel_link_text: Cancele su código de barras
+        close_window: Ya puede cerrar esta ventana.
+        deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
+        deadline_restart: Si vence el plazo, su información no se guardará y tendrá que reiniciar el proceso.
+        email_sent: Enviamos esta información al correo electrónico que usó para iniciar sesión.
+        learn_more: Obtenga más información sobre lo que debe llevar
+        location_details: Detalles del lugar
+        questions: ¿Tiene alguna pregunta?
+        retail_hours: Horario de atención al público
+        retail_hours_closed: Cerrado
+        return_to_partner_html: Ahora puede %{link_html} para completar los pasos siguientes a los que tenga acceso hasta que se haya verificado su identidad.
+        return_to_partner_link: cerrar sesión y volver a %{sp_name}
+        what_to_expect: Qué esperar en la oficina de correos
+      cta:
+        button: Intentar en persona
+        prompt_detail: Es posible que pueda verificar su identidad en una oficina de correos participante cercana.
+      expect:
+        heading: Qué esperar después de la visita
+        info: En las 24 horas siguientes a su visita a la oficina de correos, recibirá un correo electrónico para informarle si se logró o no su verificación de identidad.
+      location:
+        distance:
+          one: 'A %{count} milla de distancia'
+          other: 'A %{count} millas de distancia'
+        heading: Información de la oficina de correos
+        info: No necesita hacer una cita para verificar su identidad. Puede acudir a cualquier oficina de correos participante.
+        inline_error: Ingrese una dirección válida que incluya ciudad, estado y código postal
+        location_button: Seleccionar
+        po_search:
+          address_label: Dirección
+          address_search_hint: 'Ejemplo: 1234 N Example St., Allentown, PA 12345'
+          address_search_label: Introduzca una dirección para buscar una oficina de correos cercana.
+          city_label: Ciudad
+          is_searching_message: Buscando oficinas de correos…
+          none_found: Lo sentimos, no hay oficinas de correos participantes a menos de 50 millas de %{address}.
+          none_found_tip: Puede buscar usando una dirección diferente, o agregue fotos de su identificación para intentar verificar su identidad en línea de nuevo.
+          po_search_about: Puede verificar su identidad en persona en una oficina de correos participante de los Estados Unidos.
+          results_description:
+            one: Hay una oficina de correos participante a menos de 50 millas de %{address}.
+            other: Hay %{count} oficinas de correos participantes a menos de 50 millas de %{address}.
+          results_instructions: Seleccione una oficina de correos a continuación, o busque de nuevo usando una dirección diferente.
+          search_button: Buscar
+          state_label: Estado
+          zipcode_label: Código postal
+        retail_hours_heading: Horario de atención al público
+        retail_hours_sat: 'Sábado:'
+        retail_hours_sun: 'Domingo:'
+        retail_hours_weekday: 'De lunes a viernes:'
+        selection: 'Esta es la oficina que seleccionó:'
+      prepare:
+        privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y el Servicio Postal de los EE. UU. utilizamos sus datos para verificar su identidad.'
+        privacy_disclaimer_link: Obtenga más información sobre la privacidad y la seguridad.
+        privacy_disclaimer_questions: ¿Tiene alguna pregunta?
+        verify_step_about: 'Siga los siguientes pasos para generar el código de barras que llevará a la oficina de correos:'
+        verify_step_enter_phone: Ingrese su número de teléfono principal o el que use con más frecuencia.
+        verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.
+        verify_step_post_office: Busque una oficina de correos participantes cercana.
+      state_id:
+        alert_message: 'Su identificación emitida por el estado no debe estar vencida. Se aceptan estas formas de identificación:'
+        id_types:
+          - Licencia de conducir estatal
+          - Tarjeta de identificación estatal que no sea una licencia de conducir
+        info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
+        learn_more_link: Obtenga más información sobre las formas de identificación aceptadas.
+        questions: ¿Tiene alguna pregunta?
+    form:
+      address:
+        errors:
+          unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
+        state_prompt: '- Seleccione -'
+      state_id:
+        address1: Línea de dirección 1
+        address1_hint: 'Ejemplo: 150 Calle A Apt 3'
+        address2: Línea de dirección 2
+        address2_hint: 'Ejemplo: URB Las Gladiolas o COND Miraflor'
+        city: Ciudad
+        date_hint:
+          day: 'Ejemplo: 28'
+          month: 'Ejemplo: 4'
+          year: 'Ejemplo: 1986'
+        dob: Fecha de nacimiento
+        dob_hint: 'Ejemplo: 4 28 1986'
+        errors:
+          unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando los caracteres de su identificación.'
+        first_name: Nombre
+        identity_doc_address_state: Estado
+        identity_doc_address_state_prompt: '- Seleccione -'
+        last_name: Apellido
+        memorable_date:
+          errors:
+            date_of_birth:
+              missing_month_day_year: Ingrese una fecha de nacimiento
+              range_min_age: Debe ser mayor de 13 años para usar %{app_name}
+              range_overflow: Ingrese una fecha ya transcurrida
+        same_address_as_id: ¿Vive actualmente en la dirección que figura en su identificación emitida por el estado?
+        same_address_as_id_no: No, vivo en otra dirección
+        same_address_as_id_yes: Sí, vivo en la misma dirección que figura en mi identificación emitida por el estado
+        state_id_jurisdiction: Estado emisor
+        state_id_jurisdiction_hint: Este es el estado que emitió su identificación
+        state_id_jurisdiction_prompt: '- Seleccione -'
+        state_id_number: Número de identificación
+        state_id_number_florida_hint: Este es el número de su identificación que comienza con una letra seguida de 12 números. No se requieren guiones.
+        state_id_number_hint: 'Puede incluir letras, números y los siguientes caracteres:'
+        state_id_number_hint_asterisks: asteriscos
+        state_id_number_hint_dashes: guiones
+        state_id_number_hint_forward_slashes: barras diagonales
+        state_id_number_hint_spaces: espacios
+        state_id_number_texas_hint: Este es el número de 8 dígitos de su identificación. Ingrese únicamente números en este campo.
+        zipcode: Código postal
+    headings:
+      address: Ingrese su domicilio actual
+      barcode: Muestre este código de barras y su identificación emitida por el estado en una oficina de correos para terminar de verificar su identidad.
+      cta: Intente verificar su identidad en persona
+      id_address: Domicilio que figura en su identificación
+      po_search:
+        location: Busque una oficina de correos participante
+      prepare: Verifique su identidad en persona
+      state_id_milestone_2: Ingrese la información de su identificación emitida por el estado
+      switch_back: Vuelva a su computadora para preparar la verificación de su identidad en persona
+      update_address: Actualice su dirección actual
+      update_state_id: Actualice la información de su identificación
+    process:
+      barcode:
+        caption_label: Código de registro
+        heading: Muestre su código de barras de %{app_name}
+        info: El empleado debe escanear el código de barras que aparece en la parte superior de esta página. Puede imprimir esta página o mostrarla en su dispositivo móvil.
+      state_id:
+        heading: Muestre su licencia de conducir estatal o su tarjeta de identificación estatal que no sea una licencia de conducir
+        info: No debe estar vencida. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
+      what_to_do:
+        heading: Colóquese en cualquier fila
+        info: Diga al empleado de la oficina de correos que desea verificar su identidad con %{app_name}.

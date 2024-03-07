@@ -1,0 +1,10 @@
+---
+en:
+  sign_up:
+    agree_and_continue: Aceptar y continuar
+    cancel:
+      success: Su cuenta fue eliminada. No guardamos su información.
+      warning_header: 'Si cancela ahora:'
+    completed:
+      smiling_image_alt: Una persona sonriente con una marca de verificación verde
+    terms: Leí y acepto %{app_name}

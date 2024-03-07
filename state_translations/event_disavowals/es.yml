@@ -1,0 +1,8 @@
+---
+en:
+  event_disavowals:
+    errors:
+      event_already_disavowed: Ya usó ese vínculo para cambiar su contraseña. Inicie sesión para cambiar su contraseña.
+      event_disavowal_expired: El vínculo para cambiar su contraseña ya venció. Inicie sesión para cambiar su contraseña.
+      event_not_found: El vínculo para cambiar su contraseña no es válido. Inicie sesión para cambiar su contraseña.
+      no_account: No hay ninguna cuenta asociada con este evento.
