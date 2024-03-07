@@ -40,6 +40,40 @@ module Idv
       end
     end
 
+    def bullet_header(index)
+      case index
+      when 1
+        if selfie_required?
+          t('doc_auth.instructions.bullet1_with_selfie')
+        else
+          t('doc_auth.instructions.bullet1')
+        end
+      when 2
+        t('doc_auth.instructions.bullet2')
+      when 3
+        t('doc_auth.instructions.bullet3')
+      when 4
+        t('doc_auth.instructions.bullet4')
+      end
+    end
+
+    def bullet_text(index)
+      case index
+      when 1
+        if selfie_required?
+          t('doc_auth.instructions.text1_with_selfie')
+        else
+          t('doc_auth.instructions.text1')
+        end
+      when 2
+        t('doc_auth.instructions.text2')
+      when 3
+        t('doc_auth.instructions.text3')
+      when 4
+        t('doc_auth.instructions.text4')
+      end
+    end
+
     private
 
     attr_accessor :sp_session

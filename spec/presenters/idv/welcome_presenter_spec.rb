@@ -64,4 +64,78 @@ RSpec.describe Idv::WelcomePresenter do
       end
     end
   end
+
+  describe 'the bullet points' do
+    context 'when a selfie is not required' do
+      it 'uses the no selfie bullet point 1 header' do
+        expect(presenter.bullet_header(1)).to eq(
+          t('doc_auth.instructions.bullet1')
+        )
+      end
+
+      it 'uses the no selfie bullet point 1 text' do
+        expect(presenter.bullet_text(1)).to eq(
+          t('doc_auth.instructions.text1')
+        )
+      end
+    end
+
+    context 'when a selfie is required' do
+      let(:sp_session) do
+        { biometric_comparison_required: true }
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+      end
+
+      it 'uses the selfie bullet point 1 header' do
+        expect(presenter.bullet_header(1)).to eq(
+          t('doc_auth.instructions.bullet1_with_selfie')
+        )
+      end
+
+      it 'uses the selfie bullet point 1 text' do
+        expect(presenter.bullet_text(1)).to eq(
+          t('doc_auth.instructions.text1_with_selfie')
+        )
+      end
+    end
+
+    it 'shows the bullet point 2 header' do
+      expect(presenter.bullet_header(2)).to eq(
+        t('doc_auth.instructions.bullet2')
+      )
+    end
+
+    it 'shows the bullet point 2 text' do
+      expect(presenter.bullet_text(2)).to eq(
+        t('doc_auth.instructions.text2')
+      )
+    end
+
+    it 'shows the bullet point 3 header' do
+      expect(presenter.bullet_header(3)).to eq(
+        t('doc_auth.instructions.bullet3')
+      )
+    end
+
+    it 'shows the bullet point 3 text' do
+      expect(presenter.bullet_text(3)).to eq(
+        t('doc_auth.instructions.text3')
+      )
+    end
+
+    it 'shows the bullet point 4 header' do
+      expect(presenter.bullet_header(4)).to eq(
+        t('doc_auth.instructions.bullet4')
+      )
+    end
+
+    it 'shows the bullet point 4 text' do
+      expect(presenter.bullet_text(4)).to eq(
+        t('doc_auth.instructions.text4')
+      )
+    end
+  end
 end
