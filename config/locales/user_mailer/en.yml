@@ -20,7 +20,7 @@ en:
       button: Yes, continue deleting
       cancel_link_text: please cancel
       help_html: If you don’t want to delete your account, %{cancel_account_reset_html}.
-      intro_html: Your %{waiting_period} waiting period has ended. Please complete
+      intro_html: Your waiting period of %{waiting_period} has ended. Please complete
         step 2 of the process.<br><br> If you’ve been unable to locate your
         authentication methods, select “confirm deletion” to delete your
         %{app_name} account.<br><br> In the future, if you need to access
