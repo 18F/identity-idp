@@ -1255,10 +1255,18 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     expect(userinfo_response[:given_name]).to eq('John')
     expect(userinfo_response[:social_security_number]).to eq('111223333')
 
-    # ToDo
-    # expect(aal stuff)
-    # expect(ial_stuff)
-    # expect(vtr)
+    if vtr.present?
+      expect(userinfo_response).not_to have_key(:ial)
+      expect(userinfo_response).not_to have_key(:aal)
+      expect(userinfo_response[:vtr]).to eq(Array(vtr).to_json)
+    else
+      expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(userinfo_response[:aal]).to eq(
+        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+      )
+      expect(userinfo_response).not_to have_key(:vtr)
+    end
+
     user
   end
 end
