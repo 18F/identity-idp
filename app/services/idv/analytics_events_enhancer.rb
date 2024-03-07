@@ -50,7 +50,19 @@ module Idv
     def common_analytics_attributes
       {
         proofing_components: proofing_components,
+        active_profile_idv_level: active_profile&.idv_level,
+        pending_profile_idv_level: pending_profile&.idv_level,
       }.compact
+    end
+
+    def active_profile
+      return if !user&.respond_to?(:active_profile) || !user.active_profile
+      user.active_profile
+    end
+
+    def pending_profile
+      return if !user&.respond_to?(:pending_profile) || !user.pending_profile
+      user.pending_profile
     end
 
     def proofing_components
