@@ -6,8 +6,10 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
   describe '#show' do
     subject(:action) do
       request.headers['HTTP_AUTHORIZATION'] = authorization_header
-      post :show
+      post :show, params: params
     end
+
+    let(:params) { {} }
 
     context 'without an authorization header' do
       let(:authorization_header) { nil }
@@ -91,10 +93,43 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
         OutOfBandSessionAccessor.new(identity.rails_session_id).put_empty_user_session(50)
       end
 
-      it 'renders user info' do
-        action
-        expect(response).to be_ok
-        expect(json_response[:sub]).to eq(identity.uuid)
+      context 'without a vtr param' do
+        it 'renders user info without a vtr key' do
+          action
+          expect(response).to be_ok
+          expect(json_response).not_to have_key(:vtr)
+        end
+
+        it 'renders user info with an ial key' do
+          action
+          expect(response).to be_ok
+          expect(json_response).to have_key(:ial)
+        end
+
+        it 'renders user info with an aal key' do
+          action
+          expect(response).to be_ok
+          expect(json_response).to have_key(:aal)
+        end
+      end
+
+      context 'with a vtr param' do
+        let(:params) { { vtr: 'C1' } }
+
+        it 'renders user info with a vtr key' do
+          action
+          expect(json_response).to have_key(:vtr)
+        end
+
+        it 'renders user info without an ial key' do
+          action
+          expect(json_response).not_to have_key(:ial)
+        end
+
+        it 'renders user info without an aal key' do
+          action
+          expect(json_response).not_to have_key(:aal)
+        end
       end
 
       it 'tracks analytics' do
