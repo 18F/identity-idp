@@ -45,22 +45,36 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
     end
   end
 
-  context 'with proofing component' do
-    let(:proofing_components) do
-      ProofingComponent.new(source_check: Idp::Constants::Vendors::AAMVA)
-    end
+  describe 'proofing_components' do
+    let(:proofing_components) { nil }
 
     before do
       user.proofing_component = proofing_components
     end
 
-    it 'calls analytics method with original and decorated attributes' do
-      analytics.idv_final(extra: true)
+    context 'without proofing component' do
+      it 'calls analytics method with original attributes' do
+        analytics.idv_final(extra: true)
 
-      expect(analytics.called_kwargs).to match(
-        extra: true,
-        proofing_components: kind_of(Idv::ProofingComponentsLogging),
-      )
+        expect(analytics.called_kwargs).to match(
+          extra: true,
+        )
+      end
+    end
+
+    context 'with proofing component' do
+      let(:proofing_components) do
+        ProofingComponent.new(source_check: Idp::Constants::Vendors::AAMVA)
+      end
+
+      it 'calls analytics method with original attributes and proofing_components' do
+        analytics.idv_final(extra: true)
+
+        expect(analytics.called_kwargs).to match(
+          extra: true,
+          proofing_components: kind_of(Idv::ProofingComponentsLogging),
+        )
+      end
     end
   end
 end
