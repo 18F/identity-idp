@@ -30,18 +30,18 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
     ).to eq([Idv::AnalyticsEventsEnhancer.const_source_location(:DECORATED_METHODS).first])
   end
 
-  it 'calls analytics method with original attributes' do
+  it 'calls analytics method with original and decorated attributes' do
     analytics.idv_final(extra: true)
-    expect(analytics.called_kwargs).to eq(extra: true)
+    expect(analytics.called_kwargs).to eq(extra: true, profile_history: [])
   end
 
   context 'with anonymous analytics user' do
     let(:user) { AnonymousUser.new }
 
-    it 'calls analytics method with original attributes' do
+    it 'calls analytics method with original and decorated attributes' do
       analytics.idv_final(extra: true)
 
-      expect(analytics.called_kwargs).to eq(extra: true)
+      expect(analytics.called_kwargs).to eq(extra: true, profile_history: [])
     end
   end
 
@@ -53,11 +53,12 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
     end
 
     context 'without proofing component' do
-      it 'calls analytics method with original attributes' do
+      it 'calls analytics method with original and decorated attributes' do
         analytics.idv_final(extra: true)
 
         expect(analytics.called_kwargs).to match(
           extra: true,
+          profile_history: [],
         )
       end
     end
@@ -72,6 +73,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
 
         expect(analytics.called_kwargs).to match(
           extra: true,
+          profile_history: [],
           proofing_components: kind_of(Idv::ProofingComponentsLogging),
         )
       end
@@ -82,7 +84,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
     context 'without an active profile' do
       it 'calls analytics method with original attributes but not active_profile_idv_level' do
         analytics.idv_final(extra: true)
-        expect(analytics.called_kwargs).to match(extra: true)
+        expect(analytics.called_kwargs).to match(extra: true, profile_history: [])
       end
     end
 
@@ -92,7 +94,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
 
       it 'calls analytics method with original attributes and active_profile_idv_level' do
         analytics.idv_final(extra: true)
-        expect(analytics.called_kwargs).to match(
+        expect(analytics.called_kwargs).to include(
           extra: true,
           active_profile_idv_level: 'legacy_unsupervised',
         )
@@ -104,7 +106,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
     context 'without a pending profile' do
       it 'calls analytics method with original attributes but not pending_profile_idv_level' do
         analytics.idv_final(extra: true)
-        expect(analytics.called_kwargs).to match(extra: true)
+        expect(analytics.called_kwargs).to match(extra: true, profile_history: [])
       end
     end
 
@@ -116,6 +118,48 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
         analytics.idv_final(extra: true)
         expect(analytics.called_kwargs).to include(
           pending_profile_idv_level: 'legacy_unsupervised',
+        )
+      end
+    end
+  end
+
+  describe 'profile_history' do
+    let(:profiles) { nil }
+
+    context 'user has no profiles' do
+      it 'logs an empty array' do
+        analytics.idv_final(extra: true)
+        expect(analytics.called_kwargs).to eq(extra: true, profile_history: [])
+      end
+    end
+
+    context 'user has profiles' do
+      let(:user) { create(:user) }
+      let!(:profiles) do
+        [
+          create(:profile, :active, user:, created_at: 10.days.ago),
+          create(:profile, :verify_by_mail_pending, user:, created_at: 11.days.ago),
+        ]
+      end
+
+      it 'logs Profiles in created_at order' do
+        analytics.idv_final(extra: true)
+        expect(analytics.called_kwargs).to include(:profile_history)
+        expect(analytics.called_kwargs[:profile_history].map { |h| h.profile.id }).to eql(
+          [
+            profiles.last.id,
+            profiles.first.id,
+          ],
+        )
+      end
+
+      it 'logs Profiles using ProfileLogging' do
+        analytics.idv_final(extra: true)
+        expect(analytics.called_kwargs).to include(
+          profile_history: [
+            kind_of(Idv::ProfileLogging),
+            kind_of(Idv::ProfileLogging),
+          ],
         )
       end
     end
