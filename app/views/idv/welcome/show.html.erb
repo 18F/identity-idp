@@ -7,17 +7,17 @@
 <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
   <p>
     <%= @presenter.explanation_text(
-      new_tab_link_to(
-        t('doc_auth.info.getting_started_learn_more'),
-        help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'how-to-verify-your-identity',
-          flow: :idv,
-          step: :welcome,
-          location: 'intro_paragraph',
-        )
-      )
-    )%>
+          new_tab_link_to(
+            t('doc_auth.info.getting_started_learn_more'),
+            help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'how-to-verify-your-identity',
+              flow: :idv,
+              step: :welcome,
+              location: 'intro_paragraph',
+            ),
+          ),
+        ) %>
   </p>
 
   <h2><%= t('doc_auth.instructions.getting_started') %></h2>
@@ -31,11 +31,11 @@
   <% end %>
 
   <%= simple_form_for(
-    :doc_auth,
-    url: url_for,
-    method: 'put',
-    html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
-  ) do |f| %>
+        :doc_auth,
+        url: url_for,
+        method: 'put',
+        html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
+      ) do |f| %>
 
   <div class="margin-top-4">
     <%= render(

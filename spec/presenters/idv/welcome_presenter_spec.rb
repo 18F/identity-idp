@@ -1,11 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::WelcomePresenter do
-  # include ActionView::Helpers::UrlHelper
-  # include ActionView::Helpers::TagHelper
-  # include Rails.application.routes.url_helpers
-  # include LinkHelper
-
   subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session) }
 
   let(:sp) { build(:service_provider) }
@@ -69,13 +64,13 @@ RSpec.describe Idv::WelcomePresenter do
     context 'when a selfie is not required' do
       it 'uses the no selfie bullet point 1 header' do
         expect(presenter.bullet_header(1)).to eq(
-          t('doc_auth.instructions.bullet1')
+          t('doc_auth.instructions.bullet1'),
         )
       end
 
       it 'uses the no selfie bullet point 1 text' do
         expect(presenter.bullet_text(1)).to eq(
-          t('doc_auth.instructions.text1')
+          t('doc_auth.instructions.text1'),
         )
       end
     end
@@ -91,50 +86,50 @@ RSpec.describe Idv::WelcomePresenter do
 
       it 'uses the selfie bullet point 1 header' do
         expect(presenter.bullet_header(1)).to eq(
-          t('doc_auth.instructions.bullet1_with_selfie')
+          t('doc_auth.instructions.bullet1_with_selfie'),
         )
       end
 
       it 'uses the selfie bullet point 1 text' do
         expect(presenter.bullet_text(1)).to eq(
-          t('doc_auth.instructions.text1_with_selfie')
+          t('doc_auth.instructions.text1_with_selfie'),
         )
       end
     end
 
     it 'shows the bullet point 2 header' do
       expect(presenter.bullet_header(2)).to eq(
-        t('doc_auth.instructions.bullet2')
+        t('doc_auth.instructions.bullet2'),
       )
     end
 
     it 'shows the bullet point 2 text' do
       expect(presenter.bullet_text(2)).to eq(
-        t('doc_auth.instructions.text2')
+        t('doc_auth.instructions.text2'),
       )
     end
 
     it 'shows the bullet point 3 header' do
       expect(presenter.bullet_header(3)).to eq(
-        t('doc_auth.instructions.bullet3')
+        t('doc_auth.instructions.bullet3'),
       )
     end
 
     it 'shows the bullet point 3 text' do
       expect(presenter.bullet_text(3)).to eq(
-        t('doc_auth.instructions.text3')
+        t('doc_auth.instructions.text3'),
       )
     end
 
     it 'shows the bullet point 4 header' do
       expect(presenter.bullet_header(4)).to eq(
-        t('doc_auth.instructions.bullet4')
+        t('doc_auth.instructions.bullet4'),
       )
     end
 
     it 'shows the bullet point 4 text' do
       expect(presenter.bullet_text(4)).to eq(
-        t('doc_auth.instructions.text4')
+        t('doc_auth.instructions.text4'),
       )
     end
   end
