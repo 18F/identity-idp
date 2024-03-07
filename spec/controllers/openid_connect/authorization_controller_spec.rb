@@ -423,8 +423,15 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             end
 
             context 'sp does not request biometrics' do
-              let(:selfie_capture_enabled) { false }
+              let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
+
+              before do
+                params[:biometric_comparison_required] = 'false'
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+                  and_return(selfie_capture_enabled)
+              end
+
               it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                 profile2 = create(:profile, :verify_by_mail_pending, user: user)
                 user.active_profile.idv_level = :legacy_unsupervised
