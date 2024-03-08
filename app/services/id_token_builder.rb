@@ -38,8 +38,6 @@ class IdTokenBuilder
   def id_token_claims
     {
       acr: acr,
-      vot: vot,
-      vtm: IdentityConfig.store.vtm_url,
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
