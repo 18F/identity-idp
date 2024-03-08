@@ -27,7 +27,7 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt login and no prior session' do
-      oidc_end_client_secret_jwt(vtr: ['C1.C2.P1'], prompt: 'login')
+      oidc_end_client_secret_jwt(vot: 'C1.C2.P1', prompt: 'login')
     end
 
     it 'succeeds in forcing login with prompt login and prior session' do
@@ -58,7 +58,7 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     end
 
     it 'succeeds with a vtr param' do
-      oidc_end_client_secret_jwt(vtr: ['C1.C2.P1'])
+      oidc_end_client_secret_jwt(vot: 'C1.C2.P1')
     end
   end
 
@@ -1158,14 +1158,14 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     end
   end
 
-  def oidc_end_client_secret_jwt(vtr: nil, prompt: nil, user: nil, redirs_to: nil)
+  def oidc_end_client_secret_jwt(vot: nil, prompt: nil, user: nil, redirs_to: nil)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
 
-    if vtr.present?
+    if vot.present?
       visit_idp_from_oidc_sp_with_vtr(
-        vtr: vtr,
+        vtr: [vot],
         prompt: prompt,
         state: state,
         nonce: nonce,
@@ -1233,9 +1233,9 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     expect(decoded_id_token[:given_name]).to eq('John')
     expect(decoded_id_token[:social_security_number]).to eq('111223333')
 
-    if vtr.present?
+    if vot.present?
       expect(decoded_id_token[:acr]).to eq(nil)
-      expect(decoded_id_token[:vot]).to eq(Array(vtr).first)
+      expect(decoded_id_token[:vot]).to eq(vot)
     else
       expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
       expect(decoded_id_token[:vot]).to eq(nil)
@@ -1254,16 +1254,16 @@ RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
     expect(userinfo_response[:given_name]).to eq('John')
     expect(userinfo_response[:social_security_number]).to eq('111223333')
 
-    if vtr.present?
+    if vot.present?
       expect(userinfo_response).not_to have_key(:ial)
       expect(userinfo_response).not_to have_key(:aal)
-      expect(userinfo_response[:vtr]).to eq(Array(vtr).to_json)
+      expect(userinfo_response[:vot]).to eq(vot)
     else
       expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
       expect(userinfo_response[:aal]).to eq(
         Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
       )
-      expect(userinfo_response).not_to have_key(:vtr)
+      expect(userinfo_response).not_to have_key(:vot)
     end
 
     user
