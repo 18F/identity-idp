@@ -297,7 +297,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           service_provider: service_provider.issuer,
           scope: scope,
           aal: 2,
-          vtr: ['C1'].to_json,
+          vtr: ['C1'],
         )
       end
 
@@ -310,7 +310,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
           expect(user_info).not_to have_key(:ial)
           expect(user_info).not_to have_key(:aal)
-          expect(user_info[:vtr]).to eq(['C1'].to_json)
+          expect(user_info[:vot]).to eq('C1')
         end
       end
     end

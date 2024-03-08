@@ -17,7 +17,7 @@ module OidcAuthHelper
   end
 
   def visit_idp_from_oidc_sp_with_vtr(vtr:, **args)
-    params = vtr_params(vtr: vtr, **args)
+    params = vtr_params(vtr: vtr.first, **args)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
