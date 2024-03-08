@@ -7,39 +7,47 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       include AnalyticsEvents
       prepend Idv::AnalyticsEventsEnhancer
 
-      def idv_final(**kwargs)
-        @called_kwargs = kwargs
-      end
-
-      attr_reader :user, :called_kwargs
+      attr_reader :called_kwargs
 
       def initialize(user:)
         @user = user
+      end
+
+      def track_event(_event, **kwargs)
+        @called_kwargs = kwargs
       end
     end
   end
   let(:analytics) { analytics_class.new(user: user) }
 
-  it 'includes decorated methods' do
-    expect(analytics.methods).to include(*described_class::DECORATED_METHODS)
-    expect(
-      analytics.methods.
-        intersection(described_class::DECORATED_METHODS).
-        map { |method| analytics.method(method).source_location.first }.
-        uniq,
-    ).to eq([Idv::AnalyticsEventsEnhancer.const_source_location(:DECORATED_METHODS).first])
-  end
+  let(:test_method) { :idv_doc_auth_welcome_visited }
 
-  it 'calls analytics method with original attributes' do
-    analytics.idv_final(extra: true)
-    expect(analytics.called_kwargs).to eq(extra: true)
+  it 'enhances idv_ methods by default, but ignores those in IGNORED_METHODS' do
+    enhancer_source_file = described_class.const_source_location(:IGNORED_METHODS).first
+
+    idv_methods = analytics_class.instance_methods.filter { |method| /^idv_/.match?(method) }
+
+    idv_methods.each do |method_name|
+      method = analytics_class.instance_method(method_name)
+      method_source_file = method.source_location.first
+
+      should_be_ignored = described_class.const_get(:IGNORED_METHODS).include?(method_name)
+      if should_be_ignored
+        expect(method_source_file).not_to eql(enhancer_source_file),
+                                          "#{method_name} should not be enhanced"
+      else
+        expect(
+          method_source_file,
+        ).to eql(enhancer_source_file), "#{method_name} should be enhanced"
+       end
+    end
   end
 
   context 'with anonymous analytics user' do
     let(:user) { AnonymousUser.new }
 
     it 'calls analytics method with original attributes' do
-      analytics.idv_final(extra: true)
+      analytics.send(test_method, extra: true)
 
       expect(analytics.called_kwargs).to eq(extra: true)
     end
@@ -54,7 +62,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
 
     context 'without proofing component' do
       it 'calls analytics method with original attributes' do
-        analytics.idv_final(extra: true)
+        analytics.send(test_method, extra: true)
 
         expect(analytics.called_kwargs).to match(
           extra: true,
@@ -68,7 +76,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       end
 
       it 'calls analytics method with original attributes and proofing_components' do
-        analytics.idv_final(extra: true)
+        analytics.send(test_method, extra: true)
 
         expect(analytics.called_kwargs).to match(
           extra: true,
