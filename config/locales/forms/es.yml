@@ -114,10 +114,6 @@ es:
         automatizado. Marque la casilla de abajo para continuar.
     ssn:
       show: Mostrar Número de Seguro Social
-    totp_delete:
-      caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
-        a su cuenta %{app_name}.
-      confirm: '¿Seguro que quieres eliminar tu aplicación de autenticación?'
     totp_setup:
       totp_intro: Configure una aplicación de autenticación para iniciar sesión con
         códigos de seguridad temporales.
