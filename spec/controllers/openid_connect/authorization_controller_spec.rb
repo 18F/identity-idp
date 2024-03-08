@@ -417,7 +417,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 and_return('server_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
-                verified_attributes: %w[given_name family_name birthdate verified_at],
+                verified_attributes: %w[birthdate family_name given_name verified_at],
               )
               allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
             end
@@ -427,19 +427,18 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               let(:user) { create(:profile, :active, :verified).user }
 
               before do
-                params[:biometric_comparison_required] = 'false'
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
               end
 
               it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
-                profile2 = create(:profile, :verify_by_mail_pending, user: user)
+                create(:profile, :verify_by_mail_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
                 user.active_profile.idv_level = :legacy_unsupervised
-                profile2.idv_level = :unsupervised_with_selfie
 
                 action
 
                 expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                expect(user.identities.last.verified_attributes).to eq(%w[birthdate family_name given_name verified_at])
               end
             end
 
