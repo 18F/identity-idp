@@ -41,7 +41,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
             expect(user_info[:ial]).to eq(ial)
             expect(user_info[:aal]).to eq(aal)
-            expect(user_info).not_to have_key(:vtr)
+            expect(user_info).not_to have_key(:vot)
           end
         end
       end
@@ -61,7 +61,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
             expect(user_info[:ial]).to eq(ial_value)
             expect(user_info[:aal]).to eq(aal)
-            expect(user_info).not_to have_key(:vtr)
+            expect(user_info).not_to have_key(:vot)
           end
         end
 
@@ -73,7 +73,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:phone]).to eq(nil)
             expect(user_info[:phone_verified]).to eq(nil)
             expect(user_info[:address]).to eq(nil)
-            expect(user_info).not_to have_key(:vtr)
+            expect(user_info).not_to have_key(:vot)
           end
         end
       end
