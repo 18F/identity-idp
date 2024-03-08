@@ -27,6 +27,10 @@ module ReauthenticationRequiredConcern
   end
 
   def store_location(url)
-    user_session[:stored_location] = url
+    if request.request_method_symbol == :patch
+      user_session[:stored_location] = account_path
+    else
+      user_session[:stored_location] = url
+    end
   end
 end
