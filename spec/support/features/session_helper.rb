@@ -186,7 +186,6 @@ module Features
         end
       end
 
-      visit account_path
       user
     end
 
@@ -201,7 +200,6 @@ module Features
         end
         session['sp'] = { issuer: } if issuer
       end
-      visit account_path
     end
 
     def sign_in_and_2fa_user(user = user_with_2fa, issuer: nil)
