@@ -33,7 +33,7 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
 
     xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
     expect(xmldoc.assertion_statement_node.content).to eq('C1')
-    expect(xmldoc.attribute_node_for('vtr').content).to eq('C1')
+    expect(xmldoc.attribute_node_for('vot').content).to eq('C1')
     expect(xmldoc.attribute_node_for('ial')).to be_nil
     expect(xmldoc.attribute_node_for('aal')).to be_nil
 
@@ -180,7 +180,7 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
 
     xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
     expect(xmldoc.assertion_statement_node.content).to eq('C1.C2.P1')
-    expect(xmldoc.attribute_node_for('vtr').content).to eq('C1.C2.P1')
+    expect(xmldoc.attribute_node_for('vot').content).to eq('C1.C2.P1')
     expect(xmldoc.attribute_node_for('ial')).to be_nil
     expect(xmldoc.attribute_node_for('aal')).to be_nil
 

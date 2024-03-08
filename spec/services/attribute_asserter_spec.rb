@@ -340,10 +340,10 @@ RSpec.describe AttributeAsserter do
 
       it 'includes the correct bundle attributes' do
         expect(user.asserted_attributes.keys).to eq(
-          [:uuid, :email, :first_name, :last_name, :verified_at, :vtr],
+          [:uuid, :email, :first_name, :last_name, :verified_at, :vot],
         )
         expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
-        expect(user.asserted_attributes[:vtr][:getter].call(user)).to eq 'C1.C2.P1'
+        expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2.P1'
       end
     end
 
@@ -528,9 +528,9 @@ RSpec.describe AttributeAsserter do
 
         it 'includes the correct bundle attributes' do
           expect(user.asserted_attributes.keys).to eq(
-            [:uuid, :email, :vtr],
+            [:uuid, :email, :vot],
           )
-          expect(user.asserted_attributes[:vtr][:getter].call(user)).to eq 'C1.C2'
+          expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2'
         end
       end
     end

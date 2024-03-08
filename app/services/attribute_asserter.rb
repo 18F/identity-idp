@@ -37,7 +37,7 @@ class AttributeAsserter
     add_bundle(attrs) if should_add_proofed_attributes?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
     if authn_request.requested_vtr_authn_context.present?
-      add_vtr(attrs)
+      add_vot(attrs)
     else
       add_aal(attrs)
       add_ial(attrs) if authn_request.requested_ial_authn_context || !service_provider.ial.nil?
@@ -132,9 +132,9 @@ class AttributeAsserter
     attrs[:verified_at] = { getter: verified_at_getter_function }
   end
 
-  def add_vtr(attrs)
+  def add_vot(attrs)
     context = resolved_authn_context_result.component_values.map(&:name).join('.')
-    attrs[:vtr] = { getter: vtr_getter_function(context) }
+    attrs[:vot] = { getter: vot_getter_function(context) }
   end
 
   def add_aal(attrs)
@@ -181,8 +181,8 @@ class AttributeAsserter
     ->(principal) { principal.active_profile&.verified_at&.iso8601 }
   end
 
-  def vtr_getter_function(vtr_authn_context)
-    ->(_principal) { vtr_authn_context }
+  def vot_getter_function(vot_authn_context)
+    ->(_principal) { vot_authn_context }
   end
 
   def aal_getter_function(aal_authn_context)
