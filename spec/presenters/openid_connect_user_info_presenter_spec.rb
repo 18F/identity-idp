@@ -311,6 +311,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           expect(user_info).not_to have_key(:ial)
           expect(user_info).not_to have_key(:aal)
           expect(user_info[:vot]).to eq('C1')
+          expect(user_info[:vtm]).to eq(IdentityConfig.store.vtm_url)
         end
       end
     end

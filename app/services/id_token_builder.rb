@@ -37,9 +37,9 @@ class IdTokenBuilder
 
   def id_token_claims
     {
-      acr: (acr if !sp_requests_vot?),
-      vot: (vot if sp_requests_vot?),
-      vtm: (IdentityConfig.store.vtm_url if sp_requests_vot?),
+      acr: acr,
+      vot: vot,
+      vtm: IdentityConfig.store.vtm_url,
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
