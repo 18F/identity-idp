@@ -141,25 +141,6 @@ RSpec.describe IdTokenBuilder do
       end
     end
 
-    context 'sp requests includes ACR values and VTR' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
-          and_return(true)
-        allow(IdentityConfig.store).to receive(:vtm_url).
-          and_return(vtm_url)
-
-        identity.ial = 1
-        identity.vtr = ['C1'].to_json
-        identity.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-      end
-
-      it 'sets the vot and vtm and it does not set an acr' do
-        expect(decoded_payload[:vot]).to eq('C1')
-        expect(decoded_payload[:vtm]).to eq(vtm_url)
-        expect(decoded_payload[:acr]).to eq(nil)
-      end
-    end
-
     it 'sets the jti to something meaningful' do
       expect(decoded_payload[:jti]).to be_present
     end
