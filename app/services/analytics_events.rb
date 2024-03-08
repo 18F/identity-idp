@@ -719,6 +719,7 @@ module AnalyticsEvents
     size:,
     source:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     width:,
     **_extra
   )
@@ -747,6 +748,7 @@ module AnalyticsEvents
       size: size,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
       width: width,
     )
   end
@@ -1387,6 +1389,7 @@ module AnalyticsEvents
     size:,
     source:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     width:,
     **_extra
   )
@@ -1415,6 +1418,7 @@ module AnalyticsEvents
       size: size,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
       width: width,
     )
   end
@@ -2924,6 +2928,7 @@ module AnalyticsEvents
     mimeType:,
     size:,
     source:,
+    liveness_checking_required:,
     width:,
     **_extra
   )
@@ -2937,6 +2942,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       size: size,
       source: source,
+      liveness_checking_required: liveness_checking_required,
       width: width,
     )
   end
