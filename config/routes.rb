@@ -228,7 +228,6 @@ Rails.application.routes.draw do
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
-    delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac',
          as: :submit_new_piv_cac
 
@@ -288,7 +287,6 @@ Rails.application.routes.draw do
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
-    get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/user_please_call' => 'users/please_call#show'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
