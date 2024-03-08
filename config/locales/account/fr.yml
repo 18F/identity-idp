@@ -50,7 +50,6 @@ fr:
           personnelle pour réactiver votre profil.
         link: Réactivez votre profil maintenant.
       sign_in_location_and_ip: '%{ip} (adresse IP probablement située dans %{location})'
-      totp_confirm_delete: Oui, supprimez l’application d’authentification
       unknown_location: lieu inconnu
       verification:
         instructions: Votre compte nécessite un code de vérification pour être vérifié.

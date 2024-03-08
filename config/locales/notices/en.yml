@@ -54,7 +54,6 @@ en:
           %{time_left_in_session_html} unless you tell us otherwise.
         sign_out: Sign me out
     totp_configured: An authentication app was added to your account.
-    totp_disabled: Your authentication app was deleted from your account.
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link_html}

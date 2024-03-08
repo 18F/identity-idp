@@ -59,7 +59,6 @@ fr:
           part.
         sign_out: Déconnectez-moi
     totp_configured: Une application d’authentification a été ajoutée à votre compte.
-    totp_disabled: Votre application d’authentification a été supprimée de votre compte.
     use_diff_email:
       link: utilisez une adresse courriel différente
       text_html: Ou %{link_html}

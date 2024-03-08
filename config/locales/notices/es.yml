@@ -56,7 +56,6 @@ es:
           %{time_left_in_session_html} a menos que nos indique lo contrario.
         sign_out: Desconécteme
     totp_configured: Una aplicación de autenticación fue agregada a tu cuenta.
-    totp_disabled: Tu aplicación de autenticación fue eliminada de tu cuenta.
     use_diff_email:
       link: use un email diferente
       text_html: O %{link_html}

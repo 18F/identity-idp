@@ -116,10 +116,6 @@ fr:
         automatisés. Cochez la case ci-dessous pour continuer.
     ssn:
       show: Afficher le numéro de sécurité sociale
-    totp_delete:
-      caution: Si vous supprimez votre application d’authentification, vous ne pourrez
-        plus l’utiliser pour accéder à votre compte %{app_name}.
-      confirm: Voulez-vous vraiment supprimer votre application d’authentification?
     totp_setup:
       totp_intro: Configurez une application d’authentification pour vous connecter à
         l’aide de codes de sécurité temporaires.

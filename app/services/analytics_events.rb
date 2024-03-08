@@ -188,6 +188,7 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name TOTP: User Disabled
   # Tracks when a user deletes their auth app from account
   # @param [Boolean] success
   # @param [Hash] error_details
@@ -4579,11 +4580,6 @@ module AnalyticsEvents
       in_account_creation_flow:,
       **extra,
     )
-  end
-
-  # Tracks when a user disabled a TOTP device
-  def totp_user_disabled
-    track_event('TOTP: User Disabled')
   end
 
   # @param [String] controller
