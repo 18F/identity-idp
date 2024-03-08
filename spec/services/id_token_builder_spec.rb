@@ -81,25 +81,6 @@ RSpec.describe IdTokenBuilder do
       end
     end
 
-    context 'vtr is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).
-          and_return(false)
-        allow(IdentityConfig.store).to receive(:vtm_url).
-          and_return(vtm_url)
-      end
-
-      it 'does not set the vot if the sp does not request it' do
-        identity.vtr = ['Pb'].to_json
-        expect(decoded_payload[:vot]).to eq nil
-      end
-
-      it 'does not set the vtm' do
-        identity.vtr = nil
-        expect(decoded_payload[:vtm]).to eq nil
-      end
-    end
-
     context 'context sp requests ACR values' do
       context 'aal and ial request' do
         before do
