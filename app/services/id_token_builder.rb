@@ -48,7 +48,7 @@ class IdTokenBuilder
       claims[:acr] = acr
     end
 
-    claims.compact
+    claims
   end
 
   def timestamp_claims
