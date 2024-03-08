@@ -43,7 +43,6 @@ fr:
       phone: Numéro de téléphone
       phone_add: Ajouter un téléphone
       piv_cac_add: Ajouter un identifiant
-      piv_cac_confirm_delete: Oui, retirer la carte
       reactivation:
         instructions: Votre profil a été récemment désactivé en raison d’une
           réinitialisation de mot passe. Vous pouvez utiliser votre clé

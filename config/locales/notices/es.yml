@@ -16,7 +16,6 @@ es:
     password_changed: Ha cambiado su contraseña.
     phone_confirmed: Un teléfono fue agregado a tu cuenta.
     piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.
-    piv_cac_disabled: Tu PIV/CAC fue eliminado de tu cuenta.
     privacy:
       privacy_act_statement: Declaración de la ley de privacidad
       security_and_privacy_practices: Prácticas de seguridad y privacidad

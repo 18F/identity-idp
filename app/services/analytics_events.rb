@@ -3978,6 +3978,9 @@ module AnalyticsEvents
     track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
+  # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # @identity.idp.previous_event_name PIV CAC disabled
+  # @identity.idp.previous_event_name piv_cac_disabled
   # @param [Boolean] success
   # @param [Hash] error_details
   # @param [Integer] configuration_id
@@ -3995,13 +3998,6 @@ module AnalyticsEvents
       configuration_id:,
       **extra,
     )
-  end
-
-  # @identity.idp.previous_event_name User Registration: piv cac disabled
-  # @identity.idp.previous_event_name PIV CAC disabled
-  # Tracks when user's piv cac is disabled
-  def piv_cac_disabled
-    track_event(:piv_cac_disabled)
   end
 
   # @identity.idp.previous_event_name PIV/CAC login

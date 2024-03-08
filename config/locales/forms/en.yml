@@ -83,10 +83,6 @@ en:
     phone:
       buttons:
         delete: Remove phone
-    piv_cac_delete:
-      caution: If you remove your PIV/CAC card you won’t be able to use it to access
-        your %{app_name} account.
-      confirm: Are you sure you want to remove your PIV/CAC card?
     piv_cac_login:
       submit: Insert your PIV/CAC
     piv_cac_mfa:

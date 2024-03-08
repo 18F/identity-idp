@@ -41,7 +41,6 @@ en:
       phone: Phone numbers
       phone_add: Add phone
       piv_cac_add: Add ID
-      piv_cac_confirm_delete: Yes, remove card
       reactivation:
         instructions: Your profile was recently deactivated due to a password reset.
         link: Reactivate your profile now.

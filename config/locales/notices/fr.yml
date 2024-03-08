@@ -16,7 +16,6 @@ fr:
     password_changed: Vous avez changé votre mot de passe.
     phone_confirmed: Un téléphone a été ajouté à votre compte.
     piv_cac_configured: Une carte PIV / CAC a été ajoutée à votre compte.
-    piv_cac_disabled: Votre PIV / CAC a été supprimé de votre compte.
     privacy:
       privacy_act_statement: Déclaration de confidentialité
       security_and_privacy_practices: Pratiques de sécurité et de confidentialité

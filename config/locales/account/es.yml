@@ -42,7 +42,6 @@ es:
       phone: Teléfono
       phone_add: Añadir teléfono
       piv_cac_add: Agregar ID
-      piv_cac_confirm_delete: Sí, retire la tarjeta
       reactivation:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
