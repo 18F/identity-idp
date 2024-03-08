@@ -112,6 +112,7 @@ RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
   describe 'Editing the password' do
     it 'includes the password strength indicator when JS is on', js: true do
       sign_in_and_2fa_user
+      visit account_path
       within('.sidenav') do
         click_link 'Edit', href: manage_password_path
       end
@@ -186,6 +187,7 @@ RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
     before { sign_in_and_2fa_user }
 
     it 'allows a user to navigate between pages' do
+      visit account_path
       # Emulate reduced motion to avoid timing issues with mobile menu flyout animation
       emulate_reduced_motion
       click_on t('account.navigation.menu')

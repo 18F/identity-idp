@@ -4,6 +4,7 @@ RSpec.feature 'Session decryption', allowed_extra_analytics: [:*] do
   context 'when there is a session decryption error' do
     it 'should raise an error and log the user out' do
       sign_in_and_2fa_user
+      visit account_path
 
       session_encryptor = Rails.application.config.session_options[:serializer]
       allow(session_encryptor).to receive(:load).and_raise(Encryption::EncryptionError)

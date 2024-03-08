@@ -10,6 +10,7 @@ RSpec.feature 'Signing in via one-time use personal key', allowed_extra_analytic
     old_key = user.reload.encrypted_recovery_code_digest
 
     sign_in_before_2fa(user)
+    visit account_path
     choose_another_security_option('personal_key')
     enter_personal_key(personal_key: raw_key)
     click_submit_default
@@ -35,6 +36,7 @@ RSpec.feature 'Signing in via one-time use personal key', allowed_extra_analytic
         second_factor_attempts_count: IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
       )
       sign_in_before_2fa(user)
+      visit account_path
       personal_key = PersonalKeyGenerator.new(user).create
       wrong_personal_key = personal_key.split('-').reverse.join
 

@@ -228,20 +228,22 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
 
   scenario 'user session expires in amount of time specified by Devise config' do
     sign_in_and_2fa_user
-
     visit account_path
-    expect(current_path).to eq account_path
+    visit account_path
+
+    expect(page).to have_current_path(account_path)
 
     travel(Devise.timeout_in + 1.minute)
 
     visit account_path
-    expect(current_path).to eq root_path
+    expect(page).to have_current_path(root_path)
 
     travel_back
   end
 
   scenario 'user session cookie has no explicit expiration time (dies with browser exit)' do
     sign_in_and_2fa_user
+    visit account_path
 
     expect(session_cookie.expires).to be_nil
   end
@@ -340,6 +342,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
 
     it 'fails to sign in the user, with CSRF error' do
       user = sign_in_and_2fa_user
+      visit account_path
       click_button(t('links.sign_out'), match: :first)
 
       travel(Devise.timeout_in + 1.minute) do

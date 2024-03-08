@@ -5,6 +5,7 @@ RSpec.feature 'managing email address', allowed_extra_analytics: [:*] do
     scenario 'shows one email address for a user with only one' do
       user = create(:user, :fully_registered, :with_multiple_emails)
       sign_in_and_2fa_user(user)
+      visit account_path
 
       expect(page).to have_content(user.email_addresses.first.email)
     end
@@ -13,6 +14,7 @@ RSpec.feature 'managing email address', allowed_extra_analytics: [:*] do
       user = create(:user, :fully_registered, :with_multiple_emails)
       email1, email2 = user.reload.email_addresses.map(&:email)
       sign_in_and_2fa_user(user)
+      visit account_path
 
       expect(page).to have_content(email1)
       expect(page).to have_content(email2)
@@ -31,6 +33,7 @@ RSpec.feature 'managing email address', allowed_extra_analytics: [:*] do
       expired_unconfirmed_email = expired_unconfirmed_email_address.email
 
       sign_in_and_2fa_user(user)
+      visit account_path
 
       expect(page).to have_content(confirmed_email)
       expect(page).to_not have_content(expired_unconfirmed_email)
@@ -45,6 +48,7 @@ RSpec.feature 'managing email address', allowed_extra_analytics: [:*] do
       user.email_addresses.reload
 
       sign_in_and_2fa_user(user)
+      visit account_path
       expect(page).to have_current_path(account_path)
 
       delete_link_not_displayed(confirmed_email)
@@ -64,6 +68,7 @@ RSpec.feature 'managing email address', allowed_extra_analytics: [:*] do
       user.email_addresses.reload
 
       sign_in_and_2fa_user(user)
+      visit account_path
       expect(page).to have_current_path(account_path)
 
       delete_link_is_displayed(confirmed_email1)
@@ -78,6 +83,7 @@ RSpec.feature 'managing email address', allowed_extra_analytics: [:*] do
       confirmed_email2 = create(:email_address, user: user, confirmed_at: Time.zone.now)
 
       sign_in_and_2fa_user(user)
+      visit account_path
       expect(page).to have_current_path(account_path)
       delete_email_should_not_fail(confirmed_email1)
 

@@ -12,6 +12,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa
+      visit account_path
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -46,6 +47,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
     scenario 'user can select 2 MFA methods and then chooses another method during' do
       sign_in_before_2fa
+      visit account_path
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -89,6 +91,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     scenario 'user can select 2 MFA methods and complete after reauthn window' do
       allow(IdentityConfig.store).to receive(:reauthn_window).and_return(10)
       sign_in_before_2fa
+      visit account_path
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -134,6 +137,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
     scenario 'user can select 1 MFA methods and will be prompted to add another method' do
       sign_in_before_2fa
+      visit account_path
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -165,6 +169,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       context 'with skippable mfa method' do
         it 'allows user to skip using skip link' do
           sign_in_before_2fa
+          visit account_path
           click_2fa_option('backup_code')
 
           click_continue
@@ -186,6 +191,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
         it 'allows user to skip by clicking continue without selection' do
           sign_in_before_2fa
+          visit account_path
           click_2fa_option('backup_code')
 
           click_continue
@@ -241,6 +247,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
   context 'when backup codes are the only selected option' do
     before do
       sign_in_before_2fa
+      visit account_path
 
       expect(page).to have_current_path authentication_methods_setup_path
 

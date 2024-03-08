@@ -68,6 +68,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js,
     scenario 'two factor auth page' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
+      visit account_path
 
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect_page_to_have_no_accessibility_violations(page)

@@ -41,6 +41,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
 
       scenario 'renders an error if a user submits with JS disabled' do
         sign_in_before_2fa
+        visit account_path
         select_2fa_option(:phone)
         select_phone_delivery_option(:voice)
         select 'Bahamas', from: 'new_phone_form_international_code'
@@ -76,6 +77,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
 
       scenario 'renders the sms opt-out error screen when signing in' do
         sign_in_before_2fa(user)
+        visit account_path
 
         expect(page).to have_content(t('two_factor_authentication.opt_in.title'))
 
@@ -89,6 +91,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
 
       scenario 'allows a user to recreate their account after account reset' do
         sign_in_before_2fa(user)
+        visit account_path
         email = user.confirmed_email_addresses.first.email
 
         expect(page).to have_content(t('two_factor_authentication.opt_in.title'))
@@ -117,6 +120,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     context 'with international phone that does not support voice delivery' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
+        visit account_path
         select_2fa_option(:phone)
 
         click_send_one_time_code
@@ -161,6 +165,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
 
       scenario 'updates enabled delivery options based on deliverability to the country', :js do
         sign_in_before_2fa
+        visit account_path
         select_2fa_option(:phone)
 
         option_with_none_disabled = page.find(
@@ -231,6 +236,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
 
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
+        visit account_path
         select_2fa_option(:phone)
 
         # Because javascript is enabled and we do some fancy pants stuff with radio buttons, we need
@@ -284,6 +290,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     it 'automatically sends the OTP to the preferred delivery method' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
+      visit account_path
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page).
@@ -307,6 +314,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     scenario 'user can return to the 2fa options screen' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
+      visit account_path
       click_link t('links.cancel')
 
       expect(current_path).to eq root_path
@@ -315,6 +323,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     scenario 'user does not have to focus on OTP field', js: true do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
+      visit account_path
 
       input = page.find_field(t('components.one_time_code_input.label'))
       expect(page.evaluate_script('document.activeElement.id')).to eq(input[:id])
@@ -323,6 +332,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     it 'validates OTP format', js: true do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
+      visit account_path
 
       input = page.find_field(t('components.one_time_code_input.label'))
 
@@ -357,6 +367,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     scenario 'the user changes delivery method' do
       user = create(:user, :fully_registered, otp_delivery_preference: :sms)
       sign_in_before_2fa(user)
+      visit account_path
 
       choose_another_security_option('voice')
 
@@ -369,6 +380,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     it 'allows SMS and Voice fallbacks' do
       user = user_with_piv_cac
       sign_in_before_2fa(user)
+      visit account_path
 
       expect(current_path).to eq login_two_factor_piv_cac_path
 
@@ -386,6 +398,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     it 'allows totp fallback when configured' do
       user = create(:user, :fully_registered, :with_piv_or_cac, :with_authentication_app)
       sign_in_before_2fa(user)
+      visit account_path
 
       expect(current_path).to eq login_two_factor_piv_cac_path
 
@@ -397,6 +410,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     scenario 'user can cancel PIV/CAC process' do
       user = create(:user, :fully_registered, :with_piv_or_cac)
       sign_in_before_2fa(user)
+      visit account_path
 
       expect(current_path).to eq login_two_factor_piv_cac_path
       click_link t('links.cancel')
@@ -472,6 +486,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     it 'allows SMS and Voice fallbacks' do
       user = create(:user, :with_authentication_app, :with_phone)
       sign_in_before_2fa(user)
+      visit account_path
 
       choose_another_security_option('sms')
 
@@ -487,6 +502,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     scenario 'user can cancel TOTP process' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
+      visit account_path
       click_link t('links.cancel')
 
       expect(current_path).to eq root_path
@@ -548,6 +564,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     it 'renders the requested pages' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
+      visit account_path
       click_link t('links.help'), match: :first
 
       expect(current_url).to eq MarketingSite.help_url
@@ -617,6 +634,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
 
     it 'locks the user from further attempts after exceeding the configured max' do
       sign_in_before_2fa(user)
+      visit account_path
       max_attempts.times { submit_wrong_otp }
 
       expect(page).to have_content(t('titles.account_locked'))
@@ -632,6 +650,7 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
 
       before do
         sign_in_before_2fa(user)
+        visit account_path
         submit_wrong_otp
       end
 

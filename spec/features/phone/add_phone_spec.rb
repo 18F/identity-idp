@@ -6,6 +6,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
+    visit account_path
     expect(page).to have_link(href: phone_setup_path, text: t('account.index.phone_add'))
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
@@ -26,6 +27,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
+    visit account_path
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
@@ -44,6 +46,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
   scenario 'adding a new phone number validates number', :js do
     user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
+    visit account_path
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
@@ -129,6 +132,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     allow(IdentityConfig.store).to receive(:max_phone_numbers_per_account).and_return(1)
     user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
+    visit account_path
     expect(page).to_not have_link(t('account.index.phone_add'), normalize_ws: true, exact: true)
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
@@ -146,6 +150,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     user.phone_configurations.create(phone: '+1 3065550100')
 
     sign_in_and_2fa_user(user)
+    visit account_path
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
@@ -174,6 +179,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     user = create(:user, :fully_registered)
 
     sign_in_and_2fa_user(user)
+    visit account_path
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
@@ -186,6 +192,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     user = create(:user, :fully_registered)
 
     sign_in_and_2fa_user(user)
+    visit account_path
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
@@ -212,6 +219,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
     sign_in_and_2fa_user(user)
+    visit account_path
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Failing international should display spam protection screen
@@ -269,6 +277,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
       user = create(:user, :with_authentication_app)
       phone = '+1 (225) 278-1234'
       sign_in_and_2fa_user(user)
+      visit account_path
       within('.sidenav') do
         click_on t('account.navigation.add_phone_number')
       end
@@ -286,6 +295,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
+    visit account_path
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end

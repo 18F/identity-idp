@@ -143,6 +143,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     user = user_with_2fa
 
     sign_in_and_2fa_user(user)
+    visit account_path
     begin_in_person_proofing(user)
 
     # prepare page
@@ -275,6 +276,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     # Confirms that user can visit account page even if not completing in person proofing
     Capybara.reset_session!
     sign_in_and_2fa_user(user)
+    visit account_path
     expect(page).to have_current_path(account_path)
   end
 

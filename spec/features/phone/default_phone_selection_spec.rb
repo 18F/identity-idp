@@ -14,6 +14,7 @@ RSpec.describe 'default phone selection', allowed_extra_analytics: [:*] do
     context 'when the user has not set a default phone number' do
       it 'uses the first phone created as the default' do
         sign_in_before_2fa(user)
+        visit account_path
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
           number_html: '(***) ***-1212',
@@ -23,6 +24,7 @@ RSpec.describe 'default phone selection', allowed_extra_analytics: [:*] do
 
       it 'does not indicate that it is the default number on the account page ' do
         sign_in_before_2fa(user)
+        visit account_path
         expect(page).not_to have_content t('account.index.default')
       end
     end
@@ -48,6 +50,7 @@ RSpec.describe 'default phone selection', allowed_extra_analytics: [:*] do
 
         set_new_browser_session
         sign_in_before_2fa(user)
+        visit account_path
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
           number_html: '(***) ***-3434',
@@ -87,6 +90,7 @@ RSpec.describe 'default phone selection', allowed_extra_analytics: [:*] do
 
         set_new_browser_session
         sign_in_before_2fa(user)
+        visit account_path
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
           number_html: '(***) ***-3111',
@@ -119,6 +123,7 @@ RSpec.describe 'default phone selection', allowed_extra_analytics: [:*] do
 
         set_new_browser_session
         sign_in_before_2fa(user)
+        visit account_path
         expect(page).to have_content t(
           'instructions.mfa.voice.number_message_html',
           number_html: '(***) ***-3434',

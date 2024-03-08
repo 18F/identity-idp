@@ -9,6 +9,7 @@ RSpec.feature 'Unphishable account badge', allowed_extra_analytics: [:*] do
     let(:user) { create(:user, :with_webauthn, :with_piv_or_cac) }
 
     it 'shows an "Unphishable" badge' do
+      visit account_path
       expect(page).to have_css('.lg-verification-badge', text: t('headings.account.unphishable'))
     end
   end
@@ -17,6 +18,7 @@ RSpec.feature 'Unphishable account badge', allowed_extra_analytics: [:*] do
     let(:user) { create(:user, :fully_registered, :with_webauthn) }
 
     it 'does not show an "Unphishable" badge' do
+      visit account_path
       expect(page).to_not have_css(
         '.lg-verification-badge',
         text: t('headings.account.unphishable'),

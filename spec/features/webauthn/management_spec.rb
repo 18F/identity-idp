@@ -158,6 +158,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
+      visit account_path
       PhoneConfiguration.first.update(mfa_enabled: false)
       user.backup_code_configurations.destroy_all
 
@@ -185,6 +186,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
+      visit account_path
 
       expect(page).to have_content(name)
 
@@ -300,6 +302,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
         name = webauthn_config.name
 
         sign_in_and_2fa_user(user)
+        visit account_path
         PhoneConfiguration.first.update(mfa_enabled: false)
         user.backup_code_configurations.destroy_all
 
@@ -326,6 +329,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
         name = webauthn_config.name
 
         sign_in_and_2fa_user(user)
+        visit account_path
 
         expect(page).to have_content(name)
 
@@ -468,6 +472,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
+      visit account_path
       PhoneConfiguration.first.update(mfa_enabled: false)
       user.backup_code_configurations.destroy_all
 
@@ -495,6 +500,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
+      visit account_path
 
       expect(page).to have_content(name)
 
@@ -610,6 +616,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
         name = webauthn_config.name
 
         sign_in_and_2fa_user(user)
+        visit account_path
         PhoneConfiguration.first.update(mfa_enabled: false)
         user.backup_code_configurations.destroy_all
 
@@ -636,6 +643,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
         name = webauthn_config.name
 
         sign_in_and_2fa_user(user)
+        visit account_path
 
         expect(page).to have_content(name)
 

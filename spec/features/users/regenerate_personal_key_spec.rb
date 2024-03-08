@@ -33,6 +33,7 @@ RSpec.feature 'View personal key', allowed_extra_analytics: [:*] do
     context 'regenerating new code after canceling edit password action' do
       scenario 'displays new code' do
         sign_in_and_2fa_user(user)
+        visit account_path
         old_digest = user.encrypted_recovery_code_digest
 
         first(:link, t('forms.buttons.edit')).click

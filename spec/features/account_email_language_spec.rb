@@ -13,6 +13,7 @@ RSpec.describe 'Account email language', allowed_extra_analytics: [:*] do
   context 'for a user signed in to their account page' do
     before do
       sign_in_and_2fa_user(user)
+      visit account_path
     end
 
     it 'lets them view their current email language' do

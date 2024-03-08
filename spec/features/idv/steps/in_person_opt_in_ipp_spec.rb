@@ -270,6 +270,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
       # Confirms that user can visit account page even if not completing in person proofing
       Capybara.reset_session!
       sign_in_and_2fa_user(user)
+      visit account_path
       expect(page).to have_current_path(account_path)
     end
 
@@ -428,6 +429,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
       # Confirms that user can visit account page even if not completing in person proofing
       Capybara.reset_session!
       sign_in_and_2fa_user(user)
+      visit account_path
       expect(page).to have_current_path(account_path)
     end
   end

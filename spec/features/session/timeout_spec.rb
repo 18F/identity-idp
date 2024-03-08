@@ -40,6 +40,7 @@ RSpec.feature 'Session Timeout', allowed_extra_analytics: [:*] do
 
     it 'signs out the user and displays the timeout message' do
       sign_in_and_2fa_user
+      visit account_path
 
       timeout_in_minutes = IdentityConfig.store.session_total_duration_timeout_in_minutes.to_i
       travel_to((timeout_in_minutes + 1).minutes.from_now) do
