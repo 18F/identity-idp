@@ -1,4 +1,4 @@
-<% self.title = @title %>
+<% self.title = @presenter.title %>
 <%= render JavascriptRequiredComponent.new(
       header: t('idv.welcome.no_js_header'),
       intro: t('idv.welcome.no_js_intro', sp_name: @presenter.sp_name),
