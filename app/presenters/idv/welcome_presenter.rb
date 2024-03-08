@@ -7,13 +7,13 @@ module Idv
 
     attr_accessor :url_options
 
-    def initialize(sp_session)
-      @sp_session = sp_session
+    def initialize(decorated_sp_session)
+      @decorated_sp_session = decorated_sp_session
       @url_options = {}
     end
 
     def sp_name
-      sp_session.sp_name || APP_NAME
+      decorated_sp_session.sp_name || APP_NAME
     end
 
     def title
@@ -21,7 +21,7 @@ module Idv
     end
 
     def selfie_required?
-      sp_session.selfie_required?
+      decorated_sp_session.selfie_required?
     end
 
     def explanation_text(help_link)
@@ -76,6 +76,6 @@ module Idv
 
     private
 
-    attr_accessor :sp_session
+    attr_accessor :decorated_sp_session
   end
 end
