@@ -140,7 +140,7 @@ module InPersonHelper
 
   def complete_ssn_step(_user = nil, tmx_status = nil)
     fill_out_ssn_form_ok
-    select "#{tmx_status}", from: :mock_profiling_result unless tmx_status.nil?
+    select tmx_status.to_s, from: :mock_profiling_result unless tmx_status.nil?
     click_idv_continue
   end
 
