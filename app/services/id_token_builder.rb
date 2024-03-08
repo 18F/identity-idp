@@ -36,14 +36,19 @@ class IdTokenBuilder
   end
 
   def id_token_claims
-    {
-      acr: acr,
+    claims = {
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
       c_hash: hash_token(code),
-    }.compact
+    }
+
+    if !sp_requests_vot?
+      claims[:acr] = acr
+    end
+
+    claims.compact
   end
 
   def timestamp_claims

@@ -25,7 +25,11 @@ class OpenidConnectUserInfoPresenter
       info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
       info[:aal] = identity.requested_aal_value
     else
-      info[:vot] = JSON.parse(identity.vtr).first
+      info[:vot] = Vot::Parser.new(vector_of_trust: JSON.parse(identity.vtr).first).
+        parse.
+        component_values.
+        map(&:name).
+        join('.')
       info[:vtm] = IdentityConfig.store.vtm_url
     end
 
