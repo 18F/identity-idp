@@ -111,12 +111,12 @@ module DocAuth
       end
 
       def selfie_status
-        if portrait_match_results&.dig(:FaceMatchResult).nil?
-          return :success if @selfie_required
-          return :not_processed
+        if @selfie_required
+          return :success if portrait_match_results&.dig(:FaceMatchResult).nil?
+          portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
+        else
+          :not_processed
         end
-
-        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
       end
 
       def workflow
