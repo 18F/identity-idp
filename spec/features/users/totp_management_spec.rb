@@ -192,10 +192,4 @@ RSpec.describe 'totp management', allowed_extra_analytics: [:*] do
       end
     end
   end
-
-  def find_form(page, attributes)
-    page.all('form').detect do |form|
-      attributes.all? { |key, value| form[key] == value }
-    end
-  end
 end
