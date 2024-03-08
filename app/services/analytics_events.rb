@@ -692,6 +692,7 @@ module AnalyticsEvents
   # @param [Integer] size size of image added in bytes
   # @param [String] source
   # @param [Boolean] use_alternate_sdk
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Integer] width width of image added in pixels
   # Back image was added in document capture
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
@@ -1362,6 +1363,7 @@ module AnalyticsEvents
   # @param [Integer] size size of image added in bytes
   # @param [String] source
   # @param [Boolean] use_alternate_sdk
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Integer] width width of image added in pixels
   # Front image was added in document capture
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
@@ -2917,6 +2919,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] size size of image added in bytes
   # @param [String] source
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Integer] width width of image added in pixels
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_added(
