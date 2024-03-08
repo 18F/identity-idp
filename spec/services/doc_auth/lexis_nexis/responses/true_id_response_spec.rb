@@ -74,7 +74,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       let(:liveness_checking_enabled) { true }
       context 'when selfie status is failed' do
         let(:response) do
-          described_class.new(doc_auth_success_with_face_match_fail, config, liveness_checking_enabled, request_context)
+          described_class.new(
+            doc_auth_success_with_face_match_fail, config,
+            liveness_checking_enabled, request_context
+          )
         end
         it 'is a failed result' do
           expect(response.selfie_status).to eq(:fail)
@@ -93,7 +96,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
       context 'when selfie status passes' do
         let(:response) do
-          described_class.new(success_with_liveness_response, config, liveness_checking_enabled, request_context)
+          described_class.new(
+            success_with_liveness_response, config, liveness_checking_enabled,
+            request_context
+          )
         end
         it 'is a successful result' do
           expect(response.selfie_status).to eq(:success)
@@ -365,13 +371,19 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when liveness enabled' do
       let(:liveness_checking_enabled) { true }
       it 'returns Failed for visible_pattern when it gets passed and failed value ' do
-        output = described_class.new(failure_response_no_liveness, config, liveness_checking_enabled).to_h
+        output = described_class.new(
+          failure_response_no_liveness, config,
+          liveness_checking_enabled
+        ).to_h
         expect(output.to_h[:log_alert_results]).
           to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
       end
 
       it 'returns Failed for liveness failure' do
-        response = described_class.new(failure_response_with_liveness, config, liveness_checking_enabled)
+        response = described_class.new(
+          failure_response_with_liveness, config,
+          liveness_checking_enabled
+        )
         output = response.to_h
         expect(output[:success]).to eq(false)
         expect(response.doc_auth_success?).to eq(false)
