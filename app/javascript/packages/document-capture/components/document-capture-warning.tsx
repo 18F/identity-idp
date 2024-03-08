@@ -8,7 +8,7 @@ import DocumentCaptureTroubleshootingOptions from './document-capture-troublesho
 import UnknownError from './unknown-error';
 import { InPersonContext } from '../context';
 import AnalyticsContext from '../context/analytics';
-import FeatureFlagContext from '../context/feature-flag';
+import SelfieCaptureContext from '../context/selfie-capture';
 
 interface DocumentCaptureWarningProps {
   isFailedDocType: boolean;
@@ -78,7 +78,7 @@ function DocumentCaptureWarning({
 }: DocumentCaptureWarningProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
-  const { selfieCaptureEnabled } = useContext(FeatureFlagContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
@@ -111,7 +111,7 @@ function DocumentCaptureWarning({
       heading,
       subheading: subheadingText,
       error_message_displayed: errorMessageDisplayed,
-      liveness_checking_required: selfieCaptureEnabled,
+      liveness_checking_required: isSelfieCaptureEnabled,
     });
   }, []);
 

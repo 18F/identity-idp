@@ -6,7 +6,7 @@ import type { PII } from '../services/upload';
 import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
-import FeatureFlagContext from '../context/feature-flag';
+import SelfieCaptureContext from '../context/selfie-capture';
 import DocumentCaptureWarning from './document-capture-warning';
 import DocumentCaptureReviewIssues from './document-capture-review-issues';
 
@@ -65,7 +65,7 @@ function ReviewIssuesStep({
   failedImageFingerprints = { front: [], back: [] },
 }: ReviewIssuesStepProps) {
   const { trackEvent } = useContext(AnalyticsContext);
-  const { selfieCaptureEnabled } = useContext(FeatureFlagContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const [hasDismissed, setHasDismissed] = useState(remainingSubmitAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   const [skipWarning, setSkipWarning] = useState(false);
@@ -103,7 +103,7 @@ function ReviewIssuesStep({
 
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed', {
-      liveness_checking_required: selfieCaptureEnabled,
+      liveness_checking_required: isSelfieCaptureEnabled,
     });
 
     setHasDismissed(true);

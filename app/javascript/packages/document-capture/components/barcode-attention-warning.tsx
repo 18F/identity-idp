@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { removeUnloadProtection } from '@18f/identity-url';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import FeatureFlagContext from '../context/feature-flag';
+import SelfieCaptureContext from '../context/selfie-capture';
 
 interface BarcodeAttentionWarningProps {
   /**
@@ -20,10 +20,10 @@ interface BarcodeAttentionWarningProps {
 }
 
 function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProps) {
-  const { selfieCaptureEnabled } = useContext(FeatureFlagContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   function skipAttention() {
     trackEvent('IdV: barcode warning continue clicked', {
-      liveness_checking_required: selfieCaptureEnabled,
+      liveness_checking_required: isSelfieCaptureEnabled,
     });
     removeUnloadProtection();
     const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
@@ -32,7 +32,7 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
 
   function handleDismiss() {
     trackEvent('IdV: barcode warning retake photos clicked', {
-      liveness_checking_required: selfieCaptureEnabled,
+      liveness_checking_required: isSelfieCaptureEnabled,
     });
     onDismiss();
   }
