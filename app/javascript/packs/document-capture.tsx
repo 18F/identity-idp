@@ -178,6 +178,14 @@ const App = composeComponents(
     },
   ],
   [
+    SelfieCaptureContext.Provider,
+    {
+      value: {
+        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+      },
+    },
+  ],
+  [
     FailedCaptureAttemptsContextProvider,
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
@@ -189,14 +197,6 @@ const App = composeComponents(
     {
       value: {
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-      },
-    },
-  ],
-  [
-    SelfieCaptureContext.Provider,
-    {
-      value: {
-        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
     },
   ],
