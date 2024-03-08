@@ -63,13 +63,13 @@ RSpec.describe Idv::WelcomePresenter do
   describe 'the bullet points' do
     context 'when a selfie is not required' do
       it 'uses the no selfie bullet point 1 header' do
-        expect(presenter.bullet_header(1)).to eq(
+        expect(presenter.bullet_points[0].bullet).to eq(
           t('doc_auth.instructions.bullet1'),
         )
       end
 
       it 'uses the no selfie bullet point 1 text' do
-        expect(presenter.bullet_text(1)).to eq(
+        expect(presenter.bullet_points[0].text).to eq(
           t('doc_auth.instructions.text1'),
         )
       end
@@ -85,50 +85,50 @@ RSpec.describe Idv::WelcomePresenter do
       end
 
       it 'uses the selfie bullet point 1 header' do
-        expect(presenter.bullet_header(1)).to eq(
+        expect(presenter.bullet_points[0].bullet).to eq(
           t('doc_auth.instructions.bullet1_with_selfie'),
         )
       end
 
       it 'uses the selfie bullet point 1 text' do
-        expect(presenter.bullet_text(1)).to eq(
+        expect(presenter.bullet_points[0].text).to eq(
           t('doc_auth.instructions.text1_with_selfie'),
         )
       end
     end
 
     it 'shows the bullet point 2 header' do
-      expect(presenter.bullet_header(2)).to eq(
+      expect(presenter.bullet_points[1].bullet).to eq(
         t('doc_auth.instructions.bullet2'),
       )
     end
 
     it 'shows the bullet point 2 text' do
-      expect(presenter.bullet_text(2)).to eq(
+      expect(presenter.bullet_points[1].text).to eq(
         t('doc_auth.instructions.text2'),
       )
     end
 
     it 'shows the bullet point 3 header' do
-      expect(presenter.bullet_header(3)).to eq(
+      expect(presenter.bullet_points[2].bullet).to eq(
         t('doc_auth.instructions.bullet3'),
       )
     end
 
     it 'shows the bullet point 3 text' do
-      expect(presenter.bullet_text(3)).to eq(
+      expect(presenter.bullet_points[2].text).to eq(
         t('doc_auth.instructions.text3'),
       )
     end
 
     it 'shows the bullet point 4 header' do
-      expect(presenter.bullet_header(4)).to eq(
+      expect(presenter.bullet_points[3].bullet).to eq(
         t('doc_auth.instructions.bullet4', app_name: sp.friendly_name),
       )
     end
 
     it 'shows the bullet point 4 text' do
-      expect(presenter.bullet_text(4)).to eq(
+      expect(presenter.bullet_points[3].text).to eq(
         t('doc_auth.instructions.text4'),
       )
     end

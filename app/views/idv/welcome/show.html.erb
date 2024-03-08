@@ -23,9 +23,9 @@
   <h2><%= t('doc_auth.instructions.getting_started') %></h2>
 
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <% (1..4).each do |bullet_index| %>
-      <%= c.with_item(heading: @presenter.bullet_header(bullet_index)) do %>
-        <p><%= @presenter.bullet_text(bullet_index) %></p>
+    <% @presenter.bullet_points.each do |point| %>
+      <%= c.with_item(heading: point.bullet) do %>
+        <p><%= point.text %></p>
       <% end %>
     <% end %>
   <% end %>

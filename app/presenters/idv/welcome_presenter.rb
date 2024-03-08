@@ -40,42 +40,43 @@ module Idv
       end
     end
 
-    def bullet_header(index)
-      case index
-      when 1
+    def bullet_points
+      [
         if selfie_required?
-          t('doc_auth.instructions.bullet1_with_selfie')
+          bullet_point(
+            t('doc_auth.instructions.bullet1_with_selfie'),
+            t('doc_auth.instructions.text1_with_selfie'),
+          )
         else
-          t('doc_auth.instructions.bullet1')
-        end
-      when 2
-        t('doc_auth.instructions.bullet2')
-      when 3
-        t('doc_auth.instructions.bullet3')
-      when 4
-        t('doc_auth.instructions.bullet4', app_name: sp_name)
-      end
-    end
+          bullet_point(
+            t('doc_auth.instructions.bullet1'),
+            t('doc_auth.instructions.text1'),
+          )
+        end,
 
-    def bullet_text(index)
-      case index
-      when 1
-        if selfie_required?
-          t('doc_auth.instructions.text1_with_selfie')
-        else
-          t('doc_auth.instructions.text1')
-        end
-      when 2
-        t('doc_auth.instructions.text2')
-      when 3
-        t('doc_auth.instructions.text3')
-      when 4
-        t('doc_auth.instructions.text4')
-      end
+        bullet_point(
+          t('doc_auth.instructions.bullet2'),
+          t('doc_auth.instructions.text2'),
+        ),
+
+        bullet_point(
+          t('doc_auth.instructions.bullet3'),
+          t('doc_auth.instructions.text3'),
+        ),
+
+        bullet_point(
+          t('doc_auth.instructions.bullet4', app_name: sp_name),
+          t('doc_auth.instructions.text4'),
+        ),
+      ]
     end
 
     private
 
     attr_accessor :decorated_sp_session
+
+    def bullet_point(bullet, text)
+      OpenStruct.new(bullet: bullet, text: text)
+    end
   end
 end
