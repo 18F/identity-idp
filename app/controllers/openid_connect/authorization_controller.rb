@@ -10,8 +10,8 @@ module OpenidConnect
     include BillableEventTrackable
     include ForcedReauthenticationConcern
 
-    before_action :block_biometric_requests_in_production, only: [:index]
     before_action :build_authorize_form_from_params, only: [:index]
+    before_action :block_biometric_requests_in_production, only: [:index]
     before_action :set_devise_failure_redirect_for_concurrent_session_logout
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
@@ -48,10 +48,15 @@ module OpenidConnect
     private
 
     def block_biometric_requests_in_production
-      if params['biometric_comparison_required'] == 'true' &&
+      if biometric_comparison_requested? &&
          !FeatureManagement.idv_allow_selfie_check?
         render_not_acceptable
       end
+    end
+
+    def biometric_comparison_requested?
+      @authorize_form.parsed_vector_of_trust&.biometric_comparison? ||
+        params['biometric_comparison_required'] == 'true'
     end
 
     def check_sp_active
@@ -138,6 +143,7 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
+
       analytics.openid_connect_request_authorization(
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,

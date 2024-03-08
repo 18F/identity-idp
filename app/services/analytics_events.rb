@@ -2388,6 +2388,19 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # @param [String] enrollment_id
+  # A fraud user has been deactivated due to not visting the post office before the deadline
+  def idv_ipp_deactivated_for_never_visiting_post_office(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_deactivated_for_never_visiting_post_office,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
   # The user visited the "letter enqueued" page shown during the verify by mail flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @identity.idp.previous_event_name IdV: come back later visited
@@ -2845,39 +2858,52 @@ module AnalyticsEvents
     )
   end
 
+  # User closed the SDK for taking a selfie without submitting a photo
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
-  # User captured and approved of their selfie
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_added(captureAttempts:, **extra)
-    track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
+  def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts: nil, **extra)
+    track_event(
+      :idv_sdk_selfie_image_capture_closed_without_photo,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # User closed the SDK for taking a selfie without submitting a photo
-  def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
-    track_event(:idv_sdk_selfie_image_capture_closed_without_photo, **extra)
-  end
-
+  # User encountered an error with the SDK selfie process
+  #   Error code 1: camera permission not granted
+  #   Error code 2: unexpected errors
   # @param [Integer] sdk_error_code SDK code for the error encountered
   # @param [String] sdk_error_message SDK message for the error encountered
-  # User encountered an error with the SDK selfie process
-  # Error code 1: camera permission not granted
-  # Error code 2: unexpected errors
-  def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_sdk_selfie_image_capture_failed(
+    sdk_error_code:,
+    sdk_error_message:,
+    captureAttempts: nil,
+    **extra
+  )
     track_event(
       :idv_sdk_selfie_image_capture_failed,
       sdk_error_code: sdk_error_code,
       sdk_error_message: sdk_error_message,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User opened the SDK to take a selfie
-  def idv_sdk_selfie_image_capture_opened(**extra)
-    track_event(:idv_sdk_selfie_image_capture_opened, **extra)
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_sdk_selfie_image_capture_opened(captureAttempts: nil, **extra)
+    track_event(:idv_sdk_selfie_image_capture_opened, captureAttempts: captureAttempts, **extra)
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # User took a selfie image with the SDK, or uploaded a selfie using the file picker
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] failedImageResubmission
@@ -2888,9 +2914,8 @@ module AnalyticsEvents
   # @param [Integer] size size of image added in bytes
   # @param [String] source
   # @param [Integer] width width of image added in pixels
-  # User uploaded a selfie using the file picker
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_selfie_image_file_uploaded(
+  def idv_selfie_image_added(
     captureAttempts:,
     failedImageResubmission:,
     fingerprint:,
@@ -2903,7 +2928,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      :idv_selfie_image_file_uploaded,
+      :idv_selfie_image_added,
       captureAttempts: captureAttempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,

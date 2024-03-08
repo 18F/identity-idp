@@ -54,6 +54,12 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
 
     context 'attention barcode with invalid pii is uploaded', allow_browser_log: true do
+      let(:desktop_selfie_mode) { false }
+      # test disabled desktop selfie mode allows upload for doc auth w/o selfie
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
+          and_return(desktop_selfie_mode)
+      end
       it 'try again and page show doc type inline error message' do
         attach_images(
           Rails.root.join(
@@ -73,7 +79,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
       end
     end
 
-    context 'rate limits calls to acuant', allow_browser_log: true do
+    context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
       let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do
         allow_any_instance_of(ApplicationController).to receive(
@@ -245,7 +251,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
       context 'on mobile platform' do
         before do
-          # mock mobile device as cameraCapable, this allows us to proce
+          # mock mobile device as cameraCapable, this allows us to process
           allow_any_instance_of(ActionController::Parameters).
             to receive(:[]).and_wrap_original do |impl, param_name|
             param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
@@ -259,6 +265,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             complete_doc_auth_steps_before_document_capture_step
 
             expect(page).to have_current_path(idv_document_capture_url)
+            expect(max_capture_attempts_before_native_camera.to_i).
+              to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+            expect(max_submission_attempts_before_native_camera.to_i).
+              to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
             expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
             expect_doc_capture_id_subheader
@@ -474,6 +484,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               complete_doc_auth_steps_before_document_capture_step
 
               expect(page).to have_current_path(idv_document_capture_url)
+              expect(max_capture_attempts_before_native_camera).to eq(
+                IdentityConfig.store.doc_auth_max_capture_attempts_before_native_camera.to_s,
+              )
               expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
@@ -502,15 +515,17 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             and_return(desktop_selfie_mode)
         end
         describe 'when desktop selfie not allowed' do
-          it 'cannot proceed to document capture page' do
+          it 'can only proceed to link sent page' do
             perform_in_browser(:desktop) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
               sign_in_and_2fa_user(user)
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              click_on t('forms.buttons.upload_photos')
-              expect(page).to have_current_path(idv_hybrid_handoff_path)
+              expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
+              expect(page).not_to have_content(t('doc_auth.info.upload_from_computer'))
+              click_on t('forms.buttons.send_link')
+              expect(page).to have_current_path(idv_link_sent_path)
             end
           end
         end
@@ -523,6 +538,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
               expect(page).to have_current_path(idv_hybrid_handoff_path)
+              expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
+              expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
               click_on t('forms.buttons.upload_photos')
               expect(page).to have_current_path(idv_document_capture_url)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))

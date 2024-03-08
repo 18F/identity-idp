@@ -41,7 +41,7 @@ RSpec.describe OutageStatus do
 
   context 'when an idv vendor has an outage' do
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_acuant).
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid).
         and_return(:full_outage)
     end
 

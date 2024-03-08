@@ -17,7 +17,7 @@ module RememberDeviceConcern
     return unless UserSessionContext.authentication_context?(context)
     return if remember_device_cookie.nil?
 
-    expiration_time = decorated_sp_session.mfa_expiration_interval(resolved_authn_context_result)
+    expiration_time = decorated_sp_session.mfa_expiration_interval
     return unless remember_device_cookie.valid_for_user?(
       user: current_user,
       expiration_interval: expiration_time,
@@ -37,7 +37,7 @@ module RememberDeviceConcern
   def remember_device_expired_for_sp?
     expired_for_interval?(
       current_user,
-      decorated_sp_session.mfa_expiration_interval(resolved_authn_context_result),
+      decorated_sp_session.mfa_expiration_interval,
     )
   end
 

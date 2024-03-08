@@ -1,5 +1,5 @@
 module DocAuth
-  module Acuant
+  module LexisNexis
     module IssuerTypes
       IssuerType = Struct.new(:code, :name)
 

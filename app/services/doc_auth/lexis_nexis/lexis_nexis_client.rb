@@ -8,10 +8,6 @@ module DocAuth
         @config.validate!
       end
 
-      def create_document
-        raise NotImplementedError
-      end
-
       def post_images(
         front_image:,
         back_image:,

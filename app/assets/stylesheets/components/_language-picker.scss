@@ -22,11 +22,7 @@
 .language-picker__label {
   align-items: center;
   display: flex;
-  background-position: right units(1.5) center;
-  background-position-y: calc(50% + 2px);
-  padding: units(0.5);
-  padding-left: units(1);
-  padding-right: units(1);
+  padding: units(0.5) units(1);
   border-color: transparent;
 
   @include at-media-max('tablet') {

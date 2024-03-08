@@ -1216,7 +1216,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
-        'idv_sdk_selfie_image_added',
+        'idv_selfie_image_added',
         sinon.match({
           captureAttempts: sinon.match.number,
         }),
