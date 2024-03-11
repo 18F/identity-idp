@@ -108,20 +108,14 @@ function FullScreen(
       className={`full-screen bg-${bgColor}`}
     >
       {children}
-      {!hideCloseButton && (
-        <button
-          type="button"
-          aria-label={t('account.navigation.close')}
-          onClick={onRequestClose}
-          className="full-screen__close-button usa-button padding-2 margin-2"
-        >
-          <img
-            alt=""
-            src={getAssetPath('close-white-alt.svg')}
-            className="full-screen__close-icon"
-          />
-        </button>
-      )}
+      <button
+        type="button"
+        aria-label={t('account.navigation.close')}
+        onClick={onRequestClose}
+        className={hideCloseButton ? '' : 'full-screen__close-button usa-button padding-2 margin-2'}
+      >
+        <img alt="" src={getAssetPath('close-white-alt.svg')} className="full-screen__close-icon" />
+      </button>
     </div>,
     document.body,
   );

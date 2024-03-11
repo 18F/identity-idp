@@ -692,7 +692,7 @@ function AcuantCapture(
           <FullScreen
             ref={fullScreenRef}
             label={t('doc_auth.accessible_labels.document_capture_dialog')}
-            //hideCloseButton,
+            hideCloseButton
           >
             <AcuantSelfieCaptureCanvas
               fullScreenRef={fullScreenRef}

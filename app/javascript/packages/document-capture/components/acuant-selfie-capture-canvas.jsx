@@ -3,6 +3,7 @@ import { getAssetPath } from '@18f/identity-assets';
 import { FullScreen } from '@18f/identity-components';
 import AcuantContext from '../context/acuant';
 
+// TODO make this not fullscreen
 function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose, fullScreenLabel }) {
   return (
     <FullScreen ref={fullScreenRef} label={fullScreenLabel} onRequestClose={onRequestClose}>
