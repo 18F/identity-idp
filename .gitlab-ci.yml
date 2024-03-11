@@ -373,6 +373,9 @@ trigger_devops:
       metadata:
         name: "$CI_ENVIRONMENT_SLUG"
         namespace: argocd
+        finalizers:
+          # The default behaviour is foreground cascading deletion
+          - resources-finalizer.argocd.argoproj.io
         annotations:
           argocd.argoproj.io/sync-wave: "0"
       spec:
@@ -391,6 +394,27 @@ trigger_devops:
           targetRevision: argocd-test
           path: .
           helm:
+            parameters:
+            - name: "idp.image.repository"
+              value: "${ECR_REGISTRY}/identity-idp/review"
+            - name: "idp.image.tag"
+              value: "${CI_COMMIT_SHA}"
+            - name: "worker.image.repository"
+              value: "${ECR_REGISTRY}/identity-idp/review"
+            - name: "worker.image.tag"
+              value: "${CI_COMMIT_SHA}"
+            - name: "pivcac.image.repository"
+              value: "${ECR_REGISTRY}/identity-pivcac/review"
+            - name: "pivcac.image.tag"
+              value: "${PKI_IMAGE_TAG}"
+            - name: "pivcac.image.pullPolicy"
+              value: "Always"
+            - name: "dashboard.image.repository"
+              value: "${ECR_REGISTRY}/identity-dashboard/review"
+            - name: "dashboard.image.tag"
+              value: "${DASHBOARD_IMAGE_TAG}"
+            - name: "dashboard.image.pullPolicy"
+              value: "Always"          
             valueFiles:
             - values-main.yaml
             values: |
@@ -563,27 +587,7 @@ trigger_devops:
                       paths:
                         - path: /
                           pathType: Prefix
-            parameters:
-            - name: "idp.image.repository"
-              value: "${ECR_REGISTRY}/identity-idp/review"
-            - name: "idp.image.tag"
-              value: "${CI_COMMIT_SHA}"
-            - name: "worker.image.repository"
-              value: "${ECR_REGISTRY}/identity-idp/review"
-            - name: "worker.image.tag"
-              value: "${CI_COMMIT_SHA}"
-            - name: "pivcac.image.repository"
-              value: "${ECR_REGISTRY}/identity-pivcac/review"
-            - name: "pivcac.image.tag"
-              value: "${PKI_IMAGE_TAG}"
-            - name: "pivcac.image.pullPolicy"
-              value: "Always"
-            - name: "dashboard.image.repository"
-              value: "${ECR_REGISTRY}/identity-dashboard/review"
-            - name: "dashboard.image.tag"
-              value: "${DASHBOARD_IMAGE_TAG}"
-            - name: "dashboard.image.pullPolicy"
-              value: "Always"
+
       EOF
     - cat "$CI_ENVIRONMENT_SLUG.yaml"
     - kubectl apply -f "$CI_ENVIRONMENT_SLUG.yaml" -n argocd
