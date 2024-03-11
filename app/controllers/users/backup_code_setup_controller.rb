@@ -79,8 +79,7 @@ module Users
 
     def internal_referrer?
       UserSessionContext.reauthentication_context?(context) ||
-        in_account_creation_flow? ||
-        session[:account_redirect_path]
+        session[:account_redirect_path] || in_multi_mfa_selection_flow?
     end
 
     def analytics_properties_for_visit
