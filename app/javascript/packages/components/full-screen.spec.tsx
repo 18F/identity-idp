@@ -52,19 +52,20 @@ describe('FullScreen', () => {
     const button = getByLabelText('account.navigation.close');
 
     expect(button.nodeName).to.equal('BUTTON');
+    expect(button.className).to.include('full-screen__close-button');
   });
 
   context('hideCloseButton prop is true', () => {
     it('renders without a close button', () => {
-      const { queryByLabelText } = render(
+      const { container } = render(
         <FullScreen hideCloseButton>
           <input />
         </FullScreen>,
       );
 
-      const button = queryByLabelText('account.navigation.close');
-
-      expect(button).to.not.exist();
+      // The button still exists, but without this class it doesn't show because the
+      // z-index isn't set.
+      expect(container.querySelector('.full-screen__close-button')).not.to.exist();
     });
   });
 
