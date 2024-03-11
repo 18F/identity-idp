@@ -7,7 +7,7 @@ module AccountResetConcern
       current_time,
       current_time + account_reset_wait_period_days(user),
       true,
-      accumulate_on: account_reset_time_accumulation(user),
+      accumulate_on: reset_accumulation_type(user),
     )
   end
 
@@ -28,7 +28,7 @@ module AccountResetConcern
     user.fraud_review_pending? || user.fraud_rejection?
   end
 
-  def account_reset_time_accumulation(user)
+  def reset_accumulation_type(user)
     if account_reset_wait_period_days(user) > 3.days
       :days
     else
