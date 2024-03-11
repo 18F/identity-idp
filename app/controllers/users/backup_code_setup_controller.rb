@@ -140,7 +140,7 @@ module Users
     end
 
     def authorize_backup_code_disable
-      return if MfaPolicy.new(current_user).multiple_factors_enabled?
+      return if MfaPolicy.new(current_user).multiple_factors_enabled? || in_account_creation_flow?
       redirect_to account_two_factor_authentication_path
     end
 
