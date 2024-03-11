@@ -17,6 +17,7 @@ class FrontendLogController < ApplicationController
     'IdV: back image clicked' => :idv_back_image_clicked,
     'IdV: barcode warning continue clicked' => :idv_barcode_warning_continue_clicked,
     'IdV: barcode warning retake photos clicked' => :idv_barcode_warning_retake_photos_clicked,
+    'IdV: camera resolution logged' => :idv_camera_resolution_logged,
     'IdV: Capture troubleshooting dismissed' => :idv_capture_troubleshooting_dismissed,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,

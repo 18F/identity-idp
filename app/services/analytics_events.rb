@@ -787,6 +787,13 @@ module AnalyticsEvents
     )
   end
 
+  def idv_camera_resolution_logged(**_extra)
+    track_event(
+      'Frontend: IdV: camera resolution logged',
+    )
+  end
+
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
