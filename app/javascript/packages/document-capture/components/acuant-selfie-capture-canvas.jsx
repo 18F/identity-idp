@@ -1,42 +1,27 @@
 import { useContext } from 'react';
 import { getAssetPath } from '@18f/identity-assets';
-import { FullScreen } from '@18f/identity-components';
 import AcuantContext from '../context/acuant';
 
-// TODO make this not fullscreen
-function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose, fullScreenLabel }) {
+function LoadingSpinner() {
   return (
-    <FullScreen ref={fullScreenRef} label={fullScreenLabel} onRequestClose={onRequestClose}>
-      <img
-        src={getAssetPath('loading-badge.gif')}
-        alt=""
-        width="144"
-        height="144"
-        className="acuant-capture-canvas__spinner"
-      />
-    </FullScreen>
+    <img
+      src={getAssetPath('loading-badge.gif')}
+      alt=""
+      width="144"
+      height="144"
+      className="acuant-capture-canvas__spinner"
+    />
   );
 }
 
-function AcuantSelfieCaptureCanvas({
-  fullScreenRef,
-  onRequestClose,
-  fullScreenLabel,
-  imageCaptureText,
-}) {
+function AcuantSelfieCaptureCanvas({ imageCaptureText }) {
   const { isReady } = useContext(AcuantContext);
   // The Acuant SDK script AcuantPassiveLiveness attaches to whatever element has
   // this id. It then uses that element as the root for the full screen selfie capture
   const acuantCaptureContainerId = 'acuant-face-capture-container';
   return (
     <>
-      {!isReady && (
-        <FullScreenLoadingSpinner
-          fullScreenRef={fullScreenRef}
-          onRequestClose={onRequestClose}
-          fullScreenLabel={fullScreenLabel}
-        />
-      )}
+      {!isReady && <LoadingSpinner />}
       <div id={acuantCaptureContainerId}>
         <p className="document-capture-selfie-feedback">{imageCaptureText}</p>
       </div>
