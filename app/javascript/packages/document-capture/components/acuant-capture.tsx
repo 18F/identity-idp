@@ -328,7 +328,7 @@ function AcuantCapture(
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
   useMemo(() => setOwnErrorMessage(null), [value]);
-  const { isMobile, detectCameraResolution } = useContext(DeviceContext);
+  const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
@@ -337,7 +337,6 @@ function AcuantCapture(
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
-  detectCameraResolution();
 
   const {
     failedCaptureAttempts,
