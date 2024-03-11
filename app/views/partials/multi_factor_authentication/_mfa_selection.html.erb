@@ -23,7 +23,7 @@
     <%= content_tag(
           :span,
           id: "two_factor_options_form_selection_description_#{option.type}",
-          class: option.mfa_configuration_description.presence && 'usa-tag bg-green',
+          class: option.mfa_configuration_description.presence && 'usa-tag bg-success',
           aria: { hidden: true },
         ) do %>
       <%= option.mfa_configuration_description %>

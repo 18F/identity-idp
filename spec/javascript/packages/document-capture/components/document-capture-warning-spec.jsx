@@ -93,6 +93,7 @@ describe('DocumentCaptureWarning', () => {
         subheading: 'errors.doc_auth.rate_limited_subheading',
         error_message_displayed: 'general error',
         remaining_submit_attempts: 2,
+        liveness_checking_required: false,
       });
     });
 
@@ -245,6 +246,7 @@ describe('DocumentCaptureWarning', () => {
         subheading: '',
         error_message_displayed: 'general error idv.warning.attempts_html',
         remaining_submit_attempts: 2,
+        liveness_checking_required: false,
       });
     });
 

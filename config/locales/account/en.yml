@@ -41,12 +41,10 @@ en:
       phone: Phone numbers
       phone_add: Add phone
       piv_cac_add: Add ID
-      piv_cac_confirm_delete: Yes, remove card
       reactivation:
         instructions: Your profile was recently deactivated due to a password reset.
         link: Reactivate your profile now.
       sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
-      totp_confirm_delete: Yes, remove authentication app
       unknown_location: unknown location
       verification:
         instructions: Your account requires a verification code to be verified.

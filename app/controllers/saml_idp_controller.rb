@@ -137,6 +137,7 @@ class SamlIdpController < ApplicationController
     analytics.saml_auth_request(
       requested_ial: requested_ial,
       requested_aal_authn_context: saml_request&.requested_aal_authn_context,
+      requested_vtr_authn_context: saml_request&.requested_vtr_authn_context,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
