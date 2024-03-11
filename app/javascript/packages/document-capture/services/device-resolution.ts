@@ -1,19 +1,3 @@
-import { createContext, useContext, ReactNode } from 'react';
-import { useObjectMemo } from '@18f/identity-react-hooks';
-import AnalyticsContext from './analytics';
-
-export interface DeviceContextValue {
-  children: ReactNode;
-  isMobile: boolean;
-}
-
-const DeviceContext = createContext({
-  isMobile: false,
-  detectCameraResolution: () => {},
-});
-
-DeviceContext.displayName = 'DeviceContext';
-
 async function videoTracksAvailable() {
   // Check that there are tracks in the device, also stop them?
   try {
@@ -82,22 +66,10 @@ async function getDeviceInfo(trackEvent) {
   });
 }
 
-function DeviceContextProvider({ isMobile, children }: DeviceContextValue) {
-  const { trackEvent } = useContext(AnalyticsContext);
-
-  const detectCameraResolution = async () => {
-    //if (await videoTracksAvailable()) {
-    getDeviceInfo(trackEvent);
-    //}
-  };
-
-  const value = useObjectMemo({
-    isMobile,
-    detectCameraResolution,
-  });
-
-  return <DeviceContext.Provider value={value}>{children}</DeviceContext.Provider>;
+function logDeviceResolution({ isMobile, children, trackEvent}) {
+  //if (await videoTracksAvailable()) {
+  getDeviceInfo(trackEvent);
+  //}
 }
 
-export default DeviceContext;
-export { DeviceContextProvider as Provider };
+export { logDeviceResolution };

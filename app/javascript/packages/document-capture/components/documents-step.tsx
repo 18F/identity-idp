@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import {
   FormStepComponentProps,
@@ -104,11 +104,15 @@ function DocumentsStep({
   registerField = () => undefined,
 }: FormStepComponentProps<DocumentsStepValue>) {
   const { t } = useI18n();
-  const { isMobile } = useContext(DeviceContext);
+  const { isMobile, detectCameraResolution } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+
+  useEffect(() => {
+    detectCameraResolution();
+  });
 
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
