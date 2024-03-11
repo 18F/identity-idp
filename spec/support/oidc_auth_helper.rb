@@ -116,7 +116,7 @@ module OidcAuthHelper
     vtr_params = {
       client_id: client_id,
       response_type: 'code',
-      vtr: Array(vtr).to_json,
+      vtr: vtr.to_json,
       scope: scope,
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

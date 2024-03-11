@@ -13,7 +13,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
   scenario 'sign in with VTR request for authentication', :js do
     user = create(:user, :fully_registered)
 
-    visit_idp_from_oidc_sp_with_vtr(vtr: 'C1')
+    visit_idp_from_oidc_sp_with_vtr(vtr: ['C1'])
 
     expect(page).to have_content(t('headings.sign_in_existing_users'))
 
@@ -38,7 +38,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     click_submit_default
     first(:button, t('links.sign_out')).click
 
-    visit_idp_from_oidc_sp_with_vtr(vtr: 'C1.C2')
+    visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.C2'])
     sign_in_user(user)
 
     # MFA is required despite remember device
@@ -55,7 +55,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     mock_webauthn_setup_challenge
     user = create(:user, :fully_registered)
 
-    visit_idp_from_oidc_sp_with_vtr(vtr: 'C1.Ca')
+    visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.Ca'])
     sign_in_live_with_2fa(user)
 
     # More secure MFA is required
@@ -80,7 +80,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
 
     user = create(:user, :fully_registered)
 
-    visit_idp_from_oidc_sp_with_vtr(vtr: 'C1.Cb')
+    visit_idp_from_oidc_sp_with_vtr(vtr: ['C1.Cb'])
     sign_in_live_with_2fa(user)
 
     # More secure MFA is required
@@ -107,7 +107,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
   scenario 'sign in with VTR request for idv requires idv', :js do
     user = create(:user, :fully_registered)
 
-    visit_idp_from_oidc_sp_with_vtr(vtr: 'P1')
+    visit_idp_from_oidc_sp_with_vtr(vtr: ['P1'])
 
     expect(page).to have_content(t('headings.sign_in_existing_users'))
 
@@ -121,7 +121,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
 
     user = create(:user, :fully_registered)
 
-    visit_idp_from_oidc_sp_with_vtr(vtr: 'Pb')
+    visit_idp_from_oidc_sp_with_vtr(vtr: ['Pb'])
 
     expect(page).to have_content(t('headings.sign_in_existing_users'))
 
