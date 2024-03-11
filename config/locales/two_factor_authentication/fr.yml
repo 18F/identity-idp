@@ -35,7 +35,6 @@ fr:
       Après l’avoir envoyé, vous devrez utiliser un nouveau code de sauvegarde
       la fois suivante
     backup_codes:
-      add_another_authentication_option: '‹ Ajouter une autre option d’authentification'
       instructions: Si vous n’avez pas accès à un autre appareil, conservez vos codes
         de sauvegarde en lieu sûr. Si vous perdez vos codes de sauvegarde, vous
         ne pourrez plus vous connecter à %{app_name}.

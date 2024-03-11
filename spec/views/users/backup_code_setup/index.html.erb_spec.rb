@@ -69,7 +69,7 @@ RSpec.describe 'users/backup_code_setup/index.html.erb' do
       render
 
       expect(rendered).to have_link t(
-        'two_factor_authentication.backup_codes.add_another_authentication_option',
+        'two_factor_authentication.choose_another_option',
       )
     end
 
