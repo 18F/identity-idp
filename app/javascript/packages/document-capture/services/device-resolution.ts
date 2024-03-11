@@ -47,7 +47,7 @@ async function updateConstraintsAndGetInfo(videoDevice, facingMode, trackEvent) 
     const cameras = videoTracks.map((videoTrack) => getCameraInfo(videoTrack));
     const logInfo = {
       facingMode,
-      cameras,
+      cameraInfo: cameras,
     };
     console.log(logInfo);
     trackEvent('IdV: camera resolution logged', logInfo);
