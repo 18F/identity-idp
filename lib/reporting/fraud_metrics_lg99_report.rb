@@ -100,7 +100,7 @@ module Reporting
           , properties.new_event AS new_event
         | filter properties.new_event = 1
         | filter name in %{event_names}
-        | stats count_distinct(user_id) as unique_users_count
+        | stats count_distinct(user_id) as `unique_users_count`
       QUERY
     end
 
