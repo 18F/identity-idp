@@ -470,6 +470,7 @@ trigger_devops:
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
       --set pivcac.image.pullPolicy="Always"
+      --set pivcac.hooks.ttlSecondsAfterFinished="600"
       --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
       --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
       --set dashboard.image.pullPolicy="Always"
