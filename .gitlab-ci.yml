@@ -416,13 +416,13 @@ trigger_devops:
             - name: "dashboard.image.pullPolicy"
               value: "Always"
             - name: "idp.enabled"
-              value: true
+              value: "true"
             - name: "pivcac.enabled"
-              value: true
+              value: "true"
             - name: "worker.enabled"
-              value: true
+              value: "true"
             - name: "dashboard.enabled"
-              value: true
+              value: "true"
             valueFiles:
             - values-main.yaml
             values: |
