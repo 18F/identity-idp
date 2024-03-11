@@ -10,6 +10,7 @@ function LoadingSpinner() {
       width="144"
       height="144"
       className="acuant-capture-canvas__spinner"
+      role="img"
     />
   );
 }
