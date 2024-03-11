@@ -787,9 +787,9 @@ module AnalyticsEvents
     )
   end
 
-  def idv_camera_resolution_logged(facingMode:, cameraInfo:, **_extra)
+  def idv_camera_resolution_logged(flow_path:, facingMode:, cameraInfo:, **_extra)
     track_event(
-      'Frontend: IdV: camera resolution logged',
+      'Frontend: IdV: camera resolution logged', facingMode: facingMode, cameraInfo: cameraInfo,
       #'Frontend: IdV: camera resolution logged', facingMode, cameraInfo
     )
   end
