@@ -56,7 +56,7 @@ module OpenidConnect
 
     def biometric_comparison_requested?
       @authorize_form.parsed_vector_of_trust&.biometric_comparison? ||
-        params['biometric_comparison_required']
+        params['biometric_comparison_required'] == 'true'
     end
 
     def check_sp_active
@@ -143,6 +143,7 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
+
       analytics.openid_connect_request_authorization(
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,

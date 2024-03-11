@@ -34,10 +34,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 26d550cd249e52304aecbb53add32cbec4001e2f
-  tag: 0.18.3-18f
+  revision: f7dd59de0c860e9d78ab4f05e8365153a2a9b25a
+  tag: 0.19.1-18f
   specs:
-    saml_idp (0.18.3.pre.18f)
+    saml_idp (0.19.1.pre.18f)
       activesupport
       builder
       faraday
@@ -432,6 +432,8 @@ GEM
     msgpack (1.7.2)
     multiset (0.5.3)
     mutex_m (0.2.0)
+    net-http-persistent (4.0.2)
+      connection_pool (~> 2.2)
     net-imap (0.4.10)
       date
       net-protocol
@@ -735,7 +737,7 @@ GEM
       nokogiri (~> 1.11)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.35)
+    yard (0.9.36)
     zeitwerk (2.6.12)
     zlib (3.0.0)
     zonebie (0.6.1)
@@ -802,6 +804,7 @@ DEPENDENCIES
   maxminddb
   msgpack (~> 1.6)
   multiset
+  net-http-persistent (~> 4.0.2)
   net-sftp
   newrelic_rpm (~> 9.0)
   nokogiri (~> 1.16.0)

@@ -188,6 +188,7 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name TOTP: User Disabled
   # Tracks when a user deletes their auth app from account
   # @param [Boolean] success
   # @param [Hash] error_details
@@ -612,6 +613,7 @@ module AnalyticsEvents
   # @param [Boolean] isCameraSupported
   # @param [Boolean] success
   # @param [Boolean] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
   # The Acuant SDK was loaded
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_acuant_sdk_loaded(
@@ -621,6 +623,7 @@ module AnalyticsEvents
     isCameraSupported:,
     success:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     **_extra
   )
     track_event(
@@ -631,6 +634,7 @@ module AnalyticsEvents
       isCameraSupported: isCameraSupported,
       success: success,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -689,6 +693,7 @@ module AnalyticsEvents
   # @param [Integer] size size of image added in bytes
   # @param [String] source
   # @param [Boolean] use_alternate_sdk
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Integer] width width of image added in pixels
   # Back image was added in document capture
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
@@ -716,6 +721,7 @@ module AnalyticsEvents
     size:,
     source:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     width:,
     **_extra
   )
@@ -744,6 +750,7 @@ module AnalyticsEvents
       size: size,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
       width: width,
     )
   end
@@ -754,6 +761,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -761,6 +769,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     **_extra
   )
     track_event(
@@ -771,19 +780,24 @@ module AnalyticsEvents
       isDrop: isDrop,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_barcode_warning_continue_clicked(**_extra)
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  def idv_barcode_warning_continue_clicked(liveness_checking_required:, **_extra)
     track_event(
       'Frontend: IdV: barcode warning continue clicked',
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
-  def idv_barcode_warning_retake_photos_clicked(**_extra)
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  def idv_barcode_warning_retake_photos_clicked(liveness_checking_required:, **_extra)
     track_event(
       'Frontend: IdV: barcode warning retake photos clicked',
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
@@ -835,11 +849,13 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [String] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
   def idv_capture_troubleshooting_dismissed(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     flow_path:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     **_extra
   )
     track_event(
@@ -848,6 +864,7 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
@@ -1347,6 +1364,7 @@ module AnalyticsEvents
   # @param [Integer] size size of image added in bytes
   # @param [String] source
   # @param [Boolean] use_alternate_sdk
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Integer] width width of image added in pixels
   # Front image was added in document capture
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
@@ -1374,6 +1392,7 @@ module AnalyticsEvents
     size:,
     source:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     width:,
     **_extra
   )
@@ -1402,6 +1421,7 @@ module AnalyticsEvents
       size: size,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
       width: width,
     )
   end
@@ -1412,6 +1432,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -1419,6 +1440,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    liveness_checking_required: nil,
     **_extra
   )
     track_event(
@@ -1429,6 +1451,7 @@ module AnalyticsEvents
       isDrop: isDrop,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -2372,6 +2395,19 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # @param [String] enrollment_id
+  # A fraud user has been deactivated due to not visting the post office before the deadline
+  def idv_ipp_deactivated_for_never_visiting_post_office(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_deactivated_for_never_visiting_post_office,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
   # The user visited the "letter enqueued" page shown during the verify by mail flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @identity.idp.previous_event_name IdV: come back later visited
@@ -2829,17 +2865,10 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
-  #                  (previously called "attempt")
-  # User captured and approved of their selfie
-  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_added(captureAttempts: nil, **extra)
-    track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
-  end
-
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
-  #                  (previously called "attempt")
   # User closed the SDK for taking a selfie without submitting a photo
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts: nil, **extra)
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
@@ -2847,14 +2876,16 @@ module AnalyticsEvents
       **extra,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # User encountered an error with the SDK selfie process
+  #   Error code 1: camera permission not granted
+  #   Error code 2: unexpected errors
   # @param [Integer] sdk_error_code SDK code for the error encountered
   # @param [String] sdk_error_message SDK message for the error encountered
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
-  # User encountered an error with the SDK selfie process
-  # Error code 1: camera permission not granted
-  # Error code 2: unexpected errors
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
     sdk_error_code:,
     sdk_error_message:,
@@ -2869,13 +2900,17 @@ module AnalyticsEvents
       **extra,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # User opened the SDK to take a selfie
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_opened(captureAttempts: nil, **extra)
     track_event(:idv_sdk_selfie_image_capture_opened, captureAttempts: captureAttempts, **extra)
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # User took a selfie image with the SDK, or uploaded a selfie using the file picker
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] failedImageResubmission
@@ -2885,9 +2920,10 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] size size of image added in bytes
   # @param [String] source
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Integer] width width of image added in pixels
-  # User uploaded a selfie using the file picker
-  def idv_selfie_image_file_uploaded(
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_selfie_image_added(
     captureAttempts:,
     failedImageResubmission:,
     fingerprint:,
@@ -2896,11 +2932,12 @@ module AnalyticsEvents
     mimeType:,
     size:,
     source:,
+    liveness_checking_required:,
     width:,
     **_extra
   )
     track_event(
-      :idv_selfie_image_file_uploaded,
+      :idv_selfie_image_added,
       captureAttempts: captureAttempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
@@ -2909,6 +2946,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       size: size,
       source: source,
+      liveness_checking_required: liveness_checking_required,
       width: width,
     )
   end
@@ -3082,6 +3120,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] subheading
   # @param [Boolean] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
   def idv_warning_shown(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -3092,6 +3131,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     subheading:,
     use_alternate_sdk:,
+    liveness_checking_required:,
     **_extra
   )
     track_event(
@@ -3105,6 +3145,7 @@ module AnalyticsEvents
       remaining_submit_attempts: remaining_submit_attempts,
       subheading: subheading,
       use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
@@ -3937,6 +3978,9 @@ module AnalyticsEvents
     track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
+  # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # @identity.idp.previous_event_name PIV CAC disabled
+  # @identity.idp.previous_event_name piv_cac_disabled
   # @param [Boolean] success
   # @param [Hash] error_details
   # @param [Integer] configuration_id
@@ -3954,13 +3998,6 @@ module AnalyticsEvents
       configuration_id:,
       **extra,
     )
-  end
-
-  # @identity.idp.previous_event_name User Registration: piv cac disabled
-  # @identity.idp.previous_event_name PIV CAC disabled
-  # Tracks when user's piv cac is disabled
-  def piv_cac_disabled
-    track_event(:piv_cac_disabled)
   end
 
   # @identity.idp.previous_event_name PIV/CAC login
@@ -4567,11 +4604,6 @@ module AnalyticsEvents
       in_account_creation_flow:,
       **extra,
     )
-  end
-
-  # Tracks when a user disabled a TOTP device
-  def totp_user_disabled
-    track_event('TOTP: User Disabled')
   end
 
   # @param [String] controller

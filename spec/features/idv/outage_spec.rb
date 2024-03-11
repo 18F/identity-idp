@@ -20,7 +20,6 @@ RSpec.feature 'IdV Outage Spec', allowed_extra_analytics: [:*] do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
-  let(:vendor_status_acuant) { :operational }
   let(:vendor_status_lexisnexis_instant_verify) { :operational }
   let(:vendor_status_lexisnexis_phone_finder) { :operational }
   let(:vendor_status_lexisnexis_trueid) { :operational }
@@ -33,7 +32,6 @@ RSpec.feature 'IdV Outage Spec', allowed_extra_analytics: [:*] do
 
   let(:vendors) do
     %w[
-      acuant
       lexisnexis_instant_verify
       lexisnexis_phone_finder
       lexisnexis_trueid
@@ -237,7 +235,7 @@ RSpec.feature 'IdV Outage Spec', allowed_extra_analytics: [:*] do
     end
   end
 
-  %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
+  %w[lexisnexis_instant_verify lexisnexis_trueid].each do |service|
     context "vendor_status_#{service} set to full_outage", js: true do
       let(:"vendor_status_#{service}") { :full_outage }
 

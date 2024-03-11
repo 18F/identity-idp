@@ -27,12 +27,8 @@ module Vot
         identity_proofing? || ialmax?
       end
 
-      def aal_level_requested
-        if aal2?
-          2
-        else
-          1
-        end
+      def expanded_component_values
+        component_values.map(&:name).join('.')
       end
     end
 

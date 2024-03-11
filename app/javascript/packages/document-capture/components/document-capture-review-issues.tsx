@@ -6,7 +6,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
-import { FeatureFlagContext } from '../context';
+import { FeatureFlagContext, SelfieCaptureContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 import {
   DocumentCaptureSubheaderOne,
@@ -39,7 +39,8 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
-  const { exitQuestionSectionEnabled, selfieCaptureEnabled } = useContext(FeatureFlagContext);
+  const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const defaultSideProps = {
     registerField,
@@ -51,7 +52,7 @@ function DocumentCaptureReviewIssues({
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
+      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
         remainingSubmitAttempts={remainingSubmitAttempts}
@@ -75,7 +76,7 @@ function DocumentCaptureReviewIssues({
         />
       )}
       <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
-      {selfieCaptureEnabled && (
+      {isSelfieCaptureEnabled && (
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />

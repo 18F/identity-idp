@@ -90,10 +90,6 @@ fr:
     phone:
       buttons:
         delete: Supprimer le numéro de teléfono
-    piv_cac_delete:
-      caution: Si vous retirez votre carte PIV/CAC, vous ne pourrez plus l’utiliser
-        pour accéder à votre compte %{app_name}.
-      confirm: Êtes-vous sûr de vouloir retirer votre carte PIV/CAC?
     piv_cac_login:
       submit: Insérez votre PIV/CAC
     piv_cac_mfa:
@@ -116,10 +112,6 @@ fr:
         automatisés. Cochez la case ci-dessous pour continuer.
     ssn:
       show: Afficher le numéro de sécurité sociale
-    totp_delete:
-      caution: Si vous supprimez votre application d’authentification, vous ne pourrez
-        plus l’utiliser pour accéder à votre compte %{app_name}.
-      confirm: Voulez-vous vraiment supprimer votre application d’authentification?
     totp_setup:
       totp_intro: Configurez une application d’authentification pour vous connecter à
         l’aide de codes de sécurité temporaires.

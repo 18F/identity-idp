@@ -244,7 +244,11 @@ module SamlAuthHelper
       @state = SecureRandom.hex
       @client_id = OidcAuthHelper::OIDC_IAL1_ISSUER
       @nonce = SecureRandom.hex
-      visit_idp_from_oidc_sp_with_ial1(state: @state, client_id: @client_id, nonce: @nonce)
+      visit_idp_from_oidc_sp_with_ial1(
+        state: @state,
+        client_id: @client_id,
+        nonce: @nonce,
+      )
     end
   end
 
