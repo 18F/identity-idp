@@ -5,7 +5,7 @@ RSpec.describe 'users/backup_code_setup/index.html.erb' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:in_account_creation_flow?).and_return(false)
+    allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
     @codes = BackupCodeGenerator.new(user).create
   end
 
@@ -61,7 +61,7 @@ RSpec.describe 'users/backup_code_setup/index.html.erb' do
   context 'during account creation' do
     before do
       allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:in_account_creation_flow?).and_return(true)
+      allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(true)
       @codes = BackupCodeGenerator.new(user).create
     end
 

@@ -15,7 +15,6 @@ module Users
     before_action :validate_internal_referrer?, only: [:index]
 
     helper_method :in_multi_mfa_selection_flow?
-    helper_method :in_account_creation_flow?
 
     def index
       generate_codes
@@ -139,7 +138,8 @@ module Users
     end
 
     def authorize_backup_code_disable
-      return if MfaPolicy.new(current_user).multiple_factors_enabled? || in_account_creation_flow?
+      return if MfaPolicy.new(current_user).multiple_factors_enabled? ||
+                in_multi_mfa_selection_flow?
       redirect_to account_two_factor_authentication_path
     end
 
