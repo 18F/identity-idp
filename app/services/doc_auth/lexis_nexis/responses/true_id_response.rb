@@ -103,7 +103,8 @@ module DocAuth
         end
 
         # @return [:success, :fail, :not_processed]
-        # When selfie result is missing, return :not_processed
+        # When selfie result is missing or not requested:
+        #   return :not_processed
         # Otherwise:
         #   return :success if selfie check result == 'Pass'
         #   return :fail
