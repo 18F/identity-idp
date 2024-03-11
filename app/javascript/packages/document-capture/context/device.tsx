@@ -20,13 +20,14 @@ async function videoTracksAvailable() {
     first.getTracks().forEach((track) => track.stop());
     return true;
   } catch (err) {
-    // Probably log that the camera resolution check failed
+    // TODO log that the camera resolution check failed
   }
 }
 
-function getConstraints(deviceId) {
+function getConstraints(deviceId, facingMode) {
   return {
     video: {
+      facingMode: { exact: facingMode },
       width: {
         ideal: 999999,
       },
@@ -52,30 +53,31 @@ function getCameraInfo(videoTrack) {
 }
 
 async function updateConstraintsAndGetInfo(videoDevice) {
-  const updatedConstraints = getConstraints(videoDevice.deviceId);
+  // See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode
+  const facingMode = 'user';
+  const updatedConstraints = getConstraints(videoDevice.deviceId, facingMode);
   try {
     const stream = await navigator.mediaDevices.getUserMedia(updatedConstraints);
     const videoTracks = stream.getVideoTracks();
     const cameras = videoTracks.map((videoTrack) => getCameraInfo(videoTrack));
-    // I get an object here, but unresolved promises everywhere else
-    return cameras;
+    console.log(cameras);
   } catch (err) {
-    // Log an error
+    // TODO Log an error
   }
 }
 
 async function getDeviceInfo() {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-  const info = videoDevices.map((videoDevice) => updateConstraintsAndGetInfo(videoDevice));
-  return info;
+  videoDevices.map((videoDevice) => updateConstraintsAndGetInfo(videoDevice));
 }
 
 function DeviceContextProvider({ isMobile, children }: DeviceContextValue) {
   const detectCameraResolution = async () => {
-    if (navigator?.mediaDevices?.getUserMedia) {
-      const available = await videoTracksAvailable();
-      const info = await getDeviceInfo();
+    if (await navigator.mediaDevices.getUserMedia()) {
+      if (await videoTracksAvailable()) {
+        getDeviceInfo();
+      }
     }
   };
 
