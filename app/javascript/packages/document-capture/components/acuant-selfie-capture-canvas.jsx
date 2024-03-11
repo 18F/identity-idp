@@ -29,7 +29,9 @@ function AcuantSelfieCaptureCanvas({
   const acuantCaptureContainerId = 'acuant-face-capture-container';
   return isReady ? (
     <div id={acuantCaptureContainerId}>
-      <p aria-live='assertive' className="document-capture-selfie-feedback">{imageCaptureText}</p>
+      <p aria-live="assertive" className="document-capture-selfie-feedback">
+        {imageCaptureText}
+      </p>
     </div>
   ) : (
     <FullScreenLoadingSpinner
