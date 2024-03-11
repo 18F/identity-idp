@@ -1,4 +1,5 @@
 require 'csv'
+require 'reporting/fraud_metrics_lg99_report'
 
 module Reports
   class FraudMetricsReport < BaseReport
@@ -57,7 +58,15 @@ module Reports
     end
 
     def reports
-      @reports ||= []
+      @reports ||= [
+        fraud_metrics_lg99_report.as_emailable_reports,
+      ]
+    end
+
+    def fraud_metrics_lg99_report
+      @fraud_metrics_lg99_report ||= Reporting::FraudMetricsLg99Report.new(
+        time_range: report_date.all_month,
+      )
     end
 
     def emails
