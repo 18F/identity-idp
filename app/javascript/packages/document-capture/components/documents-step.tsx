@@ -10,8 +10,15 @@ import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import TipList from './tip-list';
-import { DeviceContext, FeatureFlagContext, SelfieCaptureContext, UploadContext } from '../context';
+import {
+  DeviceContext,
+  FeatureFlagContext,
+  SelfieCaptureContext,
+  UploadContext,
+  AnalyticsContext,
+} from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
+import { logDeviceResolution } from '../services/device-resolution';
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
@@ -104,15 +111,14 @@ function DocumentsStep({
   registerField = () => undefined,
 }: FormStepComponentProps<DocumentsStepValue>) {
   const { t } = useI18n();
-  const { isMobile, detectCameraResolution } = useContext(DeviceContext);
+  const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { trackEvent } = useContext(AnalyticsContext);
 
-  useEffect(() => {
-    detectCameraResolution();
-  });
+  logDeviceResolution(trackEvent);
 
   const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')

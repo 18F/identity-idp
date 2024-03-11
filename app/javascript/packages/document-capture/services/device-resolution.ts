@@ -49,14 +49,14 @@ async function updateConstraintsAndGetInfo(videoDevice, facingMode, trackEvent) 
       facingMode,
       cameras,
     };
-    trackEvent('IdV: camera resolution logged', logInfo);
     console.log(logInfo);
+    trackEvent('IdV: camera resolution logged', logInfo);
   } catch (err) {
     // TODO Log an error
   }
 }
 
-async function getDeviceInfo(trackEvent) {
+async function logDeviceResolution(trackEvent) {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
   videoDevices.map((videoDevice) => {
@@ -64,12 +64,6 @@ async function getDeviceInfo(trackEvent) {
     updateConstraintsAndGetInfo(videoDevice, 'environment', trackEvent);
     return true;
   });
-}
-
-function logDeviceResolution({ isMobile, children, trackEvent}) {
-  //if (await videoTracksAvailable()) {
-  getDeviceInfo(trackEvent);
-  //}
 }
 
 export { logDeviceResolution };

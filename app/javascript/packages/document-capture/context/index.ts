@@ -1,4 +1,4 @@
-export { default as DeviceContext, Provider as DeviceContextProvider } from './device';
+export { default as DeviceContext } from './device';
 export { default as AcuantContext, Provider as AcuantContextProvider } from './acuant';
 export {
   default as MarketingSiteContext,
