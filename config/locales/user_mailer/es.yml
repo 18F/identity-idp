@@ -22,8 +22,8 @@ es:
       button: Sí, continúa eliminando
       cancel_link_text: por favor cancele
       help_html: Si no desea eliminar su cuenta, %{cancel_account_reset_html}.
-      intro_html: Su período de espera de %{waiting_period} ha finalizado. Complete el
-        paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de
+      intro_html: Su período de espera de %{waiting_period} finalizó. Complete el paso
+        2 del proceso.<br><br>Si no ha podido localizar sus métodos de
         autenticación, seleccione “confirmar eliminación” para eliminar su
         cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los
         sitios web gubernamentales participantes que utilizan %{app_name}, puede

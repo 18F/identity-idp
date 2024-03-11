@@ -22,7 +22,7 @@ fr:
       cancel_link_text: veuillez annuler
       help_html: Si vous ne souhaitez pas supprimer votre compte,
         %{cancel_account_reset_html}.
-      intro_html: Votre période d’attente de %{waiting_period} est terminée. Veuillez
+      intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez
         terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à
         localiser vos méthodes d’authentification, sélectionnez “confirmer la
         suppression” pour supprimer votre compte %{app_name}.<br><br> À
