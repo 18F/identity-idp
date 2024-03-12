@@ -11,12 +11,12 @@ describe('DocumentSideAcuantCapture', () => {
   context('when selfie is _not_ enabled', () => {
     it('_does_ display a photo upload button', () => {
       const { queryAllByText } = render(
-        <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: false }}>
-          <DeviceContext.Provider value={{ isMobile: true }}>
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: false }}>
             <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
             <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
-          </DeviceContext.Provider>
-        </SelfieCaptureContext.Provider>,
+          </SelfieCaptureContext.Provider>
+        </DeviceContext.Provider>,
       );
 
       const takeOrUploadPictureText = queryAllByText(
