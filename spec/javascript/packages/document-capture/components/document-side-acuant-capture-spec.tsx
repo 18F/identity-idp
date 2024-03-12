@@ -1,18 +1,24 @@
 import { DeviceContext, SelfieCaptureContext } from '@18f/identity-document-capture';
 import DocumentSideAcuantCapture from '@18f/identity-document-capture/components/document-side-acuant-capture';
+import { expect } from 'chai';
 import { render } from '../../../support/document-capture';
 
 describe('DocumentSideAcuantCapture', () => {
   const DEFAULT_PROPS = {
     errors: [],
     registerField: () => undefined,
+    value: '',
+    onChange: () => undefined,
+    onError: () => undefined,
   };
 
   context('when selfie is _not_ enabled', () => {
     it('_does_ display a photo upload button', () => {
       const { queryAllByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: false }}>
+          <SelfieCaptureContext.Provider
+            value={{ isSelfieCaptureEnabled: false, isSelfieDesktopMode: false }}
+          >
             <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
             <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
           </SelfieCaptureContext.Provider>
@@ -29,13 +35,15 @@ describe('DocumentSideAcuantCapture', () => {
   context('when selfie _is_ enabled', () => {
     it('does _not_ display a photo upload button', () => {
       const { queryAllByText } = render(
-        <SelfieCaptureContext.Provider value={{ isSelfieCaptureEnabled: true }}>
-          <DeviceContext.Provider value={{ isMobile: true }}>
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <SelfieCaptureContext.Provider
+            value={{ isSelfieCaptureEnabled: true, isSelfieDesktopMode: false }}
+          >
             <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
             <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
             <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="selfie" />
-          </DeviceContext.Provider>
-        </SelfieCaptureContext.Provider>,
+          </SelfieCaptureContext.Provider>
+        </DeviceContext.Provider>,
       );
 
       const takePictureText = queryAllByText('doc_auth.buttons.take_picture');

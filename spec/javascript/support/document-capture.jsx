@@ -1,5 +1,6 @@
 import { render as baseRender, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
+// @ts-ignore
 import { UploadContextProvider } from '@18f/identity-document-capture';
 
 /** @typedef {import('@testing-library/react').RenderOptions} BaseRenderOptions */
@@ -44,8 +45,12 @@ export function render(element, options = {}) {
   return baseRender(element, {
     ...baseRenderOptions,
     wrapper: ({ children }) => (
-      <UploadContextProvider upload={upload} isMockClient={isMockClient}>
-        {baseWrapper({ children })}
+      <
+// @ts-ignore
+      UploadContextProvider upload={upload} isMockClient={isMockClient}>
+        {
+// @ts-ignore
+        baseWrapper({ children })}
       </UploadContextProvider>
     ),
   });
@@ -57,10 +62,15 @@ export function useAcuant() {
     // resetting the global variables, since otherwise the component's effect unsubscribe will
     // attempt to reference globals that no longer exist.
     cleanup();
+    // @ts-ignore
     delete window.AcuantJavascriptWebSdk;
+    // @ts-ignore
     delete window.AcuantCamera;
+    // @ts-ignore
     delete window.AcuantCameraUI;
+    // @ts-ignore
     delete window.AcuantPassiveLiveness;
+    // @ts-ignore
     delete window.loadAcuantSdk;
   });
 
@@ -75,6 +85,7 @@ export function useAcuant() {
       triggerCapture = sinon.stub(),
     } = {}) {
       window.AcuantJavascriptWebSdk = {
+        // @ts-ignore
         initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
           isSuccess ? onSuccess() : onFail(401, 'Server returned a 401 (missing credentials).'),
         startWorkers: sinon.stub().callsArg(0),
@@ -82,13 +93,16 @@ export function useAcuant() {
         REPEAT_FAIL_CODE: 'repeat-fail-code',
         SEQUENCE_BREAK_CODE: 'sequence-break-code',
       };
+      // @ts-ignore
       window.AcuantCamera = { isCameraSupported, triggerCapture };
       window.AcuantCameraUI = {
         start: sinon.stub().callsFake((...args) => {
           const camera = document.getElementById('acuant-camera');
           const canvas = document.createElement('canvas');
           canvas.id = 'acuant-ui-canvas';
+          // @ts-ignore
           camera.appendChild(canvas);
+          // @ts-ignore
           camera.dispatchEvent(new window.CustomEvent('acuantcameracreated'));
           start(...args);
         }),
@@ -97,7 +111,9 @@ export function useAcuant() {
       window.AcuantPassiveLiveness = { start: selfieStart, end: selfieEnd };
       window.loadAcuantSdk = () => {};
       const sdkScript = document.querySelector('[data-acuant-sdk]');
+      // @ts-ignore
       sdkScript.onload();
+      // @ts-ignore
       sdkScript.onload = null;
     },
   };
