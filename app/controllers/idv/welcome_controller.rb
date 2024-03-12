@@ -12,7 +12,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('welcome', :view, true)
 
-      @presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+      @presenter = Idv::WelcomePresenter.new(decorated_sp_session, current_user)
     end
 
     def update
