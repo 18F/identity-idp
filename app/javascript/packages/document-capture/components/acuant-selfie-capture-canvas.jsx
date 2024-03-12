@@ -23,9 +23,8 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText }) {
   return (
     <>
       {!isReady && <LoadingSpinner />}
-      <div id={acuantCaptureContainerId}>
-        <p className="document-capture-selfie-feedback">{imageCaptureText}</p>
-      </div>
+      <div id={acuantCaptureContainerId} />
+      <p className="document-capture-selfie-feedback">{imageCaptureText}</p>
     </>
   );
 }
