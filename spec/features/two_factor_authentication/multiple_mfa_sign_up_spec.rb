@@ -65,7 +65,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(page).to have_current_path backup_code_setup_path
 
-      click_link t('two_factor_authentication.choose_another_option')
+      click_button t('two_factor_authentication.choose_another_option')
 
       expect(page).to have_current_path(authentication_methods_setup_path)
 
@@ -255,8 +255,8 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       expect(page).to have_current_path account_path
     end
 
-    it 'returns to setup mfa page when user clicks Cancel' do
-      click_on(t('links.cancel'))
+    it 'returns to setup mfa page when user clicks Choose another option' do
+      click_on(t('two_factor_authentication.choose_another_option'))
       expect(current_path).to eq authentication_methods_setup_path
       expect(mfa.backup_code_configurations).to be_empty
     end

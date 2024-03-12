@@ -61,7 +61,11 @@ module Users
       PushNotification::HttpPush.deliver(event)
       flash[:success] = t('notices.backup_codes_deleted')
       revoke_remember_device(current_user)
-      redirect_to account_two_factor_authentication_path
+      if in_multi_mfa_selection_flow?
+        redirect_to authentication_methods_setup_path
+      else
+        redirect_to account_two_factor_authentication_path
+      end
     end
 
     def reminder
