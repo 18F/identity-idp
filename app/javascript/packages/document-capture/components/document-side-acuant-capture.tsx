@@ -44,7 +44,8 @@ function DocumentSideAcuantCapture({
 }: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
-  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { isSelfieCaptureEnabled, isSelfieDesktopMode } = useContext(SelfieCaptureContext);
+  const isUploadAllowed = isSelfieDesktopMode || !isSelfieCaptureEnabled;
 
   return (
     <AcuantCapture
@@ -77,7 +78,7 @@ function DocumentSideAcuantCapture({
       errorMessage={error ? error.message : undefined}
       name={side}
       className={className}
-      allowUpload={!isSelfieCaptureEnabled}
+      allowUpload={isUploadAllowed}
     />
   );
 }
