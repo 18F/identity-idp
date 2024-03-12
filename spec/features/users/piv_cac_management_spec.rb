@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
-  def find_form(page, attributes)
-    page.all('form').detect do |form|
-      attributes.all? { |key, value| form[key] == value }
-    end
-  end
-
   context 'with no piv/cac associated yet' do
     let(:uuid) { SecureRandom.uuid }
     let(:user) { create(:user, :fully_registered, :with_phone, with: { phone: '+1 202-555-1212' }) }
@@ -139,15 +133,6 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
         ),
       )
     end
-
-    scenario "doesn't allow unassociation of a piv/cac" do
-      stub_piv_cac_service
-
-      sign_in_and_2fa_user(user)
-      visit account_path
-      form = find_form(page, action: disable_piv_cac_url)
-      expect(form).to be_nil
-    end
   end
 
   context 'with a piv/cac associated' do
@@ -200,12 +185,22 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
   context 'with PIV/CAC as the only MFA method' do
     let(:user) { create(:user, :with_piv_or_cac) }
 
-    scenario 'disallows disassociation PIV/CAC' do
+    scenario 'disallows disassociation PIV/CAC', :js, allow_browser_log: true do
       sign_in_and_2fa_user(user)
       visit account_path
 
-      form = find_form(page, action: disable_piv_cac_url)
-      expect(form).to be_nil
+      click_button(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.piv_cac.manage_accessible_label'),
+          user.piv_cac_configurations.first.name,
+        ),
+      )
+      accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
+      expect(page).to have_content(
+        t('errors.manage_authenticator.remove_only_method_error'),
+        wait: 5,
+      )
 
       user.reload
       expect(user.piv_cac_configurations.first.x509_dn_uuid).to_not be_nil

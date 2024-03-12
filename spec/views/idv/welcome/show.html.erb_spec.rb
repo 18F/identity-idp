@@ -1,25 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/welcome/show.html.erb' do
-  let(:user_fully_authenticated) { true }
-  let(:sp_name) { nil }
+  include Devise::Test::ControllerHelpers
+
   let(:selfie_required) { false }
+  let(:selfie_capture_enabled) { false }
   let(:user) { create(:user) }
+  let(:sp_session) { {} }
 
   before do
-    @decorated_sp_session = instance_double(ServiceProviderSession)
-    allow(@decorated_sp_session).to receive(:sp_name).and_return(sp_name)
-    allow(@decorated_sp_session).to receive(:selfie_required?).and_return(selfie_required)
-    @sp_name = @decorated_sp_session.sp_name || APP_NAME
-    @title = t('doc_auth.headings.welcome', sp_name: @sp_name)
-    allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
-    allow(view).to receive(:user_fully_authenticated?).and_return(user_fully_authenticated)
-    allow(view).to receive(:user_signing_up?).and_return(false)
-    allow(view).to receive(:url_for).and_wrap_original do |method, *args, &block|
-      method.call(*args, &block)
-    rescue
-      ''
-    end
+    sp = build(:service_provider)
+    decorated_sp_session = ServiceProviderSession.new(
+      sp: sp,
+      view_context: nil,
+      sp_session: sp_session,
+      service_provider_request: nil,
+    )
+    presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+    assign(:presenter, presenter)
+
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(selfie_capture_enabled)
   end
 
   context 'in doc auth with an authenticated user' do
@@ -33,7 +34,9 @@ RSpec.describe 'idv/welcome/show.html.erb' do
     end
 
     it 'renders the welcome template' do
-      expect(rendered).to have_content(@title)
+      expect(rendered).to have_content(
+        t('doc_auth.headings.welcome', sp_name: 'Test Service Provider'),
+      )
       expect(rendered).to have_content(t('doc_auth.instructions.getting_started'))
       expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
       expect(rendered).to have_link(
@@ -49,7 +52,11 @@ RSpec.describe 'idv/welcome/show.html.erb' do
     end
 
     context 'when the SP requests IAL2 verification' do
-      let(:selfie_required) { true }
+      let(:sp_session) do
+        { biometric_comparison_required: true }
+      end
+
+      let(:selfie_capture_enabled) { true }
 
       it 'renders a modified welcome template' do
         expect(rendered).to have_content(t('doc_auth.instructions.bullet1_with_selfie'))
