@@ -7,8 +7,9 @@ module Idv
 
     attr_accessor :url_options
 
-    def initialize(decorated_sp_session)
+    def initialize(decorated_sp_session, current_user)
       @decorated_sp_session = decorated_sp_session
+      @current_user = current_user
       @url_options = {}
     end
 
@@ -25,7 +26,7 @@ module Idv
     end
 
     def explanation_text(help_link)
-      if selfie_required?
+      if stepping_up?
         t(
           'doc_auth.info.stepping_up_html',
           sp_name:,
@@ -73,10 +74,15 @@ module Idv
 
     private
 
-    attr_accessor :decorated_sp_session
+    attr_accessor :decorated_sp_session, :current_user
 
     def bullet_point(bullet, text)
       OpenStruct.new(bullet: bullet, text: text)
+    end
+
+    def stepping_up?
+      (current_user&.identity_verified? || current_user&.pending_profile?) &&
+        selfie_required?
     end
   end
 end
