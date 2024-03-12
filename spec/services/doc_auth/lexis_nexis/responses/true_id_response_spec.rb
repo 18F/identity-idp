@@ -9,6 +9,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_liveness_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_liveness)
   end
+  let(:doc_auth_success_with_face_match_fail) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
+  end
   let(:failure_response_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
@@ -50,7 +53,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
-  let(:liveness_enabled) { false }
+  let(:liveness_checking_enabled) { false }
   let(:workflow) { 'default_workflow' }
   let(:request_context) do
     {
@@ -59,13 +62,53 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   context 'when the response is a success' do
     let(:response) do
-      described_class.new(success_response, config, liveness_enabled, request_context)
+      described_class.new(success_response, config, liveness_checking_enabled, request_context)
     end
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
       expect(response.to_h[:vendor]).to eq('TrueID')
     end
+
+    context 'when a portrait match is returned' do
+      let(:liveness_checking_enabled) { true }
+      context 'when selfie status is failed' do
+        let(:response) do
+          described_class.new(
+            doc_auth_success_with_face_match_fail, config,
+            liveness_checking_enabled, request_context
+          )
+        end
+        it 'is a failed result' do
+          expect(response.selfie_status).to eq(:fail)
+          expect(response.success?).to eq(false)
+          expect(response.to_h[:vendor]).to eq('TrueID')
+        end
+
+        context 'when a liveness check was not requested' do
+          let(:liveness_checking_enabled) { false }
+          it 'is a successful result' do
+            expect(response.selfie_status).to eq(:not_processed)
+            expect(response.success?).to eq(true)
+            expect(response.to_h[:vendor]).to eq('TrueID')
+          end
+        end
+      end
+      context 'when selfie status passes' do
+        let(:response) do
+          described_class.new(
+            success_with_liveness_response, config, liveness_checking_enabled,
+            request_context
+          )
+        end
+        it 'is a successful result' do
+          expect(response.selfie_status).to eq(:success)
+          expect(response.success?).to eq(true)
+          expect(response.to_h[:vendor]).to eq('TrueID')
+        end
+      end
+    end
+
     it 'has no error messages' do
       expect(response.error_messages).to be_empty
     end
@@ -325,84 +368,92 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:hints]).to eq(true)
     end
+    context 'when liveness enabled' do
+      let(:liveness_checking_enabled) { true }
+      it 'returns Failed for visible_pattern when it gets passed and failed value ' do
+        output = described_class.new(
+          failure_response_no_liveness, config,
+          liveness_checking_enabled
+        ).to_h
+        expect(output.to_h[:log_alert_results]).
+          to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
+      end
 
-    it 'returns Failed for visible_pattern when it gets passed and failed value ' do
-      output = described_class.new(failure_response_no_liveness, config).to_h
-      expect(output.to_h[:log_alert_results]).
-        to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
-    end
+      it 'returns Failed for liveness failure' do
+        response = described_class.new(
+          failure_response_with_liveness, config,
+          liveness_checking_enabled
+        )
+        output = response.to_h
+        expect(output[:success]).to eq(false)
+        expect(response.doc_auth_success?).to eq(false)
+        expect(response.selfie_status).to eq(:fail)
+      end
 
-    it 'returns Failed for liveness failure' do
-      response = described_class.new(failure_response_with_liveness, config)
-      output = response.to_h
-      expect(output[:success]).to eq(false)
-      expect(response.doc_auth_success?).to eq(false)
-      expect(response.selfie_status).to eq(:fail)
-    end
+      it 'produces expected hash output' do
+        output = described_class.new(
+          failure_response_with_all_failures, config, liveness_checking_enabled,
+          request_context
+        ).to_h
 
-    it 'produces expected hash output' do
-      output = described_class.new(
-        failure_response_with_all_failures, config, liveness_enabled,
-        request_context
-      ).to_h
-
-      expect(output).to match(
-        success: false,
-        exception: nil,
-        errors: {
-          general: [DocAuth::Errors::GENERAL_ERROR],
-          front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
-          back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
-          hints: true,
-        },
-        attention_with_barcode: false,
-        doc_type_supported: true,
-        conversation_id: a_kind_of(String),
-        request_id: a_kind_of(String),
-        reference: a_kind_of(String),
-        vendor: 'TrueID',
-        billed: true,
-        log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Failed' }),
-        transaction_status: 'failed',
-        transaction_reason_code: 'failed_true_id',
-        product_status: 'pass',
-        decision_product_status: 'fail',
-        doc_auth_result: 'Failed',
-        processed_alerts: a_hash_including(:passed, :failed),
-        address_line2_present: false,
-        alert_failure_count: a_kind_of(Numeric),
-        portrait_match_results: {
-          'FaceMatchResult' => 'Fail',
-          'FaceMatchScore' => '0',
-          'FaceStatusCode' => '0',
-          'FaceErrorMessage' => 'Liveness: PoorQuality',
-        },
-        image_metrics: a_hash_including(:front, :back),
-        'ClassificationMode' => 'Automatic',
-        'DocAuthResult' => 'Failed',
-        'DocClass' => 'DriversLicense',
-        'DocClassCode' => 'DriversLicense',
-        'DocClassName' => 'Drivers License',
-        'DocumentName' => 'Connecticut (CT) Driver License',
-        'DocIssuerCode' => 'CT',
-        'DocIssuerType' => 'StateProvince',
-        'DocIssuerName' => 'Connecticut',
-        'DocIssue' => '2009',
-        'DocIssueType' => 'Driver License',
-        'DocIsGeneric' => 'false',
-        'OrientationChanged' => 'false',
-        'PresentationChanged' => 'false',
-        classification_info: {
-          Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
-          Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
-        },
-        doc_auth_success: false,
-        selfie_status: :fail,
-        selfie_live: true,
-        selfie_quality_good: false,
-        liveness_enabled: false,
-        workflow: anything,
-      )
+        expect(output).to match(
+          success: false,
+          exception: nil,
+          errors: {
+            general: [DocAuth::Errors::GENERAL_ERROR],
+            front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+            back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+            hints: true,
+          },
+          attention_with_barcode: false,
+          doc_type_supported: true,
+          conversation_id: a_kind_of(String),
+          request_id: a_kind_of(String),
+          reference: a_kind_of(String),
+          vendor: 'TrueID',
+          billed: true,
+          log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Failed' }),
+          transaction_status: 'failed',
+          transaction_reason_code: 'failed_true_id',
+          product_status: 'pass',
+          decision_product_status: 'fail',
+          doc_auth_result: 'Failed',
+          processed_alerts: a_hash_including(:passed, :failed),
+          address_line2_present: false,
+          alert_failure_count: a_kind_of(Numeric),
+          portrait_match_results: {
+            'FaceMatchResult' => 'Fail',
+            'FaceMatchScore' => '0',
+            'FaceStatusCode' => '0',
+            'FaceErrorMessage' => 'Liveness: PoorQuality',
+          },
+          image_metrics: a_hash_including(:front, :back),
+          'ClassificationMode' => 'Automatic',
+          'DocAuthResult' => 'Failed',
+          'DocClass' => 'DriversLicense',
+          'DocClassCode' => 'DriversLicense',
+          'DocClassName' => 'Drivers License',
+          'DocumentName' => 'Connecticut (CT) Driver License',
+          'DocIssuerCode' => 'CT',
+          'DocIssuerType' => 'StateProvince',
+          'DocIssuerName' => 'Connecticut',
+          'DocIssue' => '2009',
+          'DocIssueType' => 'Driver License',
+          'DocIsGeneric' => 'false',
+          'OrientationChanged' => 'false',
+          'PresentationChanged' => 'false',
+          classification_info: {
+            Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
+            Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
+          },
+          doc_auth_success: false,
+          selfie_status: :fail,
+          selfie_live: true,
+          selfie_quality_good: false,
+          liveness_enabled: true,
+          workflow: anything,
+        )
+      end
     end
     it 'produces appropriate errors with document tampering' do
       output = described_class.new(failure_response_tampering, config).to_h
@@ -440,7 +491,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'produces reasonable output for a TrueID failure without details' do
       output = described_class.new(
-        failure_response_empty, config, liveness_enabled,
+        failure_response_empty, config, liveness_checking_enabled,
         request_context
       ).to_h
 
@@ -457,7 +508,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'produces reasonable output for a malformed TrueID response' do
       allow(NewRelic::Agent).to receive(:notice_error)
       output = described_class.new(
-        failure_response_malformed, config, liveness_enabled,
+        failure_response_malformed, config, liveness_checking_enabled,
         request_context
       ).to_h
 

@@ -269,6 +269,8 @@ es:
         too_many_faces: DEMASIADOS ROSTROS
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
+      stepping_up_html: 'Verifica tu identidad de nuevo y tómate una foto para acceder
+        a este servicio. %{link_html}'
       tag: Recomendado
       upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de
         identidad desde esta computadora.
