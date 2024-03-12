@@ -52,6 +52,7 @@ describe('document-capture/components/review-issues-step', () => {
       heading: 'We couldn’t verify your ID',
       subheading: '',
       error_message_displayed: 'test error',
+      liveness_checking_required: false,
     });
 
     const button = getByRole('button');

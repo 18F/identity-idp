@@ -4,6 +4,7 @@ module Api
       class PivCacController < ApplicationController
         include CsrfTokenConcern
         include ReauthenticationRequiredConcern
+        include PivCacConcern
 
         before_action :render_unauthorized, unless: :recently_authenticated_2fa?
 
@@ -38,6 +39,7 @@ module Api
             create_user_event(:piv_cac_disabled)
             revoke_remember_device(current_user)
             deliver_push_notification
+            clear_piv_cac_information
             render json: { success: true }
           else
             render json: { success: false, error: result.first_error_message }, status: :bad_request

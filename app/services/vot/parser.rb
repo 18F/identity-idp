@@ -26,6 +26,10 @@ module Vot
       def identity_proofing_or_ialmax?
         identity_proofing? || ialmax?
       end
+
+      def expanded_component_values
+        component_values.map(&:name).join('.')
+      end
     end
 
     attr_reader :vector_of_trust, :acr_values

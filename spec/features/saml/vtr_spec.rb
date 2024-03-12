@@ -32,8 +32,12 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect_successful_saml_redirect
 
     xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-    email = xmldoc.attribute_node_for('email').children.map(&:text).join
+    expect(xmldoc.assertion_statement_node.content).to eq('C1')
+    expect(xmldoc.attribute_node_for('vot').content).to eq('C1')
+    expect(xmldoc.attribute_node_for('ial')).to be_nil
+    expect(xmldoc.attribute_node_for('aal')).to be_nil
 
+    email = xmldoc.attribute_node_for('email').content
     expect(user.email_addresses.first.email).to eq(email)
   end
 
@@ -147,6 +151,44 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     click_agree_and_continue
 
     expect_successful_saml_redirect
+  end
+
+  scenario 'sign in with VTR request for idv includes proofed attributes' do
+    pii = {
+      first_name: 'Jonathan',
+      ssn: '900-66-6666',
+    }
+    user = create(:user, :fully_registered)
+    create(:profile, :active, user: user, pii: pii)
+
+    visit_saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          'C1.C2.P1',
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name",
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}ssn",
+        ],
+      },
+    )
+    sign_in_live_with_2fa(user)
+    click_submit_default
+    click_agree_and_continue
+    click_submit_default
+
+    expect_successful_saml_redirect
+
+    xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+    expect(xmldoc.assertion_statement_node.content).to eq('C1.C2.P1')
+    expect(xmldoc.attribute_node_for('vot').content).to eq('C1.C2.P1')
+    expect(xmldoc.attribute_node_for('ial')).to be_nil
+    expect(xmldoc.attribute_node_for('aal')).to be_nil
+
+    first_name = xmldoc.attribute_node_for('first_name').content
+    ssn = xmldoc.attribute_node_for('ssn').content
+
+    expect(first_name).to eq(pii[:first_name])
+    expect(ssn).to eq(pii[:ssn])
   end
 
   scenario 'sign in with VTR request for idv with biometric requires idv with biometric', :js do

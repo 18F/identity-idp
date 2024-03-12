@@ -22,6 +22,7 @@ import AcuantCaptureCanvas from './acuant-capture-canvas';
 import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
+import SelfieCaptureContext from '../context/selfie-capture';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import FileInput from './file-input';
 import UploadContext from '../context/upload';
@@ -320,6 +321,7 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const fullScreenRef = useRef<FullScreenRefHandle>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
@@ -382,6 +384,7 @@ function AcuantCapture(
       ...payload,
       captureAttempts,
       acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
+      liveness_checking_required: isSelfieCaptureEnabled,
     };
     incrementCaptureAttempts();
     return enhancedPayload;
@@ -424,7 +427,11 @@ function AcuantCapture(
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          trackEvent(`IdV: ${name} image clicked`, { source, ...metadata });
+          trackEvent(`IdV: ${name} image clicked`, {
+            source,
+            ...metadata,
+            liveness_checking_required: isSelfieCaptureEnabled,
+          });
         }
 
         return fn(...args);
@@ -591,6 +598,7 @@ function AcuantCapture(
       size: getDecodedBase64ByteSize(nextCapture.image.data),
       fingerprint: null,
       failedImageResubmission: false,
+      liveness_checking_required: false,
     });
 
     trackEvent(
@@ -655,6 +663,7 @@ function AcuantCapture(
       field: name,
       acuantCaptureMode,
       error: getNormalizedAcuantCaptureFailureMessage(error, code),
+      liveness_checking_required: isSelfieCaptureEnabled,
     });
   }
 

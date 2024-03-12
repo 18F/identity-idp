@@ -170,6 +170,27 @@ RSpec::Matchers.define :have_unique_form_landmark_labels do
   end
 end
 
+RSpec::Matchers.define :tag_decorative_svgs_with_role do
+  def decorative_svgs(page)
+    page.all(:css, 'img[alt=""][src$=".svg" i]')
+  end
+
+  match do |page|
+    expect(decorative_svgs(page)).to all satisfy { |img| img[:role] == 'img' }
+  end
+
+  failure_message do |page|
+    img_tags = decorative_svgs(page).reject { |img| img[:role] == 'img' }.
+      map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }.
+      join("\n")
+
+    <<~STR
+      Expect all decorative SVGs to have role="img", but found ones without:
+      #{img_tags}
+    STR
+  end
+end
+
 class AccessibleName
   attr_reader :page
 
@@ -289,10 +310,17 @@ class AccessibleName
 end
 
 def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
-  expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+  expect(page).to be_axe_clean.according_to(
+    :section508, :"best-practice",
+    :wcag21aa
+  ).
+    # Axe flags redundant img role on img elements, but is necessary for a Safari bug
+    # See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#identifying_svg_as_an_image
+    excluding('img[alt=""][src$=".svg" i]')
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
   expect(page).to have_valid_markup if validate_markup
+  expect(page).to tag_decorative_svgs_with_role
 end
 
 def activate_skip_link
