@@ -459,7 +459,7 @@ trigger_devops:
       ]
       EOF
       )
-    - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+    - git clone -b sshelton/add-limits --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - >-
       helm upgrade --install --namespace review-apps
       --debug
