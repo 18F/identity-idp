@@ -8,6 +8,7 @@ require:
   - rubocop-rspec
   - rubocop-performance
   - ./lib/linters/analytics_event_name_linter.rb
+  - ./lib/linters/enhanced_idv_events_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
   - ./lib/linters/image_size_linter.rb
   - ./lib/linters/mail_later_linter.rb
