@@ -65,19 +65,11 @@ RSpec.describe 'users/backup_code_setup/index.html.erb' do
       @codes = BackupCodeGenerator.new(user).create
     end
 
-    it 'shows a link to add another authentication method' do
-      render
-
-      expect(rendered).to have_link t(
-        'two_factor_authentication.choose_another_option',
-      )
-    end
-
-    it 'shows a link to cancel account creation' do
+    it 'shows a link to cancel backup code creation and choose another mfa option' do
       render
 
       expect(rendered).to have_button t(
-        'links.cancel',
+        'two_factor_authentication.choose_another_option',
       )
     end
   end

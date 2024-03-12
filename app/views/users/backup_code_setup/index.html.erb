@@ -60,11 +60,10 @@
 
 <% if in_multi_mfa_selection_flow? %>
   <%= render PageFooterComponent.new do %>
-    <%= link_to t('two_factor_authentication.choose_another_option'), authentication_methods_setup_path %>
 
     <%= form_tag(backup_code_delete_path, method: :delete, class: 'margin-top-5') do %>
 
-      <%= button_tag t('links.cancel'), type: 'submit', class: 'usa-button usa-button--unstyled' %>
+      <%= button_tag t('two_factor_authentication.choose_another_option'), type: 'submit', class: 'usa-button usa-button--unstyled' %>
 
     <% end %>
   <% end %>
