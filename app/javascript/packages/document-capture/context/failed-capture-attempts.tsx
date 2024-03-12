@@ -149,9 +149,7 @@ function FailedCaptureAttemptsContextProvider({
     failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
     failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
 
-  const forceNativeCamera = isSelfieCaptureEnabled
-    ? false
-    : hasExhaustedAttempts;
+  const forceNativeCamera = isSelfieCaptureEnabled ? false : hasExhaustedAttempts;
 
   return (
     <FailedCaptureAttemptsContext.Provider
