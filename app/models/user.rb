@@ -99,14 +99,6 @@ class User < ApplicationRecord
     @active_profile = profiles.verified.find(&:active?)
   end
 
-  def active_legacy_profile
-    active_profile  if active_profile&.idv_level != :unsupervised_with_selfie
-  end
-
-  def active_legacy_profile?
-    active_legacy_profile.present?
-  end
-
   def pending_profile?
     pending_profile.present?
   end
