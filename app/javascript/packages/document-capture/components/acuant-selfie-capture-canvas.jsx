@@ -23,7 +23,9 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText }) {
     <>
       {!isReady && <LoadingSpinner />}
       <div id={acuantCaptureContainerId} />
-      <p aria-live="assertive" className="document-capture-selfie-feedback">{imageCaptureText}</p>
+      <p aria-live="assertive" className="document-capture-selfie-feedback">
+        {imageCaptureText}
+      </p>
     </>
   );
 }
