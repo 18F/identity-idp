@@ -58,7 +58,6 @@ function AcuantCaptureCanvas() {
           width="144"
           height="144"
           className="acuant-capture-canvas__spinner"
-          role="img"
         />
       )}
       <h2 className="usa-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_label')}</h2>
