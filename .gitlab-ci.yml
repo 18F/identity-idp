@@ -391,7 +391,7 @@ trigger_devops:
             prune: true
         source:
           repoURL: git@gitlab.login.gov:lg-public/identity-idp-helm-chart.git
-          targetRevision: argocd-test
+          targetRevision: init-containers
           path: .
           helm:
             parameters:
@@ -418,11 +418,11 @@ trigger_devops:
             - name: "idp.enabled"
               value: "true"
             - name: "pivcac.enabled"
-              value: "true"
+              value: "false"
             - name: "worker.enabled"
-              value: "true"
+              value: "false"
             - name: "dashboard.enabled"
-              value: "true"
+              value: "false"
             valueFiles:
             - values-main.yaml
             values: |
