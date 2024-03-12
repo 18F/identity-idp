@@ -418,11 +418,11 @@ trigger_devops:
             - name: "idp.enabled"
               value: "true"
             - name: "pivcac.enabled"
-              value: "false"
+              value: "true"
             - name: "worker.enabled"
-              value: "false"
+              value: "true"
             - name: "dashboard.enabled"
-              value: "false"
+              value: "true"
             valueFiles:
             - values-main.yaml
             values: |
