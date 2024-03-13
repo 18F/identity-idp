@@ -8,12 +8,12 @@ interface SelfieCaptureProps {
   /**
    * Specify whether to allow uploads for selfie when in test mode.
    */
-  isSelfieDesktopMode: boolean;
+  isSelfieDesktopTestMode: boolean;
 }
 
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
-  isSelfieDesktopMode: false,
+  isSelfieDesktopTestMode: false,
 });
 
 SelfieCaptureContext.displayName = 'SelfieCaptureContext';

@@ -184,7 +184,7 @@ const App = composeComponents(
     {
       value: {
         isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
-        isSelfieDesktopMode: String(docAuthSelfieDesktopTestMode) === 'true',
+        isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
       },
     },
   ],
