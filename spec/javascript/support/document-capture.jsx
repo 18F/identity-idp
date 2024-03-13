@@ -45,12 +45,12 @@ export function render(element, options = {}) {
   return baseRender(element, {
     ...baseRenderOptions,
     wrapper: ({ children }) => (
-      <
-// @ts-ignore
-      UploadContextProvider upload={upload} isMockClient={isMockClient}>
+      // @ts-ignore
+      <UploadContextProvider upload={upload} isMockClient={isMockClient}>
         {
-// @ts-ignore
-        baseWrapper({ children })}
+          // @ts-ignore
+          baseWrapper({ children })
+        }
       </UploadContextProvider>
     ),
   });
