@@ -171,7 +171,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
       complete_state_id_step(user)
 
       # ssn page
-      complete_ssn_step(user, 'Review')
+      complete_ssn_step(user, tmx_status)
       complete_verify_step(user)
       complete_phone_step(user)
       complete_enter_password_step(user)
@@ -188,15 +188,6 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
       profile.reload
       expect(profile.fraud_review_pending_at).to be(nil)
       expect(profile.fraud_rejection_at).to be_truthy
-    end
-
-    it 'handles when users pass IPP and pass TMX review', allow_browser_log: true  do
-      sign_in_and_2fa_user
-      begin_in_person_proofing
-      complete_all_in_person_proofing_steps(user, tmx_status)
-      complete_phone_step(user)
-      complete_enter_password_step(user)
-      acknowledge_and_confirm_personal_key
     end
 
     context 'User passes IPP and passes TMX Review' do
@@ -219,6 +210,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         expect(page).to have_current_path(idv_please_call_path)
       end
 
+      # this is not getting updated - runtime error trying to update with reason in_person_verification_pending
       it 'shows the user the successful verification screen after passing TMX review',
          allow_browser_log: true do
         deactivate_profile_update_enrollment(status: :passed)
@@ -228,6 +220,31 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         review_pass.run(args: [user.uuid], config:)
         page.visit('/verify/welcome')
         expect(page).to have_current_path(idv_activated_path)
+      end
+    end
+
+    context 'User passes IPP and fails TMX Review' do
+      before do
+        complete_entire_ipp_flow(user, tmx_status)
+      end
+
+      it_behaves_like 'initially shows the user the barcode page'
+
+      it_behaves_like 'shows the user the Please Call screen'
+
+      it 'does not allow the user to restart the flow', allow_browser_log: true do
+        deactivate_profile_update_enrollment(status: :passed)
+
+        # user revisits before fraud rejection
+        visit_idp_from_sp_with_ial2(sp)
+        expect(page).to have_current_path(idv_please_call_path)
+
+        # reject the user
+        review_reject.run(args: [user.uuid], config:)
+
+        # user revisits after fraud rejection
+        visit_idp_from_sp_with_ial2(sp)
+        expect(page).to have_current_path(idv_not_verified_path)
       end
     end
 
