@@ -62,6 +62,11 @@ IdentityIdp/UrlOptionsLinter:
   Exclude:
     - 'spec/**/*.rb'
 
+IdentityIdp/EnhancedIdvEventsLinter:
+  Enabled: true
+  Include:
+    - 'app/services/analytics_events.rb'
+
 IdentityIdp/ErrorsAddLinter:
   Enabled: true
   Exclude:
