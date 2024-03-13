@@ -50,6 +50,15 @@ RSpec.describe AttributeAsserter do
     )
     CGI.unescape ial1_authn_request_url.split('SAMLRequest').last
   end
+  let(:raw_vtr_no_proofing_authn_request) do
+    vtr_proofing_authn_request = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: 'C1.C2',
+      },
+    )
+    CGI.unescape vtr_proofing_authn_request.split('SAMLRequest').last
+  end
   let(:raw_ial2_authn_request) do
     ial2_authnrequest = saml_authn_request_url(
       overrides: {
@@ -58,6 +67,15 @@ RSpec.describe AttributeAsserter do
       },
     )
     CGI.unescape ial2_authnrequest.split('SAMLRequest').last
+  end
+  let(:raw_vtr_proofing_authn_request) do
+    vtr_proofing_authn_request = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: 'C1.C2.P1',
+      },
+    )
+    CGI.unescape vtr_proofing_authn_request.split('SAMLRequest').last
   end
   let(:raw_ial1_aal3_authn_request) do
     ial1_aal3_authnrequest = saml_authn_request_url(
@@ -94,6 +112,12 @@ RSpec.describe AttributeAsserter do
   end
   let(:ial2_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial2_authn_request)
+  end
+  let(:vtr_proofing_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_vtr_proofing_authn_request)
+  end
+  let(:vtr_no_proofing_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_vtr_no_proofing_authn_request)
   end
   let(:ial1_aal3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_aal3_authn_request)
@@ -295,6 +319,34 @@ RSpec.describe AttributeAsserter do
       end
     end
 
+    context 'verified user and proofing VTR request' do
+      let(:subject) do
+        described_class.new(
+          user: user,
+          name_id_format: name_id_format,
+          service_provider: service_provider,
+          authn_request: vtr_proofing_authn_request,
+          decrypted_pii: decrypted_pii,
+          user_session: user_session,
+        )
+      end
+
+      before do
+        user.identities << identity
+        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+          and_return(%w[email first_name last_name])
+        subject.build
+      end
+
+      it 'includes the correct bundle attributes' do
+        expect(user.asserted_attributes.keys).to eq(
+          [:uuid, :email, :first_name, :last_name, :verified_at, :vot],
+        )
+        expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
+        expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2.P1'
+      end
+    end
+
     context 'verified user and IAL1 request' do
       let(:subject) do
         described_class.new(
@@ -452,6 +504,33 @@ RSpec.describe AttributeAsserter do
             expected = %i[uuid email aal ial x509_subject x509_issuer x509_presented]
             expect(user.asserted_attributes.keys).to eq expected
           end
+        end
+      end
+
+      context 'request made with a VTR param' do
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: vtr_no_proofing_authn_request,
+            decrypted_pii: decrypted_pii,
+            user_session: user_session,
+          )
+        end
+
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email])
+          subject.build
+        end
+
+        it 'includes the correct bundle attributes' do
+          expect(user.asserted_attributes.keys).to eq(
+            [:uuid, :email, :vot],
+          )
+          expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2'
         end
       end
     end

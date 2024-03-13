@@ -36,16 +36,19 @@ class IdTokenBuilder
   end
 
   def id_token_claims
-    {
-      acr: (acr if !sp_requests_vot?),
-      vot: (vot if sp_requests_vot?),
-      vtm: (IdentityConfig.store.vtm_url if sp_requests_vot?),
+    claims = {
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
       c_hash: hash_token(code),
-    }.compact
+    }
+
+    if !sp_requests_vot?
+      claims[:acr] = acr
+    end
+
+    claims
   end
 
   def timestamp_claims
