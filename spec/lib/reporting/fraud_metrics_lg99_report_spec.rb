@@ -17,9 +17,9 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
       'Reporting::CloudwatchClient',
       fetch: [
         { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
+        { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: Verify setup errors visited' },
 
-        { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
         { 'user_id' => 'user2', 'name' => 'IdV: Verify setup errors visited' },
 
         { 'user_id' => 'user3', 'name' => 'IdV: Verify please call visited' },

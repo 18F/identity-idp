@@ -104,9 +104,7 @@ module Reporting
       format(<<~QUERY, params)
         fields
             name
-          , @timestamp
           , properties.user_id as user_id,
-          , properties.new_event AS new_event
         | filter name in %{event_names}
       QUERY
     end
@@ -123,7 +121,7 @@ module Reporting
 
     def lg99_unique_users_count
       @lg99_unique_users_count ||=
-        (data[Events::IDV_PLEASE_CALL_VISITED] + data[Events::IDV_SETUP_ERROR_VISITED]).uniq.count
+        (data[Events::IDV_PLEASE_CALL_VISITED] + data[Events::IDV_SETUP_ERROR_VISITED]).count
     end
   end
 end
