@@ -190,98 +190,88 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
       expect(profile.fraud_rejection_at).to be_truthy
     end
 
-    context 'User passes IPP and passes TMX Review' do
+    context 'fraud decisioning is completed' do
       before do
         complete_entire_ipp_flow(user, tmx_status)
       end
 
-      it_behaves_like 'initially shows the user the barcode page'
+      context 'User passes IPP and passes TMX Review' do
+        it_behaves_like 'initially shows the user the barcode page'
 
-      it_behaves_like 'shows the user the Please Call screen'
+        it_behaves_like 'shows the user the Please Call screen'
 
-      it 'does not allow the user to restart the IPP flow', allow_browser_log: true do
-        deactivate_profile_update_enrollment(status: :passed)
+        it 'does not allow the user to restart the IPP flow', allow_browser_log: true do
+          deactivate_profile_update_enrollment(status: :passed)
 
-        visit_idp_from_sp_with_ial2(sp)
-        expect(page).to have_current_path(idv_please_call_path)
-        page.visit('/verify/welcome')
-        expect(page).to have_current_path(idv_please_call_path)
-        page.visit('/verify/in_person/document_capture')
-        expect(page).to have_current_path(idv_please_call_path)
+          visit_idp_from_sp_with_ial2(sp)
+          expect(page).to have_current_path(idv_please_call_path)
+          page.visit('/verify/welcome')
+          expect(page).to have_current_path(idv_please_call_path)
+          page.visit('/verify/in_person/document_capture')
+          expect(page).to have_current_path(idv_please_call_path)
+        end
+
+        # this is not getting updated - runtime error trying to update with reason in_person_verification_pending
+        it 'shows the user the successful verification screen after passing TMX review',
+           allow_browser_log: true do
+          deactivate_profile_update_enrollment(status: :passed)
+          visit_idp_from_sp_with_ial2(sp)
+          expect(page).to have_current_path(idv_please_call_path)
+
+          review_pass.run(args: [user.uuid], config:)
+          page.visit('/verify/welcome')
+          expect(page).to have_current_path(idv_activated_path)
+        end
       end
 
-      # this is not getting updated - runtime error trying to update with reason in_person_verification_pending
-      it 'shows the user the successful verification screen after passing TMX review',
-         allow_browser_log: true do
-        deactivate_profile_update_enrollment(status: :passed)
-        visit_idp_from_sp_with_ial2(sp)
-        expect(page).to have_current_path(idv_please_call_path)
+      context 'User passes IPP and fails TMX Review' do
+        it_behaves_like 'initially shows the user the barcode page'
 
-        review_pass.run(args: [user.uuid], config:)
-        page.visit('/verify/welcome')
-        expect(page).to have_current_path(idv_activated_path)
-      end
-    end
+        it_behaves_like 'shows the user the Please Call screen'
 
-    context 'User passes IPP and fails TMX Review' do
-      before do
-        complete_entire_ipp_flow(user, tmx_status)
-      end
+        it 'does not allow the user to restart the flow', allow_browser_log: true do
+          deactivate_profile_update_enrollment(status: :passed)
 
-      it_behaves_like 'initially shows the user the barcode page'
+          # user revisits before fraud rejection
+          visit_idp_from_sp_with_ial2(sp)
+          expect(page).to have_current_path(idv_please_call_path)
 
-      it_behaves_like 'shows the user the Please Call screen'
+          # reject the user
+          review_reject.run(args: [user.uuid], config:)
 
-      it 'does not allow the user to restart the flow', allow_browser_log: true do
-        deactivate_profile_update_enrollment(status: :passed)
-
-        # user revisits before fraud rejection
-        visit_idp_from_sp_with_ial2(sp)
-        expect(page).to have_current_path(idv_please_call_path)
-
-        # reject the user
-        review_reject.run(args: [user.uuid], config:)
-
-        # user revisits after fraud rejection
-        visit_idp_from_sp_with_ial2(sp)
-        expect(page).to have_current_path(idv_not_verified_path)
-      end
-    end
-
-    context 'User fails IPP and deactivates for TMX review' do
-      before do
-        complete_entire_ipp_flow(user, tmx_status)
+          # user revisits after fraud rejection
+          visit_idp_from_sp_with_ial2(sp)
+          expect(page).to have_current_path(idv_not_verified_path)
+        end
       end
 
-      it_behaves_like 'initially shows the user the barcode page'
+      context 'User fails IPP and deactivates for TMX review' do
+        it_behaves_like 'initially shows the user the barcode page'
 
-      it 'allows the user to restart the flow', allow_browser_log: true do
-        deactivate_profile_update_enrollment(status: :failed)
+        it 'allows the user to restart the flow', allow_browser_log: true do
+          deactivate_profile_update_enrollment(status: :failed)
 
-        visit_idp_from_sp_with_ial2(sp)
-        expect(page).not_to have_current_path(idv_please_call_path)
-        # redo the flow:
-        complete_entire_ipp_flow(user, tmx_status)
-        expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-      end
-    end
-
-    context 'User cancels IPP after being deactivated for TMX review', allow_browser_log: true do
-      before do
-        complete_entire_ipp_flow(user, tmx_status)
+          visit_idp_from_sp_with_ial2(sp)
+          expect(page).not_to have_current_path(idv_please_call_path)
+          # redo the flow:
+          complete_entire_ipp_flow(user, tmx_status)
+          expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+        end
       end
 
-      it 'allows the user to restart IPP' do
-        # set fraud review to pending:
-        profile.deactivate_for_fraud_review
-        profile.reload
+      context 'User cancels IPP after being deactivated for TMX review', allow_browser_log: true do
+        it 'allows the user to restart IPP' do
+          # set fraud review to pending:
+          profile.deactivate_for_fraud_review
+          profile.reload
 
-        # cancel the enrollment
-        click_link t('links.cancel')
-        # user can restart
-        click_on t('idv.cancel.actions.start_over')
+          # cancel the enrollment
+          click_link t('links.cancel')
+          # user can restart
+          click_on t('idv.cancel.actions.start_over')
 
-        expect(page).to have_current_path(idv_welcome_path)
+          expect(page).to have_current_path(idv_welcome_path)
+        end
       end
     end
   end
