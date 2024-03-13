@@ -13,6 +13,8 @@ module Idv
       @upload_disabled = idv_session.selfie_check_required &&
                          !idv_session.desktop_selfie_test_mode_enabled?
 
+      @selfie_required = idv_session.selfie_check_required
+
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -34,6 +36,13 @@ module Idv
       else
         bypass_send_link_steps
       end
+    end
+
+    def in_person
+      idv_session.opted_in_to_in_person_proofing = true
+      idv_session.flow_path = 'standard'
+      idv_session.skip_doc_auth = true
+      redirect_to idv_document_capture_url
     end
 
     def self.selected_remote(idv_session:)

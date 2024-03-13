@@ -8,16 +8,54 @@
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
 <% end %>
+<% if !@selfie_required %>
 
-<%= render PageHeadingComponent.new do %>
-  <%= t('doc_auth.headings.hybrid_handoff') %>
-<% end %>
+  <%= render PageHeadingComponent.new do %>
+    <%= t('doc_auth.headings.hybrid_handoff') %>
+  <% end %>
 
-<p>
-  <%= t('doc_auth.info.hybrid_handoff') %>
-</p>
+  <p>
+    <%= t('doc_auth.info.hybrid_handoff') %>
+  </p>
 
-<div class="grid-row grid-gap grid-gap-2">
+  <div class="grid-row grid-gap grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-auto">
+      <%= image_tag(
+            asset_url('idv/phone-icon.svg'),
+            alt: t('image_description.camera_mobile_phone'),
+            width: 88,
+            height: 88,
+          ) %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-fill">
+      <div class="usa-tag usa-tag--informative">
+        <%= t('doc_auth.info.tag') %>
+      </div>
+      <h2 class="margin-y-105">
+        <%= t('doc_auth.headings.upload_from_phone') %>
+      </h2>
+      <%= t('doc_auth.info.upload_from_phone') %>
+      <%= simple_form_for(
+            idv_phone_form,
+            as: :doc_auth,
+            url: url_for(type: :mobile, combined: true),
+            method: 'PUT',
+            html: { autocomplete: 'off',
+                    id: 'form-to-submit-photos-through-mobile',
+                    'aria-label': t('forms.buttons.send_link') },
+          ) do |f| %>
+        <%= render PhoneInputComponent.new(
+              form: f,
+              required: true,
+              delivery_methods: [:sms],
+              class: 'margin-bottom-4',
+            ) %>
+        <%= f.submit t('forms.buttons.send_link') %>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="grid-row grid-gap grid-gap-2">
   <div class="grid-col-12 tablet:grid-col-auto">
     <%= image_tag(
           asset_url('idv/phone-icon.svg'),
@@ -27,12 +65,9 @@
         ) %>
   </div>
   <div class="grid-col-12 tablet:grid-col-fill">
-    <div class="usa-tag usa-tag--informative">
-      <%= t('doc_auth.info.tag') %>
-    </div>
-    <h2 class="margin-y-105">
-      <%= t('doc_auth.headings.upload_from_phone') %>
-    </h2>
+    <%= render PageHeadingComponent.new do %>
+      <%= 'Enter your phone number to switch devices' %>
+    <% end %>
     <%= t('doc_auth.info.upload_from_phone') %>
     <%= simple_form_for(
           idv_phone_form,
@@ -52,7 +87,16 @@
       <%= f.submit t('forms.buttons.send_link') %>
     <% end %>
   </div>
-</div>
+  </div>
+  <div class="margin-top-4 padding-top-2 border-top border-primary-light">
+    <p class="margin-top-1">
+    <strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.
+    </p>
+    <p class="margin-top-1">
+      <%= link_to t('in_person_proofing.headings.prepare'), idv_hybrid_handoff_in_person_path %>
+    </p>
+  </div>
+<% end %>
 
 <% unless @upload_disabled %>
   <hr class="margin-y-4" />
