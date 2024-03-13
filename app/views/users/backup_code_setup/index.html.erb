@@ -61,7 +61,7 @@
 <% if in_multi_mfa_selection_flow? %>
   <%= render PageFooterComponent.new do %>
 
-    <%= form_tag(backup_code_delete_path, method: :delete, class: 'margin-top-5') do %>
+    <%= form_tag(backup_code_delete_path, method: :delete) do %>
 
       <%= button_tag t('two_factor_authentication.choose_another_option'), type: 'submit', class: 'usa-button usa-button--unstyled' %>
 
