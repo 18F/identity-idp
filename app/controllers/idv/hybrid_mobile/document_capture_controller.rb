@@ -55,6 +55,8 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
+          liveness_checking_required: decorated_sp_session.selfie_required?,
+          selfie_check_required: decorated_sp_session.selfie_required?,
         }.merge(
           ab_test_analytics_buckets,
         )
@@ -63,7 +65,7 @@ module Idv
       def handle_stored_result
         if stored_result&.success? && selfie_requirement_met?
           save_proofing_components(document_capture_user)
-          extract_pii_from_doc(document_capture_user, stored_result)
+          extract_pii_from_doc(document_capture_user)
           successful_response
         else
           extra = { stored_result_present: stored_result.present? }

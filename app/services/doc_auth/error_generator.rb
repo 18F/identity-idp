@@ -2,6 +2,7 @@
 
 module DocAuth
   class ErrorGenerator
+    include SelfieConcern
     attr_reader :config
 
     def initialize(config)
@@ -14,6 +15,9 @@ module DocAuth
     BACK = :back
     SELFIE = :selfie
     GENERAL = :general
+
+    ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
 
     ERROR_KEYS = [
       ID,
@@ -58,19 +62,45 @@ module DocAuth
       unknown_fail_count = scan_for_unknown_alerts(response_info)
       alert_error_count -= unknown_fail_count
 
+      # If we have document type errors (Ex: passport was uploaded) return only
+      # document type errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
+      # this return will never include any selfie errors at the moment.
       doc_type_errors = get_id_type_errors(response_info[:classification_info])
       return doc_type_errors.to_h unless doc_type_errors.nil? || doc_type_errors.empty?
 
+      # If we have image metric errors (Ex: DPI too low) return only
+      # image metric errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
+      # this return will never include any selfie errors at the moment.
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
       return image_metric_errors.to_h unless image_metric_errors.empty?
 
+      # If we have a selfie failure (selfie does not match id), then all three fields:
+      # front, back, and selfie should fail with specific in line errors.
       liveness_enabled = response_info[:liveness_enabled]
+      selfie_error = get_selfie_error(liveness_enabled, response_info)
+      if selfie_error == Errors::SELFIE_FAILURE
+        # This returns the same sort of object that ErrorResult.to_h returns
+        # but we need to do something more complex than that's set up to handle
+        return {
+          general: [Errors::SELFIE_NOT_LIVE],
+          front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
+          back: [Errors::MULTIPLE_BACK_ID_FAILURES],
+          selfie: [Errors::SELFIE_FAILURE],
+          hints: false,
+        }
+      end
+
+      # This block can also return errors for front, back, and/or selfie
+      # But we only get here if none of the returns above are triggered
       alert_errors = get_error_messages(liveness_enabled, response_info)
       alert_error_count += 1 if alert_errors.include?(SELFIE)
 
       error = ''
       side = nil
 
+      # If we don't have document type or image metric errors then sort out which
+      # errors to return. Note that there's a :general error added in the
+      # `to_h` method of error_result
       if alert_error_count < 1
         config.warn_notifier&.call(
           message: 'DocAuth failure escaped without useful errors',
@@ -120,8 +150,7 @@ module DocAuth
                   side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
         issuer_type_ok = !side_issuer_type.present? ||
-                         side_issuer_type == DocAuth::Acuant::IssuerTypes::STATE_OR_PROVINCE.name ||
-                         side_issuer_type == DocAuth::Acuant::IssuerTypes::UNKNOWN.name
+                         ACCEPTED_ISSUER_TYPES.include?(side_issuer_type)
         both_side_ok &&= issuer_type_ok && side_ok && country_ok
         error_result.add_side(side.downcase.to_sym) unless side_ok && issuer_type_ok && country_ok
       end
@@ -189,12 +218,41 @@ module DocAuth
         end
       end
 
-      portrait_match_results = response_info[:portrait_match_results] || {}
-      if liveness_enabled && portrait_match_results.dig(:FaceMatchResult) != 'Pass'
-        errors[SELFIE] << Errors::SELFIE_FAILURE
+      selfie_error = get_selfie_error(liveness_enabled, response_info)
+      if liveness_enabled && !!selfie_error
+        errors[SELFIE] << selfie_error
       end
 
       errors
+    end
+
+    def get_selfie_error(liveness_enabled, response_info)
+      # The part of the response that contains information about the selfie
+      portrait_match_results = response_info[:portrait_match_results] || {}
+      # The overall result of the selfie, 'Pass' or 'Fail'
+      face_match_result = portrait_match_results.dig(:FaceMatchResult)
+      # The reason for failure (if it failed), also sometimes contains success info
+      face_match_error = portrait_match_results.dig(:FaceErrorMessage)
+
+      # No error if liveness is not enabled or if there's no failure
+      if !liveness_enabled || !face_match_result || face_match_result == 'Pass'
+        return nil
+      end
+
+      # Error when the image on the id does not match the selfie image, but the image was acceptable
+      if error_is_success(face_match_error)
+        return Errors::SELFIE_FAILURE
+      end
+      # Error when the image on the id is poor quality
+      if error_is_poor_quality(face_match_error)
+        return Errors::SELFIE_POOR_QUALITY
+      end
+      # Error when the image on the id is not live
+      if error_is_not_live(face_match_error)
+        return Errors::SELFIE_NOT_LIVE
+      end
+      # Fallback, we don't expect this to happen
+      return Errors::SELFIE_FAILURE
     end
 
     def scan_for_unknown_alerts(response_info)

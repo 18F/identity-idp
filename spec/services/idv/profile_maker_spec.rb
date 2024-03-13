@@ -17,7 +17,7 @@ RSpec.describe Idv::ProfileMaker do
     end
 
     it 'creates an inactive Profile with encrypted PII' do
-      proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
+      proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'mock')
       profile = subject.save_profile(
         fraud_pending_reason: nil,
         gpo_verification_needed: false,
@@ -65,15 +65,18 @@ RSpec.describe Idv::ProfileMaker do
     end
 
     context 'with fraud review needed' do
+      let(:gpo_verification_needed) { false }
+      let(:in_person_verification_needed) { false }
       let(:profile) do
         subject.save_profile(
           fraud_pending_reason: 'threatmetrix_review',
-          gpo_verification_needed: false,
+          gpo_verification_needed: gpo_verification_needed,
           deactivation_reason: nil,
-          in_person_verification_needed: false,
+          in_person_verification_needed: in_person_verification_needed,
           selfie_check_performed: false,
         )
       end
+
       it 'creates a pending profile for fraud review' do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
@@ -84,8 +87,25 @@ RSpec.describe Idv::ProfileMaker do
         expect(profile.initiating_service_provider).to eq(nil)
         expect(profile.verified_at).to be_nil
       end
+
       it 'marks the profile as legacy_unsupervised' do
         expect(profile.idv_level).to eql('legacy_unsupervised')
+      end
+
+      context 'when GPO verification is needed' do
+        let(:gpo_verification_needed) { true }
+
+        it 'is not fraud_review_pending?' do
+          expect(profile.fraud_review_pending?).to eq(false)
+        end
+      end
+
+      context 'when IPP is needed' do
+        let(:in_person_verification_needed) { true }
+
+        it 'is not fraud_review_pending?' do
+          expect(profile.fraud_review_pending?).to eq(false)
+        end
       end
     end
 

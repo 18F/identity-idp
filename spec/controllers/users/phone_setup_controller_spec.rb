@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::PhoneSetupController do
+RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
   let(:mfa_selections) { ['voice'] }
   before do
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)

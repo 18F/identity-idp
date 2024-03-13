@@ -27,7 +27,11 @@ class ServiceProvider < ApplicationRecord
   scope(:active, -> { where(active: true) })
   scope(
     :with_push_notification_urls,
-    -> { where.not(push_notification_url: nil).where.not(push_notification_url: '') },
+    -> {
+      where.not(push_notification_url: nil).
+        where.not(push_notification_url: '').
+        where(active: true)
+    },
   )
 
   IAA_INTERNAL = 'LGINTERNAL'

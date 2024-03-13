@@ -20,6 +20,7 @@ class OpenidConnectAuthorizeForm
   ATTRS = [
     :unauthorized_scope,
     :acr_values,
+    :vtr,
     :scope,
     :verified_within,
     :biometric_comparison_required,
@@ -37,7 +38,7 @@ class OpenidConnectAuthorizeForm
   RANDOM_VALUE_MINIMUM_LENGTH = 22
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
-  validates :acr_values, presence: true
+  validates :acr_values, presence: true, if: ->(form) { form.vtr.blank? }
   validates :client_id, presence: true
   validates :redirect_uri, presence: true
   validates :scope, presence: true
@@ -49,6 +50,7 @@ class OpenidConnectAuthorizeForm
   validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
+  validate :validate_vtr
   validate :validate_client_id
   validate :validate_scope
   validate :validate_unauthorized_scope
@@ -59,6 +61,7 @@ class OpenidConnectAuthorizeForm
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+    @vtr = parse_vtr(params[:vtr])
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
@@ -97,6 +100,8 @@ class OpenidConnectAuthorizeForm
       rails_session_id: rails_session_id,
       ial: ial_context.ial,
       aal: aal,
+      acr_values: acr_values&.join(' '),
+      vtr: vtr,
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
@@ -119,7 +124,13 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+    if parsed_vector_of_trust&.identity_proofing?
+      2
+    elsif parsed_vector_of_trust.present?
+      1
+    else
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+    end
   end
 
   def aal_values
@@ -127,7 +138,13 @@ class OpenidConnectAuthorizeForm
   end
 
   def aal
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
+    if parsed_vector_of_trust&.aal2?
+      2
+    elsif parsed_vector_of_trust.present?
+      1
+    else
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
+    end
   end
 
   def requested_aal_value
@@ -141,6 +158,18 @@ class OpenidConnectAuthorizeForm
 
   def biometric_comparison_required?
     @biometric_comparison_required
+  end
+
+  def parsed_vector_of_trust
+    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
+
+    @parsed_vector_of_trust = begin
+      if vtr.is_a?(Array) && !vtr.empty?
+        Vot::Parser.new(vector_of_trust: vtr.first).parse
+      end
+    rescue Vot::Parser::ParseException
+      nil
+    end
   end
 
   private
@@ -163,7 +192,18 @@ class OpenidConnectAuthorizeForm
     param_value.split(' ').compact & possible_values
   end
 
+  def parse_vtr(param_value)
+    return if !IdentityConfig.store.use_vot_in_sp_requests
+    return if param_value.blank?
+
+    JSON.parse(param_value)
+  rescue JSON::ParserError
+    nil
+  end
+
   def validate_acr_values
+    return if vtr.present?
+
     if acr_values.empty?
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'),
@@ -175,6 +215,15 @@ class OpenidConnectAuthorizeForm
         type: :missing_ial
       )
     end
+  end
+
+  def validate_vtr
+    return if vtr.blank?
+    return if parsed_vector_of_trust.present?
+    errors.add(
+      :vtr, t('openid_connect.authorization.errors.no_valid_vtr'),
+      type: :no_valid_vtr
+    )
   end
 
   # This checks that the SP matches something in the database
@@ -246,6 +295,7 @@ class OpenidConnectAuthorizeForm
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
+      vtr: vtr,
       unauthorized_scope: @unauthorized_scope,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_challenge_present: code_challenge.present?,

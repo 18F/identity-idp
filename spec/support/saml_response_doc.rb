@@ -33,7 +33,7 @@ class SamlResponseDoc
   def raw_xml_response
     if @test_type == 'feature'
       xml_response
-    elsif @response.body.include?('<html>')
+    elsif @response.body.include?('<html')
       html_response
     else
       @response.body

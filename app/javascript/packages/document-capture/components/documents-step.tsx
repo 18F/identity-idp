@@ -9,21 +9,19 @@ import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import DeviceContext from '../context/device';
-import UploadContext from '../context/upload';
 import TipList from './tip-list';
-import { FeatureFlagContext } from '../context';
+import { DeviceContext, FeatureFlagContext, SelfieCaptureContext, UploadContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 
 export function DocumentCaptureSubheaderOne({
-  selfieCaptureEnabled,
+  isSelfieCaptureEnabled,
 }: {
-  selfieCaptureEnabled: boolean;
+  isSelfieCaptureEnabled: boolean;
 }) {
   const { t } = useI18n();
   return (
     <h2>
-      {selfieCaptureEnabled && '1. '}
+      {isSelfieCaptureEnabled && '1. '}
       {t('doc_auth.headings.document_capture_subheader_id')}
     </h2>
   );
@@ -109,9 +107,10 @@ function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { exitQuestionSectionEnabled, selfieCaptureEnabled } = useContext(FeatureFlagContext);
+  const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
-  const pageHeaderText = selfieCaptureEnabled
+  const pageHeaderText = isSelfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
 
@@ -125,7 +124,7 @@ function DocumentsStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
-      <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
+      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
@@ -136,7 +135,7 @@ function DocumentsStep({
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
       <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
-      {selfieCaptureEnabled && (
+      {isSelfieCaptureEnabled && (
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}

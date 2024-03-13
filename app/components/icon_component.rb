@@ -244,17 +244,24 @@ class IconComponent < BaseComponent
     zoom_out_map
   ].to_set.freeze
 
-  attr_reader :icon, :tag_options
+  attr_reader :icon, :size, :tag_options
 
-  def initialize(icon:, **tag_options)
+  def initialize(icon:, size: nil, **tag_options)
     raise ArgumentError, "`icon` #{icon} is not a valid icon" if !ICONS.include?(icon)
 
     @icon = icon
+    @size = size
     @tag_options = tag_options
   end
 
+  def css_class
+    classes = ['icon', 'usa-icon', *tag_options[:class]]
+    classes << "usa-icon--size-#{size}" if size
+    classes
+  end
+
   def icon_path
-    asset_path([asset_path('sprite.svg'), '#', icon].join, host: asset_host)
+    @icon_path ||= asset_path("usa-icons/#{icon}.svg", host: asset_host)
   end
 
   private

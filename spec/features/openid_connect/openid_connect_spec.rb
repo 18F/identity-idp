@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'query_tracker'
 
-RSpec.describe 'OpenID Connect' do
+RSpec.describe 'OpenID Connect', allowed_extra_analytics: [:*] do
   include IdvHelper
   include OidcAuthHelper
   include SamlAuthHelper
@@ -27,7 +27,7 @@ RSpec.describe 'OpenID Connect' do
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt login and no prior session' do
-      oidc_end_client_secret_jwt(prompt: 'login')
+      oidc_end_client_secret_jwt(vot: 'C1.C2.P1', prompt: 'login')
     end
 
     it 'succeeds in forcing login with prompt login and prior session' do
@@ -55,6 +55,10 @@ RSpec.describe 'OpenID Connect' do
 
       expect(current_path).to eq(openid_connect_authorize_path)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
+    end
+
+    it 'succeeds with a vtr param' do
+      oidc_end_client_secret_jwt(vot: 'C1.C2.P1')
     end
   end
 
@@ -950,12 +954,8 @@ RSpec.describe 'OpenID Connect' do
     end
 
     context 'when signed in with another browser' do
-      it 'redirects back to the client app after concurrent session logout' do
+      it 'redirects back to the client app if logging out after concurrent session logout' do
         user = user_with_2fa
-        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
-        IdentityLinker.new(user, service_provider).link_identity(
-          verified_attributes: %w[openid email],
-        )
 
         perform_in_browser(:one) do
           visit_idp_from_sp_with_ial1(:oidc)
@@ -978,6 +978,31 @@ RSpec.describe 'OpenID Connect' do
           visit account_path
           expect(page).to_not have_content(t('headings.account.login_info'))
           expect(page).to have_content(t('headings.sign_in_without_sp'))
+        end
+      end
+
+      it 'maintains authentication request if logged out by concurrent session logout' do
+        user = user_with_2fa
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:two) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:oidc)
+
+          expect(page).to have_content(
+            [
+              ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).friendly_name,
+              t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+            ].join(' '),
+          )
         end
       end
     end
@@ -1133,12 +1158,22 @@ RSpec.describe 'OpenID Connect' do
     end
   end
 
-  def oidc_end_client_secret_jwt(prompt: nil, user: nil, redirs_to: nil)
+  def oidc_end_client_secret_jwt(vot: nil, prompt: nil, user: nil, redirs_to: nil)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
 
-    visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
+    if vot.present?
+      visit_idp_from_oidc_sp_with_vtr(
+        vtr: [vot],
+        prompt: prompt,
+        state: state,
+        nonce: nonce,
+        client_id: client_id,
+      )
+    else
+      visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
+    end
     continue_as(user.email) if user
     if redirs_to
       expect(URI(oidc_redirect_url).path).to eq(redirs_to)
@@ -1193,11 +1228,18 @@ RSpec.describe 'OpenID Connect' do
     expect(sub).to be_present
     expect(decoded_id_token[:nonce]).to eq(nonce)
     expect(decoded_id_token[:aud]).to eq(client_id)
-    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
     expect(decoded_id_token[:iss]).to eq(root_url)
     expect(decoded_id_token[:email]).to eq(user.email)
     expect(decoded_id_token[:given_name]).to eq('John')
     expect(decoded_id_token[:social_security_number]).to eq('111223333')
+
+    if vot.present?
+      expect(decoded_id_token[:acr]).to eq(nil)
+      expect(decoded_id_token[:vot]).to eq(vot)
+    else
+      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(decoded_id_token[:vot]).to eq(nil)
+    end
 
     access_token = token_response[:access_token]
     expect(access_token).to be_present
@@ -1211,6 +1253,19 @@ RSpec.describe 'OpenID Connect' do
     expect(userinfo_response[:email]).to eq(user.email)
     expect(userinfo_response[:given_name]).to eq('John')
     expect(userinfo_response[:social_security_number]).to eq('111223333')
+
+    if vot.present?
+      expect(userinfo_response).not_to have_key(:ial)
+      expect(userinfo_response).not_to have_key(:aal)
+      expect(userinfo_response[:vot]).to eq(vot)
+    else
+      expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(userinfo_response[:aal]).to eq(
+        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+      )
+      expect(userinfo_response).not_to have_key(:vot)
+    end
+
     user
   end
 end

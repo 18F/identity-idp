@@ -1,7 +1,7 @@
 # rubocop:disable Layout/LineLength
 require 'rails_helper'
 
-RSpec.describe OpenidConnect::AuthorizationController do
+RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: [:*] do
   include WebAuthnHelper
   before do
     # All the tests here were written prior to the interstitial
@@ -13,9 +13,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:service_provider) { build(:service_provider, issuer: client_id) }
   let(:prompt) { 'select_account' }
+  let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+  let(:vtr) { nil }
   let(:params) do
     {
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      acr_values: acr_values,
       client_id: client_id,
       nonce: SecureRandom.hex,
       prompt: prompt,
@@ -23,11 +25,14 @@ RSpec.describe OpenidConnect::AuthorizationController do
       response_type: 'code',
       scope: 'openid profile',
       state: SecureRandom.hex,
+      vtr: vtr,
     }
   end
 
   describe '#index' do
-    subject(:action) { get :index, params: params }
+    subject(:action) do
+      get :index, params: params
+    end
 
     context 'with prompt=login' do
       let(:prompt) { 'login' }
@@ -43,8 +48,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
     context 'user is signed in' do
       let(:user) { create(:user, :fully_registered) }
+      let(:sign_in_flow) { :sign_in }
       before do
         stub_sign_in user
+        session[:sign_in_flow] = sign_in_flow
       end
 
       context 'with valid params' do
@@ -95,42 +102,95 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(redirect_params[:state]).to eq(params[:state])
         end
 
-        it 'tracks IAL1 authentication event' do
-          stub_analytics
-          expect(@analytics).to receive(:track_event).
-            with('OpenID Connect: authorization request',
-                 success: true,
-                 client_id: client_id,
-                 prompt: 'select_account',
-                 referer: nil,
-                 allow_prompt_login: true,
-                 errors: {},
-                 unauthorized_scope: true,
-                 user_fully_authenticated: true,
-                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 code_challenge_present: false,
-                 service_provider_pkce: nil,
-                 scope: 'openid')
-          expect(@analytics).to receive(:track_event).
-            with('OpenID Connect: authorization request handoff',
-                 success: true,
-                 client_id: client_id,
-                 user_sp_authorized: true,
-                 code_digest: kind_of(String))
-          expect(@analytics).to receive(:track_event).
-            with(
-              'SP redirect initiated',
-              ial: 1,
-              billed_ial: 1,
-            )
+        context 'with ial1 requested using acr_values' do
+          it 'tracks IAL1 authentication event' do
+            stub_analytics
+            expect(@analytics).to receive(:track_event).
+              with('OpenID Connect: authorization request',
+                   success: true,
+                   client_id: client_id,
+                   prompt: 'select_account',
+                   referer: nil,
+                   allow_prompt_login: true,
+                   errors: {},
+                   unauthorized_scope: true,
+                   user_fully_authenticated: true,
+                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                   code_challenge_present: false,
+                   service_provider_pkce: nil,
+                   scope: 'openid',
+                   vtr: nil)
+            expect(@analytics).to receive(:track_event).
+              with('OpenID Connect: authorization request handoff',
+                   success: true,
+                   client_id: client_id,
+                   user_sp_authorized: true,
+                   code_digest: kind_of(String))
+            expect(@analytics).to receive(:track_event).
+              with(
+                'SP redirect initiated',
+                ial: 1,
+                billed_ial: 1,
+                sign_in_flow:,
+              )
 
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
-          user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
+            IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+            user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
-          action
+            action
 
-          sp_return_log = SpReturnLog.find_by(issuer: client_id)
-          expect(sp_return_log.ial).to eq(1)
+            sp_return_log = SpReturnLog.find_by(issuer: client_id)
+            expect(sp_return_log.ial).to eq(1)
+          end
+        end
+
+        context 'with ial1 requested using vtr' do
+          let(:acr_values) { nil }
+          let(:vtr) { ['C1'].to_json }
+
+          before do
+            allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+          end
+
+          it 'tracks IAL1 authentication event' do
+            stub_analytics
+            expect(@analytics).to receive(:track_event).
+              with('OpenID Connect: authorization request',
+                   success: true,
+                   client_id: client_id,
+                   prompt: 'select_account',
+                   referer: nil,
+                   allow_prompt_login: true,
+                   errors: {},
+                   unauthorized_scope: true,
+                   user_fully_authenticated: true,
+                   acr_values: '',
+                   code_challenge_present: false,
+                   service_provider_pkce: nil,
+                   scope: 'openid',
+                   vtr: ['C1'])
+            expect(@analytics).to receive(:track_event).
+              with('OpenID Connect: authorization request handoff',
+                   success: true,
+                   client_id: client_id,
+                   user_sp_authorized: true,
+                   code_digest: kind_of(String))
+            expect(@analytics).to receive(:track_event).
+              with(
+                'SP redirect initiated',
+                ial: 1,
+                billed_ial: 1,
+                sign_in_flow:,
+              )
+
+            IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+            user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
+
+            action
+
+            sp_return_log = SpReturnLog.find_by(issuer: client_id)
+            expect(sp_return_log.ial).to eq(1)
+          end
         end
 
         context 'with ial2 requested' do
@@ -231,6 +291,42 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
+            it 'respects UUID redirect config when issuer config is also set' do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
+                and_return({ service_provider.issuer => 'client_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
+                and_return({ user.uuid => 'client_side_js' })
+
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              action
+
+              expect(controller).to render_template('openid_connect/shared/redirect_js')
+              expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+            end
+
+            it 'respects issuer redirect config if UUID config is not set' do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
+                and_return({ service_provider.issuer => 'client_side_js' })
+
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              action
+
+              expect(controller).to render_template('openid_connect/shared/redirect_js')
+              expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+            end
+
             it 'redirects to the password capture url when pii is locked' do
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
@@ -257,7 +353,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
                      code_challenge_present: false,
                      service_provider_pkce: nil,
-                     scope: 'openid profile')
+                     scope: 'openid profile',
+                     vtr: nil)
               expect(@analytics).to receive(:track_event).
                 with('OpenID Connect: authorization request handoff',
                      success: true,
@@ -269,6 +366,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   'SP redirect initiated',
                   ial: 2,
                   billed_ial: 2,
+                  sign_in_flow:,
                 )
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -282,14 +380,70 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(sp_return_log.ial).to eq(2)
             end
 
-            context 'SP has biometric_comparison_required' do
+            context 'SP requests biometric_comparison_required' do
               let(:selfie_capture_enabled) { true }
+              let(:biometric_comparison_required) { 'true' }
+
               before do
-                params[:biometric_comparison_required] = 'true'
+                params[:biometric_comparison_required] = biometric_comparison_required.to_s
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
+                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+
+              context 'selfie check was performed' do
+                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                  user.active_profile.idv_level = :unsupervised_with_selfie
+
+                  action
+
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
+              context 'selfie check was not performed' do
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
+              context 'selfie capture not enabled, biometric_comparison_required requested by sp' do
+                let(:selfie_capture_enabled) { false }
+                it 'returns status not_acceptable' do
+                  action
+
+                  expect(response.status).to eq(406)
+                end
+              end
+
+              context 'selfie capture not enabled, biometric_comparison_required param is false' do
+                let(:selfie_capture_enabled) { false }
+                let(:biometric_comparison_required) { 'false' }
+
+                it 'redirects to the service provider' do
+                  action
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+            end
+
+            context 'SP has a vector of trust that includes a biometric comparison' do
+              let(:selfie_capture_enabled) { true }
+              before do
+                params[:acr_values] = nil
+                params[:vtr] = ['C1.C2.P1.Pb'].to_json
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+                  and_return(selfie_capture_enabled)
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -495,7 +649,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                        acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                        code_challenge_present: false,
                        service_provider_pkce: nil,
-                       scope: 'openid profile')
+                       scope: 'openid profile',
+                       vtr: nil)
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
@@ -507,6 +662,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                     'SP redirect initiated',
                     ial: 0,
                     billed_ial: 2,
+                    sign_in_flow:,
                   )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -578,19 +734,20 @@ RSpec.describe OpenidConnect::AuthorizationController do
                        acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                        code_challenge_present: false,
                        service_provider_pkce: nil,
-                       scope: 'openid profile')
+                       scope: 'openid profile',
+                       vtr: nil)
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
                        client_id: client_id,
                        user_sp_authorized: true,
                        code_digest: kind_of(String))
-                expect(@analytics).to receive(:track_event).
-                  with(
-                    'SP redirect initiated',
-                    ial: 0,
-                    billed_ial: 1,
-                  )
+                expect(@analytics).to receive(:track_event).with(
+                  'SP redirect initiated',
+                  ial: 0,
+                  billed_ial: 1,
+                  sign_in_flow:,
+                )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -663,19 +820,20 @@ RSpec.describe OpenidConnect::AuthorizationController do
                        acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                        code_challenge_present: false,
                        service_provider_pkce: nil,
-                       scope: 'openid profile')
+                       scope: 'openid profile',
+                       vtr: nil)
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
                        client_id: client_id,
                        user_sp_authorized: true,
                        code_digest: kind_of(String))
-                expect(@analytics).to receive(:track_event).
-                  with(
-                    'SP redirect initiated',
-                    ial: 0,
-                    billed_ial: 1,
-                  )
+                expect(@analytics).to receive(:track_event).with(
+                  'SP redirect initiated',
+                  ial: 0,
+                  billed_ial: 1,
+                  sign_in_flow:,
+                )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -865,7 +1023,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
                  code_challenge_present: false,
                  service_provider_pkce: nil,
-                 scope: 'openid')
+                 scope: 'openid',
+                 vtr: nil)
           expect(@analytics).to_not receive(:track_event).with('sp redirect initiated')
 
           action
@@ -898,7 +1057,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
                  code_challenge_present: false,
                  service_provider_pkce: nil,
-                 scope: 'openid')
+                 scope: 'openid',
+                 vtr: nil)
           expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
@@ -1001,19 +1161,22 @@ RSpec.describe OpenidConnect::AuthorizationController do
       it 'redirects to SP landing page with the request_id in the params' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: authorization request',
-               success: true,
-               client_id: client_id,
-               prompt: 'select_account',
-               referer: nil,
-               allow_prompt_login: true,
-               errors: {},
-               unauthorized_scope: true,
-               user_fully_authenticated: false,
-               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-               code_challenge_present: false,
-               service_provider_pkce: nil,
-               scope: 'openid')
+          with(
+            'OpenID Connect: authorization request',
+            success: true,
+            client_id: client_id,
+            prompt: 'select_account',
+            referer: nil,
+            allow_prompt_login: true,
+            errors: {},
+            unauthorized_scope: true,
+            user_fully_authenticated: false,
+            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+            code_challenge_present: false,
+            service_provider_pkce: nil,
+            scope: 'openid',
+            vtr: nil,
+          )
 
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
@@ -1027,17 +1190,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
-          aal_level_requested: nil,
-          piv_cac_requested: false,
-          phishing_resistant_requested: false,
-          ial: 1,
-          ial2: false,
-          ialmax: false,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
           request_url: request.original_url,
           requested_attributes: %w[],
           biometric_comparison_required: false,
+          vtr: nil,
         )
       end
 

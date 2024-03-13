@@ -30,17 +30,18 @@ en:
     pending:
       cancel_request: Cancel request
       cancelled: We have cancelled your request to delete your account.
-      confirm: If you cancel now, you must create a new request and wait another 24
-        hours to delete your account.
+      confirm: If you cancel now, you must create a new request and wait another
+        %{interval} to delete your account.
       header: You requested to delete your account
-      wait_html: There is a 24-hour waiting period to delete your account. In
+      wait_html: There is a %{hours}-hour waiting period to delete your account. In
         <strong>%{interval}</strong>, you will receive an email with
         instructions to complete the deletion.
     recovery_options:
-      check_webauthn_platform: Use the same device you first set up face or touch unlock with
-      check_webauthn_platform_info: If you set up face or touch unlock when you
-        created your account make sure to use the same device you created your
-        %{app_name} account on.
+      check_saved_credential: See if you have a saved credential
+      check_webauthn_platform_info: If you set up face or touch unlock, you may have
+        saved your credentials to a password manager, like iCloud Keychain or
+        Google Password Manager. Try using face or touch unlock on a browser
+        using that password manager.
       header: Are you sure you want to delete your account?
       help_text: If you’re locked out and still need access to %{app_name}, try these
         steps instead.
@@ -48,6 +49,8 @@ en:
         “remember device” option.
       try_method_again: Try your authentication method again
       use_device: Use another device
+      use_same_device: Otherwise, try using the same device where you set up face or
+        touch unlock.
     request:
       are_you_sure: Are you sure you don’t have access to any of your authentication methods?
       delete_account: Delete your account
@@ -56,10 +59,10 @@ en:
           to use the same email address and set up new authentication methods.
           However, deleting will remove any agency applications you have linked
           to your account and you will need to restore each connection.
-        - If you continue, you will first receive an email confirmation.  As a
+        - If you continue, you will first receive an email confirmation. As a
           security measure, you will receive another email with the link to
-          continue deleting your account 24 hours after the initial confirmation
-          email arrives.
+          continue deleting your account %{interval} after the initial
+          confirmation email arrives.
       info:
         - If you can’t access your account using the authentication methods you
           set up previously, deleting your account and creating a new one is the

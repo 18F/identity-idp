@@ -11,6 +11,7 @@ import {
   MarketingSiteContextProvider,
   InPersonContext,
   FeatureFlagContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -188,7 +189,14 @@ const App = composeComponents(
     {
       value: {
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-        selfieCaptureEnabled: getSelfieCaptureEnabled(),
+      },
+    },
+  ],
+  [
+    SelfieCaptureContext.Provider,
+    {
+      value: {
+        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
     },
   ],

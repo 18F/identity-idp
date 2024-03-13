@@ -8,9 +8,11 @@ RSpec.describe 'accounts/show.html.erb' do
     assign(
       :presenter,
       AccountShowPresenter.new(
-        decrypted_pii: nil, personal_key: nil, user: user,
-        sp_session_request_url: nil, sp_name: nil,
-        locked_for_session: false
+        decrypted_pii: nil,
+        user: user,
+        sp_session_request_url: nil,
+        sp_name: nil,
+        locked_for_session: false,
       ),
     )
   end
@@ -109,25 +111,6 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'auth app listing and adding' do
-    context 'user has no auth app' do
-      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
-
-      it 'does not render auth app' do
-        expect(view).to_not render_template(partial: '_auth_apps')
-      end
-    end
-
-    context 'user has an auth app' do
-      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
-      it 'renders the auth app section' do
-        render
-
-        expect(view).to render_template(partial: '_auth_apps')
-      end
-    end
-  end
-
   context 'PIV/CAC listing and adding' do
     context 'user has no piv/cac' do
       let(:user) { create(:user, :fully_registered, :with_authentication_app) }
@@ -139,6 +122,11 @@ RSpec.describe 'accounts/show.html.erb' do
 
     context 'user has a piv/cac' do
       let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+      before do
+        allow(view).to receive(:user_session).and_return({})
+      end
+
       it 'renders the piv/cac section' do
         render
 
@@ -176,9 +164,11 @@ RSpec.describe 'accounts/show.html.erb' do
       assign(
         :presenter,
         AccountShowPresenter.new(
-          decrypted_pii: nil, personal_key: 'abc123', user: user,
-          sp_session_request_url: sp.return_to_sp_url, sp_name: sp.friendly_name,
-          locked_for_session: false
+          decrypted_pii: nil,
+          user: user,
+          sp_session_request_url: sp.return_to_sp_url,
+          sp_name: sp.friendly_name,
+          locked_for_session: false,
         ),
       )
     end

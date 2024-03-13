@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::PivCacAuthenticationSetupController do
+RSpec.describe Users::PivCacAuthenticationSetupController, allowed_extra_analytics: [:*] do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
@@ -16,14 +16,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
     describe 'GET index' do
       it 'redirects to root url' do
         get :new
-
-        expect(response).to redirect_to(root_url)
-      end
-    end
-
-    describe 'DELETE delete' do
-      it 'redirects to root url' do
-        delete :delete
 
         expect(response).to redirect_to(root_url)
       end
@@ -49,13 +41,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
     describe 'GET index' do
       it 'redirects to 2fa entry' do
         get :new
-        expect(response).to redirect_to(user_two_factor_authentication_url)
-      end
-    end
-
-    describe 'DELETE delete' do
-      it 'redirects to root url' do
-        delete :delete
         expect(response).to redirect_to(user_two_factor_authentication_url)
       end
     end
@@ -218,68 +203,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
           it 'resets the piv/cac session information' do
             expect(subject.user_session[:decrypted_x509]).to be_nil
           end
-        end
-      end
-
-      describe 'DELETE delete' do
-        it 'redirects to account 2FA page' do
-          delete :delete
-          expect(response).to redirect_to(account_two_factor_authentication_path)
-        end
-      end
-    end
-
-    context 'with associated piv/cac' do
-      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
-
-      describe 'GET index' do
-        it 'does not redirect to account page because we allow multiple PIV/CACs' do
-          get :new
-          expect(response).to render_template(:new)
-        end
-      end
-
-      describe 'DELETE delete' do
-        let(:piv_cac_configuration_id) { user.piv_cac_configurations.first.id }
-
-        it 'redirects to account page' do
-          delete :delete, params: { id: piv_cac_configuration_id }
-          expect(response).to redirect_to(account_two_factor_authentication_path)
-        end
-
-        it 'removes the piv/cac association' do
-          delete :delete, params: { id: piv_cac_configuration_id }
-          expect(user.reload.piv_cac_configurations).to be_empty
-        end
-
-        it 'sends a recovery information changed event' do
-          expect(PushNotification::HttpPush).to receive(:deliver).
-            with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-          delete :delete, params: { id: piv_cac_configuration_id }
-        end
-
-        it 'resets the remember device revocation date/time' do
-          expect(user.remember_device_revoked_at).to eq nil
-          freeze_time do
-            delete :delete, params: { id: piv_cac_configuration_id }
-            expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
-          end
-        end
-
-        it 'removes the piv/cac information from the user session' do
-          subject.user_session[:decrypted_x509] = {}
-          delete :delete, params: { id: piv_cac_configuration_id }
-          expect(subject.user_session[:decrypted_x509]).to be_nil
-        end
-
-        it 'does not remove the piv/cac association if it is the last mfa method' do
-          user.phone_configurations.destroy_all
-          user.backup_code_configurations.destroy_all
-
-          delete :delete, params: { id: piv_cac_configuration_id }
-
-          expect(response).to redirect_to(account_two_factor_authentication_path)
-          expect(user.reload.piv_cac_configurations.first.x509_dn_uuid).to_not be_nil
         end
       end
     end

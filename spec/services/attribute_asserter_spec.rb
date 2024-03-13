@@ -50,6 +50,15 @@ RSpec.describe AttributeAsserter do
     )
     CGI.unescape ial1_authn_request_url.split('SAMLRequest').last
   end
+  let(:raw_vtr_no_proofing_authn_request) do
+    vtr_proofing_authn_request = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: 'C1.C2',
+      },
+    )
+    CGI.unescape vtr_proofing_authn_request.split('SAMLRequest').last
+  end
   let(:raw_ial2_authn_request) do
     ial2_authnrequest = saml_authn_request_url(
       overrides: {
@@ -58,6 +67,15 @@ RSpec.describe AttributeAsserter do
       },
     )
     CGI.unescape ial2_authnrequest.split('SAMLRequest').last
+  end
+  let(:raw_vtr_proofing_authn_request) do
+    vtr_proofing_authn_request = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: 'C1.C2.P1',
+      },
+    )
+    CGI.unescape vtr_proofing_authn_request.split('SAMLRequest').last
   end
   let(:raw_ial1_aal3_authn_request) do
     ial1_aal3_authnrequest = saml_authn_request_url(
@@ -94,6 +112,12 @@ RSpec.describe AttributeAsserter do
   end
   let(:ial2_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial2_authn_request)
+  end
+  let(:vtr_proofing_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_vtr_proofing_authn_request)
+  end
+  let(:vtr_no_proofing_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_vtr_no_proofing_authn_request)
   end
   let(:ial1_aal3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_aal3_authn_request)
@@ -295,6 +319,34 @@ RSpec.describe AttributeAsserter do
       end
     end
 
+    context 'verified user and proofing VTR request' do
+      let(:subject) do
+        described_class.new(
+          user: user,
+          name_id_format: name_id_format,
+          service_provider: service_provider,
+          authn_request: vtr_proofing_authn_request,
+          decrypted_pii: decrypted_pii,
+          user_session: user_session,
+        )
+      end
+
+      before do
+        user.identities << identity
+        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+          and_return(%w[email first_name last_name])
+        subject.build
+      end
+
+      it 'includes the correct bundle attributes' do
+        expect(user.asserted_attributes.keys).to eq(
+          [:uuid, :email, :first_name, :last_name, :verified_at, :vot],
+        )
+        expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
+        expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2.P1'
+      end
+    end
+
     context 'verified user and IAL1 request' do
       let(:subject) do
         described_class.new(
@@ -454,6 +506,33 @@ RSpec.describe AttributeAsserter do
           end
         end
       end
+
+      context 'request made with a VTR param' do
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: vtr_no_proofing_authn_request,
+            decrypted_pii: decrypted_pii,
+            user_session: user_session,
+          )
+        end
+
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email])
+          subject.build
+        end
+
+        it 'includes the correct bundle attributes' do
+          expect(user.asserted_attributes.keys).to eq(
+            [:uuid, :email, :vot],
+          )
+          expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2'
+        end
+      end
     end
 
     context 'verified user and IAL1 AAL3 request' do
@@ -544,9 +623,14 @@ RSpec.describe AttributeAsserter do
           expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
           expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
         end
+
+        it 'does not include proofed attributes' do
+          expect(user.asserted_attributes[:first_name]).to eq(nil)
+          expect(user.asserted_attributes[:phone]).to eq(nil)
+        end
       end
 
-      context 'service provider requests IALMAX with IAL2 user' do
+      context 'IAL2 service provider requests IALMAX with IAL2 user' do
         let(:service_provider_ial) { 2 }
         let(:subject) do
           described_class.new(
@@ -563,6 +647,7 @@ RSpec.describe AttributeAsserter do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
             and_return(%w[email phone first_name])
+          ServiceProvider.find_by(issuer: sp1_issuer).update!(ial: 2)
           subject.build
         end
 
@@ -574,6 +659,47 @@ RSpec.describe AttributeAsserter do
           expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
         end
+
+        it 'includes proofed attributes' do
+          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq('Jåné')
+          expect(user.asserted_attributes[:phone][:getter].call(user)).to eq('+18888675309')
+        end
+      end
+    end
+
+    context 'non-IAL2 service provider requests IALMAX with IAL2 user' do
+      let(:service_provider_ial) { 1 }
+      let(:subject) do
+        described_class.new(
+          user: user,
+          name_id_format: name_id_format,
+          service_provider: service_provider,
+          authn_request: ialmax_authn_request,
+          decrypted_pii: decrypted_pii,
+          user_session: user_session,
+        )
+      end
+
+      before do
+        user.identities << identity
+        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+          and_return(%w[email phone first_name])
+        ServiceProvider.find_by(issuer: sp1_issuer).update!(ial: 1)
+        subject.build
+      end
+
+      it 'includes ial' do
+        expect(user.asserted_attributes.keys).to include(:ial)
+      end
+
+      it 'creates a getter function for ial attribute' do
+        expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+        expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
+      end
+
+      it 'includes proofed attributes' do
+        expect(user.asserted_attributes[:first_name]).to eq(nil)
+        expect(user.asserted_attributes[:phone]).to eq(nil)
       end
     end
 

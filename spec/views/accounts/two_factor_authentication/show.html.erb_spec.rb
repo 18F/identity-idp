@@ -8,9 +8,11 @@ RSpec.describe 'accounts/two_factor_authentication/show.html.erb' do
     assign(
       :presenter,
       AccountShowPresenter.new(
-        decrypted_pii: nil, personal_key: nil, user: user,
-        sp_session_request_url: nil, sp_name: nil,
-        locked_for_session: false
+        decrypted_pii: nil,
+        user: user,
+        sp_session_request_url: nil,
+        sp_name: nil,
+        locked_for_session: false,
       ),
     )
   end
@@ -31,19 +33,12 @@ RSpec.describe 'accounts/two_factor_authentication/show.html.erb' do
       assign(
         :presenter,
         AccountShowPresenter.new(
-          decrypted_pii: nil, personal_key: nil, user: user,
-          sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          decrypted_pii: nil,
+          user: user,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
         ),
-      )
-    end
-
-    it 'contains link to disable TOTP' do
-      render
-
-      expect(rendered).to have_link(
-        t('forms.buttons.disable'),
-        href: auth_app_delete_path(id: user.auth_app_configurations.first.id),
       )
     end
   end

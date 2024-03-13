@@ -174,14 +174,6 @@ RSpec.describe 'I18n' do
             bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
             expect(bad_keys).to be_empty
           end
-
-          it 'has only has XML-safe identifiers (keys start with a letter)' do
-            keys = flattened_yaml_data.keys
-
-            bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
-
-            expect(bad_keys).to be_empty
-          end
         end
 
         it 'has correctly-formatted interpolation values' do

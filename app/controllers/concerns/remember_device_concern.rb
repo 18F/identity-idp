@@ -9,16 +9,18 @@ module RememberDeviceConcern
     return if remember_device_preference != '1' && remember_device_preference != 'true'
     cookies.encrypted[:remember_device] = {
       value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now).to_json,
-      expires: remember_device_cookie_expiration,
+      expires: IdentityConfig.store.remember_device_expiration_hours_aal_1.hours.from_now,
     }
   end
 
   def check_remember_device_preference
     return unless UserSessionContext.authentication_context?(context)
     return if remember_device_cookie.nil?
+
+    expiration_time = decorated_sp_session.mfa_expiration_interval
     return unless remember_device_cookie.valid_for_user?(
       user: current_user,
-      expiration_interval: decorated_sp_session.mfa_expiration_interval,
+      expiration_interval: expiration_time,
     )
 
     handle_valid_remember_device_cookie(remember_device_cookie: remember_device_cookie)
@@ -82,13 +84,5 @@ module RememberDeviceConcern
       cookie_created_at: cookie_created_at,
       cookie_age_seconds: (Time.zone.now - cookie_created_at).to_i,
     )
-  end
-
-  def remember_device_cookie_expiration
-    if IdentityConfig.store.set_remember_device_session_expiration
-      nil
-    else
-      IdentityConfig.store.remember_device_expiration_hours_aal_1.hours.from_now
-    end
   end
 end

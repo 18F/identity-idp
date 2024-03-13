@@ -2,6 +2,10 @@ require 'saml_idp_constants'
 require 'saml_idp'
 
 class SamlIdpController < ApplicationController
+  # Ordering is significant, since failure URL must be assigned before any references to the user,
+  # as the concurrent session timeout occurs as a callback to Warden's `after_set_user` hook.
+  before_action :set_devise_failure_redirect_for_concurrent_session_logout, only: [:auth, :logout]
+
   include SamlIdp::Controller
   include SamlIdpAuthConcern
   include SamlIdpLogoutConcern
@@ -17,7 +21,6 @@ class SamlIdpController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :require_path_year
-  before_action :set_devise_failure_redirect_for_concurrent_session_logout, only: :logout
   before_action :handle_banned_user
   before_action :bump_auth_count, only: :auth
   before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
@@ -27,10 +30,11 @@ class SamlIdpController < ApplicationController
 
   def auth
     capture_analytics
-    if ial_context.ial2_or_greater?
+    if resolved_authn_context_result.identity_proofing?
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
       return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
+      return redirect_to idv_url if selfie_needed?
     end
     return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -106,19 +110,17 @@ class SamlIdpController < ApplicationController
     redirect_to capture_password_url
   end
 
+  def selfie_needed?
+    decorated_sp_session.selfie_required? &&
+      !current_user.identity_verified_with_selfie?
+  end
+
   def set_devise_failure_redirect_for_concurrent_session_logout
     request.env['devise_session_limited_failure_redirect_url'] = request.url
   end
 
-  def pii_requested_but_locked?
-    if (sp_session && sp_session_ial > 1) || ial_context.ialmax_requested?
-      current_user.identity_verified? &&
-        !Pii::Cacher.new(current_user, user_session).exists_in_session?
-    end
-  end
-
   def capture_analytics
-    analytics_payload = @result.to_h.merge(
+    analytics_payload = result.to_h.merge(
       endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
       finish_profile: user_has_pending_profile?,
@@ -135,6 +137,7 @@ class SamlIdpController < ApplicationController
     analytics.saml_auth_request(
       requested_ial: requested_ial,
       requested_aal_authn_context: saml_request&.requested_aal_authn_context,
+      requested_vtr_authn_context: saml_request&.requested_vtr_authn_context,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
@@ -143,7 +146,9 @@ class SamlIdpController < ApplicationController
   end
 
   def requested_ial
-    return 'ialmax' if ial_context.ialmax_requested?
+    requested_ial_acr = FederatedProtocols::Saml.new(saml_request).ial
+    requested_ial_component = Vot::LegacyComponentValues.by_name[requested_ial_acr]
+    return 'ialmax' if requested_ial_component&.requirements&.include?(:ialmax)
 
     saml_request&.requested_ial_authn_context || 'none'
   end
@@ -173,10 +178,29 @@ class SamlIdpController < ApplicationController
 
   def track_events
     analytics.sp_redirect_initiated(
-      ial: ial_context.ial,
+      ial: resolved_authn_context_int_ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
+      sign_in_flow: session[:sign_in_flow],
     )
     track_billing_events
+  end
+
+  def ial_context
+    @ial_context ||= IalContext.new(
+      ial: resolved_authn_context_int_ial,
+      service_provider: saml_request_service_provider,
+      user: current_user,
+    )
+  end
+
+  def resolved_authn_context_int_ial
+    if resolved_authn_context_result.ialmax?
+      0
+    elsif resolved_authn_context_result.identity_proofing?
+      2
+    else
+      1
+    end
   end
 
   def require_path_year

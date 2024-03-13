@@ -22,8 +22,8 @@ es:
       button: Sí, continúa eliminando
       cancel_link_text: por favor cancele
       help_html: Si no desea eliminar su cuenta, %{cancel_account_reset_html}.
-      intro_html: Su período de espera de 24 horas ha finalizado. Complete el paso 2
-        del proceso.<br><br>Si no ha podido localizar sus métodos de
+      intro_html: Su período de espera de %{hours} horas ha finalizado. Complete el
+        paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de
         autenticación, seleccione “confirmar eliminación” para eliminar su
         cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los
         sitios web gubernamentales participantes que utilizan %{app_name}, puede
@@ -33,15 +33,15 @@ es:
     account_reset_request:
       cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name}
         para cancelar.'
-      header: Su cuenta será eliminada en 24 horas
+      header: Su cuenta será eliminada en %{interval}
       intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos
         pasos para eliminar su cuenta:<br><br> Paso uno: hay un período de
-        espera de 24 horas si ha perdido el acceso a sus métodos de
+        espera de %{hours} horas si ha perdido el acceso a sus métodos de
         autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de
         autenticación, puede iniciar sesión en su cuenta %{app_name} para
         cancelar esta solicitud.<br><br> Paso dos: Después de su período de
-        espera de 24 horas, recibirá un correo electrónico que le pedirá que
-        confirme la eliminación de su cuenta %{app_name}. Su cuenta no se
+        espera de %{hours} horas, recibirá un correo electrónico que le pedirá
+        que confirme la eliminación de su cuenta %{app_name}. Su cuenta no se
         eliminará hasta que confirme.'
       subject: Cómo eliminar su cuenta de %{app_name}
     account_verified:
@@ -173,6 +173,14 @@ es:
           martes 30 de mayo.</strong>
       subject: Los resultados de la verificación presencial de %{app_name} se han
         retrasado
+    in_person_please_call:
+      body:
+        contact_message_html: Llame al <strong>%{contact_number}</strong> y facilíteles
+          el código de error <strong>%{support_code}</strong>.
+        intro_html: Llame a nuestro centro de atención antes del
+          <strong>%{date}</strong> para seguir verificando su identidad.
+      header: Llámenos
+      subject: Llame a %{app_name} para proseguir con la verificación de su identidad
     in_person_ready_to_verify:
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_ready_to_verify_reminder:
@@ -274,7 +282,7 @@ es:
     phone_added:
       disavowal_link: restablezca su contraseña
       help_html: Si no realizó este cambio, inicie sesión en su perfil y administre
-        sus números de teléfono.  También le recomendamos que
+        sus números de teléfono. También le recomendamos que
         %{disavowal_link_html}.
       intro: Se agregó un nuevo número de teléfono a su perfil de %{app_name}.
       subject: Nuevo número de teléfono añadido

@@ -1,11 +1,11 @@
 class BlockLinkComponent < BaseComponent
-  attr_reader :url, :action, :new_tab, :tag_options
+  attr_reader :url, :action, :new_tab, :tag_options, :component
 
   alias_method :new_tab?, :new_tab
 
-  def initialize(url:, action: tag.method(:a), new_tab: false, **tag_options)
-    @action = action
+  def initialize(url: '#', component: nil, new_tab: false, **tag_options)
     @url = url
+    @component = component
     @new_tab = new_tab
     @tag_options = tag_options
   end
@@ -21,11 +21,11 @@ class BlockLinkComponent < BaseComponent
   end
 
   def wrapper(&block)
-    wrapper = action.call(**tag_options, href: url, class: css_class, target:, &block)
-    if wrapper.respond_to?(:render_in)
-      render wrapper, &block
+    if component
+      render component.new(href: url, class: css_class), &block
     else
-      wrapper
+      action = tag.method(:a)
+      action.call(**tag_options, href: url, class: css_class, target:, &block)
     end
   end
 end

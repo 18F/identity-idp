@@ -9,7 +9,6 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :authorize_piv_cac_disable, only: :delete
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :new
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
     before_action :confirm_recently_authenticated_2fa
@@ -33,15 +32,6 @@ module Users
       )
     end
 
-    def delete
-      analytics.piv_cac_disabled
-      remove_piv_cac
-      clear_piv_cac_information
-      create_user_event(:piv_cac_disabled)
-      flash[:success] = t('notices.piv_cac_disabled')
-      redirect_to account_two_factor_authentication_path
-    end
-
     def submit_new_piv_cac
       if good_nickname
         user_session[:piv_cac_nickname] = params[:name]
@@ -57,14 +47,6 @@ module Users
 
     def track_piv_cac_setup_visit
       analytics.piv_cac_setup_visited(**analytics_properties)
-    end
-
-    def remove_piv_cac
-      revoke_remember_device(current_user)
-      current_user_id = current_user.id
-      Db::PivCacConfiguration.delete(current_user_id, params[:id].to_i)
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
     end
 
     def render_prompt
@@ -127,10 +109,6 @@ module Users
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics)
     end
 
-    def piv_cac_enabled?
-      TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
-    end
-
     def process_invalid_submission
       if user_piv_cac_form.name_taken
         flash.now[:error] = t('errors.piv_cac_setup.unique_name')
@@ -139,11 +117,6 @@ module Users
         clear_piv_cac_information
         redirect_to setup_piv_cac_error_url(error: user_piv_cac_form.error_type)
       end
-    end
-
-    def authorize_piv_cac_disable
-      return if piv_cac_enabled? && MfaPolicy.new(current_user).multiple_factors_enabled?
-      redirect_to account_two_factor_authentication_path
     end
 
     def good_nickname

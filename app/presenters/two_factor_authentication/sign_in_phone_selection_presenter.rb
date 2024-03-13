@@ -10,7 +10,7 @@ module TwoFactorAuthentication
 
     def type
       if MfaContext.new(configuration&.user).phone_configurations.many?
-        "#{delivery_method}_#{configuration.id}".to_sym
+        :"#{delivery_method}_#{configuration.id}"
       else
         delivery_method || :phone
       end

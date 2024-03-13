@@ -16,7 +16,6 @@ es:
     password_changed: Ha cambiado su contraseña.
     phone_confirmed: Un teléfono fue agregado a tu cuenta.
     piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.
-    piv_cac_disabled: Tu PIV/CAC fue eliminado de tu cuenta.
     privacy:
       privacy_act_statement: Declaración de la ley de privacidad
       security_and_privacy_practices: Prácticas de seguridad y privacidad
@@ -37,7 +36,7 @@ es:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: '¿No recibió un email?'
+      resend_confirmation_email: Reenviar el correo electrónico de confirmación
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión
@@ -56,12 +55,9 @@ es:
           %{time_left_in_session_html} a menos que nos indique lo contrario.
         sign_out: Desconécteme
     totp_configured: Una aplicación de autenticación fue agregada a tu cuenta.
-    totp_disabled: Tu aplicación de autenticación fue eliminada de tu cuenta.
     use_diff_email:
       link: use un email diferente
       text_html: O %{link_html}
     webauthn_configured: Una llave de seguridad fue agregada a tu cuenta.
-    webauthn_deleted: Tu llave de seguridad fue eliminada de tu cuenta.
     webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para
       agregar el desbloqueo facial o táctil a su cuenta.
-    webauthn_platform_deleted: Desbloqueo facial o táctil fue eliminada de tu cuenta.

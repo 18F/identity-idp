@@ -25,10 +25,5 @@
     "./*.js",
     "scripts"
   ],
-  "exclude": [
-    "**/fixtures",
-    "**/*.spec.js",
-    "app/javascript/packs/pw-strength.js",
-    "app/javascript/packs/saml-post.js"
-  ]
+  "exclude": ["**/fixtures", "spec/**/*.spec.js"]
 }

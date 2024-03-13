@@ -18,6 +18,7 @@
     "cli.js",
     "index.js",
     "visitors/index.js",
+    "visitors/colllapse-spacing.js",
     "visitors/smart-punctuation.js",
     "visitors/sort-keys.js",
     "types"
@@ -38,5 +39,6 @@
   },
   "peerDependencies": {
     "prettier": ">=3"
-  }
+  },
+  "sideEffects": false
 }

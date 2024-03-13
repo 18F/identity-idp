@@ -85,29 +85,8 @@ module Users
       if result.success?
         process_valid_webauthn(form)
       else
-        process_invalid_webauthn(form)
-      end
-    end
-
-    def delete
-      if MfaPolicy.new(current_user).multiple_factors_enabled?
-        handle_successful_delete
-      else
-        handle_failed_delete
-      end
-      redirect_to account_two_factor_authentication_path
-    end
-
-    def show_delete
-      @webauthn = WebauthnConfiguration.where(
-        user_id: current_user.id, id: delete_params[:id],
-      ).first
-
-      if @webauthn
-        render 'users/webauthn_setup/delete'
-      else
-        flash[:error] = t('errors.general')
-        redirect_back fallback_location: new_user_session_url, allow_other_host: false
+        flash.now[:error] = result.first_error_message
+        render :new
       end
     end
 
@@ -139,31 +118,6 @@ module Users
 
     def exclude_credentials
       current_user.webauthn_configurations.map(&:credential_id)
-    end
-
-    def handle_successful_delete
-      webauthn = WebauthnConfiguration.find_by(user_id: current_user.id, id: delete_params[:id])
-      return unless webauthn
-
-      create_user_event(:webauthn_key_removed)
-      webauthn.destroy
-      revoke_remember_device(current_user)
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
-      if webauthn.platform_authenticator
-        flash[:success] = t('notices.webauthn_platform_deleted')
-      else
-        flash[:success] = t('notices.webauthn_deleted')
-      end
-      track_delete(true)
-    end
-
-    def handle_failed_delete
-      track_delete(false)
-    end
-
-    def track_delete(success)
-      analytics.webauthn_delete_submitted(success:, configuration_id: delete_params[:id])
     end
 
     def save_challenge_in_session
@@ -205,24 +159,6 @@ module Users
       in_multi_mfa_selection_flow? && mfa_selection_count < 2
     end
 
-    def process_invalid_webauthn(form)
-      if form.name_taken
-        if form.platform_authenticator?
-          flash.now[:error] = t('errors.webauthn_platform_setup.unique_name')
-        else
-          flash.now[:error] = t('errors.webauthn_setup.unique_name')
-        end
-      elsif form.platform_authenticator?
-        flash[:error] = t('errors.webauthn_platform_setup.general_error')
-      else
-        flash[:error] = t(
-          'errors.webauthn_setup.general_error_html',
-          link_html: t('errors.webauthn_setup.additional_methods_link'),
-        )
-      end
-      render :new
-    end
-
     def new_params
       params.permit(:platform, :error)
     end
@@ -236,10 +172,6 @@ module Users
         :platform_authenticator,
         :transports,
       )
-    end
-
-    def delete_params
-      params.permit(:id)
     end
   end
 end

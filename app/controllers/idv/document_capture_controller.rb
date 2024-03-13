@@ -59,7 +59,14 @@ module Idv
         key: :document_capture,
         controller: self,
         next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
-        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
+        preconditions: ->(idv_session:, user:) {
+                         idv_session.flow_path == 'standard' && (
+                           # mobile
+                           idv_session.skip_hybrid_handoff ||
+                            !idv_session.selfie_check_required || # desktop but selfie not required
+                             idv_session.desktop_selfie_test_mode_enabled?
+                         )
+                       },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
@@ -85,13 +92,15 @@ module Idv
         irs_reproofing: irs_reproofing?,
         redo_document_capture: idv_session.redo_document_capture,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
+        liveness_checking_required: decorated_sp_session.selfie_required?,
+        selfie_check_required: idv_session.selfie_check_required,
       }.merge(ab_test_analytics_buckets)
     end
 
     def handle_stored_result
       if stored_result&.success? && selfie_requirement_met?
         save_proofing_components(current_user)
-        extract_pii_from_doc(current_user, stored_result, store_in_session: true)
+        extract_pii_from_doc(current_user, store_in_session: true)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
       else

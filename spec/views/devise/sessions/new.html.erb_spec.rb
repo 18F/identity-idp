@@ -11,7 +11,6 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
     allow_any_instance_of(ActionController::TestRequest).to receive(:path).
       and_return('/')
-    assign(:ial, 1)
   end
 
   it 'sets autocomplete attribute off' do
@@ -72,15 +71,6 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     expect(rendered).to have_selector(
       "a[href='#{MarketingSite.privacy_act_statement_url}']\
 [target='_blank'][rel='noopener noreferrer']",
-    )
-  end
-
-  it 'includes tracking script for no-JavaScript' do
-    render
-
-    expect(rendered).to have_css(
-      "link[rel='stylesheet'][href='#{no_js_detect_css_path(location: :sign_in)}']",
-      visible: false,
     )
   end
 

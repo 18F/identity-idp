@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe IdvController do
+RSpec.describe IdvController, allowed_extra_analytics: [:*] do
   before do
     stub_sign_in
   end
@@ -45,6 +45,31 @@ RSpec.describe IdvController do
       get :index
 
       expect(response).to redirect_to(idv_not_verified_url)
+    end
+
+    context 'user has active profile' do
+      let(:user) { create(:user, :proofed) }
+      before do
+        stub_sign_in(user)
+      end
+      it 'redirects to activated' do
+        get :index
+        expect(response).to redirect_to idv_activated_url
+      end
+
+      context 'but user needs to redo idv with biometric' do
+        let(:current_sp) { create(:service_provider) }
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+          session[:sp] =
+            { issuer: current_sp.issuer, biometric_comparison_required: true }
+        end
+
+        it 'redirects to welcome' do
+          get :index
+          expect(response).to redirect_to idv_welcome_url
+        end
+      end
     end
 
     context 'if number of verify_info attempts has been exceeded' do
@@ -169,13 +194,13 @@ RSpec.describe IdvController do
 
     describe 'SP for IdV requirement' do
       let(:current_sp) { create(:service_provider) }
-      let(:ial) { 2 }
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
 
       before do
         stub_sign_in(user)
         if current_sp.present?
-          session[:sp] = { issuer: current_sp.issuer, ial: ial }
+          session[:sp] = { issuer: current_sp.issuer, acr_values: acr_values }
         else
           session[:sp] = {}
         end
@@ -212,7 +237,7 @@ RSpec.describe IdvController do
       end
 
       context 'with an SP context that does not require IdV' do
-        let(:ial) { 1 }
+        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
 
         context 'when an SP is required' do
           let(:idv_sp_required) { true }
@@ -241,7 +266,7 @@ RSpec.describe IdvController do
       end
 
       context 'with an SP context that requires IdV' do
-        let(:ial) { 2 }
+        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
         context 'when an SP is required' do
           let(:idv_sp_required) { true }

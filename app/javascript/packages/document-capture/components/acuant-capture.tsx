@@ -17,15 +17,12 @@ import { removeUnloadProtection } from '@18f/identity-url';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import AcuantSelfieCamera from './acuant-selfie-camera';
 import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
-import type {
-  AcuantCaptureFailureError,
-  AcuantSuccessResponse,
-  LegacyAcuantSuccessResponse,
-} from './acuant-camera';
+import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
+import SelfieCaptureContext from '../context/selfie-capture';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import FileInput from './file-input';
 import UploadContext from '../context/upload';
@@ -39,11 +36,11 @@ interface ImageAnalyticsPayload {
   /**
    * Image width, or null if unknown
    */
-  width: number | null;
+  width?: number | null;
   /**
    * Image height, or null if unknown
    */
-  height: number | null;
+  height?: number | null;
   /**
    * Mime type, or null if unknown
    */
@@ -53,9 +50,9 @@ interface ImageAnalyticsPayload {
    */
   source: ImageSource;
   /**
-   * Total number of attempts at this point
+   * Total number of attempts to capture / upload an image at this point
    */
-  attempt?: number;
+  captureAttempts?: number;
   /**
    * Size of the image in bytes
    */
@@ -69,7 +66,7 @@ interface ImageAnalyticsPayload {
   /**
    * Fingerprint of the image, base64 encoded SHA-256 digest
    */
-  fingerprint: string | null;
+  fingerprint?: string | null;
 
   /**
    *
@@ -324,6 +321,7 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const fullScreenRef = useRef<FullScreenRefHandle>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
@@ -334,7 +332,7 @@ function AcuantCapture(
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
-  const [attempt, incrementAttempt] = useCounter(1);
+  const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
   const [imageCaptureText, setImageCaptureText] = useState('');
@@ -384,10 +382,11 @@ function AcuantCapture(
   >(payload: P): P {
     const enhancedPayload = {
       ...payload,
-      attempt,
+      captureAttempts,
       acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
+      liveness_checking_required: isSelfieCaptureEnabled,
     };
-    incrementAttempt();
+    incrementCaptureAttempts();
     return enhancedPayload;
   }
 
@@ -412,7 +411,7 @@ function AcuantCapture(
       });
 
       trackEvent(
-        name === 'selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`,
+        name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
         analyticsPayload,
       );
     }
@@ -428,7 +427,11 @@ function AcuantCapture(
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          trackEvent(`IdV: ${name} image clicked`, { source, ...metadata });
+          trackEvent(`IdV: ${name} image clicked`, {
+            source,
+            ...metadata,
+            liveness_checking_required: isSelfieCaptureEnabled,
+          });
         }
 
         return fn(...args);
@@ -504,21 +507,28 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureOpen() {
-    trackEvent('idv_sdk_selfie_image_capture_opened');
+    trackEvent('idv_sdk_selfie_image_capture_opened', { captureAttempts });
 
     setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {
-    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo');
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', { captureAttempts });
 
     setIsCapturingEnvironment(false);
   }
 
   function onSelfieCaptureSuccess({ image }: { image: string }) {
-    trackEvent('idv_sdk_selfie_image_added', { attempt });
+    const analyticsPayload: ImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
+      mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
+      source: 'acuant',
+      size: getDecodedBase64ByteSize(image),
+      failedImageResubmission: false,
+    });
 
-    onChangeAndResetError(image);
+    trackEvent('idv_selfie_image_added', { captureAttempts });
+
+    onChangeAndResetError(image, analyticsPayload);
     onResetFailedCaptureAttempts();
     setIsCapturingEnvironment(false);
   }
@@ -527,6 +537,7 @@ function AcuantCapture(
     trackEvent('idv_sdk_selfie_image_capture_failed', {
       sdk_error_code: error.code,
       sdk_error_message: error.message,
+      captureAttempts,
     });
 
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
@@ -546,11 +557,8 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
-  function onAcuantImageCaptureSuccess(
-    nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
-  ) {
-    const { image, dpi, moire, glare, sharpness } = nextCapture;
-    const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
+  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
+    const { image, dpi, moire, glare, sharpness, cardType } = nextCapture;
 
     const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
     const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
@@ -590,9 +598,13 @@ function AcuantCapture(
       size: getDecodedBase64ByteSize(nextCapture.image.data),
       fingerprint: null,
       failedImageResubmission: false,
+      liveness_checking_required: false,
     });
 
-    trackEvent(`IdV: ${name} image added`, analyticsPayload);
+    trackEvent(
+      name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
+      analyticsPayload,
+    );
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
@@ -651,6 +663,7 @@ function AcuantCapture(
       field: name,
       acuantCaptureMode,
       error: getNormalizedAcuantCaptureFailureMessage(error, code),
+      liveness_checking_required: isSelfieCaptureEnabled,
     });
   }
 

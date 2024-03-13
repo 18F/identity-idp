@@ -187,6 +187,7 @@ class IdentityConfig
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
     config.add(:doc_auth_selfie_capture_enabled, type: :boolean)
+    config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_sdk_capture_orientation, type: :json, options: { symbolize_names: true })
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
@@ -257,9 +258,9 @@ class IdentityConfig
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_message_enabled, type: :boolean)
     config.add(:in_person_proofing_enabled, type: :boolean)
+    config.add(:in_person_proofing_enforce_tmx, type: :boolean)
     config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
     config.add(:in_person_public_address_search_enabled, type: :boolean)
-    config.add(:in_person_residential_address_controller_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
@@ -321,7 +322,6 @@ class IdentityConfig
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:newrelic_license_key, type: :string)
-    config.add(:nonessential_email_banlist, type: :json)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -329,6 +329,10 @@ class IdentityConfig
     )
     config.add(
       :openid_connect_redirect_uuid_override_map,
+      type: :json,
+    )
+    config.add(
+      :openid_connect_redirect_issuer_override_map,
       type: :json,
     )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
@@ -444,7 +448,6 @@ class IdentityConfig
     config.add(:session_timeout_in_minutes, type: :integer)
     config.add(:session_timeout_warning_seconds, type: :integer)
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
-    config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_unsupported_passkey_platform_authentication_setup, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
@@ -453,7 +456,9 @@ class IdentityConfig
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:team_ada_email, type: :string)
     config.add(:team_all_login_emails, type: :json)
+    config.add(:team_daily_fraud_metrics_emails, type: :json)
     config.add(:team_daily_reports_emails, type: :json)
+    config.add(:team_monthly_fraud_metrics_emails, type: :json)
     config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)
@@ -461,6 +466,7 @@ class IdentityConfig
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
+    config.add(:use_vot_in_sp_requests, type: :boolean)
     config.add(:usps_auth_token_refresh_job_enabled, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
     config.add(:usps_ipp_client_id, type: :string)
@@ -495,6 +501,7 @@ class IdentityConfig
     config.add(:version_headers_enabled, type: :boolean)
     config.add(:voice_otp_pause_time)
     config.add(:voice_otp_speech_rate)
+    config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types

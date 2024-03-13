@@ -2,6 +2,7 @@ require 'cgi'
 
 module Features
   module SessionHelper
+    include JavascriptDriverHelper
     include PersonalKeyHelper
 
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
@@ -50,6 +51,7 @@ module Features
     def signin(email, password)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
+      set_hidden_field('platform_authenticator_available', 'true')
       fill_in_credentials_and_submit(email, password)
       continue_as(email, password)
     end
@@ -146,20 +148,6 @@ module Features
       user
     end
 
-    def begin_sign_up_with_sp_and_ial(ial2:)
-      user = create(:user)
-      login_as(user, scope: :user, run_callbacks: false)
-
-      Warden.on_next_request do |proxy|
-        session = proxy.env['rack.session']
-        sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
-        session[:sp] = { ial2: ial2, issuer: sp.issuer, request_id: '123' }
-      end
-
-      visit account_path
-      user
-    end
-
     def sign_up_and_set_password
       user = sign_up
       user.password = VALID_PASSWORD
@@ -202,7 +190,7 @@ module Features
       user
     end
 
-    def sign_in_with_warden(user, auth_method: nil)
+    def sign_in_with_warden(user, auth_method: nil, issuer: nil)
       login_as(user, scope: :user, run_callbacks: false)
 
       Warden.on_next_request do |proxy|
@@ -211,12 +199,13 @@ module Features
         if auth_method
           session['warden.user.user.session']['auth_events'] = [{ auth_method:, at: Time.zone.now }]
         end
+        session['sp'] = { issuer: } if issuer
       end
       visit account_path
     end
 
-    def sign_in_and_2fa_user(user = user_with_2fa)
-      sign_in_with_warden(user, auth_method: 'phone')
+    def sign_in_and_2fa_user(user = user_with_2fa, issuer: nil)
+      sign_in_with_warden(user, auth_method: 'phone', issuer:)
       user
     end
 
@@ -367,25 +356,6 @@ module Features
       field.set(personal_key)
     end
 
-    def ial1_sp_session
-      Warden.on_next_request do |proxy|
-        session = proxy.env['rack.session']
-        sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
-        session[:sp] = {
-          ial2: false,
-          issuer: sp.issuer,
-          requested_attributes: [:email],
-        }
-      end
-    end
-
-    def ial2_sp_session(request_url: 'http://localhost:3000')
-      Warden.on_next_request do |proxy|
-        session = proxy.env['rack.session']
-        session[:sp] = { ial2: true, request_url: request_url }
-      end
-    end
-
     def cookies
       page.driver.browser.rack_mock_session.cookie_jar.instance_variable_get(:@cookies)
     end
@@ -487,7 +457,7 @@ module Features
     end
 
     def click_link_to_use_a_different_email
-      click_link t('notices.use_diff_email.link')
+      click_link t('notices.use_diff_email.link').upcase_first
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
@@ -728,6 +698,15 @@ module Features
 
     def acknowledge_backup_code_confirmation
       click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
+    end
+
+    def set_hidden_field(id, value)
+      input = first("input##{id}", visible: false)
+      if javascript_enabled?
+        input.execute_script("this.value = #{value.to_json}")
+      else
+        input.set(value)
+      end
     end
   end
 end

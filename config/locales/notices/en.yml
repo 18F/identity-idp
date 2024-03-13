@@ -16,7 +16,6 @@ en:
     password_changed: You changed your password.
     phone_confirmed: A phone was added to your account.
     piv_cac_configured: A PIV/CAC card was added to your account.
-    piv_cac_disabled: Your PIV/CAC was deleted from your account.
     privacy:
       privacy_act_statement: Privacy Act Statement
       security_and_privacy_practices: Security Practices and Privacy Act Statement
@@ -35,7 +34,7 @@ en:
       first_paragraph_end: with a link to confirm your email address. Follow the link
         to continue creating your account.
       first_paragraph_start: We sent an email to
-      no_email_sent_explanation_start: Didn’t receive an email?
+      resend_confirmation_email: Resend the confirmation email
     timeout_warning:
       partially_signed_in:
         continue: Continue sign in
@@ -54,12 +53,9 @@ en:
           %{time_left_in_session_html} unless you tell us otherwise.
         sign_out: Sign me out
     totp_configured: An authentication app was added to your account.
-    totp_disabled: Your authentication app was deleted from your account.
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link_html}
     webauthn_configured: A security key was added to your account.
-    webauthn_deleted: Your security key was deleted from your account.
     webauthn_platform_configured: You used your device’s screen lock to add face or
       touch unlock to your account.
-    webauthn_platform_deleted: Face or touch unlock was deleted from your account.

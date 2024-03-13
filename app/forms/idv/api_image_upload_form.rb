@@ -85,6 +85,7 @@ module Idv
           back_image: back_image_bytes,
           selfie_image: liveness_checking_required ? selfie_image_bytes : nil,
           image_source: image_source,
+          images_cropped: acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
@@ -143,10 +144,10 @@ module Idv
 
     def extra_attributes
       return @extra_attributes if defined?(@extra_attributes) &&
-                                  @extra_attributes&.dig('attempts') == attempts
+                                  @extra_attributes&.dig('submit_attempts') == submit_attempts
       @extra_attributes = {
-        attempts: attempts,
-        remaining_attempts: remaining_attempts,
+        submit_attempts: submit_attempts,
+        remaining_submit_attempts: remaining_submit_attempts,
         user_id: user_uuid,
         pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
@@ -154,6 +155,8 @@ module Idv
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
+      @extra_attributes[:liveness_checking_required] = liveness_checking_required
       @extra_attributes
     end
 
@@ -173,11 +176,21 @@ module Idv
       end
     end
 
-    def remaining_attempts
+    def selfie_image_fingerprint
+      return unless liveness_checking_required
+      return @selfie_image_fingerprint if @selfie_image_fingerprint
+
+      if readable?(:selfie)
+        @selfie_image_fingerprint =
+          Digest::SHA256.urlsafe_base64digest(selfie_image_bytes)
+      end
+    end
+
+    def remaining_submit_attempts
       rate_limiter.remaining_count if document_capture_session
     end
 
-    def attempts
+    def submit_attempts
       rate_limiter.attempts if document_capture_session
     end
 
@@ -186,13 +199,13 @@ module Idv
       return form_response unless form_response.success?
 
       # doc_pii validation failed
-      return doc_pii_response if (doc_pii_response.present? && !doc_pii_response.success?)
+      return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
 
       client_response
     end
 
     def image_source
-      if acuant_sdk_capture?
+      if acuant_sdk_captured_id?
         DocAuth::ImageSources::ACUANT_SDK
       else
         DocAuth::ImageSources::UNKNOWN
@@ -236,6 +249,14 @@ module Idv
           type: :not_a_file
         )
       end
+
+      if !IdentityConfig.store.doc_auth_selfie_desktop_test_mode &&
+         liveness_checking_required && !acuant_sdk_captured?
+        errors.add(
+          :selfie, t('doc_auth.errors.not_a_file'),
+          type: :not_a_file
+        )
+      end
     end
 
     def validate_duplicate_images
@@ -258,6 +279,15 @@ module Idv
       unless error_sides.empty?
         analytics.idv_doc_auth_failed_image_resubmitted(
           side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
+        )
+      end
+
+      if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
+        errors.add(
+          :selfie, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+        )
+        analytics.idv_doc_auth_failed_image_resubmitted(
+          side: 'selfie', **extra_attributes,
         )
       end
     end
@@ -348,14 +378,28 @@ module Idv
       }
     end
 
-    def acuant_sdk_capture?
+    def acuant_sdk_captured?
+      acuant_sdk_captured_id? &&
+        (liveness_checking_required ? acuant_sdk_captured_selfie? : true)
+    end
+
+    def acuant_sdk_captured_id?
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
         image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
     end
 
+    def acuant_sdk_captured_selfie?
+      image_metadata.dig(:selfie, :source) == Idp::Constants::Vendors::ACUANT
+    end
+
+    def acuant_sdk_autocaptured_id?
+      image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
+        image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO'
+    end
+
     def image_metadata
-      @image_metadata ||= params.permit(:front_image_metadata, :back_image_metadata).
-        to_h.
+      @image_metadata ||= params.
+        permit(:front_image_metadata, :back_image_metadata, :selfie_image_metadata).to_h.
         transform_values do |str|
           JSON.parse(str)
         rescue JSON::ParserError
@@ -437,35 +481,39 @@ module Idv
         return {
           front: [],
           back: [],
+          selfie: [],
         }
       end
       # doc auth failed due to non network error or doc_pii is not valid
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
-        ## assume both sides' error presents or both sides' error missing
-        failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
-        failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
-        ## not both sides' error present nor both sides' error missing
-        ## equivalent to: only one side error presents
-        only_one_side_error = errors_hash[:front]&.present? ^ errors_hash[:back]&.present?
-        if only_one_side_error
-          ## find which side is missing
-          failed_front_fingerprint = nil unless errors_hash[:front]&.present?
-          failed_back_fingerprint = nil unless errors_hash[:back]&.present?
+        failed_front_fingerprint = nil
+        failed_back_fingerprint = nil
+        if errors_hash[:front] || errors_hash[:back]
+          if errors_hash[:front]
+            failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+          end
+          if errors_hash[:back]
+            failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+          end
+        elsif !client_response.doc_auth_success?
+          failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+          failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
         end
-        document_capture_session.
-          store_failed_auth_data(
-            front_image_fingerprint: failed_front_fingerprint,
-            back_image_fingerprint: failed_back_fingerprint,
-            doc_auth_success: client_response.doc_auth_success?,
-            selfie_success: client_response.selfie_success,
-          )
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: failed_front_fingerprint,
+          back_image_fingerprint: failed_back_fingerprint,
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+        )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],
           back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
-          selfie_success: client_response.selfie_success,
+          selfie_status: client_response.selfie_status,
         )
       end
       # retrieve updated data from session
@@ -473,6 +521,7 @@ module Idv
       {
         front: captured_result&.failed_front_image_fingerprints || [],
         back: captured_result&.failed_back_image_fingerprints || [],
+        selfie: captured_result&.failed_selfie_image_fingerprints || [],
       }
     end
 

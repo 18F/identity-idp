@@ -1,10 +1,11 @@
 <%= content_tag(
-      :svg,
-      aria: { hidden: true },
-      focusable: 'false',
-      role: 'img',
+      :span,
+      content_tag(
+        :style,
+        "#icon-#{unique_id} { mask-image: url(#{icon_path}); -webkit-mask-image: url(#{icon_path}); }",
+        nonce: content_security_policy_nonce,
+      ),
       **tag_options,
-      class: ['usa-icon', *tag_options[:class]],
-    ) do %>
-  <use href="<%= icon_path %>"></use>
-<% end %>
+      id: "icon-#{unique_id}",
+      class: css_class,
+    ) -%>

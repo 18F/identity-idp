@@ -117,7 +117,7 @@ lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
-	scripts/validate-workspaces.js
+	scripts/validate-workspaces.mjs
 
 lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
 	@# This enforces an asset size budget to ensure that download sizes are reasonable and to protect
@@ -177,7 +177,7 @@ brakeman: ## Runs brakeman code security check
 	(bundle exec brakeman) || (echo "Error: update code as needed to remove security issues. For known exceptions already in brakeman.ignore, use brakeman to interactively update exceptions."; exit 1)
 
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
-	yarn build
+	yarn build:js
 
 browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
 	yarn generate-browsers-json
@@ -283,7 +283,7 @@ lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are
 
 lint_analytics_events_sorted:
 	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
-		|| (echo 'Error: methods in analytics_events.rb are not sorted alphabetically' && exit 1)
+		|| (echo '\033[1;31mError: methods in analytics_events.rb are not sorted alphabetically\033[0m' && exit 1)
 
 lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'verify_info step and verify_info_concern', :js do
+RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include DocAuthHelper
 
@@ -129,7 +129,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
       step_name: 'verify_info',
-      remaining_attempts: 5,
+      remaining_submit_attempts: 5,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
 

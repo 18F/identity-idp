@@ -1,7 +1,7 @@
 module Idv
   class SessionErrorsController < ApplicationController
     include Idv::AvailabilityConcern
-    include IdvSession
+    include IdvSessionConcern
     include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
@@ -20,7 +20,7 @@ module Idv
       )
 
       @step_indicator_steps = step_indicator_steps
-      @remaining_attempts = rate_limiter.remaining_count
+      @remaining_submit_attempts = rate_limiter.remaining_count
       log_event(based_on_limiter: rate_limiter)
     end
 
@@ -93,7 +93,7 @@ module Idv
         type: params[:action],
       }
 
-      options[:attempts_remaining] = based_on_limiter.remaining_count if based_on_limiter
+      options[:submit_attempts_remaining] = based_on_limiter.remaining_count if based_on_limiter
 
       analytics.idv_session_error_visited(**options)
     end

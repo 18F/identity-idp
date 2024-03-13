@@ -148,6 +148,12 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_attention_barcode.json')
     end
 
+    def true_id_barcode_read_attention_with_face_match_fail
+      read_fixture_file_at_path(
+        'true_id/true_id_response_attention_barcode_with_face_match_fail.json',
+      )
+    end
+
     def true_id_failure_empty
       read_fixture_file_at_path('true_id/true_id_response_failure_empty.json')
     end
@@ -162,6 +168,14 @@ module LexisNexisFixtures
 
     def true_id_response_success_with_liveness
       read_fixture_file_at_path('true_id/true_id_response_success_with_liveness.json')
+    end
+
+    def true_id_response_with_face_match_fail
+      read_fixture_file_at_path('true_id/true_id_response_with_face_match_fail.json')
+    end
+
+    def true_id_response_failure_with_face_match_pass
+      read_fixture_file_at_path('true_id/true_id_response_failure_with_face_match_pass.json')
     end
 
     def true_id_response_failure_no_liveness

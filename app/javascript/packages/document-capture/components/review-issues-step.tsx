@@ -6,6 +6,7 @@ import type { PII } from '../services/upload';
 import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import SelfieCaptureContext from '../context/selfie-capture';
 import DocumentCaptureWarning from './document-capture-warning';
 import DocumentCaptureReviewIssues from './document-capture-review-issues';
 
@@ -36,9 +37,11 @@ export interface ReviewIssuesStepValue {
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
-  remainingAttempts?: number;
+  remainingSubmitAttempts?: number;
   isFailedResult?: boolean;
+  isFailedSelfie?: boolean;
   isFailedDocType?: boolean;
+  isFailedSelfieLivenessOrQuality?: boolean;
   captureHints?: boolean;
   pii?: PII;
   failedImageFingerprints?: { front: string[] | null; back: string[] | null };
@@ -52,15 +55,18 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   toPreviousStep = () => undefined,
-  remainingAttempts = Infinity,
+  remainingSubmitAttempts = Infinity,
   isFailedResult = false,
   isFailedDocType = false,
+  isFailedSelfie = false,
+  isFailedSelfieLivenessOrQuality = false,
   pii,
   captureHints = false,
   failedImageFingerprints = { front: [], back: [] },
 }: ReviewIssuesStepProps) {
   const { trackEvent } = useContext(AnalyticsContext);
-  const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const [hasDismissed, setHasDismissed] = useState(remainingSubmitAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   const [skipWarning, setSkipWarning] = useState(false);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
@@ -96,7 +102,9 @@ function ReviewIssuesStep({
   }, []);
 
   function onWarningPageDismissed() {
-    trackEvent('IdV: Capture troubleshooting dismissed');
+    trackEvent('IdV: Capture troubleshooting dismissed', {
+      liveness_checking_required: isSelfieCaptureEnabled,
+    });
 
     setHasDismissed(true);
   }
@@ -118,7 +126,9 @@ function ReviewIssuesStep({
       <DocumentCaptureWarning
         isFailedDocType={isFailedDocType}
         isFailedResult={isFailedResult}
-        remainingAttempts={remainingAttempts}
+        isFailedSelfie={isFailedSelfie}
+        isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+        remainingSubmitAttempts={remainingSubmitAttempts}
         unknownFieldErrors={unknownFieldErrors}
         actionOnClick={onWarningPageDismissed}
         hasDismissed={false}
@@ -128,8 +138,10 @@ function ReviewIssuesStep({
   // Show review issue screen, hasDismissed = true
   return (
     <DocumentCaptureReviewIssues
+      isFailedSelfie={isFailedSelfie}
       isFailedDocType={isFailedDocType}
-      remainingAttempts={remainingAttempts}
+      isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+      remainingSubmitAttempts={remainingSubmitAttempts}
       captureHints={captureHints}
       value={value}
       unknownFieldErrors={unknownFieldErrors}

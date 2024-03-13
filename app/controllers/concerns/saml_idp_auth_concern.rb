@@ -5,8 +5,9 @@ module SamlIdpAuthConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :validate_saml_request, only: :auth
+    before_action :validate_and_create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
+    before_action :block_biometric_requests_in_production, only: :auth
     before_action :check_sp_active, only: :auth
     before_action :log_external_saml_auth_request, only: [:auth]
     # this must take place _before_ the store_saml_request action or the SAML
@@ -18,6 +19,13 @@ module SamlIdpAuthConcern
   end
 
   private
+
+  def block_biometric_requests_in_production
+    if @saml_request_validator.parsed_vector_of_trust&.biometric_comparison? &&
+       !FeatureManagement.idv_allow_selfie_check?
+      render_not_acceptable
+    end
+  end
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     if !saml_request.force_authn?
@@ -45,21 +53,29 @@ module SamlIdpAuthConcern
   end
 
   def validate_service_provider_and_authn_context
-    @saml_request_validator = SamlRequestValidator.new
+    return if result.success?
 
-    @result = @saml_request_validator.call(
+    analytics.saml_auth(
+      **result.to_h.merge(request_signed: saml_request.signed?),
+    )
+    render 'saml_idp/auth/error', status: :bad_request
+  end
+
+  def result
+    @result ||= @saml_request_validator.call(
       service_provider: saml_request_service_provider,
       authn_context: requested_authn_contexts,
       authn_context_comparison: saml_request.requested_authn_context_comparison,
       nameid_format: name_id_format,
     )
+  end
 
-    return if @result.success?
-
-    analytics.saml_auth(
-      **@result.to_h.merge(request_signed: saml_request.signed?),
-    )
-    render 'saml_idp/auth/error', status: :bad_request
+  def validate_and_create_saml_request_object
+    # this saml_idp method creates the saml_request object used for validations
+    validate_saml_request
+    @saml_request_validator = SamlRequestValidator.new
+  rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
+    @saml_request_validator = SamlRequestValidator.new(blank_cert: true)
   end
 
   def name_id_format
@@ -113,8 +129,10 @@ module SamlIdpAuthConcern
     end
   end
 
-  def requested_aal_authn_context
-    saml_request.requested_aal_authn_context || default_aal_context
+  def response_authn_context
+    saml_request.requested_vtr_authn_context ||
+      saml_request.requested_aal_authn_context ||
+      default_aal_context
   end
 
   def requested_ial_authn_context
@@ -125,26 +143,15 @@ module SamlIdpAuthConcern
     IdentityLinker.
       new(current_user, saml_request_service_provider).
       link_identity(
-        ial: ial_context.ial,
+        ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
       )
   end
 
   def identity_needs_verification?
-    ial2_requested? &&
+    resolved_authn_context_result.identity_proofing? &&
       (current_user.identity_not_verified? ||
        current_user.reproof_for_irs?(service_provider: current_sp))
-  end
-
-  def_delegators :ial_context, :ial2_requested?
-
-  def ial_context
-    @ial_context ||= IalContext.new(
-      ial: requested_ial_authn_context,
-      service_provider: saml_request_service_provider,
-      authn_context_comparison: saml_request.requested_authn_context_comparison,
-      user: current_user,
-    )
   end
 
   def active_identity
@@ -181,7 +188,7 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       name_id_format: name_id_format,
-      authn_context_classref: requested_aal_authn_context,
+      authn_context_classref: response_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
       signature: saml_response_signature_options,

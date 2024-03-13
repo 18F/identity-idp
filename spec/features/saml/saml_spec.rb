@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'saml api' do
+RSpec.feature 'saml api', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include IdvHelper
 
@@ -34,17 +34,11 @@ RSpec.feature 'saml api' do
       sp.save
     end
 
-    it 'returns the user to the account page after authentication' do
-      expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name),
-                     href: return_to_sp_cancel_path(step: :authentication)
-
+    it 'returns a 403' do
       sign_in_via_branded_page(user)
       click_submit_default
-      click_agree_and_continue
-      click_submit_default
 
-      expect(current_url).to eq account_url
+      expect(page.status_code).to eq 403
     end
   end
 
@@ -465,6 +459,33 @@ RSpec.feature 'saml api' do
             ),
           ),
         )
+      end
+
+      context 'when signed in with another browser' do
+        it 'maintains authentication request if logged out by concurrent session logout' do
+          user = user_with_2fa
+
+          perform_in_browser(:one) do
+            visit_idp_from_sp_with_ial1(:oidc)
+            sign_in_live_with_2fa(user)
+          end
+
+          perform_in_browser(:two) do
+            visit_idp_from_sp_with_ial1(:oidc)
+            sign_in_live_with_2fa(user)
+          end
+
+          perform_in_browser(:one) do
+            visit_idp_from_sp_with_ial1(:saml)
+
+            expect(page).to have_content(
+              [
+                ServiceProvider.find_by(issuer: SamlAuthHelper::SP_ISSUER).friendly_name,
+                t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+              ].join(' '),
+            )
+          end
+        end
       end
     end
   end

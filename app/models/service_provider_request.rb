@@ -3,7 +3,7 @@ class ServiceProviderRequest
   # since these objects are serialized to/from Redis and may be present
   # upon deployment
   attr_accessor :uuid, :issuer, :url, :ial, :aal, :requested_attributes,
-                :biometric_comparison_required
+                :biometric_comparison_required, :acr_values, :vtr
 
   def initialize(
     uuid: nil,
@@ -12,7 +12,9 @@ class ServiceProviderRequest
     ial: nil,
     aal: nil,
     requested_attributes: [],
-    biometric_comparison_required: false
+    biometric_comparison_required: false,
+    acr_values: nil,
+    vtr: nil
   )
     @uuid = uuid
     @issuer = issuer
@@ -21,6 +23,8 @@ class ServiceProviderRequest
     @aal = aal
     @requested_attributes = requested_attributes&.map(&:to_s)
     @biometric_comparison_required = biometric_comparison_required
+    @acr_values = acr_values
+    @vtr = vtr
   end
 
   def ==(other)

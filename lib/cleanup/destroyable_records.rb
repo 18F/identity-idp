@@ -46,7 +46,7 @@ class DestroyableRecords
 
     stdout.puts '*******'
     stdout.puts 'These are the IAA orders that will be affected: \n'
-    if iaa_orders.nil?
+    if iaa_orders.blank?
       stdout.puts 'No IAA orders will be affected'
     else
       stdout.puts 'These are the IAA orders that will be affected: \n'
@@ -58,15 +58,14 @@ class DestroyableRecords
   end
 
   def destroy_records
-    stdout.puts 'Destroying integration usages'
-    integration_usages.each do |integration_usage|
-      integration_usage.destroy!
+    if integration.present?
+      stdout.puts 'Destroying integration usages'
+      integration_usages.destroy_all
+      integration.reload
+      stdout.puts "Destroying integration with issuer #{integration.issuer}"
+      integration.destroy!
+      service_provider.reload
     end
-    integration.reload
-
-    stdout.puts "Destroying integration with issuer #{integration.issuer}"
-    integration.destroy!
-    service_provider.reload
 
     stdout.puts "Destroying service provider issuer #{service_provider.issuer}"
     service_provider.destroy!

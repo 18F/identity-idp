@@ -4,7 +4,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:sp_name) { 'Example SP' }
-  let(:remaining_attempts) { 5 }
+  let(:remaining_submit_attempts) { 5 }
   let(:gpo_letter_available) { false }
   let(:phone) { '+13602345678' }
   let(:country_code) { 'US' }
@@ -14,7 +14,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
-    assign(:remaining_attempts, remaining_attempts)
+    assign(:remaining_submit_attempts, remaining_submit_attempts)
     assign(:country_code, country_code)
     assign(:phone, phone)
 
@@ -52,7 +52,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
       strip_tags(
         t(
           'idv.failure.phone.warning.attempts_html',
-          count: remaining_attempts,
+          count: remaining_submit_attempts,
         ),
       ),
     )

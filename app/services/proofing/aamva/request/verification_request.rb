@@ -105,6 +105,9 @@ module Proofing
         end
 
         def message_destination_id
+          # Note: AAMVA uses this field to route the request to the appropriate state DMV.
+          #       We are required to use 'P6' as the jurisdiction when we make requests
+          #       in the AAMVA CERT/Test environment.
           return 'P6' if config.cert_enabled.to_s == 'true'
           applicant.state_id_data.state_id_jurisdiction
         end

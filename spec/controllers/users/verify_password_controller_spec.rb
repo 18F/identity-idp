@@ -7,6 +7,7 @@ RSpec.describe Users::VerifyPasswordController do
   let(:user) { create(:user, profiles: profiles, **recovery_hash) }
 
   before do
+    stub_analytics
     stub_sign_in(user)
   end
 
@@ -51,6 +52,11 @@ RSpec.describe Users::VerifyPasswordController do
 
           expect(response).to render_template(:new)
         end
+
+        it 'logs an analytics event' do
+          get :new
+          expect(@analytics).to have_logged_event(:reactivate_account_verify_password_visited)
+        end
       end
 
       describe '#update' do
@@ -74,6 +80,13 @@ RSpec.describe Users::VerifyPasswordController do
             put :update, params: user_params
           end
 
+          it 'logs an appropriate analytics event' do
+            expect(@analytics).to have_logged_event(
+              :reactivate_account_verify_password_submitted,
+              success: true,
+            )
+          end
+
           it 'tracks the appropriate attempts api events' do
             expect(@irs_attempts_api_tracker).to have_received(
               :logged_in_profile_change_reauthentication_submitted,
@@ -81,12 +94,12 @@ RSpec.describe Users::VerifyPasswordController do
             expect(@irs_attempts_api_tracker).to have_received(:idv_personal_key_generated)
           end
 
-          it 'redirects to the account page' do
-            expect(response).to redirect_to(account_url)
+          it 'redirects to the manage personal key page' do
+            expect(response).to redirect_to(manage_personal_key_url)
           end
 
           it 'sets a new personal key as a flash message' do
-            expect(flash[:personal_key]).to eq(key)
+            expect(controller.user_session[:personal_key]).to eq(key)
           end
         end
 
@@ -99,6 +112,13 @@ RSpec.describe Users::VerifyPasswordController do
             allow(form).to receive(:submit).and_return(response_bad)
 
             put :update, params: user_params
+          end
+
+          it 'logs an appropriate analytics event' do
+            expect(@analytics).to have_logged_event(
+              :reactivate_account_verify_password_submitted,
+              success: false,
+            )
           end
 
           it 'tracks the appropriate attempts api event' do

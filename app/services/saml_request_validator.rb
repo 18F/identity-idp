@@ -1,9 +1,15 @@
 class SamlRequestValidator
   include ActiveModel::Model
 
+  validate :cert_exists
   validate :authorized_service_provider
   validate :authorized_authn_context
+  validate :parsable_vtr
   validate :authorized_email_nameid_format
+
+  def initialize(blank_cert: false)
+    @blank_cert = blank_cert
+  end
 
   def call(service_provider:, authn_context:, nameid_format:, authn_context_comparison: nil)
     self.service_provider = service_provider
@@ -12,6 +18,16 @@ class SamlRequestValidator
     self.nameid_format = nameid_format
 
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
+  end
+
+  def parsed_vector_of_trust
+    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
+
+    @parsed_vector_of_trust = begin
+      Vot::Parser.new(vector_of_trust: vtr.first).parse if !vtr.blank?
+    rescue Vot::Parser::ParseException
+      nil
+    end
   end
 
   private
@@ -39,10 +55,22 @@ class SamlRequestValidator
 
   def authorized_authn_context
     if !valid_authn_context? ||
-       (ial2_context_requested? && service_provider&.ial != 2) ||
+       (identity_proofing_requested? && service_provider&.ial != 2) ||
        (ial_max_requested? &&
         !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer))
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
+    end
+  end
+
+  def parsable_vtr
+    if !vtr.blank? && parsed_vector_of_trust.blank?
+      errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
+    end
+  end
+
+  def cert_exists
+    if @blank_cert
+      errors.add(:service_provider, :blank_cert_element_req, type: :blank_cert_element_req)
     end
   end
 
@@ -51,7 +79,9 @@ class SamlRequestValidator
     valid_contexts += Saml::Idp::Constants::PASSWORD_AUTHN_CONTEXT_CLASSREFS if step_up_comparison?
 
     authn_contexts = authn_context.reject do |classref|
-      classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+      next true if classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+      next true if classref.match?(SamlIdp::Request::VTR_REGEXP) &&
+                   IdentityConfig.store.use_vot_in_sp_requests
     end
     authn_contexts.all? do |classref|
       valid_contexts.include?(classref)
@@ -62,14 +92,18 @@ class SamlRequestValidator
     %w[minimum better].include? authn_context_comparison
   end
 
-  def ial2_context_requested?
-    case authn_context
-    when Array
-      authn_context.any? do |classref|
-        Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)
-      end
-    else
-      Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context)
+  def identity_proofing_requested?
+    return true if parsed_vector_of_trust&.identity_proofing?
+
+    authn_context.each do |classref|
+      return true if Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)
+    end
+    false
+  end
+
+  def vtr
+    @vtr ||= Array(authn_context).select do |classref|
+      classref.match?(SamlIdp::Request::VTR_REGEXP)
     end
   end
 

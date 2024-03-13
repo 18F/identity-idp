@@ -152,13 +152,16 @@ fr:
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
       setup:
-        fail: Appelez le %{contact_number} et indiquez le code d’erreur %{support_code}.
-        fail_date_html: Appelez notre centre de contact avant le %{date_html} pour
-          continuer à vérifier votre identité.
+        fail_date_html: Appelez notre centre de contact avant le
+          <strong>%{date_html}</strong> pour continuer à vérifier votre
+          identité.
+        fail_html: Appelez le <strong>%{contact_number}</strong> et indiquez le
+          <br/>code d’erreur <strong>%{support_code}</strong>.
         heading: S’il vous plaît, appelez-nous
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
       verify:
+        exit: Quitter %{app_name}
         fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_name}</strong>
         fail_text: pour accéder aux services.
         heading: Nous n’avons pas pu vérifier votre identité
@@ -282,9 +285,6 @@ fr:
           vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
-      personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
-        conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
-        perdez votre mot de passe.
       phone:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
@@ -328,14 +328,12 @@ fr:
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:
-        missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Conseils pour prendre des photos claires de votre pièce d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
-        learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         learn_more_verify_by_phone: Apprenez-en plus sur quel numéro de téléphone utiliser
         learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone

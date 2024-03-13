@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
-  let(:selfie_check_performed) { false }
-
+  let(:selfie_required) { false }
   subject(:response) do
     config = DocAuth::Mock::Config.new(
       dpi_threshold: 290,
@@ -11,12 +10,12 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, selfie_check_performed, config)
+    described_class.new(input, config, selfie_required)
   end
 
   context 'with an image file' do
     let(:input) { DocAuthImageFixtures.document_front_image }
-
+    let(:selfie_required) { true }
     it 'returns a successful response with the default PII' do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
@@ -24,6 +23,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).
         to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
+      expect(response.selfie_status).to eq(:success)
     end
   end
 
@@ -255,7 +255,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           glare_threshold: 40,
         },
       )
-      described_class.new(input, selfie_check_performed, config)
+      described_class.new(input, config)
     end
 
     let(:input) do
@@ -300,12 +300,14 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
+        workflow: 'test_non_liveness_workflow',
+        liveness_checking_required: false,
       )
       expect(response.doc_auth_success?).to eq(true)
-      expect(response.selfie_success).to be_nil
+      expect(response.selfie_status).to eq(:not_processed)
     end
   end
 
@@ -329,9 +331,11 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).to eq({})
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::CAUTION.name,
         billed: true,
         classification_info: {},
+        liveness_checking_required: false,
+        workflow: 'test_non_liveness_workflow',
       )
     end
   end
@@ -354,9 +358,11 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).to eq({})
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
         classification_info: {},
+        liveness_checking_required: false,
+        workflow: 'test_non_liveness_workflow',
       )
     end
   end
@@ -400,9 +406,11 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
+        liveness_checking_required: false,
+        workflow: 'test_non_liveness_workflow',
       )
     end
   end
@@ -660,7 +668,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           failed_alerts: []
         YAML
       end
-      let(:selfie_check_performed) { true }
+      let(:selfie_required) { true }
 
       it 'returns the expected values' do
         selfie_results = {
@@ -672,10 +680,11 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         expect(response.success?).to eq(true)
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
         expect(response.doc_auth_success?).to eq(true)
-        expect(response.selfie_success).to eq(true)
+        expect(response.selfie_status).to eq(:success)
       end
     end
 
+    # TODO update this test, looks like the same problem as in error_generator_spec.rb
     describe 'and it is not successful' do
       let(:input) do
         <<~YAML
@@ -686,7 +695,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           failed_alerts: []
         YAML
       end
-      let(:selfie_check_performed) { true }
+      let(:selfie_required) { true }
 
       it 'returns the expected values' do
         selfie_results = {
@@ -698,20 +707,22 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         expect(response.success?).to eq(false)
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
         expect(response.doc_auth_success?).to eq(true)
-        expect(response.selfie_success).to eq(false)
+        expect(response.selfie_status).to eq(:fail)
+        expect(response.extra[:liveness_checking_required]).to eq(true)
       end
     end
   end
 
   context 'when a selfie check is not performed' do
     let(:input) { DocAuthImageFixtures.document_front_image }
-    let(:selfie_check_performed) { false }
+    let(:selfie_required) { false }
 
     it 'returns the expected values' do
       expect(response.selfie_check_performed?).to eq(false)
       expect(response.extra).not_to have_key(:portrait_match_results)
       expect(response.doc_auth_success?).to eq(true)
-      expect(response.selfie_success).to be_nil
+      expect(response.selfie_status).to eq(:not_processed)
+      expect(response.extra[:liveness_checking_required]).to eq(false)
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'User profile' do
+RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper
@@ -123,7 +123,7 @@ RSpec.feature 'User profile' do
               with: 'this is a great sentence'
 
       expect(page).to have_content(t('instructions.password.strength.intro'))
-      expect(page).to have_content t('instructions.password.strength.v')
+      expect(page).to have_content t('instructions.password.strength.4')
 
       check t('components.password_toggle.toggle_label')
 
@@ -146,8 +146,16 @@ RSpec.feature 'User profile' do
                 with: 'this is a great sentence'
         click_button 'Update'
 
-        expect(current_path).to eq account_path
-        expect(page).to have_content(t('idv.messages.personal_key'))
+        expect(page).to have_content(t('forms.personal_key_partial.header'))
+        expect(page).to have_current_path(manage_personal_key_path)
+
+        personal_key = PersonalKeyGenerator.new(profile.user).normalize(scrape_personal_key)
+
+        expect(profile.user.reload.valid_personal_key?(personal_key)).to eq(true)
+
+        click_continue
+
+        expect(current_path).to eq(account_path)
       end
 
       it 'allows the user reactivate their profile by reverifying', js: true do

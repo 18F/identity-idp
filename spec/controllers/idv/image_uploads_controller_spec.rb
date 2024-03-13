@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ImageUploadsController do
+RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
   include DocPiiHelper
 
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
+  let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_img) { nil }
   let(:state_id_number) { 'S59397998' }
 
@@ -20,8 +21,8 @@ RSpec.describe Idv::ImageUploadsController do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
         front_image_metadata: '{"glare":99.99}',
-        back: DocAuthImageFixtures.document_back_image_multipart,
-        selfie: (selfie_img unless selfie_img.nil?),
+        back: back_image,
+        selfie: selfie_img,
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: flow_path,
@@ -65,8 +66,8 @@ RSpec.describe Idv::ImageUploadsController do
             front: { blank: true },
           },
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
         ).exactly(0).times
@@ -126,12 +127,14 @@ RSpec.describe Idv::ImageUploadsController do
             front: { not_a_file: true },
           },
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -187,7 +190,7 @@ RSpec.describe Idv::ImageUploadsController do
     end
 
     context 'throttling' do
-      it 'returns remaining_attempts with error' do
+      it 'returns remaining_submit_attempts with error' do
         params.delete(:front)
         RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment!
 
@@ -198,11 +201,11 @@ RSpec.describe Idv::ImageUploadsController do
           {
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
-            remaining_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
+            remaining_submit_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { front: [], back: [] },
+            failed_image_fingerprints: { front: [], back: [], selfie: [] },
           },
         )
       end
@@ -214,11 +217,11 @@ RSpec.describe Idv::ImageUploadsController do
             success: false,
             errors: [{ field: 'limit', message: 'We couldn’t verify your ID' }],
             redirect: redirect_url,
-            remaining_attempts: 0,
+            remaining_submit_attempts: 0,
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { front: [], back: [] },
+            failed_image_fingerprints: { front: [], back: [], selfie: [] },
           }
         end
 
@@ -260,12 +263,14 @@ RSpec.describe Idv::ImageUploadsController do
             limit: { rate_limited: true },
           },
           user_id: user.uuid,
-          attempts: IdentityConfig.store.doc_auth_max_attempts,
-          remaining_attempts: 0,
+          submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          remaining_submit_attempts: 0,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -328,7 +333,7 @@ RSpec.describe Idv::ImageUploadsController do
         action
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'general',
@@ -347,6 +352,7 @@ RSpec.describe Idv::ImageUploadsController do
       # fake up a response and verify that selfie_check_performed flows through?
 
       context 'selfie included' do
+        let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
@@ -363,6 +369,7 @@ RSpec.describe Idv::ImageUploadsController do
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
               liveness_checking_required: true,
+              images_cropped: false,
             ).and_call_original
 
           action
@@ -370,7 +377,7 @@ RSpec.describe Idv::ImageUploadsController do
           expect(response.status).to eq(200)
           expect(json[:success]).to eq(true)
           expect(document_capture_session.reload.load_result.success?).to eq(true)
-          expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
+          expect(document_capture_session.reload.load_result.selfie_check_performed?).to eq(true)
         end
       end
 
@@ -384,6 +391,7 @@ RSpec.describe Idv::ImageUploadsController do
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: false,
+            images_cropped: false,
           ).and_call_original
 
         action
@@ -402,12 +410,14 @@ RSpec.describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -422,8 +432,8 @@ RSpec.describe Idv::ImageUploadsController do
           state: 'MT',
           state_id_type: 'drivers_license',
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           client_image_metrics: {
             front: { glare: 99.99 },
             back: { glare: 99.99 },
@@ -433,9 +443,28 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           doc_auth_success: boolean,
-          selfie_success: nil,
+          selfie_status: :not_processed,
+          liveness_checking_required: boolean,
+          selfie_live: boolean,
+          selfie_quality_good: boolean,
+          address_line2_present: nil,
+          alert_failure_count: nil,
+          conversation_id: nil,
+          request_id: nil,
+          decision_product_status: nil,
+          image_metrics: nil,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
+          transaction_reason_code: nil,
+          transaction_status: nil,
+          vendor: nil,
+          workflow: an_instance_of(String),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -444,12 +473,14 @@ RSpec.describe Idv::ImageUploadsController do
           errors: {},
           attention_with_barcode: false,
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
           classification_info: a_kind_of(Hash),
         )
 
@@ -580,12 +611,14 @@ RSpec.describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -600,8 +633,8 @@ RSpec.describe Idv::ImageUploadsController do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -611,9 +644,27 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              request_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -627,12 +678,14 @@ RSpec.describe Idv::ImageUploadsController do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -671,12 +724,14 @@ RSpec.describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -691,8 +746,8 @@ RSpec.describe Idv::ImageUploadsController do
               state: 'Maryland',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -702,9 +757,27 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              request_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -718,12 +791,14 @@ RSpec.describe Idv::ImageUploadsController do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -762,12 +837,14 @@ RSpec.describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -782,8 +859,8 @@ RSpec.describe Idv::ImageUploadsController do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -793,9 +870,27 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              request_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -809,12 +904,14 @@ RSpec.describe Idv::ImageUploadsController do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
             )
 
@@ -850,12 +947,14 @@ RSpec.describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -870,8 +969,8 @@ RSpec.describe Idv::ImageUploadsController do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -881,9 +980,27 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              request_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -897,12 +1014,14 @@ RSpec.describe Idv::ImageUploadsController do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
             )
 
@@ -944,7 +1063,7 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'front',
@@ -961,12 +1080,14 @@ RSpec.describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -977,9 +1098,9 @@ RSpec.describe Idv::ImageUploadsController do
           },
           attention_with_barcode: false,
           user_id: user.uuid,
-          attempts: 1,
+          submit_attempts: 1,
           billed: nil,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           state: nil,
           state_id_type: nil,
           exception: nil,
@@ -994,9 +1115,27 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           doc_auth_success: boolean,
-          selfie_success: nil,
+          selfie_status: :not_processed,
+          liveness_checking_required: boolean,
+          selfie_live: true,
+          selfie_quality_good: true,
+          address_line2_present: nil,
+          alert_failure_count: nil,
+          conversation_id: nil,
+          request_id: nil,
+          decision_product_status: nil,
+          image_metrics: nil,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
+          transaction_reason_code: nil,
+          transaction_status: nil,
+          vendor: nil,
         )
 
         action
@@ -1011,7 +1150,7 @@ RSpec.describe Idv::ImageUploadsController do
       it 'returns error from yaml file' do
         action
 
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'general',
@@ -1031,12 +1170,14 @@ RSpec.describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -1055,8 +1196,8 @@ RSpec.describe Idv::ImageUploadsController do
           state_id_type: nil,
           exception: nil,
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           client_image_metrics: {
             front: { glare: 99.99 },
             back: { glare: 99.99 },
@@ -1066,9 +1207,28 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           doc_auth_success: boolean,
-          selfie_success: nil,
+          selfie_status: :not_processed,
+          liveness_checking_required: boolean,
+          selfie_live: boolean,
+          selfie_quality_good: boolean,
+          address_line2_present: nil,
+          alert_failure_count: nil,
+          conversation_id: nil,
+          request_id: nil,
+          decision_product_status: nil,
+          image_metrics: nil,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
+          transaction_reason_code: nil,
+          transaction_status: nil,
+          vendor: nil,
+          workflow: an_instance_of(String),
         )
 
         action
@@ -1085,11 +1245,19 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'dob',
             message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
+          },
+          {
+            field: 'front',
+            message: I18n.t('doc_auth.errors.general.multiple_front_id_failures'),
+          },
+          {
+            field: 'back',
+            message: I18n.t('doc_auth.errors.general.multiple_back_id_failures'),
           },
         ]
       end
@@ -1101,6 +1269,7 @@ RSpec.describe Idv::ImageUploadsController do
           and_return(double('decorated_session', { selfie_required?: true }))
       end
 
+      let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
       let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
       it 'returns a successful response' do
@@ -1108,7 +1277,7 @@ RSpec.describe Idv::ImageUploadsController do
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
         expect(document_capture_session.reload.load_result.success?).to eq(true)
-        expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
+        expect(document_capture_session.reload.load_result.selfie_check_performed?).to eq(true)
       end
 
       it 'sends a selfie' do
@@ -1121,6 +1290,7 @@ RSpec.describe Idv::ImageUploadsController do
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: true,
+            images_cropped: false,
           ).and_call_original
 
         action

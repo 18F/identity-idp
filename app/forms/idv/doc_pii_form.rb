@@ -7,12 +7,7 @@ module Idv
     validates_presence_of :address1, { message: proc {
                                                   I18n.t('doc_auth.errors.alerts.address_check')
                                                 } }
-    validates :zipcode, format: {
-      with: /\A[0-9]{5}(?:-[0-9]{4})?\z/,
-      message: proc {
-        I18n.t('doc_auth.errors.general.no_liveness')
-      },
-    }
+    validate :zipcode_valid?
     validates :jurisdiction, :state, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
                                                   message: proc {
                                                     I18n.t('doc_auth.errors.general.no_liveness')
@@ -63,7 +58,25 @@ module Idv
       keypaths
     end
 
+    # Modifies the errors object, used in image_upload_response_presenter to customize
+    # error messages for rendering  pii errors
+    #
+    # errors: The DocPiiForm errors object
+    def self.present_error(existing_errors)
+      return if existing_errors.blank?
+      if existing_errors.any? { |k, v| PII_ERROR_KEYS.include?(k) }
+        existing_errors[:front] = [I18n.t('doc_auth.errors.general.multiple_front_id_failures')]
+        existing_errors[:back] = [I18n.t('doc_auth.errors.general.multiple_back_id_failures')]
+      end
+      if existing_errors.many? { |k, v| %i[name dob dob_min_age state].include?(k) }
+        existing_errors.slice!(:front, :back)
+        existing_errors[:pii] = [I18n.t('doc_auth.errors.general.no_liveness')]
+      end
+    end
+
     private
+
+    PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number dob_min_age]
 
     attr_reader :pii_from_doc
 
@@ -86,6 +99,12 @@ module Idv
       if age < IdentityConfig.store.idv_min_age_years
         errors.add(:dob_min_age, dob_min_age_error, type: :dob)
       end
+    end
+
+    def zipcode_valid?
+      return if zipcode.is_a?(String) && zipcode.present?
+
+      errors.add(:zipcode, generic_error, type: :zipcode)
     end
 
     def generic_error

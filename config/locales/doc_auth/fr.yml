@@ -51,6 +51,10 @@ fr:
           d’identité. Essayez de prendre de nouvelles photos.
         ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
           contrôle. Essayez de prendre de nouvelles photos.
+        selfie_not_live: 'Rééssayez de vous prendre en photo. Assurez-vous que lensemble
+          de votre visage est clair et visible sur la photo.'
+        selfie_poor_quality: 'Rééssayez de vous prendre en photo. Assurez-vous que
+          l’ensemble de votre visage est clair et visible sur la photo.'
         sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez
           de prendre de nouvelles photos.
         visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Elle a
@@ -108,6 +112,8 @@ fr:
         network_error: Nous avons des difficultés techniques de notre côté. Veuillez
           essayer de soumettre à nouveau vos images plus tard.
         no_liveness: Essayez de prendre de nouvelles photos.
+        selfie_failure: Nous n’avons pas réussi à vérifier votre photo. Essayez à
+          nouveau avec une nouvelle photo.
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo peut avoir
@@ -195,7 +201,6 @@ fr:
       document_capture_subheader_selfie: Photo de vous-même
       document_capture_with_selfie: Ajoutez des photos de votre pièce d’identité et une photo de vous-même
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
-      getting_started: Vérifions votre identité pour %{sp_name}
       how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
@@ -212,7 +217,7 @@ fr:
       verify_at_post_office: Confirmez votre identité un bureau de poste
       verify_identity: Vérifier votre identité
       verify_online: Confirmez votre identité en ligne
-      welcome: Commencez à vérifier votre identité
+      welcome: Vérifions votre identité pour %{sp_name}
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
         identité et accéder à <strong>%{service_provider_name}</strong> et à ses
@@ -236,6 +241,9 @@ fr:
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
+      getting_started_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
+        quelqu’un qui se fait passer pour vous. %{link_html}'
+      getting_started_learn_more: Pour plus d’informations sur la vérification de votre identité
       how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne ou
         en personne dans un bureau de poste participant.
       how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de vérifier votre identité?
@@ -260,9 +268,6 @@ fr:
         téléphone.
       no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la
         vérification de votre identité.
-      privacy: '%{app_name} est un site gouvernemental sécurisé qui respecte les
-        normes les plus strictes en matière de protection des données. Nous
-        utilisons vos données pour vérifier votre identité.'
       review_examples_of_photos: Examinez des exemples de photos claires de votre pièce d’identité.
       secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
@@ -274,6 +279,8 @@ fr:
         too_many_faces: TROP DE VISAGES
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
         nom, date de naissance et adresse.
+      stepping_up_html: 'Vérifiez à nouveau votre identité et prenez une photo de vous
+        pour accéder à ce service. %{link_html}'
       tag: Recommandation
       upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de
         votre carte d’identité depuis cet ordinateur.
@@ -296,33 +303,32 @@ fr:
       verify_online_instruction: Vous prendrez des photos de votre pièce d’identité
         pour confirmer votre identité entièrement en ligne.
       verify_online_link_text: En savoir plus sur la confirmation en ligne
-      welcome: '%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un
-        qui se fait passer pour vous.'
       you_entered: 'Tu as soumis:'
     instructions:
-      bullet1: Carte d’identité délivrée par l’État
-      bullet2: Numéro de sécurité sociale
-      bullet3: Numéro de téléphone OU adresse du domicile
+      bullet1: Prendre des photos de votre pièce d’identité
+      bullet1_with_selfie: Prenez des photos de vous et de vos pièces d’identité
+      bullet2: Saisissez votre numéro de sécurité sociale
+      bullet3: Faites correspondre votre numéro de téléphone
+      bullet4: Saisissez à nouveau votre mot de passe %{app_name}
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les utilisons
         pour vérifier votre identité.
+      getting_started: 'Vous aurez besoin de :'
       learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
-      privacy: Nos normes de confidentialité et de sécurité
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
       switch_back_image: Flèche pointant du téléphone vers l’ordinateur
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1: Votre carte d’identité ne doit pas être expirée.
-      text2: Vous n’aurez pas besoin de la carte sur vous.
-      text3_html:
-        - '<strong>Vérification par téléphone</strong> : Nous appellerons ou
-          enverrons un SMS à votre numéro de téléphone. Cela prend quelques
-          minutes.'
-        - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
-          lettre à votre adresse personnelle. Cela prend <strong>5 à 10
-          jours</strong>.'
-      welcome: 'Vous aurez besoin de votre:'
+      text1: Utilisez votre permis de conduire ou votre carte d’identité nationale.
+        Les autres pièces d’identité ne sont pas acceptées.
+      text1_with_selfie: Prenez une photo de vous et une de votre permis de conduire
+        ou carte d’identité nationale. Les autres pièces d’identité ne sont pas
+        acceptées.
+      text2: Vous n’aurez pas besoin de votre carte de sécurité sociale.
+      text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
+        fois la correspondance établie, nous vous enverrons un code.
+      text4: Votre mot de passe enregistre et crypte vos informations personnelles.
     tips:
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre

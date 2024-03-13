@@ -10,6 +10,9 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
+      @upload_disabled = idv_session.selfie_check_required &&
+                         !idv_session.desktop_selfie_test_mode_enabled?
+
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -33,12 +36,25 @@ module Idv
       end
     end
 
+    def self.selected_remote(idv_session:)
+      if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+         IdentityConfig.store.in_person_proofing_enabled &&
+         idv_session.service_provider&.in_person_proofing_enabled
+        idv_session.skip_doc_auth == false
+      else
+        idv_session.skip_doc_auth.nil? || idv_session.skip_doc_auth == false
+      end
+    end
+
     def self.step_info
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
         next_steps: [:link_sent, :document_capture],
-        preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
+        preconditions: ->(idv_session:, user:) {
+                         idv_session.idv_consent_given &&
+                          self.selected_remote(idv_session: idv_session)
+                       },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil
@@ -155,6 +171,7 @@ module Idv
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
+        selfie_check_required: idv_session.selfie_check_required,
       }.merge(ab_test_analytics_buckets)
     end
 

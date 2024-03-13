@@ -2,25 +2,30 @@ module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
       include DocAuth::ClassificationConcern
+      include DocAuth::SelfieConcern
       include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config
 
-      def initialize(uploaded_file, selfie_check_performed, config)
+      def initialize(uploaded_file, config, selfie_required = false)
         @uploaded_file = uploaded_file.to_s
         @config = config
-        @selfie_check_performed = selfie_check_performed
+        @selfie_required = selfie_required
         super(
           success: success?,
           errors: errors,
           pii_from_doc: pii_from_doc,
           doc_type_supported: id_type_supported?,
-          selfie_check_performed: selfie_check_performed,
+          selfie_live: selfie_live?,
+          selfie_quality_good: selfie_quality_good?,
+          selfie_status: selfie_status,
           extra: {
             doc_auth_result: doc_auth_result,
             portrait_match_results: portrait_match_results,
             billed: true,
             classification_info: classification_info,
+            workflow: workflow,
+            liveness_checking_required: @selfie_required,
           }.compact,
         )
       end
@@ -29,12 +34,12 @@ module DocAuth
         @errors ||= begin
           file_data = parsed_data_from_uploaded_file
 
-          if file_data.blank? || attention_with_barcode?
+          if file_data.blank?
             {}
           else
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
-            failed = file_data.dig('failed_alerts')
+            failed = failed_file_data(file_data.dig('failed_alerts')&.dup)
             passed = file_data.dig('passed_alerts')
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
@@ -52,8 +57,7 @@ module DocAuth
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
-                doc_auth_result, id_type_supported?,
-                face_match_result
+                doc_auth_result, id_type_supported?
               )
 
               mock_args = {}
@@ -61,7 +65,7 @@ module DocAuth
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
               mock_args[:failed] = failed.map!(&:symbolize_keys) unless failed.nil?
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
-              mock_args[:liveness_enabled] = @selfie_check_performed
+              mock_args[:liveness_enabled] = face_match_result ? true : false
               mock_args[:classification_info] = classification_info if classification_info.present?
               fake_response_info = create_response_info(**mock_args)
               ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)
@@ -82,42 +86,11 @@ module DocAuth
       end
 
       def success?
-        (errors.blank? || attention_with_barcode?) && id_type_supported?
+        doc_auth_success? && (@selfie_required ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
         parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
-      end
-
-      def self.create_image_error_response(status, side)
-        errors = case status
-                when 438
-                  {
-                    general: [Errors::IMAGE_LOAD_FAILURE],
-                    side.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
-                  }
-                when 439
-                  {
-                    general: [Errors::PIXEL_DEPTH_FAILURE],
-                    side.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
-                  }
-                when 440
-                  {
-                    general: [Errors::IMAGE_SIZE_FAILURE],
-                    side.to_sym => [Errors::IMAGE_SIZE_FAILURE_FIELD],
-                  }
-                end
-        message = [
-          'Unexpected HTTP response',
-          status,
-        ].join(' ')
-        exception = DocAuth::RequestError.new(message, status)
-        DocAuth::Response.new(
-          success: false,
-          errors: errors,
-          exception: exception,
-          extra: { vendor: 'Mock' },
-        )
       end
 
       def self.create_network_error_response
@@ -131,12 +104,23 @@ module DocAuth
       end
 
       def doc_auth_success?
-        doc_auth_result_from_uploaded_file == 'Passed' || errors.blank?
+        (doc_auth_result_from_uploaded_file == 'Passed' ||
+          errors.blank? ||
+          attention_with_barcode?
+        ) && id_type_supported?
       end
 
-      def selfie_success
-        return nil if portrait_match_results&.dig(:FaceMatchResult).nil?
-        portrait_match_results[:FaceMatchResult] == 'Pass'
+      def selfie_status
+        if @selfie_required
+          return :success if portrait_match_results&.dig(:FaceMatchResult).nil?
+          portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
+        else
+          :not_processed
+        end
+      end
+
+      def workflow
+        selfie_check_performed? ? 'test_liveness_workflow' : 'test_non_liveness_workflow'
       end
 
       private
@@ -161,8 +145,8 @@ module DocAuth
 
       def portrait_match_results
         parsed_data_from_uploaded_file.dig('portrait_match_results')&.
-        transform_keys! { |key| key.to_s.camelize }&.
-        deep_symbolize_keys
+          transform_keys! { |key| key.to_s.camelize }&.
+          deep_symbolize_keys
       end
 
       def classification_info
@@ -172,16 +156,20 @@ module DocAuth
 
       def doc_auth_result_from_success
         if success?
-          DocAuth::Acuant::ResultCodes::PASSED.name
+          DocAuth::LexisNexis::ResultCodes::PASSED.name
         else
-          DocAuth::Acuant::ResultCodes::CAUTION.name
+          DocAuth::LexisNexis::ResultCodes::CAUTION.name
         end
       end
 
-      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported, face_match_result)
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
         doc_auth_result == 'Passed' &&
           id_type_supported &&
-          (@selfie_check_performed ? face_match_result == 'Pass' : true)
+          (selfie_check_performed? ? selfie_passed? : true)
+      end
+
+      def selfie_passed?
+        selfie_status == :success
       end
 
       def parse_uri
@@ -232,8 +220,16 @@ module DocAuth
           image_metrics: merged_image_metrics,
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
-          portrait_match_results: @selfie_check_performed ? portrait_match_results : nil,
+          portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
+          extra: { liveness_checking_required: liveness_enabled },
         }.compact
+      end
+
+      def failed_file_data(failed_alerts_data)
+        if attention_with_barcode?
+          failed_alerts_data&.delete(ATTENTION_WITH_BARCODE_ALERT)
+        end
+        failed_alerts_data
       end
     end
   end

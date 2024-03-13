@@ -6,7 +6,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
-import { FeatureFlagContext } from '../context';
+import { FeatureFlagContext, SelfieCaptureContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 import {
   DocumentCaptureSubheaderOne,
@@ -16,15 +16,19 @@ import {
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
+  isFailedSelfie: boolean;
   isFailedDocType: boolean;
-  remainingAttempts: number;
+  isFailedSelfieLivenessOrQuality: boolean;
+  remainingSubmitAttempts: number;
   captureHints: boolean;
   hasDismissed: boolean;
 }
 
 function DocumentCaptureReviewIssues({
   isFailedDocType,
-  remainingAttempts = Infinity,
+  isFailedSelfie,
+  isFailedSelfieLivenessOrQuality,
+  remainingSubmitAttempts = Infinity,
   captureHints,
   registerField = () => undefined,
   unknownFieldErrors = [],
@@ -35,7 +39,8 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
-  const { exitQuestionSectionEnabled, selfieCaptureEnabled } = useContext(FeatureFlagContext);
+  const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const defaultSideProps = {
     registerField,
@@ -47,11 +52,14 @@ function DocumentCaptureReviewIssues({
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
+      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
-        remainingAttempts={remainingAttempts}
+        remainingSubmitAttempts={remainingSubmitAttempts}
         isFailedDocType={isFailedDocType}
+        isFailedSelfie={isFailedSelfie}
+        isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+        altIsFailedSelfieDontIncludeAttempts
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
         hasDismissed={hasDismissed}
       />
@@ -68,7 +76,7 @@ function DocumentCaptureReviewIssues({
         />
       )}
       <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
-      {selfieCaptureEnabled && (
+      {isSelfieCaptureEnabled && (
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />

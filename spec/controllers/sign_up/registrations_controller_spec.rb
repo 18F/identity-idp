@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignUp::RegistrationsController, devise: true do
+RSpec.describe SignUp::RegistrationsController, devise: true, allowed_extra_analytics: [:*] do
   describe '#new' do
     it 'allows user to visit the sign up page' do
       get :new
@@ -146,6 +146,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       expect(subject).to_not receive(:create_user_event)
 
       post :create, params: { user: { email: 'TEST@example.com ', terms_accepted: '1' } }
+      expect(subject.session[:sign_in_flow]).to eq(:create_account)
     end
 
     it 'tracks unsuccessful user registration' do

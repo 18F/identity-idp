@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign Up' do
+RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include OidcAuthHelper
   include DocAuthHelper
@@ -111,8 +111,6 @@ RSpec.feature 'Sign Up' do
       click_submit_default
 
       expect(current_path).to eq backup_code_setup_path
-
-      click_continue
 
       expect(page).to have_link(t('components.download_button.label'))
 
@@ -248,8 +246,7 @@ RSpec.feature 'Sign Up' do
 
     it 'allows a user to sign up with backup codes and add methods without reauthentication' do
       sign_in_user
-      set_up_2fa_with_backup_codes
-      skip_second_mfa_prompt
+      select_2fa_option('backup_code')
 
       visit phone_setup_path
       expect(page).to have_current_path phone_setup_path
@@ -466,15 +463,30 @@ RSpec.feature 'Sign Up' do
   end
 
   it 'allows a user to sign up with backup codes and add methods after without reauthentication' do
-    sign_in_user
-    set_up_2fa_with_backup_codes
-    skip_second_mfa_prompt
+    sign_up_and_set_password
+    select_2fa_option('backup_code')
 
-    acknowledge_backup_code_confirmation
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_current_path account_path
     visit phone_setup_path
     expect(page).to have_current_path phone_setup_path
+  end
+
+  it 'logs expected analytics events for end-to-end sign-up' do
+    analytics = FakeAnalytics.new
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+
+    visit_idp_from_sp_with_ial1(:oidc)
+    register_user
+    click_agree_and_continue
+
+    expect(analytics).to have_logged_event(
+      'SP redirect initiated',
+      ial: 1,
+      billed_ial: 1,
+      sign_in_flow: 'create_account',
+    )
   end
 
   describe 'visiting the homepage by clicking the logo image' do

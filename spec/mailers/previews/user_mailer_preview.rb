@@ -59,7 +59,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in(
       date: 'February 25, 2019 15:02',
       location: 'Washington, DC',
-      device_name: 'Chrome ABC on macOS 123',
+      device_name: 'Chrome 123 on macOS',
       disavowal_token: SecureRandom.hex,
     )
   end
@@ -164,6 +164,12 @@ class UserMailerPreview < ActionMailer::Preview
 
   def in_person_failed_fraud
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed_fraud(
+      enrollment: in_person_enrollment,
+    )
+  end
+
+  def in_person_please_call
+    UserMailer.with(user: user, email_address: email_address_record).in_person_please_call(
       enrollment: in_person_enrollment,
     )
   end

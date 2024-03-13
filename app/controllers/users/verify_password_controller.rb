@@ -6,7 +6,9 @@ module Users
     before_action :confirm_password_reset_profile
     before_action :confirm_personal_key
 
-    def new; end
+    def new
+      analytics.reactivate_account_verify_password_visited
+    end
 
     def update
       result = verify_password_form.submit
@@ -14,6 +16,9 @@ module Users
       irs_attempts_api_tracker.logged_in_profile_change_reauthentication_submitted(
         success: result.success?,
       )
+
+      analytics.reactivate_account_verify_password_submitted(success: result.success?)
+
       if result.success?
         handle_success(result)
       else
@@ -30,10 +35,10 @@ module Users
     end
 
     def handle_success(result)
-      flash[:personal_key] = result.extra[:personal_key]
+      user_session[:personal_key] = result.extra[:personal_key]
       irs_attempts_api_tracker.idv_personal_key_generated
       reactivate_account_session.clear
-      redirect_to account_url
+      redirect_to manage_personal_key_url
     end
 
     def verify_password_form

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'sign up with backup code' do
+RSpec.feature 'sign up with backup code', allowed_extra_analytics: [:*] do
   include DocAuthHelper
   include SamlAuthHelper
 
@@ -29,13 +29,10 @@ RSpec.feature 'sign up with backup code' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(current_path).to eq auth_method_confirmation_path
+      expect(current_path).to eq confirm_backup_codes_path
       expect(user.backup_code_configurations.count).to eq(10)
 
-      click_on t('mfa.skip')
-      expect(current_path).to eq(confirm_backup_codes_path)
-
-      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
+      click_continue
 
       expect(fake_analytics).to have_logged_event('User registration: complete')
       expect(page).to have_title(t('titles.account'))
@@ -77,11 +74,10 @@ RSpec.feature 'sign up with backup code' do
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password
     select_2fa_option('backup_code')
-    click_continue
-    skip_second_mfa_prompt
 
     expect(page).to have_current_path(confirm_backup_codes_path)
-    acknowledge_backup_code_confirmation
+
+    click_continue
 
     expect(current_path).to eq(sign_up_completed_path)
   end

@@ -43,14 +43,12 @@ fr:
       phone: Numéro de téléphone
       phone_add: Ajouter un téléphone
       piv_cac_add: Ajouter un identifiant
-      piv_cac_confirm_delete: Oui, retirer la carte
       reactivation:
         instructions: Votre profil a été récemment désactivé en raison d’une
           réinitialisation de mot passe. Vous pouvez utiliser votre clé
           personnelle pour réactiver votre profil.
         link: Réactivez votre profil maintenant.
       sign_in_location_and_ip: '%{ip} (adresse IP probablement située dans %{location})'
-      totp_confirm_delete: Oui, supprimez l’application d’authentification
       unknown_location: lieu inconnu
       verification:
         instructions: Votre compte nécessite un code de vérification pour être vérifié.
@@ -58,12 +56,8 @@ fr:
         success: Nous avons vérifié vos informations
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
-      webauthn_confirm_delete: Oui, supprimer la clé
-      webauthn_delete: Supprimer la clé
       webauthn_platform: Le déverouillage facial ou déverrouillage par empreinte digitale
       webauthn_platform_add: Ajouter le déverouillage facial ou déverrouillage par empreinte digitale
-      webauthn_platform_confirm_delete: Oui, supprimer le déverouillage facial ou
-        déverrouillage par empreinte digitale
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle

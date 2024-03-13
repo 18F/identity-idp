@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridMobile::DocumentCaptureController do
+RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do
@@ -58,6 +58,8 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
+          liveness_checking_required: false,
+          selfie_check_required: boolean,
         }.merge(ab_test_args)
       end
 
@@ -181,6 +183,8 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
+          liveness_checking_required: false,
+          selfie_check_required: boolean,
         }.merge(ab_test_args)
       end
 
@@ -257,12 +261,14 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
     allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(
       DocumentCaptureSessionResult.new(
         id: 1234,
-        success: document_capture_session_result_success,
         pii: {
           state: 'WA',
         },
         attention_with_barcode: true,
         captured_at: document_capture_session_result_captured_at,
+        doc_auth_success: document_capture_session_result_success,
+        selfie_status: document_capture_session_result_success ? :success : :fail,
+        success: document_capture_session_result_success,
       ),
     )
   end

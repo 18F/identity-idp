@@ -40,6 +40,9 @@ fr:
       rate_limited_text_html: 'Pour votre sécurité, nous limitons le nombre de fois où
         vous pouvez tenter de vérifier un document en ligne. <strong>Veuillez
         réessayer dans %{timeout}.</strong>'
+      selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à votre
+        pièce d’identité
+      selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
       send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans
         %{timeout}. Vous pouvez également revenir en arrière et choisir
         d’utiliser votre ordinateur à la place.
@@ -59,6 +62,7 @@ fr:
     messages:
       already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
       blank: Veuillez remplir ce champ.
+      blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
       confirmation_code_incorrect: Code de vérification incorrect. L’avez-vous saisi correctement ?
       confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré
         ou vous avez déjà confirmé votre compte.
@@ -144,11 +148,6 @@ fr:
       already_registered: Le déverrouillage facial ou le déverrouillage tactile est
         déjà enregistré sur cet appareil. Veuillez essayer d’ajouter une autre
         méthode d’authentification.
-      attestation_error: Désolé, mais votre déverrouillage facial ou tactile ne semble
-        pas fonctionner. Veuillez vous assurer que votre appareil est répertorié
-        sur https://fidoalliance.org/certification/fido-certified-products/ et
-        si vous pensez qu’il s’agit d’une erreur de notre part, veuillez nous
-        contacter à %{link}.
       choose_another_method: choisir une autre méthode d’authentification
       general_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
         déverrouillage tactile. Veuillez réessayer ou choisir une autre méthode
@@ -163,11 +162,6 @@ fr:
       additional_methods_link: choisir une autre méthode d’authentification
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.
-      attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé de
-        sécurité FIDO. Veuillez vérifier que votre appareil est répertorié sur
-        https://fidoalliance.org/certification/fido-certified-products/. Si vous
-        pensez qu’il s’agit d’une erreur de notre part, veuillez contacter
-        %{link}.
       general_error_html: Nous n’avons pas pu ajouter la clé de sécurité. Veuillez
         réessayer ou %{link_html}.
       not_supported: Votre navigateur ne prend pas en charge les clés de sécurité.

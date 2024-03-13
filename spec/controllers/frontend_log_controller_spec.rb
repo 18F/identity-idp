@@ -31,10 +31,9 @@ RSpec.describe FrontendLogController do
       end
 
       context 'with invalid event name' do
-        it 'logs with warning' do
+        it 'responds as unsuccessful' do
           action
 
-          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
           expect(json[:error_message]).to eq('invalid event')
@@ -201,11 +200,14 @@ RSpec.describe FrontendLogController do
               'name' => 'name',
               'message' => 'message',
               'stack' => 'stack',
+              'filename' => 'filename',
             },
           }
         end
 
         it 'notices the error to NewRelic instead of analytics logger' do
+          allow_any_instance_of(FrontendErrorForm).to receive(:submit).
+            and_return(FormResponse.new(success: true))
           expect(fake_analytics).not_to receive(:track_event)
           expect(NewRelic::Agent).to receive(:notice_error).with(
             FrontendErrorLogger::FrontendError.new,
@@ -214,6 +216,7 @@ RSpec.describe FrontendLogController do
                 name: 'name',
                 message: 'message',
                 stack: 'stack',
+                filename: 'filename',
               },
             },
             expected: true,
@@ -237,10 +240,9 @@ RSpec.describe FrontendLogController do
       end
 
       context 'with invalid event name' do
-        it 'logs with warning' do
+        it 'responds as unsuccessful' do
           action
 
-          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
           expect(json[:error_message]).to eq('invalid event')
@@ -249,21 +251,6 @@ RSpec.describe FrontendLogController do
         it 'does not commit session' do
           action
           expect(request.session_options[:skip]).to eql(true)
-        end
-      end
-
-      context 'for a named analytics method' do
-        let(:event) { 'User prompted before navigation' }
-
-        it 'logs the analytics event' do
-          expect(fake_analytics).to receive(:track_event).with(
-            'User prompted before navigation',
-            path: nil,
-          )
-          action
-
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
         end
       end
     end

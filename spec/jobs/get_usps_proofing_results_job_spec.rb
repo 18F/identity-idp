@@ -44,6 +44,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         transaction_end_date_time: anything,
         transaction_start_date_time: anything,
         job_name: 'GetUspsProofingResultsJob',
+        tmx_status: :threatmetrix_pass,
       )
     end
   end
@@ -174,7 +175,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
   end
 end
 
-RSpec.describe GetUspsProofingResultsJob do
+RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
   include UspsIppHelper
   include ApproximatingHelper
 
@@ -194,6 +195,7 @@ RSpec.describe GetUspsProofingResultsJob do
       '%m/%d/%Y %H%M%S',
     ).in_time_zone('UTC')
   end
+  let(:in_person_proofing_enforce_tmx) { true }
 
   before do
     allow(IdentityConfig.store).
@@ -207,6 +209,8 @@ RSpec.describe GetUspsProofingResultsJob do
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
       and_return(reprocess_delay_minutes)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+      and_return(in_person_proofing_enforce_tmx)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
       request_delay_ms / GetUspsProofingResultsJob::MILLISECONDS_PER_SECOND,
@@ -1147,6 +1151,161 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_encountering_an_error_that_has_a_nil_response',
             error_type: Faraday::NilStatusError,
           )
+        end
+
+        context 'when a user was flagged with fraud_pending_reason' do
+          before(:each) do
+            pending_enrollment.profile.update!(fraud_pending_reason: 'threatmetrix_review')
+            stub_request_passed_proofing_results
+          end
+
+          it 'updates the enrollment' do
+            freeze_time do
+              expect(pending_enrollment.status).to eq 'pending'
+              job.perform(Time.zone.now)
+              expect(pending_enrollment.reload.status).to eq 'passed'
+            end
+          end
+
+          context 'when the in_person_proofing_enforce_tmx flag is false' do
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+                and_return(false)
+            end
+
+            it 'activates the profile' do
+              job.perform(Time.zone.now)
+              profile = pending_enrollment.reload.profile
+              expect(profile).to be_active
+            end
+
+            it 'does not mark the user as fraud_review_pending_at' do
+              job.perform(Time.zone.now)
+
+              profile = pending_enrollment.reload.profile
+              expect(profile).not_to be_fraud_review_pending
+            end
+
+            it 'does not log a user_sent_to_fraud_review analytics event' do
+              job.perform(Time.zone.now)
+
+              expect(job_analytics).not_to have_logged_event(
+                :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
+              )
+            end
+
+            it 'does not set the fraud related fields of an expired enrollment' do
+              stub_request_expired_proofing_results
+
+              job.perform(Time.zone.now)
+              profile = pending_enrollment.reload.profile
+
+              expect(profile.fraud_review_pending_at).to be_nil
+              expect(profile.fraud_rejection_at).to be_nil
+              expect(job_analytics).not_to have_logged_event(
+                :idv_ipp_deactivated_for_never_visiting_post_office,
+              )
+            end
+          end
+
+          context 'when the in_person_proofing_enforce_tmx flag is true' do
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+                and_return(true)
+            end
+
+            it 'preserves the fraud_pending_reason attribute' do
+              job.perform(Time.zone.now)
+
+              expect(pending_enrollment.profile.fraud_pending_reason).to eq 'threatmetrix_review'
+            end
+
+            it 'logs a user_sent_to_fraud_review analytics event' do
+              job.perform(Time.zone.now)
+
+              expect(job_analytics).to have_logged_event(
+                :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
+                hash_including(
+                  enrollment_code: pending_enrollment.enrollment_code,
+                ),
+              )
+            end
+
+            it 'does not send a success email' do
+              user = pending_enrollment.user
+
+              freeze_time do
+                expect do
+                  job.perform(Time.zone.now)
+                end.not_to have_enqueued_mail(UserMailer, :in_person_verified).with(
+                  params: { user: user, email_address: user.email_addresses.first },
+                  args: [{ enrollment: pending_enrollment }],
+                )
+              end
+            end
+
+            it 'marks the user as fraud_review_pending_at' do
+              job.perform(Time.zone.now)
+
+              profile = pending_enrollment.reload.profile
+              expect(profile.fraud_review_pending_at).not_to be_nil
+              expect(profile).not_to be_active
+            end
+
+            context 'when the enrollment has passed' do
+              before(:each) do
+                pending_enrollment.profile.update!(fraud_pending_reason: 'threatmetrix_review')
+                stub_request_passed_proofing_results
+              end
+
+              it 'sends the please call email' do
+                user = pending_enrollment.user
+
+                freeze_time do
+                  expect do
+                    job.perform(Time.zone.now)
+                  end.to have_enqueued_mail(UserMailer, :in_person_please_call).with(
+                    params: { user: user, email_address: user.email_addresses.first },
+                    args: [{ enrollment: pending_enrollment }],
+                  )
+                end
+              end
+
+              it 'logs the expected analytics events' do
+                freeze_time do
+                  job.perform(Time.zone.now)
+                end
+                expect(job_analytics).to have_logged_event(
+                  :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
+                  hash_including(
+                    job_name: 'GetUspsProofingResultsJob',
+                  ),
+                )
+                expect(job_analytics).to have_logged_event(
+                  'GetUspsProofingResultsJob: Enrollment status updated',
+                  hash_including(
+                    passed: true,
+                    reason: 'Passed with fraud pending',
+                    job_name: 'GetUspsProofingResultsJob',
+                  ),
+                )
+              end
+            end
+
+            it 'deactivates and sets fraud related fields of an expired enrollment' do
+              stub_request_expired_proofing_results
+
+              job.perform(Time.zone.now)
+
+              profile = pending_enrollment.reload.profile
+              expect(profile).not_to be_active
+              expect(profile.fraud_review_pending_at).to be_nil
+              expect(profile.fraud_rejection_at).not_to be_nil
+              expect(job_analytics).to have_logged_event(
+                :idv_ipp_deactivated_for_never_visiting_post_office,
+              )
+            end
+          end
         end
       end
 

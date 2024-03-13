@@ -12,7 +12,7 @@ RSpec.describe OutageStatus do
   context 'when all vendors are operational' do
     before do
       OutageStatus::ALL_VENDORS.each do |vendor|
-        allow(IdentityConfig.store).to receive("vendor_status_#{vendor}".to_sym).
+        allow(IdentityConfig.store).to receive(:"vendor_status_#{vendor}").
           and_return(:operational)
       end
     end
@@ -29,7 +29,7 @@ RSpec.describe OutageStatus do
   context 'when any vendor has an outage' do
     OutageStatus::ALL_VENDORS.each do |vendor|
       before do
-        allow(IdentityConfig.store).to receive("vendor_status_#{vendor}".to_sym).
+        allow(IdentityConfig.store).to receive(:"vendor_status_#{vendor}").
           and_return(:full_outage)
       end
 
@@ -41,7 +41,7 @@ RSpec.describe OutageStatus do
 
   context 'when an idv vendor has an outage' do
     before do
-      allow(IdentityConfig.store).to receive(:vendor_status_acuant).
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid).
         and_return(:full_outage)
     end
 

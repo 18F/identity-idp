@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Canceling Account Creation' do
+RSpec.feature 'Canceling Account Creation', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
 
   context 'From the enter email page', email: true do

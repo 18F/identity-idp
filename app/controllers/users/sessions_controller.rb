@@ -20,18 +20,15 @@ module Users
     def new
       override_csp_for_google_analytics
 
-      @ial = sp_session_ial
       @issuer_forced_reauthentication = issuer_forced_reauthentication?(
         issuer: decorated_sp_session.sp_issuer,
       )
-      analytics.sign_in_page_visit(
-        flash: flash[:alert],
-        stored_location: session['user_return_to'],
-      )
+      analytics.sign_in_page_visit(flash: flash[:alert])
       super
     end
 
     def create
+      session[:sign_in_flow] = :sign_in
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
@@ -75,10 +72,9 @@ module Users
     end
 
     def process_locked_out_session
-      irs_attempts_api_tracker.login_rate_limited(
-        email: auth_params[:email],
-      )
-
+      irs_attempts_api_tracker.login_rate_limited(email: auth_params[:email])
+      warden.logout(:user)
+      warden.lock!
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url
     end
@@ -121,6 +117,8 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
+      user_session[:platform_authenticator_available] =
+        params[:platform_authenticator_available] == 'true'
       redirect_to next_url_after_valid_authentication
     end
 
@@ -133,7 +131,6 @@ module Users
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         bad_password_count: session[:bad_password_count].to_i,
-        stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
       )
@@ -184,8 +181,23 @@ module Users
     def override_csp_for_google_analytics
       return unless IdentityConfig.store.participate_in_dap
       policy = current_content_security_policy
-      policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
-      policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
+      policy.script_src(
+        *policy.script_src,
+        'dap.digitalgov.gov',
+        'www.google-analytics.com',
+        '*.googletagmanager.com',
+      )
+      policy.connect_src(
+        *policy.connect_src,
+        '*.google-analytics.com',
+        '*.analytics.google.com',
+        '*.googletagmanager.com',
+      )
+      policy.img_src(
+        *policy.img_src,
+        '*.google-analytics.com',
+        '*.googletagmanager.com',
+      )
       request.content_security_policy = policy
     end
 

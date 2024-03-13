@@ -6,7 +6,9 @@
   <%= render 'accounts/mobile_nav' %>
 <% end %>
 
-<% content_for :content do %>
+<%= javascript_packs_tag_once('navigation') %>
+
+<%= extends_layout :application, body_class: 'site', disable_card: true, user_main_tag: false do %>
   <div class="grid-row grid-gap">
     <div class="display-none tablet:display-block tablet:grid-col-4">
       <%= render 'accounts/side_nav' %>
@@ -16,6 +18,3 @@
     </main>
   </div>
 <% end %>
-
-<%= javascript_packs_tag_once('navigation') %>
-<%= render template: 'layouts/base', locals: { disable_card: true, user_main_tag: false } %>

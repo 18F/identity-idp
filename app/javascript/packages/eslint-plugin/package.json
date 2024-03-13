@@ -56,5 +56,6 @@
     "eslint-plugin-react-hooks": {
       "optional": true
     }
-  }
+  },
+  "sideEffects": false
 }

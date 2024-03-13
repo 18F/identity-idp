@@ -3,20 +3,33 @@ require 'rails_helper'
 RSpec.describe Telephony::AlertSender do
   let(:configured_adapter) { :test }
   let(:recipient) { '+1 (202) 555-5000' }
+  let(:interval) { '24 hours' }
 
   before do
     allow(Telephony.config).to receive(:adapter).and_return(configured_adapter)
     Telephony::Test::Message.clear_messages
   end
 
-  describe 'send_account_reset_notice' do
+  describe 'send_account_deleted_notice' do
     it 'sends the correct message' do
-      subject.send_account_reset_notice(to: recipient, country_code: 'US')
+      subject.send_account_deleted_notice(to: recipient, country_code: 'US')
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        I18n.t('telephony.account_reset_notice', app_name: APP_NAME),
+        I18n.t('telephony.account_deleted_notice', app_name: APP_NAME),
+      )
+    end
+  end
+
+  describe 'send_account_reset_notice' do
+    it 'sends the correct message' do
+      subject.send_account_reset_notice(to: recipient, country_code: 'US', interval: interval)
+
+      last_message = Telephony::Test::Message.messages.last
+      expect(last_message.to).to eq(recipient)
+      expect(last_message.body).to eq(
+        I18n.t('telephony.account_reset_notice', app_name: APP_NAME, interval: interval),
       )
     end
   end

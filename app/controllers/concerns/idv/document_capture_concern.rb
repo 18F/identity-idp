@@ -29,18 +29,16 @@ module Idv
       FormResponse.new(**form_response_params)
     end
 
-    # @param [DocAuth::Response,
-    #   DocumentCaptureSessionResult] response
-    def extract_pii_from_doc(user, response, store_in_session: false)
+    def extract_pii_from_doc(user, store_in_session: false)
       if defined?(idv_session) # hybrid mobile does not have idv_session
-        idv_session.had_barcode_read_failure = response.attention_with_barcode?
+        idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
         if store_in_session
-          idv_session.pii_from_doc = response.pii_from_doc
-          idv_session.selfie_check_performed = response.selfie_check_performed
+          idv_session.pii_from_doc = stored_result.pii_from_doc
+          idv_session.selfie_check_performed = stored_result.selfie_check_performed?
         end
       end
 
-      track_document_issuing_state(user, response.pii_from_doc[:state])
+      track_document_issuing_state(user, stored_result.pii_from_doc[:state])
     end
 
     def stored_result
@@ -49,7 +47,7 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed
+      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed?
     end
 
     private

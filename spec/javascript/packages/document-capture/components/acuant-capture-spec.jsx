@@ -290,6 +290,7 @@ describe('document-capture/components/acuant-capture', () => {
         field: 'test',
         acuantCaptureMode: 'AUTO',
         error: 'Camera not supported',
+        liveness_checking_required: false,
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -322,6 +323,7 @@ describe('document-capture/components/acuant-capture', () => {
         field: 'test',
         acuantCaptureMode: 'AUTO',
         error: 'Cropping failure',
+        liveness_checking_required: false,
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -356,6 +358,7 @@ describe('document-capture/components/acuant-capture', () => {
         field: 'test',
         acuantCaptureMode: 'AUTO',
         error: 'Camera not supported',
+        liveness_checking_required: false,
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -392,6 +395,7 @@ describe('document-capture/components/acuant-capture', () => {
         field: 'test',
         acuantCaptureMode: 'AUTO',
         error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
+        liveness_checking_required: false,
       });
       await waitFor(() => document.activeElement === button);
 
@@ -435,6 +439,7 @@ describe('document-capture/components/acuant-capture', () => {
         field: 'test',
         acuantCaptureMode: 'AUTO',
         error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
+        liveness_checking_required: false,
       });
       await waitFor(() => document.activeElement === button);
 
@@ -478,6 +483,7 @@ describe('document-capture/components/acuant-capture', () => {
         field: 'test',
         acuantCaptureMode: 'AUTO',
         error: 'User or system denied camera access',
+        liveness_checking_required: false,
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -519,6 +525,7 @@ describe('document-capture/components/acuant-capture', () => {
         field: 'test',
         acuantCaptureMode: 'AUTO',
         error: 'User or system denied camera access',
+        liveness_checking_required: false,
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -636,7 +643,7 @@ describe('document-capture/components/acuant-capture', () => {
           sharpnessScoreThreshold: sinon.match.number,
           source: 'acuant',
           width: sinon.match.number,
-          attempt: sinon.match.number,
+          captureAttempts: sinon.match.number,
           size: sinon.match.number,
         }),
       );
@@ -805,11 +812,12 @@ describe('document-capture/components/acuant-capture', () => {
         assessment: 'glare',
         sharpness: 100,
         width: 1748,
-        attempt: sinon.match.number,
+        captureAttempts: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: 'AUTO',
         fingerprint: null,
         failedImageResubmission: false,
+        liveness_checking_required: false,
       });
 
       expect(error).to.be.ok();
@@ -864,11 +872,12 @@ describe('document-capture/components/acuant-capture', () => {
         assessment: 'blurry',
         sharpness: 49,
         width: 1748,
-        attempt: sinon.match.number,
+        captureAttempts: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
         fingerprint: null,
         failedImageResubmission: false,
+        liveness_checking_required: false,
       });
 
       expect(error).to.be.ok();
@@ -976,11 +985,12 @@ describe('document-capture/components/acuant-capture', () => {
         assessment: 'blurry',
         sharpness: 49,
         width: 1748,
-        attempt: sinon.match.number,
+        captureAttempts: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
         fingerprint: null,
         failedImageResubmission: false,
+        liveness_checking_required: false,
       });
     });
 
@@ -1206,9 +1216,9 @@ describe('document-capture/components/acuant-capture', () => {
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
-        'idv_sdk_selfie_image_added',
+        'idv_selfie_image_added',
         sinon.match({
-          attempt: sinon.match.number,
+          captureAttempts: sinon.match.number,
         }),
       );
     });
@@ -1313,8 +1323,9 @@ describe('document-capture/components/acuant-capture', () => {
         source: 'upload',
         mimeType: 'image/jpeg',
         size: sinon.match.number,
-        attempt: sinon.match.number,
+        captureAttempts: sinon.match.number,
         acuantCaptureMode: null,
+        liveness_checking_required: false,
       }),
     );
   });
@@ -1349,7 +1360,7 @@ describe('document-capture/components/acuant-capture', () => {
         source: 'upload',
         mimeType: 'image/jpeg',
         size: sinon.match.number,
-        attempt: sinon.match.number,
+        captureAttempts: sinon.match.number,
         acuantCaptureMode: 'AUTO',
       }),
     );
@@ -1390,14 +1401,17 @@ describe('document-capture/components/acuant-capture', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: false,
+      liveness_checking_required: false,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'button',
       isDrop: false,
+      liveness_checking_required: false,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'upload',
       isDrop: false,
+      liveness_checking_required: false,
     });
   });
 
@@ -1417,6 +1431,7 @@ describe('document-capture/components/acuant-capture', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'placeholder',
       isDrop: true,
+      liveness_checking_required: false,
     });
   });
 
@@ -1435,14 +1450,14 @@ describe('document-capture/components/acuant-capture', () => {
 
     await expect(trackEvent).to.eventually.be.calledWith(
       'IdV: test image added',
-      sinon.match({ attempt: 1 }),
+      sinon.match({ captureAttempts: 1 }),
     );
 
     uploadFile(input, validUpload);
 
     await expect(trackEvent).to.eventually.be.calledWith(
       'IdV: test image added',
-      sinon.match({ attempt: 2 }),
+      sinon.match({ captureAttempts: 2 }),
     );
   });
 });

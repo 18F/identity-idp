@@ -88,6 +88,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_capture_enabled: false
+doc_auth_selfie_desktop_test_mode: false
 doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
@@ -120,8 +121,8 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_acuant_sdk_version_default: '11.9.1'
-idv_acuant_sdk_version_alternate: '11.8.2'
+idv_acuant_sdk_version_default: '11.9.2'
+idv_acuant_sdk_version_alternate: '11.9.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
@@ -133,6 +134,7 @@ in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
+in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
@@ -142,7 +144,6 @@ in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
-in_person_residential_address_controller_enabled: false
 in_person_results_delay_in_hours: 1
 in_person_completion_survey_url: 'https://login.gov'
 in_person_full_address_entry_enabled: true
@@ -214,6 +215,7 @@ mx_timeout: 3
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect_uuid_override_map: '{}'
+openid_connect_redirect_issuer_override_map: '{}'
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
@@ -308,7 +310,6 @@ session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
-set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
@@ -316,7 +317,9 @@ otp_min_attempts_remaining_warning_count: 3
 sp_issuer_user_counts_report_configs: '[]'
 team_ada_email: ''
 team_all_login_emails: '[]'
+team_daily_fraud_metrics_emails: '[]'
 team_daily_reports_emails: '[]'
+team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
@@ -338,8 +341,10 @@ verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
 version_headers_enabled: false
+vtm_url: 'https://developer.login.gov/vot-trust-framework'
 use_dashboard_service_providers: false
 use_kms: false
+use_vot_in_sp_requests: false
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_ipp_password: ''
@@ -383,6 +388,7 @@ development:
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: false
   doc_auth_selfie_capture_enabled: false
+  doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -393,12 +399,12 @@ development:
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
+  in_person_proofing_enforce_tmx: true
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
   newrelic_license_key: ''
-  nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
@@ -409,7 +415,7 @@ development:
   risc_notifications_local_enabled: true
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
+  saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
@@ -468,7 +474,6 @@ production:
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
   newrelic_license_key: ''
-  nonessential_email_banlist: '[]'
   openid_connect_redirect: server_side
   openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 5
@@ -493,6 +498,7 @@ production:
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
+  use_vot_in_sp_requests: false
   usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
@@ -523,6 +529,7 @@ test:
   database_worker_jobs_password: ''
   doc_auth_max_attempts: 4
   doc_auth_selfie_capture_enabled: false
+  doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -541,7 +548,6 @@ test:
   max_mail_events: 2
   otp_min_attempts_remaining_warning_count: 1
   newrelic_license_key: ''
-  nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 1
   otp_delivery_blocklist_maxretry: 2
   otps_per_ip_limit: 3
@@ -566,7 +572,7 @@ test:
   reset_password_email_window_in_minutes: 80
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"},{"suffix":"2022","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
+  saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2023","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
@@ -574,7 +580,9 @@ test:
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
+  team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   team_daily_reports_emails: '["a@example.com", "d@example.com"]'
+  team_monthly_fraud_metrics_emails: '["e@example.com", "f@example.com"]'
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
@@ -582,6 +590,7 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
+  use_vot_in_sp_requests: true
   usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com

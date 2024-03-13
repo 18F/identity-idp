@@ -4,5 +4,8 @@
   "private": true,
   "dependencies": {
     "focus-trap": "^6.7.1"
-  }
+  },
+  "sideEffects": [
+    "./modal-element.ts"
+  ]
 }

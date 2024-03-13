@@ -114,12 +114,6 @@ RSpec.describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        password_changed(disavowal_token: '123abc')
-      expect(mail.to).to eq(nil)
-    end
   end
 
   describe '#personal_key_sign_in' do
@@ -146,13 +140,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=asdf1234',
       )
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        personal_key_sign_in(disavowal_token: 'asdf1234')
-
-      expect(mail.to).to eq(nil)
     end
   end
 
@@ -216,17 +203,6 @@ RSpec.describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
-        date: date,
-        location: location,
-        device_name: device_name,
-        disavowal_token: disavowal_token,
-      )
-      expect(mail.to).to eq(nil)
-    end
   end
 
   describe '#personal_key_regenerated' do
@@ -249,12 +225,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.personal_key_regenerated.intro'),
       )
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        personal_key_regenerated
-      expect(mail.to).to eq(nil)
     end
   end
 
@@ -316,12 +286,6 @@ RSpec.describe UserMailer, type: :mailer do
         t('user_mailer.phone_added.intro', app_name: APP_NAME),
       )
     end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        phone_added(disavowal_token: disavowal_token)
-      expect(mail.to).to eq(nil)
-    end
   end
 
   def expect_email_body_to_have_help_and_contact_links
@@ -339,6 +303,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     let(:account_reset) { user.account_reset_request }
+    let(:interval) { '24 hours' }
+    let(:account_reset_deletion_period_hours) { 24 }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -354,9 +320,17 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.intro_html', app_name: APP_NAME),
+          t(
+            'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
+                                                            interval: interval,
+                                                            hours:
+                                                              account_reset_deletion_period_hours
+          ),
         ),
       )
+    end
+
+    it 'renders the footer' do
     end
 
     it 'does not render the subject in the body' do
@@ -370,7 +344,7 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the header within the body' do
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.header'),
+          t('user_mailer.account_reset_request.header', interval: interval),
         ),
       )
     end
@@ -381,6 +355,8 @@ RSpec.describe UserMailer, type: :mailer do
       UserMailer.with(user: user, email_address: email_address).
         account_reset_granted(user.account_reset_request)
     end
+    let(:account_reset_deletion_period_hours) { 24 }
+    let(:token_expiration_interval) { '24 hours' }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -390,13 +366,33 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject', app_name: APP_NAME)
+      expect(mail.subject).to eq t(
+        'user_mailer.account_reset_granted.subject', app_name: APP_NAME
+      )
     end
 
     it 'renders the body' do
       expect(mail.html_part.body).to \
         have_content(
-          strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME)),
+          strip_tags(
+            t(
+              'user_mailer.account_reset_granted.intro_html', app_name: APP_NAME,
+                                                              hours:
+                                                              account_reset_deletion_period_hours
+            ),
+          ),
+        )
+    end
+
+    it 'renders the footer' do
+      expect(mail.html_part.body).to \
+        have_content(
+          strip_tags(
+            t(
+              'user_mailer.email_confirmation_instructions.footer',
+              confirmation_period: token_expiration_interval,
+            ),
+          ),
         )
     end
   end
@@ -499,6 +495,23 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
     end
+
+    it 'logs email metadata to analytics' do
+      analytics = FakeAnalytics.new
+      allow(Analytics).to receive(:new).and_return(analytics)
+      allow(analytics).to receive(:track_event)
+
+      user = create(:user)
+      email_address = user.email_addresses.first
+      mail = UserMailer.with(user: user, email_address: email_address).please_reset_password
+      mail.deliver_now
+
+      expect(analytics).
+        to have_received(:track_event).with(
+          'Email Sent',
+          action: 'please_reset_password', ses_message_id: nil, email_address_id: email_address.id,
+        )
+    end
   end
 
   describe '#letter_reminder' do
@@ -518,11 +531,6 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.letter_reminder.info_html', link_html: APP_NAME)))
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).letter_reminder
-      expect(mail.to).to eq(nil)
     end
   end
 
@@ -547,16 +555,6 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the subject' do
       expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        account_verified(
-          date_time: date_time,
-          sp_name: sp_name,
-          disavowal_token: disavowal_token,
-        )
-      expect(mail.to).to eq(nil)
     end
 
     it 'links to the forgot password page' do
@@ -714,6 +712,17 @@ RSpec.describe UserMailer, type: :mailer do
 
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
+          enrollment: enrollment,
+        )
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+    end
+
+    describe '#in_person_please_call' do
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_please_call(
           enrollment: enrollment,
         )
       end

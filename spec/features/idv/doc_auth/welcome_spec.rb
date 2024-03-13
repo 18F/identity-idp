@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'welcome step' do
+RSpec.feature 'welcome step', allowed_extra_analytics: [:*] do
   include IdvHelper
   include DocAuthHelper
 
@@ -16,63 +16,17 @@ RSpec.feature 'welcome step' do
     complete_doc_auth_steps_before_welcome_step
   end
 
-  it 'logs return to sp link click' do
-    click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
-
-    expect(fake_analytics).to have_logged_event(
-      'Return to SP: Failed to proof',
-      flow: nil,
-      location: 'missing_items',
-      redirect_url: instance_of(String),
-      step: 'welcome',
-    )
-  end
-
-  it 'logs supported documents troubleshooting link click' do
-    click_on t('idv.troubleshooting.options.supported_documents')
+  it 'logs "intro_paragraph" learn more link click' do
+    click_on t('doc_auth.info.getting_started_learn_more')
 
     expect(fake_analytics).to have_logged_event(
       'External Redirect',
       step: 'welcome',
-      location: 'missing_items',
+      location: 'intro_paragraph',
       flow: 'idv',
       redirect_url: MarketingSite.help_center_article_url(
         category: 'verify-your-identity',
-        article: 'accepted-state-issued-identification',
-      ),
-    )
-  end
-
-  it 'logs missing items troubleshooting link click' do
-    within '.troubleshooting-options' do
-      click_on t('idv.troubleshooting.options.learn_more_address_verification_options')
-    end
-
-    expect(fake_analytics).to have_logged_event(
-      'External Redirect',
-      step: 'welcome',
-      location: 'missing_items',
-      flow: 'idv',
-      redirect_url: MarketingSite.help_center_article_url(
-        category: 'verify-your-identity',
-        article: 'phone-number',
-      ),
-    )
-  end
-
-  it 'logs "you will need" learn more link click' do
-    within '.usa-process-list' do
-      click_on t('idv.troubleshooting.options.learn_more_address_verification_options')
-    end
-
-    expect(fake_analytics).to have_logged_event(
-      'External Redirect',
-      step: 'welcome',
-      location: 'you_will_need',
-      flow: 'idv',
-      redirect_url: MarketingSite.help_center_article_url(
-        category: 'verify-your-identity',
-        article: 'phone-number',
+        article: 'how-to-verify-your-identity',
       ),
     )
   end

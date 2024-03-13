@@ -15,6 +15,7 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
+  include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
 
@@ -45,7 +46,11 @@ class UserMailer < ActionMailer::Base
   end
 
   def add_metadata
-    message.instance_variable_set(:@_metadata, { user: user, action: action_name })
+    message.instance_variable_set(
+      :@_metadata, {
+        user: user, email_address: email_address, action: action_name
+      }
+    )
   end
 
   def email_confirmation_instructions(token, request_id:, instructions:)
@@ -97,8 +102,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def password_changed(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
@@ -106,8 +109,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def phone_added(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
@@ -115,8 +116,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def personal_key_sign_in(disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('user_mailer.personal_key_sign_in.subject'))
@@ -124,8 +123,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def new_device_sign_in(date:, location:, device_name:, disavowal_token:)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @login_date = date
       @login_location = location
@@ -139,8 +136,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def personal_key_regenerated
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.personal_key_regenerated.subject'))
     end
@@ -149,7 +144,11 @@ class UserMailer < ActionMailer::Base
   def account_reset_request(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token
-      @header = t('user_mailer.account_reset_request.header')
+      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @header = t(
+        'user_mailer.account_reset_request.header',
+        interval: account_reset_deletion_period_interval,
+      )
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
@@ -161,6 +160,8 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
+      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_token_valid_period = account_reset_token_valid_period
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),
@@ -196,8 +197,6 @@ class UserMailer < ActionMailer::Base
   end
 
   def letter_reminder
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
     end
@@ -217,16 +216,12 @@ class UserMailer < ActionMailer::Base
   end
 
   def email_added
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.email_added.subject'))
     end
   end
 
   def email_deleted
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.email_deleted.subject'))
     end
@@ -241,8 +236,6 @@ class UserMailer < ActionMailer::Base
 
   # remove disavowal_token after next deploy
   def account_verified(date_time:, sp_name:, disavowal_token: nil) # rubocop:disable Lint/UnusedMethodArgument
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
     with_user_locale(user) do
       @date = I18n.l(date_time, format: :event_date)
       @sp_name = sp_name
@@ -364,6 +357,20 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_please_call(enrollment:)
+    with_user_locale(user) do
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
+      @hide_title = true
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.in_person_please_call.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   def in_person_outage_notification(enrollment:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
@@ -424,10 +431,29 @@ class UserMailer < ActionMailer::Base
 
   private
 
-  def email_should_receive_nonessential_notifications?(email)
-    banlist = IdentityConfig.store.nonessential_email_banlist
-    return true if banlist.empty?
-    modified_email = email.gsub(/\+[^@]+@/, '@')
-    !banlist.include?(modified_email)
+  def account_reset_deletion_period_interval
+    current_time = Time.zone.now
+
+    distance_of_time_in_words(
+      current_time,
+      current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+      true,
+      accumulate_on: :hours,
+    )
+  end
+
+  def account_reset_deletion_period_hours
+    IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
+  end
+
+  def account_reset_token_valid_period
+    current_time = Time.zone.now
+
+    distance_of_time_in_words(
+      current_time,
+      current_time + IdentityConfig.store.account_reset_token_valid_for_days.days,
+      true,
+      accumulate_on: :hours,
+    )
   end
 end

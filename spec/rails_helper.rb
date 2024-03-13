@@ -57,6 +57,7 @@ RSpec.configure do |config|
 
     class Analytics
       prepend FakeAnalytics::PiiAlerter
+      prepend FakeAnalytics::UndocumentedParamsChecker
     end
 
     begin
@@ -78,8 +79,7 @@ RSpec.configure do |config|
       # rubocop:enable Style/GlobalVars
       # rubocop:disable Rails/Output
       print '                       Bundling JavaScript and stylesheets... '
-      system 'WEBPACK_PORT= yarn build > /dev/null 2>&1'
-      system 'yarn build:css > /dev/null 2>&1'
+      system 'WEBPACK_PORT= yarn concurrently "yarn:build:*" > /dev/null 2>&1'
       puts '✨ Done!'
       # rubocop:enable Rails/Output
     end

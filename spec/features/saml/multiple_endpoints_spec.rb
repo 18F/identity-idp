@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe 'multiple saml endpoints' do
+RSpec.describe 'multiple saml endpoints', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include IdvHelper
 
-  let(:endpoint_suffix) { '2023' }
+  let(:endpoint_suffix) { '2024' }
   let(:user) { create(:user, :fully_registered) }
 
   let(:endpoint_saml_settings) do

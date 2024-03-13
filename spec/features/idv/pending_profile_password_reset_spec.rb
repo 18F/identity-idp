@@ -1,7 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe 'Resetting password with a pending profile' do
+RSpec.describe 'Resetting password with a pending profile', allowed_extra_analytics: [:*] do
   include OidcAuthHelper
+
+  let(:sp_name) { 'Test SP' }
+  before do
+    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).
+      and_return(sp_name)
+  end
 
   scenario 'while GPO pending requires the user to reproof' do
     user = create(:user, :with_phone, :with_pending_gpo_profile)
@@ -19,7 +25,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     user.password = new_password
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_content(t('doc_auth.headings.welcome'))
+    expect(page).to have_content t('doc_auth.headings.welcome', sp_name: sp_name)
     expect(current_path).to eq(idv_welcome_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil
@@ -43,7 +49,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     user.password = new_password
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_content(t('doc_auth.headings.welcome'))
+    expect(page).to have_content(t('doc_auth.headings.welcome', sp_name: sp_name))
     expect(current_path).to eq(idv_welcome_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil
@@ -65,7 +71,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     user.password = new_password
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_content(t('doc_auth.headings.welcome'))
+    expect(page).to have_content(t('doc_auth.headings.welcome', sp_name: sp_name))
     expect(current_path).to eq(idv_welcome_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil

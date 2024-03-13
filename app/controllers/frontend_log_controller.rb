@@ -41,30 +41,26 @@ class FrontendLogController < ApplicationController
     'IdV: warning action triggered' => :idv_warning_action_triggered,
     'IdV: warning shown' => :idv_warning_shown,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
-    'User prompted before navigation' => :user_prompted_before_navigation,
-    'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
   }.freeze
   # rubocop:enable Layout/LineLength
 
   ALLOWED_EVENTS = %i[
-    idv_sdk_selfie_image_added
     idv_sdk_selfie_image_capture_closed_without_photo
     idv_sdk_selfie_image_capture_failed
     idv_sdk_selfie_image_capture_opened
-    idv_selfie_image_file_uploaded
+    idv_selfie_image_added
     phone_input_country_changed
   ].freeze
 
   EVENT_MAP = ALLOWED_EVENTS.index_by(&:to_s).merge(LEGACY_EVENT_MAP).freeze
 
   def create
-    result = frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
+    success = frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
 
-    if result
-      render json: { success: true }, status: :ok
+    if success
+      render json: { success: }, status: :ok
     else
-      render json: { success: false, error_message: 'invalid event' },
-             status: :bad_request
+      render json: { success:, error_message: 'invalid event' }, status: :bad_request
     end
   end
 

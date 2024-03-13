@@ -25,17 +25,6 @@ module DocAuth
         @last_uploaded_back_image = nil
       end
 
-      def create_document
-        return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
-        instance_id = SecureRandom.uuid
-        Responses::CreateDocumentResponse.new(
-          success: true,
-          errors: {},
-          instance_id: instance_id,
-        )
-      end
-
       # rubocop:disable Lint/UnusedMethodArgument
       def post_front_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
@@ -58,27 +47,27 @@ module DocAuth
         back_image:,
         selfie_image: nil,
         image_source: nil,
+        images_cropped: false,
         user_uuid: nil,
         uuid_prefix: nil,
         liveness_checking_required: false
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
-        document_response = create_document
-        return document_response unless document_response.success?
-
-        instance_id = document_response.instance_id
-
+        instance_id = SecureRandom.uuid
         front_image_response = post_front_image(image: front_image, instance_id: instance_id)
         return front_image_response unless front_image_response.success?
 
         back_image_response = post_back_image(image: back_image, instance_id: instance_id)
         return back_image_response unless back_image_response.success?
 
-        get_results(instance_id: instance_id, selfie_check_performed: liveness_checking_required)
+        get_results(
+          instance_id: instance_id,
+          selfie_required: liveness_checking_required,
+        )
       end
 
-      def get_results(instance_id:, selfie_check_performed:)
+      def get_results(instance_id:, selfie_required: false)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
         error_response = http_error_response(self.class.last_uploaded_back_image, 'result')
         return error_response if error_response
@@ -90,8 +79,8 @@ module DocAuth
 
         ResultResponse.new(
           self.class.last_uploaded_back_image,
-          selfie_check_performed,
           overriden_config,
+          selfie_required,
         )
       end
       # rubocop:enable Lint/UnusedMethodArgument

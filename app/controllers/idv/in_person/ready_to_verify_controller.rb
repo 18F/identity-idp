@@ -2,13 +2,15 @@ module Idv
   module InPerson
     class ReadyToVerifyController < ApplicationController
       include Idv::AvailabilityConcern
-      include IdvSession
+      include IdvSessionConcern
       include RenderConditionConcern
       include StepIndicatorConcern
       include OptInHelper
+      include FraudReviewConcern
 
       check_or_render_not_found -> { IdentityConfig.store.in_person_proofing_enabled }
 
+      before_action :handle_fraud
       before_action :confirm_two_factor_authenticated
       before_action :confirm_in_person_session
 

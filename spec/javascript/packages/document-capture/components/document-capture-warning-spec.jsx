@@ -47,7 +47,13 @@ describe('DocumentCaptureWarning', () => {
     }
   }
 
-  function renderCcontent(isFailedDocType, isFailedResult, inPersonUrl) {
+  function renderContent({
+    isFailedDocType,
+    isFailedResult,
+    isFailedSelfieLivenessOrQuality = false,
+    isFailedSelfieFaceMatch = false,
+    inPersonUrl,
+  }) {
     const unknownFieldErrors = [
       {
         field: 'general',
@@ -60,7 +66,9 @@ describe('DocumentCaptureWarning', () => {
           <DocumentCaptureWarning
             isFailedDocType={isFailedDocType}
             isFailedResult={isFailedResult}
-            remainingAttempts={2}
+            isFailedSelfie={isFailedSelfieFaceMatch}
+            isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+            remainingSubmitAttempts={2}
             unknownFieldErrors={unknownFieldErrors}
             actionOnClick={() => {}}
           />
@@ -77,25 +85,31 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = false;
       const isFailedDocType = false;
 
-      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+      renderContent({ isFailedDocType, isFailedResult, inPersonUrl });
 
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.rate_limited_heading',
         subheading: 'errors.doc_auth.rate_limited_subheading',
         error_message_displayed: 'general error',
-        remaining_attempts: 2,
+        remaining_submit_attempts: 2,
+        liveness_checking_required: false,
       });
     });
 
     context('not failed result', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
-        const { getByRole, getByText } = renderCcontent(false, isFailedResult, inPersonUrl);
+        const { getByRole, getByText, queryByText } = renderContent({
+          isFailedDocType: false,
+          isFailedResult,
+          inPersonUrl,
+        });
 
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, true);
         expect(getByText('general error')).to.be.ok();
+        expect(queryByText('idv.warning.attempts_html')).to.be.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
         // ipp section
@@ -106,16 +120,17 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
         expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
+        expect(queryByText('idv.failure.attempts_html')).to.null();
         expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
         // ipp section
         validateIppSection(true);
@@ -128,16 +143,17 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText('general error')).to.be.ok();
+        expect(queryByText('idv.warning.attempts_html')).to.be.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // the ipp section isn't displayed with isFailedResult=true
@@ -148,17 +164,64 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
         expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
+        expect(queryByText('idv.failure.attempts_html')).to.null();
+        expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+        // ipp section not existing
+        validateIppSection(false);
+        // troubleshooting section
+        validateTroubleShootingSection();
+      });
+
+      it('renders with failed facematch for selfie', () => {
+        const isFailedDocType = false;
+        const isFailedSelfieFaceMatch = true;
+        const { getByRole, getByText, queryByText } = renderContent({
+          isFailedDocType,
+          isFailedSelfieFaceMatch,
+          isFailedResult,
+          inPersonUrl,
+        });
+
+        // error message section
+        validateHeader('errors.doc_auth.selfie_fail_heading', 1, true);
+        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+        expect(getByText('general error')).to.be.ok();
+        expect(getByText('idv.warning.attempts_html')).to.be.ok();
+        expect(queryByText('idv.failure.attempts_html')).to.null();
+        expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+        // ipp section not existing
+        validateIppSection(false);
+        // troubleshooting section
+        validateTroubleShootingSection();
+      });
+
+      it('renders with failed quality/liveness selfie', () => {
+        const isFailedDocType = false;
+        const isFailedSelfieLivenessOrQuality = true;
+        const { getByRole, getByText, queryByText } = renderContent({
+          isFailedDocType,
+          isFailedSelfieLivenessOrQuality,
+          isFailedResult,
+          inPersonUrl,
+        });
+
+        // error message section
+        validateHeader('errors.doc_auth.selfie_not_live_or_poor_quality_heading', 1, true);
+        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+        expect(getByText('general error')).to.be.ok();
+        expect(getByText('idv.warning.attempts_html')).to.be.ok();
+        expect(queryByText('idv.failure.attempts_html')).to.null();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not existing
         validateIppSection(false);
@@ -175,14 +238,15 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       const isFailedDocType = true;
 
-      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+      renderContent({ isFailedDocType, isFailedResult, inPersonUrl });
 
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.doc_type_not_supported_heading',
         subheading: '',
         error_message_displayed: 'general error idv.warning.attempts_html',
-        remaining_attempts: 2,
+        remaining_submit_attempts: 2,
+        liveness_checking_required: false,
       });
     });
 
@@ -190,16 +254,17 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText('general error')).to.be.ok();
+        expect(queryByText('idv.warning.attempts_html')).to.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not displayed for non ipp
@@ -210,17 +275,18 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
         expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
+        expect(queryByText('idv.failure.attempts_html')).to.null();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not displayed for non ipp
         validateIppSection(false);
@@ -233,16 +299,17 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText('general error')).to.be.ok();
+        expect(queryByText('idv.warning.attempts_html')).to.be.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // the ipp section isn't displayed with isFailedResult=true
@@ -253,16 +320,17 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText, queryByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
         expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
+        expect(queryByText('idv.failure.attempts_html')).to.null();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not existing
         validateIppSection(false);

@@ -96,7 +96,7 @@ class Profile < ApplicationRecord
       activated_at: now,
     }
 
-    attrs[:verified_at] = now unless (reason_deactivated == :password_reset || verified_at)
+    attrs[:verified_at] = now unless reason_deactivated == :password_reset || verified_at
 
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
@@ -105,6 +105,12 @@ class Profile < ApplicationRecord
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
+
+  def tmx_status
+    return nil unless IdentityConfig.store.in_person_proofing_enforce_tmx
+
+    fraud_pending_reason || :threatmetrix_pass
+  end
 
   def reason_not_to_activate
     if pending_reasons.any?
@@ -201,6 +207,14 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
+    )
+  end
+
+  def deactivate_due_to_ipp_expiration_during_fraud_review
+    update!(
+      active: false,
+      in_person_verification_pending_at: nil,
+      fraud_rejection_at: Time.zone.now,
     )
   end
 

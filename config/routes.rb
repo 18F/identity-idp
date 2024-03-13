@@ -21,8 +21,12 @@ Rails.application.routes.draw do
       put '/sessions' => 'sessions#update'
 
       namespace :two_factor_authentication do
+        put '/piv_cac/:id' => 'piv_cac#update', as: :piv_cac
+        delete '/piv_cac/:id' => 'piv_cac#destroy', as: nil
         put '/webauthn/:id' => 'webauthn#update', as: :webauthn
         delete '/webauthn/:id' => 'webauthn#destroy', as: nil
+        put '/auth_app/:id' => 'auth_app#update', as: :auth_app
+        delete '/auth_app/:id' => 'auth_app#destroy', as: nil
       end
     end
   end
@@ -147,6 +151,13 @@ Rails.application.routes.draw do
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
+
+        get '/oidc/login' => 'oidc_test#index'
+        get '/oidc' => 'oidc_test#start'
+        get '/oidc/auth_request' => 'oidc_test#auth_request'
+        get '/oidc/auth_result' => 'oidc_test#auth_result'
+        get '/oidc/logout' => 'oidc_test#logout'
+
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
         post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
 
@@ -217,18 +228,12 @@ Rails.application.routes.draw do
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
-    delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac',
          as: :submit_new_piv_cac
 
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
 
-    # Deprecated routes: Remove once LG-11454 is fully deployed to production.
-    delete '/webauthn_setup' => 'users/webauthn_setup#delete'
-    get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
-
-    delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
 
@@ -252,10 +257,15 @@ Rails.application.routes.draw do
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
+    get '/manage/piv_cac/:id' => 'users/piv_cac#edit', as: :edit_piv_cac
+    put '/manage/piv_cac/:id' => 'users/piv_cac#update', as: :piv_cac
+    delete '/manage/piv_cac/:id' => 'users/piv_cac#destroy', as: nil
     get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
     put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
     delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
-
+    get '/manage/auth_app/:id' => 'users/auth_app#edit', as: :edit_auth_app
+    put '/manage/auth_app/:id' => 'users/auth_app#update', as: :auth_app
+    delete '/manage/auth_app/:id' => 'users/auth_app#destroy', as: nil
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
@@ -274,12 +284,9 @@ Rails.application.routes.draw do
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
-    get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
-    get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
-    get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
     get '/user_please_call' => 'users/please_call#show'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password

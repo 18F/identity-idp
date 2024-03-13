@@ -42,6 +42,12 @@ FactoryBot.define do
       active { true }
     end
 
+    trait :in_person_proofing_enabled do
+      in_person_proofing_enabled { true }
+      ial { 2 }
+      redirect_uris { ['http://localhost:7654/auth/result'] }
+    end
+
     trait :irs do
       friendly_name { 'An IRS Service Provider' }
       ial { 2 }

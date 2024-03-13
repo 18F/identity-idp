@@ -34,10 +34,15 @@ class AttributeAsserter
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_all_emails(attrs) if bundle.include? :all_emails
-    add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
-    add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
-    add_aal(attrs)
-    add_ial(attrs) if authn_request.requested_ial_authn_context || !service_provider.ial.nil?
+    add_bundle(attrs) if should_add_proofed_attributes?
+    add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
+    if authn_request.requested_vtr_authn_context.present?
+      add_vot(attrs)
+    else
+      add_aal(attrs)
+      add_ial(attrs) if authn_request.requested_ial_authn_context || !service_provider.ial.nil?
+    end
+
     add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
   end
@@ -51,13 +56,24 @@ class AttributeAsserter
                 :decrypted_pii,
                 :user_session
 
-  def ial_context
-    @ial_context ||= IalContext.new(
-      ial: authn_context,
-      service_provider: service_provider,
-      user: user,
-      authn_context_comparison: authn_request&.requested_authn_context_comparison,
-    )
+  def should_add_proofed_attributes?
+    return false if !user.active_profile.present?
+    resolved_authn_context_result.identity_proofing_or_ialmax?
+  end
+
+  def ial2_service_provider?
+    service_provider.ial.to_i >= ::Idp::Constants::IAL2
+  end
+
+  def resolved_authn_context_result
+    @resolved_authn_context_result ||= begin
+      saml = FederatedProtocols::Saml.new(authn_request)
+      AuthnContextResolver.new(
+        service_provider: service_provider,
+        vtr: saml.vtr,
+        acr_values: saml.acr_values,
+      ).resolve
+    end
   end
 
   def default_attrs
@@ -116,6 +132,11 @@ class AttributeAsserter
     attrs[:verified_at] = { getter: verified_at_getter_function }
   end
 
+  def add_vot(attrs)
+    context = resolved_authn_context_result.component_values.map(&:name).join('.')
+    attrs[:vot] = { getter: vot_getter_function(context) }
+  end
+
   def add_aal(attrs)
     requested_context = authn_request.requested_aal_authn_context
     requested_aal_level = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_context]
@@ -126,12 +147,17 @@ class AttributeAsserter
 
   def add_ial(attrs)
     requested_context = authn_request.requested_ial_authn_context
-    context = if ial_context.ialmax_requested? && ial_context.ial2_requested?
-                sp_ial # IAL2 since IALMAX only works for IAL2 SPs
+    context = if ialmax_requested_and_fullfilable?
+                # IAL2 since IALMAX only works for IAL2 SPs
+                sp_ial
               else
                 requested_context.presence || sp_ial
               end
     attrs[:ial] = { getter: ial_getter_function(context) } if context
+  end
+
+  def ialmax_requested_and_fullfilable?
+    resolved_authn_context_result.ialmax? && user.active_profile.present?
   end
 
   def sp_ial
@@ -153,6 +179,10 @@ class AttributeAsserter
 
   def verified_at_getter_function
     ->(principal) { principal.active_profile&.verified_at&.iso8601 }
+  end
+
+  def vot_getter_function(vot_authn_context)
+    ->(_principal) { vot_authn_context }
   end
 
   def aal_getter_function(aal_authn_context)

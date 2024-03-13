@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.1.0'
+gem 'rails', '~> 7.1.3'
 
 gem 'activerecord-postgis-adapter', '~> 9.0'
 gem 'ahoy_matey', '~> 3.0'
@@ -34,7 +34,7 @@ gem 'foundation_emails'
 gem 'good_job', '~> 3.0'
 gem 'hashie', '~> 4.1'
 gem 'http_accept_language'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.2'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.3'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
 gem 'jsbundling-rails', '~> 1.1.2'
@@ -56,8 +56,8 @@ gem 'premailer-rails', '>= 1.12.0'
 gem 'profanity_filter'
 gem 'propshaft'
 gem 'rack', '>= 3.0'
-gem 'rack-attack', '>= 6.2.1'
-gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
+gem 'rack-attack', github: 'rack/rack-attack', ref: 'd9fedfae4f7f6409f33857763391f4e18a6d7467'
+gem 'rack-cors', '>= 1.0.5', '< 2.0.1', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
 gem 'redacted_struct'
@@ -69,14 +69,15 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.2-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.19.1-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'terminal-table', require: false
-gem 'valid_email', '>= 0.1.3'
+# until a release includes https://github.com/hallelujah/valid_email/pull/126
+gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
 gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
@@ -104,6 +105,7 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
+  gem 'net-http-persistent', '~> 4.0.2', require: false
   gem 'nokogiri', '~> 1.16.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
@@ -112,8 +114,8 @@ group :development, :test do
   gem 'psych'
   gem 'rspec', '~> 3.12.0'
   gem 'rspec-rails', '~> 6.0'
-  gem 'rubocop', '~> 1.55.1', require: false
-  gem 'rubocop-performance', '~> 1.19.0', require: false
+  gem 'rubocop', '~> 1.59.0', require: false
+  gem 'rubocop-performance', '~> 1.20.2', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'rubocop-rspec', require: false
 end

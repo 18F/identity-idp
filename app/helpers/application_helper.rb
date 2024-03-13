@@ -22,8 +22,12 @@ module ApplicationHelper
     end
   end
 
-  def background_cls(cls)
-    content_for(:background_cls) { cls }
+  def extends_layout(layout, **locals, &block)
+    if block.present?
+      @view_flow.get(:layout).replace capture(&block) # rubocop:disable Rails/HelperInstanceVariable
+    end
+
+    render template: "layouts/#{layout}", locals:
   end
 
   def sp_session
@@ -46,7 +50,7 @@ module ApplicationHelper
   end
 
   def ial2_requested?
-    sp_session && sp_session[:ial2]
+    resolved_authn_context_result.identity_proofing?
   end
 
   def cancel_link_text

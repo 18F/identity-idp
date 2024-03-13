@@ -6,8 +6,8 @@ require 'phonelib'
 # Scrapes HTML tables from Pinpoint help sites to parse out supported countries, and
 # puts them in a format compatible with country_dialing_codes.yml
 class PinpointSupportedCountries
-  PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-countries.html'.freeze
-  PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
+  PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html'.freeze
+  PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-voice-support-by-country.html'.freeze
 
   # The list of countries where we have our sender ID registered
   SENDER_ID_COUNTRIES = %w[
@@ -137,7 +137,7 @@ class PinpointSupportedCountries
       'BDE' => 'BD',
       'DN' => 'DM',
       'H' => 'HT',
-      'KV' => 'XK',
+      'XV' => 'XK',
       'TX' => 'TZ',
     }.fetch(iso_code, iso_code)
   end

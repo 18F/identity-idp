@@ -30,6 +30,7 @@ RSpec.describe ScriptBase do
         stderr:,
         subtask_class:,
         banner: '',
+        reason_arg: false,
       )
     end
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Two Factor Authentication' do
+RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
   describe 'When the user has not set up 2FA' do
     scenario 'user is prompted to set up two factor authentication at account creation' do
       user = sign_in_before_2fa
@@ -587,7 +587,6 @@ RSpec.feature 'Two Factor Authentication' do
     context 'sign in' do
       it 'allows user to be signed in without issue' do
         mock_webauthn_verification_challenge
-
         sign_in_user(webauthn_configuration.user)
         mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 

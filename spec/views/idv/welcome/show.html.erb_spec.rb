@@ -1,21 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/welcome/show.html.erb' do
-  let(:user_fully_authenticated) { true }
-  let(:sp_name) { nil }
+  include Devise::Test::ControllerHelpers
+
+  let(:selfie_required) { false }
+  let(:selfie_capture_enabled) { false }
   let(:user) { create(:user) }
+  let(:sp_session) { {} }
 
   before do
-    @decorated_sp_session = instance_double(ServiceProviderSession)
-    allow(@decorated_sp_session).to receive(:sp_name).and_return(sp_name)
-    allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
-    allow(view).to receive(:user_fully_authenticated?).and_return(user_fully_authenticated)
-    allow(view).to receive(:user_signing_up?).and_return(false)
-    allow(view).to receive(:url_for).and_wrap_original do |method, *args, &block|
-      method.call(*args, &block)
-    rescue
-      ''
-    end
+    sp = build(:service_provider)
+    decorated_sp_session = ServiceProviderSession.new(
+      sp: sp,
+      view_context: nil,
+      sp_session: sp_session,
+      service_provider_request: nil,
+    )
+    presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+    assign(:presenter, presenter)
+
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(selfie_capture_enabled)
   end
 
   context 'in doc auth with an authenticated user' do
@@ -27,45 +32,35 @@ RSpec.describe 'idv/welcome/show.html.erb' do
     it 'renders a link to return to the SP' do
       expect(rendered).to have_link(t('links.cancel'))
     end
-  end
 
-  context 'without service provider' do
-    it 'renders troubleshooting options' do
-      render
-
-      expect(rendered).to have_link(t('idv.troubleshooting.options.supported_documents'))
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.learn_more_address_verification_options'),
+    it 'renders the welcome template' do
+      expect(rendered).to have_content(
+        t('doc_auth.headings.welcome', sp_name: 'Test Service Provider'),
       )
-      expect(rendered).not_to have_link(
-        nil,
-        href: return_to_sp_failure_to_proof_url(step: 'welcome', location: 'missing_items'),
+      expect(rendered).to have_content(t('doc_auth.instructions.getting_started'))
+      expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
+      expect(rendered).to have_link(
+        t('doc_auth.info.getting_started_learn_more'),
+        href: help_center_redirect_path(
+          category: 'verify-your-identity',
+          article: 'how-to-verify-your-identity',
+          flow: :idv,
+          step: :welcome,
+          location: 'intro_paragraph',
+        ),
       )
     end
-  end
 
-  context 'with service provider' do
-    let(:sp_name) { 'Example App' }
+    context 'when the SP requests IAL2 verification' do
+      let(:sp_session) do
+        { biometric_comparison_required: true }
+      end
 
-    it 'renders troubleshooting options' do
-      render
+      let(:selfie_capture_enabled) { true }
 
-      expect(rendered).to have_link(t('idv.troubleshooting.options.supported_documents'))
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.learn_more_address_verification_options'),
-      )
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_url(step: 'welcome', location: 'missing_items'),
-      )
+      it 'renders a modified welcome template' do
+        expect(rendered).to have_content(t('doc_auth.instructions.bullet1_with_selfie'))
+      end
     end
-  end
-
-  it 'renders a link to the privacy & security page' do
-    render
-    expect(rendered).to have_link(
-      t('doc_auth.instructions.learn_more'),
-      href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
-    )
   end
 end

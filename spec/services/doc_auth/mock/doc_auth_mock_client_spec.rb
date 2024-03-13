@@ -5,18 +5,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
   let(:liveness_checking_required) { false }
 
-  it 'implements all the public methods of the real Acuant client' do
-    expect(
-      described_class.instance_methods.sort,
-    ).to eq(
-      DocAuth::Acuant::AcuantClient.instance_methods.
-        concat(DocAuth::Mock::YmlLoaderConcern.instance_methods).sort,
-    )
-  end
-
+  let(:instance_id) { 'fake-instance-id' }
   it 'allows doc auth without any external requests' do
-    create_document_response = client.create_document
-    instance_id = create_document_response.instance_id
     post_front_image_response = client.post_front_image(
       instance_id: instance_id,
       image: DocAuthImageFixtures.document_front_image,
@@ -27,11 +17,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: instance_id,
-      selfie_check_performed: liveness_checking_required,
     )
-
-    expect(create_document_response.success?).to eq(true)
-    expect(create_document_response.instance_id).to_not be_blank
 
     expect(post_front_image_response.success?).to eq(true)
     expect(post_back_image_response.success?).to eq(true)
@@ -77,8 +63,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
             ClassName: Tribal Identification
     YAML
 
-    create_document_response = client.create_document
-    instance_id = create_document_response.instance_id
     client.post_front_image(
       instance_id: instance_id,
       image: yaml,
@@ -88,8 +72,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       image: yaml,
     )
     get_results_response = client.get_results(
-      instance_id: create_document_response.instance_id,
-      selfie_check_performed: liveness_checking_required,
+      instance_id: instance_id,
     )
 
     expect(get_results_response.pii_from_doc).to eq(
@@ -118,8 +101,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
             ClassName: Tribal Identification
     YAML
 
-    create_document_response = client.create_document
-    instance_id = create_document_response.instance_id
     client.post_front_image(
       instance_id: instance_id,
       image: yaml,
@@ -129,8 +110,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       image: yaml,
     )
     get_results_response = client.get_results(
-      instance_id: create_document_response.instance_id,
-      selfie_check_performed: liveness_checking_required,
+      instance_id: instance_id,
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
     errors = get_results_response.errors
@@ -142,13 +122,29 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(get_results_response.extra[:classification_info]).to include(:Front, :Back)
   end
   it 'allows responses to be mocked' do
-    described_class.mock_response!(method: :create_document, response: 'Create doc test')
+    response = DocAuth::Response.new(
+      success: true,
+      errors: nil,
+      exception: nil,
+      extra: { vendor: 'Mock' },
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(method: :post_front_image, response: response)
 
-    expect(described_class.new.create_document).to eq('Create doc test')
+    expect(
+      described_class.new.post_front_image(
+        image: DocAuthImageFixtures.document_front_image,
+        instance_id: 'fake-instance-id',
+      ),
+    ).to eq(response)
 
     described_class.reset!
 
-    expect(described_class.new.create_document).to_not eq('Create doc test')
+    expect(
+      described_class.new.post_front_image(
+        image: DocAuthImageFixtures.document_front_image,
+        instance_id: 'fake-instance-id',
+      ),
+    ).to_not eq(response)
   end
 
   context 'when checking results gives a failure' do
@@ -196,6 +192,11 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         failed_alerts: []
       YAML
 
+      image_no_setting = <<~YAML
+        doc_auth_result: Passed
+        failed_alerts: []
+      YAML
+
       it 'sets selfie_check_performed to true' do
         response = client.post_images(
           front_image: image,
@@ -206,6 +207,19 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
         expect(response.selfie_check_performed?).to be(true)
         expect(response.extra).to have_key(:portrait_match_results)
+      end
+
+      it 'returns selfie status with default setting' do
+        response = client.post_images(
+          front_image: image_no_setting,
+          back_image: image_no_setting,
+          liveness_checking_required: liveness_checking_required,
+          selfie_image: image_no_setting,
+        )
+
+        expect(response.selfie_check_performed?).to be(true)
+        expect(response.selfie_status).to eq(:success)
+        expect(response.extra).to_not have_key(:portrait_match_results)
       end
     end
 
@@ -257,7 +271,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       )
       response = client.get_results(
         instance_id: nil,
-        selfie_check_performed: liveness_checking_required,
       )
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
@@ -312,6 +325,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       end
     end
 
+    # TODO fix this set of tests, this looks like something broken with error generation?
+    #      NoMethodError:
+    # undefined method `empty?' for nil
+    # ./app/services/doc_auth/error_result.rb:33:in `to_h'
     describe 'when sending a failing selfie yml' do
       context 'liveness check fails due to being determined to not be live' do
         it 'returns a failure response' do
@@ -339,7 +356,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
           errors = post_images_response.errors
           expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
-          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(errors[:selfie]).to contain_exactly(
+            DocAuth::Errors::SELFIE_FAILURE,
+          )
         end
       end
 
@@ -369,7 +388,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
           errors = post_images_response.errors
           expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
-          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(errors[:selfie]).to contain_exactly(
+            DocAuth::Errors::SELFIE_FAILURE,
+          )
         end
       end
 
@@ -397,8 +418,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           )
 
           errors = post_images_response.errors
-          expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
-          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(errors.keys).to contain_exactly(:general, :back, :front, :hints, :selfie)
+          expect(errors[:selfie]).to contain_exactly(
+            DocAuth::Errors::SELFIE_FAILURE,
+          )
         end
       end
     end

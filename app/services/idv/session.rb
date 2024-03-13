@@ -23,6 +23,7 @@ module Idv
       redo_document_capture
       resolution_successful
       selfie_check_performed
+      selfie_check_required
       skip_doc_auth
       skip_hybrid_handoff
       ssn
@@ -178,9 +179,8 @@ module Idv
     def invalidate_in_person_pii_from_user!
       if has_pii_from_user_in_flow_session
         user_session['idv/in_person'][:pii_from_user] = nil
-        # Mark the two FSM steps as incomplete so that they can be re-entered.
+        # Mark the FSM step as incomplete so that it can be re-entered.
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
-        user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
       end
     end
 
@@ -248,6 +248,10 @@ module Idv
 
     def skip_hybrid_handoff?
       !!session[:skip_hybrid_handoff]
+    end
+
+    def desktop_selfie_test_mode_enabled?
+      IdentityConfig.store.doc_auth_selfie_desktop_test_mode
     end
 
     private

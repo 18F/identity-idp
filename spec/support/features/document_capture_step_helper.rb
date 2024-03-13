@@ -16,6 +16,16 @@ module DocumentCaptureStepHelper
     attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
 
+  def attach_liveness_images(
+    file = Rails.root.join(
+      'spec', 'fixtures',
+      'ial2_test_portrait_match_success.yml'
+    )
+  )
+    attach_images(file)
+    attach_selfie
+  end
+
   def attach_selfie(file = Rails.root.join('app', 'assets', 'images', 'logo.png'))
     attach_file t('doc_auth.headings.document_capture_selfie'), file, make_visible: true
   end

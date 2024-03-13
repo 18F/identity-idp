@@ -2,13 +2,6 @@
 en:
   forms:
     backup_code:
-      are_you_sure_desc_html:
-        - '<strong>Backup codes are the least preferred authentication
-          method</strong> because the codes can easily be lost. Try a safer
-          option, like an authentication application or a security key.'
-        - We’ll give you 10 codes that you can download, print, copy or write
-          down. You’ll enter one code every time you sign in.
-      are_you_sure_title: Are you sure you want to use backup codes?
       caution_codes: Each code can only be used once. We’ll give you new codes after
         you use all ten.
       caution_delete: If you delete your backup codes you will no longer be able to
@@ -83,10 +76,6 @@ en:
     phone:
       buttons:
         delete: Remove phone
-    piv_cac_delete:
-      caution: If you remove your PIV/CAC card you won’t be able to use it to access
-        your %{app_name} account.
-      confirm: Are you sure you want to remove your PIV/CAC card?
     piv_cac_login:
       submit: Insert your PIV/CAC
     piv_cac_mfa:
@@ -108,10 +97,6 @@ en:
         below to continue.
     ssn:
       show: Show Social Security number
-    totp_delete:
-      caution: If you remove your authentication app you won’t be able to use it to
-        access your %{app_name} account.
-      confirm: Are you sure you want to remove your authentication app?
     totp_setup:
       totp_intro: Set up an authentication app to sign in using temporary security codes.
       totp_step_1: Give it a nickname
@@ -125,14 +110,6 @@ en:
       try_again: Use another phone number
     validation:
       required_checkbox: Please check this box to continue
-    webauthn_delete:
-      caution: If you remove your security key you won’t be able to use it to access
-        your %{app_name} account.
-      confirm: Are you sure you want to remove your security key?
-    webauthn_platform_delete:
-      caution: If you remove face or touch unlock you won’t be able to use it to
-        access your %{app_name} account.
-      confirm: Are you sure you want to remove face or touch unlock?
     webauthn_platform_setup:
       continue: Continue
       info_text: You’ll need to set up an additional authentication method after you

@@ -27,7 +27,7 @@ const ExtractKeysWebpackPlugin = require('./extract-keys-webpack-plugin.js');
  * // 'foo'
  * ```
  *
- * @param {Record<string, any>} object
+ * @param {undefined|Record<string, any>} object
  * @param {string[]} keyPath
  *
  * @return {any}
@@ -136,7 +136,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    * @param {string} domain
    * @param {string} locale
    *
-   * @return {Promise<Record<string, string>>}
+   * @return {Promise<undefined|Record<string, string>>}
    */
   getLocaleData(domain, locale) {
     if (!(domain in this.localeData)) {

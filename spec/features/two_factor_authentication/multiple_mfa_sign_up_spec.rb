@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Multi Two Factor Authentication' do
+RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] do
   include WebAuthnHelper
 
   describe 'When the user has not set up 2FA' do
@@ -11,9 +11,9 @@ RSpec.feature 'Multi Two Factor Authentication' do
     end
 
     scenario 'user can set up 2 MFA methods properly' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
 
       click_2fa_option('phone')
       click_2fa_option('backup_code')
@@ -23,7 +23,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       expect(page).
         to have_content t('headings.add_info.phone')
 
-      expect(current_path).to eq phone_setup_path
+      expect(page).to have_current_path phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
       click_send_one_time_code
@@ -31,9 +31,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq backup_code_setup_path
-
-      click_continue
+      expect(page).to have_current_path backup_code_setup_path
 
       expect(page).to have_link(t('components.download_button.label'))
 
@@ -41,13 +39,13 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
       expect(fake_analytics).to have_logged_event('User registration: complete')
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     scenario 'user can select 2 MFA methods and then chooses another method during' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
 
       click_2fa_option('phone')
       click_2fa_option('backup_code')
@@ -57,7 +55,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       expect(page).
         to have_content t('headings.add_info.phone')
 
-      expect(current_path).to eq phone_setup_path
+      expect(page).to have_current_path phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
       click_send_one_time_code
@@ -65,9 +63,9 @@ RSpec.feature 'Multi Two Factor Authentication' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq backup_code_setup_path
+      expect(page).to have_current_path backup_code_setup_path
 
-      click_link t('two_factor_authentication.choose_another_option')
+      click_button t('two_factor_authentication.choose_another_option')
 
       expect(page).to have_current_path(authentication_methods_setup_path)
 
@@ -83,21 +81,21 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_submit_default
 
       expect(fake_analytics).to have_logged_event('User registration: complete')
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     scenario 'user can select 2 MFA methods and complete after reauthn window' do
       allow(IdentityConfig.store).to receive(:reauthn_window).and_return(10)
-      sign_in_before_2fa
+      sign_up_and_set_password
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
 
       click_2fa_option('backup_code')
       click_2fa_option('auth_app')
 
       click_continue
 
-      expect(current_path).to eq authenticator_setup_path
+      expect(page).to have_current_path authenticator_setup_path
 
       fill_in_totp_name
 
@@ -108,34 +106,20 @@ RSpec.feature 'Multi Two Factor Authentication' do
       check t('forms.messages.remember_device')
       click_submit_default
 
-      expect(current_path).to eq backup_code_setup_path
+      expect(page).to have_current_path backup_code_setup_path
       travel_to((IdentityConfig.store.reauthn_window + 5).seconds.from_now) do
-        click_continue
-        expect(current_path).to eq login_two_factor_options_path
-
-        find("label[for='two_factor_options_form_selection_auth_app']").click
-        click_on t('forms.buttons.continue')
-
-        totp = generate_totp_code(secret)
-        fill_in :code, with: totp
-
-        click_submit_default
-        click_continue
-
-        expect(page).to have_link(t('components.download_button.label'))
-
         click_continue
 
         expect(page).to have_content(t('notices.backup_codes_configured'))
 
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
       end
     end
 
     scenario 'user can select 1 MFA methods and will be prompted to add another method' do
       sign_in_before_2fa
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
 
       click_2fa_option('phone')
 
@@ -158,24 +142,23 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       click_button t('mfa.skip')
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     describe 'skipping second mfa' do
       context 'with skippable mfa method' do
         it 'allows user to skip using skip link' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
-          expect(current_path).to eq backup_code_setup_path
+          expect(page).to have_current_path backup_code_setup_path
 
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
           expect(page).to have_content(t('notices.backup_codes_configured'))
-          expect(page).to have_current_path(auth_method_confirmation_path)
+          expect(page).to have_current_path(confirm_backup_codes_path)
 
           click_link t('mfa.add')
           expect(page).to have_current_path(authentication_methods_setup_path)
@@ -185,18 +168,17 @@ RSpec.feature 'Multi Two Factor Authentication' do
         end
 
         it 'allows user to skip by clicking continue without selection' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
-          expect(current_path).to eq backup_code_setup_path
+          expect(page).to have_current_path backup_code_setup_path
 
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
           expect(page).to have_content(t('notices.backup_codes_configured'))
-          expect(page).to have_current_path(auth_method_confirmation_path)
+          expect(page).to have_current_path(confirm_backup_codes_path)
 
           click_link t('mfa.add')
           expect(page).to have_current_path(authentication_methods_setup_path)
@@ -214,7 +196,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
           mock_webauthn_setup_challenge
           user = sign_up_and_set_password
           user.password = Features::SessionHelper::VALID_PASSWORD
-          expect(current_path).to eq authentication_methods_setup_path
+          expect(page).to have_current_path authentication_methods_setup_path
           # webauthn option is hidden in browsers that don't support it
           select_2fa_option('webauthn_platform', visible: :all)
 
@@ -239,41 +221,44 @@ RSpec.feature 'Multi Two Factor Authentication' do
   end
 
   context 'when backup codes are the only selected option' do
+    let(:mfa) { MfaContext.new(user) }
+    let(:user) { create(:user) }
     before do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
 
       click_2fa_option('backup_code')
 
       click_continue
 
-      expect(current_path).to eq backup_code_setup_path
-
-      click_continue
+      expect(page).to have_current_path backup_code_setup_path
 
       expect(page).to have_link(t('components.download_button.label'))
+    end
 
+    it 'shows the confirm backup codes page' do
       click_continue
 
       expect(page).to have_current_path(
-        auth_method_confirmation_path,
+        confirm_backup_codes_path,
       )
-
-      click_button t('mfa.skip')
     end
 
     it 'goes to the next page after user confirms that they have saved their backup codes' do
-      acknowledge_backup_code_confirmation
+      click_continue
+      expect(page).to have_current_path(
+        confirm_backup_codes_path,
+      )
+
+      click_continue
       expect(page).to have_current_path account_path
     end
 
-    it 'regenerates backup codes path if a user clicks that they need new backup codes' do
-      find(
-        'a',
-        text: t('two_factor_authentication.backup_codes.new_backup_codes_html').gsub('&nbsp;', ' '),
-      ).click
-      expect(page).to have_current_path backup_code_regenerate_path
+    it 'returns to setup mfa page when user clicks Choose another option' do
+      click_on(t('two_factor_authentication.choose_another_option'))
+      expect(current_path).to eq authentication_methods_setup_path
+      expect(mfa.backup_code_configurations).to be_empty
     end
   end
 

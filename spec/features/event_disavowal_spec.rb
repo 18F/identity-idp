@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'disavowing an action' do
+RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   scenario 'disavowing a password reset' do
@@ -129,6 +129,24 @@ RSpec.feature 'disavowing an action' do
     # We should be on the MFA screen because we logged in with the new password
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+  end
+
+  scenario 'disavowing an event with javascript enabled', :js do
+    perform_disavowable_password_reset
+
+    open_last_email
+    click_email_link_matching(%r{events/disavow})
+
+    expect(page).to have_content(t('headings.passwords.change'))
+
+    fill_in t('forms.passwords.edit.labels.password'), with: 'abc'
+
+    expect(page).to have_content t('zxcvbn.feedback.sequences_like_abc_or_6543_are_easy_to_guess')
+
+    fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
+    click_button t('forms.passwords.edit.buttons.submit')
+
+    expect(page).to have_content(t('devise.passwords.updated_not_active'))
   end
 
   def submit_prefilled_otp_code(user, delivery_preference)

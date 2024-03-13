@@ -333,7 +333,7 @@ describe('document-capture/components/document-capture', () => {
         );
 
         const response = new Response(
-          JSON.stringify({ success: false, remaining_attempts: 1, errors: [{}] }),
+          JSON.stringify({ success: false, remaining_submit_attempts: 1, errors: [{}] }),
           { status: 400 },
         );
         sandbox.stub(response, 'url').get(() => endpoint);

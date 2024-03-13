@@ -120,7 +120,7 @@ module IdvStepHelper
   end
 
   def complete_idv_steps_before_step(step, user = user_with_2fa)
-    send("complete_idv_steps_before_#{step}_step", user)
+    send(:"complete_idv_steps_before_#{step}_step", user)
   end
 
   def expect_step_indicator_current_step(text)

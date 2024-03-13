@@ -43,7 +43,6 @@ RSpec.describe Users::SessionsController, devise: true do
 
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :fully_registered)
-      subject.session['user_return_to'] = mock_valid_site
 
       stub_analytics
       stub_attempts_tracker
@@ -52,7 +51,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         bad_password_count: 0,
-        stored_location: mock_valid_site,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -64,6 +62,7 @@ RSpec.describe Users::SessionsController, devise: true do
         with(email: user.email, success: true)
 
       post :create, params: { user: { email: user.email, password: user.password } }
+      expect(subject.session[:sign_in_flow]).to eq(:sign_in)
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
@@ -75,7 +74,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         bad_password_count: 1,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -85,6 +83,7 @@ RSpec.describe Users::SessionsController, devise: true do
         with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
+      expect(subject.session[:sign_in_flow]).to eq(:sign_in)
     end
 
     it 'tracks the authentication attempt for nonexistent user' do
@@ -94,7 +93,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: 'anonymous-uuid',
         user_locked_out: false,
         bad_password_count: 1,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -133,7 +131,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: true,
         bad_password_count: 0,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -157,7 +154,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: user.uuid,
         user_locked_out: false,
         bad_password_count: 2,
-        stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
@@ -176,7 +172,6 @@ RSpec.describe Users::SessionsController, devise: true do
         user_id: 'anonymous-uuid',
         user_locked_out: false,
         bad_password_count: 1,
-        stored_location: nil,
         sp_request_url_present: true,
         remember_device: false,
       }
@@ -251,7 +246,6 @@ RSpec.describe Users::SessionsController, devise: true do
           user_id: user.uuid,
           user_locked_out: false,
           bad_password_count: 0,
-          stored_location: nil,
           sp_request_url_present: false,
           remember_device: false,
         }
@@ -378,7 +372,6 @@ RSpec.describe Users::SessionsController, devise: true do
           user_id: user.uuid,
           user_locked_out: false,
           bad_password_count: 0,
-          stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
         }
@@ -404,7 +397,6 @@ RSpec.describe Users::SessionsController, devise: true do
           user_id: user.uuid,
           user_locked_out: false,
           bad_password_count: 0,
-          stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
         }
@@ -511,12 +503,10 @@ RSpec.describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
-        subject.session['user_return_to'] = mock_valid_site
 
         expect(@analytics).to receive(:track_event).with(
           'Sign in page visited',
           flash: 'hello',
-          stored_location: mock_valid_site,
         )
 
         get :new

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::BackupCodeSetupController do
+RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
@@ -8,7 +8,8 @@ RSpec.describe Users::BackupCodeSetupController do
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
         :apply_secure_headers_override,
-        [:confirm_recently_authenticated_2fa, except: ['reminder']],
+        [:confirm_recently_authenticated_2fa, except: ['reminder', 'continue']],
+        :validate_internal_referrer?,
       )
     end
   end
@@ -18,6 +19,7 @@ RSpec.describe Users::BackupCodeSetupController do
     stub_sign_in(user)
     analytics = stub_analytics
     stub_attempts_tracker
+    allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
 
     Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
@@ -42,9 +44,9 @@ RSpec.describe Users::BackupCodeSetupController do
     expect(@irs_attempts_api_tracker).to receive(:track_event).
       with(:mfa_enroll_backup_code, success: true)
 
-    post :create
+    get :index
 
-    expect(response).to render_template('create')
+    expect(response).to render_template('index')
     expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
   end
 
@@ -56,7 +58,7 @@ RSpec.describe Users::BackupCodeSetupController do
       expect(user.remember_device_revoked_at).to eq nil
 
       freeze_time do
-        post :create
+        get :index
         expect(user.reload.remember_device_revoked_at).to eq nil
       end
     end
@@ -67,10 +69,12 @@ RSpec.describe Users::BackupCodeSetupController do
 
     it 'revokes remembered device' do
       stub_sign_in(user)
+      allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+
       expect(user.remember_device_revoked_at).to eq nil
 
       freeze_time do
-        post :create
+        get :index
         expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
       end
     end
@@ -172,6 +176,15 @@ RSpec.describe Users::BackupCodeSetupController do
         'Backup Code Regenerate Visited',
         hash_including(in_account_creation_flow: false),
       )
+    end
+  end
+
+  context 'invalid referrer to create Backup codes page' do
+    it 'redirects to site root' do
+      user = create(:user, :fully_registered)
+      stub_sign_in(user)
+      get :index
+      expect(response).to redirect_to(root_url)
     end
   end
 end

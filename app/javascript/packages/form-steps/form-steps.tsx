@@ -231,10 +231,11 @@ function FormSteps({
   promptOnNavigate = true,
   titleFormat,
 }: FormStepsProps) {
+  const stepNames = steps.map((step) => step.name);
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam(initialStep);
+  const [stepName, setStepName] = useHistoryParam(initialStep, stepNames);
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stepCanComplete, setStepCanComplete] = useState<boolean | undefined>(undefined);

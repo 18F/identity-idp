@@ -36,11 +36,17 @@ export class UploadFormEntryError extends FormError {
 export class UploadFormEntriesError extends FormError {
   formEntryErrors: UploadFormEntryError[] = [];
 
-  remainingAttempts = Infinity;
+  remainingSubmitAttempts = Infinity;
 
   isFailedResult = false;
 
   isFailedDocType = false;
+
+  isFailedSelfie = false;
+
+  selfieNotLive = false;
+
+  selfieNotGoodQuality = false;
 
   pii?: PII;
 
@@ -108,8 +114,8 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
       error.formEntryErrors = result.errors.map(toFormEntryError);
     }
 
-    if (result.remaining_attempts) {
-      error.remainingAttempts = result.remaining_attempts;
+    if (result.remaining_submit_attempts) {
+      error.remainingSubmitAttempts = result.remaining_submit_attempts;
     }
 
     if (result.ocr_pii) {
@@ -122,7 +128,14 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
 
     error.isFailedResult = !!result.result_failed;
 
+    error.isFailedSelfie = result.selfie_status === 'fail';
+
     error.isFailedDocType = !result.doc_type_supported;
+
+    error.selfieNotLive = result.selfie_live === undefined ? false : !result.selfie_live;
+
+    error.selfieNotGoodQuality =
+      result.selfie_quality_good === undefined ? false : !result.selfie_quality_good;
 
     error.failed_image_fingerprints = result.failed_image_fingerprints ?? { front: [], back: [] };
 

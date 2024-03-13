@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PersonalKeyController do
+RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
   include SamlAuthHelper
   include PersonalKeyValidator
@@ -44,6 +44,8 @@ RSpec.describe Idv::PersonalKeyController do
   let(:idv_session) { subject.idv_session }
 
   let(:threatmetrix_review_status) { nil }
+
+  let(:pii_cacher) { Pii::Cacher.new(user, controller.user_session) }
 
   before do
     stub_analytics
@@ -181,7 +183,7 @@ RSpec.describe Idv::PersonalKeyController do
       )
     end
 
-    it 'includes before_actions from IdvSession' do
+    it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(
         :before,
         :redirect_unless_sp_requested_verification,
@@ -190,6 +192,18 @@ RSpec.describe Idv::PersonalKeyController do
   end
 
   describe '#show' do
+    context 'when we have no personal key or encrypted profiles in the session' do
+      it 'redirects to get the users password and fetch the PII' do
+        controller.idv_session.personal_key = nil
+        controller.user_session[:encrypted_profiles] = nil
+
+        response = get :show
+
+        expect(controller.user_session[:stored_location]).to eq(idv_personal_key_path)
+        expect(response).to redirect_to(capture_password_path)
+      end
+    end
+
     context 'profile has been created from idv_session' do
       it 'does not redirect' do
         get :show
@@ -215,8 +229,17 @@ RSpec.describe Idv::PersonalKeyController do
       end
 
       context 'but a profile is pending from a different session' do
+        before { pii_cacher.save(password, pending_profile) }
+
         context 'due to fraud review' do
-          let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
+          let!(:pending_profile) do
+            create(
+              :profile,
+              :fraud_review_pending,
+              :with_pii,
+              user: user,
+            )
+          end
 
           it 'does not redirect' do
             get :show
@@ -225,7 +248,14 @@ RSpec.describe Idv::PersonalKeyController do
         end
 
         context 'due to in person proofing' do
-          let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
+          let!(:pending_profile) do
+            create(
+              :profile,
+              :in_person_verification_pending,
+              :with_pii,
+              user: user,
+            )
+          end
 
           it 'does not redirect' do
             get :show
@@ -389,7 +419,7 @@ RSpec.describe Idv::PersonalKeyController do
   describe '#update' do
     context 'user selected phone verification' do
       it 'redirects to sign up completed for an sp' do
-        subject.session[:sp] = { ial2: true }
+        subject.session[:sp] = { issuer: create(:service_provider).issuer }
         patch :update
 
         expect(response).to redirect_to sign_up_completed_url

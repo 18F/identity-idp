@@ -112,14 +112,14 @@ module Idv
     def idv_failure_log_error
       analytics.idv_doc_auth_exception_visited(
         step_name: STEP_NAME,
-        remaining_attempts: resolution_rate_limiter.remaining_count,
+        remaining_submit_attempts: resolution_rate_limiter.remaining_count,
       )
     end
 
     def idv_failure_log_warning
       analytics.idv_doc_auth_warning_visited(
         step_name: STEP_NAME,
-        remaining_attempts: resolution_rate_limiter.remaining_count,
+        remaining_submit_attempts: resolution_rate_limiter.remaining_count,
       )
     end
 

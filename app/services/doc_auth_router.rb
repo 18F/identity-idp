@@ -54,6 +54,12 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.ref_control_number_check')
     DocAuth::Errors::REF_CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.ref_control_number_check',
+    # i18n-tasks-use t('doc_auth.errors.general.selfie_failure')
+    DocAuth::Errors::SELFIE_FAILURE => 'doc_auth.errors.general.selfie_failure',
+    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_not_live')
+    DocAuth::Errors::SELFIE_NOT_LIVE => 'doc_auth.errors.alerts.selfie_not_live',
+    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_poor_quality')
+    DocAuth::Errors::SELFIE_POOR_QUALITY => 'doc_auth.errors.alerts.selfie_poor_quality',
     # i18n-tasks-use t('doc_auth.errors.alerts.sex_check')
     DocAuth::Errors::SEX_CHECK => 'doc_auth.errors.alerts.sex_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.visible_color_check')
@@ -126,7 +132,6 @@ module DocAuthRouter
 
     def translate_doc_auth_errors!(response)
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
-      error_keys.delete(:selfie) if @client.is_a?(DocAuth::Acuant::AcuantClient)
 
       error_keys.each do |category|
         cat_errors = response.errors[category]
@@ -155,21 +160,6 @@ module DocAuthRouter
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
   def self.client(vendor_discriminator: nil, warn_notifier: nil, analytics: nil)
     case doc_auth_vendor(discriminator: vendor_discriminator, analytics: analytics)
-    when Idp::Constants::Vendors::ACUANT
-      DocAuthErrorTranslatorProxy.new(
-        DocAuth::Acuant::AcuantClient.new(
-          assure_id_password: IdentityConfig.store.acuant_assure_id_password,
-          assure_id_subscription_id: IdentityConfig.store.acuant_assure_id_subscription_id,
-          assure_id_url: IdentityConfig.store.acuant_assure_id_url,
-          assure_id_username: IdentityConfig.store.acuant_assure_id_username,
-          facial_match_url: IdentityConfig.store.acuant_facial_match_url,
-          passlive_url: IdentityConfig.store.acuant_passlive_url,
-          warn_notifier: warn_notifier,
-          dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
-          sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
-          glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
-        ),
-      )
     when Idp::Constants::Vendors::LEXIS_NEXIS, 'lexisnexis' # Use constant once configured in prod
       DocAuthErrorTranslatorProxy.new(
         DocAuth::LexisNexis::LexisNexisClient.new(
