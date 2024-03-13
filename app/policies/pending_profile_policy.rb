@@ -1,7 +1,8 @@
 class PendingProfilePolicy
-  def initialize(user, resolved_authn_context_result)
+  def initialize(user:, resolved_authn_context_result:, biometric_comparison_requested:)
     @user = user
     @resolved_authn_context_result = resolved_authn_context_result
+    @biometric_comparison_requested = biometric_comparison_requested
   end
 
   def user_has_useable_pending_profile?
@@ -14,7 +15,7 @@ class PendingProfilePolicy
 
   private
 
-  attr_reader :user, :resolved_authn_context_result
+  attr_reader :user, :resolved_authn_context_result, :biometric_comparison_requested
 
   def active_biometric_profile?
     user.active_profile&.idv_level == 'unsupervised_with_selfie'
@@ -25,7 +26,8 @@ class PendingProfilePolicy
   end
 
   def biometric_comparison_requested?
-    resolved_authn_context_result.biometric_comparison?
+    return false if !FeatureManagement.idv_allow_selfie_check?
+    resolved_authn_context_result.biometric_comparison? || biometric_comparison_requested
   end
 
   def pending_legacy_profile?

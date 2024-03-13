@@ -6,29 +6,44 @@ RSpec.describe PendingProfilePolicy do
     AuthnContextResolver.new(
       service_provider: nil,
       vtr: vtr,
-      acr_values: nil,
+      acr_values: acr_values,
     ).resolve
   end
+  let(:biometric_comparison_requested) { nil }
   let(:vtr) { nil }
+  let(:acr_values) { nil }
 
   subject(:policy) do
     described_class.new(
-      user,
-      resolved_authn_context_result,
+      user: user,
+      resolved_authn_context_result: resolved_authn_context_result,
+      biometric_comparison_requested: biometric_comparison_requested,
     )
   end
 
   describe '#user_has_useable_pending_profile?' do
     context 'has an active non-biometric profile and biometric comparison is requested' do
       let(:idv_level) { :unsupervised_with_selfie }
-      let(:vtr) { ['C2.Pb'] }
       before do
         create(:profile, :active, :verified, idv_level: :legacy_unsupervised, user: user)
         create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
+        allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
       end
 
-      it 'has a usable pending profile' do
-        expect(policy.user_has_useable_pending_profile?).to eq(true)
+      context 'with resolved authn context result' do
+        let(:vtr) { ['C2.Pb'] }
+        it 'has a usable pending profile' do
+          expect(policy.user_has_useable_pending_profile?).to eq(true)
+        end
+      end
+
+      context 'with biometric_comparison_requested param set to true' do
+        let(:biometric_comparison_requested) { true }
+        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+
+        it 'has a usable pending profile' do
+          expect(policy.user_has_useable_pending_profile?).to eq(true)
+        end
       end
     end
 

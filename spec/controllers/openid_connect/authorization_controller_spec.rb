@@ -440,11 +440,19 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 expect(user.identities.last.verified_attributes).to eq(%w[birthdate family_name given_name verified_at])
               end
+
+              it 'redirects to please call page if user has a fraudualent profile' do
+                create(:profile, :fraud_review_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
+
+                action
+
+                expect(response).to redirect_to(idv_please_call_url)
+              end
             end
 
             context 'sp requests biometrics' do
               let(:selfie_capture_enabled) { true }
-              let(:user) { create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie).user }
+              let(:user) { create(:profile, :active, :verified).user }
 
               before do
                 params[:biometric_comparison_required] = 'true'
@@ -453,6 +461,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'redirects to gpo enter code page' do
+                create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
+
                 action
 
                 expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
