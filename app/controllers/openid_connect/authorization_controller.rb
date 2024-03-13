@@ -28,7 +28,7 @@ module OpenidConnect
     def index
       if @authorize_form.ial2_or_greater?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
-        return redirect_to url_for_pending_profile_reason if user_has_useable_pending_profile?
+        return redirect_to url_for_pending_profile_reason if user_has_usable_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
         return redirect_to idv_url if selfie_needed?
       end
@@ -55,8 +55,8 @@ module OpenidConnect
       )
     end
 
-    def user_has_useable_pending_profile?
-      pending_profile_policy.user_has_useable_pending_profile?
+    def user_has_usable_pending_profile?
+      pending_profile_policy.user_has_usable_pending_profile?
     end
 
     def block_biometric_requests_in_production
