@@ -19,7 +19,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
     stub_sign_in(user)
     analytics = stub_analytics
     stub_attempts_tracker
-    allow(controller).to receive(:validate_internal_referrer?).and_return(true)
+    allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
 
     Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
@@ -69,7 +69,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
 
     it 'revokes remembered device' do
       stub_sign_in(user)
-      allow(controller).to receive(:validate_internal_referrer?).and_return(true)
+      allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
 
       expect(user.remember_device_revoked_at).to eq nil
 
@@ -179,11 +179,11 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
     end
   end
 
-  context 'non-logged in user vists create Backup codes page' do
-    let(:user) { create(:user) }
+  context 'invalid referrer to create Backup codes page' do
     it 'redirects to site root' do
+      user = create(:user, :fully_registered)
+      stub_sign_in(user)
       get :index
-
       expect(response).to redirect_to(root_url)
     end
   end
