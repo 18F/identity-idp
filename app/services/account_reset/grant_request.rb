@@ -7,7 +7,7 @@ module AccountReset
     def call
       token = SecureRandom.uuid
       arr = AccountResetRequest.find_by(user_id: @user_id)
-      return if fraud_user?(arr) && fraud_wait_not_met?(arr)
+      return if fraud_user?(arr) && fraud_wait_period_not_met?(arr)
       result = arr.with_lock do
         if !arr.granted_token_valid?
           arr.update(
