@@ -215,6 +215,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
       rerender({});
       expect(result.current.failedSubmissionAttempts).to.equal(3);
       expect(result.current.forceNativeCamera).to.equal(false);
+
       expect(trackEvent).to.not.have.been.calledWith(
         'IdV: Native camera forced after failed attempts',
       );
