@@ -6,7 +6,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   let(:expected_lg99_metrics_table) do
     [
       ['Metric', 'Total'],
-      ['Unique users seeing LG-99', 5],
+      ['Unique users seeing LG-99', '5'],
     ]
   end
 
@@ -16,13 +16,34 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     cloudwatch_client = double(
       'Reporting::CloudwatchClient',
       fetch: [
-        {
-          'unique_users_count' => '5',
-        },
+        { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
+        { 'user_id' => 'user1', 'name' => 'IdV: Verify setup errors visited' },
+
+        { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
+        { 'user_id' => 'user2', 'name' => 'IdV: Verify setup errors visited' },
+
+        { 'user_id' => 'user3', 'name' => 'IdV: Verify please call visited' },
+        { 'user_id' => 'user3', 'name' => 'IdV: Verify setup errors visited' },
+
+        { 'user_id' => 'user4', 'name' => 'IdV: Verify please call visited' },
+        { 'user_id' => 'user4', 'name' => 'IdV: Verify setup errors visited' },
+
+        { 'user_id' => 'user5', 'name' => 'IdV: Verify please call visited' },
+        { 'user_id' => 'user5', 'name' => 'IdV: Verify setup errors visited' },
       ],
     )
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
+  end
+
+  describe '#lg99_metrics_table' do
+    it 'renders a lg99 metrics table' do
+      aggregate_failures do
+        report.lg99_metrics_table.zip(expected_lg99_metrics_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
   end
 
   describe '#as_emailable_reports' do

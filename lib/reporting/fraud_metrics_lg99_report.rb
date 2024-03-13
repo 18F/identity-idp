@@ -59,7 +59,7 @@ module Reporting
     def lg99_metrics_table
       [
         ['Metric', 'Total'],
-        ['Unique users seeing LG-99', totals('unique_users_count')],
+        ['Unique users seeing LG-99', lg99_unique_users_count.to_s],
       ]
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
       [
@@ -76,10 +76,19 @@ module Reporting
       end
     end
 
-    # @return Array<Hash>
+    # event name => set(user ids)
+    # @return Hash<String,Set<String>>
     def data
       @data ||= begin
-        fetch_results
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_results.each do |row|
+          event_users[row['name']] << row['user_id']
+        end
+
+        event_users
       end
     end
 
@@ -98,9 +107,7 @@ module Reporting
           , @timestamp
           , properties.user_id as user_id,
           , properties.new_event AS new_event
-        | filter properties.new_event = 1
         | filter name in %{event_names}
-        | stats count_distinct(user_id) as `unique_users_count`
       QUERY
     end
 
@@ -114,18 +121,9 @@ module Reporting
       )
     end
 
-    def totals(key)
-      data.inject(0) { |sum, slice| slice[key].to_i + sum }
+    def lg99_unique_users_count
+      @lg99_unique_users_count ||=
+        (data[Events::IDV_PLEASE_CALL_VISITED] + data[Events::IDV_SETUP_ERROR_VISITED]).uniq.count
     end
   end
 end
-
-# rubocop:disable Rails/Output
-if __FILE__ == $PROGRAM_NAME
-  options = Reporting::CommandLineOptions.new.parse!(ARGV)
-
-  Reporting::FraudMetricsLg99Report.new(**options).to_csv.each do |csv|
-    puts csv
-  end
-end
-# rubocop:enable Rails/Output
