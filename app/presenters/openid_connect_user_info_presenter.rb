@@ -76,7 +76,7 @@ class OpenidConnectUserInfoPresenter
     {
       x509_subject: stringify_attr(x509_data.subject),
       x509_issuer: stringify_attr(x509_data.issuer),
-      x509_presented: x509_data.presented,
+      x509_presented: stringify_attr(x509_data.presented),
     }
   end
 

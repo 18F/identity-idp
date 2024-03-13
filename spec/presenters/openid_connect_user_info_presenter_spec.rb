@@ -5,7 +5,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
   let(:rails_session_id) { SecureRandom.uuid }
   let(:scope) do
-    'openid email all_emails address phone profile social_security_number x509:subject'
+    'openid email all_emails address phone profile social_security_number x509:subject x509:presented x509:issuer'
   end
   let(:service_provider_ial) { 2 }
   let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
@@ -45,23 +45,94 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           end
         end
       end
+    end
 
-      context 'ialmax' do
-        let(:ial) { Idp::Constants::IAL_MAX }
-        let(:ial_value) { Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[ial] }
-        let(:aal) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
-        before { identity.ial = ial }
+    context 'ialmax' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:ial_value) { Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[ial] }
+      let(:aal) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
+      before { identity.ial = ial }
 
-        it 'has basic attributes' do
-          aggregate_failures do
-            expect(user_info[:sub]).to eq(identity.uuid)
-            expect(user_info[:iss]).to eq(root_url)
-            expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
-            expect(user_info[:email_verified]).to eq(true)
-            expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:ial]).to eq(ial_value)
-            expect(user_info[:aal]).to eq(aal)
-            expect(user_info).not_to have_key(:vot)
+      it 'has basic attributes' do
+        aggregate_failures do
+          expect(user_info[:sub]).to eq(identity.uuid)
+          expect(user_info[:iss]).to eq(root_url)
+          expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
+          expect(user_info[:email_verified]).to eq(true)
+          expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+          expect(user_info[:ial]).to eq(ial_value)
+          expect(user_info[:aal]).to eq(aal)
+          expect(user_info).not_to have_key(:vot)
+        end
+      end
+
+      it 'does not return ial2 attributes' do
+        aggregate_failures do
+          expect(user_info[:given_name]).to eq(nil)
+          expect(user_info[:family_name]).to eq(nil)
+          expect(user_info[:birthdate]).to eq(nil)
+          expect(user_info[:phone]).to eq(nil)
+          expect(user_info[:phone_verified]).to eq(nil)
+          expect(user_info[:address]).to eq(nil)
+        end
+      end
+    end
+
+    context 'when a piv/cac was used as second factor' do
+      let(:x509_subject) { 'x509-subject' }
+      let(:presented) { true }
+      let(:issuer)  { 'trusted issuer' }
+
+      let(:x509) do
+        X509::Attributes.new_from_hash(
+          subject: x509_subject,
+          presented:,
+          issuer:
+        )
+      end
+
+
+      before do
+        OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.to_i)
+      end
+
+      context 'when the identity has piv/cac associated' do
+        let(:identity) do
+          build(
+            :service_provider_identity,
+            rails_session_id: rails_session_id,
+            user: create(:user, :with_piv_or_cac),
+            scope: scope,
+          )
+        end
+
+        context 'when the scope includes all attributes' do
+          it 'returns x509 attributes' do
+            aggregate_failures do
+              expect(user_info[:x509_subject]).to eq(x509_subject)
+              expect(user_info[:x509_presented]).to eq(presented.to_s)
+              expect(user_info[:x509_issuer]).to eq(issuer)
+            end
+          end
+
+          it 'renders values as simple strings as json' do
+            json = user_info.as_json
+
+            expect(json['x509_subject']).to eq(x509_subject)
+            expect(json['x509_presented']).to eq(presented.to_s)
+            expect(json['x509_issuer']).to eq(issuer)
+          end
+        end
+      end
+
+      context 'when the identity has no piv/cac associated' do
+        context 'when the scope includes all attributes' do
+          it 'returns no x509 attributes' do
+            aggregate_failures do
+              expect(user_info[:x509_subject]).to be_blank
+              expect(user_info[:x509_issuer]).to be_blank
+              expect(user_info[:x509_presented]).to be_blank
+            end
           end
         end
 
