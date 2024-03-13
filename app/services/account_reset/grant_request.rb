@@ -27,12 +27,9 @@ module AccountReset
         arr.user.fraud_rejection?
     end
 
-    def fraud_user_and_fraud_with_not_met(arr)
-    end
-
-    def fraud_wait_period_not_met?(now)
+    def fraud_wait_period_not_met?(arr)
       if fraud_wait_period_days.present?
-        return arr.requested_at > (now - fraud_wait_period_days.days)
+        return arr.requested_at > (Time.zone.now - fraud_wait_period_days.days)
       else
         false
       end
