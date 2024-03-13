@@ -81,7 +81,7 @@ module Idv
     end
 
     def stepping_up?
-      (current_user&.identity_verified? || current_user&.pending_profile?) &&
+      !!(current_user&.identity_verified? || current_user&.pending_profile?) &&
         selfie_required?
     end
   end
