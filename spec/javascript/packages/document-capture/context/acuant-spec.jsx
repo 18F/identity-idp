@@ -157,6 +157,7 @@ describe('document-capture/context/acuant', () => {
           expect(trackEvent).to.have.been.calledWith('IdV: Acuant SDK loaded', {
             success: true,
             isCameraSupported: true,
+            liveness_checking_required: false,
           });
         });
       });
@@ -177,6 +178,7 @@ describe('document-capture/context/acuant', () => {
           expect(trackEvent).to.have.been.calledWith('IdV: Acuant SDK loaded', {
             success: true,
             isCameraSupported: false,
+            liveness_checking_required: false,
           });
         });
       });
@@ -215,6 +217,7 @@ describe('document-capture/context/acuant', () => {
           success: false,
           code: sinon.match.number,
           description: sinon.match.string,
+          liveness_checking_required: false,
         });
       });
     });

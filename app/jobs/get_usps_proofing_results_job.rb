@@ -271,6 +271,13 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
 
+    if fraud_result_pending?(enrollment)
+      analytics(user: enrollment.user).idv_ipp_deactivated_for_never_visiting_post_office(
+        **enrollment_analytics_attributes(enrollment, complete: true),
+      )
+      enrollment.profile.deactivate_due_to_ipp_expiration_during_fraud_review
+    end
+
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err

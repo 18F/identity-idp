@@ -142,6 +142,12 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::PivCacController do
       end
     end
 
+    it 'removes the piv/cac information from the user session' do
+      controller.user_session[:decrypted_x509] = {}
+      response
+      expect(controller.user_session[:decrypted_x509]).to be_nil
+    end
+
     it 'logs a user event for the removed credential' do
       expect { response }.to change { user.events.piv_cac_disabled.size }.by 1
     end

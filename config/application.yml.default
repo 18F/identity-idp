@@ -317,7 +317,9 @@ otp_min_attempts_remaining_warning_count: 3
 sp_issuer_user_counts_report_configs: '[]'
 team_ada_email: ''
 team_all_login_emails: '[]'
+team_daily_fraud_metrics_emails: '[]'
 team_daily_reports_emails: '[]'
+team_monthly_fraud_metrics_emails: '[]'
 team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
@@ -403,7 +405,6 @@ development:
   logo_upload_enabled: true
   max_bad_passwords: 5
   newrelic_license_key: ''
-  nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
@@ -473,7 +474,6 @@ production:
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
   newrelic_license_key: ''
-  nonessential_email_banlist: '[]'
   openid_connect_redirect: server_side
   openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 5
@@ -548,7 +548,6 @@ test:
   max_mail_events: 2
   otp_min_attempts_remaining_warning_count: 1
   newrelic_license_key: ''
-  nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 1
   otp_delivery_blocklist_maxretry: 2
   otps_per_ip_limit: 3
@@ -581,7 +580,9 @@ test:
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
+  team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   team_daily_reports_emails: '["a@example.com", "d@example.com"]'
+  team_monthly_fraud_metrics_emails: '["e@example.com", "f@example.com"]'
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
@@ -589,6 +590,7 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
+  use_vot_in_sp_requests: true
   usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com

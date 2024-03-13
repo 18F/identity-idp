@@ -16,7 +16,6 @@ en:
     password_changed: You changed your password.
     phone_confirmed: A phone was added to your account.
     piv_cac_configured: A PIV/CAC card was added to your account.
-    piv_cac_disabled: Your PIV/CAC was deleted from your account.
     privacy:
       privacy_act_statement: Privacy Act Statement
       security_and_privacy_practices: Security Practices and Privacy Act Statement
@@ -54,7 +53,6 @@ en:
           %{time_left_in_session_html} unless you tell us otherwise.
         sign_out: Sign me out
     totp_configured: An authentication app was added to your account.
-    totp_disabled: Your authentication app was deleted from your account.
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link_html}

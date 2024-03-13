@@ -86,42 +86,11 @@ module DocAuth
       end
 
       def success?
-        doc_auth_success? && (selfie_check_performed? ? selfie_passed? : true)
+        doc_auth_success? && (@selfie_required ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
         parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
-      end
-
-      def self.create_image_error_response(status, side)
-        errors = case status
-                when 438
-                  {
-                    general: [Errors::IMAGE_LOAD_FAILURE],
-                    side.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
-                  }
-                when 439
-                  {
-                    general: [Errors::PIXEL_DEPTH_FAILURE],
-                    side.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
-                  }
-                when 440
-                  {
-                    general: [Errors::IMAGE_SIZE_FAILURE],
-                    side.to_sym => [Errors::IMAGE_SIZE_FAILURE_FIELD],
-                  }
-                end
-        message = [
-          'Unexpected HTTP response',
-          status,
-        ].join(' ')
-        exception = DocAuth::RequestError.new(message, status)
-        DocAuth::Response.new(
-          success: false,
-          errors: errors,
-          exception: exception,
-          extra: { vendor: 'Mock' },
-        )
       end
 
       def self.create_network_error_response
@@ -187,9 +156,9 @@ module DocAuth
 
       def doc_auth_result_from_success
         if success?
-          DocAuth::Acuant::ResultCodes::PASSED.name
+          DocAuth::LexisNexis::ResultCodes::PASSED.name
         else
-          DocAuth::Acuant::ResultCodes::CAUTION.name
+          DocAuth::LexisNexis::ResultCodes::CAUTION.name
         end
       end
 

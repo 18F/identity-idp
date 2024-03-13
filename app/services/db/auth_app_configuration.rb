@@ -39,10 +39,6 @@ module Db
       )
     end
 
-    def self.delete(current_user, auth_app_cfg_id)
-      ::AuthAppConfiguration.where(user_id: current_user.id, id: auth_app_cfg_id).delete_all
-    end
-
     def self.update_timestamp(cfg, new_timestamp)
       return unless new_timestamp
       cfg.totp_timestamp = new_timestamp

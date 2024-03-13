@@ -382,54 +382,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
     end
   end
 
-  describe '#disable' do
-    context 'when a user has configured TOTP' do
-      it 'disables TOTP' do
-        user = create(:user, :fully_registered, :with_phone)
-        totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
-        user.save
-        stub_sign_in(user)
-
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-        allow(subject).to receive(:create_user_event)
-
-        delete :disable, params: { id: totp_app.id }
-
-        expect(user.reload.auth_app_configurations.any?).to eq false
-        expect(response).to redirect_to(account_two_factor_authentication_path)
-        expect(flash[:success]).to eq t('notices.totp_disabled')
-        expect(@analytics).to have_received(:track_event).with('TOTP: User Disabled')
-        expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
-      end
-
-      it 'revokes remember device cookies' do
-        user = create(:user, :fully_registered, :with_phone)
-        totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
-        user.save
-        stub_sign_in(user)
-        expect(user.remember_device_revoked_at).to eq nil
-        freeze_time do
-          delete :disable, params: { id: totp_app.id }
-          expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
-        end
-      end
-    end
-
-    context 'when totp is the last mfa method' do
-      it 'does not disable totp' do
-        user = create(:user, :with_authentication_app)
-        stub_sign_in user
-
-        delete :disable
-        expect(response).to redirect_to(account_two_factor_authentication_path)
-        expect(user.reload.auth_app_configurations.any?).to eq true
-      end
-    end
-  end
-
   def next_auth_app_id
     recs = ActiveRecord::Base.connection.execute(
       "SELECT NEXTVAL(pg_get_serial_sequence('auth_app_configurations', 'id')) AS new_id",

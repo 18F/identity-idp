@@ -39,14 +39,6 @@ module Users
       end
     end
 
-    def disable
-      if MfaPolicy.new(current_user).multiple_factors_enabled?
-        process_successful_disable
-      else
-        redirect_to account_two_factor_authentication_path
-      end
-    end
-
     private
 
     def totp_setup_form
@@ -100,21 +92,6 @@ module Users
         in_account_creation_flow: in_account_creation_flow?,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics)
-    end
-
-    def process_successful_disable
-      analytics.totp_user_disabled
-      create_user_event(:authenticator_disabled)
-      revoke_remember_device(current_user)
-      revoke_otp_secret_key
-      flash[:success] = t('notices.totp_disabled')
-      redirect_to account_two_factor_authentication_path
-    end
-
-    def revoke_otp_secret_key
-      Db::AuthAppConfiguration.delete(current_user, params[:id].to_i)
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
     end
 
     def process_invalid_code

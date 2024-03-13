@@ -1,6 +1,6 @@
 <footer class="footer">
   <%= new_tab_link_to('https://www.gsa.gov', class: 'display-none tablet:display-inline') do %>
-    <%= image_tag(asset_url('sp-logos/square-gsa.svg'), size: 20, alt: '', class: 'float-left margin-right-1') %>
+    <%= image_tag(asset_url('sp-logos/square-gsa.svg'), size: 20, alt: '', class: 'float-left margin-right-1', role: 'img') %>
     <%= t('shared.footer_lite.gsa') %>
   <% end %>
   <%= render LanguagePickerComponent.new(class: 'footer__language-picker') %>

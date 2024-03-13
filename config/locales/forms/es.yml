@@ -2,14 +2,6 @@
 es:
   forms:
     backup_code:
-      are_you_sure_desc_html:
-        - '<strong>Los códigos de respaldo son el método de autenticación menos
-          utilizado,</strong> ya que se pueden perder con facilidad. Prueba una
-          opción más segura, como una aplicación de autenticación o una clave de
-          seguridad.'
-        - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o
-          escribir. Ingresará un código cada vez que inicie sesión.
-      are_you_sure_title: '¿Está seguro de que desea usar códigos de respaldo?'
       caution_codes: Cada código solo puede usarse una vez. Te daremos nuevos códigos
         una vez que hayas usado los diez.
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
@@ -88,10 +80,6 @@ es:
     phone:
       buttons:
         delete: Eliminar el teléfono
-    piv_cac_delete:
-      caution: Si retira su tarjeta PIV/CAC, no podrá usarla para acceder a su cuenta
-        %{app_name}.
-      confirm: '¿Estás seguro de que deseas eliminar tu tarjeta PIV/CAC?'
     piv_cac_login:
       submit: Inserte su PIV/CAC
     piv_cac_mfa:
@@ -114,10 +102,6 @@ es:
         automatizado. Marque la casilla de abajo para continuar.
     ssn:
       show: Mostrar Número de Seguro Social
-    totp_delete:
-      caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
-        a su cuenta %{app_name}.
-      confirm: '¿Seguro que quieres eliminar tu aplicación de autenticación?'
     totp_setup:
       totp_intro: Configure una aplicación de autenticación para iniciar sesión con
         códigos de seguridad temporales.

@@ -2,11 +2,12 @@
 # yarn lockfile v1
 
 
-"@18f/identity-design-system@^8.1.2":
-  version "8.1.2"
-  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-8.1.2.tgz#d9f36e50c615afb4ff81befe02309a618647bd33"
-  integrity sha512-EvhnRvqOWmvjAdV2EedvSeoiN55RFA4RqAIsPTScw1N6QstbXEzJmDA242k3X81nf6Kd1yRFKxrKxNdl1CbmDQ==
+"@18f/identity-design-system@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-9.0.0.tgz#d10756f79371fc379a0c45fb7517eb59325acd04"
+  integrity sha512-l1cdTlp6lHRnWypqDkXCDAfkQMGbgaU1LicLyNXxDZ5sAMskGxfR1dKC5Igt/JL05XbBs2kBzyLW/UHs+KkMow==
   dependencies:
+    "@types/uswds__uswds" "^3.7.0"
     "@uswds/uswds" "^3.7.1"
 
 "@aashutoshrathi/word-wrap@^1.2.3":
@@ -1716,6 +1717,11 @@
   integrity sha512-G4JdzEcq61fUyV6wVW9ebHWEiLK2iQvaBuCHHn9eMSbZzVh4Z4wHnUGIvQOYCCYeu5DnUtFyNYuAAgbSaO/43Q==
   dependencies:
     "@types/react-test-renderer" "*"
+
+"@types/uswds__uswds@^3.7.0":
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/@types/uswds__uswds/-/uswds__uswds-3.7.0.tgz#6ce7b3dbff304113f4e7acaa88fff4c771dfb02d"
+  integrity sha512-HlOhwJPLpmv3rC8IN81DmvnRvi9Qzsf7MdxlE1XCB+fsPqTakkrpLdDoQOL+9lcCOurt7VhBXClSi6ZCKskZHw==
 
 "@types/wrap-ansi@^3.0.0":
   version "3.0.0"
@@ -4639,10 +4645,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libphonenumber-js@^1.10.57:
-  version "1.10.57"
-  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.57.tgz#4a8174014c758b8ffd865e06a43c3885706f7a9c"
-  integrity sha512-OjsEd9y4LgcX+Ig09SbxWqcGESxliDDFNVepFhB9KEsQZTrnk3UdEU+cO0sW1APvLprHstQpS23OQpZ3bwxy6Q==
+libphonenumber-js@^1.10.58:
+  version "1.10.58"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.58.tgz#2015877bd47fd3d32d9fbfcedd75df35be230c9a"
+  integrity sha512-53A0IpJFL9LdHbpeatwizf8KSwPICrqn9H0g3Y7WQ+Jgeu9cQ4Ew3WrRtrLBu/CX2lXd5+rgT01/tGlkbkzOjw==
 
 lightningcss-darwin-arm64@1.23.0:
   version "1.23.0"
