@@ -11,7 +11,9 @@ RSpec.describe Reports::FraudMetricsReport do
   end
 
   let(:expected_s3_paths) do
-    []
+    [
+      "#{report_folder}/lg99_metrics.csv",
+    ]
   end
 
   let(:s3_metadata) do
@@ -20,6 +22,13 @@ RSpec.describe Reports::FraudMetricsReport do
       content_type: 'text/csv',
       bucket: 'reports-bucket.1234-us-west-1',
     }
+  end
+
+  let(:mock_identity_verification_lg99_data) do
+    [
+      ['Metric', 'Total'],
+      ['Unique users seeing LG-99', 5],
+    ]
   end
 
   let(:mock_team_fraud_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
@@ -42,6 +51,9 @@ RSpec.describe Reports::FraudMetricsReport do
       and_return(mock_test_fraud_emails)
     allow(IdentityConfig.store).to receive(:team_monthly_fraud_metrics_emails).
       and_return(mock_team_fraud_emails)
+
+    allow(report.fraud_metrics_lg99_report).to receive(:lg99_metrics_table).
+      and_return(mock_identity_verification_lg99_data)
   end
 
   it 'sends out a report to just to team agnes' do
