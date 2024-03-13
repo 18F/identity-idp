@@ -22,6 +22,20 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def fraud_metrics_report
+    fraud_metrics_report = Reports::FraudMetricsReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(fraud_metrics_report.fraud_metrics_lg99_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example Fraud Key Metrics Report - #{Time.zone.now.to_date}",
+      message: fraud_metrics_report.preamble,
+      attachment_format: :xlsx,
+      reports: fraud_metrics_report.reports,
+    )
+  end
+
   def tables_report
     ReportMailer.tables_report(
       email: 'test@example.com',
