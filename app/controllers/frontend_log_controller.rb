@@ -62,7 +62,7 @@ class FrontendLogController < ApplicationController
     if success
       render json: { success: }, status: :ok
     else
-      render json: { success:, error_message: "invalid event, #{log_params[:event]} #{log_params[:payload]}" }, status: :bad_request
+      render json: { success:, error_message: 'invalid event' }, status: :bad_request
     end
   end
 
