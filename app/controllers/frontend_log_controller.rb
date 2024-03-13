@@ -23,6 +23,8 @@ class FrontendLogController < ApplicationController
     'IdV: exit optional questions' => :idv_exit_optional_questions,
     'IdV: front image added' => :idv_front_image_added,
     'IdV: front image clicked' => :idv_front_image_clicked,
+    'IdV: selfie image added' => :idv_selfie_image_added,
+    'IdV: selfie image clicked' => :idv_selfie_image_clicked,
     'IdV: Image capture failed' => :idv_image_capture_failed,
     'IdV: Link sent capture doc polling complete' => :idv_link_sent_capture_doc_polling_complete,
     'IdV: Link sent capture doc polling started' => :idv_link_sent_capture_doc_polling_started,
@@ -60,7 +62,7 @@ class FrontendLogController < ApplicationController
     if success
       render json: { success: }, status: :ok
     else
-      render json: { success:, error_message: 'invalid event' }, status: :bad_request
+      render json: { success:, error_message: "invalid event, #{log_params[:event]} #{log_params[:payload]}" }, status: :bad_request
     end
   end
 
