@@ -701,7 +701,6 @@ function AcuantCapture(
           <FullScreen
             ref={fullScreenRef}
             label={t('doc_auth.accessible_labels.document_capture_dialog')}
-            onRequestClose={() => onSelfieCaptureClosed()}
             hideCloseButton
           >
             <AcuantSelfieCaptureCanvas imageCaptureText={imageCaptureText} />
