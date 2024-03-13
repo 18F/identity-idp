@@ -19,6 +19,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
     stub_sign_in(user)
     analytics = stub_analytics
     stub_attempts_tracker
+    allow(controller).to receive(:validate_internal_referrer?).and_return(true)
 
     Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
@@ -43,9 +44,9 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
     expect(@irs_attempts_api_tracker).to receive(:track_event).
       with(:mfa_enroll_backup_code, success: true)
 
-    post :create
+    get :index
 
-    expect(response).to render_template('create')
+    expect(response).to render_template('index')
     expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
   end
 
@@ -57,7 +58,7 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
       expect(user.remember_device_revoked_at).to eq nil
 
       freeze_time do
-        post :create
+        get :index
         expect(user.reload.remember_device_revoked_at).to eq nil
       end
     end
@@ -68,10 +69,12 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
 
     it 'revokes remembered device' do
       stub_sign_in(user)
+      allow(controller).to receive(:validate_internal_referrer?).and_return(true)
+
       expect(user.remember_device_revoked_at).to eq nil
 
       freeze_time do
-        post :create
+        get :index
         expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
       end
     end
@@ -173,6 +176,15 @@ RSpec.describe Users::BackupCodeSetupController, allowed_extra_analytics: [:*] d
         'Backup Code Regenerate Visited',
         hash_including(in_account_creation_flow: false),
       )
+    end
+  end
+
+  context 'non-logged in user vists create Backup codes page' do
+    let(:user) { create(:user) }
+    it 'redirects to site root' do
+      get :index
+
+      expect(response).to redirect_to(root_url)
     end
   end
 end
