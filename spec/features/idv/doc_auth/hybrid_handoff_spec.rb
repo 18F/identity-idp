@@ -230,7 +230,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       it 'has expected UI elements' do
         mobile_form = find('#form-to-submit-photos-through-mobile')
         expect(mobile_form).to have_name(t('forms.buttons.send_link'))
-        expect(page).to have_selector('h1', text: 'Enter your phone number to switch devices')
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff_selfie'))
       end
     end
 
