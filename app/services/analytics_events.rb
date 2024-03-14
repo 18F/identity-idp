@@ -2953,7 +2953,6 @@ module AnalyticsEvents
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName,
-  # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -2972,7 +2971,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      'Frontend: IdV: selfie image clicked',
+      :idv_selfie_image_clicked,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       acuant_version: acuant_version,
       flow_path: flow_path,
@@ -2982,7 +2981,7 @@ module AnalyticsEvents
       liveness_checking_required: liveness_checking_required,
     )
   end
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
