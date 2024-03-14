@@ -207,6 +207,7 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
+      in_person_verification_pending_at: nil,
     )
   end
 
