@@ -523,17 +523,36 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               let(:user) { create(:profile, :active, :verified).user }
 
               before do
-                params[:biometric_comparison_required] = 'true'
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
               end
 
-              it 'redirects to gpo enter code page' do
-                create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
+              context 'with biometric_comparison_required param' do
+                before do
+                  params[:biometric_comparison_required] = 'true'
+                end
 
-                action
+                it 'redirects to gpo enter code page' do
+                  create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
 
-                expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
+                  action
+
+                  expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
+                end
+              end
+
+              context 'with vectors of trust' do
+                before do
+                  params[:vtr] = ['C1.C2.P1.Pb'].to_json
+                end
+
+                it 'redirects to gpo enter code page' do
+                  create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
+
+                  action
+
+                  expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
+                end
               end
             end
           end

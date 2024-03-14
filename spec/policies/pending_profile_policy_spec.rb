@@ -32,6 +32,7 @@ RSpec.describe PendingProfilePolicy do
 
       context 'with resolved authn context result' do
         let(:vtr) { ['C2.Pb'] }
+
         it 'has a usable pending profile' do
           expect(policy.user_has_usable_pending_profile?).to eq(true)
         end
