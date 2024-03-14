@@ -190,7 +190,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
       expect(profile.fraud_rejection_at).to be_truthy
     end
 
-    context 'fraud decisioning is completed' do
+    context 'Fraud decisioning is completed' do
       before do
         complete_entire_ipp_flow(user, tmx_status)
       end
@@ -211,7 +211,6 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
           expect(page).to have_current_path(idv_please_call_path)
         end
 
-        # this is not getting updated - runtime error trying to update with reason in_person_verification_pending
         it 'shows the user the successful verification screen after passing TMX review',
            allow_browser_log: true do
           deactivate_profile_update_enrollment(status: :passed)
@@ -245,7 +244,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         end
       end
 
-      context 'User fails IPP and deactivates for TMX review' do
+      context 'User fails IPP and fails TMX review' do
         it_behaves_like 'initially shows the user the barcode page'
 
         it 'allows the user to restart the flow', allow_browser_log: true do
