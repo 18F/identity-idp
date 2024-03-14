@@ -52,8 +52,6 @@ RSpec.feature 'Backup codes', allowed_extra_analytics: [:*] do
 
       expect(page).to have_current_path(backup_code_setup_path)
 
-      click_continue
-
       generated_at = user.backup_code_configurations.
         order(created_at: :asc).first.created_at.
         in_time_zone('UTC')

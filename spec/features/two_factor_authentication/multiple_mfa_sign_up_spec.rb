@@ -11,7 +11,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     end
 
     scenario 'user can set up 2 MFA methods properly' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -32,8 +32,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       click_submit_default
 
       expect(page).to have_current_path backup_code_setup_path
-
-      click_continue
 
       expect(page).to have_link(t('components.download_button.label'))
 
@@ -45,7 +43,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     end
 
     scenario 'user can select 2 MFA methods and then chooses another method during' do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -67,7 +65,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(page).to have_current_path backup_code_setup_path
 
-      click_link t('two_factor_authentication.choose_another_option')
+      click_button t('two_factor_authentication.choose_another_option')
 
       expect(page).to have_current_path(authentication_methods_setup_path)
 
@@ -88,7 +86,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
     scenario 'user can select 2 MFA methods and complete after reauthn window' do
       allow(IdentityConfig.store).to receive(:reauthn_window).and_return(10)
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -110,20 +108,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(page).to have_current_path backup_code_setup_path
       travel_to((IdentityConfig.store.reauthn_window + 5).seconds.from_now) do
-        click_continue
-        expect(page).to have_current_path login_two_factor_options_path
-
-        find("label[for='two_factor_options_form_selection_auth_app']").click
-        click_on t('forms.buttons.continue')
-
-        totp = generate_totp_code(secret)
-        fill_in :code, with: totp
-
-        click_submit_default
-        click_continue
-
-        expect(page).to have_link(t('components.download_button.label'))
-
         click_continue
 
         expect(page).to have_content(t('notices.backup_codes_configured'))
@@ -164,18 +148,17 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     describe 'skipping second mfa' do
       context 'with skippable mfa method' do
         it 'allows user to skip using skip link' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
           expect(page).to have_current_path backup_code_setup_path
 
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
           expect(page).to have_content(t('notices.backup_codes_configured'))
-          expect(page).to have_current_path(auth_method_confirmation_path)
+          expect(page).to have_current_path(confirm_backup_codes_path)
 
           click_link t('mfa.add')
           expect(page).to have_current_path(authentication_methods_setup_path)
@@ -185,18 +168,17 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
         end
 
         it 'allows user to skip by clicking continue without selection' do
-          sign_in_before_2fa
+          sign_up_and_set_password
           click_2fa_option('backup_code')
 
           click_continue
           expect(page).to have_current_path backup_code_setup_path
 
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
           expect(page).to have_content(t('notices.backup_codes_configured'))
-          expect(page).to have_current_path(auth_method_confirmation_path)
+          expect(page).to have_current_path(confirm_backup_codes_path)
 
           click_link t('mfa.add')
           expect(page).to have_current_path(authentication_methods_setup_path)
@@ -239,8 +221,10 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
   end
 
   context 'when backup codes are the only selected option' do
+    let(:mfa) { MfaContext.new(user) }
+    let(:user) { create(:user) }
     before do
-      sign_in_before_2fa
+      sign_up_and_set_password
 
       expect(page).to have_current_path authentication_methods_setup_path
 
@@ -250,30 +234,31 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(page).to have_current_path backup_code_setup_path
 
-      click_continue
-
       expect(page).to have_link(t('components.download_button.label'))
+    end
 
+    it 'shows the confirm backup codes page' do
       click_continue
 
       expect(page).to have_current_path(
-        auth_method_confirmation_path,
+        confirm_backup_codes_path,
       )
-
-      click_button t('mfa.skip')
     end
 
     it 'goes to the next page after user confirms that they have saved their backup codes' do
-      acknowledge_backup_code_confirmation
+      click_continue
+      expect(page).to have_current_path(
+        confirm_backup_codes_path,
+      )
+
+      click_continue
       expect(page).to have_current_path account_path
     end
 
-    it 'regenerates backup codes path if a user clicks that they need new backup codes' do
-      find(
-        'a',
-        text: t('two_factor_authentication.backup_codes.new_backup_codes_html').gsub('&nbsp;', ' '),
-      ).click
-      expect(page).to have_current_path backup_code_regenerate_path
+    it 'returns to setup mfa page when user clicks Choose another option' do
+      click_on(t('two_factor_authentication.choose_another_option'))
+      expect(current_path).to eq authentication_methods_setup_path
+      expect(mfa.backup_code_configurations).to be_empty
     end
   end
 
