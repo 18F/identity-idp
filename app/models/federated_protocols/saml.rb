@@ -25,7 +25,7 @@ module FederatedProtocols
     end
 
     def vtr
-      nil
+      [request.requested_vtr_authn_context] if request.requested_vtr_authn_context.present?
     end
 
     def requested_attributes

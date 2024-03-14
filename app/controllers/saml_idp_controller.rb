@@ -30,10 +30,11 @@ class SamlIdpController < ApplicationController
 
   def auth
     capture_analytics
-    if ial_context.ial2_or_greater?
+    if resolved_authn_context_result.identity_proofing?
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
       return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
+      return redirect_to idv_url if selfie_needed?
     end
     return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -109,6 +110,11 @@ class SamlIdpController < ApplicationController
     redirect_to capture_password_url
   end
 
+  def selfie_needed?
+    decorated_sp_session.selfie_required? &&
+      !current_user.identity_verified_with_selfie?
+  end
+
   def set_devise_failure_redirect_for_concurrent_session_logout
     request.env['devise_session_limited_failure_redirect_url'] = request.url
   end
@@ -131,6 +137,7 @@ class SamlIdpController < ApplicationController
     analytics.saml_auth_request(
       requested_ial: requested_ial,
       requested_aal_authn_context: saml_request&.requested_aal_authn_context,
+      requested_vtr_authn_context: saml_request&.requested_vtr_authn_context,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
@@ -169,6 +176,23 @@ class SamlIdpController < ApplicationController
     )
   end
 
+  def track_events
+    analytics.sp_redirect_initiated(
+      ial: resolved_authn_context_int_ial,
+      billed_ial: ial_context.bill_for_ial_1_or_2,
+      sign_in_flow: session[:sign_in_flow],
+    )
+    track_billing_events
+  end
+
+  def ial_context
+    @ial_context ||= IalContext.new(
+      ial: resolved_authn_context_int_ial,
+      service_provider: saml_request_service_provider,
+      user: current_user,
+    )
+  end
+
   def resolved_authn_context_int_ial
     if resolved_authn_context_result.ialmax?
       0
@@ -177,15 +201,6 @@ class SamlIdpController < ApplicationController
     else
       1
     end
-  end
-
-  def track_events
-    analytics.sp_redirect_initiated(
-      ial: resolved_authn_context_int_ial,
-      billed_ial: ial_context.bill_for_ial_1_or_2,
-      sign_in_flow: session[:sign_in_flow],
-    )
-    track_billing_events
   end
 
   def require_path_year

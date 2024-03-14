@@ -6,6 +6,7 @@ import {
   InPersonContext,
   FailedCaptureAttemptsContextProvider,
   FeatureFlagContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
@@ -51,6 +52,7 @@ describe('document-capture/components/review-issues-step', () => {
       heading: 'We couldn’t verify your ID',
       subheading: '',
       error_message_displayed: 'test error',
+      liveness_checking_required: false,
     });
 
     const button = getByRole('button');
@@ -178,13 +180,13 @@ describe('document-capture/components/review-issues-step', () => {
     expect(queryByLabelText('doc_auth.headings.document_capture_selfie')).to.not.exist();
   });
 
-  it('renders with front, back, and selfie inputs when featureflag', async () => {
+  it('renders with front, back, and selfie inputs when isSelfieCaptureEnabled is true', async () => {
     const App = composeComponents(
       [
-        FeatureFlagContext.Provider,
+        SelfieCaptureContext.Provider,
         {
           value: {
-            selfieCaptureEnabled: true,
+            isSelfieCaptureEnabled: true,
           },
         },
       ],

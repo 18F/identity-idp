@@ -3,7 +3,7 @@ import { AcuantContext, DeviceContext } from '@18f/identity-document-capture';
 import { render } from '../../../support/document-capture';
 
 it('shows the loading spinner when the script hasnt loaded', () => {
-  const { getByRole, container } = render(
+  const { container } = render(
     <DeviceContext.Provider value={{ isMobile: true }}>
       <AcuantContext.Provider value={{ isReady: false }}>
         <AcuantSelfieCaptureCanvas />
@@ -11,12 +11,12 @@ it('shows the loading spinner when the script hasnt loaded', () => {
     </DeviceContext.Provider>,
   );
 
-  expect(getByRole('dialog')).to.be.ok();
-  expect(container.querySelector('#acuant-face-capture-container')).to.not.exist();
+  expect(container.querySelector('#acuant-face-capture-container')).to.exist();
+  expect(container.querySelector('.acuant-capture-canvas__spinner')).to.exist();
 });
 
 it('shows the Acuant div when the script has loaded', () => {
-  const { queryByRole, container } = render(
+  const { container } = render(
     <DeviceContext.Provider value={{ isMobile: true }}>
       <AcuantContext.Provider value={{ isReady: true }}>
         <AcuantSelfieCaptureCanvas />
@@ -24,6 +24,6 @@ it('shows the Acuant div when the script has loaded', () => {
     </DeviceContext.Provider>,
   );
 
-  expect(queryByRole('dialog')).to.not.exist();
   expect(container.querySelector('#acuant-face-capture-container')).to.exist();
+  expect(container.querySelector('.acuant-capture-canvas__spinner')).not.to.exist();
 });

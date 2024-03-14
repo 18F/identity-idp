@@ -61,6 +61,11 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr
 RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install -y yarn=1.22.5-1
 
+# Download RDS Combined CA Bundle
+RUN mkdir -p /usr/local/share/aws \
+  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
+  && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
+
 # Create a new user and set up the working directory
 RUN addgroup --gid 1000 app && \
     adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \

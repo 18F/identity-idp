@@ -11,6 +11,7 @@ import {
   MarketingSiteContextProvider,
   InPersonContext,
   FeatureFlagContext,
+  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -38,6 +39,7 @@ interface AppRootData {
   skipDocAuth: string;
   howToVerifyURL: string;
   uiExitQuestionSectionEnabled: string;
+  docAuthSelfieDesktopTestMode: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -105,6 +107,7 @@ const {
   skipDocAuth,
   howToVerifyUrl,
   uiExitQuestionSectionEnabled = '',
+  docAuthSelfieDesktopTestMode,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -177,6 +180,15 @@ const App = composeComponents(
     },
   ],
   [
+    SelfieCaptureContext.Provider,
+    {
+      value: {
+        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+        isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
+      },
+    },
+  ],
+  [
     FailedCaptureAttemptsContextProvider,
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
@@ -188,7 +200,6 @@ const App = composeComponents(
     {
       value: {
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-        selfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
     },
   ],

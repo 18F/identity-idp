@@ -34,10 +34,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 26d550cd249e52304aecbb53add32cbec4001e2f
-  tag: 0.18.3-18f
+  revision: f7dd59de0c860e9d78ab4f05e8365153a2a9b25a
+  tag: 0.19.1-18f
   specs:
-    saml_idp (0.18.3.pre.18f)
+    saml_idp (0.19.1.pre.18f)
       activesupport
       builder
       faraday
@@ -497,7 +497,7 @@ GEM
     raabro (1.4.0)
     racc (1.7.3)
     rack (3.0.9.1)
-    rack-cors (2.0.0)
+    rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
     rack-mini-profiler (3.3.0)
@@ -737,7 +737,7 @@ GEM
       nokogiri (~> 1.11)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.35)
+    yard (0.9.36)
     zeitwerk (2.6.12)
     zlib (3.0.0)
     zonebie (0.6.1)
@@ -821,7 +821,7 @@ DEPENDENCIES
   puma (~> 6.0)
   rack (>= 3.0)
   rack-attack!
-  rack-cors (>= 1.0.5, < 2.0.1)
+  rack-cors (> 2.0.1)
   rack-headers_filter
   rack-mini-profiler (>= 1.1.3)
   rack-test (>= 1.1.0)

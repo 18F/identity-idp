@@ -7,6 +7,7 @@ es:
       document_capture_dialog: Captura del documento
     buttons:
       add_new_photos: Añadir nuevas fotos
+      close: Cerrar
       continue: Continuar
       take_or_upload_picture_html: '<lg-take-photo>Toma una
         foto</lg-take-photo><lg-or> o </lg-or> <lg-upload>Sube una
@@ -264,11 +265,13 @@ es:
         modificar su información.
       selfie_capture_status:
         face_close_to_border: DEMASIADO CERCA DEL MARCO
-        face_not_found: NO SE ENCONTRÓ LA CARA
-        face_too_small: LA CARA ES DEMASIADO CHICA
-        too_many_faces: HAY DEMASIADAS CARAS
+        face_not_found: NO SE DETECTÓ EL ROSTRO
+        face_too_small: ROSTRO DEMASIADO PEQUEÑO
+        too_many_faces: DEMASIADOS ROSTROS
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
+      stepping_up_html: 'Verifica tu identidad de nuevo y tómate una foto para acceder
+        a este servicio. %{link_html}'
       tag: Recomendado
       upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de
         identidad desde esta computadora.

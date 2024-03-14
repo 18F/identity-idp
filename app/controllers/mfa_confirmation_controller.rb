@@ -1,6 +1,8 @@
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
   before_action :confirm_two_factor_authenticated
+  before_action :redirect_to_backup_codes_confirm, only: [:show],
+                                                   if: :backup_code_confirmation_needed?
 
   def show
     @content = mfa_confirmation_presenter
@@ -17,7 +19,7 @@ class MfaConfirmationController < ApplicationController
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       success: true,
     )
-    redirect_to after_skip_path
+    redirect_to sign_up_completed_path
   end
 
   private
@@ -37,19 +39,15 @@ class MfaConfirmationController < ApplicationController
     @mfa_context ||= MfaContext.new(current_user)
   end
 
-  def after_skip_path
-    if backup_code_confirmation_needed?
-      confirm_backup_codes_path
-    else
-      sign_up_completed_path
-    end
-  end
-
   def backup_code_confirmation_needed?
     !MfaPolicy.new(current_user).multiple_factors_enabled? && user_backup_codes_configured?
   end
 
   def webauthn_platform_set_up_successful?
     mfa_context.webauthn_platform_configurations.present?
+  end
+
+  def redirect_to_backup_codes_confirm
+    redirect_to confirm_backup_codes_path
   end
 end
