@@ -45,4 +45,10 @@ RSpec.describe TwoFactorAuthentication::SetUpWebauthnSelectionPresenter do
       )
     end
   end
+
+  describe '#phishing_resistant?' do
+    subject(:phishing_resistant) { presenter_without_mfa.phishing_resistant? }
+
+    it { expect(phishing_resistant).to eq(true) }
+  end
 end

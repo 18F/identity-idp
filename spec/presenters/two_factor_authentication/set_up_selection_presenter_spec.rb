@@ -107,6 +107,14 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
     end
   end
 
+  describe '#phishing_resistant?' do
+    it 'raises with missing implementation' do
+      expect do
+        placeholder_presenter_class.new(user:).phishing_resistant?
+      end.to raise_error(NotImplementedError)
+    end
+  end
+
   describe '#recommended?' do
     subject(:recommended) { presenter.recommended? }
 

@@ -49,4 +49,10 @@ RSpec.describe TwoFactorAuthentication::SetUpPhoneSelectionPresenter do
         to eq(t('two_factor_authentication.two_factor_choice_options.phone_info'))
     end
   end
+
+  describe '#phishing_resistant?' do
+    subject(:phishing_resistant) { presenter_without_mfa.phishing_resistant? }
+
+    it { expect(phishing_resistant).to eq(false) }
+  end
 end

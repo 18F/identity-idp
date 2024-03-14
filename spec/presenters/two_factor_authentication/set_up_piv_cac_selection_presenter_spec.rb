@@ -47,4 +47,10 @@ RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
       it { expect(recommended).to eq(true) }
     end
   end
+
+  describe '#phishing_resistant?' do
+    subject(:phishing_resistant) { presenter.phishing_resistant? }
+
+    it { expect(phishing_resistant).to eq(true) }
+  end
 end
