@@ -106,4 +106,10 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
       expect { placeholder_presenter_class.new(user:).info }.to raise_error(NotImplementedError)
     end
   end
+
+  describe '#recommended?' do
+    subject(:recommended) { presenter.recommended? }
+
+    it { expect(recommended).to eq(false) }
+  end
 end
