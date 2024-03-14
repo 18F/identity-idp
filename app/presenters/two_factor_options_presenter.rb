@@ -94,17 +94,6 @@ class TwoFactorOptionsPresenter
 
   private
 
-  def sorted_method_presenters
-    [
-      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
-      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
-      TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
-      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
-      TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
-    ]
-  end
-
   def show_option?(option)
     case option
     when TwoFactorAuthentication::SetUpPivCacSelectionPresenter
