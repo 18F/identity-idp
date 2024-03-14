@@ -5,7 +5,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
   let(:rails_session_id) { SecureRandom.uuid }
   let(:scope) do
-    'openid email all_emails address phone profile social_security_number x509:subject x509:presented x509:issuer'
+    'openid email all_emails address phone profile social_security_number x509'
   end
   let(:service_provider_ial) { 2 }
   let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
@@ -81,16 +81,15 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     context 'when a piv/cac was used as second factor' do
       let(:x509_subject) { 'x509-subject' }
       let(:presented) { true }
-      let(:issuer)  { 'trusted issuer' }
+      let(:issuer) { 'trusted issuer' }
 
       let(:x509) do
         X509::Attributes.new_from_hash(
           subject: x509_subject,
           presented:,
-          issuer:
+          issuer:,
         )
       end
-
 
       before do
         OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.to_i)
@@ -121,6 +120,25 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(json['x509_subject']).to eq(x509_subject)
             expect(json['x509_presented']).to eq(presented.to_s)
             expect(json['x509_issuer']).to eq(issuer)
+          end
+        end
+
+        context 'when the sp requested x509_presented scope before it was fixed to string' do
+          before do
+            expect(IdentityConfig.store).to receive(
+              :x509_presented_hash_attribute_requested_issuers,
+            ).
+              and_return([identity.service_provider])
+          end
+
+          it 'returns x509_presented as an (X509::Attribute' do
+            # This is guarding against partners who may have coded against
+            # a bug where we returning the wrong data type for x509_presented
+            aggregate_failures do
+              expect(user_info[:x509_subject]).to eq(x509_subject)
+              expect(user_info[:x509_presented].class).to eq(X509::Attribute)
+              expect(user_info[:x509_issuer]).to eq(issuer)
+            end
           end
         end
       end
