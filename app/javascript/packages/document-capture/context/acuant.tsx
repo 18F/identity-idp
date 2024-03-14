@@ -8,10 +8,6 @@ import SelfieCaptureContext from './selfie-capture';
 /**
  * Global declarations
  */
-// As of 11.7.0, Acuant provides global objects that are not on the window object. We (identity-idp)
-// attach this to the window object to preserve backwards compatibility. One example is in the onAcuantSdkLoaded function.
-// see https://github.com/18F/identity-idp/pull/6649 for context.
-declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface;
 declare let AcuantCamera: AcuantCameraInterface;
 
 declare global {
@@ -185,11 +181,11 @@ const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
   if (window.AcuantJavascriptWebSdk && typeof window.AcuantJavascriptWebSdk.start === 'function') {
     return window.AcuantJavascriptWebSdk;
   }
-  if (typeof AcuantJavascriptWebSdk === 'undefined') {
+  if (!window.AcuantJavascriptWebSdk) {
     // eslint-disable-next-line no-console
     console.error('AcuantJavascriptWebSdk is not defined in the global scope');
   }
-  return AcuantJavascriptWebSdk;
+  return window.AcuantJavascriptWebSdk;
 };
 
 /**
