@@ -2,10 +2,15 @@ module TwoFactorAuthentication
   class SetUpSelectionPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :user
+    attr_reader :user, :piv_cac_required, :phishing_resistant_required, :user_agent
+    alias_method :piv_cac_required?, :piv_cac_required
+    alias_method :phishing_resistant_required?, :phishing_resistant_required
 
-    def initialize(user:)
+    def initialize(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
       @user = user
+      @piv_cac_required = piv_cac_required
+      @phishing_resistant_required = phishing_resistant_required
+      @user_agent = user_agent
     end
 
     def render_in(view_context, &block)
@@ -24,6 +29,10 @@ module TwoFactorAuthentication
       raise NotImplementedError
     end
 
+    def phishing_resistant?
+      raise NotImplementedError
+    end
+
     def mfa_added_label
       if single_configuration_only?
         ''
@@ -32,7 +41,23 @@ module TwoFactorAuthentication
       end
     end
 
+    def visible?
+      if piv_cac_required?
+        type == :piv_cac
+      elsif phishing_resistant_required?
+        phishing_resistant?
+      elsif desktop_only?
+        browser.desktop?
+      else
+        true
+      end
+    end
+
     def recommended?
+      false
+    end
+
+    def desktop_only?
       false
     end
 
@@ -59,5 +84,11 @@ module TwoFactorAuthentication
     def disabled?
       single_configuration_only? && mfa_configuration_count > 0
     end
+
+    def browser
+      @browser ||= BrowserCache.parse(user_agent)
+    end
+
+    private :piv_cac_required, :phishing_resistant_required
   end
 end

@@ -1,7 +1,12 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :after_mfa_setup_path, :return_to_sp_cancel_path
+  attr_reader :user,
+              :after_mfa_setup_path,
+              :return_to_sp_cancel_path,
+              :phishing_resistant_required,
+              :piv_cac_required,
+              :user_agent
 
   delegate :two_factor_enabled?, to: :mfa_policy
 
@@ -24,18 +29,22 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    all_options_sorted.select { |option| show_option?(option) }
+    all_options_sorted.select(&:visible?)
   end
 
   def all_options_sorted
     [
-      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user:),
-      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user:),
-      TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user:),
-      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user:),
-      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user:),
-      TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user:),
-    ].partition(&:recommended?).flatten
+      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
+      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+      TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
+      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+      TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+    ].map do |klass|
+      klass.new(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
+    end.
+      partition(&:recommended?).
+      flatten
   end
 
   def icon
@@ -93,25 +102,6 @@ class TwoFactorOptionsPresenter
   end
 
   private
-
-  def show_option?(option)
-    case option
-    when TwoFactorAuthentication::SetUpPivCacSelectionPresenter
-      current_device_is_desktop?
-    when TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
-         TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter
-      !piv_cac_required?
-    when TwoFactorAuthentication::SetUpPhoneSelectionPresenter
-      !piv_cac_required? && !phishing_resistant_only? && !IdentityConfig.store.hide_phone_mfa_signup
-    when TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
-         TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter
-      !piv_cac_required? && !phishing_resistant_only?
-    end
-  end
-
-  def current_device_is_desktop?
-    !BrowserCache.parse(@user_agent).mobile?
-  end
 
   def piv_cac_required?
     @piv_cac_required
