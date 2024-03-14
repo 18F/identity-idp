@@ -16,10 +16,43 @@ module RuboCop
           ENHANCED_ARGS.each do |arg_name|
             check_arg_present_on_event_method(arg_name, method)
             check_arg_present_in_track_event_send(arg_name, track_event_send)
+            check_arg_has_docs(arg_name, method)
           end
         end
 
         private
+
+        def check_arg_has_docs(arg_name, method)
+          pattern = Regexp.new("# @param \\[.+\\] #{arg_name}")
+          has_docs = preceding_lines(method).any? do |line|
+            line.is_a?(Parser::Source::Comment) && pattern.match?(line.text)
+          end
+
+          return if has_docs
+
+          add_offense(
+            method,
+            message: "Missing @param documentation comment for #{arg_name}",
+          ) do |corrector|
+            last_param_line = preceding_lines(method).reverse.find do |line|
+              line.is_a?(Parser::Source::Comment) && /@param/.match?(line.text)
+            end
+
+            comment = "# @param [Object] #{arg_name} TODO: Write doc comment"
+            indent = indentation_for_node(method)
+            if last_param_line
+              corrector.insert_after(
+                last_param_line,
+                "\n#{indent}#{comment}",
+              )
+            else
+              corrector.insert_before(
+                method,
+                "#{comment}\n#{indent}",
+              )
+            end
+          end
+        end
 
         def check_arg_present_in_track_event_send(arg_name, track_event_send)
           # We expect there is a hash that includes arg_name
@@ -180,6 +213,10 @@ module RuboCop
 
         def max_line_length
           config.for_cop('Layout/LineLength')['Max'] || 100
+        end
+
+        def preceding_lines(node)
+          processed_source.ast_with_comments[node].select { |line| line.loc.line < node.loc.line }
         end
 
         def remove_whitespace_before(node, corrector)
