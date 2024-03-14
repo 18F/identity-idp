@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { getAssetPath } from '@18f/identity-assets';
+import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
 
 function LoadingSpinner() {
@@ -14,8 +15,9 @@ function LoadingSpinner() {
   );
 }
 
-function AcuantSelfieCaptureCanvas({ imageCaptureText }) {
+function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) {
   const { isReady } = useContext(AcuantContext);
+  const { t } = useI18n();
   // The Acuant SDK script AcuantPassiveLiveness attaches to whatever element has
   // this id. It then uses that element as the root for the full screen selfie capture
   const acuantCaptureContainerId = 'acuant-face-capture-container';
@@ -26,6 +28,9 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText }) {
       <p aria-live="assertive" className="document-capture-selfie-feedback">
         {imageCaptureText}
       </p>
+      <button type="button" onClick={onSelfieCaptureClosed} className="usa-sr-only">
+        {t('doc_auth.buttons.take_picture')}
+      </button>
     </>
   );
 }

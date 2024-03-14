@@ -13,6 +13,7 @@ en:
       take_picture: Take photo
       take_picture_retry: Retake photo
       upload_picture: Upload photo
+      close: Close
     errors:
       alerts:
         address_check: We couldn’t read the address on your ID. Try taking new pictures.
