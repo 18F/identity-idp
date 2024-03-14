@@ -33,7 +33,6 @@ class FrontendLogController < ApplicationController
     'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
     'IdV: prepare submitted' => :idv_in_person_prepare_submitted,
     'IdV: prepare visited' => :idv_in_person_prepare_visited,
-    'IdV: selfie image added' => :idv_selfie_image_added,
     'IdV: selfie image clicked' => :idv_selfie_image_clicked,
     'IdV: switch_back submitted' => :idv_in_person_switch_back_submitted,
     'IdV: switch_back visited' => :idv_in_person_switch_back_visited,
