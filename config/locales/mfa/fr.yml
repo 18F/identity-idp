@@ -4,7 +4,7 @@ fr:
     account_info: L’ajout d’une autre méthode d’authentification vous empêche d’être
       bloqué sur votre compte si vous perdez l’une de vos méthodes.
     add: Agregar otro método
-    info: Ajoutez une couche de protection supplémentaire à votre compte Login.gov
+    info: Ajoutez une couche de protection supplémentaire à votre compte %{app_name}
       en sélectionnant une méthode d’authentification à plusieurs facteurs.
     recommendation: Nous vous recommandons de sélectionner au moins deux options
       différentes au cas où vous perdriez l’une de vos méthodes.
