@@ -10,6 +10,7 @@ import SelfieCaptureContext from './selfie-capture';
  */
 // As of 11.7.0, Acuant provides global objects that are not on the window object. We (identity-idp)
 // attach this to the window object to preserve backwards compatibility. One example is in the onAcuantSdkLoaded function.
+// see https://github.com/18F/identity-idp/pull/6649 for context.
 declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface;
 declare let AcuantCamera: AcuantCameraInterface;
 
