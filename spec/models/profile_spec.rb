@@ -1019,12 +1019,10 @@ RSpec.describe Profile do
       profile = create(:profile, :in_person_verification_pending, user: user)
 
       profile.fraud_pending_reason = 'threatmetrix_review'
-      expect { profile.deactivate_for_fraud_review }.to change {
-                                                          profile.fraud_review_pending?
-                                                        }.from(false).to(true).
-        and change {
-          profile.in_person_verification_pending_at
-        }.to(nil)
+      expect { profile.deactivate_for_fraud_review }.to(
+        change { profile.fraud_review_pending? }.from(false).to(true).
+        and(change { profile.in_person_verification_pending_at }.to(nil)),
+      )
 
       expect(profile).to_not be_active
       expect(profile.fraud_rejection?).to eq(false)
