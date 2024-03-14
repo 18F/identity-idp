@@ -47,7 +47,7 @@ module TwoFactorAuthentication
       elsif phishing_resistant_required?
         phishing_resistant?
       elsif desktop_only?
-        browser.desktop?
+        !browser.mobile?
       else
         true
       end
