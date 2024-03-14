@@ -1,4 +1,6 @@
 class NullServiceProviderSession
+  attr_reader :view_context
+
   def initialize(view_context: nil)
     @view_context = view_context
   end
@@ -48,8 +50,4 @@ class NullServiceProviderSession
   def selfie_required?
     false
   end
-
-  private
-
-  attr_reader :view_context
 end

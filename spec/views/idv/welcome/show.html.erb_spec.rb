@@ -16,7 +16,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
       sp_session: sp_session,
       service_provider_request: nil,
     )
-    presenter = Idv::WelcomePresenter.new(decorated_sp_session, user)
+    presenter = Idv::WelcomePresenter.new(decorated_sp_session)
     assign(:presenter, presenter)
 
     allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).

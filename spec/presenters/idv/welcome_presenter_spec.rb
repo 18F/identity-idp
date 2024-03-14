@@ -1,22 +1,28 @@
 require 'rails_helper'
 
 RSpec.describe Idv::WelcomePresenter do
-  subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session, user) }
+  subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session) }
 
   let(:sp) { build(:service_provider) }
 
   let(:sp_session) { {} }
 
+  let(:view_context) { ActionController::Base.new.view_context }
+
   let(:decorated_sp_session) do
     ServiceProviderSession.new(
       sp: sp,
-      view_context: nil,
+      view_context: view_context,
       sp_session: sp_session,
       service_provider_request: nil,
     )
   end
 
   let(:user) { nil }
+
+  before do
+    allow(view_context).to receive(:current_user).and_return(user)
+  end
 
   it 'gives us the correct sp_name' do
     expect(presenter.sp_name).to eq(sp.friendly_name)

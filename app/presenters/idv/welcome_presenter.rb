@@ -7,9 +7,8 @@ module Idv
 
     attr_accessor :url_options
 
-    def initialize(decorated_sp_session, current_user)
+    def initialize(decorated_sp_session)
       @decorated_sp_session = decorated_sp_session
-      @current_user = current_user
       @url_options = {}
     end
 
@@ -74,7 +73,11 @@ module Idv
 
     private
 
-    attr_accessor :decorated_sp_session, :current_user
+    attr_accessor :decorated_sp_session
+
+    def current_user
+      decorated_sp_session.view_context&.current_user
+    end
 
     def bullet_point(bullet, text)
       OpenStruct.new(bullet: bullet, text: text)
