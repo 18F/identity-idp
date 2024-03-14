@@ -10,6 +10,15 @@ RSpec.describe RuboCop::Cop::IdentityIdp::EnhancedIdvEventsLinter do
 
   let(:config) { RuboCop::Config.new }
   let(:cop) { RuboCop::Cop::IdentityIdp::EnhancedIdvEventsLinter.new(config) }
+  let(:check_param_docs) { false }
+
+  before do
+    if !check_param_docs
+      # Most of these tests don't involve the @param doc linter, so
+      # unwire it here.
+      allow(cop).to receive(:check_arg_has_docs).and_return(nil)
+    end
+  end
 
   it 'does not register an offense for non-idv methods' do
     expect_no_offenses(<<~RUBY)
@@ -250,5 +259,55 @@ RSpec.describe RuboCop::Cop::IdentityIdp::EnhancedIdvEventsLinter do
         end
       end
     RUBY
+  end
+
+  describe 'parameter documentation' do
+    let(:check_param_docs) { true }
+
+    it 'can add parameter documentation for proofing_components' do
+      expect_offense(<<~RUBY)
+        module AnalyticsEvents
+          def idv_my_method(other:, **extra)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: Method is missing proofing_components argument.
+            track_event(:idv_my_method, other: other, **extra)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: proofing_components is missing from track_event call.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module AnalyticsEvents
+          # @param [Object] proofing_components TODO: Write doc comment
+          def idv_my_method(other:, proofing_components: nil, **extra)
+            track_event(:idv_my_method, other: other, proofing_components: proofing_components, **extra)
+          end
+        end
+      RUBY
+    end
+
+    it 'can add parameter documentation for proofing_components with param docs already there' do
+      expect_offense(<<~RUBY)
+        module AnalyticsEvents
+          # @param [String] other Some param
+          # Logs an event for my method
+          def idv_my_method(other:, **extra)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: Method is missing proofing_components argument.
+            track_event(:idv_my_method, other: other, **extra)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: proofing_components is missing from track_event call.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module AnalyticsEvents
+          # @param [String] other Some param
+          # @param [Object] proofing_components TODO: Write doc comment
+          # Logs an event for my method
+          def idv_my_method(other:, proofing_components: nil, **extra)
+            track_event(:idv_my_method, other: other, proofing_components: proofing_components, **extra)
+          end
+        end
+      RUBY
+    end
   end
 end
