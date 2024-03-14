@@ -14,7 +14,7 @@ module Idv
                          !idv_session.desktop_selfie_test_mode_enabled?
 
       @opt_in_ipp_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
-        Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
+                            Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
 
       @selfie_required = idv_session.selfie_check_required
 

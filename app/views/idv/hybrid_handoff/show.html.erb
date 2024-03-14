@@ -90,7 +90,7 @@
     <% end %>
 
     <% if @opt_in_ipp_enabled %>
-      <%= link_to 'Verify in person2', idv_document_capture_path(opt_in_ipp: true) %>
+      <%= link_to 'Verify in person2', idv_document_capture_path(step: :hybrid_handoff) %>
     <% end %>
   </div>
   </div>

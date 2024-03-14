@@ -21,10 +21,13 @@ function InPersonPrepareStep({ toPreviousStep }) {
     inPersonOutageExpectedUpdateDate,
     skipDocAuth,
     howToVerifyURL,
+    previousStepURL,
   } = useContext(InPersonContext);
 
   function goBack() {
-    if (skipDocAuth && howToVerifyURL) {
+    if (skipDocAuth && previousStepURL) {
+      forceRedirect(previousStepURL);
+    } else if (skipDocAuth && howToVerifyURL) {
       forceRedirect(howToVerifyURL);
     } else {
       toPreviousStep();

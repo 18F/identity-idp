@@ -38,6 +38,7 @@ interface AppRootData {
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
   howToVerifyURL: string;
+  previousStepUrl: string;
   uiExitQuestionSectionEnabled: string;
   docAuthSelfieDesktopTestMode: string;
 }
@@ -106,6 +107,7 @@ const {
   usStatesTerritories = '',
   skipDocAuth,
   howToVerifyUrl,
+  previousStepUrl,
   uiExitQuestionSectionEnabled = '',
   docAuthSelfieDesktopTestMode,
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -132,6 +134,7 @@ const App = composeComponents(
         usStatesTerritories: parsedUsStatesTerritories,
         skipDocAuth: skipDocAuth === 'true',
         howToVerifyURL: howToVerifyUrl,
+        previousStepURL: previousStepUrl,
       },
     },
   ],
