@@ -40,7 +40,7 @@ RSpec.describe TwoFactorAuthentication::SetUpPhoneSelectionPresenter do
     context 'user with configured authenticator' do
       let(:user) { create(:user, :with_phone) }
 
-      it 'returns number of added authenticators' do
+      it 'returns text with number of added authenticators' do
         expect(mfa_configuration_description).to eq(
           t(
             'two_factor_authentication.two_factor_choice_options.configurations_added',
