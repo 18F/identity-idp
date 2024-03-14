@@ -109,7 +109,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           it 'returns x509 attributes' do
             aggregate_failures do
               expect(user_info[:x509_subject]).to eq(x509_subject)
-              expect(user_info[:x509_presented]).to eq(presented.to_s)
+              expect(user_info[:x509_presented]).to eq(presented)
               expect(user_info[:x509_issuer]).to eq(issuer)
             end
           end
@@ -118,7 +118,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             json = user_info.as_json
 
             expect(json['x509_subject']).to eq(x509_subject)
-            expect(json['x509_presented']).to eq(presented.to_s)
+            expect(json['x509_presented']).to eq(presented)
             expect(json['x509_issuer']).to eq(issuer)
           end
         end

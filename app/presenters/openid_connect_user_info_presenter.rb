@@ -160,7 +160,7 @@ class OpenidConnectUserInfoPresenter
     )
       x509_data.presented
     else
-      stringify_attr(x509_data.presented)
+      x509_data.presented.raw
     end
   end
 
