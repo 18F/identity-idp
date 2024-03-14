@@ -7,7 +7,7 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
   let(:user) { build(:user) }
   let(:piv_cac_required) { false }
   let(:phishing_resistant_required) { false }
-  let(:user_agent) { desktop_user_agent }
+  let(:user_agent) {}
 
   subject(:presenter) do
     presenter_class.new(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
@@ -186,6 +186,8 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
           end
         end
       end
+
+      it { expect(visible).to eq(true) }
 
       context 'on mobile device' do
         let(:user_agent) { mobile_user_agent }
