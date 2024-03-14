@@ -8,6 +8,7 @@
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
 <% end %>
+<%#   ============== Non Selfie Section ==========    %>
 <% if !@selfie_required %>
 
   <%= render PageHeadingComponent.new do %>
@@ -54,6 +55,7 @@
       <% end %>
     </div>
   </div>
+<%#   ============== Selfie Section ==========    %>
 <% else %>
   <div class="grid-row grid-gap grid-gap-2">
   <div class="grid-col-12 tablet:grid-col-auto">
@@ -66,7 +68,7 @@
   </div>
   <div class="grid-col-12 tablet:grid-col-fill">
     <%= render PageHeadingComponent.new do %>
-      <%= 'Enter your phone number to switch devices' %>
+      <%= t('doc_auth.headings.hybrid_handoff_selfie') %>
     <% end %>
     <%= t('doc_auth.info.upload_from_phone') %>
     <%= simple_form_for(
@@ -87,14 +89,6 @@
       <%= f.submit t('forms.buttons.send_link') %>
     <% end %>
   </div>
-  </div>
-  <div class="margin-top-4 padding-top-2 border-top border-primary-light">
-    <p class="margin-top-1">
-    <strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.
-    </p>
-    <p class="margin-top-1">
-      <%= link_to t('in_person_proofing.headings.prepare'), idv_hybrid_handoff_in_person_path %>
-    </p>
   </div>
 <% end %>
 

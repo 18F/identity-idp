@@ -11,8 +11,15 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
+  let(:doc_auth_selfie_capture_enabled) { false }
+  let(:biometric_comparison_required) { false }
 
   before do
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(doc_auth_selfie_capture_enabled)
+    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
+
+    visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: biometric_comparison_required)
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
@@ -207,6 +214,35 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
       expect(document_capture_session).to be
       expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
+    end
+  end
+
+  context 'on a desktop device and selfie is allowed' do
+    let(:doc_auth_selfie_capture_enabled) { true }
+    before do
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+        and_return(true)
+      complete_doc_auth_steps_before_hybrid_handoff_step
+    end
+
+    describe 'when selfie is required by sp' do
+      let(:biometric_comparison_required) { true }
+      it 'has expected UI elements' do
+        mobile_form = find('#form-to-submit-photos-through-mobile')
+        expect(mobile_form).to have_name(t('forms.buttons.send_link'))
+        expect(page).to have_selector('h1', text: 'Enter your phone number to switch devices')
+      end
+    end
+
+    describe 'when selfie is not required by sp' do
+      let(:biometric_comparison_required) { false }
+      it 'has expected UI elements' do
+        mobile_form = find('#form-to-submit-photos-through-mobile')
+        desktop_form = find('#form-to-submit-photos-through-desktop')
+
+        expect(mobile_form).to have_name(t('forms.buttons.send_link'))
+        expect(desktop_form).to have_name(t('forms.buttons.upload_photos'))
+      end
     end
   end
 end

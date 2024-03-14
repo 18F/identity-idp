@@ -38,13 +38,6 @@ module Idv
       end
     end
 
-    def in_person
-      idv_session.opted_in_to_in_person_proofing = true
-      idv_session.flow_path = 'standard'
-      idv_session.skip_doc_auth = true
-      redirect_to idv_document_capture_url
-    end
-
     def self.selected_remote(idv_session:)
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&

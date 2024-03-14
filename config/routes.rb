@@ -342,7 +342,6 @@ Rails.application.routes.draw do
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/hybrid_handoff' => 'hybrid_handoff#show'
-      get '/hybrid_handoff/in_person' => 'hybrid_handoff#in_person'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
       put '/link_sent' => 'link_sent#update'
