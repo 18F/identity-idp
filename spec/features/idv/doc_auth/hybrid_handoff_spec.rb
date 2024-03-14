@@ -17,9 +17,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
       and_return(doc_auth_selfie_capture_enabled)
-    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
-
-    visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: biometric_comparison_required)
+    if biometric_comparison_required
+      visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: biometric_comparison_required)
+    end
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
@@ -220,8 +220,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   context 'on a desktop device and selfie is allowed' do
     let(:doc_auth_selfie_capture_enabled) { true }
     before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-        and_return(true)
       complete_doc_auth_steps_before_hybrid_handoff_step
     end
 
