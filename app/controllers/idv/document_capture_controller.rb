@@ -7,6 +7,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
+    before_action :confirm_ipp_allowed, only: [:show]
     before_action :confirm_step_allowed
     before_action :override_csp_to_allow_acuant
 
@@ -40,6 +41,7 @@ module Idv
       end
     end
 
+
     def extra_view_variables
       {
         document_capture_session_uuid: document_capture_session_uuid,
@@ -62,6 +64,7 @@ module Idv
         preconditions: ->(idv_session:, user:) {
                          idv_session.flow_path == 'standard' && (
                            # mobile
+                           idv_session.skip_doc_auth ||
                            idv_session.skip_hybrid_handoff ||
                             idv_session.skip_doc_auth ||
                             !idv_session.selfie_check_required || # desktop but selfie not required
@@ -108,6 +111,17 @@ module Idv
         extra = { stored_result_present: stored_result.present? }
         failure(I18n.t('doc_auth.errors.general.network_error'), extra)
       end
+    end
+    def confirm_ipp_allowed
+      puts "opt_in_ipp=#{params[:opt_in_ipp]}"
+      return unless params[:opt_in_ipp] == 'true'
+      puts "check allowed"
+      return unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
+        Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
+      puts "setup ipp"
+      idv_session.opted_in_to_in_person_proofing = true
+      idv_session.flow_path = 'standard'
+      idv_session.skip_doc_auth = true
     end
   end
 end
