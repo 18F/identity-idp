@@ -1,53 +1,58 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SetUpWebauthnSelectionPresenter do
-  let(:user_without_mfa) { create(:user) }
-  let(:user_with_mfa) { create(:user) }
-  let(:configuration) {}
-  let(:presenter_without_mfa) do
-    described_class.new(user: user_without_mfa)
-  end
-  let(:presenter_with_mfa) do
-    described_class.new(user: user_with_mfa)
-  end
+  let(:user) { create(:user) }
+  let(:presenter) { described_class.new(user:) }
 
   describe '#type' do
+    subject(:type) { presenter.type }
+
     it 'returns webauthn' do
-      expect(presenter_without_mfa.type).to eq :webauthn
+      expect(type).to eq(:webauthn)
     end
   end
 
   describe '#render_in' do
-    it 'renders a WebauthnInputComponent' do
-      view_context = ActionController::Base.new.view_context
+    let(:view_context) { ActionController::Base.new.view_context }
+    subject(:rendered) { presenter.render_in(view_context) { 'content' } }
 
+    it 'renders a WebauthnInputComponent' do
       expect(view_context).to receive(:render) do |component, &block|
         expect(component).to be_instance_of(WebauthnInputComponent)
         expect(block.call).to eq('content')
       end
 
-      presenter_without_mfa.render_in(view_context) { 'content' }
+      rendered
     end
   end
 
-  describe '#mfa_configuration' do
-    it 'returns an empty string when user has not configured this authenticator' do
-      expect(presenter_without_mfa.mfa_configuration_description).to eq('')
+  describe '#mfa_configuration_description' do
+    subject(:mfa_configuration_description) { presenter.mfa_configuration_description }
+
+    context 'when user has not configured this authenticator' do
+      let(:user) { create(:user) }
+
+      it 'returns an empty string' do
+        expect(mfa_configuration_description).to eq('')
+      end
     end
 
-    it 'returns an # added when user has configured this authenticator' do
-      create(:webauthn_configuration, platform_authenticator: false, user: user_with_mfa)
-      expect(presenter_with_mfa.mfa_configuration_description).to eq(
-        t(
-          'two_factor_authentication.two_factor_choice_options.configurations_added',
-          count: 1,
-        ),
-      )
+    context 'when user has configured this authenticator' do
+      let(:user) { create(:user, :with_webauthn) }
+
+      it 'returns text with number of added authenticators' do
+        expect(mfa_configuration_description).to eq(
+          t(
+            'two_factor_authentication.two_factor_choice_options.configurations_added',
+            count: 1,
+          ),
+        )
+      end
     end
   end
 
   describe '#phishing_resistant?' do
-    subject(:phishing_resistant) { presenter_without_mfa.phishing_resistant? }
+    subject(:phishing_resistant) { presenter.phishing_resistant? }
 
     it { expect(phishing_resistant).to eq(true) }
   end
