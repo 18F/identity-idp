@@ -32,6 +32,10 @@ module TwoFactorAuthentication
       end
     end
 
+    def recommended?
+      false
+    end
+
     def single_configuration_only?
       false
     end

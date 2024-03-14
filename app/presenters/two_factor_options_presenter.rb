@@ -24,21 +24,18 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    webauthn_platform_option + totp_option + phone_options +
-      backup_code_option + webauthn_option + piv_cac_option
+    all_options_sorted.select { |option| show_option?(option) }
   end
 
-  # Array of possible options selected by the user to display on the
-  # add additional MFA page
-  def all_user_selected_options
+  def all_options_sorted
     [
-      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user),
-    ]
+      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user:),
+      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user:),
+      TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user:),
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user:),
+      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user:),
+      TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user:),
+    ].partition(&:recommended?).flatten
   end
 
   def icon
@@ -97,37 +94,30 @@ class TwoFactorOptionsPresenter
 
   private
 
-  def piv_cac_option
-    return [] unless current_device_is_desktop?
-    [TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user)]
+  def sorted_method_presenters
+    [
+      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
+      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+      TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
+      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+      TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+    ]
   end
 
-  def webauthn_option
-    return [] if piv_cac_required?
-    [TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user)]
-  end
-
-  def webauthn_platform_option
-    return [] if piv_cac_required?
-    [TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user)]
-  end
-
-  def phone_options
-    if piv_cac_required? || phishing_resistant_only? || IdentityConfig.store.hide_phone_mfa_signup
-      return []
-    else
-      [TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user: user)]
+  def show_option?(option)
+    case option
+    when TwoFactorAuthentication::SetUpPivCacSelectionPresenter
+      current_device_is_desktop?
+    when TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+         TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter
+      !piv_cac_required?
+    when TwoFactorAuthentication::SetUpPhoneSelectionPresenter
+      !piv_cac_required? && !phishing_resistant_only? && !IdentityConfig.store.hide_phone_mfa_signup
+    when TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+         TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter
+      !piv_cac_required? && !phishing_resistant_only?
     end
-  end
-
-  def totp_option
-    return [] if piv_cac_required? || phishing_resistant_only?
-    [TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user)]
-  end
-
-  def backup_code_option
-    return [] if piv_cac_required? || phishing_resistant_only?
-    [TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user)]
   end
 
   def current_device_is_desktop?

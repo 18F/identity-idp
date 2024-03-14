@@ -12,6 +12,10 @@ module TwoFactorAuthentication
       t('two_factor_authentication.two_factor_choice_options.piv_cac_info')
     end
 
+    def recommended?
+      user.confirmed_email_addresses.any?(&:gov_or_mil?)
+    end
+
     def single_configuration_only?
       true
     end
