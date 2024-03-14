@@ -162,6 +162,7 @@ es:
       google_policy_link: aplican la política de privacidad
       google_tos_link: las condiciones de servicio
       login_tos_link: las condiciones de uso
+    recommended: Recomendado
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_aal3_choice: Se requiere autenticación adicional
     two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de
