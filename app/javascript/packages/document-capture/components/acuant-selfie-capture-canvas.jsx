@@ -29,7 +29,7 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
         {imageCaptureText}
       </p>
       <button type="button" onClick={onSelfieCaptureClosed} className="usa-sr-only">
-        {t('doc_auth.buttons.take_picture')}
+        {t('doc_auth.buttons.close')}
       </button>
     </>
   );
