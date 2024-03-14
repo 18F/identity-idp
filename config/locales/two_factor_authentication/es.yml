@@ -191,8 +191,8 @@ es:
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       webauthn: Clave de seguridad
-      webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
-        y se conecta a su dispositivo.
+      webauthn_info: Conecte su clave de seguridad física a su dispositivo. No
+        necesitará ingresar un código.
       webauthn_platform: Desbloqueo facial o táctil
       webauthn_platform_info: Use la cara o la huella digital para acceder a su cuenta
         sin un código de un solo uso.

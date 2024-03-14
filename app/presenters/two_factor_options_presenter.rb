@@ -71,6 +71,10 @@ class TwoFactorOptionsPresenter
     end
   end
 
+  def recommendation
+    t('mfa.recommendation')
+  end
+
   def show_cancel_return_to_sp?
     phishing_resistant_only? || piv_cac_required?
   end
