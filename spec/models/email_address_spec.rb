@@ -88,4 +88,26 @@ RSpec.describe EmailAddress do
       expect(email_address.confirmation_period_expired?).to be_truthy
     end
   end
+
+  describe '#gov_or_mil?' do
+    subject(:result) { email_address.gov_or_mil? }
+
+    context 'with an email domain ending in anything other than .gov or .mil' do
+      let(:email) { 'example@example.com' }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with an email domain ending in .gov' do
+      let(:email) { 'example@example.gov' }
+
+      it { expect(result).to eq(true) }
+    end
+
+    context 'with an email domain ending in .mil' do
+      let(:email) { 'example@example.mil' }
+
+      it { expect(result).to eq(true) }
+    end
+  end
 end
