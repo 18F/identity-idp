@@ -4003,12 +4003,14 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [String,nil] key_id
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, **extra)
+  def piv_cac_login(success:, errors:, key_id:, **extra)
     track_event(
       :piv_cac_login,
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
+      key_id:,
       **extra,
     )
   end
