@@ -2,6 +2,11 @@
   <%= t('account.index.webauthn') %>
 </h2>
 
+
+<p class="margin-top-2">
+  <%= t('two_factor_authentication.two_factor_choice_options.webauthn_info') %>
+</p>
+
 <div role="list">
   <% MfaContext.new(current_user).webauthn_roaming_configurations.each do |configuration| %>
     <%= render ManageableAuthenticatorComponent.new(
