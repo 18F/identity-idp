@@ -12,9 +12,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class="margin-bottom-0"><%= @presenter.intro %></p>
+<p><%= @presenter.intro %></p>
 
-<p class="margin-top-2"><%= @presenter.recommendation %></p>
+<p><%= t('mfa.recommendation') %></p>
 
 <% if @presenter.two_factor_enabled? %>
   <h2 class="margin-top-2 margin-bottom-1">
