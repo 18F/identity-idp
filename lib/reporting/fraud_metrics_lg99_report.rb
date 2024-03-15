@@ -104,7 +104,7 @@ module Reporting
       format(<<~QUERY, params)
         fields
             name
-          , properties.user_id as user_id,
+          , properties.user_id as user_id
         | filter name in %{event_names}
       QUERY
     end
