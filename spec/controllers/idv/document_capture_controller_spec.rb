@@ -82,22 +82,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         :check_for_mail_only_outage,
       )
     end
-
-    it 'includes allow ipp check before_action and after_action' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_ipp_allowed,
-      )
-    end
-  end
-
-  describe 'after_actions' do
-    it 'includes clean up ipp check after_action' do
-      expect(subject).to have_actions(
-        :after,
-        :cleanup_ipp_allowed,
-      )
-    end
   end
 
   describe '#show' do
@@ -273,7 +257,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
         get :show, params: { step: 'hybrid_handoff' }
         expect(response).to render_template :show
-        expect(subject.idv_session.skip_doc_auth).to be_falsey
       end
     end
 

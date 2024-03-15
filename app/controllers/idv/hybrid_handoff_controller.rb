@@ -25,6 +25,8 @@ module Idv
         true
       )
 
+      # yes if we on hand off, skip_doc_auth not avail yet
+      idv_session.skip_doc_auth = nil
       render :show, locals: extra_view_variables
     end
 
@@ -45,9 +47,11 @@ module Idv
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
          idv_session.service_provider&.in_person_proofing_enabled
-        idv_session.skip_doc_auth == false
+        idv_session.skip_doc_auth == false ||
+          !idv_session.skip_hybrid_handoff
       else
-        idv_session.skip_doc_auth.nil? || idv_session.skip_doc_auth == false
+        idv_session.skip_doc_auth.nil? || idv_session.skip_doc_auth == false ||
+          !idv_session.skip_hybrid_handoff
       end
     end
 

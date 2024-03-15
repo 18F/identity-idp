@@ -7,10 +7,8 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
-    before_action :confirm_ipp_allowed, only: [:show]
-    before_action :confirm_step_allowed
+    before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
     before_action :override_csp_to_allow_acuant
-    after_action  :cleanup_ipp_allowed, only: [:show]
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -113,36 +111,24 @@ module Idv
       end
     end
 
-    def confirm_ipp_allowed
-      return if params[:step].blank?
+    def allow_direct_ipp?
+      # not allowed when no step param and action:show(get request)
+      return false if params[:step].blank? || params[:action].to_s != 'show' ||
+                      idv_session.flow_path == 'hybrid'
       # Only allow direct access to document capture if IPP available
-      return unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
-                    Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
+      return false unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
+                          Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
       case params[:step]
       when 'hybrid_handoff'
         @previous_step_url = idv_hybrid_handoff_path
-        idv_session.opted_in_to_in_person_proofing = true
-        idv_session.flow_path = 'standard'
-        idv_session.skip_doc_auth = true
       else
         @previous_step_url = nil
       end
-    end
-
-    def cleanup_ipp_allowed
-      return if params[:step].blank?
-      # Only allow direct access to document capture if IPP available
-      return unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
-                    Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
-      case params[:step]
-      when 'hybrid_handoff'
-        @previous_step_url = idv_hybrid_handoff_path
-        idv_session.opted_in_to_in_person_proofing = nil
-        idv_session.flow_path = 'standard'
-        idv_session.skip_doc_auth = nil
-      else
-        @previous_step_url = nil
-      end
+      # allow
+      idv_session.flow_path = 'standard'
+      idv_session.skip_doc_auth = true
+      idv_session.skip_hybrid_handoff = false
+      true
     end
   end
 end
