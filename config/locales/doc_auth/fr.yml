@@ -7,6 +7,7 @@ fr:
       document_capture_dialog: Capture du document
     buttons:
       add_new_photos: Ajoutez de nouvelles photos
+      close: Fermer
       continue: Continuer
       take_or_upload_picture_html: '<lg-take-photo>Prendre une
         photo</lg-take-photo><lg-or> ou </lg-or><lg-upload>Télécharger une

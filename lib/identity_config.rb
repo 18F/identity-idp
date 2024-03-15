@@ -503,6 +503,7 @@ class IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
+    config.add(:x509_presented_hash_attribute_requested_issuers, type: :json)
 
     @key_types = config.key_types
     @unused_keys = config_map.keys - config.written_env.keys
