@@ -56,22 +56,20 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: doc auth image upload form submitted,',
-          any_args,
-        )
-
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: doc auth image upload vendor submitted',
-          any_args,
-        )
-
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
           any_args,
         )
 
         action
+
+        expect(@analytics).not_to have_logged_event(
+          'IdV: doc auth image upload form submitted,',
+        )
+
+        expect(@analytics).not_to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+        )
 
         expect_funnel_update_counts(user, 0)
       end
@@ -142,13 +140,9 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             success: false },
         )
 
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: doc auth image upload vendor submitted',
-          # Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-          any_args,
-        )
-
         action
+
+        expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
 
         expect_funnel_update_counts(user, 0)
       end
@@ -242,26 +236,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).to receive(:track_event).with(
-          'IdV: doc auth image upload form submitted',
-          success: false,
-          errors: {
-            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
-          },
-          error_details: {
-            limit: { rate_limited: true },
-          },
-          user_id: user.uuid,
-          submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
-          remaining_submit_attempts: 0,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: an_instance_of(String),
-          back_image_fingerprint: an_instance_of(String),
-          selfie_image_fingerprint: nil,
-          liveness_checking_required: boolean,
-        )
-
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_rate_limited,
         )
@@ -284,12 +258,28 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             success: false },
         )
 
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: doc auth image upload vendor submitted',
-          any_args,
+        action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth image upload form submitted',
+          success: false,
+          errors: {
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
+          },
+          error_details: {
+            limit: { rate_limited: true },
+          },
+          user_id: user.uuid,
+          submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          remaining_submit_attempts: 0,
+          flow_path: 'standard',
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
-        action
+        expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
 
         expect_funnel_update_counts(user, 0)
       end
