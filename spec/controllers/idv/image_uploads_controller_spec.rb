@@ -56,21 +56,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).not_to receive(:track_event).with(
           'IdV: doc auth image upload form submitted,',
-          success: false,
-          errors: {
-            front: ['Please fill in this field.'],
-          },
-          error_details: {
-            front: { blank: true },
-          },
-          user_id: user.uuid,
-          submit_attempts: 1,
-          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-        ).exactly(0).times
+          any_args,
+        )
 
         expect(@analytics).not_to receive(:track_event).with(
           'IdV: doc auth image upload vendor submitted',
