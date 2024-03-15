@@ -7,6 +7,7 @@ import type {
   RegisterFieldCallback,
 } from '@18f/identity-form-steps';
 import AcuantCapture from './acuant-capture';
+import SelfieCaptureContext from '../context/selfie-capture';
 
 interface DocumentSideAcuantCaptureProps {
   side: 'front' | 'back' | 'selfie';
@@ -43,6 +44,9 @@ function DocumentSideAcuantCapture({
 }: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
+  const { isSelfieCaptureEnabled, isSelfieDesktopTestMode } = useContext(SelfieCaptureContext);
+  const isUploadAllowed = isSelfieDesktopTestMode || !isSelfieCaptureEnabled;
+
   return (
     <AcuantCapture
       ref={registerField(side, { isRequired: true })}
@@ -74,6 +78,7 @@ function DocumentSideAcuantCapture({
       errorMessage={error ? error.message : undefined}
       name={side}
       className={className}
+      allowUpload={isUploadAllowed}
     />
   );
 }

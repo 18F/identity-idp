@@ -698,12 +698,16 @@ function AcuantCapture(
           onImageCaptureClose={onSelfieCaptureClosed}
           onImageCaptureFeedback={onImageCaptureFeedback}
         >
-          <AcuantSelfieCaptureCanvas
-            fullScreenRef={fullScreenRef}
-            fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
-            onRequestClose={() => setIsCapturingEnvironment(false)}
-            imageCaptureText={imageCaptureText}
-          />
+          <FullScreen
+            ref={fullScreenRef}
+            label={t('doc_auth.accessible_labels.document_capture_dialog')}
+            hideCloseButton
+          >
+            <AcuantSelfieCaptureCanvas
+              imageCaptureText={imageCaptureText}
+              onSelfieCaptureClosed={onSelfieCaptureClosed}
+            />
+          </FullScreen>
         </AcuantSelfieCamera>
       )}
       <FileInput
