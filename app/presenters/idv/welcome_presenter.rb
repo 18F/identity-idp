@@ -76,7 +76,7 @@ module Idv
     attr_accessor :decorated_sp_session
 
     def current_user
-      decorated_sp_session.view_context&.current_user
+      decorated_sp_session&.current_user
     end
 
     def bullet_point(bullet, text)

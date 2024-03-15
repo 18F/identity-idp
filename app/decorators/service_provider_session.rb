@@ -4,8 +4,6 @@ class ServiceProviderSession
 
   DEFAULT_LOGO = 'generic.svg'.freeze
 
-  attr_reader :view_context
-
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
     @view_context = view_context
@@ -128,9 +126,13 @@ class ServiceProviderSession
     end
   end
 
+  def current_user
+    view_context&.current_user
+  end
+
   private
 
-  attr_reader :sp, :sp_session, :service_provider_request
+  attr_reader :sp, :view_context, :sp_session, :service_provider_request
 
   def resolved_authn_context_result
     @resolved_authn_context_result ||= AuthnContextResolver.new(
