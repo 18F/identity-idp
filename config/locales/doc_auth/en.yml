@@ -164,6 +164,7 @@ en:
       front: Front of your driver’s license or state ID
       how_to_verify: Choose how you want to verify your identity
       hybrid_handoff: How would you like to add your ID?
+      hybrid_handoff_selfie: Enter your phone number to switch devices
       interstitial: We are processing your images
       lets_go: How verifying your identity works
       no_ssn: Don’t have a Social Security number?
