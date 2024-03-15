@@ -261,17 +261,18 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
       # end
 
       # To be completed in a future ticket
-      # context 'User cancels IPP after being deactivated for TMX review', allow_browser_log: true do
+      # context 'User cancels IPP after being deactivated for TMX review',
+      #         allow_browser_log: true do
       #   it 'allows the user to restart IPP' do
       #     # set fraud review to pending:
       #     profile.deactivate_for_fraud_review
       #     profile.reload
-
+      #
       #     # cancel the enrollment
       #     click_link t('links.cancel')
       #     # user can restart
       #     click_on t('idv.cancel.actions.start_over')
-
+      #
       #     # user should be redirected to the welcome path when they cancel
       #     expect(page).to have_current_path(idv_welcome_path)
       #   end
