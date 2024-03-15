@@ -243,4 +243,38 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       end
     end
   end
+  context 'on a desktop choose ipp', js: true do
+    let(:in_person_doc_auth_button_enabled) { true }
+    let(:sp_ipp_enabled) { true }
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
+        and_return(in_person_doc_auth_button_enabled)
+      allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
+        and_return(sp_ipp_enabled)
+      complete_doc_auth_steps_before_hybrid_handoff_step
+    end
+
+    context 'when ipp is enabled' do
+      it 'proceeds to ipp if selected and can go back' do
+        expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+        click_on t('in_person_proofing.headings.prepare')
+        expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
+        click_on t('forms.buttons.back')
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+      end
+    end
+
+    context 'when ipp is disabled' do
+      let(:in_person_doc_auth_button_enabled) { false }
+      let(:sp_ipp_enabled) { false }
+      it 'has no ipp option can be selected' do
+        expect(page).to_not have_content(
+          strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')),
+        )
+        expect(page).to_not have_content(
+          t('in_person_proofing.headings.prepare'),
+        )
+      end
+    end
+  end
 end

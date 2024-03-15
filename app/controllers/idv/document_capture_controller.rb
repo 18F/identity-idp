@@ -136,7 +136,6 @@ module Idv
                     Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
       case params[:step]
       when 'hybrid_handoff'
-        Rails.logger.debug { "set previous step url to #{idv_hybrid_handoff_path}" }
         @previous_step_url = idv_hybrid_handoff_path
         idv_session.opted_in_to_in_person_proofing = nil
         idv_session.flow_path = 'standard'

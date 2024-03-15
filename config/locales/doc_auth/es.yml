@@ -243,6 +243,7 @@ es:
       how_to_verify_troubleshooting_options_header: ¿Quiere saber más sobre cómo verificar su identidad?
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
+      hybrid_handoff_ipp_html: <strong>¿No tiene celular?</strong> Como alternativa, puede verificar su identidad en una oficina de correos de Estados Unidos.
       image_loaded: Imagen cargada
       image_loading: Cargando la imagen
       image_updated: Imagen actualizada

@@ -82,6 +82,22 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         :check_for_mail_only_outage,
       )
     end
+
+    it 'includes allow ipp check before_action and after_action' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_ipp_allowed,
+      )
+    end
+  end
+
+  describe 'after_actions' do
+    it 'includes clean up ipp check after_action' do
+      expect(subject).to have_actions(
+        :after,
+        :cleanup_ipp_allowed,
+      )
+    end
   end
 
   describe '#show' do
@@ -224,6 +240,8 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
       end
 
       it 'renders show when flow path is standard' do
@@ -247,6 +265,27 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
 
         get :show
 
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+
+      it 'renders show when accessed from handoff' do
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
+        get :show, params: { step: 'hybrid_handoff' }
+        expect(response).to render_template :show
+        expect(subject.idv_session.skip_doc_auth).to be_falsey
+      end
+    end
+
+    context 'ipp disabled for sp' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+        allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).and_return(false)
+        allow(subject.decorated_sp_session).to receive(:selfie_required?).and_return(true)
+      end
+      it 'redirect back when accessed from handoff' do
+        subject.idv_session.skip_hybrid_handoff = nil
+        get :show, params: { step: 'hybrid_handoff' }
         expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
