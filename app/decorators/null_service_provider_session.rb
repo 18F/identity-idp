@@ -50,6 +50,7 @@ class NullServiceProviderSession
   end
 
   def current_user
+    view_context&.current_user
   end
 
   private
