@@ -274,10 +274,10 @@ fr:
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
         seul(e) à pouvoir accéder à vos informations ou les modifier.
       selfie_capture_status:
-        face_close_to_border: TROP PRÈS DU CADRE
-        face_not_found: VISAGE NON TROUVÉ
-        face_too_small: VISAGE TROP PETIT
-        too_many_faces: TROP DE VISAGES
+        face_close_to_border: Trop près du cadre
+        face_not_found: Visage non trouvé
+        face_too_small: Visage trop petit
+        too_many_faces: Trop de visages
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
         nom, date de naissance et adresse.
       stepping_up_html: 'Vérifiez à nouveau votre identité et prenez une photo de vous
