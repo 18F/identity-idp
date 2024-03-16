@@ -569,6 +569,37 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               expect(page).to have_current_path(idv_phone_url)
             end
           end
+
+          context 'when ipp is enabled' do
+            let(:in_person_doc_auth_button_enabled) { true }
+            let(:sp_ipp_enabled) { true }
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
+                and_return(in_person_doc_auth_button_enabled)
+              allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
+                and_return(sp_ipp_enabled)
+            end
+            describe 'when ipp is selected' do
+              it 'proceed to the next page and start ipp' do
+                perform_in_browser(:desktop) do
+                  visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
+                  sign_in_and_2fa_user(user)
+                  complete_doc_auth_steps_before_hybrid_handoff_step
+                  # we still have option to continue on handoff, since it's desktop no skip_hand_off
+                  expect(page).to have_current_path(idv_hybrid_handoff_path)
+                  expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
+                  click_on t('in_person_proofing.headings.prepare')
+                  expect(page).to have_current_path(
+                    idv_document_capture_path({ step: 'hybrid_handoff' }),
+                  )
+                  expect_step_indicator_current_step(
+                    t('step_indicator.flows.idv.find_a_post_office'),
+                  )
+                  expect_doc_capture_page_header(t('in_person_proofing.headings.prepare'))
+                end
+              end
+            end
+          end
         end
       end
     end
