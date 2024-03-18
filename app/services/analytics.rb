@@ -4,14 +4,14 @@ class Analytics
   include AnalyticsEvents
   prepend Idv::AnalyticsEventsEnhancer
 
-  attr_reader :user, :request, :sp, :ahoy
+  attr_reader :user, :request, :sp, :session, :ahoy
 
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
-    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
     @session = session
+    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
   end
 
   def track_event(event, attributes = {})
@@ -42,13 +42,13 @@ class Analytics
   end
 
   def update_session_events_and_paths_visited_for_analytics(event)
-    @session[:events] ||= {}
-    @session[:first_event] = !@session[:events].key?(event)
-    @session[:events][event] = true
+    session[:events] ||= {}
+    session[:first_event] = !@session[:events].key?(event)
+    session[:events][event] = true
   end
 
   def first_event_this_session?
-    @session[:first_event]
+    session[:first_event]
   end
 
   def track_mfa_submit_event(attributes)
@@ -95,11 +95,11 @@ class Analytics
   end
 
   def session_duration
-    @session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
+    session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
   end
 
   def session_started_at
-    value = @session[:session_started_at]
+    value = session[:session_started_at]
     return value unless value.is_a?(String)
     Time.zone.parse(value)
   end
