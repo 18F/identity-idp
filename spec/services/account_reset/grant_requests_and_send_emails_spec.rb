@@ -54,8 +54,8 @@ RSpec.describe AccountReset::GrantRequestsAndSendEmails do
       end
 
       context 'possible fraud user' do
-        let(:user) { create(:user, :gpo_pending_with_fraud_review) }
-        let(:user2) { create(:user, :gpo_pending_with_fraud_rejection) }
+        let(:user) { create(:user, :fraud_review_pending) }
+        let(:user2) { create(:user, :fraud_rejection) }
         before do
           allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
             and_return(10)
