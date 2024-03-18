@@ -149,7 +149,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               aggregate_failures do
                 expect(user_info[:x509_subject]).to be_blank
                 expect(user_info[:x509_issuer]).to be_blank
-                expect(user_info[:x509_presented]).to be_blank
+                expect(user_info[:x509_presented]).to be false
               end
             end
           end

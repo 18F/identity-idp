@@ -160,7 +160,7 @@ class OpenidConnectUserInfoPresenter
     )
       x509_data.presented
     else
-      x509_data.presented.raw
+      !!x509_data.presented.raw
     end
   end
 
