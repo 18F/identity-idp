@@ -33,8 +33,8 @@ en:
         to cancel.
       header: Your account will be deleted in %{interval}
       intro_html: 'As a security measure, %{app_name} requires a two-step process to
-        delete your account:<br><br> Step One: There is a %{waiting_period}
-        waiting period if you have lost access to your authentication methods
+        delete your account:<br><br> Step One: There is a waiting period of
+        %{waiting_period} if you have lost access to your authentication methods
         and need to delete your account. If you locate your authentication
         methods, you can sign in to your %{app_name} account to cancel this
         request.<br><br> Step Two: After your %{waiting_period} waiting period,
