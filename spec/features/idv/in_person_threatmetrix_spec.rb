@@ -217,7 +217,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
           visit_idp_from_sp_with_ial2(sp)
           expect(page).to have_current_path(idv_please_call_path)
 
-          review_pass.run(args: [user.uuid], config:)
+          expect do
+            review_pass.run(args: [user.uuid], config:)
+          end.to(change { ActionMailer::Base.deliveries.count }.by(1))
           page.visit('/verify/welcome')
           expect(page).to have_current_path(idv_activated_path)
         end
@@ -236,7 +238,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
           expect(page).to have_current_path(idv_please_call_path)
 
           # reject the user
-          review_reject.run(args: [user.uuid], config:)
+          expect do
+            review_reject.run(args: [user.uuid], config:)
+          end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
           # user revisits after fraud rejection
           visit_idp_from_sp_with_ial2(sp)
@@ -296,7 +300,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         deactivate_profile_update_enrollment(status: :passed)
 
         # reject the user
-        review_reject.run(args: [user.uuid], config:)
+        expect do
+          review_reject.run(args: [user.uuid], config:)
+        end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
         visit_idp_from_sp_with_ial2(sp)
         expect(page).to have_current_path(idv_not_verified_path)
