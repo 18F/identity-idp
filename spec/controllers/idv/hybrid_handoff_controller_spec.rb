@@ -212,7 +212,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
             and_return(false)
           subject.idv_session.skip_doc_auth = nil
-          subject.idv_session.skip_hybrid_handoff = true
         end
 
         it 'redirects to how to verify' do

@@ -119,8 +119,10 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
    when the sp has opted into ipp' do
     context 'opt in false at start but true during navigation' do
       it 'should be bounced back from Hybrid Handoff to How to Verify' do
+        sleep(5)
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        sleep(5)
         page.refresh
         expect(page).to have_current_path(idv_how_to_verify_url)
       end

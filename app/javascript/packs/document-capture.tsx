@@ -37,6 +37,7 @@ interface AppRootData {
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
+  skipDocAuthFromHandoff: string;
   howToVerifyURL: string;
   previousStepUrl: string;
   uiExitQuestionSectionEnabled: string;
@@ -106,6 +107,7 @@ const {
   optedInToInPersonProofing,
   usStatesTerritories = '',
   skipDocAuth,
+  skipDocAuthFromHandoff,
   howToVerifyUrl,
   previousStepUrl,
   uiExitQuestionSectionEnabled = '',
@@ -133,6 +135,7 @@ const App = composeComponents(
         optedInToInPersonProofing: optedInToInPersonProofing === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
         skipDocAuth: skipDocAuth === 'true',
+        skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
         howToVerifyURL: howToVerifyUrl,
         previousStepURL: previousStepUrl,
       },

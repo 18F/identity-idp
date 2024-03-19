@@ -37,7 +37,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth } = useContext(InPersonContext);
+  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
+    useContext(InPersonContext);
   const appName = getConfigValue('appName');
 
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -137,7 +138,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps
-  const steps: FormStep[] = skipDocAuth ? inPersonSteps : defaultSteps;
+  const steps: FormStep[] = skipDocAuth || skipDocAuthFromHandoff ? inPersonSteps : defaultSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON

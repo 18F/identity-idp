@@ -20,12 +20,14 @@ function InPersonPrepareStep({ toPreviousStep }) {
     inPersonOutageMessageEnabled,
     inPersonOutageExpectedUpdateDate,
     skipDocAuth,
+    skipDocAuthFromHandoff,
     howToVerifyURL,
     previousStepURL,
   } = useContext(InPersonContext);
 
   function goBack() {
-    if (skipDocAuth && previousStepURL) {
+    if (skipDocAuthFromHandoff && previousStepURL) {
+      // directly from handoff page
       forceRedirect(previousStepURL);
     } else if (skipDocAuth && howToVerifyURL) {
       forceRedirect(howToVerifyURL);

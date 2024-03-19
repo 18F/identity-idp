@@ -50,6 +50,12 @@ export interface InPersonContextProps {
   skipDocAuth?: boolean;
 
   /**
+   * Flag set when user select IPP from handoff page when IPP is available
+   * and selfie is required
+   */
+  skipDocAuthFromHandoff?: boolean;
+
+  /**
    * URL for Opt-in IPP, used when in_person_proofing_opt_in_enabled is enabled
    */
   howToVerifyURL?: string;
