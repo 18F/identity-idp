@@ -113,6 +113,12 @@ class Analytics
     attributes[:component_values] = resolved_result.component_values.map do |v|
       v.to_h.slice(:name)
     end
+    attributes.reject! { |_key, value| value == false }
+    attributes.transform_keys! do |key|
+      key = key[0...-1].to_sym if key[-1] == '?'
+      key
+    end
+
     { sp_request: attributes }
   end
 
