@@ -262,7 +262,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'C1' => 1, 'C2' => 1, 'P1' => 1 },
+            component_values: { 'C1' => true, 'C2' => true, 'P1' => true },
             identity_proofing: true,
           },
         }
@@ -284,11 +284,11 @@ RSpec.describe Analytics do
             aal2: true,
             biometric_comparison: true,
             component_values: {
-              'C1' => 1,
-              'C2' => 1,
-              'Ca' => 1,
-              'P1' => 1,
-              'Pb' => 1,
+              'C1' => true,
+              'C2' => true,
+              'Ca' => true,
+              'P1' => true,
+              'Pb' => true,
             },
             identity_proofing: true,
             phishing_resistant: true,
@@ -311,7 +311,7 @@ RSpec.describe Analytics do
       let(:expected_attributes) do
         {
           sp_request: {
-            component_values: { 'http://idmanagement.gov/ns/assurance/ial/1' => 1 },
+            component_values: { 'http://idmanagement.gov/ns/assurance/ial/1' => true },
           },
         }
       end
@@ -330,7 +330,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'http://idmanagement.gov/ns/assurance/ial/2' => 1 },
+            component_values: { 'http://idmanagement.gov/ns/assurance/ial/2' => true },
             identity_proofing: true,
           },
         }
@@ -350,7 +350,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'http://idmanagement.gov/ns/assurance/ial/0' => 1 },
+            component_values: { 'http://idmanagement.gov/ns/assurance/ial/0' => true },
             ialmax: true,
           },
         }
