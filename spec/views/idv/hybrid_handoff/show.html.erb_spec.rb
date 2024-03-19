@@ -59,7 +59,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
 
     describe 'when ipp is enabled' do
       before do
-        @opt_in_ipp_enabled = true
+        @direct_ipp_with_selfie_enabled = true
       end
       it 'displays content and link for choose ipp' do
         expect(rendered).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
@@ -72,7 +72,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
 
     describe 'when ipp is not enabled' do
       before do
-        @opt_in_ipp_enabled = false
+        @direct_ipp_with_selfie_enabled = false
       end
       it 'displays content and link for choose ipp' do
         expect(rendered).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
