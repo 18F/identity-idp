@@ -115,8 +115,7 @@ class Analytics
     end
     attributes.reject! { |_key, value| value == false }
     attributes.transform_keys! do |key|
-      key = key[0...-1].to_sym if key[-1] == '?'
-      key
+      key.to_s.chomp('?').to_sym
     end
 
     { sp_request: attributes }
