@@ -110,9 +110,15 @@ class Analytics
     return if resolved_result.nil?
 
     attributes = resolved_result.to_h
-    attributes[:component_values] = resolved_result.component_values.map do |v|
+
+    component_values = {}
+    resolved_result.component_values.map do |v|
       v.to_h.slice(:name)
+    end.each do |cv|
+      component_values[cv[:name]] = 1
     end
+    attributes[:component_values] = component_values
+
     attributes.reject! { |_key, value| value == false }
     attributes.transform_keys! do |key|
       key.to_s.chomp('?').to_sym
