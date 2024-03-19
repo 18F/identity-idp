@@ -2985,6 +2985,37 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName,
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isDrop
+  # @param [String] source
+  # @param [String] use_alternate_sdk
+  # @param [Boolean] liveness_checking_required
+  def idv_selfie_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    isDrop:,
+    source:,
+    use_alternate_sdk:,
+    liveness_checking_required: nil,
+    **_extra
+  )
+    track_event(
+      :idv_selfie_image_clicked,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isDrop: isDrop,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+      liveness_checking_required: liveness_checking_required,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
   # @param [Integer,nil] submit_attempts_remaining (previously called "attempts_remaining")

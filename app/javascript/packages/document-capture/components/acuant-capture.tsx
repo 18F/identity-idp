@@ -509,12 +509,14 @@ function AcuantCapture(
   function onSelfieCaptureOpen() {
     trackEvent('idv_sdk_selfie_image_capture_opened', { captureAttempts });
 
+    setImageCaptureText('');
     setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {
     trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', { captureAttempts });
 
+    setImageCaptureText('');
     setIsCapturingEnvironment(false);
   }
 
