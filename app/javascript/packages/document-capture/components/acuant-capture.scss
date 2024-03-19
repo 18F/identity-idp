@@ -37,14 +37,4 @@
   .document-capture-file-image--loading {
     @extend %pad-common-id-card;
   }
-
-  .document-capture-selfie-feedback {
-    color: color('white');
-    background: color('black');
-    left: 50%;
-    top: 10%;
-    position: fixed;
-    transform: translateX(-50%);
-    z-index: 11;
-  }  
 }
