@@ -12,22 +12,41 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     }
   end
 
-  it 'has a form for starting mobile doc auth with an aria label tag' do
-    expect(rendered).to have_selector(
-      :xpath,
-      "//form[@aria-label=\"#{t('forms.buttons.send_link')}\"]",
-    )
-  end
+  context 'when selfie is not required' do
+    before do
+      @selfie_required = false
+    end
+    it 'has a form for starting mobile doc auth with an aria label tag' do
+      expect(rendered).to have_selector(
+        :xpath,
+        "//form[@aria-label=\"#{t('forms.buttons.send_link')}\"]",
+      )
+    end
 
-  it 'has a form for starting desktop doc auth with an aria label tag' do
-    expect(rendered).to have_selector(
-      :xpath,
-      "//form[@aria-label=\"#{t('forms.buttons.upload_photos')}\"]",
-    )
-  end
+    it 'has a form for starting desktop doc auth with an aria label tag' do
+      expect(rendered).to have_selector(
+        :xpath,
+        "//form[@aria-label=\"#{t('forms.buttons.upload_photos')}\"]",
+      )
+    end
 
-  it 'displays the expected headings from the "a" case' do
-    expect(rendered).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
-    expect(rendered).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
+    it 'displays the expected headings from the "a" case' do
+      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+      expect(rendered).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
+    end
+  end
+  context 'when selfie is required' do
+    before do
+      @selfie_required = true
+    end
+    it 'has a form for starting mobile doc auth with an aria label tag' do
+      expect(rendered).to have_selector(
+        :xpath,
+        "//form[@aria-label=\"#{t('forms.buttons.send_link')}\"]",
+      )
+    end
+    it 'displays the expected headings from the "a" case' do
+      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff_selfie'))
+    end
   end
 end

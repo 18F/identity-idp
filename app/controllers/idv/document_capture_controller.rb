@@ -63,6 +63,7 @@ module Idv
                          idv_session.flow_path == 'standard' && (
                            # mobile
                            idv_session.skip_hybrid_handoff ||
+                            idv_session.skip_doc_auth ||
                             !idv_session.selfie_check_required || # desktop but selfie not required
                              idv_session.desktop_selfie_test_mode_enabled?
                          )

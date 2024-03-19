@@ -67,7 +67,7 @@ class TwoFactorOptionsPresenter
     elsif phishing_resistant_only?
       t('two_factor_authentication.two_factor_aal3_choice_intro')
     else
-      t('mfa.info')
+      t('mfa.info', app_name: APP_NAME)
     end
   end
 
