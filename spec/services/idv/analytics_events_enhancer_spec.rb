@@ -70,7 +70,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
   end
 
   context 'with requested authn context' do
-    let(:sp) { create(:service_provider) }
+    let(:sp) { create(:service_provider).issuer }
     let(:session) { { sp: { vtr: ['C1.P1'] } } }
 
     it 'calls analytics method with original and decorated attributes' do

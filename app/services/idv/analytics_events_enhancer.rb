@@ -74,8 +74,10 @@ module Idv
     def resolved_authn_context_result
       return nil if sp.nil? || session[:sp].blank?
 
+      service_provider = ServiceProvider.find_by(issuer: sp)
+
       AuthnContextResolver.new(
-        service_provider: sp,
+        service_provider:,
         vtr: session[:sp][:vtr],
         acr_values: session[:sp][:acr_values],
       ).resolve
