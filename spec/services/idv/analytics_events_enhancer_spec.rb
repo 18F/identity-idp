@@ -94,4 +94,47 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       end
     end
   end
+
+  describe 'active_profile_idv_level' do
+    context 'without an active profile' do
+      it 'calls analytics method with original attributes but not active_profile_idv_level' do
+        analytics.idv_test_method(extra: true)
+        expect(analytics.called_kwargs).to match(extra: true)
+      end
+    end
+
+    context 'with an active profile' do
+      let(:user) { create(:user) }
+      let!(:profile) { create(:profile, :active, user: user) }
+
+      it 'calls analytics method with original attributes and active_profile_idv_level' do
+        analytics.idv_test_method(extra: true)
+        expect(analytics.called_kwargs).to include(
+          extra: true,
+          active_profile_idv_level: 'legacy_unsupervised',
+        )
+      end
+    end
+  end
+
+  describe 'pending_profile_idv_level' do
+    context 'without a pending profile' do
+      it 'calls analytics method with original attributes but not pending_profile_idv_level' do
+        analytics.idv_test_method(extra: true)
+        expect(analytics.called_kwargs).to match(extra: true)
+      end
+    end
+
+    context 'with a pending profile' do
+      let(:user) { create(:user) }
+      let!(:profile) { create(:profile, :verify_by_mail_pending, user: user) }
+
+      it 'calls analytics method with original attributes and pending_profile_idv_level' do
+        analytics.idv_test_method(extra: true)
+        expect(analytics.called_kwargs).to include(
+          pending_profile_idv_level: 'legacy_unsupervised',
+        )
+      end
+    end
+  end
 end
