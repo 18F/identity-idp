@@ -278,3 +278,322 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
   end
 end
+RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
+                                                               allowed_extra_analytics: [:*] do
+  include IdvStepHelper
+  include DocAuthHelper
+  include InPersonHelper
+
+  context 'on a desktop device with various ipp and selfie configuration' do
+    let(:in_person_proofing_enabled) { true }
+    let(:sp_ipp_enabled) { true }
+    let(:in_person_proofing_opt_in_enabled) { true }
+    let(:doc_auth_selfie_capture_enabled) { true }
+    let(:biometric_comparison_required) { true }
+    let(:user) { user_with_2fa }
+    let(:service_provider) do
+      if sp_ipp_enabled
+        Rails.logger.debug 'create ipp'
+        create(:service_provider, :active, :in_person_proofing_enabled)
+      else
+        Rails.logger.debug 'create sp without ipp'
+        sp = create(:service_provider, :active, :in_person_proofing_enabled)
+        sp.in_person_proofing_enabled = false
+        sp.save!
+        sp
+      end
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
+        in_person_proofing_enabled,
+      )
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
+        in_person_proofing_opt_in_enabled,
+      )
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+        and_return(doc_auth_selfie_capture_enabled)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(sp_ipp_enabled)
+      visit_idp_from_sp_with_ial2(
+        :oidc,
+        **{ client_id: service_provider.issuer,
+            biometric_comparison_required: biometric_comparison_required },
+      )
+      sign_in_via_branded_page(user)
+      complete_doc_auth_steps_before_agreement_step
+      complete_agreement_step
+    end
+    context 'when ipp is available system wide' do
+      context 'when in person proofing opt in enabled' do
+        context 'when sp ipp is available' do
+          context 'when selfie is enabled system wide' do
+            describe 'when selfie is required by sp' do
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_how_to_verify_path)
+                choose 'Most Common'
+                sleep(1)
+                click_on 'Continue'
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                click_on t('in_person_proofing.headings.prepare')
+                expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
+                expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+                expect(page).to have_content(t('headings.verify'))
+                click_on t('forms.buttons.back')
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_how_to_verify_path)
+                choose 'Most Common'
+                sleep(1)
+                click_on 'Continue'
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                expect(page).to_not have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff'),
+                )
+                expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+                click_on t('forms.buttons.upload_photos')
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              end
+            end
+          end
+          context 'when selfie is disabled system wide' do
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_how_to_verify_path)
+                choose 'Most Common'
+                sleep(1)
+                click_on 'Continue'
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                expect(page).to_not have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff'),
+                )
+                expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+                click_on t('forms.buttons.upload_photos')
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              end
+            end
+          end
+        end
+        context 'when sp ipp is not available' do
+          let(:sp_ipp_enabled) { false }
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                expect(page).to_not have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff'),
+                )
+                expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+                click_on t('forms.buttons.upload_photos')
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              end
+            end
+          end
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                sleep(5)
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).not_to have_content(t('doc_auth.headings.upload_from_computer'))
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                sleep(5)
+                expect(page).to_not have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+              end
+            end
+          end
+        end
+      end
+
+      context 'when in person proofing opt in disabled' do
+        let(:in_person_proofing_opt_in_enabled) { false }
+        context 'when sp ipp is not available' do
+          let(:sp_ipp_enabled) { false }
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                expect(page).to_not have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff'),
+                )
+                expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+                click_on t('forms.buttons.upload_photos')
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              end
+            end
+          end
+
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).not_to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).not_to have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).not_to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.upload_from_computer'),
+                )
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'continues from handoff by choosing IPP and comes back' do
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                sleep(5)
+                expect(page).to_not have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).not_to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).not_to have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff'),
+                )
+                expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+                click_on t('forms.buttons.upload_photos')
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              end
+            end
+          end
+        end
+        context 'when sp ipp is available' do
+          let(:sp_ipp_enabled) { true }
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'works' do
+                expect(page).to have_current_path(idv_hybrid_handoff_path)
+                expect(page).to_not have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff_selfie'),
+                )
+                expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+                expect(page).to_not have_link(
+                  t('in_person_proofing.headings.prepare'),
+                  href: idv_document_capture_path(step: :hybrid_handoff),
+                )
+                expect(page).to have_selector(
+                  'h1',
+                  text: t('doc_auth.headings.hybrid_handoff'),
+                )
+                expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+                sleep(10)
+                click_on t('forms.buttons.upload_photos')
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
