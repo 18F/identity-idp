@@ -1,6 +1,8 @@
 .document-capture-selfie-feedback {
-  color: color('white');
-  background: color('black');
+  color: white;
+  background: black;
+  border-radius: 5px;
+  padding: 10px;
   left: 50%;
   top: 10%;
   position: fixed;
