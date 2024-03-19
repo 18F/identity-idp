@@ -111,7 +111,7 @@ class Analytics
 
     attributes = resolved_result.to_h
     attributes[:component_values] = resolved_result.component_values.map do |v|
-      v.to_h.slice(:name, :description)
+      v.to_h.slice(:name)
     end
     { sp_request: attributes }
   end

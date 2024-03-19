@@ -263,9 +263,9 @@ RSpec.describe Analytics do
           aal2?: true,
           biometric_comparison?: false,
           component_values: [
-            { name: 'C1', description: 'Multi-factor authentication' },
-            { name: 'C2', description: 'AAL2 conformant features are engaged' },
-            { name: 'P1', description: 'Identity proofing is performed' },
+            { name: 'C1' },
+            { name: 'C2' },
+            { name: 'P1' },
           ],
           hspd12?: false,
           ialmax?: false,
@@ -291,7 +291,7 @@ RSpec.describe Analytics do
           aal2?: true,
           biometric_comparison?: false,
           component_values: [
-            { name: 'http://idmanagement.gov/ns/assurance/ial/2', description: 'Legacy IAL2' },
+            { name: 'http://idmanagement.gov/ns/assurance/ial/2' },
           ],
           hspd12?: false,
           ialmax?: false,
