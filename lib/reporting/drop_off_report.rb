@@ -44,6 +44,7 @@ module Reporting
       IDV_DOC_AUTH_PHONE_VISITED = 'IdV: phone of record visited'
       IDV_ENTER_PASSWORD_VISITED = 'idv_enter_password_visited'
       OLD_IDV_ENTER_PASSWORD_VISITED = 'IdV: review info visited'
+      IDV_PENDING_GPO = 'IdV: USPS address letter enqueued'
       IDV_ENTER_PASSWORD_SUBMITTED = 'idv_enter_password_submitted'
       OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
       IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
@@ -215,6 +216,20 @@ module Reporting
           ),
         ],
         [
+          'Workflow Completed - Total Pending (event)',
+          idv_pending_gpo,
+          dropoff = idv_enter_password_submitted -
+                    idv_pending_gpo,
+          percent(
+            numerator: dropoff,
+            denominator: idv_enter_password_submitted,
+          ),
+          percent(
+            numerator: idv_pending_gpo,
+            denominator: idv_started,
+          ),
+        ],
+        [
           'Verified (event)',
           idv_personal_key_submitted,
           dropoff = idv_enter_password_submitted -
@@ -226,36 +241,6 @@ module Reporting
           percent(
             numerator: idv_personal_key_submitted,
             denominator: idv_started,
-          ),
-        ],
-        [
-          'Blanket proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_personal_key_submitted,
-            denominator: idv_doc_auth_welcome_submitted,
-          ),
-        ],
-        [
-          'Actual proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_enter_password_visited,
-            denominator: idv_doc_auth_image_vendor_submitted,
-          ),
-        ],
-        [
-          'Verified proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_personal_key_submitted,
-            denominator: idv_doc_auth_image_vendor_submitted,
           ),
         ],
       ]
@@ -380,6 +365,10 @@ module Reporting
     end
 
     def idv_personal_key_submitted
+      data[Events::IDV_PERSONAL_KEY_SUBMITTED].count
+    end
+
+    def idv_pending_gpo
       data[Events::IDV_PERSONAL_KEY_SUBMITTED].count
     end
 
