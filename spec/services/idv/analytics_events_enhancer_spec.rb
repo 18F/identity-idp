@@ -68,31 +68,4 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       )
     end
   end
-
-  context 'with requested authn context' do
-    let(:sp) { create(:service_provider).issuer }
-    let(:session) { { sp: { vtr: ['C1.P1'] } } }
-
-    it 'calls analytics method with original and decorated attributes' do
-      analytics.idv_final(extra: true)
-
-      expect(analytics.called_kwargs).to match(
-        extra: true,
-        proofing_components: nil,
-        sp_request: {
-          aal2?: true,
-          biometric_comparison?: false,
-          component_values: [
-            { name: 'C1', description: 'Multi-factor authentication' },
-            { name: 'C2', description: 'AAL2 conformant features are engaged' },
-            { name: 'P1', description: 'Identity proofing is performed' },
-          ],
-          hspd12?: false,
-          ialmax?: false,
-          identity_proofing?: true,
-          phishing_resistant?: false,
-        },
-      )
-    end
-  end
 end

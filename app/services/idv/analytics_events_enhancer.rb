@@ -50,37 +50,12 @@ module Idv
     def common_analytics_attributes
       {
         proofing_components: proofing_components,
-      }.merge({
-        sp_request: sp_request_components,
-      }.compact)
+      }
     end
 
     def proofing_components
       return if !user&.respond_to?(:proofing_component) || !user.proofing_component
       ProofingComponentsLogging.new(user.proofing_component)
-    end
-
-    def sp_request_components
-      resolved_result = resolved_authn_context_result
-      return resolved_result if resolved_result.nil?
-
-      components = resolved_result.to_h
-      components[:component_values] = resolved_result.component_values.map do |v|
-        v.to_h.slice(:name, :description)
-      end
-      components
-    end
-
-    def resolved_authn_context_result
-      return nil if sp.nil? || session[:sp].blank?
-
-      service_provider = ServiceProvider.find_by(issuer: sp)
-
-      AuthnContextResolver.new(
-        service_provider:,
-        vtr: session[:sp][:vtr],
-        acr_values: session[:sp][:acr_values],
-      ).resolve
     end
   end
 end

@@ -37,13 +37,14 @@ RSpec.describe Analytics do
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
   let(:success_state) { 'GET|fake_path|Trackable Event' }
+  let(:session) { {} }
 
   subject(:analytics) do
     Analytics.new(
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
-      session: {},
+      session: session,
       ahoy: ahoy,
     )
   end
@@ -252,5 +253,59 @@ RSpec.describe Analytics do
       liveness_checking_required: nil,
       'DocumentName' => 'some_name',
     )
+  end
+
+  context 'with an SP request vtr saved in the session' do
+    let(:session) { { sp: { vtr: ['C1.P1'] } } }
+    let(:expected_attributes) do
+      {
+        sp_request: {
+          aal2?: true,
+          biometric_comparison?: false,
+          component_values: [
+            { name: 'C1', description: 'Multi-factor authentication' },
+            { name: 'C2', description: 'AAL2 conformant features are engaged' },
+            { name: 'P1', description: 'Identity proofing is performed' },
+          ],
+          hspd12?: false,
+          ialmax?: false,
+          identity_proofing?: true,
+          phishing_resistant?: false,
+        },
+      }
+    end
+
+    it 'includes the sp_request' do
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', hash_including(expected_attributes))
+
+      analytics.track_event('Trackable Event')
+    end
+  end
+
+  context 'with SP request acr_values saved in the session' do
+    let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF } } }
+    let(:expected_attributes) do
+      {
+        sp_request: {
+          aal2?: true,
+          biometric_comparison?: false,
+          component_values: [
+            { name: 'http://idmanagement.gov/ns/assurance/ial/2', description: 'Legacy IAL2' },
+          ],
+          hspd12?: false,
+          ialmax?: false,
+          identity_proofing?: true,
+          phishing_resistant?: false,
+        },
+      }
+    end
+
+    it 'includes the sp_request' do
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', hash_including(expected_attributes))
+
+      analytics.track_event('Trackable Event')
+    end
   end
 end
