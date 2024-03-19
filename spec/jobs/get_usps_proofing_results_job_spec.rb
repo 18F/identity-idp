@@ -1290,6 +1290,32 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   ),
                 )
               end
+
+              context 'when the enrollment has failed' do
+                before do
+                  stub_request_failed_proofing_results
+                end
+
+                it 'sends proofing failed email on response with failed status' do
+                  user = pending_enrollment.user
+
+                  freeze_time do
+                    expect do
+                      job.perform(Time.zone.now)
+                    end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
+                      params: { user: user, email_address: user.email_addresses.first },
+                      args: [{ enrollment: pending_enrollment }],
+                    )
+                    expect(job_analytics).to have_logged_event(
+                      'GetUspsProofingResultsJob: Success or failure email initiated',
+                      hash_including(
+                        email_type: 'Failed',
+                        job_name: 'GetUspsProofingResultsJob',
+                      ),
+                    )
+                  end
+                end
+              end
             end
 
             it 'deactivates and sets fraud related fields of an expired enrollment' do
