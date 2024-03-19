@@ -529,7 +529,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
+              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
+              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
               expect(page).not_to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.send_link')
               expect(page).to have_current_path(idv_link_sent_path)
@@ -545,8 +546,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
               expect(page).to have_current_path(idv_hybrid_handoff_path)
+              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
+              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
               expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
-              expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
               click_on t('forms.buttons.upload_photos')
               expect(page).to have_current_path(idv_document_capture_url)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
