@@ -134,20 +134,18 @@ module Idv
     def common_analytics_attributes
       {
         proofing_components: proofing_components,
-        active_profile_idv_level: active_profile&.idv_level,
-        pending_profile_idv_level: pending_profile&.idv_level,
+        active_profile_idv_level: active_profile_idv_level.presence,
+        pending_profile_idv_level: pending_profile_idv_level.presence,
         profile_history: profile_history,
       }.compact
     end
 
-    def active_profile
-      return if !user&.respond_to?(:active_profile) || !user.active_profile
-      user.active_profile
+    def active_profile_idv_level
+      user&.respond_to?(:active_profile) && user&.active_profile&.idv_level
     end
 
-    def pending_profile
-      return if !user&.respond_to?(:pending_profile) || !user.pending_profile
-      user.pending_profile
+    def pending_profile_idv_level
+      user&.respond_to?(:pending_profile) && user&.pending_profile&.idv_level
     end
 
     def profile_history
