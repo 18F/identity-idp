@@ -1,16 +1,3 @@
-async function videoTracksAvailable() {
-  // Check that there are tracks in the device, also stop them?
-  try {
-    const firstDevice = await navigator.mediaDevices.getUserMedia({ video: true });
-    const firstTrack = firstDevice.getTracks()[0];
-    if (firstTrack) {
-      return true;
-    }
-  } catch (err) {
-    // TODO log that the camera resolution check failed
-  }
-}
-
 function getConstraints(deviceId, facingMode) {
   return {
     video: {
