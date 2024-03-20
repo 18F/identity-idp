@@ -540,7 +540,7 @@ RSpec.describe 'webauthn management', allowed_extra_analytics: [:*] do
       mock_press_button_on_hardware_key_on_setup
 
       expect(current_path).to eq webauthn_setup_path
-      expect(page).to have_content t('errors.webauthn_platform_setup.unique_name')
+      expect(page).to have_content t('errors.webauthn_setup.unique_name')
     end
 
     context 'with javascript enabled', :js do

@@ -17,19 +17,26 @@
       "two_factor_options_form_selection_#{option.type}",
       class: 'usa-checkbox__label usa-checkbox__label--illustrated',
     ) do %>
-  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: '', class: 'usa-checkbox__image') %>
+  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: '', class: 'usa-checkbox__image', role: 'img') %>
   <div class="usa-checkbox__label--text">
     <span class="margin-right-2"><%= option.label %></span>
     <%= content_tag(
           :span,
           id: "two_factor_options_form_selection_description_#{option.type}",
-          class: option.mfa_configuration_description.presence && 'usa-tag bg-green',
+          class: option.mfa_configuration_description.presence && 'usa-tag bg-success',
           aria: { hidden: true },
         ) do %>
       <%= option.mfa_configuration_description %>
     <% end %>
     <span id="two_factor_options_form_selection_info_<%= option.type %>" aria-hidden="true" class="usa-checkbox__label-description">
       <%= option.info %>
+      <% if option.recommended? %>
+        <br />
+        <%= render TagComponent.new(
+              informative: true,
+              class: 'margin-top-1',
+            ).with_content(t('two_factor_authentication.recommended')) %>
+      <% end %>
     </span>
   </div>
 <% end %>

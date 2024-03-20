@@ -85,6 +85,37 @@ RSpec.describe TwoFactorOptionsPresenter do
     end
   end
 
+  describe '#all_options_sorted' do
+    it 'returns all options' do
+      expect(presenter.options.map(&:class)).to eq [
+        TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
+        TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+        TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
+        TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
+        TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+        TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+      ]
+    end
+
+    context 'when a presenter which is recommended' do
+      before do
+        allow_any_instance_of(TwoFactorAuthentication::SetUpPivCacSelectionPresenter).
+          to receive(:recommended?).and_return(true)
+      end
+
+      it 'orders options by recommended' do
+        expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
+          TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+          TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
+          TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+        ]
+      end
+    end
+  end
+
   describe '#skip_path' do
     subject(:skip_path) { presenter.skip_path }
     it { expect(skip_path).to be_nil }

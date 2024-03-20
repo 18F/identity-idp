@@ -86,7 +86,7 @@ module DocAuth
       end
 
       def success?
-        doc_auth_success? && (selfie_check_performed? ? selfie_passed? : true)
+        doc_auth_success? && (@selfie_required ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
