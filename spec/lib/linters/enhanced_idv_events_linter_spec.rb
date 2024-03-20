@@ -18,6 +18,8 @@ RSpec.describe RuboCop::Cop::IdentityIdp::EnhancedIdvEventsLinter do
       # unwire it here.
       allow(cop).to receive(:check_arg_has_docs).and_return(nil)
     end
+
+    stub_const("#{described_class.name}::ENHANCED_ARGS", [:proofing_components])
   end
 
   it 'does not register an offense for non-idv methods' do
@@ -193,6 +195,48 @@ RSpec.describe RuboCop::Cop::IdentityIdp::EnhancedIdvEventsLinter do
                 **extra,
               }.compact,
             )
+        end
+      end
+    RUBY
+  end
+
+  it 'handles track_event calls without **extra' do
+    expect_offense(<<~RUBY)
+      module AnalyticsEvents
+        def idv_my_method(
+        ^^^^^^^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: Method is missing proofing_components argument.
+          type:,
+          limiter_expires_at: nil,
+          remaining_submit_attempts: nil,
+          **_extra
+        )
+          track_event(
+          ^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: proofing_components is missing from track_event call.
+            'IdV: phone error visited',
+            type: type,
+            limiter_expires_at: limiter_expires_at,
+            remaining_submit_attempts: remaining_submit_attempts,
+          )
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module AnalyticsEvents
+        def idv_my_method(
+          type:,
+          limiter_expires_at: nil,
+          remaining_submit_attempts: nil,
+          proofing_components: nil,
+          **_extra
+        )
+          track_event(
+            'IdV: phone error visited',
+            type: type,
+            limiter_expires_at: limiter_expires_at,
+            remaining_submit_attempts: remaining_submit_attempts,
+            proofing_components: proofing_components,
+          )
         end
       end
     RUBY

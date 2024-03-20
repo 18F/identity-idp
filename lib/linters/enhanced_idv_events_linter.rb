@@ -7,7 +7,12 @@ module RuboCop
 
         RESTRICT_ON_SEND = [:track_event]
 
-        ENHANCED_ARGS = [:proofing_components].freeze
+        ENHANCED_ARGS = [
+          :proofing_components,
+          :active_profile_idv_level,
+          :pending_profile_idv_level,
+          :profile_history,
+        ].freeze
 
         def on_send(track_event_send)
           method = track_event_send.each_ancestor(:def).first
@@ -21,6 +26,71 @@ module RuboCop
         end
 
         private
+
+        def add_argument_to_send(
+          arg_name:,
+          arg_value:,
+          corrector:,
+          send:
+        )
+          hash_arg = send.arguments.find { |arg| arg.hash_type? }
+          return if hash_arg&.pairs&.any? { |pair| pair.key.value == arg_name }
+
+          # Put the reference into the hash, before the splat
+          # If there is no splat, add it to the end of the arg list
+          kwsplat = hash_arg&.children&.find { |child| child.kwsplat_type? }
+          do_insert = nil
+
+          arg_and_value = "#{arg_name}: #{arg_value}"
+
+          if kwsplat
+            do_insert = ->(on_new_line:) {
+              newline_before = whitespace_before(kwsplat).include?("\n")
+
+              to_insert = if on_new_line && newline_before
+                            "#{arg_and_value},\n#{indentation_for_node(send)}  "
+                          elsif on_new_line
+                            "\n#{indentation_for_node(send)}  #{arg_and_value},"
+                          else
+                            "#{arg_and_value}, "
+                          end
+
+              corrector.insert_before(kwsplat, to_insert)
+            }
+          else
+            last_arg = send.arguments.last
+            do_insert = ->(on_new_line:) {
+              to_insert = if on_new_line
+                            ",\n#{indentation_for_node(send)}  #{arg_and_value}"
+                          else
+                            ", #{arg_and_value}"
+                          end
+
+              corrector.insert_after(last_arg, to_insert)
+            }
+          end
+
+          if all_on_same_line?(send.arguments)
+            indent = indentation_for_node(send)
+
+            # We might need to convert this to a multi-line invocation
+            proposed_line_length = [
+              indent.length,
+              send.method_name.length + 2, # method()
+              send.arguments.map { |arg| arg.source }.join(', ').length,
+              arg_and_value.length + 1, # arg: value,
+            ].sum
+
+            if proposed_line_length > max_line_length
+              make_send_multiline(corrector, send)
+              do_insert.call(on_new_line: true)
+            else
+              do_insert.call(on_new_line: false)
+            end
+          else
+            do_insert.call(on_new_line: true)
+          end
+        end
 
         def check_arg_has_docs(arg_name, method)
           pattern = Regexp.new("# @param \\[.+\\] #{arg_name}")
@@ -110,38 +180,12 @@ module RuboCop
         end
 
         def correct_arg_missing_from_track_event_send(arg_name, track_event_send, corrector)
-          hash_arg = track_event_send.arguments.find { |arg| arg.hash_type? }
-          return unless hash_arg
-
-          return if hash_arg.pairs.any? { |pair| pair.key.value == arg_name }
-
-          # Put the reference into the hash, before the splat
-          kwsplat = hash_arg.children.find { |child| child.kwsplat_type? }
-          return unless kwsplat
-
-          new_arg = "#{arg_name}: #{arg_name},"
-          if all_on_same_line?(track_event_send.arguments)
-            indent = indentation_for_node(track_event_send)
-
-            # We might need to convert this to a multi-line invocation
-            proposed_line_length = [
-              indent.length,
-              track_event_send.method_name.length + 2,
-              track_event_send.arguments.map { |arg| arg.source }.join(', ').length,
-              new_arg.length + 1,
-            ].sum
-
-            if proposed_line_length > max_line_length
-              make_send_multiline(corrector, track_event_send)
-              corrector.insert_before(kwsplat, "\n#{indent}  #{new_arg}")
-            else
-              corrector.insert_before(kwsplat, "#{new_arg} ")
-            end
-          else
-            # Assume that we are doing 1 arg per line
-            indent = indentation_for_node(kwsplat)
-            corrector.insert_before(kwsplat, "#{new_arg}\n#{indent}")
-          end
+          add_argument_to_send(
+            arg_name:,
+            arg_value: arg_name,
+            send: track_event_send,
+            corrector:,
+          )
         end
 
         def events_enhancer_class
@@ -229,6 +273,26 @@ module RuboCop
 
         def should_check_method?(method_name)
           events_enhancer_class&.should_enhance_method?(method_name)
+        end
+
+        def whitespace_before(node)
+          len = 1
+          result = ''
+
+          loop do
+            begin_pos = node.source_range.begin_pos - len
+            end_pos = node.source_range.begin_pos
+
+            return result if begin_pos < 0
+
+            range = node.source_range.with(begin_pos:, end_pos:)
+
+            next_result = range.source
+            return result if /[^\s]/.match?(next_result)
+
+            result = next_result
+            len += 1
+          end
         end
       end
     end
