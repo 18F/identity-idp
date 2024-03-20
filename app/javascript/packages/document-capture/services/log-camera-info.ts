@@ -33,30 +33,16 @@ async function updateConstraintsAndGetInfo(videoDevice, facingMode, trackEvent) 
     const videoTracks = stream.getVideoTracks();
     const cameras = videoTracks.map((videoTrack) => getCameraInfo(videoTrack));
     const logInfo = {
-      facingMode,
-      cameraInfo: cameras,
+      facing_mode: facingMode,
+      camera_info: cameras,
     };
-    console.log(logInfo);
     trackEvent('IdV: camera resolution logged', logInfo);
   } catch (err) {
-    // TODO Log an error
+    trackEvent('IdV: camera resolution error');
   }
 }
 
-async function cameraPermissionsGranted() {
-  const cameraPermissions = await navigator.permissions.query({ name: 'camera' });
-  if (cameraPermissions.state === 'granted') {
-    return true;
-  }
-  return false;
-}
-
-async function logDeviceResolution(trackEvent) {
-  const cameraPermissionGranted = await cameraPermissionsGranted();
-  console.log('camerapermissions', cameraPermissionGranted);
-  if (!cameraPermissionGranted) {
-    return;
-  }
+async function logCameraInfo(trackEvent) {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
   videoDevices.forEach((videoDevice) => {
@@ -65,4 +51,4 @@ async function logDeviceResolution(trackEvent) {
   });
 }
 
-export { logDeviceResolution };
+export { logCameraInfo };
