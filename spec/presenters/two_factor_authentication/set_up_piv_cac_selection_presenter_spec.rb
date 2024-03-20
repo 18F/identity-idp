@@ -53,4 +53,10 @@ RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
 
     it { expect(phishing_resistant).to eq(true) }
   end
+
+  describe '#desktop_only?' do
+    subject(:desktop_only) { presenter.desktop_only? }
+
+    it { expect(desktop_only).to eq(true) }
+  end
 end

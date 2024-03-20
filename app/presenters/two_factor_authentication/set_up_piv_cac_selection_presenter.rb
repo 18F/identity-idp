@@ -21,7 +21,7 @@ module TwoFactorAuthentication
     end
 
     def desktop_only?
-      false
+      true
     end
 
     def single_configuration_only?
