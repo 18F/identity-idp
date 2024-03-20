@@ -46,10 +46,9 @@ async function updateConstraintsAndGetInfo(videoDevice, facingMode, trackEvent) 
 async function logDeviceResolution(trackEvent) {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-  videoDevices.map((videoDevice) => {
+  videoDevices.forEach((videoDevice) => {
     updateConstraintsAndGetInfo(videoDevice, 'user', trackEvent);
     updateConstraintsAndGetInfo(videoDevice, 'environment', trackEvent);
-    return true;
   });
 }
 
