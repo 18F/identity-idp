@@ -90,10 +90,12 @@ module TwoFactorAuthentication
       single_configuration_only? && mfa_configuration_count > 0
     end
 
+    private :piv_cac_required, :phishing_resistant_required
+
+    private
+
     def browser
       @browser ||= BrowserCache.parse(user_agent)
     end
-
-    private :piv_cac_required, :phishing_resistant_required
   end
 end
