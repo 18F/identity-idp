@@ -149,4 +149,8 @@ class TwoFactorOptionsPresenter
   def user_has_dismissed_second_mfa_reminder?
     user.second_mfa_reminder_dismissed_at.present?
   end
+
+  def user_has_gov_or_mil_email?
+    user.confirmed_email_addresses.any?(&:gov_or_mil?)
+  end
 end
