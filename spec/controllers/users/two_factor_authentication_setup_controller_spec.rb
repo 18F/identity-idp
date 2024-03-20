@@ -1,20 +1,44 @@
 require 'rails_helper'
 
-RSpec.describe Users::TwoFactorAuthenticationSetupController, allowed_extra_analytics: [:*] do
+RSpec.describe(
+  Users::TwoFactorAuthenticationSetupController,
+  allowed_extra_analytics: [:user_registration_2fa_setup],
+) do
   describe 'GET index' do
-    it 'tracks the visit in analytics' do
-      stub_sign_in_before_2fa
-      stub_analytics
+    let(:user) { create(:user) }
 
+    before do
+      stub_sign_in_before_2fa(user) if user
+      stub_analytics
+    end
+
+    it 'tracks the visit in analytics' do
       get :index
 
       expect(@analytics).to have_logged_event(
         'User Registration: 2FA Setup visited',
         enabled_mfa_methods_count: 0,
+        gov_or_mil_email: false,
       )
     end
 
+    context 'with user having gov or mil email' do
+      let(:user) { create(:user, email: 'example@example.gov') }
+
+      it 'tracks the visit in analytics' do
+        get :index
+
+        expect(@analytics).to have_logged_event(
+          'User Registration: 2FA Setup visited',
+          enabled_mfa_methods_count: 0,
+          gov_or_mil_email: true,
+        )
+      end
+    end
+
     context 'when signed out' do
+      let(:user) { nil }
+
       it 'redirects to sign in page' do
         get :index
 
@@ -23,16 +47,19 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController, allowed_extra_anal
     end
 
     context 'when fully authenticated and MFA enabled' do
-      it 'logs the visit event with mfa method count' do
-        user = build(:user, :with_phone)
-        stub_sign_in(user)
-        stub_analytics
+      let(:user) { build(:user, :with_phone) }
 
+      before do
+        stub_sign_in(user)
+      end
+
+      it 'logs the visit event with mfa method count' do
         get :index
 
         expect(@analytics).to have_logged_event(
           'User Registration: 2FA Setup visited',
           enabled_mfa_methods_count: 1,
+          gov_or_mil_email: false,
         )
       end
     end
@@ -48,10 +75,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController, allowed_extra_anal
     end
 
     context 'already two factor enabled but not fully authenticated' do
-      it 'prompts for 2FA' do
-        user = build(:user, :fully_registered)
-        stub_sign_in_before_2fa(user)
+      let(:user) { build(:user, :fully_registered) }
 
+      it 'prompts for 2FA' do
         get :index
 
         expect(response).to redirect_to(user_two_factor_authentication_url)
