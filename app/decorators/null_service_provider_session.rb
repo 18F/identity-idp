@@ -49,6 +49,10 @@ class NullServiceProviderSession
     false
   end
 
+  def current_user
+    view_context&.current_user
+  end
+
   private
 
   attr_reader :view_context
