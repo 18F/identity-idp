@@ -43,7 +43,20 @@ async function updateConstraintsAndGetInfo(videoDevice, facingMode, trackEvent) 
   }
 }
 
+async function cameraPermissionsGranted() {
+  const cameraPermissions = await navigator.permissions.query({ name: 'camera' });
+  if (cameraPermissions.state === 'granted') {
+    return true;
+  }
+  return false;
+}
+
 async function logDeviceResolution(trackEvent) {
+  const cameraPermissionGranted = await cameraPermissionsGranted();
+  console.log('camerapermissions', cameraPermissionGranted);
+  if (!cameraPermissionGranted) {
+    return;
+  }
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
   videoDevices.forEach((videoDevice) => {
