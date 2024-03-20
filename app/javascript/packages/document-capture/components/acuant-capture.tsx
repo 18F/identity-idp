@@ -28,7 +28,6 @@ import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
 import useCounter from '../hooks/use-counter';
-import { logDeviceResolution } from '../services/device-resolution';
 
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
