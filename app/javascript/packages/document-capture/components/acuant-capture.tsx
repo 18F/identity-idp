@@ -349,13 +349,13 @@ function AcuantCapture(
     if (!isBackOfId) {
       return;
     }
-    if (hasStartedCropping && !cameraInfoLogged) {
+    if (hasStartedCropping && !didLogCameraInfo) {
       logCameraInfo(trackEvent);
-      setCameraInfoLogged(true);
+      setDidLogCameraInfo(true);
     }
   }, [
-    cameraInfoLogged,
-    setCameraInfoLogged,
+    didLogCameraInfo,
+    setDidLogCameraInfo,
     hasStartedCropping,
     isBackOfId,
     logCameraInfo,
