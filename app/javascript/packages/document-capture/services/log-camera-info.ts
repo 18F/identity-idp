@@ -36,9 +36,9 @@ async function updateConstraintsAndGetInfo(videoDevice, facingMode, trackEvent) 
       facing_mode: facingMode,
       camera_info: cameras,
     };
-    trackEvent('IdV: camera resolution logged', logInfo);
+    trackEvent('IdV: camera info logged', logInfo);
   } catch (err) {
-    trackEvent('IdV: camera resolution error');
+    trackEvent('IdV: camera info error');
   }
 }
 

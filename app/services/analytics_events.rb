@@ -806,12 +806,15 @@ module AnalyticsEvents
     )
   end
 
-  def idv_camera_resolution_logged(flow_path:, facingMode:, cameraInfo:, **_extra)
+  def idv_camera_info_logged(flow_path:, facing_mode:, camera_info:, **_extra)
     track_event(
-      'Frontend: IdV: camera resolution logged', facingMode: facingMode, cameraInfo: cameraInfo,
+      :idv_camera_info_logged, flow_path: flow_path, facing_mode: facing_mode, camera_info: camera_info
     )
   end
 
+  def idv_camera_info_error
+    track_event(:idv_camera_info_error)
+  end
 
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
