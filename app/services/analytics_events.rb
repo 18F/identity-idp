@@ -4744,10 +4744,16 @@ module AnalyticsEvents
 
   # Tracks when user visits MFA selection page
   # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
-  def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] gov_or_mil_email Whether registered user has government email
+  def user_registration_2fa_setup_visit(
+    enabled_mfa_methods_count:,
+    gov_or_mil_email:,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup visited',
       enabled_mfa_methods_count:,
+      gov_or_mil_email:,
       **extra,
     )
   end
