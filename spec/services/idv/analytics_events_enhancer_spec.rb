@@ -140,6 +140,18 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
 
   describe 'profile_history' do
     let(:profiles) { nil }
+    let(:include_profile_history?) { true }
+
+    before do
+      if include_profile_history?
+        allow(
+          stub_const(
+            'Idv::AnalyticsEventsEnhancer::METHODS_WITH_PROFILE_HISTORY',
+            %i[idv_test_method],
+          ),
+        )
+      end
+    end
 
     context 'user has no profiles' do
       it 'logs an empty array' do
@@ -174,6 +186,15 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
           active_profile_idv_level: 'legacy_unsupervised',
           profile_history: all(be_instance_of(Idv::ProfileLogging)),
         )
+      end
+
+      context 'method is not opted into profile_history' do
+        let(:include_profile_history?) { false }
+
+        it 'does not log profile_history' do
+          analytics.idv_test_method(extra: true)
+          expect(analytics.called_kwargs).not_to include(:profile_history)
+        end
       end
     end
   end
