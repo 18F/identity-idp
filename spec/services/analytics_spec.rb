@@ -311,7 +311,7 @@ RSpec.describe Analytics do
       let(:expected_attributes) do
         {
           sp_request: {
-            component_values: { 'http://idmanagement.gov/ns/assurance/ial/1' => true },
+            component_values: { 'L1' => true },
           },
         }
       end
@@ -330,7 +330,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'http://idmanagement.gov/ns/assurance/ial/2' => true },
+            component_values: { 'L2' => true },
             identity_proofing: true,
           },
         }
@@ -350,7 +350,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             aal2: true,
-            component_values: { 'http://idmanagement.gov/ns/assurance/ial/0' => true },
+            component_values: { 'L0' => true },
             ialmax: true,
           },
         }

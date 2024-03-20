@@ -111,7 +111,7 @@ class Analytics
 
     attributes = resolved_result.to_h
     attributes[:component_values] = resolved_result.component_values.map do |v|
-      [v.name, true]
+      [v.name.sub('http://idmanagement.gov/ns/assurance/ial/', 'L'), true]
     end.to_h
     attributes.reject! { |_key, value| value == false }
     attributes.transform_keys! do |key|
