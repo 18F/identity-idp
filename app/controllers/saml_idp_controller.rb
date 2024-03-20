@@ -32,7 +32,7 @@ class SamlIdpController < ApplicationController
     capture_analytics
     if resolved_authn_context_result.identity_proofing?
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
-      return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
+      return redirect_to url_for_pending_profile_reason if user_has_usable_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
       return redirect_to idv_url if selfie_needed?
     end
@@ -108,6 +108,18 @@ class SamlIdpController < ApplicationController
   def prompt_for_password_if_ial2_request_and_pii_locked
     return unless pii_requested_but_locked?
     redirect_to capture_password_url
+  end
+
+  def pending_profile_policy
+    @pending_profile_policy ||= PendingProfilePolicy.new(
+      user: current_user,
+      resolved_authn_context_result: resolved_authn_context_result,
+      biometric_comparison_requested: nil,
+    )
+  end
+
+  def user_has_usable_pending_profile?
+    pending_profile_policy.user_has_usable_pending_profile?
   end
 
   def selfie_needed?
