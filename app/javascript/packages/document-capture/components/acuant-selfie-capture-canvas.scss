@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .document-capture-selfie-feedback {
   color: color('white');
   background: color('black');
@@ -5,5 +7,7 @@
   top: 10%;
   position: fixed;
   transform: translateX(-50%);
+  border-radius: 5px;
+  padding: 10px;
   z-index: 11;
 }
