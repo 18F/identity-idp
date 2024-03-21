@@ -118,10 +118,6 @@ class SamlIdpController < ApplicationController
     )
   end
 
-  def user_has_usable_pending_profile?
-    pending_profile_policy.user_has_usable_pending_profile?
-  end
-
   def selfie_needed?
     decorated_sp_session.selfie_required? &&
       !current_user.identity_verified_with_selfie?
@@ -135,7 +131,7 @@ class SamlIdpController < ApplicationController
     analytics_payload = result.to_h.merge(
       endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
-      finish_profile: user_has_pending_profile?,
+      finish_profile: user_has_usable_pending_profile?,
       requested_ial: requested_ial,
       request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,

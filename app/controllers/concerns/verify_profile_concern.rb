@@ -12,4 +12,8 @@ module VerifyProfileConcern
     return false if current_user.blank?
     current_user.pending_profile?
   end
+
+  def user_has_usable_pending_profile?
+    pending_profile_policy.user_has_usable_pending_profile?
+  end
 end

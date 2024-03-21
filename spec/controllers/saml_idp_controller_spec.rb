@@ -2400,7 +2400,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         stub_analytics
         session[:sign_in_flow] = :sign_in
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
-        allow(controller).to receive(:user_has_pending_profile?).and_return(true)
+        allow(controller).to receive(:user_has_usable_pending_profile?).and_return(true)
 
         analytics_hash = {
           success: true,

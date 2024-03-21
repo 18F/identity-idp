@@ -43,7 +43,15 @@ class IdvController < ApplicationController
   end
 
   def handle_pending_profile
-    redirect_to url_for_pending_profile_reason if user_has_pending_profile?
+    redirect_to url_for_pending_profile_reason if user_has_usable_pending_profile?
+  end
+
+  def pending_profile_policy
+    @pending_profile_policy ||= PendingProfilePolicy.new(
+      user: current_user,
+      resolved_authn_context_result: resolved_authn_context_result,
+      biometric_comparison_requested: nil,
+    )
   end
 
   def profile_needs_reactivation?

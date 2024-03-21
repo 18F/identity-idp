@@ -59,10 +59,11 @@ RSpec.describe IdvController, allowed_extra_analytics: [:*] do
 
       context 'but user needs to redo idv with biometric' do
         let(:current_sp) { create(:service_provider) }
+
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
           session[:sp] =
-            { issuer: current_sp.issuer, biometric_comparison_required: true }
+            { issuer: current_sp.issuer, vtr: ['C2.Pb'], biometric_comparison_required: true }
         end
 
         it 'redirects to welcome' do

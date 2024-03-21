@@ -6,6 +6,8 @@ class PendingProfilePolicy
   end
 
   def user_has_usable_pending_profile?
+    return false if user.blank?
+
     if biometric_comparison_requested?
       pending_biometric_profile?
     else

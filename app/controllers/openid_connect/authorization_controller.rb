@@ -55,10 +55,6 @@ module OpenidConnect
       )
     end
 
-    def user_has_usable_pending_profile?
-      pending_profile_policy.user_has_usable_pending_profile?
-    end
-
     def block_biometric_requests_in_production
       if biometric_comparison_requested? &&
          !FeatureManagement.idv_allow_selfie_check?
