@@ -28,7 +28,7 @@ import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
 import useCounter from '../hooks/use-counter';
-import { logCameraInfo } from '../services/log-camera-info';
+import { useLogCameraInfo } from '../hooks/use-log-camera-info';
 
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
@@ -337,30 +337,13 @@ function AcuantCapture(
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
   const [imageCaptureText, setImageCaptureText] = useState('');
-  const [didLogCameraInfo, setDidLogCameraInfo] = useState(false);
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
+  // When it's the back of the ID we want to log information about the camera
+  // This hook does that.
   const isBackOfId = name === 'back';
-
-  // We only want to log the camera information once, so somewhat arbitrarily we do it
-  // in the AcuantCapture that deals with the back of the document
-  useEffect(() => {
-    if (!isBackOfId) {
-      return;
-    }
-    if (hasStartedCropping && !didLogCameraInfo) {
-      logCameraInfo(trackEvent);
-      setDidLogCameraInfo(true);
-    }
-  }, [
-    didLogCameraInfo,
-    setDidLogCameraInfo,
-    hasStartedCropping,
-    isBackOfId,
-    logCameraInfo,
-    trackEvent,
-  ]);
+  useLogCameraInfo({ isBackOfId, hasStartedCropping });
 
   const {
     failedCaptureAttempts,
