@@ -146,9 +146,11 @@ class FakeAnalytics < Analytics
   attr_reader :events
   attr_accessor :user
 
-  def initialize(user: AnonymousUser.new)
+  def initialize(user: AnonymousUser.new, sp: nil, session: nil)
     @events = Hash.new
     @user = user
+    @sp = sp
+    @session = session
   end
 
   def track_event(event, attributes = {})
