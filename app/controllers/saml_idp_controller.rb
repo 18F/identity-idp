@@ -110,14 +110,6 @@ class SamlIdpController < ApplicationController
     redirect_to capture_password_url
   end
 
-  def pending_profile_policy
-    @pending_profile_policy ||= PendingProfilePolicy.new(
-      user: current_user,
-      resolved_authn_context_result: resolved_authn_context_result,
-      biometric_comparison_requested: nil,
-    )
-  end
-
   def selfie_needed?
     decorated_sp_session.selfie_required? &&
       !current_user.identity_verified_with_selfie?

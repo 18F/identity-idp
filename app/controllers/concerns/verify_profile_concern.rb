@@ -8,12 +8,15 @@ module VerifyProfileConcern
     idv_not_verified_url if current_user.fraud_rejection?
   end
 
-  def user_has_pending_profile?
-    return false if current_user.blank?
-    current_user.pending_profile?
-  end
-
   def user_has_usable_pending_profile?
     pending_profile_policy.user_has_usable_pending_profile?
+  end
+
+  def pending_profile_policy
+    @pending_profile_policy ||= PendingProfilePolicy.new(
+      user: current_user,
+      resolved_authn_context_result: resolved_authn_context_result,
+      biometric_comparison_requested: nil,
+    )
   end
 end

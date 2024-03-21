@@ -19,10 +19,6 @@ class PendingProfilePolicy
 
   attr_reader :user, :resolved_authn_context_result, :biometric_comparison_requested
 
-  def active_biometric_profile?
-    user.active_profile&.idv_level == 'unsupervised_with_selfie'
-  end
-
   def pending_biometric_profile?
     user.pending_profile&.idv_level == 'unsupervised_with_selfie'
   end
