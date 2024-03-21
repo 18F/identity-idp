@@ -1,5 +1,5 @@
 module Users
-    class GovOrMilEmailDetectedController < ApplicationController
+    class PossiblePivUserController < ApplicationController
       include TwoFactorAuthenticatableMethods
       include MfaSetupConcern
       include SecureHeadersConcern

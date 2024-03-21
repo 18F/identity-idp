@@ -2,9 +2,11 @@ module Users
   class TwoFactorAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include MfaSetupConcern
+    include PivCacConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :check_if_possible_piv_user
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
@@ -76,6 +78,12 @@ module Users
       params.require(:two_factor_options_form).permit(:selection, selection: [])
     rescue ActionController::ParameterMissing
       ActionController::Parameters.new(selection: [])
+    end
+
+    def check_if_possible_piv_user
+      if current_user.has_gov_or_mil_email? && !current_user.piv_cac_recommended_dismissed
+        redirect_to login_possible_piv_user_path 
+      end
     end
   end
 end

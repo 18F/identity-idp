@@ -141,8 +141,8 @@ Rails.application.routes.draw do
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
-      get 'login/gov_or_mil_email_detected' => 'users/gov_or_mil_email_detected#show'
-      post 'login/add_piv_cac_for_gov_email' => 'users/gov_or_mil_email_detected#confirm'
+      get 'login/possible_piv_user' => 'users/possible_piv_user#show'
+      post 'login/add_piv_for_user' => 'users/possible_piv_user#confirm'
     end
 
     if IdentityConfig.store.enable_test_routes
