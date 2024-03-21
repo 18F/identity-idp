@@ -12,7 +12,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class="margin-bottom-0"><%= @presenter.intro %></p>
+<p><%= @presenter.intro %></p>
+
+<p><%= t('mfa.recommendation') %></p>
 
 <% if @presenter.two_factor_enabled? %>
   <h2 class="margin-top-2 margin-bottom-1">
@@ -20,7 +22,7 @@
   </h2>
 
   <%= render IconListComponent.new(icon: :check_circle, color: :success) do |c| %>
-    <% @presenter.all_user_selected_options.each do |option| %>
+    <% @presenter.all_options_sorted.each do |option| %>
       <% if option.mfa_configuration_count > 0 %>
         <% c.with_item do %>
           <%= option.label %> <%= option.mfa_added_label %>

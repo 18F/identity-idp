@@ -4,16 +4,13 @@ RSpec.describe Users::PivCacLoginController do
   describe 'GET new' do
     before do
       stub_analytics
-      allow(@analytics).to receive(:track_event)
     end
 
     context 'without a token' do
       before { get :new }
 
       it 'tracks the piv cac login' do
-        expect(@analytics).to have_received(:track_event).with(
-          :piv_cac_login_visited,
-        )
+        expect(@analytics).to have_logged_event(:piv_cac_login_visited)
       end
 
       it 'redirects to root url' do
@@ -27,13 +24,11 @@ RSpec.describe Users::PivCacLoginController do
       context 'an invalid token' do
         before { get :new, params: { token: token } }
         it 'tracks the login attempt' do
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             :piv_cac_login,
-            {
-              errors: {},
-              key_id: nil,
-              success: false,
-            },
+            errors: {},
+            key_id: nil,
+            success: false,
           )
         end
 
@@ -73,15 +68,13 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'tracks the login attempt' do
-            expect(@analytics).to have_received(:track_event).with(
+            expect(@analytics).to have_logged_event(
               :piv_cac_login,
-              {
-                errors: {
-                  type: 'user.not_found',
-                },
-                key_id: nil,
-                success: false,
+              errors: {
+                type: 'user.not_found',
               },
+              key_id: nil,
+              success: false,
             )
           end
 
@@ -112,13 +105,11 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'tracks the login attempt' do
-            expect(@analytics).to have_received(:track_event).with(
+            expect(@analytics).to have_logged_event(
               :piv_cac_login,
-              {
-                errors: {},
-                key_id: nil,
-                success: true,
-              },
+              errors: {},
+              key_id: nil,
+              success: true,
             )
           end
 
@@ -137,9 +128,9 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'tracks the user_marked_authed event' do
-            expect(@analytics).to have_received(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'User marked authenticated',
-              { authentication_type: :valid_2fa },
+              authentication_type: :valid_2fa,
             )
           end
 
@@ -164,9 +155,9 @@ RSpec.describe Users::PivCacLoginController do
 
           describe 'it handles the otp_context' do
             it 'tracks the user_marked_authed event' do
-              expect(@analytics).to have_received(:track_event).with(
+              expect(@analytics).to have_logged_event(
                 'User marked authenticated',
-                { authentication_type: :valid_2fa },
+                authentication_type: :valid_2fa,
               )
             end
 

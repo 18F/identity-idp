@@ -39,6 +39,7 @@ interface AppRootData {
   skipDocAuth: string;
   howToVerifyURL: string;
   uiExitQuestionSectionEnabled: string;
+  docAuthSelfieDesktopTestMode: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -106,6 +107,7 @@ const {
   skipDocAuth,
   howToVerifyUrl,
   uiExitQuestionSectionEnabled = '',
+  docAuthSelfieDesktopTestMode,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -178,6 +180,15 @@ const App = composeComponents(
     },
   ],
   [
+    SelfieCaptureContext.Provider,
+    {
+      value: {
+        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+        isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
+      },
+    },
+  ],
+  [
     FailedCaptureAttemptsContextProvider,
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
@@ -189,14 +200,6 @@ const App = composeComponents(
     {
       value: {
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-      },
-    },
-  ],
-  [
-    SelfieCaptureContext.Provider,
-    {
-      value: {
-        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
     },
   ],

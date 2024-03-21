@@ -365,6 +365,7 @@ get_usps_proofing_results_job_request_delay_milliseconds: 1000
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 weekly_auth_funnel_report_config: '[]'
+x509_presented_hash_attribute_requested_issuers: '[]'
 
 development:
   aamva_private_key: 123abc

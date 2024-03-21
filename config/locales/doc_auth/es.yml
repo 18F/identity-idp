@@ -7,6 +7,7 @@ es:
       document_capture_dialog: Captura del documento
     buttons:
       add_new_photos: Añadir nuevas fotos
+      close: Cerrar
       continue: Continuar
       take_or_upload_picture_html: '<lg-take-photo>Toma una
         foto</lg-take-photo><lg-or> o </lg-or> <lg-upload>Sube una
@@ -194,6 +195,7 @@ es:
       front: Anverso de su licencia de conducir o identificación estatal
       how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
+      hybrid_handoff_selfie: Ingrese su número de celular para cambiar de dispositivo
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
       no_ssn: ¿No tiene un número de Seguro Social?
@@ -263,10 +265,10 @@ es:
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
       selfie_capture_status:
-        face_close_to_border: DEMASIADO CERCA DEL MARCO
-        face_not_found: NO SE DETECTÓ EL ROSTRO
-        face_too_small: ROSTRO DEMASIADO PEQUEÑO
-        too_many_faces: DEMASIADOS ROSTROS
+        face_close_to_border: Demasiado cerca del marco
+        face_not_found: No se detectó el rostro
+        face_too_small: Rostro demasiado pequeño
+        too_many_faces: Demasiados rostros
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
       stepping_up_html: 'Verifica tu identidad de nuevo y tómate una foto para acceder

@@ -37,13 +37,14 @@ RSpec.describe Analytics do
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
   let(:success_state) { 'GET|fake_path|Trackable Event' }
+  let(:session) { {} }
 
   subject(:analytics) do
     Analytics.new(
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
-      session: {},
+      session: session,
       ahoy: ahoy,
     )
   end
@@ -252,5 +253,115 @@ RSpec.describe Analytics do
       liveness_checking_required: nil,
       'DocumentName' => 'some_name',
     )
+  end
+
+  context 'with an SP request vtr saved in the session' do
+    context 'identity verified' do
+      let(:session) { { sp: { vtr: ['C1.P1'] } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            component_values: { 'C1' => true, 'C2' => true, 'P1' => true },
+            identity_proofing: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'phishing resistant and requiring biometric comparison' do
+      let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            biometric_comparison: true,
+            component_values: {
+              'C1' => true,
+              'C2' => true,
+              'Ca' => true,
+              'P1' => true,
+              'Pb' => true,
+            },
+            identity_proofing: true,
+            phishing_resistant: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+  end
+
+  context 'with SP request acr_values saved in the session' do
+    context 'legacy IAL1' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'legacy IAL2' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            component_values: { 'ial/2' => true },
+            identity_proofing: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'legacy IALMAX' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            component_values: { 'ial/0' => true },
+            ialmax: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
   end
 end

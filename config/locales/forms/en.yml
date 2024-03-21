@@ -2,13 +2,6 @@
 en:
   forms:
     backup_code:
-      are_you_sure_desc_html:
-        - '<strong>Backup codes are the least preferred authentication
-          method</strong> because the codes can easily be lost. Try a safer
-          option, like an authentication application or a security key.'
-        - We’ll give you 10 codes that you can download, print, copy or write
-          down. You’ll enter one code every time you sign in.
-      are_you_sure_title: Are you sure you want to use backup codes?
       caution_codes: Each code can only be used once. We’ll give you new codes after
         you use all ten.
       caution_delete: If you delete your backup codes you will no longer be able to

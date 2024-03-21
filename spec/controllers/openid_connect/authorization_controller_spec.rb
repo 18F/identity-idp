@@ -479,6 +479,84 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             end
           end
 
+          context 'verified non-biometric profile with pending biometric profile' do
+            before do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return('server_side')
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[birthdate family_name given_name verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+            end
+
+            context 'sp does not request biometrics' do
+              let(:selfie_capture_enabled) { true }
+              let(:user) { create(:profile, :active, :verified).user }
+
+              before do
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+                  and_return(selfie_capture_enabled)
+              end
+
+              it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                create(:profile, :verify_by_mail_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
+                user.active_profile.idv_level = :legacy_unsupervised
+
+                action
+
+                expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                expect(user.identities.last.verified_attributes).to eq(%w[birthdate family_name given_name verified_at])
+              end
+
+              it 'redirects to please call page if user has a fraudualent profile' do
+                create(:profile, :fraud_review_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
+
+                action
+
+                expect(response).to redirect_to(idv_please_call_url)
+              end
+            end
+
+            context 'sp requests biometrics' do
+              let(:selfie_capture_enabled) { true }
+              let(:user) { create(:profile, :active, :verified).user }
+
+              before do
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+                  and_return(selfie_capture_enabled)
+              end
+
+              context 'with biometric_comparison_required param' do
+                before do
+                  params[:biometric_comparison_required] = 'true'
+                end
+
+                it 'redirects to gpo enter code page' do
+                  create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
+
+                  action
+
+                  expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
+                end
+              end
+
+              context 'with vectors of trust' do
+                before do
+                  params[:vtr] = ['C1.C2.P1.Pb'].to_json
+                end
+
+                it 'redirects to gpo enter code page' do
+                  create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
+
+                  action
+
+                  expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
+                end
+              end
+            end
+          end
+
           context 'account is not already verified' do
             it 'redirects to have the user verify their account' do
               action
