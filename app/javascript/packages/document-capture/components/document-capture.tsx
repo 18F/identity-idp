@@ -138,7 +138,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps
-  const steps: FormStep[] = skipDocAuth || skipDocAuthFromHandoff ? inPersonSteps : defaultSteps;
+  const isInPersonStepEnabled = skipDocAuth || skipDocAuthFromHandoff;
+  const steps: FormStep[] = isInPersonStepEnabled ? inPersonSteps : defaultSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true;
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
