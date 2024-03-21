@@ -2,11 +2,12 @@
 
 .document-capture-selfie-feedback {
   color: color('white');
-  background: color('black');
+  background: rgba(0, 0, 0, .5);
   left: 50%;
   top: 10%;
   position: fixed;
   transform: translateX(-50%);
-  border-radius: 5px;
+  padding: 0 5px 0 5px;
+  opacity: 100%;
   z-index: 11;
 }
