@@ -354,13 +354,15 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
     context 'when ipp is available system wide' do
       context 'when in person proofing opt in enabled' do
         context 'when sp ipp is available' do
+          before do
+            expect(page).to have_current_path(idv_how_to_verify_path)
+            choose 'Most Common'
+            sleep(1)
+            click_on 'Continue'
+          end
           context 'when selfie is enabled system wide' do
             describe 'when selfie is required by sp' do
               it 'continues from handoff by choosing IPP and comes back' do
-                expect(page).to have_current_path(idv_how_to_verify_path)
-                choose 'Most Common'
-                sleep(1)
-                click_on 'Continue'
                 expect(page).to have_current_path(idv_hybrid_handoff_path)
                 expect(page).to have_selector(
                   'h1',
@@ -382,10 +384,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             describe 'when selfie is not required by sp' do
               let(:biometric_comparison_required) { false }
               it 'continues from handoff by choosing IPP and comes back' do
-                expect(page).to have_current_path(idv_how_to_verify_path)
-                choose 'Most Common'
-                sleep(1)
-                click_on 'Continue'
                 expect(page).to have_current_path(idv_hybrid_handoff_path)
                 expect(page).to_not have_selector(
                   'h1',
@@ -411,10 +409,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             describe 'when selfie is not required by sp' do
               let(:biometric_comparison_required) { false }
               it 'continues from handoff by choosing IPP and comes back' do
-                expect(page).to have_current_path(idv_how_to_verify_path)
-                choose 'Most Common'
-                sleep(1)
-                click_on 'Continue'
                 expect(page).to have_current_path(idv_hybrid_handoff_path)
                 expect(page).to_not have_selector(
                   'h1',
