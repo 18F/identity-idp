@@ -65,7 +65,7 @@ module Idv
         ),
 
         bullet_point(
-          t('doc_auth.instructions.bullet4', app_name: sp_name),
+          t('doc_auth.instructions.bullet4', app_name: APP_NAME),
           t('doc_auth.instructions.text4'),
         ),
       ]
