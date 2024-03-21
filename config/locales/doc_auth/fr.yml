@@ -311,7 +311,7 @@ fr:
       bullet1_with_selfie: Prenez des photos de vous et de vos pièces d’identité
       bullet2: Saisissez votre numéro de sécurité sociale
       bullet3: Faites correspondre votre numéro de téléphone
-      bullet4: Saisissez à nouveau votre mot de passe %{app_name}
+      bullet4: Saisissez à nouveau votre mot de passe Login.gov
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les utilisons
         pour vérifier votre identité.

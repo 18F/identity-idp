@@ -258,7 +258,7 @@ en:
       bullet1_with_selfie: Take photos of yourself and your ID
       bullet2: Enter your Social Security number
       bullet3: Match to your phone number
-      bullet4: Re-enter your %{app_name} password
+      bullet4: Re-enter your Login.gov password
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will use it to verify your
         identity.
