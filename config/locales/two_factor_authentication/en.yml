@@ -146,6 +146,12 @@ en:
       nickname: Nickname
       renamed: Successfully renamed your PIV/CAC method
     piv_cac_header_text: Present your PIV/CAC
+    piv_cac_upsell:
+      add_piv: Add PIV/CAC card
+      choose_other_method: Choose other methods instead
+      info: Because you are using a %{email_type} email, we recommend you add your government
+        employee ID as one of your authentication methods. This adds another
+        layer of security to your account.
     please_try_again_html: Please try again in <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Read about two-factor authentication
     recaptcha:

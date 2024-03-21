@@ -1,0 +1,21 @@
+<% self.title = t('titles.piv_cac_setup.upsell') %>
+
+<%= render AlertIconComponent.new(icon_name: :info_question) %>
+
+<%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_setup.upsell')) %>
+
+<p>
+  <%= t('two_factor_authentication.piv_cac_upsell.info', email_type: @email_type) %>
+</p>
+
+<%= form_tag(login_add_piv_cac_for_gov_email_path, method: :confirm, class: 'margin-top-5') do %>
+  <%= button_tag t('two_factor_authentication.piv_cac_upsell.add_piv'), type: 'submit',
+                                                                class: 'usa-button usa-button--big usa-button--wide margin-bottom-2' %>
+<% end %>
+
+<% if MfaPolicy.new(current_user).two_factor_enabled? %>
+  <%= link_to t('links.cancel'), account_path %>
+<% else %>
+  <%= link_to t('two_factor_authentication.choose_another_option'), authentication_methods_setup_path %>
+<% end %>
+
