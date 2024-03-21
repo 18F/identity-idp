@@ -18,8 +18,9 @@ module Users
       end
 
       def confirm
-        # UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
-        redirect_to confirmation_path('piv_cac')
+        UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
+        user_session[:mfa_selections] = ['piv_cac']
+        redirect_to confirmation_path(user_session[:mfa_selections].first)
       end
 
 
