@@ -11,10 +11,13 @@
     ) do |f|
 %>
   <div role="group" aria-labelledby="how-to-verify-info">
+    <%= f.hidden_field(
+          :selection, :value => Idv::HowToVerifyForm::REMOTE,
+        ) %>
     <%= f.label(
           :selection_remote,
         ) do %>
-          <div class="grid-row">
+          <div class="grid-row border-bottom border-primary-light">
             <div classe="tablet:grid-col">
               <%= image_tag asset_url('idv/remote.svg'),
                             width: 88,
@@ -29,10 +32,23 @@
                 <p><%= t('doc_auth.info.verify_online_instruction') %></p>
                 <p><%= t('doc_auth.info.verify_online_description') %></p>
               </div>
-              <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+              <%= f.submit t('forms.buttons.continue_remote'), class: 'display-block margin-y-5' %>
             </div>
           </div>
         <% end %>
+  </div>
+<% end %>
+<%= simple_form_for(
+      @idv_how_to_verify_form,
+      html: { autocomplete: 'off' },
+      method: :put,
+      url: idv_how_to_verify_url,
+    ) do |f|
+%>
+  <div role="group" aria-labelledby="how-to-verify-info">
+    <%= f.hidden_field(
+          :selection, :value => Idv::HowToVerifyForm::IPP,
+        ) %>
     <%= f.label(
           :selection_ipp,
         ) do %>
@@ -51,7 +67,7 @@
                 <p><%= t('doc_auth.info.verify_at_post_office_instruction') %></p>
                 <p><%= t('doc_auth.info.verify_at_post_office_description') %></p>
               </div>
-              <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+              <%= f.submit t('forms.buttons.continue_ipp'), class: 'display-block margin-y-5', outline: true %>
             </div>
           </div>
         <% end %>
