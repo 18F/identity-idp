@@ -7,13 +7,21 @@ RSpec.describe Idv::WelcomePresenter do
 
   let(:sp_session) { {} }
 
+  let(:view_context) { ActionController::Base.new.view_context }
+
   let(:decorated_sp_session) do
     ServiceProviderSession.new(
       sp: sp,
-      view_context: nil,
+      view_context: view_context,
       sp_session: sp_session,
       service_provider_request: nil,
     )
+  end
+
+  let(:user) { nil }
+
+  before do
+    allow(view_context).to receive(:current_user).and_return(user)
   end
 
   it 'gives us the correct sp_name' do
@@ -38,7 +46,6 @@ RSpec.describe Idv::WelcomePresenter do
         )
       end
     end
-
     context 'when a selfie is required' do
       let(:sp_session) do
         { biometric_comparison_required: true }
@@ -48,14 +55,42 @@ RSpec.describe Idv::WelcomePresenter do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
       end
 
-      it 'uses the stepping up message' do
+      it 'uses the getting started message' do
         expect(presenter.explanation_text(help_link)).to eq(
           t(
-            'doc_auth.info.stepping_up_html',
+            'doc_auth.info.getting_started_html',
             sp_name: sp.friendly_name,
             link_html: help_link,
           ),
         )
+      end
+
+      context 'as part of a step-up for an existing verified user' do
+        let(:user) { build(:user, :proofed) }
+
+        it 'uses the stepping up message' do
+          expect(presenter.explanation_text(help_link)).to eq(
+            t(
+              'doc_auth.info.stepping_up_html',
+              sp_name: sp.friendly_name,
+              link_html: help_link,
+            ),
+          )
+        end
+      end
+
+      context 'as part of a step-up for a user in the middle of GPO' do
+        let(:user) { create(:user, :with_pending_gpo_profile) }
+
+        it 'uses the stepping up message' do
+          expect(presenter.explanation_text(help_link)).to eq(
+            t(
+              'doc_auth.info.stepping_up_html',
+              sp_name: sp.friendly_name,
+              link_html: help_link,
+            ),
+          )
+        end
       end
     end
   end

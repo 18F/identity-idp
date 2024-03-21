@@ -2879,12 +2879,15 @@ module AnalyticsEvents
   end
 
   # User closed the SDK for taking a selfie without submitting a photo
+  # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts: nil, **extra)
+  def idv_sdk_selfie_image_capture_closed_without_photo(acuant_version:, captureAttempts: nil,
+                                                        **extra)
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
+      acuant_version: acuant_version,
       captureAttempts: captureAttempts,
       **extra,
     )
@@ -2894,12 +2897,14 @@ module AnalyticsEvents
   # User encountered an error with the SDK selfie process
   #   Error code 1: camera permission not granted
   #   Error code 2: unexpected errors
+  # @param [String] acuant_version
   # @param [Integer] sdk_error_code SDK code for the error encountered
   # @param [String] sdk_error_message SDK message for the error encountered
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
+    acuant_version:,
     sdk_error_code:,
     sdk_error_message:,
     captureAttempts: nil,
@@ -2907,6 +2912,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_sdk_selfie_image_capture_failed,
+      acuant_version: acuant_version,
       sdk_error_code: sdk_error_code,
       sdk_error_message: sdk_error_message,
       captureAttempts: captureAttempts,
@@ -2916,14 +2922,25 @@ module AnalyticsEvents
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User opened the SDK to take a selfie
+  # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_capture_opened(captureAttempts: nil, **extra)
-    track_event(:idv_sdk_selfie_image_capture_opened, captureAttempts: captureAttempts, **extra)
+  def idv_sdk_selfie_image_capture_opened(
+    acuant_version:,
+    captureAttempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_capture_opened,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User took a selfie image with the SDK, or uploaded a selfie using the file picker
+  # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] failedImageResubmission
@@ -2937,6 +2954,7 @@ module AnalyticsEvents
   # @param [Integer] width width of image added in pixels
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_added(
+    acuant_version:,
     captureAttempts:,
     failedImageResubmission:,
     fingerprint:,
@@ -2951,6 +2969,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_selfie_image_added,
+      acuant_version: acuant_version,
       captureAttempts: captureAttempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
@@ -4725,10 +4744,16 @@ module AnalyticsEvents
 
   # Tracks when user visits MFA selection page
   # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
-  def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] gov_or_mil_email Whether registered user has government email
+  def user_registration_2fa_setup_visit(
+    enabled_mfa_methods_count:,
+    gov_or_mil_email:,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup visited',
       enabled_mfa_methods_count:,
+      gov_or_mil_email:,
       **extra,
     )
   end

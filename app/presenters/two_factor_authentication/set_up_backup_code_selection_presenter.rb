@@ -12,6 +12,10 @@ module TwoFactorAuthentication
       t('two_factor_authentication.two_factor_choice_options.backup_code_info')
     end
 
+    def phishing_resistant?
+      false
+    end
+
     def single_configuration_only?
       true
     end

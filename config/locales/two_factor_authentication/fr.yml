@@ -171,6 +171,7 @@ fr:
       google_policy_link: règles de confidentialité
       google_tos_link: conditions de service
       login_tos_link: conditions d’utilisation
+    recommended: Recommandation
     totp_header_text: Entrez votre code d’application d’authentification
     two_factor_aal3_choice: Authentification supplémentaire requise
     two_factor_aal3_choice_intro: Cette application nécessite un niveau de sécurité
