@@ -13,7 +13,10 @@ module Users
     def index
       two_factor_options_form
       @presenter = two_factor_options_presenter
-      analytics.user_registration_2fa_setup_visit(enabled_mfa_methods_count:)
+      analytics.user_registration_2fa_setup_visit(
+        enabled_mfa_methods_count:,
+        gov_or_mil_email: gov_or_mil_email?,
+      )
     end
 
     def create
@@ -43,6 +46,10 @@ module Users
     end
 
     private
+
+    def gov_or_mil_email?
+      current_user.confirmed_email_addresses.any?(&:gov_or_mil?)
+    end
 
     def mfa_context
       @mfa_context ||= MfaContext.new(current_user)

@@ -136,9 +136,12 @@ en:
       unique_name: That name is already taken. Please choose a different name.
     webauthn_setup:
       additional_methods_link: choose another authentication method
-      already_registered: Security key already registered. Please try a different security key.
-      general_error_html: We were unable to add the security key. Please try again or %{link_html}.
-      not_supported: Your browser doesn’t support security keys. Use the latest
-        version of Google Chrome, Microsoft Edge, Mozilla Firefox or Safari to
-        use security keys.
-      unique_name: That name is already taken. Please choose a different name.
+      already_registered: You have already linked this security key to your account.
+        Please try a different security key.
+      general_error_html: We were unable to add the security key. Check that your
+        security key is properly inserted and try again or %{link_html}.
+      not_supported: Your browser doesn’t support security keys. Update to the latest
+        version of Google Chrome, Microsoft Edge, Mozilla Firefox or Safari and
+        try again.
+      unique_name: That device nickname is already being used. Choose a different
+        device nickname.

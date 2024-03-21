@@ -139,6 +139,12 @@ RSpec.describe Users::PivCacController do
       expect(flash[:success]).to eq(presenter.delete_success_alert_text)
     end
 
+    it 'removes the piv/cac information from the user session' do
+      controller.user_session[:decrypted_x509] = {}
+      response
+      expect(controller.user_session[:decrypted_x509]).to be_nil
+    end
+
     it 'logs the submission attempt' do
       response
 

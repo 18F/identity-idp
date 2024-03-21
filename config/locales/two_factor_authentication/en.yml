@@ -161,6 +161,7 @@ en:
       google_policy_link: Privacy Policy
       google_tos_link: Terms of Service
       login_tos_link: Mobile Terms of Use
+    recommended: Recommended
     totp_header_text: Enter your authentication app code
     two_factor_aal3_choice: Additional authentication required
     two_factor_aal3_choice_intro: This app requires a higher level of security. You

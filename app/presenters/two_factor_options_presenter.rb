@@ -1,7 +1,12 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :after_mfa_setup_path, :return_to_sp_cancel_path
+  attr_reader :user,
+              :after_mfa_setup_path,
+              :return_to_sp_cancel_path,
+              :phishing_resistant_required,
+              :piv_cac_required,
+              :user_agent
 
   delegate :two_factor_enabled?, to: :mfa_policy
 
@@ -24,21 +29,22 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    webauthn_platform_option + totp_option + phone_options +
-      backup_code_option + webauthn_option + piv_cac_option
+    all_options_sorted.select(&:visible?)
   end
 
-  # Array of possible options selected by the user to display on the
-  # add additional MFA page
-  def all_user_selected_options
+  def all_options_sorted
     [
-      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user),
-    ]
+      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
+      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
+      TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
+      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
+      TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+    ].map do |klass|
+      klass.new(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
+    end.
+      partition(&:recommended?).
+      flatten
   end
 
   def icon
@@ -96,43 +102,6 @@ class TwoFactorOptionsPresenter
   end
 
   private
-
-  def piv_cac_option
-    return [] unless current_device_is_desktop?
-    [TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user)]
-  end
-
-  def webauthn_option
-    return [] if piv_cac_required?
-    [TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user)]
-  end
-
-  def webauthn_platform_option
-    return [] if piv_cac_required?
-    [TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user)]
-  end
-
-  def phone_options
-    if piv_cac_required? || phishing_resistant_only? || IdentityConfig.store.hide_phone_mfa_signup
-      return []
-    else
-      [TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user: user)]
-    end
-  end
-
-  def totp_option
-    return [] if piv_cac_required? || phishing_resistant_only?
-    [TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user)]
-  end
-
-  def backup_code_option
-    return [] if piv_cac_required? || phishing_resistant_only?
-    [TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user)]
-  end
-
-  def current_device_is_desktop?
-    !BrowserCache.parse(@user_agent).mobile?
-  end
 
   def piv_cac_required?
     @piv_cac_required

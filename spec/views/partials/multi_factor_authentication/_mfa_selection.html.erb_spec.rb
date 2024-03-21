@@ -12,6 +12,8 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   let(:form_builder) do
     SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
   end
+  let(:option) { presenter.options.first }
+  subject(:rendered) { render(partial: 'mfa_selection', locals: { form: form_builder, option: }) }
 
   context 'before selecting options' do
     subject(:rendered) do
@@ -141,6 +143,22 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
           count: 10,
         ),
       )
+    end
+  end
+
+  describe 'recommended tag' do
+    it 'does not render recommended tag' do
+      expect(rendered).not_to have_css('.usa-tag', text: t('two_factor_authentication.recommended'))
+    end
+
+    context 'when option is recommended' do
+      before do
+        allow(option).to receive(:recommended?).and_return(true)
+      end
+
+      it 'renders with recommended tag' do
+        expect(rendered).to have_css('.usa-tag', text: t('two_factor_authentication.recommended'))
+      end
     end
   end
 end

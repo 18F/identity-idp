@@ -30,6 +30,13 @@
     <% end %>
     <span id="two_factor_options_form_selection_info_<%= option.type %>" aria-hidden="true" class="usa-checkbox__label-description">
       <%= option.info %>
+      <% if option.recommended? %>
+        <br />
+        <%= render TagComponent.new(
+              informative: true,
+              class: 'margin-top-1',
+            ).with_content(t('two_factor_authentication.recommended')) %>
+      <% end %>
     </span>
   </div>
 <% end %>
