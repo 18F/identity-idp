@@ -8,10 +8,10 @@ es:
         get_a_letter: Reciba una carta por correo
         getting_started: Inicio
         go_to_the_post_office: Vaya a la oficina de correos
-        secure_account: Proteja su cuenta
+        secure_account: Vuelve a ingresar tu contraseña
         verify_id: Verifica tu identificación
         verify_info: Verifique sus datos
-        verify_phone_or_address: Verifique su teléfono o dirección
+        verify_phone_or_address: Verifique su número de teléfono
     status:
       complete: Completo
       current: Siguiente paso
