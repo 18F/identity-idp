@@ -145,9 +145,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
-    (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) ||
-    skipDocAuth ||
-    skipDocAuthFromHandoff
+    (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || isInPersonStepEnabled
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
@@ -186,7 +184,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
             titleFormat={`%{step} - ${appName}`}
-            initialStep={skipDocAuth ? steps[0].name : undefined}
+            initialStep={isInPersonStepEnabled ? steps[0].name : undefined}
           />
         </>
       )}
