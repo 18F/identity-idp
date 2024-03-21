@@ -32,7 +32,7 @@ class SamlIdpController < ApplicationController
     capture_analytics
     if resolved_authn_context_result.identity_proofing?
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
-      return redirect_to url_for_pending_profile_reason if user_has_usable_pending_profile?
+      return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
       return redirect_to idv_url if selfie_needed?
     end
@@ -123,7 +123,7 @@ class SamlIdpController < ApplicationController
     analytics_payload = result.to_h.merge(
       endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
-      finish_profile: user_has_usable_pending_profile?,
+      finish_profile: user_has_pending_profile?,
       requested_ial: requested_ial,
       request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,

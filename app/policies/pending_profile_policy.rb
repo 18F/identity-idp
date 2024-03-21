@@ -5,7 +5,7 @@ class PendingProfilePolicy
     @biometric_comparison_requested = biometric_comparison_requested
   end
 
-  def user_has_usable_pending_profile?
+  def user_has_pending_profile?
     return false if user.blank?
 
     if biometric_comparison_requested?

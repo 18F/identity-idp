@@ -8,8 +8,8 @@ module VerifyProfileConcern
     idv_not_verified_url if current_user.fraud_rejection?
   end
 
-  def user_has_usable_pending_profile?
-    pending_profile_policy.user_has_usable_pending_profile?
+  def user_has_pending_profile?
+    pending_profile_policy.user_has_pending_profile?
   end
 
   def pending_profile_policy
