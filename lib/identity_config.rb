@@ -375,6 +375,7 @@ class IdentityConfig
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url, type: :string)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
+    config.add(:prometheus_exporter, type: :boolean)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_ssn_max_attempt_window_in_minutes, type: :integer)
