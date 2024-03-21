@@ -158,7 +158,7 @@ RSpec.describe Idv::WelcomePresenter do
 
     it 'shows the bullet point 4 header' do
       expect(presenter.bullet_points[3].bullet).to eq(
-        t('doc_auth.instructions.bullet4', app_name: sp.friendly_name),
+        t('doc_auth.instructions.bullet4', app_name: APP_NAME),
       )
     end
 

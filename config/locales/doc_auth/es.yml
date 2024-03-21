@@ -300,7 +300,7 @@ es:
       bullet1_with_selfie: Tomar fotos tuyas y de tu identificación oficial
       bullet2: Ingresar tu Número de Seguro Social
       bullet3: Confirmar tu número de teléfono
-      bullet4: Ingresar de nuevo tu contraseña de Login.gov
+      bullet4: Ingresar de nuevo tu contraseña de %{app_name}
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
         para verificar su identidad.
