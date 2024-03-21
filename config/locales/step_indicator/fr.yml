@@ -8,10 +8,10 @@ fr:
         get_a_letter: Recevoir une lettre par la poste
         getting_started: Démarrer
         go_to_the_post_office: Se rendre au bureau de poste
-        secure_account: Sécurisez votre compte
+        secure_account: Saisir à nouveau votre mot de passe
         verify_id: Vérifier votre identité
         verify_info: Vérifier votre informations
-        verify_phone_or_address: Vérifier le téléphone ou l’adresse
+        verify_phone_or_address: Vérifier votre numéro de téléphone
     status:
       complete: Terminé
       current: Étape en cours
