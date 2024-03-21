@@ -155,4 +155,8 @@ class FeatureManagement
   def self.idv_allow_selfie_check?
     !(Identity::Hostdata.env == 'prod') && IdentityConfig.store.doc_auth_selfie_capture_enabled
   end
+
+  def self.aggregate_new_device_alerts?
+    IdentityConfig.store.feature_new_device_alert_aggregation
+  end
 end

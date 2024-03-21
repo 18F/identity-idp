@@ -214,6 +214,7 @@ class IdentityConfig
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
+    config.add(:feature_new_device_alert_aggregation, type: :boolean)
     config.add(:geo_data_file_path, type: :string)
     config.add(:get_usps_proofing_results_job_cron, type: :string)
     config.add(:get_usps_proofing_results_job_reprocess_delay_minutes, type: :integer)
