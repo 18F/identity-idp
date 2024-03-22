@@ -1,0 +1,27 @@
+---
+zh:
+  links:
+    account:
+      reactivate:
+        with_key: 我有密钥
+        without_key: 我没有密钥
+    back_to_sp: 返回 %{sp}
+    cancel: 取消
+    cancel_account_creation: '‹ 取消设立账户'
+    contact: 联系
+    continue_sign_in: 继续登录
+    create_account: 设立账户
+    exit_login: 退出 %{app_name}
+    go_back: 返回
+    help: 帮助
+    new_tab: '（打开新窗口）'
+    passwords:
+      forgot: 忘了你的密码?
+    privacy_policy: 隐私与安全
+    resend: 重发
+    reverify: 请再验证你的身份。
+    sign_in: 登录
+    sign_out: 登出
+    two_factor_authentication:
+      send_another_code: 发送另一个代码
+    what_is_totp: 什么是身份证实应用程序？

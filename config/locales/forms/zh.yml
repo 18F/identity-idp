@@ -1,0 +1,127 @@
+---
+zh:
+  forms:
+    backup_code:
+      are_you_sure_desc_html:
+        - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
+        - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+      are_you_sure_title: 你确定要使用备用代码吗？
+      caution_codes: 每个代码只能使用一次。你用完所有 10 个代码后我们会给你新代码。
+      caution_delete: 如果你删除自己的备用代码，就无法用其来登录了。
+      confirm_delete: 你确定要删除备用代码吗？
+      generate: 获得代码
+      last_code: 你用了最后一个备用代码。请打印、复制、或下载下面的代码。你下次登录时可以使用这些新代码。
+      regenerate: 获得新代码
+      saved: 我已把自己的备用代码放在一个安全的地方。
+      subinfo_html: '<strong>如果你丢了设备，就会需要这些代码来登录 %{app_name}。</strong>保存或打印代码并将其放在安全的地方。'
+      title: 保存这些备用代码
+    backup_code_regenerate:
+      caution: 如果你重新生成备用代码，会收到新的一套备用代码。你原来的备用代码就会失效。
+      confirm: 你确定要重新生成备用代码吗？
+    backup_code_reminder:
+      body_info: 如果你无法使用自己的主要身份证实方法，可以使用备用代码重新获得对账户的访问权。
+      have_codes: 我有代码
+      heading: 你的备用代码还有吗？
+      need_new_codes: 我需要新的一套备用代码。
+    buttons:
+      back: 返回
+      cancel: 是的，取消
+      confirm: 确认
+      continue: 继续
+      delete: 删除
+      disable: 删除
+      edit: 编辑
+      manage: 管理
+      resend_confirmation: 重新发送确认说明
+      send_link: 发送链接
+      send_one_time_code: 发送代码
+      submit:
+        confirm_change: 确认变更
+        default: 提交
+        update: 更新
+      upload_photos: 上传照片
+    confirmation:
+      show_hdr: 设一个强密码
+    email:
+      buttons:
+        delete: 删除电邮地址
+    example: '举例：'
+    messages:
+      remember_device: 记住这个浏览器
+    password: 密码
+    passwords:
+      edit:
+        buttons:
+          submit: 变更密码
+        labels:
+          password: 新密码
+    personal_key:
+      alternative: 没有你的个人密钥？
+      confirmation_label: 个人密钥
+      download: 下载（文本文件）。
+      instructions: 请在下面输入你的个人密钥，以确认你有个人密钥。
+      required_checkbox: 我将个人密钥存放到了一个安全的地方。
+      title: 输入你的个人密钥
+    personal_key_partial:
+      acknowledgement:
+        header: 如果你忘记了密码，就需要你的个人密钥。请将其保管好，不要与任何人分享。
+        help_link_text: 了解更多有关个人密钥的信息。
+        text: 如果你在没有个人密钥情况下重设你的密码，将需要再次验证你的身份。
+      header: 保存你的个人密钥
+    phone:
+      buttons:
+        delete: 去掉电话
+    piv_cac_delete:
+      caution:  如果你去掉你的 PIV/CAC 卡，将无法用其访问你的 %{app_name}账户。 
+      confirm: 你确定要去掉你的 PIV/CAC 卡吗？
+    piv_cac_login:
+      submit: 插入 PIV/CAC 卡
+    piv_cac_mfa:
+      submit: 提供 PIV/CAC 卡
+    piv_cac_setup:
+      nickname: PIV/CAC 卡昵称
+      no_thanks: 不用，谢谢。
+      piv_cac_intro_html: <Strong>每次你登录时</strong>，作为双因素身份证实的一部分，我们会要你提供你的 PIV/CAC 卡。<br><br>点击“添加 PIV/CAC”后，你的浏览器会提示要你的 PIV/CAC 并要你选择一个证书。
+      submit: 添加 PIV/CAC 卡
+    registration:
+      labels:
+        email: 输入你的电邮地址
+        email_language: 选择你的电邮语言偏好
+    spam_protection:
+      description: 我们使用 reCAPTCHA 来防止自动化垃圾邮件。  勾选以下方框来继续。
+    ssn:
+      show: 显示社会保障号码
+    totp_delete:
+      caution:  如果你去掉你的身份证实应用程序，将无法用其访问你的 %{app_name}账户。 
+      confirm: 你确定要去掉你的身份证实应用程序吗？
+    totp_setup:
+      totp_intro: 设立一个身份证实应用程序，以使用临时安全代码登录。
+      totp_step_1: 给其一个昵称
+      totp_step_1a: 如果你添加了一个以上的应用程序的话，你就能把它们分辨开来。
+      totp_step_2: 打开你的身份证实应用程序
+      totp_step_3: 用你的应用程序扫描这一二维码（QR）代码
+      totp_step_4: 输入来自你应用程序的临时代码
+    two_factor:
+      backup_code: 备用代码
+      personal_key: 个人密钥
+      try_again: 使用另一个电话号码
+    validation:
+      required_checkbox: 请在这一框里打勾来继续。
+    webauthn_delete:
+      caution:  如果你去掉你的安全密钥，将无法用其访问你的 %{app_name}账户。 
+      confirm: 你确定要去掉你的安全密钥吗？
+    webauthn_platform_delete:
+      caution:  如果你去掉人脸或触摸解锁，将无法用其访问你的 %{app_name}账户。 
+      confirm: 你确定要去掉人脸或触摸解锁吗？
+    webauthn_platform_setup:
+      continue: 继续
+      info_text: 你设置人脸或触摸解锁后需要再设置另一个身份证实方法。
+      intro_html:  <p>就像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p><p>如果你使用iCloud Keychain 或 Google Password Manager 这样的密码管理器，管理器可能会要保存一个通行密钥。这会使你能使用那个密码管理器在任何设备上证实身份。%{link}</> 
+      intro_link_text: 了解关于使用不同设备的更多信息。
+      nickname: 设备昵称
+      nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
+    webauthn_setup:
+      continue: 继续
+      intro_html: '<p>添加一个满足 FIDO 标准的安全密钥作为你的身份证实方法。你想添加多少安全密钥都行。首先请给你的安全密钥一个昵称。</p>'
+      nickname: 安全密钥昵称
+      saving: 正在保存你的凭据...

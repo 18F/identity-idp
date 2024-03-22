@@ -1,0 +1,219 @@
+---
+zh:
+  doc_auth:
+    accessible_labels:
+      camera_video_capture_instructions: 我们会自动拍张照片。
+      camera_video_capture_label: 带框的取景器能把你身份证件放在中间。
+      document_capture_dialog: 文档扫描
+    buttons:
+      add_new_photos: 添加新照片
+      continue: 继续
+      take_or_upload_picture_html: '<lg-take-photo>拍照</lg-take-photo> <lg-or> 或 </lg-or> <lg-upload>上传照片</lg-upload>'
+      take_picture: 拍照
+      take_picture_retry: 重新拍照
+      upload_picture: 上传照片
+    errors:
+      alerts:
+        address_check: 我们读取不到你身份证件上的地址。尝试重拍。
+        barcode_content_check: 我们读取不到你身份证件背面的条形码可能是条形码有问题，也可能是条形码类型很新，我们还不认识。如果你有州政府颁发的别的身份证件， 请使用那个身份证件。
+        barcode_read_check: 我们读取不到你身份证件背面的条形码尝试重拍一张照片。
+        birth_date_checks: 我们读取不到你身份证件上的生日。尝试重拍。
+        control_number_check: 我们读取不到你身份证件背面的参考数字。尝试重拍一张照片。
+        doc_crosscheck: 我们无法认出你的身份证件。可能是因为你的身份证件破旧受损，或者正反两面对不上。尝试重拍。
+        doc_number_checks: 我们读取不到你身份证件上的文档号。尝试重拍。
+        expiration_checks: 文件已过期，或者我们读取不到你身份证件上的过期日期。如果你的身份证件还没过期，尝试重拍。
+        full_name_check: 我们读取不到你身份证件上的姓名。尝试重拍。
+        id_not_recognized: 我们无法辨认你的身份证件。可能是因为你的身份证件破旧受损，或是我们不认识的一类身份证件。尝试重拍。
+        id_not_verified: 我们无法验证你的身份证件。可能因为你拍照时身份证件移动了。尝试重拍。
+        issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
+        ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
+        sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
+        visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
+        visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
+      barcode_attention:
+        confirm_info: 如果以下信息不正确，请上传你州政府颁发的身份证件的新照片。
+        heading: 我们读取不到你身份证件上的条形码。
+      camera:
+        blocked: 你的镜头被遮住了。
+        blocked_detail: 我们没有使用相机的许可。请检查一下你的浏览器或系统设置，重新加载该页面，或者上传照片。
+        failed: 相机未开启，请再试一次。
+      card_type: 再用你的驾照或州政府颁发的身份证件试一次。
+      doc:
+        doc_type_check: 你的驾照或身份证件必须是美国一个州或属地颁发的。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。
+        resubmit_failed_image: 你已经试过这张图像，该图像不行。请尝试添加一个不同的图像。
+        wrong_id_type_html: 我们只接受由美国的一个州或属地颁发的驾照或身份证件。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。<A> 了解更多有关我们接受的身份证件的信息 </a>
+      dpi:
+        failed_short: 图像太小或模糊，请再试一次。
+        top_msg: 我们无法辨认你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或太模糊。确保你的身份证件在图框中比较大，然后试着重拍一下。
+        top_msg_plural: 我们无法读取你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或模糊。确保你的身份证件在图片框中很大，然后试着拍一张新照片。
+      file_type:
+        invalid: 这一文件类型我们不接受。请选择一个 JPG 或 PNG 文件。
+      general:
+        fallback_field_level: 请添加一个新图像
+        multiple_back_id_failures: 我们无法验证你身份证件的背面。尝试重拍一张。
+        multiple_front_id_failures: 我们无法验证你身份证件的正面。尝试重拍一张。
+        network_error: 我们这边有技术困难。请稍后再提交你的图像。
+        no_liveness: 尝试重拍。
+      glare:
+        failed_short: 图像有炫光，请再试一次。
+        top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
+        top_msg_plural: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍。
+      http:
+        image_load:
+          failed_short: 系统不支持图像文件，请再试一次。
+          top_msg: 你添加的图像文件系统不支持。请重拍你的身份证件并再试一次。
+        image_size:
+          failed_short: 系统不支持图像文件，请再试一次。
+          top_msg: 你的图像尺寸太大或太小。请添加你身份证件的图像，其像素应约为 2025 x 1275。
+        pixel_depth:
+          failed_short: 系统不支持图像文件，请再试一次。
+          top_msg: 你图像文件的像素深度系统不支持。请重拍你的身份证件并再试一次。系统支持的图像像素深度为 24位 RGB。
+      not_a_file: 你选择的不是一个正确的文件。
+      pii:
+        birth_date_min_age: 你的生日不满足最低年龄要求。
+      sharpness:
+        failed_short: 图像模糊，请再试一次。
+        top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
+        top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
+      upload_error: 抱歉，我们这边出错了。
+    exit_survey:
+      content_html:  <Strong>如果你没有驾照或州政府颁发的身份证件，则不能继续使用 %{app_name}。</strong>请 <a>退出 %{app_name} 并联系 %{sp_name}</a> 来了解你该怎么办。 
+      content_nosp_html:  <Strong>如果你没有驾照或州政府颁发的身份证件，则不能继续使用 %{app_name}。</strong><a>取消在 %{app_name} 验证身份</a> ，等你准备好后再重新开始验证过程。 
+      header: 没有驾照或州政府颁发的身份证件？
+      optional:
+        button:  提交并退出 %{app_name} 
+        content:  帮助我们向 %{app_name} 添加更多身份证件。你有哪些类型的身份证件？ 
+        id_types:
+          military_id: 军队身份卡（这包括国防部身份卡、退伍军人医疗卡，或者退伍军人 ID 卡）。
+          other: 未列出的其他证件
+          resident_card: 美国绿卡（也叫永久居民卡）
+          tribal_id: 部落 ID 卡
+          us_passport: 美国护照
+          voter_registration_card: 选民登记卡
+        legend: 可选选择你有的任何证件
+        tag: 可选项
+    forms:
+      captured_image: 扫描到的图像
+      change_file: 更改文件
+      choose_file_html: 将文件拖到此处或者 <lg-underline>从文件夹中选择</lg-underline>。
+      doc_success: 我们验证了你的信息
+      selected_file: 被选文件
+    headings:
+      address: 更新你的邮政地址
+      back: 驾照或州政府颁发身份证件的背面。
+      capture_complete: 我们验证了你的身份证件
+      capture_scan_warning_html:  我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。 
+      capture_scan_warning_link: 上传新照片
+      document_capture: 添加你身份证件的照片
+      document_capture_back: 你身份证件的背面
+      document_capture_front: 你身份证件的正面
+      document_capture_selfie: 你本人照片
+      document_capture_subheader_id: 驾照或州政府颁发的身份证件
+      document_capture_subheader_selfie: 你本人照片
+      document_capture_with_selfie: 添加你身份证件和本人的照片
+      front: 驾照或州政府颁发身份证件的正面
+      getting_started:  现在我们来为 %{app_name} 验证你的身份 
+      how_to_verify: 选择你想如何验证身份
+      hybrid_handoff: 你想怎么添加身份证件？
+      interstitial: 我们正在处理你的图像
+      lets_go: 你的身份是如何验证的
+      no_ssn: 没有社会保障号码？
+      review_issues: 检查一下你的图片并再试一次
+      secure_account: 保护你的账户安全
+      selfie: 照片
+      ssn: 输入你的社会保障号码
+      ssn_update: 更新你的社会保障号码
+      text_message: 我们给你的手机发了短信
+      upload_from_computer: 在这台电脑上继续
+      upload_from_phone: 使用手机拍照
+      verify_at_post_office: 去邮局验证身份
+      verify_identity: 验证你的身份
+      verify_online: 在网上验证你的身份
+      welcome: 开始验证你的身份
+    hybrid_flow_warning:
+      explanation_html:  你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。 
+      explanation_non_sp_html:  你在使用 <strong>%{app_name}</strong> 验证身份。 
+      only_add_if_text: '只有在以下情况下才添加你的身份证件：'
+      only_add_own_account:  你在使用自己的 %{app_name} 账户 
+      only_add_phone_verify:  你要求 %{app_name} 使用你的电话来验证你的身份证件。 
+      only_add_sp_services_html:  你在试图访问 <strong>%{service_provider_name}</strong> 服务。 
+    info:
+      address_guidance_puerto_rico_html: 波多黎各居民：<br><br>编辑你的地址，在地址第 2 行列出你的 urbanization 或 condominium。
+      capture_status_big_document: 太近了
+      capture_status_capturing: 扫描中
+      capture_status_none: 对齐
+      capture_status_small_document: 靠近一些
+      capture_status_tap_to_capture: 点击来扫描
+      exit:
+        with_sp:  退出 %{app_name} 并返回 %{app_name} 
+        without_sp: 退出身份验证并到你的账户页面
+      how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
+      how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
+      hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
+      image_loaded: 图像已加载
+      image_loading: 图像加载中
+      image_updated: 图像已上传
+      interstitial_eta: 可能需要一分钟时间这一步完成后，我们会自动加载下一步。
+      interstitial_thanks: 感谢你的耐心！
+      keep_window_open: 请勿关闭此窗口。
+      learn_more: 对于我们如何保护你的敏感信息获得更多了解
+      lets_go: '身份验证包括两部分：'
+      link_sent: 请查看你的手机并按照说明拍一张你州政府颁发的身份证件的照片。
+      link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
+      link_sent_complete_polling: 下一步会自动加载。
+      no_ssn: 你必须有社会保障号码才能完成身份验证。
+      privacy: '%{app_name}是一个安全的政府网站，遵守数据保护的最高标准。我们使用你的数据来验证你的身份。'
+      review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
+      secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
+      ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
+      tag: 建议
+      upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
+      upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
+      verify_at_post_office_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
+      verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与邮件去亲身验证身份。
+      verify_at_post_office_link_text: 对亲身验证获得更多了解
+      verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
+      verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
+      verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
+      verify_online_link_text: 对网上验证获得更多了解
+      welcome: '%{sp_name}需要确保你是你，而不是别人冒充你。'
+      you_entered: '你输入了：'
+    instructions:
+      bullet1: 州政府颁发的身份证件
+      bullet2: 社会保障号码
+      bullet3: 电话号码或家庭地址
+      consent:  在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。 
+      learn_more: 了解有关我们隐私和安全措施的更多信息。
+      privacy: 我们的隐私与安全标准
+      switch_back: 然后再返回你的电脑完成验证身份。
+      switch_back_image: 从手机指向电脑的箭头
+      test_ssn:  在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。 
+      text1: 你的身份证件不能是过期的。
+      text2: 你不需要有卡。
+      text3_html:
+        - '<strong>通过手机验证</strong>：我们会给你的号码打电话或发短信。这会化几分钟时间。'
+        - '<strong>通过普通邮件验证</strong>：我们会往你家庭地址寄信。这需要 <strong>5 到 10 天</strong>。'
+      welcome: '你将需要你的：'
+    not_ready:
+      button_nosp: 取消并返回你的用户资料
+      button_sp:  退出 %{app_name} 并返回 %{app_name} 
+      content_nosp:  如果你退出 %{app_name}，你尚未验证你的身份。你可以稍后回来完成这一过程。 
+      content_sp:  如果你退出 %{app_name} 并返回 %{sp_name}，你尚未验证你的身份。你可以稍后回来完成这一过程。 
+      header: 尚未做好添加照片的准备？
+    tips:
+      document_capture_hint: 必须是 JPG 或 PNG
+      document_capture_id_text1: 使用暗色背景
+      document_capture_id_text2: 在平坦平面上拍照。
+      document_capture_id_text3: 不要使用相机的闪光灯
+      document_capture_id_text4: 文件大小应当至少 2 兆。
+      document_capture_selfie_id_header_text: 拍出清晰照片的提示
+      document_capture_selfie_selfie_text: 拍出清晰照片的提示
+      document_capture_selfie_text1: 把设备放在眼睛水平
+      document_capture_selfie_text2: 确保你整个面孔都可以看到
+      document_capture_selfie_text3: 在光线充沛的地方拍照
+      most_common: 最常见
+      review_issues_id_header_text: '请仔细查看你州政府颁发身份证件的图像：'
+      review_issues_id_text1: 你是否使用了暗色背景？
+      review_issues_id_text2: 是否在平坦平面上拍的照？
+      review_issues_id_text3: 你相机的闪光灯是否关闭？
+      review_issues_id_text4: 是否所有细节都清晰可见？

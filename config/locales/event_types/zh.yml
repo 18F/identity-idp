@@ -1,0 +1,28 @@
+---
+zh:
+  event_types:
+    account_created: 账户已设立
+    account_verified: 账户已验证
+    authenticated_at: 已在 %{service_provider}登录
+    authenticated_at_html: 已在 %{service_provider_link_html}登录
+    authenticator_disabled: 身份证实器应用程序已去掉
+    authenticator_enabled: 身份证实器应用程序已添加
+    backup_codes_added: 备用代码已添加
+    eastern_timestamp: '%{timestamp} （东部）'
+    email_changed: 电邮地址已更改
+    email_deleted: 电邮地址已删除
+    gpo_mail_sent: 信已发送
+    new_personal_key: 个人密钥已更改
+    password_changed: 密码已更改
+    password_invalidated: 密码由 %{app_name}重设
+    personal_key_used: 个人密钥被使用来登录
+    phone_added: 电话号码已添加。
+    phone_changed: 电话号码已更改。
+    phone_confirmed: 电话已确认
+    phone_removed: 电话号码已去掉。
+    piv_cac_disabled: PIV/CAC 卡无关联
+    piv_cac_enabled: PIV/CAC 卡已关联
+    sign_in_after_2fa: 已使用第二个因素登录
+    sign_in_before_2fa: 已使用密码登录
+    webauthn_key_added: 硬件安全密钥已添加
+    webauthn_key_removed: 硬件安全密钥已去掉

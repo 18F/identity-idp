@@ -1,0 +1,16 @@
+---
+zh:
+  shared:
+    banner:
+      fake_site: 美国政府的一个示范网站
+      gov_description_html: <strong>.gov</strong> 网站属于一个美国官方政府机构。
+      gov_heading: 官方网站使用 .gov
+      how: 这里告诉你如何知道
+      landmark_label: 官方政府网站
+      lock_description: 锁上的锁头
+      official_site: 美国政府的一个官方网站
+      secure_description_html: 一把 <strong>锁</strong> ( %{lock_icon} )或者 <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
+      secure_heading: 安全的 .gov 网站使用 HTTPS
+    footer_lite:
+      gsa: 美国联邦总务管理局
+    skip_link: 跳到主要内容

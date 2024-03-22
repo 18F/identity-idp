@@ -1,0 +1,41 @@
+---
+zh:
+  date:
+    day_names:
+      -  # empty item to have correct weekday offset for %A
+      - 星期一
+      - 星期二
+      - 星期三
+      - 星期四
+      - 星期五
+      - 星期六
+      - 星期天
+    formats:
+      long: '%B %-d, %Y'
+      short: '%A, %B %-d'
+    month_names:
+      -
+      - 1月
+      - 2月
+      - 3月
+      - 4月
+      - 5月
+      - 6月
+      - 7月
+      - 8月
+      - 9月
+      - 10月
+      - 11月
+      - 12月
+    range: '从 %{from} 到 %{to}'
+  time:
+    am: 上午
+    formats:
+      event_date: '%B %-d, %Y'
+      event_time: '%-l:%M %p'
+      event_timestamp: '%B %-d, %Y at %-l:%M %p'
+      event_timestamp_js: '%{Year} %{month} %{day}, %{hour}:%{minute} %{day_period}'
+      event_timestamp_utc: '%B %-d, %Y， %-l:%M %p UTC'
+      event_timestamp_with_zone: '%B %-d, %Y，%-l:%M %p %Z'
+      sms_date: '%Y/%m/%d'
+    pm: 下午

@@ -1,0 +1,136 @@
+---
+zh:
+  in_person_proofing:
+    body:
+      barcode:
+        cancel_link_text: 取消你的条形码
+        close_window: 你现在可以关闭这一窗口。
+        deadline: 你必须在 %{deadline}之前去任何参与邮局。
+        deadline_restart: 如果你在截止日期后才去邮局，你的信息不会被存储，你又得从头开始这一过程。
+        email_sent: 我们已将该信息发送到你用来登录的电邮。
+        learn_more: 了解有关携带物品的更多信息
+        location_details: 详细地址信息
+        questions: 有问题吗？
+        retail_hours: 营业时间
+        retail_hours_closed: 已关闭
+        return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
+        return_to_partner_link: 登出 %{app_name} 并返回 %{app_name}
+        what_to_expect: 在邮局会发生什么
+      cta:
+        button: 尝试亲身去
+        prompt_detail: 你也许可以到附近一个参与本项目的邮局去亲身验证你的身份证件。
+      expect:
+        heading: 去邮局后会发生什么
+        info: 你去邮局后 24 小时内，我们会给你发电邮，告诉你是否成功验证了身份。
+      location:
+        distance:
+          one: '距离你 %{count} 英里'
+          other: '距离你 %{count} 英里'
+        heading: 邮局信息
+        info: 验证你的身份无需做预约。你可以去任何参与邮局。
+        inline_error: 请输入正确地址，包括城市、州和邮编
+        location_button: 选择
+        po_search:
+          address_label: 地址
+          address_search_hint: '举例：1234 N Example St., Allentown, PA 12345'
+          address_search_label: 输入地址来寻找你附件的邮局。
+          city_label: 城市
+          is_searching_message: 正在寻找邮局。。。
+          none_found: 抱歉，%{address}方圆 50 英里没有参与本项目的邮局。
+          none_found_tip: 你可以换个地址搜索，或添加你身份证件照片，再次尝试在网上验证你的身份。
+          po_search_about: 你能在当地任何一个参与的美国邮局亲身去验证身份。
+          results_description:
+            one: %{address}方圆 50 英里有一个参与本项目的邮局。
+            other: %{address}方圆 50 英里有 %{count} 个参与本项目邮局。
+          results_instructions: 选择下面一个邮局，或者换个地址做搜索。
+          search_button: 搜索
+          state_label: 州
+          zipcode_label: 邮编
+        retail_hours_heading: 营业时间
+        retail_hours_sat: '周六：'
+        retail_hours_sun: '周日：'
+        retail_hours_weekday: '周一到周五：'
+        selection: '这是你选择的地点：'
+      prepare:
+        privacy_disclaimer: '%{app_name} 是一个安全的政府网站。我们和美国邮局使用你的数据来验证你的身份。'
+        privacy_disclaimer_link: 了解有关隐私和安全的更多信息。
+        privacy_disclaimer_questions: 有问题吗？
+        verify_step_about: '完成以下步骤来生成你带去邮局的条形码。'
+        verify_step_enter_phone: 输入你的主要电话号码或者你最常使用的号码。
+        verify_step_enter_pii: 输入你的姓名、生日、州政府颁发的身份证件号、地址以及社会保障号码。
+        verify_step_post_office: 找到你附件的参与邮局。
+      state_id:
+        alert_message: '州政府颁发给你的身份证件必须尚未过期。系统接受的身份证件包括：'
+        id_types:
+          - 州驾照
+          - 州非驾照身份卡
+        info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong> 我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
+        learn_more_link: 了解更多有关哪些身份证件可被接受的信息。
+        questions: 有问题吗？
+    form:
+      address:
+        errors:
+          unsupported_chars: '我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。'
+        state_prompt: '- 选择 -'
+      state_id:
+        address1: 地址第 1 行
+        address1_hint: '举例： 150 Calle A Apt 3'
+        address2: 地址第 2 行
+        address2_hint: '举例： URB Las Gladiolas or COND Miraflor'
+        city: 城市
+        date_hint:
+          day: '举例：28'
+          month: '举例：4'
+          year: '举例：1986'
+        dob: 生日
+        dob_hint: '举例：4 28 1986'
+        errors:
+          unsupported_chars: '我们的系统无法读取以下字符：%{char_list}.请使用你身份证件上的字符再试一次。'
+        first_name: 名
+        identity_doc_address_state: 州
+        identity_doc_address_state_prompt: '- 选择 -'
+        last_name: 姓
+        memorable_date:
+          errors:
+            date_of_birth:
+              missing_month_day_year: 输入生日
+              range_min_age: 你年龄必须超过 13 岁才能使用 %{app_name}
+              range_overflow: 输入过去的一个日期
+        same_address_as_id: 你目前所住地址是州政府颁发的身份证件上所列地址吗？
+        same_address_as_id_no: 不是，我住在一个不同的地址。
+        same_address_as_id_yes: 是的，我住在州政府颁发的身份证件上所列地址。
+        state_id_jurisdiction: 颁发州
+        state_id_jurisdiction_hint: 这是颁发你身份证件的州
+        state_id_jurisdiction_prompt: '- 选择 -'
+        state_id_number: 身份证件号
+        state_id_number_florida_hint: 这是你身份证件上的号码，以1个字母打头，然后是12个数字。无需横杠。
+        state_id_number_hint: '可以包含字母、数字以及以下符号：'
+        state_id_number_hint_asterisks: 星号
+        state_id_number_hint_dashes: 横杠
+        state_id_number_hint_forward_slashes: 前斜杠
+        state_id_number_hint_spaces: 空格
+        state_id_number_texas_hint: 这是你身份证件上的8位数在这一字段中只输入数字
+        zipcode: 邮编
+    headings:
+      address: 输入你当前住宅地址
+      barcode: 到邮局出示这一条形码和你州政府颁发的身份证件来完成验证身份。
+      cta: 尝试亲身去验证身份证件
+      id_address: 你身份证件上的地址
+      po_search:
+        location: 找到一个参与本项目的邮局
+      prepare: 亲身去验证身份
+      state_id_milestone_2: 输入你州政府颁发身份证件上的信息。
+      switch_back: 切换回你的电脑，来准备亲身去验证身份。
+      update_address: 更新你当前地址
+      update_state_id: 更新你身份证件上的信息
+    process:
+      barcode:
+        caption_label: 注册代码
+        heading: 出示你的 %{app_name} 条形码
+        info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
+      state_id:
+        heading: 出示你州驾照或州非驾照身份卡。
+        info: 该证件必须在有效期内。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
+      what_to_do:
+        heading: 请排在任何一队里
+        info: 告诉邮局工作人员你是为了%{app_name}验证你的身份。

@@ -1,0 +1,149 @@
+---
+zh:
+  two_factor_authentication:
+    aal2_request:
+      phishing_resistant_html: '<strong>%{sp_name}</strong> 要求一种高安全水平的身份证实方法。比如人脸或触摸解锁、安全密钥或政府雇员身份证件。'
+      piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
+    account_reset:
+      cancel_link: 取消你的请求
+      link: 删除你的账户
+      pending: 你目前有个待处理的删除账户请求。从你提出请求到完成该流程需要 24 个小时请稍后回来查看。
+      successful_cancel: 谢谢。你删除自己 %{app_name} 账户的请求已被取消。
+      text_html: 如果你无法使用上述身份证实方法，可以通过 %{link_html} 重设你的首选。
+    attempt_remaining_warning_html:
+      one: 你还可以再试 <strong>%{count}  次 </strong> 。
+      other: 你还可以再试 <strong>%{count}  次 </strong> 。
+    backup_code_header_text: 输入你的备用代码。
+    backup_code_prompt: 该安全代码可使用一次。提交后，你下次就需要使用一个新备用代码。
+    backup_codes:
+      add_another_authentication_option: '‹添加另一个身份证实方法。'
+      instructions: 如果你无法使用另一个设备，请将安全代码存放好。万一丢失备用代码，你就无法登录%{app_name}。
+      new_backup_codes_html: 我需要新备用&nbsp；代码
+      saved_backup_codes: 我已保存了我的备用代码
+      warning_html: <strong>你只在自己账户上设置了备用代码。</strong>如果你可以使用另一个设备，比如手机，请用另一种身份证实方法来保护你的账户。
+    choose_another_option: '‹ 选择另一个身份证实方法'
+    form_legend: 选择你的身份证实方法
+    header_text: 输入一次性代码
+    important_alert_icon: 重要警告标志
+    invalid_backup_code: 该备用代码有误
+    invalid_otp: 那个一次性代码有误。再试一次或请求新代码。
+    invalid_personal_key: 那个个人密钥有误
+    invalid_piv_cac: 那个 PIV/CAC 没起作用。确保 PIV/CAC 是这个账户的。如果的确是，那你的PIV/CAC、个人识别号码（PIN）有问题，或者我们这边出了问题。再试一次或选择另一个身份证实方法。
+    learn_more: 了解身份证实选项的更多信息
+    login_intro: 你设立账户时设了它们。
+    login_intro_reauthentication: 在你能对账户做出任何更改前，我们需要你使用你一种身份证实方法来确定的确是你。
+    login_options:
+      auth_app: 身份证实 app
+      auth_app_info: 使用你的身份证实应用程序获得一个安全代码。
+      backup_code: 备用代码
+      backup_code_info: 用你备用代码清单中的一个备用代码来登录。
+      personal_key: 个人密钥
+      personal_key_info: 使用你设立账户时得到的 16 字符的个人密钥。
+      piv_cac: 政府雇员身份证件
+      piv_cac_info: 用你的 PIV/CAC 卡而不是安全代码。
+      sms: 短信
+      sms_info_html: 通过发给 <strong>%{phone}</strong> 短信得到一次性代码。
+      voice: 自动拨打的电话
+      voice_info_html: 通过电话<strong>%{phone}</strong>（仅限北美电话号码）得到一次性代码。
+      webauthn: 安全密钥
+      webauthn_info: 使用你的安全密钥来访问账户
+      webauthn_platform: 人脸或触摸解锁
+      webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
+    login_options_link_text: 选择另一个身份证实方法
+    login_options_reauthentication_title: 须重新进行身份证实
+    login_options_title: 选择你的身份证实方法
+    max_backup_code_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入备用代码太多次。
+    max_generic_login_attempts_reached: 为了你的安全，你的账户暂时被锁住。
+    max_otp_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入一次性代码太多次。
+    max_otp_requests_reached: 为了你的安全，你的账户暂时被锁住，因为你要求一次性代码太多次。
+    max_personal_key_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误输入个人密钥太多次。
+    max_piv_cac_login_attempts_reached: 为了你的安全，你的账户暂时被锁住，因为你错误提供 piv/cac 凭据太多次。
+    mobile_terms_of_service: 移动服务条款
+    no_auth_option: 找不到身份证实选项让你登录。
+    opt_in:
+      error_retry: 抱歉，我们让你加入有困难。请再试一次。
+      opted_out_html: 你选择不在 %{phone_number_html} 接受短信。你可以选择加入并再在那个电话号码接受安全代码。
+      opted_out_last_30d_html: 你选择过去 30 天里不在 %{phone_number_html} 接受短信。我们每 30 天只能允许加入一次电话号码。
+      title: 我们无法向你电话号码发送安全代码。
+      wait_30d_opt_in: 30 天后，你可以选择加入并在那个电话号码接受安全代码。
+    otp_delivery_preference:
+      instruction: 你可以随时对此进行更改。如果你使用座机电话，请选择“接听电话”。
+      landline_warning_html: 输入的电话号码似乎是一个 <strong>座机电话</strong>。通过 %{phone_setup_path} 请求一次性代码。
+      no_supported_options: 我们无法验证 %{location} 的电话号码。
+      phone_call: 电话
+      sms: 短信（SMS）
+      sms_unsupported: 我们无法向 %{location} 的电话号码发送短信。
+      title: 你会怎么得到代码
+      voice: 电话
+      voice_unsupported: 我们无法验证给 %{location} 的电话号码打电话。
+    otp_make_default_number:
+      instruction: 把一次性代码发给这一默认号码
+      label: 默认电话号码
+      one_number_instruction: 你必须添加了不止一个电话号码才能选择一个默认号码。
+      one_number_title: 这是你的默认号码
+      title: 把这个设为你的默认电话号码？
+    personal_key_header_text: 输入你的个人密钥
+    personal_key_prompt: 该个人密钥可使用一次。输入后，一个新钥会提供给你。
+    phone:
+      delete:
+        failure: 无法去掉你的电话。
+        success: 你的电话已被去掉。
+    phone_fee_disclosure: 可能会收短信和数据费。
+    phone_info: 你每次登录我们会给你发个一次性代码。
+    phone_label: 电话号码
+    phone_verification:
+      troubleshooting:
+        change_number: 使用另一个电话号码
+        code_not_received: 我没收到一次性代码
+    piv_cac_header_text: 提供你的 PIV/CAC
+    please_try_again_html: 请在 <strong>%{countdown}</strong> 后再试一次。
+    read_about_two_factor_authentication: 阅读有关双因素身份证实的内容
+    recaptcha:
+      disclosure_statement_html: 该网站由 reCAPTCHA 保护而且谷歌的 %{google_policy_link_html} 和 %{google_tos_link_html} 都适用。阅读 %{app_name}的 %{login_tos_link_html}。
+      google_policy_link: 隐私政策
+      google_tos_link: 服务条款
+      login_tos_link: 移动使用条款
+    totp_header_text: 输入你的身份证实应用程序代码
+    two_factor_aal3_choice: 要求额外的身份证实
+    two_factor_aal3_choice_intro: 该应用程序要求更高的安全级别。要访问你信息，你需要使用一个实体设备 - 比如安全密钥或政府雇员身份证件(PIV 或 CAC) - 来验证你的身份。
+    two_factor_choice: 身份证实方法设置
+    two_factor_choice_options:
+      auth_app: 身份证实应用程序
+      auth_app_info: 下载或使用你选择的身份证实应用程序来生成安全代码。
+      backup_code: 备用代码
+      backup_code_info: 你可以打印或存到你设备里一套 10 个代码。你使用最后一个代码时，我们会生成一套新的。谨记备用代码容易丢失
+      configurations_added:
+        one: '%{count} 已添加'
+        other: '%{count} 已添加'
+      no_count_configuration_added: 添加了
+      phone: 短信或语音
+      phone_info: 通过（SMS）短信或接听电话接受安全代码。
+      phone_info_no_voip: 请勿使用基于网络的（VOIP）电话服务或高价（收费）电话号码。
+      piv_cac: 政府雇员身份证件
+      piv_cac_info: 政府和军队雇员的 PIV/CAC 卡仅限桌面电脑。
+      webauthn: 安全密钥
+      webauthn_info: 一个实体设备，通常形状像一个U盘，可以插入你的设备。
+      webauthn_platform: 人脸或触摸解锁
+      webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
+    two_factor_hspd12_choice: 要求额外的身份证实
+    two_factor_hspd12_choice_intro: 该应用程序要求更高的安全级别。要访问你的信息，你需要使用政府雇员身份证件 (PIV/CAC) 来验证身份。
+    webauthn_authenticating: 正在证实你的凭据...
+    webauthn_error:
+      additional_methods_link: 选择另一个身份证实方法
+      connect_html: 我们无法连接安全密钥。请再试一次或者 %{link_html}。
+      screen_lock_no_other_mfa: 我们无法用人脸或触摸解锁进行身份证实。请试着在你首次设置人脸或触摸解锁的设备上登录。
+      screen_lock_other_mfa_html: 我们无法用人脸或触摸解锁进行身份证实。%{link_html}，请试着在你首次设置人脸或触摸解锁的设备上登录。
+      try_again: 人脸或触摸解锁不成功。请再试一次或者 %{link}。
+      use_a_different_method: 使用另一种身份证实方法
+    webauthn_header_text: 连接你的安全密钥
+    webauthn_platform:
+      change_nickname: 更改昵称
+      delete: 删除该设备
+      deleted: 成功地删除了人脸或触摸解锁方法
+      edit_heading: 管理你的人脸或触摸解锁设置
+      manage_accessible_label: 管理人脸或触摸解锁
+      nickname: 昵称
+      renamed: 成功地重新命名了你的人脸或触摸解锁方法
+    webauthn_platform_header_text: 使用人脸或触摸解锁
+    webauthn_platform_use_key: 使用屏幕解锁
+    webauthn_use_key: 使用安全密钥

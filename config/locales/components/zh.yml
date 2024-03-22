@@ -1,0 +1,75 @@
+---
+zh:
+  components:
+    barcode:
+      image_alt: 条形码
+    captcha_submit_button:
+      action_message: 验证中
+      mock_score_disclaimer: 只针对内部
+      mock_score_label: 'reCAPTCHA 分数： (0.0 - 1.0)'
+    clipboard_button:
+      label: 复制
+      tooltip: 复制了！
+    countdown_alert:
+      time_remaining_html: '余下 %{countdown_html}'
+    download_button:
+      label: 下载
+    javascript_required:
+      browser_instructions: '按照说明让你浏览器启用 JavaScript:'
+      enabled_alert: 你在浏览器中启用了 JavaScript。
+      next_step: 你在浏览器中启用了 JavaScript后，请刷新本页面。
+    manageable_authenticator:
+      cancel: 取消
+      created_on:  在 %{date}创建 
+      delete: 删除
+      delete_confirm: 你确定要删除该身份证实方法吗？
+      deleted: 成功地删除了一个身份证实方法
+      deleting: 删除中...
+      done: 做完了
+      manage: 管理
+      manage_accessible_label: 管理身份证实方法
+      nickname: 昵称
+      rename: 重新命名
+      renamed: 成功地重新命名了你的身份证实方法
+      save: 保存
+      saving: 保存中...
+    memorable_date:
+      day: 日
+      errors:
+        invalid_date: 输入的不是一个合理日期。
+        invalid_day: 日请输入 1 到 31
+        invalid_month: 月请输入 1 到 21
+        invalid_year: 年请输入 4 位数
+        missing_day: 输入日
+        missing_day_year: 输入日和年
+        missing_month: 输入月
+        missing_month_day: 输入月和日
+        missing_month_day_year:  输入 %{label} 
+        missing_month_year: 输入月和年
+        missing_year: 输入年
+        outside_date_range:  输入 %{label}（%{min} 到 %{max}） 
+        range_overflow:  输入 %{date}或之前日期 
+        range_underflow:  输入 %{date}或之后日期 
+      month: 月
+      year: 年
+    one_time_code_input:
+      hint:
+        alphanumeric: '举例：123ABC'
+        numeric: '举例：123456'
+      label: 一次性代码
+    password_confirmation:
+      confirm_label: 确认密码
+      errors:
+        empty: 重打你的密码
+        mismatch: 你的密码不一致
+      toggle_label: 显示密码
+    password_toggle:
+      label: 密码
+      toggle_label: 显示密码
+    phone_input:
+      country_code_label: 国家代码
+    print_button:
+      label: 打印
+    troubleshooting_options:
+      default_heading: '有疑难？可以这样做：'
+      ipp_heading: '更多化解疑难选项：'

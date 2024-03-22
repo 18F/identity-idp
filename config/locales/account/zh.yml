@@ -1,0 +1,109 @@
+---
+zh:
+  account:
+    connected_apps:
+      associated: 已连接 %{timestamp}
+      description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
+    email_language:
+      default: '%{language} （默认）'
+      edit_title: 编辑电邮语言选择
+      languages_list: '%{app_name} 允许你以 %{list}接受电邮沟通。'
+      name:
+        en: 英文
+        es: 西班牙文
+        fr: 法文
+      sentence_connector: 或者
+      updated: 你的电邮语言选择已更新。
+    forget_all_browsers:
+      longer_description: 你选择“忘掉所有浏览器“后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
+    index:
+      auth_app_add: 添加应用程序
+      auth_app_disabled: 未启用
+      auth_app_enabled: 已启用
+      backup_code_confirm_delete: 是的，删除代码
+      backup_code_confirm_regenerate: 是的，重新生成代码
+      backup_codes_exist: 生成了
+      backup_codes_no_exist: 未生成
+      continue_to_service_provider: 继续到 %{service_provider}
+      default: 默认
+      device: '在 %{os}的 %{browser}'
+      email: 电邮地址
+      email_add: 添加新电邮地址
+      email_addresses: 电邮地址
+      email_preferences: 电邮选择
+      password: 密码
+      phone: 电话号码
+      phone_add: 添加电话
+      piv_cac_add: 添加身份证件
+      piv_cac_confirm_delete: 是的，把卡拿掉
+      reactivation:
+        instructions: 你的用户资料因为重设密码最近被停用。
+        link: 现在重新激活你的用户资料。
+      sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
+      totp_confirm_delete: 是的，把身份证实应用程序去掉
+      unknown_location: 未知地点
+      verification:
+        instructions: 你账户的验证需要一个验证码。
+        reactivate_button: 输入你通过邮局邮件收到的代码。
+        success: 我们验证了你的信息
+      webauthn: 安全密钥
+      webauthn_add: 添加安全密钥
+      webauthn_confirm_delete: 是的，去掉密钥
+      webauthn_delete: 把密钥去掉
+      webauthn_platform: 人脸或触摸解锁
+      webauthn_platform_add: 添加人脸或触摸解锁
+      webauthn_platform_confirm_delete: 是的，把人脸或触摸解锁去掉
+    items:
+      delete_your_account: 删除你的账户
+      personal_key: 个人密钥
+    links:
+      delete_account: 删除
+      regenerate_personal_key: 重设
+    login:
+      forced_reauthentication_notice_html: <strong>%{sp_name}</strong> 需要你再次输入你的电邮和密码。
+      piv_cac: 使用你的政府雇员身份证件登录
+      tab_navigation: 账户创建标签页
+    navigation:
+      add_authentication_apps: 添加身份证实应用程序
+      add_email: 添加电邮地址
+      add_federal_id: 添加政府雇员身份证件
+      add_phone_number: 添加电话号码
+      add_platform_authenticator: 添加人脸或触摸解锁
+      add_security_key: 添加安全密钥
+      close: 关闭
+      connected_accounts: 你已连接的账户
+      customer_support: 客户支持
+      delete_account: 删除账户
+      edit_password: 编辑密码
+      forget_browsers: 忘掉所有浏览器
+      get_backup_codes: 获得备用代码
+      history: 历史
+      landmark_label: 侧边导航
+      menu: 菜单
+      reset_personal_key: 重设个人密钥
+      two_factor_authentication: 你的身份证实方法。
+      your_account: 你的账户
+    personal_key:
+      get_new: 获得新个人密钥
+      get_new_description: 你得到新个人密钥时，老的个人密钥就失效了。
+      last_generated: 最后在 %{timestamp} 生成。
+      needs_new: 你的账户需要新个人密钥。如果你忘记了密码，老的个人密钥就无效了。
+      old_key_will_not_work: 请打印、复印、或下载下面的新个人密钥。如果你忘记了密码，老的个人密钥就无效了。
+      reset_instructions: 如果你没有个人密钥，请重设。如果你忘记了密码，就需要该个人密钥。
+      reset_success: 你的个人密钥已重设。
+    re_verify:
+      banner: 为了保护你的隐私，我们已隐藏了你的用户资料信息。
+      footer: 验证身份来查看你的信息。
+    revoke_consent:
+      link_title: 切断连接
+      longer_description_html: 你的信息将不再与 %{service_provider_html} 分享。以后要访问 %{service_provider_html}，你必须授权同意分享你的信息。授权同意请到 %{service_provider_html} 网站并登录。
+    security:
+      link: 请到帮助中心了解更多信息
+      text: 为了你的安全，你的用户资料已被锁住。
+    verified_information:
+      address: 地址
+      dob: 生日
+      full_name: 姓名
+      phone_number: 电话号码
+      ssn: 社会保障号码
+    welcome: 欢迎。
