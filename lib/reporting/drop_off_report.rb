@@ -216,7 +216,7 @@ module Reporting
           ),
         ],
         [
-          'Workflow Completed - Total Pending (event)',
+          'USPS letter enqueued (event)',
           idv_pending_gpo,
           dropoff = idv_enter_password_submitted -
                     idv_pending_gpo,
