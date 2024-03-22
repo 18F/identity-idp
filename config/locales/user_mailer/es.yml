@@ -39,10 +39,10 @@ es:
         espera de %{waiting_period} si perdió el acceso a sus métodos de
         autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de
         autenticación, puede iniciar sesión en su cuenta %{app_name} para
-        cancelar esta solicitud.<br><br> Paso dos: Después de su período de
-        espera de %{waiting_period}, recibirá un correo electrónico que le
-        pedirá que confirme la eliminación de su cuenta %{app_name}. Su cuenta
-        no se eliminará hasta que confirme.'
+        cancelar esta solicitud.<br><br> Paso dos: Tras el período de espera de
+        %{waiting_period}, recibirás un correo electrónico en el que te
+        pediremos que confirmes la eliminación de tu cuenta %{app_name}. Tu
+        cuenta no se eliminará hasta que lo confirmes.'
       subject: Cómo eliminar su cuenta de %{app_name}
     account_verified:
       change_password_link: cambiar tu contraseña

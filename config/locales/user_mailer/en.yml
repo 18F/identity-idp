@@ -37,10 +37,10 @@ en:
         %{waiting_period} if you have lost access to your authentication methods
         and need to delete your account. If you locate your authentication
         methods, you can sign in to your %{app_name} account to cancel this
-        request.<br><br> Step Two: After your %{waiting_period} waiting period,
-        you will receive an email that will ask you to confirm the deletion of
-        your %{app_name} account. Your account will not be deleted until you
-        confirm.'
+        request.<br><br> Step Two: After the waiting period of
+        %{waiting_period}, you will receive an email that will ask you to
+        confirm the deletion of your %{app_name} account. Your account will not
+        be deleted until you confirm.'
       subject: How to delete your %{app_name} account
     account_verified:
       change_password_link: change your password

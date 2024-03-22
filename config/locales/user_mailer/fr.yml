@@ -41,10 +41,9 @@ fr:
         d’authentification et devez supprimer votre compte. Si vous trouvez vos
         méthodes d’authentification, vous pouvez vous connecter à votre compte
         %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après
-        votre période d’attente de %{waiting_period}, vous recevrez un e-mail
-        qui vous demandera de confirmer la suppression de votre compte
-        %{app_name}. Votre compte ne sera pas supprimé tant que vous ne l’aurez
-        pas confirmé.'
+        la période d’attente de %{waiting_period}, vous recevrez un e-mail qui
+        vous demandera de confirmer la suppression de votre compte %{app_name}.
+        Votre compte ne sera pas supprimé tant que vous n’aurez pas confirmé.'
       subject: Comment supprimer votre compte %{app_name}
     account_verified:
       change_password_link: changer votre mot de passe
