@@ -7,8 +7,10 @@ class ModalElement extends HTMLElement {
    * Shows the modal dialog.
    */
   show() {
-    this.ownerDocument.body.classList.add('usa-js-modal--active');
-    this.#dialog.showModal();
+    if (!this.#dialog.open) {
+      this.ownerDocument.body.classList.add('usa-js-modal--active');
+      this.#dialog.showModal();
+    }
   }
 
   /**

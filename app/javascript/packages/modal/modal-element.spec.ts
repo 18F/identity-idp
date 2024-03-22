@@ -12,8 +12,19 @@ describe('ModalElement', () => {
   beforeEach(() => {
     // JSDOM does not currently implement HTMLDialogElement, so stub minimal implementation
     // See: https://github.com/jsdom/jsdom/issues/3294
+    defineProperty(HTMLDialogElement.prototype, 'open', {
+      get() {
+        return this.hasAttribute('open');
+      },
+    });
     defineProperty(HTMLDialogElement.prototype, 'showModal', {
       value(this: HTMLDialogElement) {
+        if (this.open) {
+          // "If this has an open attribute, then throw an "InvalidStateError" DOMException."
+          // See: https://html.spec.whatwg.org/multipage/interactive-elements.html#dom-dialog-showmodal-dev
+          throw new DOMException('InvalidStateError');
+        }
+
         this.setAttribute('open', '');
       },
       configurable: true,
@@ -62,6 +73,17 @@ describe('ModalElement', () => {
       const dialog = screen.getByRole('dialog');
       expect(dialog.hasAttribute('open')).to.be.true();
       expect(document.body.classList.contains('usa-js-modal--active')).to.be.true();
+    });
+
+    context('while already visible', () => {
+      it('is a noop', () => {
+        modal.show();
+        modal.show();
+
+        const dialog = screen.getByRole('dialog');
+        expect(dialog.hasAttribute('open')).to.be.true();
+        expect(document.body.classList.contains('usa-js-modal--active')).to.be.true();
+      });
     });
   });
 
