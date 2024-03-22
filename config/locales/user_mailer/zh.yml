@@ -1,0 +1,189 @@
+---
+zh:
+  user_mailer:
+    account_reinstated:
+      subject: 你的账户已解锁
+      we_have_finished_reviewing: 我们已完成对你%{app_name}账户的审查，你现在能使用账户信息登录了。
+    account_rejected:
+      intro: 我们无法在%{app_name}验证你的身份。请联系你试图访问其服务的那个机构。
+      subject: 我们无法验证你的身份。
+    account_reset_cancel:
+      intro_html: 这封电邮确认你已取消删除你 %{app_name_html} 账户的请求。
+      subject: 请求已取消
+    account_reset_complete:
+      intro_html: 这封电邮确认你已删除你的 %{app_name_html} 账户。
+      subject: 账户已删除
+    account_reset_granted:
+      button: 是的，继续删除
+      cancel_link_text: 请取消
+      help_html: 如果你不想删除你的账户，%{cancel_account_reset_html}。
+      intro_html: 你的24小时等待期已结束。请完成流程第 2 步。<br><br> 如果你无法找到自己的身份证实方法，选择“确认删除”来删除你的 %{app_name} 账户。<br><br> 账户删除后，将来如果你需要访问使用 %{app_name}的参与这个项目的政府网站，可以使用同一电邮地址来设立一个新 %{app_name} 账户。<br><br>
+      subject: 删除你的 %{app_name} 账户
+    account_reset_request:
+      cancel: 不想删除你的账户？登入你的 %{app_name} 账户来取消。
+      header: 你的账户会在 24 小时后删除。
+      intro_html: '作为安全措施, %{app_name} 要求一个两步流程来删除账户: <br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个 24 小时的等待期。如果你找到了身份证实方法, 可登入你的 %{app_name} 账户来取消这一请求。<br><br> 第二步：24 小时等待期过了之后，你会收到一封电邮，请你确认删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。'
+      subject: 如何删除你的 %{app_name} 账户
+    account_verified:
+      change_password_link: 更改密码
+      contact_link: 联系我们
+      intro_html: 你于 %{date} 使用 %{app_name} 在 %{sp_name}}成功验证了身份。如果你没有采取这一行动，请 %{contact_link_html} 并登录 %{change_password_link_html}。
+      subject: 你在 %{sp_name} 验证了身份。
+    add_email:
+      footer: 这个链接会在 %{confirmation_period} 后作废。
+      header: 感谢添加电邮。请点击下面的链接或把整个链接复制并黏贴进浏览器。
+      subject: 确认你的电邮
+    add_email_associated_with_another_account:
+      help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
+      intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能把它加到另外一个账户上。你必须首先将其从与之相关的账户中删除或去掉。要做到这一点，点击以下链接并用该电邮地址登录。如果你没有试图将此电邮地址加到一个账户，可忽略这一信息。
+      link_text: 请到 %{app_name}
+      reset_password_html: 如果你不记得密码，请到 %{app_name_html} 去重设密码。
+    contact_link_text: 联系我们
+    email_added:
+      header: 一个新电邮地址加进了你的 %{app_name} 用户资料中。
+      help: 如果你没有作此更改，请登录你的用户资料来管理电邮地址。我们推荐你也更改密码。
+      subject: 新电邮地址已添加
+    email_confirmation_instructions:
+      create_new_account: 设立新账户。
+      email_not_found: 电邮没找到
+      first_sentence:
+        confirmed: 试图更改你电邮地址？
+        forgot_password: 你试图重设 %{app_name} 密码，但我们没有与此电邮地址相连接的账户。
+        unconfirmed: 感谢提交你的电邮地址。
+      footer: 这一链接会在 %{confirmation_period}后作废。
+      header: '%{intro}请点击下面的链接或把整个链接复制并黏贴进浏览器。'
+      link_text: 确认电邮地址
+      request_with_diff_email: 你可以使用与你 %{app_name} 账户连接的一个不同电邮地址来要求重设密码。
+      subject: 确认你的电邮
+      try_diff_email: 尝试用一个不同的电邮地址
+      use_this_email: 或者使用这一电邮地址，而且
+    email_deleted:
+      header: 一个电邮地址被从你的 %{app_name} 用户资料中删除。
+      help_html: 如果你没有想删除这一电邮地址， 请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
+      subject: 电邮地址已删除
+    help_link_text: 帮助中心
+    in_person_completion_survey:
+      body:
+        cta:
+          callout: 点击下面的按钮来开始
+          label: 填写我们的意见调查
+        greeting: 你好，
+        intent: 我们想听听你在邮局亲身验证身份的经历。
+        privacy_html: 你对这份意见调查的回复将会依照下面的 <a href=\"%{url}\">隐私和安全标准</a> 得到保护。
+        request_description: 填写一个简短、匿名的调查问卷，你的意见会帮助我们更好满足你的需求。
+        thanks: 感谢使用 %{app_name}。
+      header: 花点时间告诉我们，我们表现如何
+      subject: 讲讲你最近在 %{app_name} 的经历
+    in_person_deadline_passed:
+      body:
+        canceled: 亲身验证身份的截止日期已过，为了保护你的个人数据，我们自动取消了你的请求。
+        cta: 重新开始
+        greeting: 你好，
+        restart: 你可以开始提出在 %{partner_agency}验证身份的新请求。
+      header: 亲身验证身份的截止日期已过。
+      subject: 你亲身验证身份的要求已过期。
+    in_person_failed:
+      body:
+        with_cta: 点击按钮或者复制下面的链接来再次在网上通过 %{sp_or_app_name}验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
+        without_cta: 请尝试从 %{sp_name}的网站再次验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
+      intro: 你的身份于 %{date}在 %{location} 邮局未能得到验证。
+      subject: 你的身份未能亲身被验证。
+      verifying_identity: '验证你的身份时:'
+      verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
+    in_person_failed_suspected_fraud:
+      body:
+        help_center_html: 如需要更多帮助，可以<a href=\"%{help_center_url}\">访问我们的帮助中心</a> 或寻求你试图访问的机构的帮助。
+        intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
+      greeting: 你好，
+      subject: 你的身份未能亲身被验证。
+    in_person_outage_notification:
+      body:
+        closing_html: 对于服务的延迟，我们诚恳道歉。如果你 6 月 1 日之前有问题或没有收到结果，请 <a href=\"%{contact_us_url}\">联系 %{app_name} 客户支持</a>。
+        heading: 亲身验证身份的结果从 5 月 20 日延到了 5 月 30 日。
+        instructions: 如果你已尝试过在邮局完成验证身份的过程，现在则没必要再去试。请放心，你的验证结果没有丢失，而是已被安全保存，而且等我们解决技术问题后就会通过电邮发给你。
+        intro_html: 我们正在解决导致亲身验证身份结果延迟的一个技术问题。<Strong>如果你 5 月 20 日到 29 日之间已经尝试过在邮局完成验证身份的过程，结果可能直到 5 月 30 日（礼拜二）才能通过电邮发给你 </strong>。
+      subject: '%{app_name} 亲身验证身份的结果延迟了'
+    in_person_ready_to_verify:
+      subject: 你可以在 %{app_name} 亲身验证身份了
+    in_person_ready_to_verify_reminder:
+      greeting: 你好，
+      heading:
+        one: 你距离亲身验证身份截止日期还有 %{count} 天
+        other: 你距离亲身验证身份截止日期还有 %{count} 天
+      intro: 不要错过到你附近邮局验证身份的机会。完成这一步以访问 %{sp_name}。
+      subject:
+        one: 第二天去邮局验证身份。
+        other: 过%{count} 天去邮局验证身份。
+    in_person_verified:
+      greeting: 你好，
+      intro: 你于 %{date}在 %{location} 邮局成功地验证了身份。
+      next_sign_in:
+        with_sp:
+          with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
+          without_cta: 你现在可以从 %{sp_name} 的网站登录。
+        without_sp: 接下来请点击按钮或复制下面的连接来登录 %{sp_name}。
+      sign_in: 登录
+      subject: 你在 %{sp_name} 成功地验证了身份
+      warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href=\"%{reset_password_url}\"> 重设密码</a>。要报告这件事，<a href=\"%{contact_us_url}\">联系 %{app_name} 支持 %{app_name}</a>。
+    letter_reminder:
+      info_html: 你将收到的信件会含有帮助我们验证你地址的一次性代码。你可以登入 %{link_html} 并输入该一次性代码来完成身份验证流i程。
+      subject: 我们已向你存档地址发送了一封信。
+    letter_reminder_14_days:
+      body_html: <P><strong>%{date_letter_was_sent} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>
+      did_not_get_a_letter_html: 如果你没有收到这封信， %{another_letter_link_html}。
+      finish: 完成验证你的身份
+      sign_in_and_request_another_letter: 登录要求再发一封信
+      subject: 完成验证你的身份
+    new_device_sign_in:
+      disavowal_link: 重设你的密码
+      help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
+      info: ''
+      subject: 用你 %{app_name} 账户进行的新登录
+    password_changed:
+      disavowal_link: 重设你的密码
+      help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
+      intro_html: 你的 %{app_name_html} 账户有了新密码。
+    personal_key_regenerated:
+      help_html: <p>你的 %{app_name} 账户刚得到了一个新的 16 字符的个人密钥。你收到这一电邮是为了确保就是你。</p><p>如果你刚刚登入并重设了个人密钥，没问题！你无需做任何事情。</p><p>如果你刚才没有重设个人密钥，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href=\"%{reset_password_url}\">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href=\"%{account_url}\">登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或安全密钥。</li><li><strong>在你的<a href=\"%{account_url}\">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用该密钥登录一个使用 %{app_name} 的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br> %{app_name} 团队
+      intro: 新个人密钥已发放
+      subject: 账户安全警告
+    personal_key_sign_in:
+      help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href=\"%{reset_password_url}\">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href=\"%{account_url}\"> 登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href=\"%{account_url}\">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
+      intro: 个人密钥被用来登录
+      subject: 账户安全警告
+    phone_added:
+      disavowal_link: 重设你的密码
+      help_html: 如果你没做此更改，请登录进入你的用户资料并管理电邮地址。我们还建议你 %{disavowal_link_html}。
+      intro: 你的 %{app_name} 用户资料添加了一个新电话号码。
+      subject: 新电话号码已添加。
+    please_reset_password:
+      call_to_action: '为了谨慎起见，我们已禁用你的密码以保护你信息的安全。请按照以下步骤重设你的密码和保护你账户安全：'
+      intro: 我们在你的 %{app_name} 账户上探查到了异常活动。我们担心别人（不是你）在试图访问你的信息。
+      learn_more_link_text: 了解更多有关你选项的信息。
+      reminder_html: 提醒一下， <strong>%{app_name} 永远不会通过电话或电邮索要你的登录凭证</strong>。你可以通过启动双因素身份证实，采取额外步骤来保护你账户安全。
+      step_1: 访问 %{app_name} 网站并选择登录
+      step_2: 选择页面底部的“忘了你的密码？”
+      step_3: 按照说明重设你的密码
+      subject: 异常活动 — 重设你的 %{app_name} 密码
+    reset_password_instructions:
+      footer: 这一链接 %{expires} 小时后会作废。
+      gpo_letter_description: 如果你重设密码，信件中的一次性代码就会失效，你需要再次验证身份。
+      gpo_letter_header: 你的信件已寄出。
+      header: 要完成重设密码，请点击下面的链接或把整个链接复制并黏贴进浏览器。
+      link_text: 重设你的密码
+      subject: 重设你的密码
+    signup_with_your_email:
+      help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
+      intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能用它设立新账户。要使用你现有账户登录，请点击以下链接。  如果你未试图用此电邮地址登录，可以忽略这一信息。
+      link_text: 请到 %{app_name}
+      reset_password_html: 如果你不记得密码，请到 %{app_name_html} 去重设密码。
+    suspended_create_account:
+      message: 用该电邮地址创建你的%{app_name} 账户出现了问题。请拨打 %{contact_number}到我们联系中心并提供这一代码%{support_code}。
+      subject: 我们无法创建你的账户。
+    suspended_reset_password:
+      message: 重设你的密码出了问题。请拨打 %{contact_number}到我们联系中心并提供这一代码%{support_code}。
+      subject: 我们无法重设你的密码。
+    suspension_confirmed:
+      contact_agency: 请联系你试图访问其服务的那个机构。
+      remain_locked: 我们已完成了对你%{app_name}账户的审查，你的账户将继续被锁。
+      subject: 你的账户被锁

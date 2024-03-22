@@ -1,0 +1,14 @@
+---
+zh:
+  email_addresses:
+    add:
+      duplicate: 该电邮地址已注册到你的账户。
+      limit: 你添加的电邮地址数目已达最多。
+    delete:
+      bullet1:  使用该电邮地址你无法登录进入 %{app_name} （或任何其他与你账户关联的政府应用程序）。 
+      bullet2: 你不会在该电邮地址得到账户通知。
+      confirm:  你确定要删除 %{email}吗？ 
+      failure: 无法删除这一电邮地址。
+      success: 这一电邮地址已被去掉。
+      warning: 如果你删除你的电邮地址
+    unconfirmed: '（未确认）'

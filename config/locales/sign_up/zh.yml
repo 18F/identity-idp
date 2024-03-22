@@ -1,0 +1,10 @@
+---
+zh:
+  sign_up:
+    agree_and_continue: 同意并继续
+    cancel:
+      success: 你的账户已被删除。我们没有存储你的信息。
+      warning_header: '如果你现在取消：'
+    completed:
+      smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
+    terms: 我已阅读并接受 %{app_name}

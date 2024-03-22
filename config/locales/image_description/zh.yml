@@ -1,0 +1,16 @@
+---
+zh:
+  image_description:
+    camera_mobile_phone: 手机上相机在闪光
+    delete: 红色垃圾桶
+    error: 红色错误 x
+    error_lock: 红色错误锁
+    info_pin_map: 地图图钉图像
+    info_question: 蓝色问号
+    laptop: 手提电脑
+    laptop_and_phone: 手提电脑和电话
+    personal_key: 个人密钥
+    post_office: 邮局
+    totp_qrcode: 身份证实应用程序的二维码（QR）代码
+    us_flag: 美国国旗
+    warning: 黄色警告标志

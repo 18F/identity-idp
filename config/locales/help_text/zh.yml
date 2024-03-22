@@ -1,0 +1,19 @@
+---
+zh:
+  help_text:
+    requested_attributes:
+      address: 地址
+      all_emails: 你账户上的电邮地址
+      birthdate: 生日
+      email: 电邮地址
+      full_name: 姓名
+      ial1_consent_reminder_html: 你每年都必须授权同意与 <strong>%{sp}</strong> 分享信息。我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
+      ial1_intro_html: 我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
+      ial2_consent_reminder_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息： '
+      ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息： '
+      ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。 '
+      phone: 电话号码
+      social_security_number: 社会保障号码
+      verified_at: 更新是在
+      x509_issuer: PIV/CAC 发放方
+      x509_subject: PIV/CAC 身份

@@ -1,0 +1,23 @@
+zh:
+  i18n:
+    transliterate:
+      rule:
+        # Convert okina to apostrophe
+        ʻ: "'"
+        # Convert quotation marks
+        ’: "'"
+        ‘: "'"
+        ‛: "'"
+        “: '"'
+        ‟: '"'
+        ”: '"'
+        # Convert hyphens
+        ‐: '-'
+        ‑: '-'
+        ‒: '-'
+        –: '-'
+        —: '-'
+        ﹘: '-'
+        # Convert number signs
+        ﹟: '#'
+        ＃: '#'
