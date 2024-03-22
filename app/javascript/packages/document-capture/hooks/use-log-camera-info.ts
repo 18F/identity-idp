@@ -1,10 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import AnalyticsContext from '../context/analytics';
 
-function getConstraints(deviceId, facingMode) {
+function getConstraints(deviceId) {
   return {
     video: {
-      facingMode: { exact: facingMode },
       width: {
         ideal: 999999,
       },
@@ -28,20 +27,19 @@ function getCameraInfo(videoTrack) {
   return cameraInfo;
 }
 
-async function updateConstraintsAndGetInfo(videoDevice, facingMode, trackEvent) {
+async function updateConstraintsAndLogInfo(videoDevice, trackEvent) {
   // See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode
-  const updatedConstraints = getConstraints(videoDevice.deviceId, facingMode);
+  const updatedConstraints = getConstraints(videoDevice.deviceId);
   try {
     const stream = await navigator.mediaDevices.getUserMedia(updatedConstraints);
     const videoTracks = stream.getVideoTracks();
     const cameras = videoTracks.map((videoTrack) => getCameraInfo(videoTrack));
     const logInfo = {
-      facing_mode: facingMode,
       camera_info: cameras,
     };
     trackEvent('IdV: camera info logged', logInfo);
-  } catch (err) {
-    trackEvent('IdV: camera info error');
+  } catch (error) {
+    trackEvent('IdV: camera info error', error);
   }
 }
 
@@ -49,12 +47,11 @@ async function logCameraInfo(trackEvent) {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
   videoDevices.forEach((videoDevice) => {
-    updateConstraintsAndGetInfo(videoDevice, 'user', trackEvent);
-    updateConstraintsAndGetInfo(videoDevice, 'environment', trackEvent);
+    updateConstraintsAndLogInfo(videoDevice, trackEvent);
   });
 }
 
-function useLogCameraInfo(isBackOfId, hasStartedCropping) {
+function useLogCameraInfo({ isBackOfId, hasStartedCropping }) {
   const [didLogCameraInfo, setDidLogCameraInfo] = useState(false);
   const { trackEvent } = useContext(AnalyticsContext);
 
