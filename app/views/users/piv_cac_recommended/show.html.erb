@@ -17,7 +17,7 @@
               )
             end,
             big: true,
-            class: 'margin-bottom-2',
+            class: 'margin-bottom-3',
           ).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
 
 <%= render ButtonComponent.new(
@@ -30,5 +30,5 @@
           end,
           big: true,
           class: 'margin-bottom-2',
-        ).with_content(t('two_factor_authentication.piv_cac_upsell.choose_other_method')) %>
+        ).with_content(@skip_text) %>
 

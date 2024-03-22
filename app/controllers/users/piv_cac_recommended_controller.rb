@@ -14,6 +14,7 @@ module Users
 
     def show
       @email_type = email_type
+      @skip_text = skip_text
       analytics.piv_cac_recommended_page_visited
     end
 
@@ -45,5 +46,13 @@ module Users
         '.mil'
       end
     end
+
+    def skip_text
+      if MfaPolicy.new(current_user).two_factor_enabled?
+        t('mfa.skip')
+      else
+        t('two_factor_authentication.piv_cac_upsell.choose_other_method')
+      end
+    end
   end
-  end
+end
