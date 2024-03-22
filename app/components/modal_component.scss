@@ -2,10 +2,6 @@
 
 @forward 'usa-modal/src/styles';
 
-::backdrop {
-  background: color('black-transparent-70');
-}
-
 lg-modal {
   text-align: left;
   display: flex;
@@ -27,6 +23,10 @@ lg-modal {
 
   @include at-media('tablet') {
     @include u-padding(6);
+  }
+
+  &::backdrop {
+    background: color('black-transparent-70');
   }
 
   hr {
