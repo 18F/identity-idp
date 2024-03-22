@@ -25,6 +25,8 @@ zh:
       rate_limited_heading: 我们无法验证你的身份证件。
       rate_limited_subheading: 尝试再拍照片
       rate_limited_text_html: '为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>'
+      selfie_fail_heading: We couldn’t match the photo of yourself to your ID
+      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
       send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
     enter_code:
       rate_limited_html: 你输入错误验证码太多次。<strong> %{timeout} 后再试。</strong>
