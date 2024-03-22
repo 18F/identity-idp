@@ -1,5 +1,11 @@
 User-agent: *
-Disallow: /users/password/edit
-Disallow: /sign_up/enter_password
-Disallow: /sign_up/email/confirm
-Disallow: /api/saml/
+Disallow: /
+Allow: /$
+Allow: /es$
+Allow: /fr$
+Allow: /sign_up/enter_email$
+Allow: /es/sign_up/enter_email$
+Allow: /fr/sign_up/enter_email$
+Allow: /users/password/new$
+Allow: /es/users/password/new$
+Allow: /fr/users/password/new$
