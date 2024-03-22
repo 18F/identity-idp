@@ -22,7 +22,7 @@ class ModalElement extends HTMLElement {
   }
 
   get #dialog(): HTMLDialogElement {
-    return this.querySelector<HTMLDialogElement>('.modal__content')!;
+    return this.querySelector('dialog')!;
   }
 
   #handleDismiss = (event: MouseEvent) => {
