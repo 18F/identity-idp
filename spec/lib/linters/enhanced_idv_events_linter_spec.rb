@@ -19,27 +19,11 @@ RSpec.describe RuboCop::Cop::IdentityIdp::EnhancedIdvEventsLinter do
       allow(cop).to receive(:check_arg_has_docs).and_return(nil)
     end
 
-    stub_const("#{described_class.name}::ENHANCED_ARGS", [:proofing_components])
-  end
-
-  it 'does not register an offense for non-idv methods' do
-    expect_no_offenses(<<~RUBY)
-      module AnalyticsEvents
-        def a_non_idv_method
-          track_event(:a_non_idv_method)
-        end
-      end
-    RUBY
-  end
-
-  it 'does not register an offense for ignored methods' do
-    expect_no_offenses(<<~RUBY)
-      module AnalyticsEvents
-        def idv_acuant_sdk_loaded
-          track_event(:idv_acuant_sdk_loaded)
-        end
-      end
-    RUBY
+    allow(cop).to receive(:extra_args_for_method).and_return(
+      [
+        :proofing_components,
+      ],
+    )
   end
 
   it 'registers an offense when an idv_ is missing proofing_components' do
@@ -352,6 +336,43 @@ RSpec.describe RuboCop::Cop::IdentityIdp::EnhancedIdvEventsLinter do
           end
         end
       RUBY
+    end
+  end
+
+  describe 'profile_history' do
+    context 'method should not receive profile_history' do
+      it 'registers no offense' do
+        expect_no_offenses(<<~RUBY)
+          module AnalyticsEvents
+            def idv_final(proofing_components:, **extra)
+              track_event(:idv_final, proofing_components: proofing_components, **extra)
+            end    
+          end
+        RUBY
+      end
+    end
+
+    context 'method should receive profile_history' do
+      before do
+        allow(cop).to receive(:extra_args_for_method).and_return(
+          %i[
+            proofing_components
+            profile_history
+          ],
+        )
+      end
+
+      it 'registers offence when method that should receive profile_history does not' do
+        expect_offense(<<~RUBY)
+          module AnalyticsEvents
+            def idv_final(proofing_components:, **extra)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: Method is missing profile_history argument.
+              track_event(:idv_final, proofing_components: proofing_components, **extra)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/EnhancedIdvEventsLinter: profile_history is missing from track_event call.
+            end    
+          end
+        RUBY
+      end
     end
   end
 end

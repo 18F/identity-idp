@@ -7,18 +7,11 @@ module RuboCop
 
         RESTRICT_ON_SEND = [:track_event]
 
-        ENHANCED_ARGS = [
-          :proofing_components,
-          :active_profile_idv_level,
-          :pending_profile_idv_level,
-          :profile_history,
-        ].freeze
-
         def on_send(track_event_send)
           method = track_event_send.each_ancestor(:def).first
-          return if !should_check_method?(method.method_name)
+          args = extra_args_for_method(method.method_name)
 
-          ENHANCED_ARGS.each do |arg_name|
+          args.each do |arg_name|
             check_arg_present_on_event_method(arg_name, method)
             check_arg_present_in_track_event_send(arg_name, track_event_send)
             check_arg_has_docs(arg_name, method)
@@ -212,6 +205,10 @@ module RuboCop
           ::Idv::AnalyticsEventsEnhancer
         end
 
+        def extra_args_for_method(method_name)
+          events_enhancer_class.extra_args_for_method(method_name)
+        end
+
         def make_method_args_multiline(corrector, method)
           indent = indentation_for_node(method)
           arg_indent = "\n#{indent}  "
@@ -269,10 +266,6 @@ module RuboCop
             end_pos: node.source_range.begin_pos,
           )
           corrector.remove_preceding(node, 1) if /\s/.match?(char_before.source)
-        end
-
-        def should_check_method?(method_name)
-          events_enhancer_class&.should_enhance_method?(method_name)
         end
 
         def whitespace_before(node)
