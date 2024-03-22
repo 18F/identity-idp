@@ -1,16 +1,5 @@
 @use 'uswds-core' as *;
 
-lg-modal {
-  text-align: left;
-  display: flex;
-  align-items: start;
-  justify-content: center;
-
-  @include at-media('tablet') {
-    align-items: center;
-  }
-}
-
 .modal__content {
   @include u-padding(4);
   @include u-bg('white');
