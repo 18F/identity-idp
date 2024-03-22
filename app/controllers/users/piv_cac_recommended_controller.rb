@@ -1,51 +1,49 @@
 module Users
-    class PivCacRecommendedController < ApplicationController
-      include TwoFactorAuthenticatableMethods
-      include MfaSetupConcern
-      include SecureHeadersConcern
-      include ReauthenticationRequiredConcern
-  
-      before_action :authenticate_user!
-      before_action :confirm_user_authenticated_for_2fa_setup
-      before_action :apply_secure_headers_override
-      before_action :user_email_is_gov_or_mil?
-  
-      helper_method :in_multi_mfa_selection_flow?
-  
-      def show
-        @email_type = email_type
-        analytics.piv_cac_recommended_page_visited
-      end
+  class PivCacRecommendedController < ApplicationController
+    include TwoFactorAuthenticatableMethods
+    include MfaSetupConcern
+    include SecureHeadersConcern
+    include ReauthenticationRequiredConcern
 
-      def confirm
-        UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
-        user_session[:mfa_selections] = ['piv_cac']
-        analytics.piv_cac_recommended_accepted
-        redirect_to confirmation_path(user_session[:mfa_selections].first)
-      end
+    before_action :authenticate_user!
+    before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :apply_secure_headers_override
+    before_action :user_email_is_gov_or_mil?
 
-      def skip
-        UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
-        analytics.piv_cac_recommended_skipped
-        redirect_to after_sign_in_path_for(current_user)
-      end
+    helper_method :in_multi_mfa_selection_flow?
 
+    def show
+      @email_type = email_type
+      analytics.piv_cac_recommended_page_visited
+    end
 
-      private 
+    def confirm
+      UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
+      user_session[:mfa_selections] = ['piv_cac']
+      analytics.piv_cac_recommended_accepted
+      redirect_to confirmation_path(user_session[:mfa_selections].first)
+    end
 
-      def user_email_is_gov_or_mil?
-        redirect_to after_sign_in_path_for(current_user) unless current_user.has_gov_or_mil_email?
-      end
+    def skip
+      UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
+      analytics.piv_cac_recommended_skipped
+      redirect_to after_sign_in_path_for(current_user)
+    end
 
-      def email_type
-        address = current_user.confirmed_email_addresses.select {|address| address.gov_or_mil? }
-        case address.first.email.end_with?('.gov')
-        when true
-          '.gov'
-        else
-          '.mil'
-        end
+    private
+
+    def user_email_is_gov_or_mil?
+      redirect_to after_sign_in_path_for(current_user) unless current_user.has_gov_or_mil_email?
+    end
+
+    def email_type
+      address = current_user.confirmed_email_addresses.select { |address| address.gov_or_mil? }
+      case address.first.email.end_with?('.gov')
+      when true
+        '.gov'
+      else
+        '.mil'
       end
     end
   end
-  
+  end

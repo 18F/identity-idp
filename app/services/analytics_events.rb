@@ -4117,15 +4117,15 @@ module AnalyticsEvents
   end
 
   def piv_cac_recommended_page_visited
-    track_event('piv_cac_recommended_page_visited')
+    track_event(:piv_cac_recommended_page_visited)
   end
 
   def piv_cac_recommended_accepted
-    track_event('piv_cac_recommended_accepted')
+    track_event(:piv_cac_recommended_accepted)
   end
 
   def piv_cac_recommended_skipped
-    track_event('piv_cac_recommended_skipped')
+    track_event(:piv_cac_recommended_skipped)
   end
 
   # @param [String] redirect_url URL user was directed to

@@ -17,10 +17,6 @@ class EmailAddress < ApplicationRecord
     self.email_fingerprint = email.present? ? encrypted_attributes[:email].fingerprint : ''
   end
 
-  def gov_or_mil?
-    self.email.end_with?('.gov', '.mil')
-  end
-
   def confirmed?
     confirmed_at.present?
   end

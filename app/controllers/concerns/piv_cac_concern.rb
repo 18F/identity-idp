@@ -44,4 +44,4 @@ module PivCacConcern
                   end
     [piv_cac_uri] + csp_uris
   end
-end 
+end

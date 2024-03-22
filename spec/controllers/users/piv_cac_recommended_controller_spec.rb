@@ -8,14 +8,11 @@ RSpec.describe Users::PivCacRecommendedController do
   end
 
   context '#show' do
-    
   end
 
   context '#confirm' do
-    
   end
 
   context '#skip' do
-    
   end
 end
