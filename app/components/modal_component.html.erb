@@ -1,11 +1,12 @@
 <%= content_tag(:'lg-modal', **tag_options) do %>
-  <%= tag.dialog(
+  <%= content_tag(
+        :dialog,
+        content,
         aria: {
           describedby: description_id,
           labelledby: label_id,
         },
         class: 'modal__content',
-      ) do %>
-    <%= content %>
+      ) %>
   <% end %>
 <% end %>
