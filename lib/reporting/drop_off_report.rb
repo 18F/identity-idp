@@ -243,36 +243,6 @@ module Reporting
             denominator: idv_started,
           ),
         ],
-        [
-          'Blanket proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_personal_key_submitted,
-            denominator: idv_doc_auth_welcome_submitted,
-          ),
-        ],
-        [
-          'Actual proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_enter_password_visited,
-            denominator: idv_doc_auth_image_vendor_submitted,
-          ),
-        ],
-        [
-          'Verified proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_personal_key_submitted,
-            denominator: idv_doc_auth_image_vendor_submitted,
-          ),
-        ],
       ]
     end
 
