@@ -17,7 +17,7 @@ RSpec.describe ModalComponent, type: :component do
       ]
     end
 
-    dialog = rendered.css('[role="dialog"]').first
+    dialog = rendered.css('dialog').first
     labelledby_id = dialog['aria-labelledby']
     describedby_id = dialog['aria-describedby']
     heading_id = rendered.css('h1').first['id']

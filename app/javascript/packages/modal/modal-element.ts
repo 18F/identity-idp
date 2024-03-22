@@ -1,11 +1,5 @@
-import { createFocusTrap } from 'focus-trap';
-import type { FocusTrap } from 'focus-trap';
-
 class ModalElement extends HTMLElement {
-  trap: FocusTrap;
-
   connectedCallback() {
-    this.trap = createFocusTrap(this, { escapeDeactivates: false });
     this.addEventListener('click', this.#handleDismiss);
   }
 
@@ -13,20 +7,20 @@ class ModalElement extends HTMLElement {
    * Shows the modal dialog.
    */
   show() {
-    this.removeAttribute('hidden');
-    this.classList.add('is-visible');
     this.ownerDocument.body.classList.add('usa-js-modal--active');
-    this.trap.activate();
+    this.#dialog.showModal();
   }
 
   /**
    * Hides the modal dialog.
    */
   hide() {
-    this.setAttribute('hidden', '');
-    this.classList.remove('is-visible');
     this.ownerDocument.body.classList.remove('usa-js-modal--active');
-    this.trap.deactivate();
+    this.#dialog.close();
+  }
+
+  get #dialog(): HTMLDialogElement {
+    return this.querySelector<HTMLDialogElement>('.modal__content')!;
   }
 
   #handleDismiss = (event: MouseEvent) => {

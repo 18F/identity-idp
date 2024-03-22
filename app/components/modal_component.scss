@@ -1,9 +1,12 @@
 @use 'uswds-core' as *;
-@use '../variables/app' as *;
 
-.usa-modal-overlay {
-  // Temporary styles to avoid inheriting too much of the USWDS opinionated modal styling until
-  // modal styles are settled in the Login.gov Design System.
+@forward 'usa-modal/src/styles';
+
+::backdrop {
+  background: color('black-transparent-70');
+}
+
+lg-modal {
   text-align: left;
   display: flex;
   align-items: start;
@@ -14,11 +17,13 @@
   }
 }
 
-.modal-content {
+.modal__content {
   @include u-padding(4);
   @include u-bg('white');
-  max-width: $container-xskinny-width;
-  border-radius: $border-radius-xxl;
+  width: 26rem;
+  max-width: 98%;
+  border-width: 0;
+  border-radius: units(1.5);
 
   @include at-media('tablet') {
     @include u-padding(6);
