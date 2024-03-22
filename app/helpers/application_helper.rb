@@ -40,10 +40,6 @@ module ApplicationHelper
     )
   end
 
-  def session_with_trust?
-    user_signed_in?
-  end
-
   def ial2_requested?
     resolved_authn_context_result.identity_proofing?
   end
