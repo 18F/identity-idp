@@ -58,4 +58,16 @@ module DocCaptureHelper
   def expect_doc_capture_selfie_subheader
     expect(page).to have_text(t('doc_auth.headings.document_capture_subheader_selfie'))
   end
+
+  def max_capture_attempts_before_native_camera
+    form = page.find_by_id('document-capture-form')
+    return nil unless form
+    form['data-max-capture-attempts-before-native-camera']
+  end
+
+  def max_submission_attempts_before_native_camera
+    form = page.find_by_id('document-capture-form')
+    return nil unless form
+    form['data-max-submission-attempts-before-native-camera']
+  end
 end

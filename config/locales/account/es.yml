@@ -42,12 +42,10 @@ es:
       phone: Teléfono
       phone_add: Añadir teléfono
       piv_cac_add: Agregar ID
-      piv_cac_confirm_delete: Sí, retire la tarjeta
       reactivation:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
       sign_in_location_and_ip: Desde %{ip} (la dirección IP probablemente se encuentra en %{location})
-      totp_confirm_delete: Sí, eliminar la aplicación de autenticación
       unknown_location: ubicación desconocida
       verification:
         instructions: Su cuenta requiere un código de verificación para ser verificado.

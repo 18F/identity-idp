@@ -4,14 +4,14 @@ class Analytics
   include AnalyticsEvents
   prepend Idv::AnalyticsEventsEnhancer
 
-  attr_reader :user, :request, :sp, :ahoy
+  attr_reader :user, :request, :sp, :session, :ahoy
 
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
-    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
     @session = session
+    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
   end
 
   def track_event(event, attributes = {})
@@ -27,6 +27,7 @@ class Analytics
     }
 
     analytics_hash.merge!(request_attributes) if request
+    analytics_hash.merge!(sp_request_attributes) if sp_request_attributes
 
     ahoy.track(event, analytics_hash)
 
@@ -42,13 +43,13 @@ class Analytics
   end
 
   def update_session_events_and_paths_visited_for_analytics(event)
-    @session[:events] ||= {}
-    @session[:first_event] = !@session[:events].key?(event)
-    @session[:events][event] = true
+    session[:events] ||= {}
+    session[:first_event] = !@session[:events].key?(event)
+    session[:events][event] = true
   end
 
   def first_event_this_session?
-    @session[:first_event]
+    session[:first_event]
   end
 
   def track_mfa_submit_event(attributes)
@@ -95,12 +96,43 @@ class Analytics
   end
 
   def session_duration
-    @session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
+    session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
   end
 
   def session_started_at
-    value = @session[:session_started_at]
+    value = session[:session_started_at]
     return value unless value.is_a?(String)
     Time.zone.parse(value)
+  end
+
+  def sp_request_attributes
+    resolved_result = resolved_authn_context_result
+    return if resolved_result.nil?
+
+    attributes = resolved_result.to_h
+    attributes[:component_values] = resolved_result.component_values.map do |v|
+      [v.name.sub('http://idmanagement.gov/ns/assurance/', ''), true]
+    end.to_h
+    attributes.reject! { |_key, value| value == false }
+    attributes.transform_keys! do |key|
+      key.to_s.chomp('?').to_sym
+    end
+
+    { sp_request: attributes }
+  end
+
+  def resolved_authn_context_result
+    return nil if sp.nil? || session[:sp].blank?
+    return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
+
+    service_provider = ServiceProvider.find_by(issuer: sp)
+
+    @resolved_authn_context_result = AuthnContextResolver.new(
+      service_provider:,
+      vtr: session[:sp][:vtr],
+      acr_values: session[:sp][:acr_values],
+    ).resolve
+  rescue Vot::Parser::ParseException
+    return
   end
 end

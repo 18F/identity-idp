@@ -88,12 +88,12 @@ class ServiceProviderSession
     end
   end
 
-  def mfa_expiration_interval(authorization_context)
+  def mfa_expiration_interval
     aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
     aal_2_expiration = IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
     return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1
-    return aal_2_expiration if authorization_context.aal_level_requested > 1
+    return aal_2_expiration if resolved_authn_context_result.aal2?
 
     aal_1_expiration
   end
@@ -126,9 +126,21 @@ class ServiceProviderSession
     end
   end
 
+  def current_user
+    view_context&.current_user
+  end
+
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request
+
+  def resolved_authn_context_result
+    @resolved_authn_context_result ||= AuthnContextResolver.new(
+      service_provider: sp,
+      vtr: sp_session[:vtr],
+      acr_values: sp_session[:acr_values],
+    ).resolve
+  end
 
   def sp_aal
     sp.default_aal || 1
@@ -136,10 +148,6 @@ class ServiceProviderSession
 
   def sp_ial
     sp.ial || 1
-  end
-
-  def requested_aal(authorization_context)
-    authorization_context.aal_level_requested
   end
 
   def request_url

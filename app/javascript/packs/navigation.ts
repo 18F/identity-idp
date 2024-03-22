@@ -1,3 +1,3 @@
-import { header } from '@18f/identity-design-system';
+import { navigation } from '@18f/identity-design-system';
 
-header.on();
+navigation.on();

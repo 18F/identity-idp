@@ -364,6 +364,7 @@ get_usps_proofing_results_job_request_delay_milliseconds: 1000
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 weekly_auth_funnel_report_config: '[]'
+x509_presented_hash_attribute_requested_issuers: '[]'
 
 development:
   aamva_private_key: 123abc
@@ -590,6 +591,7 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
+  use_vot_in_sp_requests: true
   usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com

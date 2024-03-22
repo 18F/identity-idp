@@ -47,6 +47,14 @@ module OpenidConnect
 
     private
 
+    def pending_profile_policy
+      @pending_profile_policy ||= PendingProfilePolicy.new(
+        user: current_user,
+        resolved_authn_context_result: resolved_authn_context_result,
+        biometric_comparison_requested: biometric_comparison_requested?,
+      )
+    end
+
     def block_biometric_requests_in_production
       if biometric_comparison_requested? &&
          !FeatureManagement.idv_allow_selfie_check?
@@ -56,7 +64,7 @@ module OpenidConnect
 
     def biometric_comparison_requested?
       @authorize_form.parsed_vector_of_trust&.biometric_comparison? ||
-        params['biometric_comparison_required']
+        params['biometric_comparison_required'] == 'true'
     end
 
     def check_sp_active
@@ -143,6 +151,7 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
+
       analytics.openid_connect_request_authorization(
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,

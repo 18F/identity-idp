@@ -12,8 +12,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('welcome', :view, true)
 
-      @sp_name = decorated_sp_session.sp_name || APP_NAME
-      @title = t('doc_auth.headings.welcome', sp_name: @sp_name)
+      @presenter = Idv::WelcomePresenter.new(decorated_sp_session)
     end
 
     def update

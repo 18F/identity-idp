@@ -21,8 +21,13 @@ class OpenidConnectUserInfoPresenter
     info.merge!(ial2_attributes) if scoper.ial2_scopes_requested? && ial2_data.present?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
-    info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
-    info[:aal] = identity.requested_aal_value
+    if identity.vtr.nil?
+      info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
+      info[:aal] = identity.requested_aal_value
+    else
+      info[:vot] = vot_values
+      info[:vtm] = IdentityConfig.store.vtm_url
+    end
 
     scoper.filter(info)
   end
@@ -32,6 +37,12 @@ class OpenidConnectUserInfoPresenter
   end
 
   private
+
+  def vot_values
+    vot = JSON.parse(identity.vtr).first
+    parsed_vot = Vot::Parser.new(vector_of_trust: vot).parse
+    parsed_vot.expanded_component_values
+  end
 
   def uuid_from_sp_identity(identity)
     AgencyIdentityLinker.new(identity).link_identity.uuid
@@ -65,7 +76,7 @@ class OpenidConnectUserInfoPresenter
     {
       x509_subject: stringify_attr(x509_data.subject),
       x509_issuer: stringify_attr(x509_data.issuer),
-      x509_presented: x509_data.presented,
+      x509_presented:,
     }
   end
 
@@ -141,6 +152,16 @@ class OpenidConnectUserInfoPresenter
 
   def x509_session?
     identity.piv_cac_enabled?
+  end
+
+  def x509_presented
+    if IdentityConfig.store.x509_presented_hash_attribute_requested_issuers.include?(
+      identity&.service_provider,
+    )
+      x509_data.presented
+    else
+      !!x509_data.presented.raw
+    end
   end
 
   def active_profile

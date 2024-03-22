@@ -97,17 +97,24 @@ RSpec.describe 'totp management', allowed_extra_analytics: [:*] do
   end
 
   context 'when totp is the only mfa method' do
-    let(:user) { create(:user, :with_authentication_app, :with_phone) }
+    let(:user) { create(:user, :with_authentication_app) }
 
-    it 'does not show the user the option to disable their totp app' do
+    it 'prevents a user from deleting their last authenticator', :js, allow_browser_log: true do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      expect(page).to have_content(
-        t('two_factor_authentication.login_options.auth_app'),
+      click_button(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          user.auth_app_configurations.first.name,
+        ),
       )
-      form = find_form(page, action: disable_totp_url)
-      expect(form).to be_nil
+      accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
+      expect(page).to have_content(
+        t('errors.manage_authenticator.remove_only_method_error'),
+        wait: 5,
+      )
     end
   end
 
@@ -183,12 +190,6 @@ RSpec.describe 'totp management', allowed_extra_analytics: [:*] do
         expect(page).
           to_not have_link(t('account.index.auth_app_add'), href: authenticator_setup_url)
       end
-    end
-  end
-
-  def find_form(page, attributes)
-    page.all('form').detect do |form|
-      attributes.all? { |key, value| form[key] == value }
     end
   end
 end

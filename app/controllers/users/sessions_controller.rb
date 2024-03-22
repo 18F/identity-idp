@@ -181,8 +181,23 @@ module Users
     def override_csp_for_google_analytics
       return unless IdentityConfig.store.participate_in_dap
       policy = current_content_security_policy
-      policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
-      policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
+      policy.script_src(
+        *policy.script_src,
+        'dap.digitalgov.gov',
+        'www.google-analytics.com',
+        '*.googletagmanager.com',
+      )
+      policy.connect_src(
+        *policy.connect_src,
+        '*.google-analytics.com',
+        '*.analytics.google.com',
+        '*.googletagmanager.com',
+      )
+      policy.img_src(
+        *policy.img_src,
+        '*.google-analytics.com',
+        '*.googletagmanager.com',
+      )
       request.content_security_policy = policy
     end
 

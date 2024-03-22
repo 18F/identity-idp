@@ -3,11 +3,11 @@ import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import AnalyticsContext from './analytics';
 import DeviceContext from './device';
+import SelfieCaptureContext from './selfie-capture';
 
 /**
  * Global declarations
  */
-declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
 declare let AcuantCamera: AcuantCameraInterface;
 
 declare global {
@@ -181,11 +181,11 @@ const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
   if (window.AcuantJavascriptWebSdk && typeof window.AcuantJavascriptWebSdk.start === 'function') {
     return window.AcuantJavascriptWebSdk;
   }
-  if (typeof AcuantJavascriptWebSdk === 'undefined') {
+  if (!window.AcuantJavascriptWebSdk) {
     // eslint-disable-next-line no-console
     console.error('AcuantJavascriptWebSdk is not defined in the global scope');
   }
-  return AcuantJavascriptWebSdk;
+  return window.AcuantJavascriptWebSdk;
 };
 
 /**
@@ -221,6 +221,7 @@ function AcuantContextProvider({
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
   const { trackEvent } = useContext(AnalyticsContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
@@ -275,6 +276,7 @@ function AcuantContextProvider({
             trackEvent('IdV: Acuant SDK loaded', {
               success: true,
               isCameraSupported: nextIsCameraSupported,
+              liveness_checking_required: isSelfieCaptureEnabled,
             });
 
             setIsCameraSupported(nextIsCameraSupported);
@@ -287,6 +289,7 @@ function AcuantContextProvider({
             success: false,
             code,
             description,
+            liveness_checking_required: isSelfieCaptureEnabled,
           });
 
           setIsError(true);

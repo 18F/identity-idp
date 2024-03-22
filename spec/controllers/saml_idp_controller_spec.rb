@@ -541,15 +541,162 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       )
     end
 
-    context 'with IAL2 and the identity is already verified' do
-      let(:ial2_settings) do
-        saml_settings(
-          overrides: {
-            issuer: sp1_issuer,
-            authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          },
-        )
+    context 'when a request is made with a VTR in the authn context' do
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+        stub_sign_in(user)
       end
+
+      context 'the request does not require identity proofing' do
+        it 'redirects the user' do
+          vtr_settings = saml_settings(
+            overrides: {
+              issuer: sp1_issuer,
+              authn_context: 'C1',
+            },
+          )
+          saml_get_auth(vtr_settings)
+          expect(response).to redirect_to(sign_up_completed_url)
+          expect(controller.session[:sp][:vtr]).to eq(['C1'])
+        end
+      end
+
+      context 'the request requires identity proofing' do
+        it 'redirects to identity proofing' do
+          vtr_settings = saml_settings(
+            overrides: {
+              issuer: sp1_issuer,
+              authn_context: 'C1.C2.P1',
+            },
+          )
+          saml_get_auth(vtr_settings)
+          expect(response).to redirect_to(idv_url)
+          expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1'])
+        end
+      end
+
+      context 'the request requires identity proofing with a biometric' do
+        let(:vtr_settings) do
+          saml_settings(
+            overrides: {
+              issuer: sp1_issuer,
+              authn_context: 'C1.C2.P1.Pb',
+            },
+          )
+        end
+        let(:pii) do
+          Pii::Attributes.new_from_hash(
+            first_name: 'Some',
+            last_name: 'One',
+            ssn: '666666666',
+          )
+        end
+        let(:doc_auth_selfie_capture_enabled) { true }
+
+        before do
+          allow(IdentityConfig.store).to receive(
+            :doc_auth_selfie_capture_enabled,
+          ).and_return(
+            doc_auth_selfie_capture_enabled,
+          )
+          create(:profile, :active, user: user, pii: pii.to_h)
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+            pii,
+            user.reload.active_profile.id,
+          )
+        end
+
+        context 'the user has proofed without a biometric check' do
+          before do
+            user.active_profile.update!(idv_level: :legacy_unsupervised)
+          end
+
+          it 'redirects to identity proofing for a user who is verified without a biometric' do
+            saml_get_auth(vtr_settings)
+            expect(response).to redirect_to(idv_url)
+            expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
+          end
+
+          context 'user has a pending biometric profile' do
+            let(:vtr_settings) do
+              saml_settings(
+                overrides: {
+                  issuer: sp1_issuer,
+                  authn_context: 'C1.C2.P1',
+                },
+              )
+            end
+
+            it 'does not redirect to proofing if sp does not request biometrics' do
+              create(
+                :profile,
+                :verify_by_mail_pending,
+                :with_pii,
+                idv_level: :unsupervised_with_selfie,
+                user: user,
+              )
+              saml_get_auth(vtr_settings)
+              expect(response).to redirect_to(sign_up_completed_url)
+              expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1'])
+            end
+
+            it 'redirects to the please call page if user has a fraudualent profile' do
+              create(
+                :profile,
+                :fraud_review_pending,
+                :with_pii,
+                idv_level: :unsupervised_with_selfie,
+                user: user,
+              )
+
+              saml_get_auth(vtr_settings)
+              expect(response).to redirect_to(idv_please_call_url)
+              expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1'])
+            end
+          end
+        end
+
+        context 'the user has proofed with a biometric check' do
+          before do
+            user.active_profile.update!(idv_level: :unsupervised_with_selfie)
+          end
+
+          it 'does not redirect to proofing' do
+            saml_get_auth(vtr_settings)
+            expect(response).to redirect_to(sign_up_completed_url)
+            expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
+          end
+        end
+
+        context 'selfie check is disabled for the environment' do
+          let(:doc_auth_selfie_capture_enabled) { false }
+
+          it 'renders an error' do
+            saml_get_auth(vtr_settings)
+            expect(response.status).to eq(406)
+          end
+        end
+      end
+
+      context 'the VTR is not parsable' do
+        it 'renders an error' do
+          vtr_settings = saml_settings(
+            overrides: {
+              issuer: sp1_issuer,
+              authn_context: 'Fa.Ke.Va.Lu.E0',
+            },
+          )
+          saml_get_auth(vtr_settings)
+          expect(controller).to render_template('saml_idp/auth/error')
+          expect(response.status).to eq(400)
+          expect(response.body).to include(t('errors.messages.unauthorized_authn_context'))
+        end
+      end
+    end
+
+    context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
       let(:pii) do
         Pii::Attributes.new_from_hash(
@@ -1188,7 +1335,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         sp_request_id = ServiceProviderRequestProxy.last.uuid
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          aal_level_requested: 1,
           acr_values: acr_values,
           request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
@@ -1223,7 +1369,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
-          aal_level_requested: 1,
           acr_values: acr_values,
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
