@@ -155,6 +155,7 @@ RSpec.describe Reporting::DropOffReport do
         ['Phone finder (page view)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
         ['Encrypt account: enter password (page view)'] + string_or_num(strings, 1, 1, 0.5, 0.2),
         ['Personal key input (page view)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
+        ['USPS letter enqueued (event)'] + string_or_num(strings, 0, 1, 1.0, 0.0),
         ['Verified (event)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
         ['Blanket proofing rate', '', '', ''] + string_or_num(strings, 0.2),
         ['Actual proofing rate', '', '', ''] + string_or_num(strings, 0.25),
