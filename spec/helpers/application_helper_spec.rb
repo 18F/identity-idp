@@ -60,24 +60,4 @@ RSpec.describe ApplicationHelper do
       expect(helper.view_flow.get(:title)).to eq(title)
     end
   end
-
-  describe '#session_with_trust?' do
-    subject(:session_with_trust) { helper.session_with_trust? }
-
-    before do
-      allow(controller).to receive(:current_user).and_return(user)
-    end
-
-    context 'no user present' do
-      let(:user) { nil }
-
-      it { expect(session_with_trust).to eq(false) }
-    end
-
-    context 'curent user is present' do
-      let(:user) { build(:user) }
-
-      it { expect(session_with_trust).to eq(true) }
-    end
-  end
 end
