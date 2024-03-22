@@ -1,5 +1,5 @@
 module Users
-    class PossiblePivUserController < ApplicationController
+    class PivCacRecommendedController < ApplicationController
       include TwoFactorAuthenticatableMethods
       include MfaSetupConcern
       include SecureHeadersConcern
@@ -14,17 +14,20 @@ module Users
   
       def show
         @email_type = email_type
-        analytics.gov_or_mil_email_detected_visited
+        analytics.piv_cac_recommended_page_visited
       end
 
       def confirm
         UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
         user_session[:mfa_selections] = ['piv_cac']
+        analytics.piv_cac_recommended_accepted
         redirect_to confirmation_path(user_session[:mfa_selections].first)
       end
 
       def skip
         UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
+        analytics.piv_cac_recommended_skipped
+        redirect_to after_sign_in_path_for(current_user)
       end
 
 

@@ -11,7 +11,7 @@
 <%= render ButtonComponent.new(
             action: ->(**tag_options, &block) do
               button_to(
-                login_add_piv_for_user_path,
+                login_piv_cac_recommended_add_path,
                 **tag_options,
                 &block
               )
@@ -20,19 +20,15 @@
             class: 'margin-bottom-2',
           ).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
 
-<% if MfaPolicy.new(current_user).two_factor_enabled? %>
-  <%= link_to t('links.cancel'), account_path %>
-<% else %>
-  <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(
-                login_add_piv_for_user_path,
-                **tag_options,
-                &block
-              )
-            end,
-            big: true,
-            class: 'margin-bottom-2',
-          ).with_content(t('two_factor_authentication.piv_cac_upsell.choose_other_method')) %>
-<% end %>
+<%= render ButtonComponent.new(
+          action: ->(**tag_options, &block) do
+            button_to(
+              login_piv_cac_recommended_skip_path,
+              **tag_options,
+              &block
+            )
+          end,
+          big: true,
+          class: 'margin-bottom-2',
+        ).with_content(t('two_factor_authentication.piv_cac_upsell.choose_other_method')) %>
 

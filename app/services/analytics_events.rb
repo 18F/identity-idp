@@ -3986,10 +3986,6 @@ module AnalyticsEvents
     track_event('Personal key reactivation: Personal key form visited')
   end
 
-  def gov_or_mil_email_detected_visited
-    track_event('gov_or_mil_email_detected_visited')
-  end
-
   # @param [Boolean] personal_key_present if personal key is present
   # Personal key viewed
   def personal_key_viewed(personal_key_present:, **extra)
@@ -4118,6 +4114,18 @@ module AnalyticsEvents
       configuration_id:,
       **extra,
     )
+  end
+
+  def piv_cac_recommended_page_visited
+    track_event('piv_cac_recommended_page_visited')
+  end
+
+  def piv_cac_recommended_accepted
+    track_event('piv_cac_recommended_accepted')
+  end
+
+  def piv_cac_recommended_skipped
+    track_event('piv_cac_recommended_skipped')
   end
 
   # @param [String] redirect_url URL user was directed to
