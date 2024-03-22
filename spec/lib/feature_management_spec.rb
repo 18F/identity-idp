@@ -350,34 +350,6 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe 'prometheus_exporter?' do
-    context 'outside the test environment' do
-      before { allow(Rails.env).to receive(:test?).and_return(false) }
-
-      it 'returns true when enabled' do
-        allow(IdentityConfig.store).to receive(:prometheus_exporter).and_return(true)
-
-        expect(FeatureManagement.prometheus_exporter?).to eq(true)
-      end
-
-      it 'returns false when disabled' do
-        allow(IdentityConfig.store).to receive(:prometheus_exporter).and_return(true)
-
-        expect(FeatureManagement.prometheus_exporter?).to eq(true)
-      end
-    end
-
-    context 'in the test environment' do
-      it 'always returns true' do
-        allow(IdentityConfig.store).to receive(:prometheus_exporter).and_return(true)
-        expect(FeatureManagement.prometheus_exporter?).to eq(false)
-
-        allow(IdentityConfig.store).to receive(:prometheus_exporter).and_return(false)
-        expect(FeatureManagement.prometheus_exporter?).to eq(false)
-      end
-    end
-  end
-
   describe '#proofing_device_profiling_collecting_enabled?' do
     it 'returns false for disabled' do
       expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)

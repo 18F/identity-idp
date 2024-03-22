@@ -103,10 +103,6 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
-  def self.prometheus_exporter?
-    !Rails.env.test? && IdentityConfig.store.prometheus_exporter
-  end
-
   def self.phone_recaptcha_enabled?
     return false if IdentityConfig.store.recaptcha_site_key_v2.blank? ||
                     IdentityConfig.store.recaptcha_site_key_v3.blank? ||
