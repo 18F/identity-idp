@@ -11,10 +11,6 @@
   <meta content="<%= yield(:meta_refresh) %>" http-equiv="refresh" />
   <% end %>
 
-  <% if session_with_trust? || FeatureManagement.disallow_all_web_crawlers? %>
-  <meta content="noindex,nofollow" name="robots" />
-  <% end %>
-
   <title><%= title %> | <%= APP_NAME %></title>
 
   <%= javascript_tag(nonce: true) do %>
