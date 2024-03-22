@@ -1,0 +1,18 @@
+---
+zh:
+  risc:
+    security_event:
+      errors:
+        alg_unsupported: unsupported algorithm, must be signed with %{expected_alg}
+        aud_invalid: invalid aud claim, expected %{url}
+        event_type_missing: missing event
+        event_type_unsupported: unsupported event type %{event_type}
+        exp_present: SET events must not have an exp claim
+        jti_not_unique: jti was not unique
+        jti_required: jti claim is required
+        jwt_could_not_parse: could not parse JWT
+        no_public_key: could not load public key for issuer
+        sub_not_found: invalid event.subject.sub claim
+        sub_unsupported: top-level sub claim is not accepted
+        subject_type_unsupported: subject_type must be %{expected_subject_type}
+        typ_error: typ header must be %{expected_typ}

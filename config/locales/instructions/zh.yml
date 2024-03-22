@@ -1,0 +1,63 @@
+---
+zh:
+  instructions:
+    account:
+      reactivate:
+        begin: 我们开始吧。
+        explanation: '你设立账户时，我们给了你一个单词清单并请你将其存放在一个安全的地方。清单像这样：'
+        intro: 我们采取额外步骤来保护你个人信息的安全和私密，所以重设密码需要多花点精力。
+        modal:
+          copy: 如果你没有个人密钥，则需要重新验证你的身份。
+          heading: 没有个人密钥？
+        with_key: 你有个人密钥吗？
+    forgot_password:
+      close_window: 重设你的密码后，你就可以关闭这个浏览器窗口。
+    go_back_to_mobile_app: 要继续的话，请回到 %{friendly_name}应用程序并登录。
+    mfa:
+      authenticator:
+        confirm_code_html: 输入来自你身份证实应用程序的代码。如果你在应用程序中设了几个账户，请输入与在 %{app_name_html}对应的代码。
+        manual_entry: 或者动手将这个密码输入你的身份证实应用程序。
+      piv_cac:
+        account_not_found_html: '用你的电邮地址和密码 <p><strong>%{sing in}</strong>。然后把你的 PIV/CAC 添加到账户。</p> <p><strong>没有%{app_name} 账户？</strong> %{create_account}</p>'
+        add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong> (恰当的证书可能会有你的名字）而且<strong>输入你的个人识别号码（PIN）</strong> (你的个人识别号码（PIN）是在设置 PIV/CAC 时设立的)。'
+        already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
+        back_to_sign_in: 返回去登录
+        confirm_piv_cac: 提供与你账户相关的 PIV/CAC。
+        did_not_work_html: 请 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
+        http_failure: 服务器反应时间过长。请再试一次。
+        no_certificate_html: 请确保你的 PIV/CAC 是连上的并 %{try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
+        not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
+        please_try_again: 再试一次
+        sign_in_html: 确保 <strong>你有 %{app_name} 账户</strong> 而且 <strong> PIV/CAC</strong> 已被你设置为一个双因素身份证实方法。
+        step_1: 给它一个昵称
+        step_1_info: 这样如果你添加了一个以上 PIV/CA 话，你就能把它们分辨开来。
+        step_2: 把 PIV/CAC 插入读卡器
+        step_3: 添加 PIV/CAC
+        step_3_info_html: 你将需要<strong>选择一个证书</strong> (恰当的证书可能会有你的名字）而且<strong>输入你的个人识别号码（PIN）</strong> (你的个人识别号码（PIN）是在设置 PIV/CAC 时设立的)。
+        try_again: 再试一次
+      sms:
+        number_message_html: 我们把带有一次性代码的短信发到了 %{number_html}。这一代码 %{expiration} 分钟后会作废。
+      voice:
+        number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
+      webauthn:
+        confirm_webauthn: 提供与你账户相关的安全密钥。
+        confirm_webauthn_platform_html: <p>你可以像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p> <p>如果你用一个密码管理器设置了人脸或触摸解锁，则可以从使用那一密码管理器的任何设备进行身份证实。否则的话，使用你设置人脸或触摸解锁的同一设备。</p>
+      webauthn_platform:
+        learn_more_help: 了解更多有关人脸或触摸解锁的信息
+      wrong_number: 输入的电话号码不对？
+    password:
+      forgot: 不知道你的密码？确认你的电邮地址后重设密码。
+      help_text: 避免重复使用你其他网上账户（比如银行、电邮和社交媒体）的密码。请勿包括你电邮地址中的单词。
+      help_text_header: 密码安全提示
+      info:
+        lead_html: 你的密码必须至少有 <strong> %{min_length} 个字符 </strong>。请勿使用常见短语或重复性字符，比如 abc 或 111。
+      password_key: 你在这个账户验证了身份后，需要一个 16 字符的个人密钥来重设密码。如果你没有，仍然可以重设密码然后再验证身份。
+      strength:
+        0: 太弱
+        1: 弱
+        2: 一般
+        3: 好
+        4: 棒！
+        intro: '密码强度： '
+    sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
+    sp_handoff_bounced_with_no_sp: 你的服务提供商

@@ -1,0 +1,18 @@
+---
+zh:
+  step_indicator:
+    accessible_label: 步骤进展
+    flows:
+      idv:
+        find_a_post_office: 找一个邮局
+        get_a_letter: 接收一封信
+        getting_started: 开始
+        go_to_the_post_office: 去邮局
+        secure_account: 保护你的账户安全
+        verify_id: 验证你的身份证件
+        verify_info: 验证你的信息
+        verify_phone_or_address: 验证电话或地址
+    status:
+      complete: 完成了
+      current: 目前步骤
+      not_complete: 未完成

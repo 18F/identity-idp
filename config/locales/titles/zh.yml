@@ -1,0 +1,84 @@
+---
+zh:
+  titles:
+    account: 账户
+    account_locked: 账户临时锁住
+    add_info:
+      phone: 添加电话号码
+    backup_codes: 别丢了你的备用代码
+    confirmations:
+      delete: 请确认
+      new: 重新给你账户发送确认说明
+      show: 选择一个密码
+    doc_auth:
+      address: 更新你的邮政地址
+      doc_capture: 添加你的身份证件
+      hybrid_handoff: 验证你的身份证件
+      link_sent: 链接已发送
+      processing_images: 正在处理你的图像
+      ssn: 输入你的社会保障号码
+      switch_back: 切换回你的电脑
+      verify: 验证你的身份
+    edit_info:
+      email_language: 编辑你电邮语言偏好
+      password: 编辑密码
+      phone: 编辑你的电话号码
+    enter_2fa_code:
+      one_time_code: 输入安全的一次性代码
+      security_code: 输入安全的一次性安全代码
+    failure:
+      information_not_verified: 个人信息未验证
+      phone_verification: 电话号码未验证
+    forget_all_browsers: 忘掉所有浏览器
+    idv:
+      cancellation_prompt: 取消身份验证
+      cancelled: 身份验证已取消
+      come_back_soon: 稍后再回来
+      enter_one_time_code: 输入一次性代码
+      enter_password: 重新输入你的密码
+      enter_password_letter: 重新输入你的密码来给你发信
+      get_letter: 收信
+      personal_key: 保存你的个人密钥
+      phone: 验证你的电话号码
+      reset_password: 重设密码
+      verify_info: 验证你的信息
+    mfa_setup:
+      face_touch_unlock_confirmation: 人脸或触摸解锁已添加
+      suggest_second_mfa: 你已添加了第一个身份证实方法！添加第二个做备份
+    no_auth_option: 没找到登录方法
+    openid_connect:
+      authorization: OpenID Connect 授权
+      logout: OpenID Connect 登出
+    passwords:
+      change: 更改你账户密码
+      forgot: 重设密码
+    personal_key: 万一
+    piv_cac_login:
+      add: 添加你的 PIV 或者 CAC
+      new: 用 PIV/CAC 登入你的账户
+    piv_cac_setup:
+      new: 用 PIV/CAC 卡来保护你账户安全
+    present_piv_cac: 提供你的 PIV/CAC
+    present_webauthn: 连接你的硬件安全密钥
+    reactivate_account: 重新激活你账户
+    registrations:
+      new: 设立账户
+    revoke_consent: 撤销同意
+    rules_of_use: 使用规则
+    sign_up:
+      completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
+      completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
+      completion_first_sign_in: 继续到 %{sp}
+      completion_ial2: 连接你验证过的信息到 %{sp}
+      completion_new_attributes: '%{sp} 在要求新信息'
+      completion_new_sp: 你现在正在首次登入
+      completion_reverified_consent: 与 %{sp}分享你更新后的信息
+      confirmation: 继续登录
+    spam_protection: 防止垃圾邮件
+    totp_setup:
+      new: 添加身份证实应用程序
+    two_factor_setup: 设立双因素身份证实
+    verify_email: 检查你的电邮
+    visitors:
+      index: 欢迎。
+    webauthn_setup: 添加你的安全密钥

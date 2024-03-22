@@ -1,0 +1,50 @@
+---
+zh:
+  account_reset:
+    cancel_request:
+      are_you_sure: 你确定要取消删除账户的请求吗？
+      cancel: 退出
+      cancel_button: 取消删除账户
+      title: 取消删除账户
+    confirm_delete_account:
+      cta_html:  完成后可以 %{link_html} 或关闭这一窗口。 
+      info_html:  <strong>%{email}</strong> 的账户已删除。我们已发送了账户删除的确认电邮。 
+      link_text: 设立新账户
+      title: 你已删除自己的账户
+    confirm_request:
+      close_window: 你完成后可以关闭这一窗口。
+      instructions_end: 开始删除账户流程。请按照你电邮中的说明来完成这一流程。
+      instructions_start: 我们已发电邮到
+      security_note: 作为一项安全措施，我们也向你登记的电话号码发了短信。
+    delete_account:
+      are_you_sure: 你确定要删除账户吗？
+      info:  被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。 
+      title: 删除账户应当是你最后的选择。
+    pending:
+      cancel_request: 取消请求
+      cancelled: 我们已取消了你删除账户的请求。
+      confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待24个小时。
+      header: 你已提出删除账户的请求。
+      wait_html:  要删除账户，有 24 小时的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。 
+    recovery_options:
+      check_saved_credential: See if you have a saved credential
+      use_same_device: Otherwise, try using the same device where you set up face or touch unlock.
+      check_webauthn_platform: 使用你首次设置人脸或触摸解锁时使用的同一设备。
+      check_webauthn_platform_info:  如果你在设立账户时设置了人脸或触摸解锁，务必使用你设立 %{app_name} 账户时使用的同一设备。 
+      header: 你确定要删除账户吗？
+      help_text:  如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。 
+      try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
+      try_method_again: 再次尝试你的身份证实方法。
+      use_device: 使用另一个设备。
+    request:
+      are_you_sure: 你确定无法使用自己任何一个身份证实方法吗？
+      delete_account: 删除你的账户
+      delete_account_info:
+        - 删除现有账户并设立一个新账户使你能够使用同一电邮地址并设置新的身份证实方法。但是，删除账户会去掉与你账户连接的所有机构的应用程序，你将需要恢复每个连接。
+        - 如果你继续的话，会首先收到一个确认电邮。  作为安全措施，你收到第一个电邮 24 小时后，会收到另外一个电邮，其中有让你继续删除账户的链接。
+      info:
+        - 如果你无法使用先前设立的身份证实方法访问你的账户，那唯一的选择就是删除账户并设立一个新账户。
+        - 账户一旦删除，我们是无法恢复的，所以请核查一下你有没有可以使用的另一种身份证实方法。
+      no_cancel: 取消
+      title: 账户删除和重设
+      yes_continue: 是的，继续删除

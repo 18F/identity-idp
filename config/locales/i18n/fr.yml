@@ -3,6 +3,7 @@ fr:
   i18n:
     language: Langue
     locale:
-      en: anglais
-      es: espagnol
-      fr: français
+      en: English
+      es: Español
+      fr: Français
+      zh: Chinese

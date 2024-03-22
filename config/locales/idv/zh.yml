@@ -1,0 +1,273 @@
+---
+zh:
+  idv:
+    accessible_labels:
+      masked_ssn: 保护文本安全，从 %{first_number} 开始，到 %{last_number}结束
+    buttons:
+      change_address_label: 更新地址
+      change_label: 更新
+      change_ssn_label: 更新社会保障号码
+      change_state_id_label: 更新州颁发的身份证件
+      continue_plain: 继续
+      mail:
+        send: 要求发一封信
+    cancel:
+      actions:
+        account_page: 到账户页面
+        exit: 退出 %{app_name}
+        keep_going: 不是，继续
+        start_over: 重新开始
+      description:
+        account_page: 账户页面
+        exit:
+          with_sp_html:
+            - 如果你退出 %{app_name} 并返回 %{sp_name}，你尚未验证你的身份。
+            - 你仍然会有 %{app_name} 账户。你可以在你的 %{account_page_link_html} 管理或删除账户。
+          without_sp:
+            - 如果你退出身份验证并到你的账户页面，你尚未验证你的身份。
+            - 你仍然会有 %{app_name} 账户。你可以在你的 %{account_page_text} 管理或删除账户。
+        gpo:
+          continue: 继续来重新开始并从头开始验证身份。
+          start_over: '如果你清除你的信息并重新开始:'
+          start_over_new_address: 要发信到另一个地址，则需要从头开始，用新地址来验证你的身份。
+          warnings:
+            - 你信中的验证码会失效
+            - 你将重新开始，从头开始验证身份
+        hybrid: 如果你现在取消的话，会被提示切换回电脑继续验证你的身份。
+        start_over: 如果你重新开始，就会从头重新开始这一流程。
+      headings:
+        confirmation:
+          hybrid: 你已取消了在该手机上上传身份证件照片
+        exit:
+          with_sp: 退出 %{app_name} 并返回 %{app_name}
+          without_sp: 退出身份验证并到你的账户页面
+        prompt:
+          hybrid: 你确定要取消在该手机上上传身份证件照片吗？
+          standard: 取消验证身份？
+          start_over: 重新开始验证身份?
+        start_over: 重新开始验证身份
+    errors:
+      incorrect_password: 你输入的密码不对。
+      pattern_mismatch:
+        ssn: '输入 9 位数的社会保障号码'
+        zipcode: 输入 5 或 9 位的邮编
+        zipcode_five: 输入 5 位的邮编
+    failure:
+      attempts_html:
+        one: 出于安全考虑，你在网上添加身份证件只能再试<strong>一次<strong>了。
+        other: 出于安全考虑，你在网上添加身份证件只能再试<strong>%{count} </strong>次了。
+      button:
+        try_online: 在网上再试一下
+        warning: 再试一下。
+      exceptions:
+        in_person_outage_error_message:
+          post_cta:
+            body: 与此同时，你仍然可以在 %{app_name}开始亲身验证身份流程，然后去邮局。如果你迫切需要得到服务，请直接联系该政府机构。
+            title: 我们正在解决一个技术问题。你身份验证结果可能要到 %{date} 才能寄到。
+          ready_to_verify:
+            body: 你仍然可以到邮局去完成验证你的身份。如果你迫切需要得到服务，请直接联系该政府机构。
+            contact_html: 如果你到 %{date}仍然没有收到有关验证结果的电邮 <a href=\"%{help_url}\" target=\"_blank\"> 请联系 %{app_name}支持 %</a> 。
+            title: 我们正在解决一个技术问题。你身份验证结果可能要到 %{date} 才能通过电邮发给你。
+        internal_error: 处理你的请求时内部出错。请再试一次。
+        link: 请联系我们。
+        post_office_search_error: 我们这边目前遇到技术困难。请再次尝试搜索一个邮局。如果该问题继续存在，请稍后回来。
+        text_html: 请再试一次。如果这些错误一直出现，%{link_html}。
+      exit:
+        with_sp: 退出 %{app_name} 并返回 %{app_name}
+        without_sp: 退出身份验证并到你的账户页面
+      gpo:
+        rate_limited:
+          heading: 请稍后再试
+      phone:
+        heading: 我们无法将该电话号码与其他记录相匹配
+        jobfail: 出错了，我们现在无法处理你的请求。请再试一次。
+        rate_limited:
+          body: 为了你的安全，我们限制你在网上尝试验证电话号码的次数。
+          gpo:
+            button: 通过普通邮件验证
+          heading: '我们无法通过电话验证你的身份。'
+          option_try_again_later_html: '取消并在 <strong>%{time_left}</strong> 后再试'
+          option_verify_by_mail_html: '通过普通邮件验证，这需要<strong>5 到 10 天</strong>'
+          options_header: '你可以：'
+        timeout: 我们请你验证自己信息的请求已过期。请再试一次。
+        warning:
+          attempts_html:
+            one: 出于安全考虑，你只能再试<strong>一次<strong>了。
+            other: 出于安全考虑，你只能再试<strong>%{count}次 </strong>了。
+          gpo:
+            button: 通过普通邮件验证
+            explanation: 如果你没有别的电话号码可以尝试，那请通过普通邮件验证。
+            heading: 通过普通邮件验证
+            how_long_it_takes_html: 这需要<strong>5 到 10 天</strong>。
+          heading: 我们无法将你与该号码匹配。
+          learn_more_link: '了解有关使用什么号码的更多信息。'
+          next_steps_html: '尝试 <strong>a另一个</strong> 你经常使用并用了很久的号码。  工作或住宅号码都行。'
+          try_again_button: '尝试另一个号码'
+          you_entered: '你输入了：'
+      sessions:
+        exception: 处理你的请求时内部出错。
+        fail_html: '为了你的安全，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>'
+        heading: 我们找不到与你个人信息匹配的记录
+        warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
+      setup:
+        exit: Exit %{app_name}
+        fail: 打电话给 %{contact_number} 并提供错误代码 %{support_code}。
+        fail_html: Call <strong>%{contact_number}</strong> and provide them with the error <br/>code <strong>%{support_code}</strong>.
+        fail_date_html: 请给我们的联系中心在%{date_html} 之前打电话以继续验证你的身份。
+        heading: 请给我们打个电话
+      timeout: 目前处理你请求的时间超出正常等待时间。请再试一次。
+      verify:
+        fail_link_html: 在<strong>%{sp_name}</strong> 得到
+        fail_text: 帮助以获得服务。
+        heading: 我们无法验证你的身份证件。
+    forgot_password:
+      link_text: 忘了密码?
+      modal_header: 你确定不记得密码吗？
+      reset_password: 重设密码
+      try_again: 请再试一下。
+      warnings:
+        - 如果你忘记了密码，则需重设并再次填写表格。
+        - 你得重新输入个人信息，比如姓名、州政府颁发的身份证件等。
+    form:
+      address1: 地址第 1 行
+      address2: 地址第 2 行
+      city: 城市
+      dob: 生日
+      first_name: 名
+      id_number: 身份证件号
+      issuing_state: 颁发州
+      last_name: 姓
+      password: 密码
+      ssn: 社会保障号码
+      ssn_label: 社会保障号码
+      state: 州
+      zipcode: 邮编
+    gpo:
+      alert_info: '我们把带有你验证码的信件寄到了：'
+      alert_rate_limit_warning_html: 你现在不能再要求发信了。你此前曾在<strong>%{date_letter_was_sent}</strong> 要求过信件。
+      clear_and_start_over: 清除你的信息并重新开始。
+      did_not_receive_letter:
+        form:
+          instructions: 如果你收到了信，请输入信中由 10 个字符组成的代码。
+        intro:
+          be_patient_html: 请注意<strong> 信件最多需要<strong> 10 天</strong>才能送到。感谢你的耐心。
+          request_new_letter_link: 要求再发一封信
+          request_new_letter_prompt_html: 如果你尚未收到信，可以 <span>%{request_new_letter_link}</span>。
+        title: 没收到信？
+      form:
+        instructions: 输入你收到信中的由 10 个字符组成的代码。
+        otp_label: 验证码
+        submit: 确认账户
+        title: 确认你的账户
+      intro_html: '<p>如果你收到了信件，请在下面输入你的一次性代码 。</p><p>如果你的信件还没到，请耐心等待，因为 <strong> 信件最多需要<strong> 10 天</strong>才能送到。感谢你的耐心。</p>'
+      request_another_letter:
+        button: 要求再发一封信
+        instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>5 到 10 天</strong>到达。
+        learn_more_link: 对通过邮件验证你地址获得更多了解
+        title: 要求再发一封信？
+      return_to_profile: 返回你的用户资料
+      title: 欢迎回来
+      wrong_address: 地址不对？
+    images:
+      come_back_later: 带有打勾符的信件
+    legal_statement:
+      information_collection: >-
+        这次信息收集满足通过 1995 年《减少文书法》（Paperwork Reduction Act）第2节修订后的44 U.S.C. § 3507的要求。除非我们显示管理和预算办公室（OMB）的有效控制号码，你无需回答这些问题。本次信息收集的 OMB 控制号码是 3090-0325。我们预计你阅读说明、收集事实并回答问题需要 1 分钟。请只把与我们时间预估相关的评论（包括减少这一负担或有关本次信息收集任何方面的建议）发到： General Services Administration, Regulatory Secretariat Division (MVCB), ATTN: Lois Mandell/IC 3090-0325, 1800 F Street, NW, Washington, DC 20405.
+    messages:
+      activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
+      activated_link: 联系我们
+      clear_and_start_over: 清除我的信息并重新开始。
+      come_back_later_html: <P> 美国邮局平信一般需要 <strong> 5 到 10 天</strong> 送达。</p> <p> 你的信件到达后，请登录 %{app_name}，并按照提示输入你的验证码 </p>。
+      come_back_later_no_sp_html: 你目前可以返回你的<strong>%{app_name} 账户</strong> 了。
+      come_back_later_password_html: <strong>请勿忘记密码。</strong><br /> 如果你重设密码，信件中的一次性代码就会失效，你就需要再次验证身份。
+      come_back_later_sp_html: 你目前可以返回 <strong>%{sp}</strong> 了。
+      confirm: 我们对你验证过的信息做了安全处理
+      enter_password:
+        by_mail_password_reminder_html: <strong>记住你的密码。</strong> 如果你随后重设密码的话，信中的验证码就不会奏效。
+        message: '%{app_name}会用你的密码对你的账户加密。加密意味着你的信息很安全，而且只有你能够访问或变更你的信息。'
+        phone_verified: 我们验证了你的电话号码
+      gpo:
+        address_on_file: '我们会向你早些时候验证过的地址发送一封信。'
+        another_letter_on_the_way: 我们正在再给你发送一封信。
+        info_alert: 你得等到收到信件后才能完成验证你的身份。
+        learn_more_verify_by_mail: 对通过邮件验证你地址获得更多了解
+        letter_on_the_way: 我们正在给你发信。
+        resend: 给我另外发送一封信
+        start_over_html: 如果该地址不对，你需要%{start_over_link_html}。
+        start_over_link_text: 重新开始并用你新地址进行验证。
+        timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码<strong> 的信。
+      otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
+      personal_key: 这是你新的个人密钥。把它写下来并安全存放。万一丢失密码，你将需要这一密钥。
+      phone:
+        alert_html: '<Strong>输入一个这样的电话号码：</strong> '
+        description: 我们会将该号码与记录核对并给你发个一次性代码。这是为了帮助你验证身份。
+        failed_number:
+          alert_text: 我们无法将你与该号码匹配。
+          gpo_alert_html: 试试 <strong>另一个</strong> 号码或者%{link_html}。
+          gpo_verify_link: 通过普通邮件验证
+          try_again_html: 试试 <strong>另一个</strong> 号码。
+        rules:
+          - 美国的（包括美国属地）
+          - 你的主要号码（你最常用的）
+      return_to_profile: '‹ 返回你的 %{app_name} 用户资料'
+      select_verification_with_sp: 为了保护你不受身份欺诈，我们会联系你确认该 %{sp_name} 账户是真实的。
+      select_verification_without_sp: 为了保护你不受身份欺诈，我们会联系你确认该账户是真实的。
+      sessions:
+        enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
+        no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的） - 测试站点
+      verify_info: 我们从你的身份证件上读取你的信息。提交进行验证之前请检查一下并做出必要更新。
+      verifying: 验证中。。。
+    titles:
+      activated: 你的身份已验证
+      come_back_later: 你的信件已寄出。
+      enter_password: 审阅并提交
+      mail:
+        verify: 验证你的地址
+      otp_delivery_method: 我们应该如何发送代码？
+      session:
+        enter_password: 重新输入你的%{app_name}密码
+        enter_password_letter: 重新输入你的%{app_name}密码来给你发信
+      unavailable: '我们正在争取解决错误。'
+    troubleshooting:
+      headings:
+        missing_required_items: 你是不是缺少这些东西中的一个？
+        need_assistance: '需要立即帮助？以下是如何得到帮助的步骤：'
+      options:
+        contact_support: 联系 %{app_name} 支持
+        doc_capture_tips: 拍出你身份证件清晰照片的提示。
+        get_help_at_sp: 在 %{sp_name}得到帮助
+        learn_more_address_verification_options: 对通过电话或邮件验证获得更多了解
+        learn_more_verify_by_mail: 对通过邮件验证你地址获得更多了解
+        learn_more_verify_by_phone: 了解有关使用什么号码的更多信息
+        learn_more_verify_by_phone_in_person: 对验证你的电话号码获得更多了解
+        learn_more_verify_in_person: 对亲身验证获得更多了解
+        supported_documents: 了解有关哪些身份证件可被接受的更多信息 
+        verify_by_mail: 使用邮件来验证地址
+    unavailable:
+      exit_button: '退出 %{app_name}'
+      idv_explanation:
+        with_sp_html: '<strong>%{sp}</strong>需要确保你是你，而不是别人冒充你。'
+        without_sp: '你试图访问的机构需要确保你是你，而不是别人冒充你。'
+      next_steps_html: '%{status_page_link_html} 或者退出 %{app_name}，稍后再试。'
+      status_page_link: '在我们的状态页面获得最新信息。'
+      technical_difficulties: 很遗憾，我们这边现在遇到技术困难，目前无法验证你的身份。
+    warning:
+      attempts_html:
+        one: 出于安全考虑，你只能再试<strong>一次<strong>了。
+        other: 出于安全考虑，你只能再试 <strong>%{count} 次 </strong>了 。
+      sessions:
+        heading: 我们找不到与你个人信息匹配的记录
+      state_id:
+        cancel_button: 退出 %{app_name}
+        explanation: |
+          遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
+        heading: 我们正在争取解决错误。
+        next_steps:
+          items_html:
+            - S现在再试一次<strong>或者</strong>
+            - 退出 %{app_name}，稍后再试
+          preamble: '你可以：'
+        try_again_button: 再试一下。
+    welcome:
+      no_js_header: 你必须启用 JavaScript 以验证身份。
+      no_js_intro: '%{sp_name} 需要你验证身份。你需要启用JavaScript 以继续这一流程。'

@@ -1,0 +1,10 @@
+---
+zh:
+  saml_idp:
+    auth:
+      error:
+        title: 错误
+    shared:
+      saml_post_binding:
+        heading: 提交来继续
+        no_js: 你浏览器中的 JavaScript 似乎已关闭。该步骤通常会自动发生，但因为你把 JavaScript 关闭，请点击提交按钮来继续登入或登出。

@@ -1,0 +1,43 @@
+---
+zh:
+  users:
+    delete:
+      actions:
+        cancel: 返回用户资料
+        delete: 删除账户
+      bullet_1: 你不会有 %{app_name} 账户
+      bullet_2_basic: 我们将删除你的电邮地址、密码和电话号码。
+      bullet_2_verified: '%{app_name} 将把你的电邮地址、密码、 电话号码、姓名、地址、生日以及社会保障号码从我们系统中删除。'
+      bullet_3: 你将无法使用 %{app_name} 来安全访问你的信息。
+      bullet_4: 我们将通知你使用 %{app_name} 访问的政府机构你不再有账户。
+      heading: 你确定要删除账户吗？
+      instructions: 输入密码来确认你要删除账户。
+      subheading: '如果你删除自己的账户：'
+    personal_key:
+      accessible_labels:
+        code_example: 有 16 个字符的个人密钥示例
+        preview: 个人密钥预览
+      confirmation_error: 你输入的个人密钥不对
+      generated_on_html: 你的个人密钥在 %{date_html} 生成。
+    phones:
+      error_message: 你添加的电话号码已达数量上限。
+    rules_of_use:
+      check_box_to_accept: 在该方框里打勾来接受 %{app_name}
+      details_html: |-
+        <div class="bold margin-bottom-1">使用规则:</div>
+        <ul>
+        <li>解释 %{app_name} 服务原理以及你应有的期望,</li>
+        <li>我们给你提供 %{app_name} 服务的服务条款,</li>
+        <li>我们如何使用你的信息以及你对此信息拥有的权力，以及 and</li>
+        <li>你同意的在 %{app_name} 采取某些行动的前提条件。</li>
+        </ul>
+      overview_html: 我们已更新了我们的 %{link_html}。请审阅并在下面方框里打勾来继续。
+    second_mfa_reminder:
+      add_method: 添加另外一个身份证实方法
+      continue: 继续到 %{sp_name}
+      description: 你的账户只有一个身份证实方法。添加另外一个身份证实方法来避免被锁在账户外。
+      heading: 改善你账户安全
+    suspended_sign_in_account:
+      contact_details: 我们无法把你登录进去。请给我们联系中心打电话，号码是 %{contact_number}。
+      error_details: 请提供错误代码 %{error_code}。
+      heading: 请给我们打个电话

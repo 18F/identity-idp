@@ -1,0 +1,74 @@
+---
+zh:
+  headings:
+    account:
+      activity: 活动
+      authentication_apps: 身份证实应用程序
+      connected_accounts: 你连接的账户
+      devices: 设备
+      events: 事件
+      federal_employee_id: 政府雇员身份证件
+      login_info: 你的账户
+      reactivate: 重新激活你的账户
+      two_factor: 你的身份证实方法。
+      unphishable: 无法网络钓鱼
+      verified_account: 验证过的账户
+      verified_information: 验证过的信息
+    add_email: 添加一个新电邮地址
+    add_info:
+      phone: 添加一个电话号码
+    cancellations:
+      prompt: 你确定要取消吗？
+    confirmations:
+      new: 发送另外一个确认电邮
+    create_account_new_users: 为新用户创建一个账户
+    create_account_with_sp:
+      sp_text: 正在使用 %{app_name} 使你能够安全可靠地登入账户。
+    edit_info:
+      password: 更改密码
+      phone: 管理你的电话设置
+    passwords:
+      change: 更改密码
+      confirm: 确认你目前密码以继续
+      confirm_for_personal_key: 输入密码并获得一个新个人密钥
+      forgot: 忘了你的密码?
+    piv_cac:
+      certificate:
+        bad: 你选择的 PIV/CAC 证书有误
+        expired: 你选择的 PIV/CAC 证书已过期
+        invalid: 你选择的 PIV/CAC 证书有误
+        none: 我们在你的 PIV/CAC 卡上探查不到证书
+        not_auth_cert: 请给你的PIV/CAC 卡选择另外一个证书
+        revoked: 你选择的 PIV/CAC 证书已从你的卡上撤销
+        unverified: 你选择的 PIV/CAC 证书有误
+      did_not_work: 你的 PIV/CAC 卡没起作用
+      token:
+        bad: 内部出错
+        invalid: 你选择的 PIV/CAC 证书有误。
+        missing: 内部出错
+    piv_cac_login:
+      account_not_found: 你的 PIV/CAC 没有连接账户
+      add: 把你的 PIV 或 CAC 设为一个双因素身份证实方法，这样你可以用其登录。
+      new: 使用你的 PIV 或 CAC 登录
+      success: 你已成功把 PIV/CAC 设为一个身份证实方法
+    piv_cac_setup:
+      already_associated: 你提供的 PIV/CAC 与另外一个用户相关。
+      new: 用你的 PIV/CAC 卡来保护你的账户安全
+    redirecting: 重定向
+    residential_address: 目前住宅地址
+    session_timeout_warning: 需要更多时间？
+    sign_in_existing_users: 现有用户登录
+    sign_in_with_sp: 登录以继续到 %{sp}
+    sign_in_without_sp: 登录
+    sp_handoff_bounced: 连接 %{sp_name} 出了问题
+    ssn: 社会保障号码
+    state_id: 州政府颁发的身份证件
+    totp_setup:
+      new: 添加一个身份证实应用程序
+    verify: 验证你的信息
+    verify_email: 检查你的电邮
+    verify_personal_key: 验证你的个人密钥
+    webauthn_platform_setup:
+      new: 添加人脸或触摸解锁
+    webauthn_setup:
+      new: 添加你的安全密钥

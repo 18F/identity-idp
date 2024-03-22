@@ -1,0 +1,10 @@
+---
+zh:
+  service_providers:
+    errors:
+      generic_sp_name: 该机构
+      inactive:
+        button_text: 查看我的 %{app_name} 账户
+        heading: '%{sp_name} 不再使用 %{app_name}'
+        instructions: '%{sp_name}不再用 %{app_name} 为其网站提供登录服务。如果你设立了 %{app_name} 账户的话，账户仍然有效，可用来访问其他参与本项目的政府网站。'
+        instructions2: 请访问该机构的网站来联系他们并获得更多信息。
