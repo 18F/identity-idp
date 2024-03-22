@@ -53,6 +53,29 @@ RSpec.describe AccountReset::RequestController, allowed_extra_analytics: [:*] do
 
     context 'fraud user' do
       let(:user) { create(:user, :fraud_review_pending) }
+
+      context 'fraud wait period not set' do
+        before do
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
+            and_return(nil)
+        end
+
+        it 'should have @account_reset_deletion_period to match regular wait period' do
+          stub_sign_in_before_2fa(user)
+
+          get :show
+          current_time = Time.zone.now
+          time_in_hours = distance_of_time_in_words(
+            current_time,
+            current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+            true,
+            accumulate_on: :hours,
+          )
+          expect(controller.view_assigns['account_reset_deletion_period_interval']).
+            to eq(time_in_hours)
+        end
+      end
+
       it 'should have @account_reset_deletion_period_interval to match fraud wait period' do
         stub_sign_in_before_2fa(user)
 
