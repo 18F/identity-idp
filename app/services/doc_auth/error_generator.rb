@@ -1,12 +1,215 @@
 # frozen_string_literal: true
 
 module DocAuth
-  class ErrorGenerator
-    include SelfieConcern
-    attr_reader :config
+
+  # Non document authentication related error
+  class NonAuthErrorHandler
+    attr_writer :next_handler
+    def handle(response_info)
+      return @next_handler.handle(response_info) if @next_handler
+      nil
+    end
+  end
+
+  class IdTypeErrorHandler < NonAuthErrorHandler
+    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
+    ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+    def handle(response_info)
+      errors = get_id_type_errors(response_info[:classification_info])
+      return errors.to_h if errors.present? && !errors.empty?
+      super(response_info)
+    end
+
+    private
+
+    def get_id_type_errors(classification_info)
+      return unless classification_info.present?
+      error_result = ErrorResult.new
+      both_side_ok = true
+      %w[Front Back].each do |side|
+        side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
+        side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
+        side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
+
+        side_ok = !side_class.present? ||
+          SUPPORTED_ID_CLASSNAME.include?(side_class) ||
+          side_class == 'Unknown'
+        country_ok = !side_country.present? || supported_country_codes.include?(side_country)
+        issuer_type_ok = !side_issuer_type.present? ||
+          ACCEPTED_ISSUER_TYPES.include?(side_issuer_type)
+        both_side_ok &&= issuer_type_ok && side_ok && country_ok
+        error_result.add_side(side.downcase.to_sym) unless side_ok && issuer_type_ok && country_ok
+      end
+      unless both_side_ok
+        error_result.set_error(Errors::DOC_TYPE_CHECK)
+      end
+      error_result
+    end
+  end
+
+  class ImageMetricsErrorHandler < NonAuthErrorHandler
 
     def initialize(config)
       @config = config
+    end
+
+    def handle(response_info)
+      errors = get_image_metric_errors(response_info[:image_metrics])
+      return errors.to_h if errors.present? && !errors.empty?
+      super(response_info)
+    end
+
+    private
+
+    def get_image_metric_errors(processed_image_metrics)
+      dpi_threshold = @config&.dpi_threshold&.to_i || 290
+      sharpness_threshold = @config&.sharpness_threshold&.to_i || 40
+      glare_threshold = @config&.glare_threshold&.to_i || 40
+
+      dpi_metrics, sharp_metrics, glare_metrics = {}, {}, {}
+      error_result = ErrorResult.new
+
+      processed_image_metrics.each do |side, img_metrics|
+        dpi_metrics[side] = img_metrics.slice('HorizontalResolution', 'VerticalResolution')
+        sharp_metrics[side] = img_metrics.slice('SharpnessMetric')
+        glare_metrics[side] = img_metrics.slice('GlareMetric')
+      end
+
+      dpi_metrics.each do |side, img_metrics|
+        hdpi = img_metrics['HorizontalResolution']&.to_i || 0
+        vdpi = img_metrics['VerticalResolution']&.to_i || 0
+        if hdpi < dpi_threshold || vdpi < dpi_threshold
+          error_result.set_error(Errors::DPI_LOW)
+          error_result.add_side(side)
+        end
+      end
+      return error_result unless error_result.empty?
+
+      sharp_metrics.each do |side, img_metrics|
+        sharpness = img_metrics['SharpnessMetric']&.to_i
+        if sharpness.present? && sharpness < sharpness_threshold
+          error_result.set_error(Errors::SHARP_LOW)
+          error_result.add_side(side)
+        end
+      end
+      return error_result unless error_result.empty?
+
+      glare_metrics.each do |side, img_metrics|
+        glare = img_metrics['GlareMetric']&.to_i
+        if glare.present? && glare < glare_threshold
+          error_result.set_error(Errors::GLARE_LOW)
+          error_result.add_side(side)
+        end
+      end
+
+      error_result
+    end
+  end
+
+  class SelfieErrorHandler
+    include SelfieConcern
+    def handle(response_info)
+      liveness_enabled = response_info[:liveness_enabled]
+      get_selfie_error(liveness_enabled, response_info)
+    end
+
+    def is_selfie_failure(error)
+      error == Errors::SELFIE_FAILURE
+    end
+
+    SELFIE_GENERAL_FAILURE_ERROR =
+      {
+        general: [Errors::SELFIE_NOT_LIVE],
+        front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
+        back: [Errors::MULTIPLE_BACK_ID_FAILURES],
+        selfie: [Errors::SELFIE_FAILURE],
+        hints: false,
+      }
+
+
+    private
+
+    def get_selfie_error(liveness_enabled, response_info)
+      # The part of the response that contains information about the selfie
+      portrait_match_results = response_info[:portrait_match_results] || {}
+      # The overall result of the selfie, 'Pass' or 'Fail'
+      face_match_result = portrait_match_results.dig(:FaceMatchResult)
+      # The reason for failure (if it failed), also sometimes contains success info
+      face_match_error = portrait_match_results.dig(:FaceErrorMessage)
+
+      # No error if liveness is not enabled or if there's no failure
+      if !liveness_enabled || !face_match_result || face_match_result == 'Pass'
+        return nil
+      end
+
+      # Error when the image on the id does not match the selfie image, but the image was acceptable
+      if error_is_success(face_match_error)
+        return Errors::SELFIE_FAILURE
+      end
+      # Error when the image on the id is poor quality
+      if error_is_poor_quality(face_match_error)
+        return Errors::SELFIE_POOR_QUALITY
+      end
+      # Error when the image on the id is not live
+      if error_is_not_live(face_match_error)
+        return Errors::SELFIE_NOT_LIVE
+      end
+      # Fallback, we don't expect this to happen
+      Errors::SELFIE_FAILURE
+    end
+  end
+
+  class VendorErrorHandler
+
+    def initialize(config:, liveness_enabled:)
+      @config = config
+      @liveness_enabled = liveness_enabled
+    end
+
+    def handle(known_alert_error_count, response_info, selfie_error)
+      alert_errors = get_error_messages(response_info)
+      if @liveness_enabled && !!selfie_error
+        alert_errors[SELFIE] << selfie_error
+      end
+      known_alert_error_count += 1 if alert_errors.include?(SELFIE)
+
+      error = ''
+      side = nil
+
+      # If we don't have document type or image metric errors then sort out which
+      # errors to return. Note that there's a :general error added in the
+      # `to_h` method of error_result
+      if known_alert_error_count < 1
+        @config.warn_notifier&.call(
+          message: 'DocAuth failure escaped without useful errors',
+          response_info: response_info,
+          )
+
+        error = Errors::GENERAL_ERROR
+        side = ID
+      elsif known_alert_error_count == 1
+        error = alert_errors.values[0].to_a.pop
+        side = alert_errors.keys[0]
+      elsif known_alert_error_count > 1
+        # Simplify multiple errors into a single error for the user
+        error_fields = alert_errors.keys
+        if error_fields.length == 1
+          side = error_fields.first
+          case side
+          when ID
+            error = Errors::GENERAL_ERROR
+          when FRONT
+            error = Errors::MULTIPLE_FRONT_ID_FAILURES
+          when BACK
+            error = Errors::MULTIPLE_BACK_ID_FAILURES
+          end
+        elsif error_fields.length > 1
+          error = Errors::GENERAL_ERROR
+          side = ID
+        end
+      end
+      ErrorResult.new(error, side).to_h
     end
 
     # These constants are the key names for the TrueID errors hash that is returned
@@ -54,157 +257,7 @@ module DocAuth
     }.freeze
 
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
-
-    def generate_doc_auth_errors(response_info)
-      alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
-        0 : response_info[:alert_failure_count]
-
-      unknown_fail_count = scan_for_unknown_alerts(response_info)
-      alert_error_count -= unknown_fail_count
-
-      # If we have document type errors (Ex: passport was uploaded) return only
-      # document type errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
-      # this return will never include any selfie errors at the moment.
-      doc_type_errors = get_id_type_errors(response_info[:classification_info])
-      return doc_type_errors.to_h unless doc_type_errors.nil? || doc_type_errors.empty?
-
-      # If we have image metric errors (Ex: DPI too low) return only
-      # image metric errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
-      # this return will never include any selfie errors at the moment.
-      image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
-      return image_metric_errors.to_h unless image_metric_errors.empty?
-
-      # If we have a selfie failure (selfie does not match id), then all three fields:
-      # front, back, and selfie should fail with specific in line errors.
-      liveness_enabled = response_info[:liveness_enabled]
-      selfie_error = get_selfie_error(liveness_enabled, response_info)
-      if selfie_error == Errors::SELFIE_FAILURE
-        # This returns the same sort of object that ErrorResult.to_h returns
-        # but we need to do something more complex than that's set up to handle
-        return {
-          general: [Errors::SELFIE_NOT_LIVE],
-          front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
-          back: [Errors::MULTIPLE_BACK_ID_FAILURES],
-          selfie: [Errors::SELFIE_FAILURE],
-          hints: false,
-        }
-      end
-
-      # This block can also return errors for front, back, and/or selfie
-      # But we only get here if none of the returns above are triggered
-      alert_errors = get_error_messages(liveness_enabled, response_info)
-      alert_error_count += 1 if alert_errors.include?(SELFIE)
-
-      error = ''
-      side = nil
-
-      # If we don't have document type or image metric errors then sort out which
-      # errors to return. Note that there's a :general error added in the
-      # `to_h` method of error_result
-      if alert_error_count < 1
-        config.warn_notifier&.call(
-          message: 'DocAuth failure escaped without useful errors',
-          response_info: response_info,
-        )
-
-        error = Errors::GENERAL_ERROR
-        side = ID
-      elsif alert_error_count == 1
-        error = alert_errors.values[0].to_a.pop
-        side = alert_errors.keys[0]
-      elsif alert_error_count > 1
-        # Simplify multiple errors into a single error for the user
-        error_fields = alert_errors.keys
-        if error_fields.length == 1
-          side = error_fields.first
-          case side
-          when ID
-            error = Errors::GENERAL_ERROR
-          when FRONT
-            error = Errors::MULTIPLE_FRONT_ID_FAILURES
-          when BACK
-            error = Errors::MULTIPLE_BACK_ID_FAILURES
-          end
-        elsif error_fields.length > 1
-          error = Errors::GENERAL_ERROR
-          side = ID
-        end
-      end
-
-      ErrorResult.new(error, side).to_h
-    end
-
-    # private
-
-    def get_id_type_errors(classification_info)
-      return unless classification_info.present?
-      error_result = ErrorResult.new
-      both_side_ok = true
-      %w[Front Back].each do |side|
-        side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
-        side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
-        side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
-
-        side_ok = !side_class.present? ||
-                  SUPPORTED_ID_CLASSNAME.include?(side_class) ||
-                  side_class == 'Unknown'
-        country_ok = !side_country.present? || supported_country_codes.include?(side_country)
-        issuer_type_ok = !side_issuer_type.present? ||
-                         ACCEPTED_ISSUER_TYPES.include?(side_issuer_type)
-        both_side_ok &&= issuer_type_ok && side_ok && country_ok
-        error_result.add_side(side.downcase.to_sym) unless side_ok && issuer_type_ok && country_ok
-      end
-      unless both_side_ok
-        error_result.set_error(Errors::DOC_TYPE_CHECK)
-      end
-      error_result
-    end
-
-    def get_image_metric_errors(processed_image_metrics)
-      dpi_threshold = config&.dpi_threshold&.to_i || 290
-      sharpness_threshold = config&.sharpness_threshold&.to_i || 40
-      glare_threshold = config&.glare_threshold&.to_i || 40
-
-      dpi_metrics, sharp_metrics, glare_metrics = {}, {}, {}
-      error_result = ErrorResult.new
-
-      processed_image_metrics.each do |side, img_metrics|
-        dpi_metrics[side] = img_metrics.slice('HorizontalResolution', 'VerticalResolution')
-        sharp_metrics[side] = img_metrics.slice('SharpnessMetric')
-        glare_metrics[side] = img_metrics.slice('GlareMetric')
-      end
-
-      dpi_metrics.each do |side, img_metrics|
-        hdpi = img_metrics['HorizontalResolution']&.to_i || 0
-        vdpi = img_metrics['VerticalResolution']&.to_i || 0
-        if hdpi < dpi_threshold || vdpi < dpi_threshold
-          error_result.set_error(Errors::DPI_LOW)
-          error_result.add_side(side)
-        end
-      end
-      return error_result unless error_result.empty?
-
-      sharp_metrics.each do |side, img_metrics|
-        sharpness = img_metrics['SharpnessMetric']&.to_i
-        if sharpness.present? && sharpness < sharpness_threshold
-          error_result.set_error(Errors::SHARP_LOW)
-          error_result.add_side(side)
-        end
-      end
-      return error_result unless error_result.empty?
-
-      glare_metrics.each do |side, img_metrics|
-        glare = img_metrics['GlareMetric']&.to_i
-        if glare.present? && glare < glare_threshold
-          error_result.set_error(Errors::GLARE_LOW)
-          error_result.add_side(side)
-        end
-      end
-
-      error_result
-    end
-
-    def get_error_messages(liveness_enabled, response_info)
+    def get_error_messages(response_info)
       errors = Hash.new { |hash, key| hash[key] = Set.new }
 
       if response_info[:doc_auth_result] != 'Passed'
@@ -217,42 +270,92 @@ module DocAuth
           end
         end
       end
-
-      selfie_error = get_selfie_error(liveness_enabled, response_info)
-      if liveness_enabled && !!selfie_error
-        errors[SELFIE] << selfie_error
-      end
-
       errors
     end
+  end
 
-    def get_selfie_error(liveness_enabled, response_info)
-      # The part of the response that contains information about the selfie
-      portrait_match_results = response_info[:portrait_match_results] || {}
-      # The overall result of the selfie, 'Pass' or 'Fail'
-      face_match_result = portrait_match_results.dig(:FaceMatchResult)
-      # The reason for failure (if it failed), also sometimes contains success info
-      face_match_error = portrait_match_results.dig(:FaceErrorMessage)
+  class ErrorGenerator
+    include SelfieConcern
+    attr_reader :config
 
-      # No error if liveness is not enabled or if there's no failure
-      if !liveness_enabled || !face_match_result || face_match_result == 'Pass'
-        return nil
+    def initialize(config)
+      @config = config
+    end
+
+    # # These constants are the key names for the TrueID errors hash that is returned
+    # ID = :id
+    # FRONT = :front
+    # BACK = :back
+    # SELFIE = :selfie
+    # GENERAL = :general
+    #
+    # ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
+    #                          DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+    #
+    # ERROR_KEYS = [
+    #   ID,
+    #   FRONT,
+    #   BACK,
+    #   SELFIE,
+    #   GENERAL,
+    # ].to_set.freeze
+    #
+    # ALERT_MESSAGES = {
+    #   '1D Control Number Valid': { type: BACK, msg_key: Errors::REF_CONTROL_NUMBER_CHECK },
+    #   '2D Barcode Content': { type: BACK, msg_key: Errors::BARCODE_CONTENT_CHECK },
+    #   '2D Barcode Read': { type: BACK, msg_key: Errors::BARCODE_READ_CHECK },
+    #   'Birth Date Crosscheck': { type: ID, msg_key: Errors::BIRTH_DATE_CHECKS },
+    #   'Birth Date Valid': { type: ID, msg_key: Errors::BIRTH_DATE_CHECKS },
+    #   'Control Number Crosscheck': { type: BACK, msg_key: Errors::CONTROL_NUMBER_CHECK },
+    #   'Document Classification': { type: ID, msg_key: Errors::ID_NOT_RECOGNIZED },
+    #   'Document Crosscheck Aggregation': { type: ID, msg_key: Errors::DOC_CROSSCHECK },
+    #   'Document Expired': { type: ID, msg_key: Errors::DOCUMENT_EXPIRED_CHECK },
+    #   'Document Number Crosscheck': { type: ID, msg_key: Errors::DOC_NUMBER_CHECKS },
+    #   'Expiration Date Crosscheck': { type: ID, msg_key: Errors::EXPIRATION_CHECKS },
+    #   'Expiration Date Valid': { type: ID, msg_key: Errors::EXPIRATION_CHECKS },
+    #   'Full Name Crosscheck': { type: ID, msg_key: Errors::FULL_NAME_CHECK },
+    #   'Issue Date Crosscheck': { type: ID, msg_key: Errors::ISSUE_DATE_CHECKS },
+    #   'Issue Date Valid': { type: ID, msg_key: Errors::ISSUE_DATE_CHECKS },
+    #   'Layout Valid': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
+    #   'Near-Infrared Response': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
+    #   'Photo Printing': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
+    #   'Physical Document Presence': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
+    #   'Sex Crosscheck': { type: ID, msg_key: Errors::SEX_CHECK },
+    #   'Visible Color Response': { type: ID, msg_key: Errors::VISIBLE_COLOR_CHECK },
+    #   'Visible Pattern': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
+    #   'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
+    # }.freeze
+    #
+    # SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
+
+    def generate_doc_auth_errors(response_info)
+      # scan unknown(handled) error, make sure `warn_notify` it
+      unknown_fail_count = scan_for_unknown_alerts(response_info)
+
+      # chain of non doc auth error handlers
+      # return any id type, metrics if exists
+      metrics_error_handler = ImageMetricsErrorHandler.new(config)
+      id_type_handler = IdTypeErrorHandler.new
+      id_type_handler.next_handler = metrics_error_handler
+      error = id_type_handler.handle(response_info)
+      return error if error.present? && !error.empty?
+
+      selfie_error_handler = SelfieErrorHandler.new
+      selfie_error = selfie_error_handler.handle(response_info)
+
+      # if selfie itself is ok, but we have selfie related error
+      if selfie_error_handler.is_selfie_failure(selfie_error)
+        return SelfieErrorHandler::SELFIE_GENERAL_FAILURE_ERROR
       end
 
-      # Error when the image on the id does not match the selfie image, but the image was acceptable
-      if error_is_success(face_match_error)
-        return Errors::SELFIE_FAILURE
-      end
-      # Error when the image on the id is poor quality
-      if error_is_poor_quality(face_match_error)
-        return Errors::SELFIE_POOR_QUALITY
-      end
-      # Error when the image on the id is not live
-      if error_is_not_live(face_match_error)
-        return Errors::SELFIE_NOT_LIVE
-      end
-      # Fallback, we don't expect this to happen
-      return Errors::SELFIE_FAILURE
+      ## other vendor response detail error
+      liveness_enabled = response_info[:liveness_enabled]
+      alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
+                            0 : response_info[:alert_failure_count]
+
+      known_alert_error_count = alert_error_count - unknown_fail_count
+      VendorErrorHandler.new(config: config, liveness_enabled:liveness_enabled)
+                        .handle(known_alert_error_count, response_info, selfie_error)
     end
 
     def scan_for_unknown_alerts(response_info)
@@ -264,7 +367,7 @@ module DocAuth
 
       unknown_alerts = []
       all_alerts.each do |alert|
-        if ALERT_MESSAGES[alert[:name].to_sym].blank?
+        if VendorErrorHandler::ALERT_MESSAGES[alert[:name].to_sym].blank?
           unknown_alerts.push(alert[:name])
 
           unknown_fail_count += 1 if alert[:result] != 'Passed'
