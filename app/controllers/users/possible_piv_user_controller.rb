@@ -23,6 +23,10 @@ module Users
         redirect_to confirmation_path(user_session[:mfa_selections].first)
       end
 
+      def skip
+        UpdateUser.new(user: current_user, attributes: { piv_cac_recommended_dismissed: true }).call
+      end
+
 
       private 
 
