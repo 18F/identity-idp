@@ -78,8 +78,7 @@ RSpec.describe EffectiveUser, type: :controller do
         end
 
         it 'deletes the session key' do
-          subject
-          expect(session).not_to include(:doc_capture_user_id)
+          expect { subject }.to(change { session[:doc_capture_user_id] }.to(nil))
         end
       end
     end
