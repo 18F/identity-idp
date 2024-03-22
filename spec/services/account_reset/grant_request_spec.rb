@@ -38,7 +38,7 @@ RSpec.describe AccountReset::GrantRequest do
           allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
             and_return(nil)
         end
-        
+
         it 'grants request for all users' do
           before_waiting_the_full_wait_period(Time.zone.now) do
             create_account_reset_request_for(user)
