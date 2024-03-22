@@ -1,4 +1,4 @@
-# initialize the prometheus exporter
+# Initialize the prometheus exporter
 
 if IdentityConfig.store.prometheus_exporter
   require 'prometheus_exporter/middleware'
