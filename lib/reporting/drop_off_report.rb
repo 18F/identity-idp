@@ -369,7 +369,7 @@ module Reporting
     end
 
     def idv_pending_gpo
-      data[Events::IDV_PERSONAL_KEY_SUBMITTED].count
+      data[Events::IDV_PENDING_GPO].count
     end
 
     def as_tables
