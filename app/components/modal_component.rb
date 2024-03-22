@@ -7,10 +7,6 @@ class ModalComponent < BaseComponent
     @tag_options = tag_options
   end
 
-  def css_class
-    ['usa-modal-wrapper', *tag_options[:class]]
-  end
-
   def label_id
     "modal-label-#{unique_id}"
   end
