@@ -30,15 +30,16 @@ zh:
       first_paragraph_end: 带有确认你电邮的链接。点击链接来继续设立你的账户。
       first_paragraph_start: 我们已发电邮到
       no_email_sent_explanation_start: 没有收到电邮？
+      resend_confirmation_email: Resend the confirmation email
     timeout_warning:
       partially_signed_in:
         continue: 继续登录
-        live_region_message_html: %{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。
-        message_html: 为了你的安全， %{time_left_in_session_html} 后我们将取消你的登录。
+        live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
+        message_html: 为了你的安全， '%{time_left_in_session_html} 后我们将取消你的登录。'
         sign_out: 取消登录
       signed_in:
         continue: 保持我登录状态
-        live_region_message_html: %{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。
+        live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
         message_html: 为了你的安全，我们会在 %{time_left_in_session_html} 后将你登出，除非你告诉我们不要这样做。
         sign_out: 把我登出
     totp_configured: 你账户添加了一个身份证实应用程序。

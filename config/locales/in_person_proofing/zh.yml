@@ -40,8 +40,8 @@ zh:
           none_found_tip: 你可以换个地址搜索，或添加你身份证件照片，再次尝试在网上验证你的身份。
           po_search_about: 你能在当地任何一个参与的美国邮局亲身去验证身份。
           results_description:
-            one: %{address}方圆 50 英里有一个参与本项目的邮局。
-            other: %{address}方圆 50 英里有 %{count} 个参与本项目邮局。
+            one: '%{address}方圆 50 英里有一个参与本项目的邮局。'
+            other: '%{address}方圆 50 英里有 %{count} 个参与本项目邮局。'
           results_instructions: 选择下面一个邮局，或者换个地址做搜索。
           search_button: 搜索
           state_label: 州
@@ -104,6 +104,7 @@ zh:
         state_id_jurisdiction_prompt: '- 选择 -'
         state_id_number: 身份证件号
         state_id_number_florida_hint: 这是你身份证件上的号码，以1个字母打头，然后是12个数字。无需横杠。
+        state_id_number_florida_hint_html: This is the number on your ID with one letter and 12 numbers. Example:&nbsp;D123-456-78-901-2
         state_id_number_hint: '可以包含字母、数字以及以下符号：'
         state_id_number_hint_asterisks: 星号
         state_id_number_hint_dashes: 横杠

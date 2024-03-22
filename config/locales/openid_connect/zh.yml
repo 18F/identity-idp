@@ -12,6 +12,7 @@ zh:
         no_auth: The acr_values are not authorized
         no_valid_acr_values: No acceptable acr_values found
         no_valid_scope: No valid scope values found
+        no_valid_vtr: No acceptable vots found
         prompt_invalid: No valid prompt values found
         redirect_uri_invalid: redirect_uri is invalid
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri

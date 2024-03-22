@@ -27,6 +27,8 @@ zh:
       header: 你已提出删除账户的请求。
       wait_html:  要删除账户，有 24 小时的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。 
     recovery_options:
+      check_saved_credential: See if you have a saved credential
+      use_same_device: Otherwise, try using the same device where you set up face or touch unlock.
       check_webauthn_platform: 使用你首次设置人脸或触摸解锁时使用的同一设备。
       check_webauthn_platform_info:  如果你在设立账户时设置了人脸或触摸解锁，务必使用你设立 %{app_name} 账户时使用的同一设备。 
       header: 你确定要删除账户吗？

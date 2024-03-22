@@ -40,6 +40,7 @@ zh:
     messages:
       already_confirmed: 已确认，请尝试登录
       blank: 请填写这一字段。
+      blank_cert_element_req: We cannot detect a certificate in your request.
       confirmation_code_incorrect: 验证码不对。你打字打对了吗？
       confirmation_invalid_token: 确认链接有误。链接已过期，或者你已确认了你的账户。
       confirmation_period_expired: 过期的确认链接。你可以点击“重新发送确认说明”来得到另一个。

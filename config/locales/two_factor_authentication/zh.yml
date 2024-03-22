@@ -13,6 +13,14 @@ zh:
     attempt_remaining_warning_html:
       one: 你还可以再试 <strong>%{count}  次 </strong> 。
       other: 你还可以再试 <strong>%{count}  次 </strong> 。
+    auth_app:
+      change_nickname: Change nickname
+      delete: Delete this device
+      deleted: Successfully deleted an authentication app method
+      edit_heading: Manage your authentication app settings
+      manage_accessible_label: Manage authentication app
+      nickname: Nickname
+      renamed: Successfully renamed your authentication app method
     backup_code_header_text: 输入你的备用代码。
     backup_code_prompt: 该安全代码可使用一次。提交后，你下次就需要使用一个新备用代码。
     backup_codes:
@@ -95,6 +103,15 @@ zh:
       troubleshooting:
         change_number: 使用另一个电话号码
         code_not_received: 我没收到一次性代码
+    piv_cac:
+      change_nickname: Change nickname
+      delete: Delete this method
+      deleted: Successfully deleted a PIV/CAC method
+      edit_heading: Manage your PIV/CAC settings
+      manage_accessible_label: PIV/CAC
+      nickname: Nickname
+      renamed: Successfully renamed your PIV/CAC method
+      recommended: Recommended
     piv_cac_header_text: 提供你的 PIV/CAC
     please_try_again_html: 请在 <strong>%{countdown}</strong> 后再试一次。
     read_about_two_factor_authentication: 阅读有关双因素身份证实的内容
@@ -146,4 +163,12 @@ zh:
       renamed: 成功地重新命名了你的人脸或触摸解锁方法
     webauthn_platform_header_text: 使用人脸或触摸解锁
     webauthn_platform_use_key: 使用屏幕解锁
+    webauthn_roaming:
+      change_nickname: Change nickname
+      delete: Delete this device
+      deleted: Successfully deleted a security key method
+      edit_heading: Manage your security key settings
+      manage_accessible_label: Manage security key
+      nickname: Nickname
+      renamed: Successfully renamed your security key method
     webauthn_use_key: 使用安全密钥

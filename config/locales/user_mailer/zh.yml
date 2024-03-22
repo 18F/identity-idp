@@ -114,6 +114,14 @@ zh:
       subject:
         one: 第二天去邮局验证身份。
         other: 过%{count} 天去邮局验证身份。
+    in_person_please_call:
+      body:
+        contact_message_html: Call <strong>%{contact_number}</strong> and provide them
+          with the error code <strong>%{support_code}</strong>.
+        intro_html: Call our contact center by <strong>%{date}</strong> to continue
+          verifying your identity.
+      header: Please give us a call
+      subject: Call %{app_name} to continue with your identity verification
     in_person_verified:
       greeting: 你好，
       intro: 你于 %{date}在 %{location} 邮局成功地验证了身份。

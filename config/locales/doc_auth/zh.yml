@@ -7,6 +7,7 @@ zh:
       document_capture_dialog: 文档扫描
     buttons:
       add_new_photos: 添加新照片
+      close: Close
       continue: 继续
       take_or_upload_picture_html: '<lg-take-photo>拍照</lg-take-photo> <lg-or> 或 </lg-or> <lg-upload>上传照片</lg-upload>'
       take_picture: 拍照
@@ -27,6 +28,9 @@ zh:
         id_not_verified: 我们无法验证你的身份证件。可能因为你拍照时身份证件移动了。尝试重拍。
         issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
         ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
+        selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
+        selfie_not_live: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
+        selfie_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
         sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
         visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
         visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
@@ -115,6 +119,7 @@ zh:
       getting_started:  现在我们来为 %{app_name} 验证你的身份 
       how_to_verify: 选择你想如何验证身份
       hybrid_handoff: 你想怎么添加身份证件？
+      hybrid_handoff_selfie: Enter your phone number to switch devices
       interstitial: 我们正在处理你的图像
       lets_go: 你的身份是如何验证的
       no_ssn: 没有社会保障号码？
@@ -147,6 +152,8 @@ zh:
       exit:
         with_sp:  退出 %{app_name} 并返回 %{app_name} 
         without_sp: 退出身份验证并到你的账户页面
+      getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
+      getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
       how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
       hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
@@ -165,7 +172,13 @@ zh:
       privacy: '%{app_name}是一个安全的政府网站，遵守数据保护的最高标准。我们使用你的数据来验证你的身份。'
       review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
       secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
+      selfie_capture_status:
+        face_close_to_border: Too close to the frame
+        face_not_found: Face not found
+        face_too_small: Face too small
+        too_many_faces: Too many faces
       ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
+      stepping_up_html: Verify your identity again and take a photo of yourself to access this service. %{link_html}
       tag: 建议
       upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
       upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
@@ -182,17 +195,23 @@ zh:
       bullet1: 州政府颁发的身份证件
       bullet2: 社会保障号码
       bullet3: 电话号码或家庭地址
+      bullet4: Re-enter your %{app_name} password
+      bullet1_with_selfie: Take photos of yourself and your I
       consent:  在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。 
+      getting_started: 'You’ll need to:'
       learn_more: 了解有关我们隐私和安全措施的更多信息。
       privacy: 我们的隐私与安全标准
       switch_back: 然后再返回你的电脑完成验证身份。
       switch_back_image: 从手机指向电脑的箭头
       test_ssn:  在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。 
       text1: 你的身份证件不能是过期的。
+      text1_with_selfie: Take a photo of yourself and take photos of your driver’s license or state ID card. Other forms of ID are not accepted.
       text2: 你不需要有卡。
+      text3: Your phone number matches you to your personal information. After you match, we’ll send you a code.
       text3_html:
         - '<strong>通过手机验证</strong>：我们会给你的号码打电话或发短信。这会化几分钟时间。'
         - '<strong>通过普通邮件验证</strong>：我们会往你家庭地址寄信。这需要 <strong>5 到 10 天</strong>。'
+      text4: Your password saves and encrypts your personal information.
       welcome: '你将需要你的：'
     not_ready:
       button_nosp: 取消并返回你的用户资料
