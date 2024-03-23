@@ -28,11 +28,23 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
+  # rubocop:disable Lint/InterpolationCheck
+  let(:front_image_file_name) { '\n"#{ENV}".jpg' }
+  let(:back_image_file_name) { 'back".jpg' }
+  # rubocop:enable Lint/InterpolationCheck
   let(:front_image_metadata) do
-    { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }
+    { width: 40,
+      height: 40,
+      mimeType: 'image/png',
+      source: 'upload',
+      fileName: front_image_file_name }
   end
   let(:back_image_metadata) do
-    { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }
+    { width: 20,
+      height: 20,
+      mimeType: 'image/png',
+      source: 'upload',
+      fileName: back_image_file_name }
   end
   let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
@@ -183,12 +195,14 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
               mimeType: 'image/png',
               source: 'upload',
               width: 20,
+              fileName: back_image_file_name,
             },
             front: {
               height: 40,
               mimeType: 'image/png',
               source: 'upload',
               width: 40,
+              fileName: front_image_file_name,
             },
           },
           image_metrics: nil,
@@ -294,12 +308,14 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
                 mimeType: 'image/png',
                 source: 'upload',
                 width: 20,
+                fileName: back_image_file_name,
               },
               front: {
                 height: 40,
                 mimeType: 'image/png',
                 source: 'upload',
                 width: 40,
+                fileName: front_image_file_name,
               },
               selfie: {
                 height: 10,
