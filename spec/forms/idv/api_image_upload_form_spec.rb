@@ -31,20 +31,25 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   # rubocop:disable Lint/InterpolationCheck
   let(:front_image_file_name) { '\n"#{ENV}".jpg' }
   let(:back_image_file_name) { 'back".jpg' }
+  let(:selfie_image_file_name) { 'selfie".jpg' }
   # rubocop:enable Lint/InterpolationCheck
   let(:front_image_metadata) do
-    { width: 40,
+    {
+      width: 40,
       height: 40,
       mimeType: 'image/png',
       source: 'upload',
-      fileName: front_image_file_name }
+      fileName: front_image_file_name,
+    }
   end
   let(:back_image_metadata) do
-    { width: 20,
+    {
+      width: 20,
       height: 20,
       mimeType: 'image/png',
       source: 'upload',
-      fileName: back_image_file_name }
+      fileName: back_image_file_name,
+    }
   end
   let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
@@ -122,10 +127,22 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
           context 'images sourced by acuant sdk' do
             let(:front_image_metadata) do
-              { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }
+              {
+                width: 40,
+                height: 40,
+                mimeType: 'image/png',
+                source: 'acuant',
+                fileName: front_image_file_name,
+              }
             end
             let(:back_image_metadata) do
-              { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }
+              {
+                width: 20,
+                height: 20,
+                mimeType: 'image/png',
+                source: 'acuant',
+                fileName: back_image_file_name,
+              }
             end
             it 'is valid' do
               expect(form.valid?).to eq(true)
@@ -133,7 +150,13 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
             context 'selfie is uploaded' do
               let(:selfie_image_metadata) do
-                { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }
+                {
+                  width: 40,
+                  height: 40,
+                  mimeType: 'image/png',
+                  source: 'upload',
+                  fileName: selfie_image_file_name,
+                }
               end
               it 'is invalid' do
                 expect(form.valid?).to eq(false)
