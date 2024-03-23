@@ -1,24 +1,19 @@
 # frozen_string_literal: true
 
 module DocAuth
-
   # Non document authentication related error
-  class NonAuthErrorHandler
-    attr_writer :next_handler
+  class ErrorHandler
     def handle(response_info)
-      return @next_handler.handle(response_info) if @next_handler
-      nil
+      raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
     end
   end
 
-  class IdTypeErrorHandler < NonAuthErrorHandler
+  class IdTypeErrorHandler < ErrorHandler
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
                              DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
     def handle(response_info)
-      errors = get_id_type_errors(response_info[:classification_info])
-      return errors.to_h if errors.present? && !errors.empty?
-      super(response_info)
+      get_id_type_errors(response_info[:classification_info])
     end
 
     private
@@ -33,11 +28,11 @@ module DocAuth
         side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
 
         side_ok = !side_class.present? ||
-          SUPPORTED_ID_CLASSNAME.include?(side_class) ||
-          side_class == 'Unknown'
+                  SUPPORTED_ID_CLASSNAME.include?(side_class) ||
+                  side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
         issuer_type_ok = !side_issuer_type.present? ||
-          ACCEPTED_ISSUER_TYPES.include?(side_issuer_type)
+                         ACCEPTED_ISSUER_TYPES.include?(side_issuer_type)
         both_side_ok &&= issuer_type_ok && side_ok && country_ok
         error_result.add_side(side.downcase.to_sym) unless side_ok && issuer_type_ok && country_ok
       end
@@ -46,18 +41,19 @@ module DocAuth
       end
       error_result
     end
+
+    def supported_country_codes
+      IdentityConfig.store.doc_auth_supported_country_codes
+    end
   end
 
-  class ImageMetricsErrorHandler < NonAuthErrorHandler
-
+  class ImageMetricsErrorHandler < ErrorHandler
     def initialize(config)
       @config = config
     end
 
     def handle(response_info)
-      errors = get_image_metric_errors(response_info[:image_metrics])
-      return errors.to_h if errors.present? && !errors.empty?
-      super(response_info)
+      get_image_metric_errors(response_info[:image_metrics])
     end
 
     private
@@ -107,7 +103,7 @@ module DocAuth
     end
   end
 
-  class SelfieErrorHandler
+  class SelfieErrorHandler < ErrorHandler
     include SelfieConcern
     def handle(response_info)
       liveness_enabled = response_info[:liveness_enabled]
@@ -126,7 +122,6 @@ module DocAuth
         selfie: [Errors::SELFIE_FAILURE],
         hints: false,
       }
-
 
     private
 
@@ -160,8 +155,7 @@ module DocAuth
     end
   end
 
-  class VendorErrorHandler
-
+  class AlertErrorHandler < ErrorHandler
     def initialize(config:, liveness_enabled:)
       @config = config
       @liveness_enabled = liveness_enabled
@@ -169,48 +163,86 @@ module DocAuth
 
     def handle(known_alert_error_count, response_info, selfie_error)
       alert_errors = get_error_messages(response_info)
+      # take non general selfie error into account
       if @liveness_enabled && !!selfie_error
-        alert_errors[SELFIE] << selfie_error
+        alert_errors[ErrorGenerator::SELFIE] << selfie_error
       end
-      known_alert_error_count += 1 if alert_errors.include?(SELFIE)
+      known_alert_error_count += 1 if alert_errors.include?(ErrorGenerator::SELFIE)
 
-      error = ''
-      side = nil
-
-      # If we don't have document type or image metric errors then sort out which
-      # errors to return. Note that there's a :general error added in the
-      # `to_h` method of error_result
+      # consolidate error based on count
       if known_alert_error_count < 1
-        @config.warn_notifier&.call(
-          message: 'DocAuth failure escaped without useful errors',
-          response_info: response_info,
-          )
-
-        error = Errors::GENERAL_ERROR
-        side = ID
+        process_unknown_alert_error(response_info)
       elsif known_alert_error_count == 1
-        error = alert_errors.values[0].to_a.pop
-        side = alert_errors.keys[0]
+        process_single_alert_error(alert_errors)
       elsif known_alert_error_count > 1
         # Simplify multiple errors into a single error for the user
-        error_fields = alert_errors.keys
-        if error_fields.length == 1
-          side = error_fields.first
-          case side
-          when ID
-            error = Errors::GENERAL_ERROR
-          when FRONT
-            error = Errors::MULTIPLE_FRONT_ID_FAILURES
-          when BACK
-            error = Errors::MULTIPLE_BACK_ID_FAILURES
+        consolidate_multiple_alert_errors(alert_errors)
+      else
+        # default fall back
+        ErrorResult.new(error, side)
+      end
+    end
+
+    private
+
+    def get_error_messages(response_info)
+      errors = Hash.new { |hash, key| hash[key] = Set.new }
+
+      if response_info[:doc_auth_result] != 'Passed'
+        response_info[:processed_alerts][:failed]&.each do |alert|
+          alert_msg_hash = ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym]
+
+          if alert_msg_hash.present?
+            field_type = alert[:side] || alert_msg_hash[:type]
+            errors[field_type.to_sym] << alert_msg_hash[:msg_key]
           end
-        elsif error_fields.length > 1
-          error = Errors::GENERAL_ERROR
-          side = ID
         end
       end
-      ErrorResult.new(error, side).to_h
+      errors
     end
+
+    ##
+    # Return ErrorResult as hash, there is error but known_error_count = 0
+    ##
+    def process_unknown_alert_error(response_info)
+      @config.warn_notifier&.call(
+        message: 'DocAuth failure escaped without useful errors',
+        response_info: response_info,
+      )
+
+      error = Errors::GENERAL_ERROR
+      side = ErrorGenerator::ID
+      ErrorResult.new(error, side)
+    end
+
+    def process_single_alert_error(alert_errors)
+      error = alert_errors.values[0].to_a.pop
+      side = alert_errors.keys[0]
+      ErrorResult.new(error, side)
+    end
+
+    def consolidate_multiple_alert_errors(alert_errors)
+      error_fields = alert_errors.keys
+      if error_fields.length == 1
+        side = error_fields.first
+        case side
+        when ErrorGenerator::ID
+          error = Errors::GENERAL_ERROR
+        when ErrorGenerator::FRONT
+          error = Errors::MULTIPLE_FRONT_ID_FAILURES
+        when ErrorGenerator::BACK
+          error = Errors::MULTIPLE_BACK_ID_FAILURES
+        end
+      elsif error_fields.length > 1
+        error = Errors::GENERAL_ERROR
+        side = ErrorGenerator::ID
+      end
+      ErrorResult.new(error, side)
+    end
+  end
+
+  class ErrorGenerator
+    attr_reader :config
 
     # These constants are the key names for the TrueID errors hash that is returned
     ID = :id
@@ -257,89 +289,27 @@ module DocAuth
     }.freeze
 
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
-    def get_error_messages(response_info)
-      errors = Hash.new { |hash, key| hash[key] = Set.new }
-
-      if response_info[:doc_auth_result] != 'Passed'
-        response_info[:processed_alerts][:failed]&.each do |alert|
-          alert_msg_hash = ALERT_MESSAGES[alert[:name].to_sym]
-
-          if alert_msg_hash.present?
-            field_type = alert[:side] || alert_msg_hash[:type]
-            errors[field_type.to_sym] << alert_msg_hash[:msg_key]
-          end
-        end
-      end
-      errors
-    end
-  end
-
-  class ErrorGenerator
-    include SelfieConcern
-    attr_reader :config
 
     def initialize(config)
       @config = config
     end
 
-    # # These constants are the key names for the TrueID errors hash that is returned
-    # ID = :id
-    # FRONT = :front
-    # BACK = :back
-    # SELFIE = :selfie
-    # GENERAL = :general
-    #
-    # ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-    #                          DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
-    #
-    # ERROR_KEYS = [
-    #   ID,
-    #   FRONT,
-    #   BACK,
-    #   SELFIE,
-    #   GENERAL,
-    # ].to_set.freeze
-    #
-    # ALERT_MESSAGES = {
-    #   '1D Control Number Valid': { type: BACK, msg_key: Errors::REF_CONTROL_NUMBER_CHECK },
-    #   '2D Barcode Content': { type: BACK, msg_key: Errors::BARCODE_CONTENT_CHECK },
-    #   '2D Barcode Read': { type: BACK, msg_key: Errors::BARCODE_READ_CHECK },
-    #   'Birth Date Crosscheck': { type: ID, msg_key: Errors::BIRTH_DATE_CHECKS },
-    #   'Birth Date Valid': { type: ID, msg_key: Errors::BIRTH_DATE_CHECKS },
-    #   'Control Number Crosscheck': { type: BACK, msg_key: Errors::CONTROL_NUMBER_CHECK },
-    #   'Document Classification': { type: ID, msg_key: Errors::ID_NOT_RECOGNIZED },
-    #   'Document Crosscheck Aggregation': { type: ID, msg_key: Errors::DOC_CROSSCHECK },
-    #   'Document Expired': { type: ID, msg_key: Errors::DOCUMENT_EXPIRED_CHECK },
-    #   'Document Number Crosscheck': { type: ID, msg_key: Errors::DOC_NUMBER_CHECKS },
-    #   'Expiration Date Crosscheck': { type: ID, msg_key: Errors::EXPIRATION_CHECKS },
-    #   'Expiration Date Valid': { type: ID, msg_key: Errors::EXPIRATION_CHECKS },
-    #   'Full Name Crosscheck': { type: ID, msg_key: Errors::FULL_NAME_CHECK },
-    #   'Issue Date Crosscheck': { type: ID, msg_key: Errors::ISSUE_DATE_CHECKS },
-    #   'Issue Date Valid': { type: ID, msg_key: Errors::ISSUE_DATE_CHECKS },
-    #   'Layout Valid': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
-    #   'Near-Infrared Response': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
-    #   'Photo Printing': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
-    #   'Physical Document Presence': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
-    #   'Sex Crosscheck': { type: ID, msg_key: Errors::SEX_CHECK },
-    #   'Visible Color Response': { type: ID, msg_key: Errors::VISIBLE_COLOR_CHECK },
-    #   'Visible Pattern': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
-    #   'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
-    # }.freeze
-    #
-    # SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
-
     def generate_doc_auth_errors(response_info)
+      # when entered here, it's decided the doc auth is not successful
+
       # scan unknown(handled) error, make sure `warn_notify` it
+      # if unhandled error found
       unknown_fail_count = scan_for_unknown_alerts(response_info)
 
-      # chain of non doc auth error handlers
-      # return any id type, metrics if exists
-      metrics_error_handler = ImageMetricsErrorHandler.new(config)
-      id_type_handler = IdTypeErrorHandler.new
-      id_type_handler.next_handler = metrics_error_handler
-      error = id_type_handler.handle(response_info)
-      return error if error.present? && !error.empty?
+      # check whether ID type supported
+      error = IdTypeErrorHandler.new.handle(response_info)
+      return error.to_h if error.present? && !error.empty?
 
+      # check Image metrics error
+      error = ImageMetricsErrorHandler.new(config).handle(response_info)
+      return error.to_h if error.present? && !error.empty?
+
+      # check selfie error
       selfie_error_handler = SelfieErrorHandler.new
       selfie_error = selfie_error_handler.handle(response_info)
 
@@ -354,8 +324,9 @@ module DocAuth
                             0 : response_info[:alert_failure_count]
 
       known_alert_error_count = alert_error_count - unknown_fail_count
-      VendorErrorHandler.new(config: config, liveness_enabled:liveness_enabled)
-                        .handle(known_alert_error_count, response_info, selfie_error)
+      error = AlertErrorHandler.new(config: config, liveness_enabled: liveness_enabled).
+        handle(known_alert_error_count, response_info, selfie_error)
+      error.to_h
     end
 
     def scan_for_unknown_alerts(response_info)
@@ -367,7 +338,7 @@ module DocAuth
 
       unknown_alerts = []
       all_alerts.each do |alert|
-        if VendorErrorHandler::ALERT_MESSAGES[alert[:name].to_sym].blank?
+        if ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym].blank?
           unknown_alerts.push(alert[:name])
 
           unknown_fail_count += 1 if alert[:result] != 'Passed'
@@ -391,10 +362,6 @@ module DocAuth
 
     def self.wrapped_general_error(liveness_enabled)
       { general: [ErrorGenerator.general_error(liveness_enabled)], hints: true }
-    end
-
-    def supported_country_codes
-      IdentityConfig.store.doc_auth_supported_country_codes
     end
   end
 end
