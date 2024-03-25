@@ -2,10 +2,6 @@
 
 # rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
-  def javascript_include_tag_without_preload(...)
-    without_preload_links_header { javascript_include_tag(...) }
-  end
-
   def javascript_packs_tag_once(*names, **attributes)
     @scripts = @scripts.to_h.merge(names.index_with(attributes))
     nil
@@ -52,14 +48,6 @@ module ScriptHelper
         false,
       )
     end
-  end
-
-  def without_preload_links_header
-    original_preload_links_header = ActionView::Helpers::AssetTagHelper.preload_links_header
-    ActionView::Helpers::AssetTagHelper.preload_links_header = false
-    result = yield
-    ActionView::Helpers::AssetTagHelper.preload_links_header = original_preload_links_header
-    result
   end
 
   def asset_host(path)
