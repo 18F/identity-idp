@@ -261,9 +261,9 @@ es:
       no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de
         su identidad.
       review_examples_of_photos: Revisa ejemplos de cómo hacer fotos nítidas de tu documento de identidad.
-      secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
-        significa que sus datos están protegidos y solo usted podrá acceder o
-        modificar su información.
+      secure_account: Cifraremos su cuenta cuando vuelva a introducir su contraseña.
+        La encriptación significa que sus datos están protegidos y solo usted
+        podrá acceder o modificar su información.
       selfie_capture_status:
         face_close_to_border: Demasiado cerca del marco
         face_not_found: No se detectó el rostro
@@ -286,8 +286,9 @@ es:
         línea y verificará tu identidad en persona en una oficina de correos
         participante.
       verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
-      verify_identity: Le preguntaremos sus datos personales para verificar su
-        identidad comparándola con los registros públicos.
+      verify_identity: Le pediremos su identificación, número de teléfono y otros
+        datos personales para verificar su identidad comparándola con los
+        registros públicos.
       verify_online_description: La mayoría de los usuarios finalizan este proceso de
         una sola vez. Esta opción es mejor si tiene un dispositivo móvil o una
         forma de tomar fotografías de su identificación.
