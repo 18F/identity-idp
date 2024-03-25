@@ -280,14 +280,15 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to have_logged_event(
           :idv_enter_password_submitted,
-          success: false,
-          fraud_review_pending: false,
-          fraud_rejection: false,
-          gpo_verification_pending: false,
-          in_person_verification_pending: false,
-          proofing_components: nil,
-          deactivation_reason: nil,
-          **ab_test_args,
+          hash_including(
+            success: false,
+            fraud_review_pending: false,
+            fraud_rejection: false,
+            gpo_verification_pending: false,
+            in_person_verification_pending: false,
+            deactivation_reason: nil,
+            **ab_test_args,
+          ),
         )
       end
     end
@@ -297,14 +298,15 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
 
       expect(@analytics).to have_logged_event(
         :idv_enter_password_submitted,
-        success: true,
-        fraud_review_pending: false,
-        fraud_rejection: false,
-        gpo_verification_pending: false,
-        in_person_verification_pending: false,
-        proofing_components: nil,
-        deactivation_reason: anything,
-        **ab_test_args,
+        hash_including(
+          success: true,
+          fraud_review_pending: false,
+          fraud_rejection: false,
+          gpo_verification_pending: false,
+          in_person_verification_pending: false,
+          deactivation_reason: anything,
+          **ab_test_args,
+        ),
       )
       expect(@analytics).to have_logged_event(
         'IdV: final resolution',
@@ -779,25 +781,27 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                   put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
                   expect(@analytics).to have_logged_event(
                     :idv_enter_password_submitted,
-                    success: true,
-                    fraud_review_pending: fraud_review_pending?,
-                    fraud_rejection: false,
-                    gpo_verification_pending: false,
-                    in_person_verification_pending: false,
-                    proofing_components: nil,
-                    deactivation_reason: nil,
-                    **ab_test_args,
+                    hash_including(
+                      success: true,
+                      fraud_review_pending: fraud_review_pending?,
+                      fraud_rejection: false,
+                      gpo_verification_pending: false,
+                      in_person_verification_pending: false,
+                      deactivation_reason: nil,
+                      **ab_test_args,
+                    ),
                   )
                   expect(@analytics).to have_logged_event(
                     'IdV: final resolution',
-                    success: true,
-                    fraud_review_pending: fraud_review_pending?,
-                    fraud_rejection: false,
-                    gpo_verification_pending: false,
-                    in_person_verification_pending: false,
-                    proofing_components: nil,
-                    deactivation_reason: nil,
-                    **ab_test_args,
+                    hash_including(
+                      success: true,
+                      fraud_review_pending: fraud_review_pending?,
+                      fraud_rejection: false,
+                      gpo_verification_pending: false,
+                      in_person_verification_pending: false,
+                      deactivation_reason: nil,
+                      **ab_test_args,
+                    ),
                   )
                 end
 
@@ -847,13 +851,14 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to have_logged_event(
           'IdV: USPS address letter enqueued',
-          resend: false,
-          enqueued_at: Time.zone.now,
-          phone_step_attempts: 1,
-          first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
-          hours_since_first_letter: 0,
-          proofing_components: nil,
-          **ab_test_args,
+          hash_including(
+            resend: false,
+            enqueued_at: Time.zone.now,
+            phone_step_attempts: 1,
+            first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
+            hours_since_first_letter: 0,
+            **ab_test_args,
+          ),
         )
       end
 
@@ -866,13 +871,14 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
 
           expect(@analytics).to have_logged_event(
             'IdV: USPS address letter enqueued',
-            resend: false,
-            enqueued_at: Time.zone.now,
-            phone_step_attempts: RateLimiter.max_attempts(rate_limit_type),
-            first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
-            hours_since_first_letter: 0,
-            proofing_components: nil,
-            **ab_test_args,
+            hash_including(
+              resend: false,
+              enqueued_at: Time.zone.now,
+              phone_step_attempts: RateLimiter.max_attempts(rate_limit_type),
+              first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
+              hours_since_first_letter: 0,
+              **ab_test_args,
+            ),
           )
         end
       end

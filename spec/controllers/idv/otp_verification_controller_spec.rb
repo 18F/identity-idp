@@ -81,10 +81,7 @@ RSpec.describe Idv::OtpVerificationController,
     it 'tracks an analytics event' do
       get :show
 
-      expect(@analytics).to have_logged_event(
-        'IdV: phone confirmation otp visited',
-        proofing_components: nil,
-      )
+      expect(@analytics).to have_logged_event('IdV: phone confirmation otp visited')
     end
   end
 
@@ -180,13 +177,12 @@ RSpec.describe Idv::OtpVerificationController,
         code_matches: true,
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
-        proofing_components: nil,
         **ab_test_args,
       }
 
       expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp submitted',
-        expected_result,
+        hash_including(expected_result),
       )
     end
 

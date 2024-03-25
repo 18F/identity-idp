@@ -3017,10 +3017,10 @@ module AnalyticsEvents
         proofing_components: proofing_components,
         limiter_expires_at: limiter_expires_at,
         remaining_submit_attempts: remaining_submit_attempts,
+        active_profile_idv_level: active_profile_idv_level,
+        pending_profile_idv_level: pending_profile_idv_level,
         **extra,
       }.compact,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
     )
   end
 
