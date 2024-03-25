@@ -52,8 +52,8 @@ fr:
           d’identité. Essayez de prendre de nouvelles photos.
         ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
           contrôle. Essayez de prendre de nouvelles photos.
-        selfie_not_live: 'Essayez de prendre de nouvelles photos de vous-même. Veillez à ce que toutes vos photos soient claires
-          et nettes.'
+        selfie_not_live: 'Essayez de prendre de nouvelles photos de vous-même. Veillez à
+          ce que toutes vos photos soient claires et nettes.'
         selfie_poor_quality: 'Essayez de prendre une nouvelle photo de vous-même.
           Assurez-vous que l’ensemble de votre visage soit clair et visible sur
           la photo.'
