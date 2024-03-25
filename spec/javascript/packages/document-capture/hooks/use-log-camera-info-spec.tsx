@@ -41,10 +41,24 @@ const addMockCameraToNavigator = () => {
       getUserMedia: mockGetUserMedia,
       enumerateDevices: mockEnumerateDevices,
     },
+    configurable: true,
+    writable: true,
   });
 };
 
+let originalGetUserMedia;
+let originalEnumerateDevices;
 describe('document-capture/hooks/use-log-camera-info', () => {
+  beforeEach(() => {
+    originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+    originalEnumerateDevices = navigator.mediaDevices.enumerateDevices;
+    addMockCameraToNavigator();
+  });
+
+  afterEach(() => {
+    navigator.mediaDevices.getUserMedia = originalGetUserMedia;
+    navigator.mediaDevices.enumerateDevices = originalEnumerateDevices;
+  });
   // This overrides the global navigator object
   addMockCameraToNavigator();
 
