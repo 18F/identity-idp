@@ -9,6 +9,7 @@ module DocAuth
       end
 
       class << self
+        # These will need to be refactored
         attr_reader :response_mocks
         attr_accessor :last_uploaded_front_image
         attr_accessor :last_uploaded_back_image

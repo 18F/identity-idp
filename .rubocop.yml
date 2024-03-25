@@ -1425,6 +1425,13 @@ ThreadSafety:
   Exclude:
     - 'spec/**/*'
 
+ThreadSafety/NewThread:
+  Enabled: true
+  Exclude:
+    - 'lib/reporting/proofing_rate_report.rb'
+    - 'lib/reporting/cloudwatch_client.rb'
+    - 'lib/pwned_password_downloader.rb'
+
 Style/ClassVars:
   Enabled: true
 

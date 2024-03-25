@@ -7,7 +7,9 @@ class ServiceProviderRequestProxy
 
   # This is used to support the .last method. That method is only used in the
   # test environment
+  # rubocop:disable ThreadSafety/ClassAndModuleAttributes
   cattr_accessor :redis_last_uuid
+  # rubocop:enable ThreadSafety/ClassAndModuleAttributes
 
   def self.from_uuid(uuid)
     return NullServiceProviderRequest.new if uuid.to_s.blank?
