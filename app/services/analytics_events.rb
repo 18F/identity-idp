@@ -2646,6 +2646,7 @@ module AnalyticsEvents
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [String] phone_fingerprint Fingerprint string identifying phone number
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
@@ -2656,6 +2657,7 @@ module AnalyticsEvents
     area_code:,
     rate_limit_exceeded:,
     telephony_response:,
+    phone_fingerprint:,
     proofing_components: nil,
     **extra
   )
@@ -2668,6 +2670,7 @@ module AnalyticsEvents
       area_code: area_code,
       rate_limit_exceeded: rate_limit_exceeded,
       telephony_response: telephony_response,
+      phone_fingerprint: phone_fingerprint,
       proofing_components: proofing_components,
       **extra,
     )
@@ -3854,12 +3857,14 @@ module AnalyticsEvents
   # Tracks if otp phone validation failed
   # @identity.idp.previous_event_name Twilio Phone Validation Failed
   # @param [String] error
+  # @param [string] message
   # @param [String] context
   # @param [String] country
-  def otp_phone_validation_failed(error:, context:, country:, **extra)
+  def otp_phone_validation_failed(error:, message:, context:, country:, **extra)
     track_event(
       'Vendor Phone Validation failed',
       error: error,
+      message: message,
       context: context,
       country: country,
       **extra,
