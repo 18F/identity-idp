@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
   def javascript_packs_tag_once(*names, **attributes)
     scripts = RequestStore.store[:scripts]
@@ -72,4 +71,3 @@ module ScriptHelper
     end
   end
 end
-# rubocop:enable Rails/HelperInstanceVariable
