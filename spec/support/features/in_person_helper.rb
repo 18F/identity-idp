@@ -179,6 +179,11 @@ module InPersonHelper
   end
 
   def expect_in_person_step_indicator_current_step(text)
+    expect_in_person_step_indicator
+    expect_step_indicator_current_step(text)
+  end
+
+  def expect_in_person_step_indicator
     # Normally we're only concerned with the "current" step, but since some steps are shared between
     # flows, we also want to make sure that at least one of the in-person-specific steps exists in
     # the step indicator.
@@ -186,8 +191,6 @@ module InPersonHelper
       '.step-indicator__step',
       text: t('step_indicator.flows.idv.find_a_post_office'),
     )
-
-    expect_step_indicator_current_step(text)
   end
 
   def expect_in_person_gpo_step_indicator_current_step(text)
