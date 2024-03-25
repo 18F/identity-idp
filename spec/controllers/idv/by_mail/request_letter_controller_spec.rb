@@ -79,7 +79,7 @@ RSpec.describe Idv::ByMail::RequestLetterController,
     it 'assigns the current step indicator step as "verify phone or address"' do
       get :index
 
-      expect(assigns(:step_indicator_current_step)).to eq(:verify_phone_or_address)
+      expect(assigns(:step_indicator_current_step)).to eq(:verify_address)
     end
 
     context 'with letter already sent' do
@@ -106,7 +106,7 @@ RSpec.describe Idv::ByMail::RequestLetterController,
       it 'assigns the current step indicator step as "get a letter"' do
         get :index
 
-        expect(assigns(:step_indicator_current_step)).to eq(:get_a_letter)
+        expect(assigns(:step_indicator_current_step)).to eq(:verify_address)
       end
     end
 

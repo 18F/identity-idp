@@ -64,11 +64,7 @@ module Idv
       end
 
       def step_indicator_current_step
-        if resend_requested?
-          :get_a_letter
-        else
-          :verify_phone_or_address
-        end
+        :verify_address
       end
 
       def update_tracking
@@ -138,6 +134,14 @@ module Idv
 
       def pii_locked?
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
+      end
+
+      def step_indicator_steps
+        if in_person_proofing?
+          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
+        else
+          StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
+        end
       end
     end
   end

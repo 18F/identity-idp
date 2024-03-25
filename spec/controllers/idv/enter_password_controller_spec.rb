@@ -139,7 +139,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       it 'uses the correct step indicator step' do
         indicator_step = subject.step_indicator_step
 
-        expect(indicator_step).to eq(:secure_account)
+        expect(indicator_step).to eq(:re_enter_password)
       end
 
       context 'user is in gpo flow' do
@@ -170,7 +170,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
         it 'uses the correct step indicator step' do
           indicator_step = subject.step_indicator_step
 
-          expect(indicator_step).to eq(:get_a_letter)
+          expect(indicator_step).to eq(:verify_address)
         end
       end
 

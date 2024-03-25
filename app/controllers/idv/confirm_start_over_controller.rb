@@ -11,13 +11,13 @@ module Idv
     before_action :confirm_idv_needed
 
     def index
-      @step_indicator_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
+      @step_indicator_step = requested_letter_before? ? :verify_address : :verify_phone
 
       analytics.idv_gpo_confirm_start_over_visited
     end
 
     def before_letter
-      @step_indicator_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
+      @step_indicator_step = requested_letter_before? ? :verify_address : :verify_phone
 
       analytics.idv_gpo_confirm_start_over_before_letter_visited
     end

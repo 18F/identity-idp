@@ -198,7 +198,7 @@ module InPersonHelper
     # Ensure that GPO letter step is shown in the step indicator.
     expect(page).to have_css(
       '.step-indicator__step',
-      text: t('step_indicator.flows.idv.get_a_letter'),
+      text: t('step_indicator.flows.idv.verify_address'),
     )
 
     expect_in_person_step_indicator_current_step(text)

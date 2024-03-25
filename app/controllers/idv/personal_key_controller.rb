@@ -27,6 +27,8 @@ module Idv
         **opt_in_analytics_properties,
       )
 
+      @step_indicator_step = step_indicator_step
+
       if pii_is_missing?
         redirect_to_retrieve_pii
       else
@@ -133,5 +135,13 @@ module Idv
       user_session[:stored_location] = request.original_fullpath
       redirect_to fix_broken_personal_key_url
     end
+
+    public def step_indicator_step
+      return :secure_account if idv_session.verify_by_mail?
+      return :go_to_the_post_office if in_person_proofing?
+
+      StepIndicatorComponent::ALL_STEPS_COMPLETE
+    end
+    helper_method :step_indicator_step
   end
 end

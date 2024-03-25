@@ -70,8 +70,8 @@ module Idv
     end
 
     def step_indicator_step
-      return :secure_account unless idv_session.verify_by_mail?
-      :get_a_letter
+      return :re_enter_password unless idv_session.verify_by_mail?
+      :verify_address
     end
 
     def self.step_info
