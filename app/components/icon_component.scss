@@ -7,7 +7,3 @@
   mask-size: 100%;
   background-color: currentColor;
 }
-
-.usa-button:not(.usa-button--unstyled) > .usa-icon {
-  margin-left: -1 * units($theme-button-icon-gap);
-}
