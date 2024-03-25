@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::PersonalKeyController do
   include FlowPolicyHelper
   include SamlAuthHelper
   include PersonalKeyValidator

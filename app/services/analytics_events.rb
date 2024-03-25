@@ -2557,8 +2557,10 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
+  # @param [String] address_verification_method "phone" or "gpo"
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
+    address_verification_method:,
     fraud_review_pending:,
     fraud_rejection:,
     in_person_verification_pending:,
@@ -2568,6 +2570,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: personal key submitted',
+      address_verification_method: address_verification_method,
       in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
@@ -2578,11 +2581,23 @@ module AnalyticsEvents
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] address_verification_method "phone" or "gpo"
+  # @param [Boolean,nil] in_person_verification_pending
+  # @param [Boolean] encrypted_profiles_missing True if user's session had no encrypted pii
   # User visited IDV personal key page
-  def idv_personal_key_visited(proofing_components: nil, **extra)
+  def idv_personal_key_visited(
+    proofing_components: nil,
+    address_verification_method: nil,
+    in_person_verification_pending: nil,
+    encrypted_profiles_missing: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key visited',
       proofing_components: proofing_components,
+      address_verification_method: address_verification_method,
+      in_person_verification_pending: in_person_verification_pending,
+      encrypted_profiles_missing: encrypted_profiles_missing,
       **extra,
     )
   end
