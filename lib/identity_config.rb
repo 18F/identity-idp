@@ -324,6 +324,7 @@ class IdentityConfig
     config.add(:min_password_score, type: :integer)
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
     config.add(:mx_timeout, type: :integer)
+    config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
     config.add(
       :openid_connect_redirect,
