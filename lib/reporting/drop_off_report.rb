@@ -44,7 +44,7 @@ module Reporting
       IDV_DOC_AUTH_PHONE_VISITED = 'IdV: phone of record visited'
       IDV_ENTER_PASSWORD_VISITED = 'idv_enter_password_visited'
       OLD_IDV_ENTER_PASSWORD_VISITED = 'IdV: review info visited'
-      IDV_PENDING_GPO = 'IdV: USPS address letter enqueued'
+      IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       IDV_ENTER_PASSWORD_SUBMITTED = 'idv_enter_password_submitted'
       OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
       IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
@@ -213,15 +213,15 @@ module Reporting
         ],
         [
           'Workflow Complete - Total Pending (event)',
-          idv_pending_gpo,
+          idv_final_resolution,
           dropoff = idv_enter_password_submitted -
-                    idv_pending_gpo,
+                    idv_final_resolution,
           percent(
             numerator: dropoff,
             denominator: idv_enter_password_submitted,
           ),
           percent(
-            numerator: idv_pending_gpo,
+            numerator: idv_final_resolution,
             denominator: idv_started,
           ),
         ],
@@ -342,8 +342,8 @@ module Reporting
       data[Events::IDV_PERSONAL_KEY_SUBMITTED].count
     end
 
-    def idv_pending_gpo
-      data[Events::IDV_PENDING_GPO].count
+    def idv_final_resolution
+      data[Events::IDV_FINAL_RESOLUTION].count
     end
 
     def as_tables
