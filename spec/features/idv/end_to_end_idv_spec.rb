@@ -323,7 +323,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
   def validate_letter_enqueued_page
     expect(page).to have_current_path(idv_letter_enqueued_path)
-    expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+    expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
     expect(page).to have_content(t('idv.titles.come_back_later'))
     expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
   end
@@ -349,7 +349,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
       text: t('step_indicator.flows.idv.secure_account'),
     )
     expect(page).not_to have_css('.step-indicator__step--current')
-    expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
+    expect(page).not_to have_content(t('step_indicator.flows.idv.verify_address'))
 
     # Refreshing shows same page (BUT with new personal key, we should warn the user)
     visit current_path

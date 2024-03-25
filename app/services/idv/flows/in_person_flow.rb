@@ -24,7 +24,7 @@ module Idv
         { name: :find_a_post_office },
         { name: :verify_info },
         { name: :secure_account },
-        { name: :get_a_letter },
+        { name: :verify_address },
         { name: :go_to_the_post_office },
       ].freeze
 

@@ -56,7 +56,7 @@ RSpec.feature 'idv gpo confirm start over', js: true, allowed_extra_analytics: [
 
       expect(current_path).to eq idv_confirm_start_over_path
       expect(page).to have_content(t('idv.cancel.description.gpo.start_over'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
       expect(fake_analytics).to have_logged_event('IdV: gpo confirm start over visited')
 
       click_idv_continue

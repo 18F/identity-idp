@@ -105,7 +105,7 @@ function VerifyFlowStepIndicator({
   // i18n-tasks-use t('step_indicator.flows.idv.secure_account')
   // i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
   // i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
-  // i18n-tasks-use t('step_indicator.flows.idv.get_a_letter')
+  // i18n-tasks-use t('step_indicator.flows.idv.verify_address')
 
   return (
     <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">

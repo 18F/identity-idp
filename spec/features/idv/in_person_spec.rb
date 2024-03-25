@@ -274,14 +274,14 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
-      expect_in_person_step_indicator_current_step(
-        t('step_indicator.flows.idv.verify_phone_or_address'),
+      expect_in_person_gpo_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_address'),
       )
       click_on t('idv.buttons.mail.send')
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
       complete_enter_password_step
 
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_letter_enqueued_path)
 
@@ -289,7 +289,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       expect(page).to have_current_path(account_path)
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
       click_button t('idv.gpo.form.submit')
 
       # personal key

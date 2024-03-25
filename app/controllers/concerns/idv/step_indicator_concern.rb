@@ -14,7 +14,7 @@ module Idv
       { name: :getting_started },
       { name: :verify_id },
       { name: :verify_info },
-      { name: :get_a_letter },
+      { name: :verify_address },
       { name: :secure_account },
     ].freeze
 
