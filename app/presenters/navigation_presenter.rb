@@ -62,7 +62,7 @@ class NavigationPresenter
     if TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
       backup_code_regenerate_path
     else
-      backup_code_create_path
+      backup_code_setup_path
     end
   end
 end
