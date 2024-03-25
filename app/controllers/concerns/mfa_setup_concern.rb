@@ -71,10 +71,9 @@ module MfaSetupConcern
        mfa_context.webauthn_platform_configurations.count == 1)
   end
 
-
   def check_if_possible_piv_user
     if current_user.has_gov_or_mil_email? && !current_user.piv_cac_recommended_dismissed
-      redirect_to login_possible_piv_user_path
+      redirect_to login_piv_cac_recommended_path
     end
   end
 
