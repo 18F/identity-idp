@@ -3,10 +3,10 @@ module Idp
     AVAILABLE_LOCALES = %w[en es fr].freeze
     UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
 
-    KMS_LOG_FILENAME = 'kms.log'
-    WORKER_LOG_FILENAME = 'workers.log'
-    EVENT_LOG_FILENAME = 'events.log'
-    TELEPHONY_LOG_FILENAME = 'telephony.log'
+    KMS_LOG_FILENAME = 'kms.log'.freeze
+    WORKER_LOG_FILENAME = 'workers.log'.freeze
+    EVENT_LOG_FILENAME = 'events.log'.freeze
+    TELEPHONY_LOG_FILENAME = 'telephony.log'.freeze
 
     module Vendors
       ACUANT = 'acuant'.freeze
@@ -162,9 +162,9 @@ module Idp
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE =
       MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(phone: '12025551212').freeze
 
-    MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
-    MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
-    MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
-    MOCK_IDV_APPLICANT_STATE = 'MT'
+    MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'.freeze
+    MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'.freeze
+    MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'.freeze
+    MOCK_IDV_APPLICANT_STATE = 'MT'.freeze
   end
 end

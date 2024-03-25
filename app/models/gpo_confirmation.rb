@@ -1,7 +1,7 @@
 class GpoConfirmation < ApplicationRecord
   self.table_name = 'usps_confirmations'
 
-  ENTRY_ATTRIBUTES = %i[otp address1 city state zipcode]
+  ENTRY_ATTRIBUTES = %i[otp address1 city state zipcode].freeze
   ENTRY_ATTRIBUTES.each do |attr|
     define_method(:"entry_#{attr}") do
       entry[attr]

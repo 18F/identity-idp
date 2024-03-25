@@ -76,7 +76,8 @@ module Idv
 
     private
 
-    PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number dob_min_age]
+    PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
+                        dob_min_age].freeze
 
     attr_reader :pii_from_doc
 

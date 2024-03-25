@@ -3,7 +3,7 @@ module Test
   class OidcTestController < ApplicationController
     include OidcAuthHelper
 
-    BIOMETRIC_REQUIRED = 'biometric-comparison-required'
+    BIOMETRIC_REQUIRED = 'biometric-comparison-required'.freeze
 
     def initialize
       @client_id = 'urn:gov:gsa:openidconnect:sp:test'

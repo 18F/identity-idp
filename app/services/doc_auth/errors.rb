@@ -10,28 +10,28 @@ module DocAuth
     # Network
     NETWORK = 'network'.freeze # usually 500 or other unhandled error
     # Alerts
-    BARCODE_CONTENT_CHECK = 'barcode_content_check'
-    BARCODE_READ_CHECK = 'barcode_read_check'
-    BIRTH_DATE_CHECKS = 'birth_date_checks'
-    CONTROL_NUMBER_CHECK = 'control_number_check'
-    DOC_CROSSCHECK = 'doc_crosscheck'
-    DOC_NUMBER_CHECKS = 'doc_number_checks'
-    DOCUMENT_EXPIRED_CHECK = 'doc_expired_check' # document has expired
-    EXPIRATION_CHECKS = 'expiration_checks' # expiration date valid, expiration crosscheck
-    FULL_NAME_CHECK = 'full_name_check'
-    GENERAL_ERROR = 'general_error'
-    ID_NOT_RECOGNIZED = 'id_not_recognized'
-    ID_NOT_VERIFIED = 'id_not_verified'
-    ISSUE_DATE_CHECKS = 'issue_date_checks'
-    MULTIPLE_BACK_ID_FAILURES = 'multiple_back_id_failures'
-    MULTIPLE_FRONT_ID_FAILURES = 'multiple_front_id_failures'
-    REF_CONTROL_NUMBER_CHECK = 'ref_control_number_check'
-    SELFIE_FAILURE = 'selfie_failure'
-    SELFIE_NOT_LIVE = 'selfie_not_live'
-    SELFIE_POOR_QUALITY = 'selfie_poor_quality'
-    SEX_CHECK = 'sex_check'
-    VISIBLE_COLOR_CHECK = 'visible_color_check'
-    VISIBLE_PHOTO_CHECK = 'visible_photo_check'
+    BARCODE_CONTENT_CHECK = 'barcode_content_check'.freeze
+    BARCODE_READ_CHECK = 'barcode_read_check'.freeze
+    BIRTH_DATE_CHECKS = 'birth_date_checks'.freeze
+    CONTROL_NUMBER_CHECK = 'control_number_check'.freeze
+    DOC_CROSSCHECK = 'doc_crosscheck'.freeze
+    DOC_NUMBER_CHECKS = 'doc_number_checks'.freeze
+    DOCUMENT_EXPIRED_CHECK = 'doc_expired_check'.freeze # document has expired
+    EXPIRATION_CHECKS = 'expiration_checks'.freeze # expiration date valid, expiration crosscheck
+    FULL_NAME_CHECK = 'full_name_check'.freeze
+    GENERAL_ERROR = 'general_error'.freeze
+    ID_NOT_RECOGNIZED = 'id_not_recognized'.freeze
+    ID_NOT_VERIFIED = 'id_not_verified'.freeze
+    ISSUE_DATE_CHECKS = 'issue_date_checks'.freeze
+    MULTIPLE_BACK_ID_FAILURES = 'multiple_back_id_failures'.freeze
+    MULTIPLE_FRONT_ID_FAILURES = 'multiple_front_id_failures'.freeze
+    REF_CONTROL_NUMBER_CHECK = 'ref_control_number_check'.freeze
+    SELFIE_FAILURE = 'selfie_failure'.freeze
+    SELFIE_NOT_LIVE = 'selfie_not_live'.freeze
+    SELFIE_POOR_QUALITY = 'selfie_poor_quality'.freeze
+    SEX_CHECK = 'sex_check'.freeze
+    VISIBLE_COLOR_CHECK = 'visible_color_check'.freeze
+    VISIBLE_PHOTO_CHECK = 'visible_photo_check'.freeze
     # Image metrics
     DPI_LOW = 'dpi_low'.freeze
     DPI_LOW_FIELD = 'dpi_low_field'.freeze
@@ -121,7 +121,7 @@ module DocAuth
       SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_FAILURE, hints: false },
       SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_FAILURE, hints: false },
       SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },
-    }
+    }.freeze
     # rubocop:enable Layout/LineLength
   end
 end

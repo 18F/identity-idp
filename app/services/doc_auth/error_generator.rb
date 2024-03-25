@@ -252,7 +252,7 @@ module DocAuth
     GENERAL = :general
 
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
 
     ERROR_KEYS = [
       ID,
