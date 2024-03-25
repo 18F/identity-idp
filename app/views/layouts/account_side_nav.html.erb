@@ -6,6 +6,7 @@
   <%= render 'accounts/mobile_nav' %>
 <% end %>
 
+<%= stylesheet_tag_once('navigation') %>
 <%= javascript_packs_tag_once('navigation') %>
 
 <%= extends_layout :application, body_class: 'site', disable_card: true, user_main_tag: false do %>

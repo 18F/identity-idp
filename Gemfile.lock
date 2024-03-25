@@ -473,6 +473,8 @@ GEM
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
     profanity_filter (0.1.1)
+    prometheus_exporter (2.1.0)
+      webrick
     propshaft (0.7.0)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
@@ -813,6 +815,7 @@ DEPENDENCIES
   phonelib
   premailer-rails (>= 1.12.0)
   profanity_filter
+  prometheus_exporter
   propshaft
   pry-byebug
   pry-doc
