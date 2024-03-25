@@ -171,7 +171,6 @@ class IdentityConfig
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disable_logout_get_request, type: :boolean)
-    config.add(:disallow_all_web_crawlers, type: :boolean)
     config.add(:disposable_email_services, type: :json)
     config.add(:doc_auth_attempt_window_in_minutes, type: :integer)
     config.add(:doc_auth_check_failed_image_resubmission_enabled, type: :boolean)
@@ -375,6 +374,7 @@ class IdentityConfig
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url, type: :string)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
+    config.add(:prometheus_exporter, type: :boolean)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_ssn_max_attempt_window_in_minutes, type: :integer)
@@ -503,6 +503,7 @@ class IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
+    config.add(:x509_presented_hash_attribute_requested_issuers, type: :json)
 
     @key_types = config.key_types
     @unused_keys = config_map.keys - config.written_env.keys

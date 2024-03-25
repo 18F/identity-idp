@@ -618,6 +618,44 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             expect(response).to redirect_to(idv_url)
             expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
           end
+
+          context 'user has a pending biometric profile' do
+            let(:vtr_settings) do
+              saml_settings(
+                overrides: {
+                  issuer: sp1_issuer,
+                  authn_context: 'C1.C2.P1',
+                },
+              )
+            end
+
+            it 'does not redirect to proofing if sp does not request biometrics' do
+              create(
+                :profile,
+                :verify_by_mail_pending,
+                :with_pii,
+                idv_level: :unsupervised_with_selfie,
+                user: user,
+              )
+              saml_get_auth(vtr_settings)
+              expect(response).to redirect_to(sign_up_completed_url)
+              expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1'])
+            end
+
+            it 'redirects to the please call page if user has a fraudualent profile' do
+              create(
+                :profile,
+                :fraud_review_pending,
+                :with_pii,
+                idv_level: :unsupervised_with_selfie,
+                user: user,
+              )
+
+              saml_get_auth(vtr_settings)
+              expect(response).to redirect_to(idv_please_call_url)
+              expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1'])
+            end
+          end
         end
 
         context 'the user has proofed with a biometric check' do

@@ -80,9 +80,11 @@ class FakeAnalytics < Analytics
       method_name = caller.
         grep(/analytics_events\.rb/)&.
         first&.
-        match(/:in `(?<method_name>[^']+)'/)&.[](:method_name)
+        match(/:in `(?<method_name>[^']+)'/)&.
+        [](:method_name)&.
+        to_sym
 
-      if method_name && !allowed_extra_analytics.include?(:*)
+      if method_name && (allowed_extra_analytics & [:*, method_name]).blank?
         analytics_method = AnalyticsEvents.instance_method(method_name)
 
         param_names = analytics_method.
@@ -144,9 +146,11 @@ class FakeAnalytics < Analytics
   attr_reader :events
   attr_accessor :user
 
-  def initialize(user: AnonymousUser.new)
+  def initialize(user: AnonymousUser.new, sp: nil, session: nil)
     @events = Hash.new
     @user = user
+    @sp = sp
+    @session = session
   end
 
   def track_event(event, attributes = {})

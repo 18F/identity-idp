@@ -159,12 +159,14 @@ fr:
       unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre nom
         d’appareil.
     webauthn_setup:
-      additional_methods_link: choisir une autre méthode d’authentification
-      already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
-        de sécurité différente.
-      general_error_html: Nous n’avons pas pu ajouter la clé de sécurité. Veuillez
-        réessayer ou %{link_html}.
+      additional_methods_link: choisissez une autre méthode d’authentification
+      already_registered: Vous avez déjà lié cette clé de sécurité à votre compte.
+        Veuillez essayer une autre clé de sécurité.
+      general_error_html: Nous n’avons pas pu ajouter la clé de sécurité. Vérifiez que
+        votre clé de sécurité est correctement insérée et réessayez ou
+        %{link_html}.
       not_supported: Votre navigateur ne prend pas en charge les clés de sécurité.
-        Utilisez la dernière version de Google Chrome, Microsoft Edge, Mozilla
-        Firefox ou Safari pour utiliser les clés de sécurité.
-      unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
+        Installez la dernière version de Google Chrome, Microsoft Edge, Mozilla
+        Firefox ou Safari, puis réessayez.
+      unique_name: Ce pseudonyme d’appareil est déjà utilisé. Choisissez un autre
+        pseudonyme d’appareil.

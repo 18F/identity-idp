@@ -58,7 +58,9 @@
   @include u-padding(1);
   @include u-border(1px, 'primary-light');
 
-  lg-manageable-authenticator + lg-manageable-authenticator & {
+  lg-manageable-authenticator:not(.manageable-authenticator--editing)
+    + lg-manageable-authenticator
+    & {
     border-top: none;
   }
 

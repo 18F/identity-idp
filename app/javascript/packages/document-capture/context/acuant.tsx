@@ -8,7 +8,6 @@ import SelfieCaptureContext from './selfie-capture';
 /**
  * Global declarations
  */
-declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
 declare let AcuantCamera: AcuantCameraInterface;
 
 declare global {
@@ -182,11 +181,11 @@ const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
   if (window.AcuantJavascriptWebSdk && typeof window.AcuantJavascriptWebSdk.start === 'function') {
     return window.AcuantJavascriptWebSdk;
   }
-  if (typeof AcuantJavascriptWebSdk === 'undefined') {
+  if (!window.AcuantJavascriptWebSdk) {
     // eslint-disable-next-line no-console
     console.error('AcuantJavascriptWebSdk is not defined in the global scope');
   }
-  return AcuantJavascriptWebSdk;
+  return window.AcuantJavascriptWebSdk;
 };
 
 /**

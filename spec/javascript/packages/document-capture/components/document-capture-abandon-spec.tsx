@@ -41,6 +41,7 @@ describe('DocumentCaptureAbandon', () => {
                 cancelURL: '/cancel',
                 exitURL: '/exit',
                 currentStep: 'document_capture',
+                accountURL: '',
               }}
             >
               <I18nContext.Provider
@@ -137,6 +138,7 @@ describe('DocumentCaptureAbandon', () => {
                 cancelURL: '/cancel',
                 exitURL: '/exit',
                 currentStep: 'document_capture',
+                accountURL: '',
               }}
             >
               <I18nContext.Provider

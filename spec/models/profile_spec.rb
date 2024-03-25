@@ -1016,33 +1016,18 @@ RSpec.describe Profile do
   # TODO: related: should we test against an active profile here?
   describe '#deactivate_for_fraud_review' do
     it 'sets fraud_review_pending to true and sets fraud_pending_reason' do
-      profile = create(:profile, user: user)
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false) # ???
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false) # to change
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
+      profile = create(:profile, :in_person_verification_pending, user: user)
 
       profile.fraud_pending_reason = 'threatmetrix_review'
-      profile.deactivate_for_fraud_review
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(true) # changed
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
+      expect { profile.deactivate_for_fraud_review }.to(
+        change { profile.fraud_review_pending? }.from(false).to(true).
+        and(change { profile.in_person_verification_pending_at }.to(nil)),
+      )
 
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.fraud_rejection?).to eq(false)
       expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
+      expect(profile.pending_reasons).to eq([:fraud_check_pending])
     end
   end
 
