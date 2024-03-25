@@ -316,6 +316,10 @@ module Reporting
           'Users who enter their password to encrypt their PII',
         ],
         [
+          'USPS letter enqueued (event)',
+          'Users who requested a verification letter mailed to their address.',
+        ],
+        [
           'Verified (event)',
           'Users who confirm their personal key and complete setting up their verified account',
         ],
