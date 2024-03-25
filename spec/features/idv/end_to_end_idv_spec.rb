@@ -348,7 +348,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
       '.step-indicator__step--complete',
       text: t('step_indicator.flows.idv.secure_account'),
     )
-    expect(page).not_to have_css('.step-indicator__step--current', wait: 5)
+    expect(page).not_to have_css('.step-indicator__step--current')
     expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
 
     # Refreshing shows same page (BUT with new personal key, we should warn the user)
