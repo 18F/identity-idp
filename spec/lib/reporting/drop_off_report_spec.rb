@@ -134,8 +134,7 @@ RSpec.describe Reporting::DropOffReport do
 
   def expected_tables(strings: false)
     [
-      # these two tables are static
-      report.proofing_definition_table,
+      # this table is static
       report.step_definition_table,
       [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
