@@ -57,10 +57,6 @@ module Reporting
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
-          title: 'Proofing Funnel Definitions',
-          table: proofing_definition_table,
-        ),
-        Reporting::EmailableReport.new(
           title: 'Step Definitions',
           table: step_definition_table,
         ),
@@ -246,32 +242,6 @@ module Reporting
       ]
     end
 
-    # rubocop:disable Layout/LineLength
-    def proofing_definition_table
-      [
-        ['Term', 'Description', 'Definition', 'Calculated'],
-        [
-          'Blanket Proofing',
-          'Full funnel: People who started proofing from welcome screen, successfully got verified credential and encrypted account',
-          'Percentage of users that successfully proofed over the total number of users that began the proofing process',
-          'Steps: "Verified" divided by "User agreement"',
-        ],
-        [
-          'Actual Proofing',
-          'Proofing funnel: People that submit and get verified',
-          'Percentage of users who submitted documents, passed instant verify and phone finder',
-          'Steps: "Encrypt account: enter password" divided by "Document submitted"',
-        ],
-        [
-          'Verified Proofing',
-          'Proofing + encryption: People that get verified, encypt account and are passed back to Service Provider',
-          'Number of users who submitted documents, passed instant verify and phone finder, encrypted account, and sent to consent screen for sharing data with Service Provider',
-          'Steps: "Verified" divided by "Document submitted"',
-        ],
-      ]
-    end
-    # rubocop:enable Layout/LineLength
-
     def step_definition_table
       [
         ['Step', 'Definition'],
@@ -378,7 +348,6 @@ module Reporting
 
     def as_tables
       [
-        proofing_definition_table,
         step_definition_table,
         overview_table,
         dropoff_metrics_table,
