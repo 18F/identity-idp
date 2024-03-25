@@ -45,13 +45,13 @@ Steps:
 
 7. Assuming the version is correct and you have it set in your `application.yml`, you are ready to test it.
 
-    1. See below for a sample chart of which browsers you might want to test.
+    1. See below for a sample chart of what you might want to test.
     <br>
 
-    | device  | chrome | firefox | safari |
-    |---------|--------|---------|--------|
-    | ios     |        |         |        |
-    | android |        |         |  N/A   |
+    | device  | chrome | firefox | safari | manual capture | sdk capture | upload |
+    |---------|--------|---------|--------|----------------|-------------|--------|
+    | ios     |        |         |        |                |             |        |
+    | android |        |   N/A   |   N/A  |                |             |        |
 
     1. Look at the [Testing Considerations](#testing-considerations) for other ideas on what you might want to test.
     1. Here is a sample plan:
@@ -155,6 +155,11 @@ Browser:
   * Chrome
   * Firefox
   * Safari
+
+Capture methods:
+  * SDK
+  * Upload
+  * Native camera capture
 
 ## Monitor A/B testing
 
