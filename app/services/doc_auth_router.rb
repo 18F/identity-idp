@@ -182,6 +182,12 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
+    when 'true_id_mock'
+      DocAuthErrorTranslatorProxy.new(
+        DocAuth::Mock::TrueIdMockClient.new(
+          warn_notifier: warn_notifier,
+        ),
+      )
     when Idp::Constants::Vendors::MOCK
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Mock::DocAuthMockClient.new(
@@ -206,7 +212,7 @@ module DocAuthRouter
 
     # if vendor is not set to mock and selfie enabled use lexisnexis
     if FeatureManagement.idv_allow_selfie_check? &&
-       vendor != Idp::Constants::Vendors::MOCK
+       (vendor != Idp::Constants::Vendors::MOCK && vendor != 'true_id_mock')
       vendor = Idp::Constants::Vendors::LEXIS_NEXIS
     end
     vendor
