@@ -58,7 +58,6 @@ cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/*.wasm "$PUBLIC_DIR/"
 cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/*.json "$PUBLIC_DIR/"
 cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/tiny_face_detector* "$PUBLIC_DIR/"
 cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/face_landmark* "$PUBLIC_DIR/"
-cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/imageMagick* "$PUBLIC_DIR/"
 
 echo "Done! You can commit the files in ${PUBLIC_DIR}."
 
