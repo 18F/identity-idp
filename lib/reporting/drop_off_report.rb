@@ -212,7 +212,7 @@ module Reporting
           ),
         ],
         [
-          'USPS letter enqueued (event)',
+          'Workflow Complete - Total Pending (event)',
           idv_pending_gpo,
           dropoff = idv_enter_password_submitted -
                     idv_pending_gpo,
@@ -286,7 +286,7 @@ module Reporting
           'Users who enter their password to encrypt their PII',
         ],
         [
-          'USPS letter enqueued (event)',
+          'Workflow Complete - Total Pending (event)',
           'Users who requested a verification letter mailed to their address.',
         ],
         [
