@@ -143,35 +143,6 @@ RSpec.describe 'layouts/application.html.erb' do
     end
   end
 
-  describe 'DAP analytics' do
-    let(:user_signed_in?) { false }
-
-    before do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
-      allow(view).to receive(:user_signed_in?).and_return(user_signed_in?)
-    end
-
-    context 'user is not signed in' do
-      let(:user_signed_in?) { false }
-
-      it 'renders DAP analytics' do
-        render
-
-        expect(view).to render_template(partial: 'shared/_dap_analytics')
-      end
-    end
-
-    context 'user is signed in' do
-      let(:user_signed_in?) { true }
-
-      it 'does not render DAP analytics' do
-        render
-
-        expect(view).not_to render_template(partial: 'shared/_dap_analytics')
-      end
-    end
-  end
-
   describe 'javascript error tracking' do
     context 'when browser is unsupported' do
       before do

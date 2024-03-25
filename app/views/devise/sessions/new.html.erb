@@ -86,4 +86,5 @@
   </p>
 <% end %>
 
+<%= render 'shared/dap_analytics' if IdentityConfig.store.participate_in_dap %>
 <%= javascript_packs_tag_once('platform-authenticator-available') %>

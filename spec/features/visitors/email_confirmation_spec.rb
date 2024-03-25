@@ -9,7 +9,6 @@ RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*]
     open_email(email)
     visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))
 
-    expect(page.html).not_to include(t('notices.dap_participation'))
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
     expect(page).to have_title t('titles.confirmations.show')
     expect(page).to have_content t('forms.confirmation.show_hdr')
@@ -76,10 +75,8 @@ RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*]
 
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(page.html).to include(t('notices.dap_participation'))
       action = t('devise.confirmations.sign_in')
-      expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: action)
+      expect(page).to have_content t('devise.confirmations.already_confirmed', action:)
       expect(current_url).to eq new_user_session_url
     end
   end
