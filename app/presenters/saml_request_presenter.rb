@@ -42,7 +42,7 @@ class SamlRequestPresenter
 
   def ialmax_authn_context?
     ial_acr_value = FederatedProtocols::Saml.new(request).ial
-    Vot::LegacyComponentValues.by_name[ial_acr_value]&.requirements&.include?(:ialmax)
+    Vot::LegacyComponentValues::NAME_HASH[ial_acr_value]&.requirements&.include?(:ialmax)
   end
 
   def authn_context

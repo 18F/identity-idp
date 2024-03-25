@@ -148,7 +148,7 @@ class SamlIdpController < ApplicationController
 
   def requested_ial
     requested_ial_acr = FederatedProtocols::Saml.new(saml_request).ial
-    requested_ial_component = Vot::LegacyComponentValues.by_name[requested_ial_acr]
+    requested_ial_component = Vot::LegacyComponentValues::NAME_HASH[requested_ial_acr]
     return 'ialmax' if requested_ial_component&.requirements&.include?(:ialmax)
 
     saml_request&.requested_ial_authn_context || 'none'

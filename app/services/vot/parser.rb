@@ -58,7 +58,7 @@ module Vot
 
     def map_initial_vector_of_trust_components_to_component_values
       vector_of_trust.split('.').map do |component_value_name|
-        SupportedComponentValues.by_name.fetch(component_value_name)
+        SupportedComponentValues::NAME_HASH.fetch(component_value_name)
       rescue KeyError
         raise_unsupported_component_exception(component_value_name)
       end
@@ -66,7 +66,7 @@ module Vot
 
     def map_initial_acr_values_to_component_values
       acr_values.split(' ').map do |component_value_name|
-        LegacyComponentValues.by_name.fetch(component_value_name)
+        LegacyComponentValues::NAME_HASH.fetch(component_value_name)
       rescue KeyError
         raise_unsupported_component_exception(component_value_name)
       end
