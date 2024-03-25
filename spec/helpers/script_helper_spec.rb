@@ -1,15 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe ScriptHelper do
-  describe '#javascript_include_tag_without_preload' do
-    it 'avoids modifying headers' do
-      output = javascript_include_tag_without_preload 'application'
-
-      expect(response.header['Link']).to be_nil
-      expect(output).to have_css('script', visible: :all)
-    end
-  end
-
   describe '#javascript_packs_tag_once' do
     it 'returns nil' do
       output = javascript_packs_tag_once('application')
