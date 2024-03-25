@@ -58,14 +58,15 @@ RSpec.describe AssetSources do
     manifest_file.unlink
   end
 
-  let(:asset_sources) do
+  subject(:asset_sources) do
     AssetSources.new(
-      manifest_path: manifest_file.path, cache_manifest: true,
+      manifest_path: manifest_file.path, cache_manifest: cache_manifest,
       i18n_locales: [:en, :es, :fr]
     )
   end
+  let(:cache_manifest) { true }
 
-  describe '.get_sources' do
+  describe '#get_sources' do
     it 'returns unique localized assets for existing sources, in order, localized scripts first' do
       expect(asset_sources.get_sources('application', 'application', 'missing', 'input')).to eq [
         'application.en.js',
@@ -92,12 +93,7 @@ RSpec.describe AssetSources do
     end
 
     context 'uncached manifest' do
-      let(:asset_sources) do
-        AssetSources.new(
-          manifest_path: manifest_file.path, cache_manifest: false,
-          i18n_locales: [:en, :es, :fr]
-        )
-      end
+      let(:cache_manifest) { false }
 
       it 'loads the manifest' do
         expect(asset_sources).to receive(:load_manifest).twice.and_call_original
@@ -108,7 +104,7 @@ RSpec.describe AssetSources do
     end
   end
 
-  describe '.get_assets' do
+  describe '#get_assets' do
     it 'returns unique, flattened assets' do
       expect(asset_sources.get_assets('application', 'application', 'input')).to eq [
         'clock.svg',
@@ -132,12 +128,7 @@ RSpec.describe AssetSources do
     end
 
     context 'uncached manifest' do
-      let(:asset_sources) do
-        AssetSources.new(
-          manifest_path: manifest_file.path, cache_manifest: false,
-          i18n_locales: [:en, :es, :fr]
-        )
-      end
+      let(:cache_manifest) { false }
 
       it 'loads the manifest' do
         expect(asset_sources).to receive(:load_manifest).twice.and_call_original
@@ -148,7 +139,7 @@ RSpec.describe AssetSources do
     end
   end
 
-  describe '.get_integrity' do
+  describe '#get_integrity' do
     let(:path) { 'vendor.js' }
     subject(:integrity) { asset_sources.get_integrity(path) }
 
@@ -165,7 +156,7 @@ RSpec.describe AssetSources do
     end
   end
 
-  describe '.load_manifest' do
+  describe '#load_manifest' do
     it 'sets the manifest' do
       asset_sources.load_manifest
 
