@@ -3048,10 +3048,16 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] location
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
+  # @param [String,nil] enrollment_code IPP enrollment code
+  # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
   # User started over idv
   def idv_start_over(
     step:,
     location:,
+    cancelled_enrollment: nil,
+    enrollment_code: nil,
+    enrollment_id: nil,
     proofing_components: nil,
     **extra
   )
@@ -3060,6 +3066,9 @@ module AnalyticsEvents
       step: step,
       location: location,
       proofing_components: proofing_components,
+      cancelled_enrollment: cancelled_enrollment,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
