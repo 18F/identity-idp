@@ -820,12 +820,25 @@ module AnalyticsEvents
 
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
+  # @param [String,nil] enrollment_code IPP enrollment code
+  # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
   # The user chose to go back instead of cancel IDV
-  def idv_cancellation_go_back(step:, proofing_components: nil, **extra)
+  def idv_cancellation_go_back(
+    step:,
+    proofing_components: nil,
+    cancelled_enrollment: nil,
+    enrollment_code: nil,
+    enrollment_id: nil,
+    **extra
+  )
     track_event(
       'IdV: cancellation go back',
       step: step,
       proofing_components: proofing_components,
+      cancelled_enrollment: cancelled_enrollment,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
