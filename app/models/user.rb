@@ -500,6 +500,11 @@ class User < ApplicationRecord
     super(...)
   end
 
+  # User was flagged by TMX as fraudulent, AND failed at the Post Office.
+  def double_failed?
+      fraud_review_pending? && %w[cancelled failed].include?(in_person_enrollments&.last&.status)
+  end
+
   private
 
   def lockout_period
