@@ -20,11 +20,14 @@ RSpec.describe ScriptHelper do
       before do
         javascript_packs_tag_once('application')
         javascript_packs_tag_once('document-capture', 'document-capture')
-        allow(AssetSources).to receive(:get_sources).with('application').
-          and_return(['/application.js'])
-        allow(AssetSources).to receive(:get_sources).with('document-capture').
-          and_return(['/document-capture.js'])
-        allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
+        allow(Rails.application.config.asset_sources).to receive(:get_sources).
+          with('application').and_return(['/application.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_sources).
+          with('document-capture').and_return(['/document-capture.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_assets).with(
+          'application',
+          'document-capture',
+        ).
           and_return(['clock.svg', 'sprite.svg'])
       end
 
@@ -77,8 +80,9 @@ RSpec.describe ScriptHelper do
 
       context 'with script integrity available' do
         before do
-          allow(AssetSources).to receive(:get_integrity).and_return(nil)
-          allow(AssetSources).to receive(:get_integrity).with('/application.js').
+          allow(Rails.application.config.asset_sources).to receive(:get_integrity).and_return(nil)
+          allow(Rails.application.config.asset_sources).to receive(:get_integrity).
+            with('/application.js').
             and_return('sha256-aztp/wpATyjXXpigZtP8ZP/9mUCHDMaL7OKFRbmnUIazQ9ehNmg4CD5Ljzym/TyA')
         end
 
@@ -96,9 +100,9 @@ RSpec.describe ScriptHelper do
       context 'with attributes' do
         before do
           javascript_packs_tag_once('track-errors', async: true)
-          allow(AssetSources).to receive(:get_sources).with('track-errors').
-            and_return(['/track-errors.js'])
-          allow(AssetSources).to receive(:get_assets).
+          allow(Rails.application.config.asset_sources).to receive(:get_sources).
+            with('track-errors').and_return(['/track-errors.js'])
+          allow(Rails.application.config.asset_sources).to receive(:get_assets).
             with('application', 'document-capture', 'track-errors').
             and_return([])
         end
@@ -147,7 +151,7 @@ RSpec.describe ScriptHelper do
 
     context 'with named scripts argument' do
       before do
-        allow(AssetSources).to receive(:get_sources).with('application').
+        allow(Rails.application.config.asset_sources).to receive(:get_sources).with('application').
           and_return(['/application.js'])
       end
 

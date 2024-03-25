@@ -15,12 +15,12 @@ module ScriptHelper
       return if @scripts.blank?
       concat javascript_assets_tag
       @scripts.each do |name, attributes|
-        AssetSources.get_sources(name).each do |source|
+        asset_sources.get_sources(name).each do |source|
           concat javascript_include_tag(
             source,
             **attributes,
             crossorigin: local_crossorigin_sources? ? true : nil,
-            integrity: AssetSources.get_integrity(source),
+            integrity: asset_sources.get_integrity(source),
           )
         end
       end
@@ -33,12 +33,17 @@ module ScriptHelper
     sprite.svg
   ].to_set.freeze
 
+  def asset_sources
+    Rails.application.config.asset_sources
+  end
+
   def local_crossorigin_sources?
     Rails.env.development? && ENV['WEBPACK_PORT'].present?
   end
 
   def javascript_assets_tag
-    assets = AssetSources.get_assets(*@scripts.keys)
+    assets = asset_sources.get_assets(*@scripts.keys)
+
     if assets.present?
       asset_map = assets.index_with { |path| asset_path(path, host: asset_host(path)) }
       content_tag(
