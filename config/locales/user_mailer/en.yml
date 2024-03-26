@@ -218,6 +218,30 @@ en:
         %{contact_link_html}.
       info: 'Your %{app_name} account was just used to sign in on a new device.'
       subject: New sign-in with your %{app_name} account
+    new_device_sign_in_attempt:
+      events:
+        sign_in_after_2fa: Authenticated
+        sign_in_before_2fa: Signed in with password
+        sign_in_unsuccessful_2fa: Failed to authenticate
+      new_sign_in_from: New sign in from %{location}
+      sign_in_after_2fa:
+        info_html:
+          - Your Login.gov email and password were used to sign-in and
+            authenticate on a new device.
+          - If you recognize this activity, you don’t need to do anything.
+          - If this wasn’t you, %{reset_password_link_html} and change your
+            authentication methods immediately.
+        reset_password: reset your password
+        subject: New sign-in and authentication with your Login.gov account
+      sign_in_before_2fa:
+        info_html:
+          - Your Login.gov email and password were used to sign in from a new
+            device but <strong>failed to authenticate</strong>.
+          - If you recognize this activity, you don’t need to do anything.
+          - Two-factor authentication protects your account from unauthorized
+            access. If this wasn’t you, %{reset_password_link_html} immediately.
+        reset_password: reset your password
+        subject: New sign-in with your Login.gov account
     password_changed:
       disavowal_link: reset your password
       help_html: If you did not make this change, %{disavowal_link_html}. For more

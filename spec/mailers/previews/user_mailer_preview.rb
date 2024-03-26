@@ -64,6 +64,56 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def new_device_sign_in_attempt_after_2fa
+    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_attempt(
+      fully_authenticated: true,
+      events: [
+        unsaveable(
+          Event.new(
+            event_type: :sign_in_before_2fa,
+            created_at: Time.zone.now - 2.minutes,
+            user:,
+            device: user.devices.first,
+          ),
+        ),
+        unsaveable(
+          Event.new(
+            event_type: :sign_in_after_2fa,
+            created_at: Time.zone.now,
+            user:,
+            device: user.devices.first,
+          ),
+        ),
+      ],
+      disavowal_token: SecureRandom.hex,
+    )
+  end
+
+  def new_device_sign_in_attempt_before_2fa
+    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_attempt(
+      fully_authenticated: false,
+      events: [
+        unsaveable(
+          Event.new(
+            event_type: :sign_in_before_2fa,
+            created_at: Time.zone.now - 2.minutes,
+            user:,
+            device: user.devices.first,
+          ),
+        ),
+        unsaveable(
+          Event.new(
+            event_type: :sign_in_unsuccessful_2fa,
+            created_at: Time.zone.now,
+            user:,
+            device: user.devices.first,
+          ),
+        ),
+      ],
+      disavowal_token: SecureRandom.hex,
+    )
+  end
+
   def personal_key_regenerated
     UserMailer.with(user: user, email_address: email_address_record).personal_key_regenerated
   end
@@ -222,7 +272,19 @@ class UserMailerPreview < ActionMailer::Preview
   private
 
   def user
-    unsaveable(User.new(email_addresses: [email_address_record]))
+    unsaveable(
+      User.new(
+        email_addresses: [email_address_record],
+        devices: [
+          unsaveable(
+            Device.new(
+              user_agent: Faker::Internet.user_agent,
+              last_ip: Faker::Internet.ip_v4_address,
+            ),
+          ),
+        ],
+      ),
+    )
   end
 
   def user_with_pending_gpo_letter

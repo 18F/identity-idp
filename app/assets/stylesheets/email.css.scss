@@ -1,4 +1,7 @@
-@use 'uswds-core' as *;
+@use '@18f/identity-design-system/packages/uswds-core' as * with (
+  $theme-table-border-color: 'base-lighter',
+  $theme-table-header-background-color: 'base-lightest'
+);
 @use 'variables/app' as *;
 @use 'variables/email' as *;
 
@@ -198,6 +201,10 @@ h6 {
   @include u-font('sans', 'md');
 }
 
+.font-family-mono {
+  font-family: monospace;
+}
+
 .margin-bottom-0 {
   @include u-margin-bottom(0);
 }
@@ -267,5 +274,32 @@ h6 {
 
   li {
     @extend %usa-list-item;
+  }
+}
+
+.usa-table {
+  @include usa-table;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  tbody td {
+    border-top: 0;
+  }
+
+  thead th:first-child {
+    border-top-left-radius: units(0.5);
+  }
+
+  thead th:last-child {
+    border-top-right-radius: units(0.5);
+  }
+
+  tbody tr:last-child td:first-child {
+    border-bottom-left-radius: units(0.5);
+  }
+
+  tbody tr:last-child td:last-child {
+    border-bottom-right-radius: units(0.5);
   }
 }

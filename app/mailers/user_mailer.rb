@@ -135,6 +135,23 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  # @param [Boolean] fully_authenticated Whether the sign-in MFA step was completed
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_attempt(fully_authenticated:, events:, disavowal_token:)
+    with_user_locale(user) do
+      @fully_authenticated = fully_authenticated
+      @events = events
+      @disavowal_token = disavowal_token
+      @i18n_scope = fully_authenticated ?
+        [:user_mailer, :new_device_sign_in_attempt, :sign_in_after_2fa] :
+        [:user_mailer, :new_device_sign_in_attempt, :sign_in_before_2fa]
+
+      mail(to: email_address.email, subject: t(:subject, scope: @i18n_scope))
+    end
+  end
+
   def personal_key_regenerated
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.personal_key_regenerated.subject'))
