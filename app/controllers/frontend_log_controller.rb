@@ -17,8 +17,6 @@ class FrontendLogController < ApplicationController
     'IdV: back image clicked' => :idv_back_image_clicked,
     'IdV: barcode warning continue clicked' => :idv_barcode_warning_continue_clicked,
     'IdV: barcode warning retake photos clicked' => :idv_barcode_warning_retake_photos_clicked,
-    'IdV: camera info error' => :idv_camera_info_error,
-    'IdV: camera info logged' => :idv_camera_info_logged,
     'IdV: Capture troubleshooting dismissed' => :idv_capture_troubleshooting_dismissed,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,
@@ -48,6 +46,8 @@ class FrontendLogController < ApplicationController
   # rubocop:enable Layout/LineLength
 
   ALLOWED_EVENTS = %i[
+    idv_camera_info_error
+    idv_camera_info_logged
     idv_sdk_selfie_image_capture_closed_without_photo
     idv_sdk_selfie_image_capture_failed
     idv_sdk_selfie_image_capture_opened

@@ -37,9 +37,9 @@ async function updateConstraintsAndLogInfo(videoDevice, trackEvent) {
     const logInfo = {
       camera_info: cameras,
     };
-    trackEvent('IdV: camera info logged', logInfo);
+    trackEvent('idv_camera_info_logged', logInfo);
   } catch (error) {
-    trackEvent('IdV: camera info error', error);
+    trackEvent('idv_camera_info_error', error);
   }
 }
 

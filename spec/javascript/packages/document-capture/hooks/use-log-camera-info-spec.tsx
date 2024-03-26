@@ -74,7 +74,7 @@ describe('document-capture/hooks/use-log-camera-info', () => {
     // This click is not triggering anything, it's the easiest way I found to make the test wait bit until the async
     // trackEvent can be called, I can't get 'waitFor' to work
     await userEvent.click(await findByText('mockcomponent'));
-    expect(trackEvent).to.have.been.calledWith('IdV: camera info logged');
+    expect(trackEvent).to.have.been.calledWith('idv_camera_info_logged');
   });
 
   it('doesnt log camera info when isBackOfId is false', async () => {
