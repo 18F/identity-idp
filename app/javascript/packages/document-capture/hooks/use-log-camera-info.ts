@@ -51,6 +51,9 @@ async function logCameraInfo(trackEvent) {
   });
 }
 
+// This function is intended to be used only after camera permissions have been granted
+// hasStartedCropping only happens after an image has been captured with the Acuant SDK,
+// which means that camera permissions have been granted.
 function useLogCameraInfo({ isBackOfId, hasStartedCropping }) {
   const didLogCameraInfoRef = useRef(false);
   const { trackEvent } = useContext(AnalyticsContext);
