@@ -72,7 +72,6 @@ deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
 disable_logout_get_request: true
-disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
 doc_capture_polling_enabled: true
@@ -248,6 +247,7 @@ piv_cac_service_url: https://localhost:8443/
 piv_cac_service_timeout: 5.0
 piv_cac_verify_token_url: https://localhost:8443/
 poll_rate_for_verify_in_seconds: 3
+prometheus_exporter: false
 proofer_mock_fallback: true
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
@@ -458,7 +458,6 @@ production:
   database_worker_jobs_password: ''
   disable_email_sending: false
   disable_logout_get_request: false
-  disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -562,6 +561,7 @@ test:
   phone_setups_per_ip_limit: 3
   phone_setups_per_ip_period: 10
   phone_setups_per_ip_track_only_mode: false
+  prometheus_exporter: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
   raise_on_missing_title: true

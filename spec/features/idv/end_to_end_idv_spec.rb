@@ -340,11 +340,15 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.text'))
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.help_link_text'))
     expect(page).to have_content(t('idv.messages.confirm'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
     expect(page).to have_css(
       '.step-indicator__step--complete',
       text: t('step_indicator.flows.idv.verify_phone_or_address'),
     )
+    expect(page).to have_css(
+      '.step-indicator__step--complete',
+      text: t('step_indicator.flows.idv.secure_account'),
+    )
+    expect(page).not_to have_css('.step-indicator__step--current')
     expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
 
     # Refreshing shows same page (BUT with new personal key, we should warn the user)

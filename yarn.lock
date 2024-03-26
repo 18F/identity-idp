@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@18f/identity-design-system@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-9.0.0.tgz#d10756f79371fc379a0c45fb7517eb59325acd04"
-  integrity sha512-l1cdTlp6lHRnWypqDkXCDAfkQMGbgaU1LicLyNXxDZ5sAMskGxfR1dKC5Igt/JL05XbBs2kBzyLW/UHs+KkMow==
+"@18f/identity-design-system@^9.1.0":
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-9.1.0.tgz#745a6b18ea30fe6fd7f18ebcaca777a5d51bf139"
+  integrity sha512-8eQBP6fHi+0MQYJu7YCF7sPtxgwDvTjnhZ2vL4XDIgjMknDOOZeyUmPrhjsnT2pAXlE11hS/eBfUm7KE8rifKw==
   dependencies:
-    "@types/uswds__uswds" "^3.7.0"
-    "@uswds/uswds" "^3.7.1"
+    "@types/uswds__uswds" "^3.8.0"
+    "@uswds/uswds" "^3.8.0"
 
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
@@ -1718,10 +1718,10 @@
   dependencies:
     "@types/react-test-renderer" "*"
 
-"@types/uswds__uswds@^3.7.0":
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/@types/uswds__uswds/-/uswds__uswds-3.7.0.tgz#6ce7b3dbff304113f4e7acaa88fff4c771dfb02d"
-  integrity sha512-HlOhwJPLpmv3rC8IN81DmvnRvi9Qzsf7MdxlE1XCB+fsPqTakkrpLdDoQOL+9lcCOurt7VhBXClSi6ZCKskZHw==
+"@types/uswds__uswds@^3.8.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@types/uswds__uswds/-/uswds__uswds-3.8.0.tgz#f5e7e05b7f5a450a0dddf303fde765814b626d7b"
+  integrity sha512-bpM1KLaY7pNpLj7xlouMa+OSXeTCCNN56VJle+gacbyMG1XJXRfQIIihLVKnX7M+P70WZYMM8zXvVTrZzS5wog==
 
 "@types/wrap-ansi@^3.0.0":
   version "3.0.0"
@@ -1890,10 +1890,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@uswds/uswds@^3.7.1":
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.7.1.tgz#455dee2d7a9c7b316192bb2e21ecd0df6fad3085"
-  integrity sha512-32u2S50bf5dwIujebqL+f1Jgx2rmRrpxcaccSZzdo3Qv9HaDUdcmeavlrxHqN30edHc7p8kRPjvjevOmOJKB7w==
+"@uswds/uswds@^3.8.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.8.0.tgz#dba0b0b38182053779276f9ae6809474bd31d548"
+  integrity sha512-rMwCXe/u4HGkfskvS1Iuabapi/EXku3ChaIFW7y/dUhc7R1TXQhbbfp8YXEjmXPF0yqJnv9T08WPgS0fQqWZ8w==
   dependencies:
     classlist-polyfill "1.2.0"
     object-assign "4.1.1"

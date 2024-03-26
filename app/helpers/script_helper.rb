@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
-  def javascript_include_tag_without_preload(...)
-    without_preload_links_header { javascript_include_tag(...) }
-  end
-
   def javascript_packs_tag_once(*names, **attributes)
-    @scripts = @scripts.to_h.merge(names.index_with(attributes))
+    scripts = RequestStore.store[:scripts]
+    if scripts
+      RequestStore.store[:scripts].merge!(names.index_with(attributes))
+    else
+      RequestStore.store[:scripts] = names.index_with(attributes)
+    end
     nil
   end
 
@@ -16,15 +16,15 @@ module ScriptHelper
   def render_javascript_pack_once_tags(...)
     capture do
       javascript_packs_tag_once(...)
-      return if @scripts.blank?
+      return if RequestStore.store[:scripts].blank?
       concat javascript_assets_tag
-      @scripts.each do |name, attributes|
-        AssetSources.get_sources(name).each do |source|
+      RequestStore.store[:scripts].each do |name, attributes|
+        asset_sources.get_sources(name).each do |source|
           concat javascript_include_tag(
             source,
             **attributes,
             crossorigin: local_crossorigin_sources? ? true : nil,
-            integrity: AssetSources.get_integrity(source),
+            integrity: asset_sources.get_integrity(source),
           )
         end
       end
@@ -37,12 +37,17 @@ module ScriptHelper
     sprite.svg
   ].to_set.freeze
 
+  def asset_sources
+    Rails.application.config.asset_sources
+  end
+
   def local_crossorigin_sources?
     Rails.env.development? && ENV['WEBPACK_PORT'].present?
   end
 
   def javascript_assets_tag
-    assets = AssetSources.get_assets(*@scripts.keys)
+    assets = asset_sources.get_assets(*RequestStore.store[:scripts].keys)
+
     if assets.present?
       asset_map = assets.index_with { |path| asset_path(path, host: asset_host(path)) }
       content_tag(
@@ -52,14 +57,6 @@ module ScriptHelper
         false,
       )
     end
-  end
-
-  def without_preload_links_header
-    original_preload_links_header = ActionView::Helpers::AssetTagHelper.preload_links_header
-    ActionView::Helpers::AssetTagHelper.preload_links_header = false
-    result = yield
-    ActionView::Helpers::AssetTagHelper.preload_links_header = original_preload_links_header
-    result
   end
 
   def asset_host(path)
@@ -74,4 +71,3 @@ module ScriptHelper
     end
   end
 end
-# rubocop:enable Rails/HelperInstanceVariable
