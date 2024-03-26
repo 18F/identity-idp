@@ -39,7 +39,7 @@ async function updateConstraintsAndLogInfo(videoDevice, trackEvent) {
     };
     trackEvent('idv_camera_info_logged', logInfo);
   } catch (error) {
-    trackEvent('idv_camera_info_error', error);
+    trackEvent('idv_camera_info_error');
   }
 }
 

@@ -30,6 +30,9 @@ const mockDevice = {
   deviceId: mockDeviceId,
 };
 
+const mockGetUserMediaThrowsError = () => {
+  throw new Error('camera logging failed');
+};
 const mockGetUserMedia = () =>
   new Promise((resolve) => resolve({ getVideoTracks: mockGetVideoTracks }));
 const mockEnumerateDevices = () => new Promise((resolve) => resolve([mockDevice]));
@@ -46,20 +49,7 @@ const addMockCameraToNavigator = () => {
   });
 };
 
-let originalGetUserMedia;
-let originalEnumerateDevices;
 describe('document-capture/hooks/use-log-camera-info', () => {
-  beforeEach(() => {
-    originalGetUserMedia = navigator.mediaDevices.getUserMedia;
-    originalEnumerateDevices = navigator.mediaDevices.enumerateDevices;
-    addMockCameraToNavigator();
-  });
-
-  afterEach(() => {
-    navigator.mediaDevices.getUserMedia = originalGetUserMedia;
-    navigator.mediaDevices.enumerateDevices = originalEnumerateDevices;
-  });
-  // This overrides the global navigator object
   addMockCameraToNavigator();
 
   it('logs camera info when isBackOfId and hasStartedCropping are both true', async () => {
@@ -105,5 +95,21 @@ describe('document-capture/hooks/use-log-camera-info', () => {
     // trackEvent can be called, I can't get 'waitFor' to work
     await userEvent.click(await findByText('mockcomponent'));
     expect(trackEvent).not.to.have.been.called();
+  });
+
+  it('logs a camera info error when getting media info fails', async () => {
+    const trackEvent = sinon.stub();
+    const [isBackOfId, hasStartedCropping] = [true, true];
+    global.navigator.mediaDevices.getUserMedia = mockGetUserMediaThrowsError;
+    const { findByText } = render(
+      <AnalyticsContextProvider trackEvent={trackEvent}>
+        <MockComponent isBackOfId={isBackOfId} hasStartedCropping={hasStartedCropping} />
+      </AnalyticsContextProvider>,
+    );
+
+    // This click is not triggering anything, it's the easiest way I found to make the test wait bit until the async
+    // trackEvent can be called, I can't get 'waitFor' to work
+    await userEvent.click(await findByText('mockcomponent'));
+    expect(trackEvent).to.have.been.calledWith('idv_camera_info_error');
   });
 });
