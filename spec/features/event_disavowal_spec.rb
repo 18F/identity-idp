@@ -22,14 +22,15 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
     disavow_last_action_and_reset_password
   end
 
-  scenario 'disavowing a new device sign in' do
-    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
-    signin(user.email, user.password)
-    Capybara.reset_session!
-    visit root_path
-    signin(user.email, user.password)
-
-    disavow_last_action_and_reset_password
+  unless FeatureManagement.aggregate_new_device_alerts?
+    scenario 'disavowing a new device sign in' do
+      allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
+      signin(user.email, user.password)
+      Capybara.reset_session!
+      visit root_path
+      signin(user.email, user.password)
+      disavow_last_action_and_reset_password
+    end
   end
 
   scenario 'disavowing a personal key sign in' do
