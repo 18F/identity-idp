@@ -223,9 +223,9 @@ en:
       link_sent_complete_polling: The next step will load automatically.
       no_ssn: You must have a Social Security number to finish verifying your identity.
       review_examples_of_photos: Review examples of how to take clear photos of your ID.
-      secure_account: We’ll encrypt your account with your password. Encryption means
-        your data is protected and only you will be able to access or change
-        your information.
+      secure_account: We’ll encrypt your account when you re-enter your password.
+        Encryption means your data is protected and only you will be able to
+        access or change your information.
       selfie_capture_status:
         face_close_to_border: Too close to the frame
         face_not_found: Face not found
@@ -245,8 +245,8 @@ en:
       verify_at_post_office_instruction: You’ll enter your ID information online, and
         verify your identity in person at a participating Post Office.
       verify_at_post_office_link_text: Learn more about verifying in person
-      verify_identity: We’ll ask for your personal information to verify your identity
-        against public records.
+      verify_identity: We’ll ask for your ID, phone number, and other personal
+        information to verify your identity against public records.
       verify_online_description: This option is better if you have a mobile device or
         a way to take photos of your ID.
       verify_online_instruction: You’ll take photos of your ID to verify your identity
