@@ -119,9 +119,7 @@ module Idv
       # Only allow direct access to document capture if IPP available
       return false unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
                           Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
-      params[:step] == 'hybrid_handoff' ?
-        @previous_step_url = idv_hybrid_handoff_path :
-        @previous_step_url = nil
+      @previous_step_url = params[:step] == 'hybrid_handoff' ? idv_hybrid_handoff_path : nil
       # allow
       idv_session.flow_path = 'standard'
       idv_session.skip_doc_auth_from_handoff = true

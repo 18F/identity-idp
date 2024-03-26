@@ -348,18 +348,13 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
     let(:doc_auth_selfie_capture_enabled) { true }
     let(:biometric_comparison_required) { true }
     let(:user) { user_with_2fa }
-    let(:service_provider) do
-      if sp_ipp_enabled
-        create(:service_provider, :active, :in_person_proofing_enabled)
-      else
-        sp = create(:service_provider, :active, :in_person_proofing_enabled)
-        sp.in_person_proofing_enabled = false
-        sp.save!
-        sp
-      end
-    end
 
     before do
+      service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
+      unless sp_ipp_enabled
+        service_provider.in_person_proofing_enabled = false
+        service_provider.save!
+      end
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
         in_person_proofing_enabled,
