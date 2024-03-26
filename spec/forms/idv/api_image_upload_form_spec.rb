@@ -28,11 +28,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
-  # rubocop:disable Lint/InterpolationCheck
-  let(:front_image_file_name) { '\n"#{ENV}".jpg' }
-  let(:back_image_file_name) { 'back".jpg' }
-  let(:selfie_image_file_name) { 'selfie".jpg' }
-  # rubocop:enable Lint/InterpolationCheck
+  let(:front_image_file_name) { 'front.jpg' }
+  let(:back_image_file_name) { 'back.jpg' }
+  let(:selfie_image_file_name) { 'selfie.jpg' }
   let(:front_image_metadata) do
     {
       width: 40,
