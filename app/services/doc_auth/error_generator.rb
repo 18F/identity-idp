@@ -110,7 +110,7 @@ module DocAuth
       get_selfie_error(liveness_enabled, response_info)
     end
 
-    def present_generic_selfie_error?(error)
+    def is_generic_selfie_error?(error)
       error == Errors::SELFIE_FAILURE
     end
 
@@ -302,11 +302,13 @@ module DocAuth
       unknown_fail_count = scan_for_unknown_alerts(response_info)
 
       # check whether ID type supported
-      id_type_error = IdTypeErrorHandler.new.handle(response_info)
+      id_type_error_handler = IdTypeErrorHandler.new
+      id_type_error = id_type_error_handler.handle(response_info)
       return id_type_error.to_h if id_type_error.present? && !id_type_error.empty?
 
       # check Image metrics error
-      metrics_error = ImageMetricsErrorHandler.new(config).handle(response_info)
+      metrics_error_handler = ImageMetricsErrorHandler.new(config)
+      metrics_error = metrics_error_handler.handle(response_info)
       return metrics_error.to_h if metrics_error.present? && !metrics_error.empty?
 
       # check selfie error
@@ -314,7 +316,7 @@ module DocAuth
       selfie_error = selfie_error_handler.handle(response_info)
 
       # if selfie itself is ok, but we have selfie related error
-      if selfie_error_handler.present_generic_selfie_error?(selfie_error)
+      if selfie_error_handler.is_generic_selfie_error?(selfie_error)
         return SelfieErrorHandler::SELFIE_GENERAL_FAILURE_ERROR
       end
 
@@ -324,8 +326,11 @@ module DocAuth
                             0 : response_info[:alert_failure_count]
 
       known_alert_error_count = alert_error_count - unknown_fail_count
-      alert_error = AlertErrorHandler.new(config: config, liveness_enabled: liveness_enabled).
-        handle(known_alert_error_count, response_info, selfie_error)
+      alert_error_handler = AlertErrorHandler.new(
+        config: config,
+        liveness_enabled: liveness_enabled,
+      )
+      alert_error = alert_error_handler.handle(known_alert_error_count, response_info, selfie_error)
       alert_error.to_h
     end
 
