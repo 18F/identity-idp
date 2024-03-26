@@ -302,12 +302,12 @@ module DocAuth
       unknown_fail_count = scan_for_unknown_alerts(response_info)
 
       # check whether ID type supported
-      error = IdTypeErrorHandler.new.handle(response_info)
-      return error.to_h if error.present? && !error.empty?
+      id_type_error = IdTypeErrorHandler.new.handle(response_info)
+      return id_type_error.to_h if id_type_error.present? && !id_type_error.empty?
 
       # check Image metrics error
-      error = ImageMetricsErrorHandler.new(config).handle(response_info)
-      return error.to_h if error.present? && !error.empty?
+      metrics_error = ImageMetricsErrorHandler.new(config).handle(response_info)
+      return metrics_error.to_h if metrics_error.present? && !metrics_error.empty?
 
       # check selfie error
       selfie_error_handler = SelfieErrorHandler.new
@@ -318,15 +318,15 @@ module DocAuth
         return SelfieErrorHandler::SELFIE_GENERAL_FAILURE_ERROR
       end
 
-      ## other vendor response detail error
+      # other vendor response detail error
       liveness_enabled = response_info[:liveness_enabled]
       alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
                             0 : response_info[:alert_failure_count]
 
       known_alert_error_count = alert_error_count - unknown_fail_count
-      error = AlertErrorHandler.new(config: config, liveness_enabled: liveness_enabled).
+      alert_error = AlertErrorHandler.new(config: config, liveness_enabled: liveness_enabled).
         handle(known_alert_error_count, response_info, selfie_error)
-      error.to_h
+      alert_error.to_h
     end
 
     def scan_for_unknown_alerts(response_info)
