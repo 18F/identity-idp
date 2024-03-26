@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext, useRef } from 'react';
 import AnalyticsContext from '../context/analytics';
 
 function getConstraints(deviceId) {
@@ -52,18 +52,18 @@ async function logCameraInfo(trackEvent) {
 }
 
 function useLogCameraInfo({ isBackOfId, hasStartedCropping }) {
-  const [didLogCameraInfo, setDidLogCameraInfo] = useState(false);
+  const didLogCameraInfoRef = useRef(false);
   const { trackEvent } = useContext(AnalyticsContext);
 
   useEffect(() => {
     if (!isBackOfId) {
       return;
     }
-    if (hasStartedCropping && !didLogCameraInfo) {
+    if (hasStartedCropping && !didLogCameraInfoRef.current) {
       logCameraInfo(trackEvent);
-      setDidLogCameraInfo(true);
+      didLogCameraInfoRef.current = true;
     }
-  }, [didLogCameraInfo, hasStartedCropping, isBackOfId, trackEvent]);
+  }, [didLogCameraInfoRef, hasStartedCropping, isBackOfId, trackEvent]);
 }
 
 export { useLogCameraInfo };
