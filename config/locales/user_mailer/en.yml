@@ -10,7 +10,7 @@ en:
         agency whose service you are trying to access.
       subject: We couldn’t verify your identity
     account_reset_cancel:
-      intro_html: This email confirms you have cancelled your request to delete your
+      intro_html: This email confirms you have canceled your request to delete your
         %{app_name_html} account.
       subject: Request canceled
     account_reset_complete:
