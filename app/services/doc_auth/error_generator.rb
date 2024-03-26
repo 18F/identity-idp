@@ -110,7 +110,7 @@ module DocAuth
       get_selfie_error(liveness_enabled, response_info)
     end
 
-    def is_selfie_failure(error)
+    def present_generic_selfie_error?(error)
       error == Errors::SELFIE_FAILURE
     end
 
@@ -314,7 +314,7 @@ module DocAuth
       selfie_error = selfie_error_handler.handle(response_info)
 
       # if selfie itself is ok, but we have selfie related error
-      if selfie_error_handler.is_selfie_failure(selfie_error)
+      if selfie_error_handler.present_generic_selfie_error?(selfie_error)
         return SelfieErrorHandler::SELFIE_GENERAL_FAILURE_ERROR
       end
 
