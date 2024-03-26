@@ -10,11 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_16_184124) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_26_181600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
 
@@ -612,6 +611,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_184124) do
     t.string "encrypted_password_digest_multi_region"
     t.string "encrypted_recovery_code_digest_multi_region"
     t.datetime "second_mfa_reminder_dismissed_at"
+    t.datetime "piv_cac_recommended_visited_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
@@ -653,7 +653,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_184124) do
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
-  add_foreign_key "in_person_enrollments", "service_providers", column: "issuer", primary_key: "issuer"
+  add_foreign_key "in_person_enrollments", "service_providers", column: "issuer", primary_key: "issuer", validate: false
   add_foreign_key "in_person_enrollments", "users"
   add_foreign_key "integration_usages", "iaa_orders"
   add_foreign_key "integration_usages", "integrations"
