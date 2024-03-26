@@ -28,7 +28,7 @@ else
       # Send new device alert notifications
       create_new_device_alert_send_emails: {
         class: 'CreateNewDeviceAlert',
-        cron: cron_2m,
+        cron: cron_5m,
       },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
