@@ -5,16 +5,15 @@ class CreateNewDeviceAlert < ApplicationJob
     User.where(
       'sign_in_new_device < ?', IdentityConfig.store.new_device_alert_delay_in_minutes.minutes.ago
     ).each do |user|
-      email_and_clear(user)
+      clear_new_device_and_send_email(user)
     end
   end
 
   private
 
-  def email_and_clear(user)
+  def clear_new_device_and_send_email(user)
     user.sign_in_new_device = nil
     user.save
-
     # user_devices = user.recent_devices
     # user_events = user.recent_events
     # location = user_devices.last.last_sign_in_location_and_ip

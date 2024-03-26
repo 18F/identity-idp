@@ -1,18 +1,28 @@
 require 'rails_helper'
 
 RSpec.describe CreateNewDeviceAlert do
-  let(:user) { create(:user, :fully_registered) }
-
-  before do
-    user.sign_in_new_device = Time.zone.now - IdentityConfig.store.
-      new_device_alert_delay_in_minutes.minutes
-  end
+  let(:user) { create(:user) }
   describe '#perform' do
-    it 'deletes user sign_in_new_device value' do
-      travel_to(Time.zone.now + 5.minutes)
-      described_class.new.perform
+    let(:now) { Time.zone.now }
+    context 'after waiting the full wait period' do
+      it 'deletes user sign_in_new_device value' do
+        before_waiting_the_full_wait_period(now) do
+          user.sign_in_new_device = now - IdentityConfig.store.
+            new_device_alert_delay_in_minutes.minutes
+        end
 
-      expect(user.sign_in_new_device).to eq(nil)
+        travel_to(now + IdentityConfig.store.new_device_alert_delay_in_minutes.minutes)
+        CreateNewDeviceAlert.new.perform
+
+        expect(user.sign_in_new_device).to eq(nil)
+      end
+    end
+  end
+
+  def before_waiting_the_full_wait_period(now)
+    minutes = IdentityConfig.store.new_device_alert_delay_in_minutes.minutes
+    travel_to(now - minutes) do
+      yield
     end
   end
 end
