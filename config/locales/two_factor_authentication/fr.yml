@@ -164,12 +164,14 @@ fr:
     piv_cac_upsell:
       add_piv: Ajouter une carte PIV/CAC
       choose_other_method: Choisir plutôt d’autres méthodes
-      existing_user_info: Because you are using a %{email_type} email, we recommend
-        you add your government employee ID as one of your authentication
-        methods. This will greatly enhance your account security.
-      new_user_info: Because you are using a %{email_type} email, we recommend you add
-        your government employee ID as one of your authentication methods. This
-        adds another layer of security to your account.
+      existing_user_info: Comme vous utilisez une adresse e-mail avec le suffixe
+        %{email_type}, nous vous recommandons d’ajouter votre carte d’employé
+        fédéral parmi vos méthodes d’authentification. Ceci renforcera
+        considérablement la sécurité de votre compte.
+      new_user_info: Comme vous utilisez une adresse e-mail avec le suffixe
+        %{email_type}, nous vous recommandons d’ajouter votre carte d’employé
+        fédéral parmi vos méthodes d’authentification. Ceci permet d’ajouter une
+        couche supplémentaire de sécurité à votre compte.
       skip: Ignorer
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs

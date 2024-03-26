@@ -182,7 +182,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     fill_in_code_with_last_phone_otp
     click_submit_default
     expect(page).to have_current_path(login_piv_cac_recommended_path)
-    click_button(t('mfa.skip'))
+    click_button(t('two_factor_authentication.piv_cac_upsell.skip'))
     expect(page).to have_current_path(account_path)
   end
 

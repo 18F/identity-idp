@@ -4123,8 +4123,11 @@ module AnalyticsEvents
 
   # @param [String] action what action user made
   # Tracks when user submits an action on Piv Cac recommended page
-  def piv_cac_recommended(action: nil)
-    track_event(:piv_cac_recommended, action: action)
+  def piv_cac_recommended(action: nil, **_exra)
+    track_event(
+      :piv_cac_recommended,
+      action: action,
+    )
   end
 
   # @param [String] redirect_url URL user was directed to
