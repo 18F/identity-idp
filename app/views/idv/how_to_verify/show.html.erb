@@ -12,7 +12,7 @@
 %>
   <div role="group" aria-labelledby="how-to-verify-info">
     <%= f.hidden_field(
-          :selection, :value => Idv::HowToVerifyForm::REMOTE,
+          :selection, value: Idv::HowToVerifyForm::REMOTE,
         ) %>
     <%= f.label(
           :selection_remote,
@@ -47,7 +47,7 @@
 %>
   <div role="group" aria-labelledby="how-to-verify-info">
     <%= f.hidden_field(
-          :selection, :value => Idv::HowToVerifyForm::IPP,
+          :selection, value: Idv::HowToVerifyForm::IPP,
         ) %>
     <%= f.label(
           :selection_ipp,
