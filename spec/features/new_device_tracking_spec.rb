@@ -9,22 +9,23 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
     before do
       create(:device, user: user)
     end
+    unless FeatureManagement.aggregate_new_device_alerts?
+      it 'sends a user notification on signin' do
+        sign_in_user(user)
 
-    it 'sends a user notification on signin' do
-      sign_in_user(user)
+        expect(user.reload.devices.length).to eq 2
 
-      expect(user.reload.devices.length).to eq 2
+        device = user.devices.order(created_at: :desc).first
 
-      device = user.devices.order(created_at: :desc).first
-
-      expect_delivered_email_count(1)
-      expect_delivered_email(
-        to: [user.email_addresses.first.email],
-        subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
-        body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-               strftime('%B %-d, %Y %H:%M Eastern Time'),
-               'From 127.0.0.1 (IP address potentially located in United States)'],
-      )
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+          body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
+                strftime('%B %-d, %Y %H:%M Eastern Time'),
+                'From 127.0.0.1 (IP address potentially located in United States)'],
+        )
+      end
     end
   end
 

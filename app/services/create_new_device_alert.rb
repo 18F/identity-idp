@@ -17,12 +17,14 @@ class CreateNewDeviceAlert < ApplicationJob
 
     # user_devices = user.recent_devices
     # user_events = user.recent_events
+    # location = user_devices.last.last_sign_in_location_and_ip
+    # disavowal_token = SecureRandom.urlsafe_base64(32)
 
-    # user.confirmed_email_addresses.each do |email_address, user_devices, user_events|
+    # user.confirmed_email_addresses.each do |email_address|
     #   UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
-    #     date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
+    #     date: user_devices.last.last_used_at.in_time_zone('Eastern Time (US & Canada)').
     #       strftime('%B %-d, %Y %H:%M Eastern Time'),
-    #     location: login_location,
+    #     location: location,
     #     devices: user_devices,
     #     events: user_events,
     #     disavowal_token: disavowal_token,
