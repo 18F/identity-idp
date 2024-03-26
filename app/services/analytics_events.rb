@@ -3800,6 +3800,7 @@ module AnalyticsEvents
   # @param [String] scope
   # @param [Array] acr_values
   # @param [Array] vtr
+  # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
@@ -3807,6 +3808,7 @@ module AnalyticsEvents
     scope:,
     acr_values:,
     vtr:,
+    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     **extra
@@ -3817,6 +3819,7 @@ module AnalyticsEvents
       scope: scope,
       acr_values: acr_values,
       vtr: vtr,
+      vtr_param: vtr_param,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
       **extra,
@@ -4459,6 +4462,12 @@ module AnalyticsEvents
   # @param [Array] authn_context
   # @param [String] authn_context_comparison
   # @param [String] service_provider
+  # @param [String] endpoint
+  # @param [Boolean] idv
+  # @param [Boolean] finish_profile
+  # @param [Integer] requested_ial
+  # @param [Boolean] request_signed
+  # @param [String] matching_cert_serial
   def saml_auth(
     success:,
     errors:,
@@ -4466,6 +4475,12 @@ module AnalyticsEvents
     authn_context:,
     authn_context_comparison:,
     service_provider:,
+    endpoint:,
+    idv:,
+    finish_profile:,
+    requested_ial:,
+    request_signed:,
+    matching_cert_serial:,
     **extra
   )
     track_event(
@@ -4476,29 +4491,47 @@ module AnalyticsEvents
       authn_context: authn_context,
       authn_context_comparison: authn_context_comparison,
       service_provider: service_provider,
+      endpoint: endpoint,
+      idv: idv,
+      finish_profile: finish_profile,
+      requested_ial: requested_ial,
+      request_signed: request_signed,
+      matching_cert_serial: matching_cert_serial,
       **extra,
     )
   end
 
   # @param [Integer] requested_ial
-  # @param [String,nil] requested_aal_authn_context
-  # @param [Boolean,nil] force_authn
+  # @param [Array] authn_context
+  # @param [String, nil] requested_aal_authn_context
+  # @param [String, nil] requested_vtr_authn_context
+  # @param [Boolean] force_authn
+  # @param [Boolean] final_auth_request
   # @param [String] service_provider
+  # @param [Boolean] user_fully_authenticated
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
+    authn_context:,
     requested_aal_authn_context:,
+    requested_vtr_authn_context:,
     force_authn:,
+    final_auth_request:,
     service_provider:,
+    user_fully_authenticated:,
     **extra
   )
     track_event(
       'SAML Auth Request',
       {
         requested_ial: requested_ial,
+        authn_context: authn_context,
         requested_aal_authn_context: requested_aal_authn_context,
+        requested_vtr_authn_context: requested_vtr_authn_context,
         force_authn: force_authn,
+        final_auth_request: final_auth_request,
         service_provider: service_provider,
+        user_fully_authenticated: user_fully_authenticated,
         **extra,
       }.compact,
     )
@@ -4624,12 +4657,16 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [Integer] billed_ial
   # @param [String, nil] sign_in_flow
-  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, **extra)
+  # @param [String, nil] vtr
+  # @param [String, nil] acr_values
+  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, vtr:, acr_values:, **extra)
     track_event(
       'SP redirect initiated',
       ial:,
       billed_ial:,
       sign_in_flow:,
+      vtr: vtr,
+      acr_values: acr_values,
       **extra,
     )
   end
