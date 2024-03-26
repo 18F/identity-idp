@@ -204,6 +204,22 @@ RSpec.describe MfaContext do
     end
   end
 
+  describe '#two_factor_enabled?' do
+    subject(:two_factor_enabled?) { mfa.two_factor_enabled? }
+
+    context 'when user has an associated mfa' do
+      let(:user) { create(:user, :with_phone) }
+
+      it { expect(two_factor_enabled?).to eq(true) }
+    end
+
+    context 'when user does not have any associated mfa' do
+      let(:user) { create(:user) }
+
+      it { expect(two_factor_enabled?).to eq(false) }
+    end
+  end
+
   describe '#enabled_mfa_methods_count' do
     context 'with 2 phones' do
       it 'returns 2' do
