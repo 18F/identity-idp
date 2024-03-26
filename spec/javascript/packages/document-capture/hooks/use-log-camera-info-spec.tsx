@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import { useLogCameraInfo } from '@18f/identity-document-capture/hooks/use-log-camera-info';
 import { AnalyticsContextProvider } from '@18f/identity-document-capture/context/analytics';
+import { useDefineProperty } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 
 interface MockComponentProps {
@@ -37,20 +38,18 @@ const mockGetUserMedia = () =>
   new Promise((resolve) => resolve({ getVideoTracks: mockGetVideoTracks }));
 const mockEnumerateDevices = () => new Promise((resolve) => resolve([mockDevice]));
 
-// Give the global navigator object a mock camera with various functions so that the logging actually happens
-const addMockCameraToNavigator = () => {
-  Object.defineProperty(global.navigator, 'mediaDevices', {
-    value: {
-      getUserMedia: mockGetUserMedia,
-      enumerateDevices: mockEnumerateDevices,
-    },
-    configurable: true,
-    writable: true,
-  });
-};
-
 describe('document-capture/hooks/use-log-camera-info', () => {
-  addMockCameraToNavigator();
+  const defineProperty = useDefineProperty();
+  beforeEach(() => {
+    defineProperty(global.navigator, 'mediaDevices', {
+      value: {
+        getUserMedia: mockGetUserMedia,
+        enumerateDevices: mockEnumerateDevices,
+      },
+      configurable: true,
+      writable: true,
+    });
+  });
 
   it('logs camera info when isBackOfId and hasStartedCropping are both true', async () => {
     const trackEvent = sinon.stub();
@@ -100,6 +99,7 @@ describe('document-capture/hooks/use-log-camera-info', () => {
   it('logs a camera info error when getting media info fails', async () => {
     const trackEvent = sinon.stub();
     const [isBackOfId, hasStartedCropping] = [true, true];
+    // Override a previously mocked window function to always throw an error
     global.navigator.mediaDevices.getUserMedia = mockGetUserMediaThrowsError;
     const { findByText } = render(
       <AnalyticsContextProvider trackEvent={trackEvent}>
