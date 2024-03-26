@@ -217,20 +217,6 @@ module Reporting
           ),
         ],
         [
-          'USPS letter enqueued (event)',
-          idv_pending_gpo,
-          dropoff = idv_enter_password_submitted -
-                    idv_pending_gpo,
-          percent(
-            numerator: dropoff,
-            denominator: idv_enter_password_submitted,
-          ),
-          percent(
-            numerator: idv_pending_gpo,
-            denominator: idv_started,
-          ),
-        ],
-        [
           'Verified (event)',
           idv_personal_key_submitted,
           dropoff = idv_enter_password_submitted -
