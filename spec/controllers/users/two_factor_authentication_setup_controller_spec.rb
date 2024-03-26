@@ -23,7 +23,7 @@ RSpec.describe(
     end
 
     context 'with user having gov or mil email' do
-      let(:user) { create(:user, email: 'example@example.gov') }
+      let(:user) { create(:user, email: 'example@example.gov', piv_cac_recommended_visited_at: Time.zone.now) }
 
       it 'tracks the visit in analytics' do
         get :index

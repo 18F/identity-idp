@@ -170,6 +170,7 @@ fr:
       new_user_info: Because you are using a %{email_type} email, we recommend you add
         your government employee ID as one of your authentication methods. This
         adds another layer of security to your account.
+      skip: Ignorer
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     recaptcha:

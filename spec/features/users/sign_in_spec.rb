@@ -162,14 +162,28 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
       to(include(expected_form_action))
   end
 
-  scenario 'User with gov/mil email and is signing in without having visited piv recommended page ever' do
-    
+  scenario 'User with gov/mil email directed to recommended PIV page' do
+    user = create(:user, :with_phone, { email: 'example@example.gov' })
 
+    visit new_user_session_path
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    expect(page).to have_current_path(login_piv_cac_recommended_path)
+    click_button(t('two_factor_authentication.piv_cac_upsell.add_piv'))
+    expect(page).to have_current_path(setup_piv_cac_path)
   end
 
-  scenario 'User has Piv/Cac' do
-    
-    
+  scenario 'User with gov/mil email and skips recommendation page' do
+    user = create(:user, :with_phone, { email: 'example@example.gov' })
+
+    visit new_user_session_path
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    expect(page).to have_current_path(login_piv_cac_recommended_path)
+    click_button(t('mfa.skip'))
+    expect(page).to have_current_path(account_path)
   end
 
   scenario 'user attempts sign in with piv/cac with no account then creates account' do

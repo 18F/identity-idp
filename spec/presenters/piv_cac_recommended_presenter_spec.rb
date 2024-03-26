@@ -66,7 +66,7 @@ RSpec.describe PivCacRecommendedPresenter do
     end
 
     context 'when .mil email' do
-			let(:user) { create(:user, email: 'example@example.mil') }
+      let(:user) { create(:user, email: 'example@example.mil') }
       it 'should return .mil' do
         expect(presenter.email_type).to eq('.mil')
       end
@@ -77,7 +77,7 @@ RSpec.describe PivCacRecommendedPresenter do
     context 'when existing user' do
       let(:user) { create(:user, :with_phone, { email: 'example@example.mil' }) }
       it 'should return skip text' do
-        expect(presenter.skip_text).to eq(t('mfa.skip'))
+        expect(presenter.skip_text).to eq(t('two_factor_authentication.piv_cac_upsell.skip'))
       end
     end
 

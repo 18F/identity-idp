@@ -9,26 +9,26 @@
 </p>
 
 <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(
-                login_piv_cac_recommended_add_path,
-                **tag_options,
-                &block
-              )
-            end,
-            big: true,
-            class: 'margin-bottom-3',
-          ).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
+  action: ->(**tag_options, &block) do
+    button_to(
+      login_piv_cac_recommended_add_path,
+      **tag_options,
+      &block
+    )
+  end,
+  big: true,
+  class: 'margin-bottom-3',
+).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
 
 <%= render ButtonComponent.new(
-          action: ->(**tag_options, &block) do
-            button_to(
-              login_piv_cac_recommended_skip_path,
-              **tag_options,
-              &block
-            )
-          end,
-          big: true,
-          class: 'margin-bottom-2',
-        ).with_content(@recommended_presenter.skip_text) %>
+  action: ->(**tag_options, &block) do
+    button_to(
+      login_piv_cac_recommended_skip_path,
+      **tag_options,
+      &block
+    )
+  end,
+  outline: true,
+  class: 'usa-button usa-button--unstyled',
+).with_content(@recommended_presenter.skip_text) %>
 

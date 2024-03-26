@@ -164,6 +164,7 @@ es:
         recomendamos que añada su identificación de empleado del gobierno como
         uno de sus métodos de autenticación. Esto agrega un nivel adicional de
         seguridad a su cuenta.
+      skip: Omitir
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     recaptcha:

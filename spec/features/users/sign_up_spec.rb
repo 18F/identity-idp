@@ -526,7 +526,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     end
 
     context 'user can skip piv cac prompt' do
-      it 'should skip piv cac prompt and land of mfa screen' do
+      it 'should skip piv cac prompt and land on mfa screen' do
         expect(current_path).to eq login_piv_cac_recommended_path
         click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
 
