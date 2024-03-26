@@ -119,7 +119,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                    code_challenge_present: false,
                    service_provider_pkce: nil,
                    scope: 'openid',
-                   vtr: nil)
+                   vtr: nil,
+                   vtr_param: '')
             expect(@analytics).to receive(:track_event).
               with('OpenID Connect: authorization request handoff',
                    success: true,
@@ -132,6 +133,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 ial: 1,
                 billed_ial: 1,
                 sign_in_flow:,
+                acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                vtr: nil,
               )
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -168,7 +171,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                    code_challenge_present: false,
                    service_provider_pkce: nil,
                    scope: 'openid',
-                   vtr: ['C1'])
+                   vtr: ['C1'],
+                   vtr_param: ['C1'].to_json)
             expect(@analytics).to receive(:track_event).
               with('OpenID Connect: authorization request handoff',
                    success: true,
@@ -181,6 +185,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 ial: 1,
                 billed_ial: 1,
                 sign_in_flow:,
+                acr_values: '',
+                vtr: ['C1'],
               )
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -354,7 +360,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                      code_challenge_present: false,
                      service_provider_pkce: nil,
                      scope: 'openid profile',
-                     vtr: nil)
+                     vtr: nil,
+                     vtr_param: '')
               expect(@analytics).to receive(:track_event).
                 with('OpenID Connect: authorization request handoff',
                      success: true,
@@ -367,6 +374,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   ial: 2,
                   billed_ial: 2,
                   sign_in_flow:,
+                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
+                  vtr: nil,
                 )
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -728,7 +737,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                        code_challenge_present: false,
                        service_provider_pkce: nil,
                        scope: 'openid profile',
-                       vtr: nil)
+                       vtr: nil,
+                       vtr_param: '')
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
@@ -741,6 +751,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                     ial: 0,
                     billed_ial: 2,
                     sign_in_flow:,
+                    acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                    vtr: nil,
                   )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -813,7 +825,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                        code_challenge_present: false,
                        service_provider_pkce: nil,
                        scope: 'openid profile',
-                       vtr: nil)
+                       vtr: nil,
+                       vtr_param: '')
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
@@ -825,6 +838,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   ial: 0,
                   billed_ial: 1,
                   sign_in_flow:,
+                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                  vtr: nil,
                 )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -899,7 +914,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                        code_challenge_present: false,
                        service_provider_pkce: nil,
                        scope: 'openid profile',
-                       vtr: nil)
+                       vtr: nil,
+                       vtr_param: '')
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
@@ -911,6 +927,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   ial: 0,
                   billed_ial: 1,
                   sign_in_flow:,
+                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                  vtr: nil,
                 )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -1102,7 +1120,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                  code_challenge_present: false,
                  service_provider_pkce: nil,
                  scope: 'openid',
-                 vtr: nil)
+                 vtr: nil,
+                 vtr_param: '')
           expect(@analytics).to_not receive(:track_event).with('sp redirect initiated')
 
           action
@@ -1136,7 +1155,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                  code_challenge_present: false,
                  service_provider_pkce: nil,
                  scope: 'openid',
-                 vtr: nil)
+                 vtr: nil,
+                 vtr_param: '')
           expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
@@ -1254,6 +1274,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             service_provider_pkce: nil,
             scope: 'openid',
             vtr: nil,
+            vtr_param: '',
           )
 
         action
