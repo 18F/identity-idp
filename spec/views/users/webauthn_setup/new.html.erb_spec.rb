@@ -83,9 +83,62 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     let(:platform_authenticator) { false }
     it 'displays the form' do
       render
+
       expect(rendered).to have_content(
-        t('two_factor_authentication.two_factor_choice_options.webauthn'),
+        t('two_factor_authentication.two_factor_choice_options.webauthn').downcase,
       )
+    end
+
+    it 'displays the step 1 heading' do
+      render
+
+      expect(rendered).to have_css('h2', text: I18n.t('forms.webauthn_setup.step_1'))
+    end
+
+    it 'displays the step 2 heading' do
+      render
+
+      expect(rendered).to have_css('h2', text: I18n.t('forms.webauthn_setup.step_2'))
+    end
+
+    it 'displays the step 3 heading' do
+      render
+
+      expect(rendered).to have_css('h2', text: I18n.t('forms.webauthn_setup.step_3'))
+    end
+
+    it 'displays the nickname input field' do
+      render
+
+      expect(rendered).to have_selector("input#nickname[type='text']")
+    end
+
+    it 'displays form submission button' do
+      render
+
+      expect(rendered).to have_button(t('forms.webauthn_setup.set_up'))
+    end
+
+    describe 'security key image' do
+      context 'when on a mobile device' do
+        before { assign(:mobile, true) }
+
+        it 'displays the mobile image security key image' do
+          render
+
+          expect(rendered).to match(/src=".*security_key_mobile-.*\.gif"/)
+        end
+      end
+
+      context 'when on a non-mobile device' do
+        before { assign(:mobile, false) }
+
+        it 'displays the security key image' do
+          render
+
+          expect(rendered).to match(/src=".*security_key-.*\.gif"/)
+        end
+      end
     end
   end
 end
