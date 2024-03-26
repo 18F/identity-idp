@@ -12,6 +12,11 @@ class IpGeocoder
     I18n.t('account.index.unknown_location')
   end
 
+  def time_zone
+    return if !geocoded_location || !both_city_and_state_present?
+    geocoded_location.data['location']['time_zone']
+  end
+
   private
 
   attr_reader :ip

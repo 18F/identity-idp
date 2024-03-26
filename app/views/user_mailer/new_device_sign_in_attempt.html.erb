@@ -10,7 +10,9 @@
   </p>
 <% end %>
 
-<% @events.group_by { |event| IpGeocoder.new(event.device.last_ip).location }.each do |location, events| %>
+<% @events.map { |event| [IpGeocoder.new(event.device.last_ip), event] }.
+     group_by { |geocoder,| geocoder.location }.
+     each do |location, geocoder_events| %>
   <div class="margin-top-5">
     <table class="usa-table">
       <thead>
@@ -21,11 +23,11 @@
         </tr>
       </thead>
       <tbody>
-        <% events.each do |event| %>
+        <% geocoder_events.each do |geocoder, event| %>
           <tr>
             <td class="font-family-mono">
               <%= t(event.event_type, scope: [:user_mailer, :new_device_sign_in_attempt, :events]) %><br />
-              <%= I18n.l(event.created_at, format: :event_timestamp_with_zone) %>
+              <%= I18n.l(event.created_at.in_time_zone(geocoder.time_zone), format: :event_timestamp_with_zone) %>
             </td>
           </tr>
         <% end %>
