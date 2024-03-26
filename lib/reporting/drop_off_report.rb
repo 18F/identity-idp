@@ -50,12 +50,13 @@ module Reporting
       IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
 
-    module Results
-      IDV_FINAL_RESOLUTION_VERIFIED = 'IdV: final resolution - Verified'
-
       def self.all_events
         constants.map { |c| const_get(c) }
       end
+    end
+
+    module Results
+      IDV_FINAL_RESOLUTION_VERIFIED = 'IdV: final resolution - Verified'
     end
 
     def as_emailable_reports
