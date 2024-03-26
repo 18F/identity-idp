@@ -232,7 +232,7 @@ module Reporting
         ],
         [
           'Workflow Complete - Total Pending',
-          idv_final_resolution_total_pending
+          idv_final_resolution_total_pending,
         ],
       ]
     end
