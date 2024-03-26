@@ -407,11 +407,11 @@ module Reporting
 
           event = row['name']
           case event
-          # rubocop:disable Layout/LineLength
           when Events::IDV_FINAL_RESOLUTION
-            event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+            if row['identity_verified'] == '1'
+              event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id
+            end
           end
-          # rubocop:enable Layout/LineLength
         end
 
         event_users
