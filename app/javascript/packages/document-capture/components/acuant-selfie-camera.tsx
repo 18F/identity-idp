@@ -110,7 +110,6 @@ function AcuantSelfieCamera({
       },
       onPhotoTaken: () => {
         // The photo has been taken and it's showing a preview with a button to accept or retake the image.
-        onImageCaptureFeedback('');
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped

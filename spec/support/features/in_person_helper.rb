@@ -138,8 +138,9 @@ module InPersonHelper
     click_idv_continue
   end
 
-  def complete_ssn_step(_user = nil)
+  def complete_ssn_step(_user = nil, tmx_status = nil)
     fill_out_ssn_form_ok
+    select tmx_status.to_s, from: :mock_profiling_result unless tmx_status.nil?
     click_idv_continue
   end
 
@@ -156,16 +157,33 @@ module InPersonHelper
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
   end
 
-  def complete_all_in_person_proofing_steps(user = user_with_2fa, same_address_as_id: true)
+  def complete_all_in_person_proofing_steps(user = user_with_2fa, tmx_status = nil,
+                                            same_address_as_id: true)
     complete_prepare_step(user)
     complete_location_step(user)
     complete_state_id_step(user, same_address_as_id: same_address_as_id)
     complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
-    complete_ssn_step(user)
+    complete_ssn_step(user, tmx_status)
     complete_verify_step(user)
   end
 
+  def complete_entire_ipp_flow(user = user_with_2fa, tmx_status = nil, same_address_as_id: true)
+    sign_in_and_2fa_user(user)
+    begin_in_person_proofing(user)
+    complete_all_in_person_proofing_steps(user, tmx_status, same_address_as_id: same_address_as_id)
+    click_idv_send_security_code
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    complete_enter_password_step(user)
+    acknowledge_and_confirm_personal_key
+  end
+
   def expect_in_person_step_indicator_current_step(text)
+    expect_in_person_step_indicator
+    expect_step_indicator_current_step(text)
+  end
+
+  def expect_in_person_step_indicator
     # Normally we're only concerned with the "current" step, but since some steps are shared between
     # flows, we also want to make sure that at least one of the in-person-specific steps exists in
     # the step indicator.
@@ -173,8 +191,6 @@ module InPersonHelper
       '.step-indicator__step',
       text: t('step_indicator.flows.idv.find_a_post_office'),
     )
-
-    expect_step_indicator_current_step(text)
   end
 
   def expect_in_person_gpo_step_indicator_current_step(text)

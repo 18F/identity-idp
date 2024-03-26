@@ -47,6 +47,14 @@ module OpenidConnect
 
     private
 
+    def pending_profile_policy
+      @pending_profile_policy ||= PendingProfilePolicy.new(
+        user: current_user,
+        resolved_authn_context_result: resolved_authn_context_result,
+        biometric_comparison_requested: biometric_comparison_requested?,
+      )
+    end
+
     def block_biometric_requests_in_production
       if biometric_comparison_requested? &&
          !FeatureManagement.idv_allow_selfie_check?

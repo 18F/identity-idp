@@ -126,6 +126,10 @@ class ServiceProviderSession
     end
   end
 
+  def current_user
+    view_context&.current_user
+  end
+
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request

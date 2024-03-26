@@ -48,7 +48,12 @@ Steps:
 
 8. After you have photographed the front and back of your card, you have tested the SDK locally. You do not need to submit the images. If you have both an Android and an iPhone, test the SDK with both of them. (Or, pair with someone who has the other type of phone.)
 
-9. Open a pull request for the modified SDK files. The next process &mdash; A/B testing the new version &mdash; can only take place after the files are accepted into the main branch.
+9. If you are running into errors testing locally, you can try:
+    - making sure the new files in `public/acuant/11.N.N` match what's in the `webSdk` directory [in Acuant's repo](https://github.com/Acuant/JavascriptWebSDKV11/tree/master/webSdk) for the new version
+        - if they don't match, try looking at our [`download_acuant_sdk` script](../scripts/download_acuant_sdk.sh) and see if more files need to be copied over
+        - there may be some we don't need (as of 3/20/2024 we don't need `AcuantCamera.js`, for instance)
+
+10. Open a pull request for the modified SDK files. The next process &mdash; A/B testing the new version &mdash; can only take place after the files are accepted into the main branch.
 
 ## Turn on A/B testing
 

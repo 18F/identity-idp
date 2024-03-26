@@ -1,13 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
-  let(:placeholder_presenter_class) do
-    Class.new(TwoFactorAuthentication::SetUpSelectionPresenter)
-  end
+  include UserAgentHelper
 
+  let(:presenter_class) { TwoFactorAuthentication::SetUpSelectionPresenter }
   let(:user) { build(:user) }
+  let(:piv_cac_required) { false }
+  let(:phishing_resistant_required) { false }
+  let(:user_agent) {}
 
-  subject(:presenter) { described_class.new(user: user) }
+  subject(:presenter) do
+    presenter_class.new(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
+  end
 
   describe '#render_in' do
     it 'renders captured block content' do
@@ -91,19 +95,117 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
 
   describe '#type' do
     it 'raises with missing implementation' do
-      expect { placeholder_presenter_class.new(user:).type }.to raise_error(NotImplementedError)
+      expect { presenter.type }.to raise_error(NotImplementedError)
     end
   end
 
   describe '#label' do
     it 'raises with missing implementation' do
-      expect { placeholder_presenter_class.new(user:).label }.to raise_error(NotImplementedError)
+      expect { presenter.label }.to raise_error(NotImplementedError)
     end
   end
 
   describe '#info' do
     it 'raises with missing implementation' do
-      expect { placeholder_presenter_class.new(user:).info }.to raise_error(NotImplementedError)
+      expect { presenter.info }.to raise_error(NotImplementedError)
     end
+  end
+
+  describe '#phishing_resistant?' do
+    it 'raises with missing implementation' do
+      expect { presenter.phishing_resistant? }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#visible?' do
+    subject(:visible) { presenter.visible? }
+
+    it { expect(visible).to eq(true) }
+
+    context 'with piv cac required' do
+      let(:piv_cac_required) { true }
+
+      context 'with non-piv type selection' do
+        let(:presenter_class) do
+          Class.new(super()) do
+            def type
+              :not_piv_cac
+            end
+          end
+        end
+
+        it { expect(visible).to eq(false) }
+      end
+
+      context 'with piv type selection' do
+        let(:presenter_class) do
+          Class.new(super()) do
+            def type
+              :piv_cac
+            end
+          end
+        end
+
+        it { expect(visible).to eq(true) }
+      end
+    end
+
+    context 'with phishing resistant required' do
+      let(:phishing_resistant_required) { true }
+
+      context 'with non-phishing resistant selection' do
+        let(:presenter_class) do
+          Class.new(super()) do
+            def phishing_resistant?
+              false
+            end
+          end
+        end
+
+        it { expect(visible).to eq(false) }
+      end
+
+      context 'with phishing resistant selection' do
+        let(:presenter_class) do
+          Class.new(super()) do
+            def phishing_resistant?
+              true
+            end
+          end
+        end
+
+        it { expect(visible).to eq(true) }
+      end
+    end
+
+    context 'with selection supporting desktop only' do
+      let(:presenter_class) do
+        Class.new(super()) do
+          def desktop_only?
+            true
+          end
+        end
+      end
+
+      it { expect(visible).to eq(true) }
+
+      context 'on mobile device' do
+        let(:user_agent) { mobile_user_agent }
+
+        it { expect(visible).to eq(false) }
+      end
+
+      context 'on desktop device' do
+        let(:user_agent) { desktop_user_agent }
+
+        it { expect(visible).to eq(true) }
+      end
+    end
+  end
+
+  describe '#recommended?' do
+    subject(:recommended) { presenter.recommended? }
+
+    it { expect(recommended).to eq(false) }
   end
 end

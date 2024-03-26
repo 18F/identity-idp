@@ -39,8 +39,8 @@ en:
           the picture. Try taking new pictures.
         issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-        selfie_not_live: 'Try taking a photo of yourself again. Make sure your whole
-          face is clear and visible in the photo.'
+        selfie_not_live: 'Try taking your photos again. Make sure all of your photos are
+          clear and in focus.'
         selfie_poor_quality: 'Try taking a photo of yourself again. Make sure your whole
           face is clear and visible in the photo.'
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
@@ -164,6 +164,7 @@ en:
       front: Front of your driver’s license or state ID
       how_to_verify: Choose how you want to verify your identity
       hybrid_handoff: How would you like to add your ID?
+      hybrid_handoff_selfie: Enter your phone number to switch devices
       interstitial: We are processing your images
       lets_go: How verifying your identity works
       no_ssn: Don’t have a Social Security number?
@@ -226,10 +227,10 @@ en:
         your data is protected and only you will be able to access or change
         your information.
       selfie_capture_status:
-        face_close_to_border: TOO CLOSE TO THE FRAME
-        face_not_found: FACE NOT FOUND
-        face_too_small: FACE TOO SMALL
-        too_many_faces: TOO MANY FACES
+        face_close_to_border: Too close to the frame
+        face_not_found: Face not found
+        face_too_small: Face too small
+        too_many_faces: Too many faces
       ssn: We need your Social Security number to verify your name, date of birth and
         address.
       stepping_up_html: 'Verify your identity again and take a photo of yourself to
