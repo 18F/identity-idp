@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_recommended_for_piv_cac?
-    current_user.has_gov_or_mil_email? && !current_user.piv_cac_recommended_dismissed
+    current_user.has_gov_or_mil_email? && current_user.piv_cac_recommended_visited_at.nil?
   end
 
   def pending_profile_newer_than_password_reset_profile?

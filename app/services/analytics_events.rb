@@ -4116,16 +4116,15 @@ module AnalyticsEvents
     )
   end
 
-  def piv_cac_recommended_page_visited
-    track_event(:piv_cac_recommended_page_visited)
+  # Tracks when user visits piv cac recommended
+  def piv_cac_recommended_visited
+    track_event(:piv_cac_recommended_visited)
   end
 
-  def piv_cac_recommended_accepted
-    track_event(:piv_cac_recommended_accepted)
-  end
-
-  def piv_cac_recommended_skipped
-    track_event(:piv_cac_recommended_skipped)
+  # @param [String] action what action user made
+  # Tracks when user submits an action on Piv Cac recommended page
+  def piv_cac_recommended(action: nil)
+    track_event(:piv_cac_recommended, action: action)
   end
 
   # @param [String] redirect_url URL user was directed to

@@ -66,13 +66,18 @@ module MfaSetupConcern
     user_session[:mfa_selection_index] || 0
   end
 
+  def set_piv_cac_as_option_and_redirect
+    user_session[:mfa_selections] = ['piv_cac']
+    redirect_to confirmation_path(user_session[:mfa_selections].first)
+  end
+
   def show_skip_additional_mfa_link?
     !(mfa_context.enabled_mfa_methods_count == 1 &&
        mfa_context.webauthn_platform_configurations.count == 1)
   end
 
   def check_if_possible_piv_user
-    if current_user.has_gov_or_mil_email? && !current_user.piv_cac_recommended_dismissed
+    if current_user.has_gov_or_mil_email? && current_user.piv_cac_recommended_visited_at.nil?
       redirect_to login_piv_cac_recommended_path
     end
   end

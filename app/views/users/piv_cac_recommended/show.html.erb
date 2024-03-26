@@ -5,7 +5,7 @@
 <%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_setup.upsell')) %>
 
 <p>
-  <%= t('two_factor_authentication.piv_cac_upsell.info', email_type: @email_type) %>
+  <%= @recommended_presenter.info %>
 </p>
 
 <%= render ButtonComponent.new(
@@ -30,5 +30,5 @@
           end,
           big: true,
           class: 'margin-bottom-2',
-        ).with_content(@skip_text) %>
+        ).with_content(@recommended_presenter.skip_text) %>
 

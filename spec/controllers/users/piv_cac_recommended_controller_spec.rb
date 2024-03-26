@@ -1,65 +1,106 @@
 require 'rails_helper'
 
 RSpec.describe Users::PivCacRecommendedController do
-  
   describe 'New user' do
-    let(:user) { create(:user, :fully_registered) }
+    let(:user) { create(:user, email: 'example@example.gov') }
     before do
       stub_sign_in_before_2fa(user)
       stub_analytics
+      controller.user_session[:in_account_creation_flow] = true
     end
 
     context '#show' do
-      context 'with user with gov email' do
-        it 'should render with .gov content ' do
-          get :show
-
-          expect(assigns(:email_type)).to eq('.gov')
-          expect(response.status).to eq 200
-        end
-      end
-
-      context 'with user with mil email' do
-        let(:user) { build(:user, email: 'test@test.mil') }
-        it 'should render with .gov content ' do
-          get :show
-
-          expect(assigns(:email_type)).to eq('.mil')
-          expect(response.status).to eq 200
-        end
-      end
-
       context 'with user without proper email' do
-        let(:user) { build(:user, email: 'test@test.com') }
+        let(:user) { create(:user, email: 'example@example.com') }
 
-        it 'redirects back to sign in page' do
-          expect(response).to redirect_to(authentication_methods_setup_path)
+        it 'redirects back to sign in path page' do
+          get :show
+          expect(response).to redirect_to(account_path)
         end
       end
     end
-  
-    context '#confirm' do
-    end
-  
-    context '#skip' do
-    end
 
+    it 'logs analytic event' do
+      get :show
+
+      expect(@analytics).to have_logged_event(:piv_cac_recommended_visited)
+    end
   end
 
   describe 'Sign in flow' do
+    let(:user) { create(:user, :with_phone, { email: 'example@example.gov' }) }
     before do
       stub_analytics
-      user = create(:user, :fully_registered, :with_phone, with: { phone: '703-555-1212' })
+
       stub_sign_in(user)
+      user.reload
     end
 
     context '#show' do
+      context 'with user without proper email' do
+        let(:user) { create(:user, :with_phone, { email: 'example@example.com' }) }
+
+        it 'redirects back to account page' do
+          get :show
+          expect(response).to redirect_to(account_path)
+        end
+      end
     end
-  
-    context '#confirm' do
+  end
+
+  context '#confirm' do
+    let(:user) { create(:user, email: 'example@example.gov') }
+    before do
+      stub_sign_in_before_2fa(user)
+      stub_analytics
+      controller.user_session[:in_account_creation_flow] = true
     end
-  
-    context '#skip' do
+
+    it 'directs user to piv cac page' do
+      post :confirm
+
+      expect(response).to redirect_to(setup_piv_cac_path)
+    end
+
+    it 'sets piv_cac recommended as set' do
+      post :confirm
+
+      user.reload
+      expect(user.piv_cac_recommended_visited_at).to be_truthy
+    end
+
+    it 'logs analytics' do
+      post :confirm
+
+      expect(@analytics).to have_logged_event(:piv_cac_recommended, action: :accepted)
+    end
+  end
+
+  context '#skip' do
+    let(:user) { create(:user, email: 'example@example.gov') }
+    before do
+      stub_sign_in_before_2fa(user)
+      stub_analytics
+      controller.user_session[:in_account_creation_flow] = true
+    end
+
+    it 'directs user to after set up page' do
+      post :skip
+
+      expect(response).to redirect_to(account_path)
+    end
+
+    it 'sets piv_cac recommended as set' do
+      post :skip
+
+      user.reload
+      expect(user.piv_cac_recommended_visited_at).to be_truthy
+    end
+
+    it 'logs analytics' do
+      post :skip
+
+      expect(@analytics).to have_logged_event(:piv_cac_recommended, action: :skipped)
     end
   end
 end
