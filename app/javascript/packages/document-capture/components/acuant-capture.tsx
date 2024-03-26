@@ -72,6 +72,11 @@ interface ImageAnalyticsPayload {
    *
    */
   failedImageResubmission: boolean;
+
+  /**
+   * Image file name
+   */
+  fileName?: string;
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
@@ -408,8 +413,8 @@ function AcuantCapture(
         source: 'upload',
         size: nextValue.size,
         failedImageResubmission: hasFailed,
+        fileName: nextValue.name,
       });
-
       trackEvent(
         name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
         analyticsPayload,
