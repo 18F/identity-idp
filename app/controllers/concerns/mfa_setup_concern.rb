@@ -66,9 +66,8 @@ module MfaSetupConcern
     user_session[:mfa_selection_index] || 0
   end
 
-  def set_piv_cac_as_option_and_redirect
-    user_session[:mfa_selections] = ['piv_cac']
-    redirect_to confirmation_path(user_session[:mfa_selections].first)
+  def set_mfa_selections(selections)
+    user_session[:mfa_selections] = selections
   end
 
   def show_skip_additional_mfa_link?

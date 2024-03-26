@@ -21,7 +21,8 @@ module Users
         attributes: { piv_cac_recommended_visited_at: Time.zone.now },
       ).call
       analytics.piv_cac_recommended(action: :accepted)
-      set_piv_cac_as_option_and_redirect
+      set_mfa_selections(['piv_cac'])
+      redirect_to confirmation_path(user_session[:mfa_selections].first)
     end
 
     def skip
