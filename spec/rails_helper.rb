@@ -121,7 +121,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    RequestStore.clear!
     Rails.cache.clear
   end
 
