@@ -162,6 +162,16 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
       to(include(expected_form_action))
   end
 
+  scenario 'User with gov/mil email and is signing in without having visited piv recommended page ever' do
+    
+
+  end
+
+  scenario 'User has Piv/Cac' do
+    
+    
+  end
+
   scenario 'user attempts sign in with piv/cac with no account then creates account' do
     visit_idp_from_sp_with_ial1(:oidc)
     click_on t('account.login.piv_cac')

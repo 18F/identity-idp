@@ -153,6 +153,17 @@ es:
       nickname: Apodo
       renamed: Se ha cambiado correctamente el nombre de su método PIV/CAC
     piv_cac_header_text: Presenta tu PIV/CAC
+    piv_cac_upsell:
+      add_piv: Agregar tarjeta PIV/CAC
+      choose_other_method: Elegir otros métodos
+      existing_user_info: Dado que utiliza un correo electrónico %{email_type}, le
+        recomendamos que añada su identificación de empleado del gobierno como
+        uno de sus métodos de autenticación. Esto aumentará en gran medida la
+        seguridad de su cuenta.
+      new_user_info: Dado que utiliza un correo electrónico %{email_type}, le
+        recomendamos que añada su identificación de empleado del gobierno como
+        uno de sus métodos de autenticación. Esto agrega un nivel adicional de
+        seguridad a su cuenta.
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     recaptcha:

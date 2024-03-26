@@ -162,7 +162,7 @@ fr:
       renamed: Votre méthode PIV/CAC a été renommée avec succès
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     piv_cac_upsell:
-      add_piv: Add PIV/CAC card
+      add_piv: Ajouter une carte PIV/CAC
       choose_other_method: Choisir plutôt d’autres méthodes
       existing_user_info: Because you are using a %{email_type} email, we recommend
         you add your government employee ID as one of your authentication
