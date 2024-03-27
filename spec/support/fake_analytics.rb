@@ -207,6 +207,13 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
         actual_event_attributes: matching_events.first,
         include_matcher: attributes_matcher,
       )
+    elsif matching_events&.length == 1 &&
+          attributes_matcher.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
+      failure_message_for_single_event_and_hash_including_matcher(
+        event_name: event,
+        actual_event_attributes: matching_events.first,
+        hash_including_matcher: attributes_matcher,
+      )
     else
       default_failure_message(
         event_name: event,
@@ -272,6 +279,19 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
       event_name:,
       actual_event_attributes:,
       expected_event_attributes:,
+    )
+  end
+
+  def failure_message_for_single_event_and_hash_including_matcher(
+    event_name:,
+    actual_event_attributes:,
+    hash_including_matcher:
+  )
+    failure_message_with_diff(
+      event_name:,
+      actual_event_attributes:,
+      expected_event_attributes: hash_including_matcher.instance_variable_get(:@expected),
+      match_type: 'hash including',
     )
   end
 

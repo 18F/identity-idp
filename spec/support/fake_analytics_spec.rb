@@ -303,11 +303,14 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>.
+              Expected that FakeAnalytics would have received matching event my_event
+              expected: hash including {:arg1=>42}
+                   got: {:arg1=>43}
 
-              Events received:
-              {:my_event=>[{:arg1=>43}]}
+              Diff:
+              @@ -1 +1 @@
+              -:arg1 => 42,
+              +:arg1 => 43,
             MESSAGE
           end
       end
