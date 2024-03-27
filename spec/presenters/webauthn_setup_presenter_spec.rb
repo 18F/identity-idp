@@ -41,7 +41,7 @@ RSpec.describe WebauthnSetupPresenter do
   describe '#intro_html' do
     subject { presenter.intro_html }
 
-    it { is_expected.to eq(t('forms.webauthn_setup.intro_html')) }
+    it { is_expected.to eq(t('forms.webauthn_setup.intro', app_name: APP_NAME)) }
   end
 
   describe '#nickname_label' do
@@ -59,7 +59,7 @@ RSpec.describe WebauthnSetupPresenter do
   describe '#button_text' do
     subject { presenter.button_text }
 
-    it { is_expected.to eq(t('forms.webauthn_setup.continue')) }
+    it { is_expected.to eq(t('forms.webauthn_setup.set_up')) }
   end
 
   context 'with platform_authenticator' do

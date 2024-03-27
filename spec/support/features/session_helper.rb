@@ -308,6 +308,12 @@ module Features
       click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
 
+    def click_setup
+      if page.has_button?(t('forms.webauthn_setup.set_up'))
+        click_button t('forms.webauthn_setup.set_up')
+      end
+    end
+
     def click_agree_and_continue
       click_button t('sign_up.agree_and_continue')
     end
