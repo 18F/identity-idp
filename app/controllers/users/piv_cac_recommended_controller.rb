@@ -3,7 +3,7 @@ module Users
     include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
     include SecureHeadersConcern
-    
+
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
     before_action :redirect_unless_user_email_is_gov_or_mil
