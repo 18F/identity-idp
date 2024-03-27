@@ -34,21 +34,46 @@ async function updateConstraintsAndLogInfo(videoDevice, trackEvent) {
     const stream = await navigator.mediaDevices.getUserMedia(updatedConstraints);
     const videoTracks = stream.getVideoTracks();
     const cameras = videoTracks.map((videoTrack) => getCameraInfo(videoTrack));
-    const logInfo = {
-      camera_info: cameras,
-    };
-    trackEvent('idv_camera_info_logged', logInfo);
+    return cameras[0];
   } catch (error) {
     trackEvent('idv_camera_info_error');
   }
 }
 
+function logsHaveSameValuesButDifferentName(logOne, logTwo) {
+  if (
+    logOne.height === logTwo.height &&
+    logOne.width === logTwo.width &&
+    logOne.frameRate === logTwo.frameRate
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function condenseLogs(logs) {
+  const firstLog = logs[0];
+  const condensedLogs = logs.reduce((accumulator, log) => {
+      if (logsHaveSameValuesButDifferentName(log, firstLog)) {
+        console.log('cameraname', log.label)
+        return;
+      }
+      return accumulator.concat(log);
+    },
+    [firstLog],
+  );
+  return condensedLogs;
+}
+
 async function logCameraInfo(trackEvent) {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-  videoDevices.forEach((videoDevice) => {
-    updateConstraintsAndLogInfo(videoDevice, trackEvent);
-  });
+  const logs = await Promise.all(
+    videoDevices.map((videoDevice) => updateConstraintsAndLogInfo(videoDevice, trackEvent)),
+  );
+  console.log(logs);
+  const condensedLogs = condenseLogs(logs);
+  console.log(condensedLogs);
 }
 
 // This function is intended to be used only after camera permissions have been granted
