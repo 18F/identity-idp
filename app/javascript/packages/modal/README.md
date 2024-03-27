@@ -15,15 +15,17 @@ The custom element will implement modal behavior, including focus trap and a pro
 However, all markup must already exist.
 
 ```html
-<lg-modal class="usa-modal-wrapper" hidden>
-  <div role="dialog" class="usa-modal-overlay" aria-describedby="modal-description-7ace89e6" aria-labelledby="modal-label-7ace89e6">
-    <div class="modal-content">
-      <h2 id="modal-label-7ace89e6">
-        Modal Heading
-      </h2>
-      Modal Content
-    </div>
-  </div>
+<lg-modal>
+  <dialog
+    class="modal__content"
+    aria-describedby="modal-description-7ace89e6"
+    aria-labelledby="modal-label-7ace89e6"
+  >
+    <h2 id="modal-label-7ace89e6">
+      Modal Heading
+    </h2>
+    Modal Content
+  </dialog>
 </lg-modal>
 ```
 

@@ -1,0 +1,26 @@
+@use 'uswds-core' as *;
+
+.modal__content {
+  @include u-padding(4);
+  @include u-bg('white');
+  width: 26rem;
+  max-width: 98%;
+  border-width: 0;
+  border-radius: units(1.5);
+
+  @include at-media('tablet') {
+    @include u-padding(6);
+  }
+
+  &::backdrop {
+    background: color('black-transparent-70');
+  }
+
+  hr {
+    width: 5rem;
+  }
+}
+
+.usa-js-modal--active {
+  overflow: hidden;
+}
