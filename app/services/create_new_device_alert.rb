@@ -3,7 +3,8 @@ class CreateNewDeviceAlert < ApplicationJob
 
   def perform
     User.where(
-      'sign_in_new_device < ?', IdentityConfig.store.new_device_alert_delay_in_minutes.minutes.ago
+      'sign_in_new_device_at < ?',
+      IdentityConfig.store.new_device_alert_delay_in_minutes.minutes.ago,
     ).each do |user|
       clear_new_device_and_send_email(user)
     end
@@ -12,7 +13,7 @@ class CreateNewDeviceAlert < ApplicationJob
   private
 
   def clear_new_device_and_send_email(user)
-    user.sign_in_new_device = nil
+    user.sign_in_new_device_at = nil
     user.save
     # user_devices = user.recent_devices
     # user_events = user.recent_events

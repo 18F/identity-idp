@@ -3,8 +3,8 @@
 module UserAlerts
   class AlertUserAboutNewDevice
     def self.call(user, device, disavowal_token)
-      if FeatureManagement.aggregate_new_device_alerts?
-        user.sign_in_new_device ||= Time.zone.now
+      if IdentityConfig.store.feature_new_device_alert_aggregation
+        user.sign_in_new_device_at ||= Time.zone.now
         user.save!
       else
         device_decorator = DeviceDecorator.new(device)

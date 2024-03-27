@@ -6,10 +6,10 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     let(:disavowal_token) { 'the_disavowal_token' }
     let(:device) { create(:device, user: user) }
 
-    if FeatureManagement.aggregate_new_device_alerts?
-      it 'sets the user sign_in_new_device value to current datetime' do
+    if IdentityConfig.store.feature_new_device_alert_aggregation
+      it 'sets the user sign_in_new_device_at value to current datetime' do
         described_class.call(user, device, disavowal_token)
-        expect(user.sign_in_new_device).not_to be_nil
+        expect(user.sign_in_new_device_at).not_to be_nil
       end
     else
 
