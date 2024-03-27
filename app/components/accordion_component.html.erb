@@ -3,7 +3,7 @@
     <button
       type="button"
       class="usa-accordion__button"
-      aria-expanded="false"
+      aria-expanded=<%= expanded? ? 'true' : 'false' %>
       aria-controls="accordion-<%= unique_id %>"
     >
       <%= header %>

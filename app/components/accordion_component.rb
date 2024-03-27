@@ -3,8 +3,9 @@ class AccordionComponent < BaseComponent
 
   attr_reader :bordered, :tag_options
 
-  def initialize(bordered: true, **tag_options)
+  def initialize(bordered: true, expanded: false, **tag_options)
     @bordered = bordered
+    @expanded = expanded
     @tag_options = tag_options
   end
 
@@ -12,5 +13,9 @@ class AccordionComponent < BaseComponent
     classes = ['usa-accordion', *tag_options[:class]]
     classes << 'usa-accordion--bordered' if bordered
     classes
+  end
+
+  def expanded?
+    @expanded
   end
 end

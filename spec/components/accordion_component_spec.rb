@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe AccordionComponent, type: :component do
   let(:bordered) { nil }
+  let(:expanded) { nil }
   let(:tag_options) { {} }
-  let(:options) { { bordered:, **tag_options }.compact }
+  let(:options) { { bordered:, expanded:, **tag_options }.compact }
 
   subject(:rendered) do
     render_inline(described_class.new(**options)) do |c|
@@ -14,6 +15,7 @@ RSpec.describe AccordionComponent, type: :component do
 
   it 'renders an accordion' do
     expect(rendered).to have_css('.usa-accordion.usa-accordion--bordered')
+    expect(rendered).to have_css('button.usa-accordion__button[aria-expanded="false"]')
     expect(rendered).to have_css('.usa-accordion__heading', text: 'heading')
     expect(rendered).to have_css('.usa-accordion__content', text: 'content')
   end
@@ -34,6 +36,14 @@ RSpec.describe AccordionComponent, type: :component do
 
     it 'renders without bordered modifier' do
       expect(rendered).to have_css('.usa-accordion:not(.usa-accordion--bordered)')
+    end
+  end
+
+  context 'expanded' do
+    let(:expanded) { true }
+
+    it 'renders with expanded set to true' do
+      expect(rendered).to have_css('button.usa-accordion__button[aria-expanded="true"]')
     end
   end
 
