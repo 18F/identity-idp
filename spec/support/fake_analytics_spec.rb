@@ -335,6 +335,31 @@ RSpec.describe FakeAnalytics do
     end
   end
 
+  describe FakeAnalytics::PiiAlerter do
+    subject(:analytics) do
+      FakeAnalytics.new
+    end
+
+    it 'throws an error when pii is passed in' do
+      expect { analytics.track_event('Trackable Event') }.to_not raise_error
+
+      expect { analytics.track_event('Trackable Event', first_name: 'Bobby') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+
+      expect do
+        analytics.track_event('Trackable Event', nested: [{ value: { first_name: 'Bobby' } }])
+      end.to raise_error(FakeAnalytics::PiiDetected)
+
+      expect { analytics.track_event('Trackable Event', decrypted_pii: '{"first_name":"Bobby"}') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+    end
+
+    it 'throws an error when it detects sample PII in the payload' do
+      expect { analytics.track_event('Trackable Event', some_benign_key: 'FAKEY MCFAKERSON') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+    end
+  end
+
   def assert_error_messages_equal(err, expected)
     actual = normalize_error_message(err.message)
     expected = normalize_error_message(expected)
