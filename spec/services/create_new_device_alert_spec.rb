@@ -1,16 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe CreateNewDeviceAlert do
-  let(:user) do
-    create(
-      :user, sign_in_new_device: IdentityConfig.store.
-      new_device_alert_delay_in_minutes.minutes.ago
-    )
-  end
+  let(:user) { create(:user) }
   describe '#perform' do
-    it 'deletes user sign_in_new_device value' do
-      CreateNewDeviceAlert.new.perform
-      expect(user.sign_in_new_device).to eq(nil)
+    before do
+      allow(user).to receive(:sign_in_new_device_at).and_return(
+        Time.zone.now,
+      )
+    end
+    it 'deletes user sign_in_new_device_at value' do
+      travel_to(IdentityConfig.store.new_device_alert_delay_in_minutes.minutes.from_now) do
+        CreateNewDeviceAlert.new.perform
+        expect(user.sign_in_new_device_at).to eq(nil)
+      end
     end
   end
 end

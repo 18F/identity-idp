@@ -22,7 +22,12 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
     disavow_last_action_and_reset_password
   end
 
-  unless FeatureManagement.aggregate_new_device_alerts?
+  context 'when aggregated new device alerts is disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(
+        :feature_new_device_alert_aggregation,
+      ).and_return(false)
+    end
     scenario 'disavowing a new device sign in' do
       allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
       signin(user.email, user.password)
