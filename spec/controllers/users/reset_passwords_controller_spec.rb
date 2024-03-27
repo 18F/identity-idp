@@ -141,7 +141,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           allow(user).to receive(:email_addresses).and_return([email_address])
         end
 
-        it 'displays the form to enter a new password and disallows indexing' do
+        it 'displays the form to enter a new password' do
           expect(email_address).to receive(:email).twice
 
           forbidden = instance_double(ForbiddenPasswords)
@@ -156,7 +156,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
           expect(response).to render_template :edit
           expect(flash.keys).to be_empty
-          expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
         end
       end
     end

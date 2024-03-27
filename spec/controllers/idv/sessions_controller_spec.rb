@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Idv::SessionsController do
   let(:user) { build(:user) }
-  let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
   before do
     stub_sign_in(user)
@@ -47,21 +46,28 @@ RSpec.describe Idv::SessionsController do
         'IdV: start over',
         location: 'get_help',
         proofing_components: nil,
+        cancelled_enrollment: nil,
+        enrollment_code: nil,
+        enrollment_id: nil,
         step: 'first',
       )
     end
 
-    it 'logs idv_start_over event with extra analytics attributes for barcode step' do
-      expect(@analytics).to receive(:track_event).with(
-        'IdV: start over',
-        location: '',
-        proofing_components: nil,
-        step: 'barcode',
-        cancelled_enrollment: true,
-        enrollment_code: enrollment.enrollment_code,
-        enrollment_id: enrollment.id,
-      )
-      delete :destroy, params: { step: 'barcode', location: '' }
+    context 'with in person enrollment' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      it 'logs idv_start_over event with extra analytics attributes for barcode step' do
+        delete :destroy, params: { step: 'barcode', location: '' }
+        expect(@analytics).to have_logged_event(
+          'IdV: start over',
+          location: '',
+          proofing_components: nil,
+          step: 'barcode',
+          cancelled_enrollment: true,
+          enrollment_code: user.pending_in_person_enrollment.enrollment_code,
+          enrollment_id: user.pending_in_person_enrollment.id,
+        )
+      end
     end
 
     it 'redirect occurs to the start of identity verification' do
@@ -88,6 +94,9 @@ RSpec.describe Idv::SessionsController do
           'IdV: start over',
           location: 'clear_and_start_over',
           proofing_components: nil,
+          cancelled_enrollment: nil,
+          enrollment_code: nil,
+          enrollment_id: nil,
           step: 'gpo_verify',
         )
       end

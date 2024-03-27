@@ -71,7 +71,6 @@ deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
 disable_logout_get_request: true
-disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
 doc_capture_polling_enabled: true
@@ -458,7 +457,6 @@ production:
   database_worker_jobs_password: ''
   disable_email_sending: false
   disable_logout_get_request: false
-  disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0

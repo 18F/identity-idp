@@ -77,6 +77,11 @@ Vagrantfile
 .yardoc
 /doc/
 
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids
+!/tmp/pids/.keep
+
 package-lock.json
 browsers.json
 Brewfile.lock.json
