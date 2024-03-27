@@ -17,6 +17,14 @@ LOCALE_SPECIFIC_CONTENT = {
   es: /¿|ó/,
 }.freeze
 
+# Regex patterns for commonly misspelled words by locale. Match on word boundaries ignoring case.
+# The current design should be adequate for a small number of words in each language.
+# If we encounter false positives we should come up with a scheme to ignore those cases.
+# Add additional words using the regex union operator '|'.
+COMMONLY_MISSPELLED_WORDS = {
+  en: /\b(cancelled|occured|seperated?)\b/i,
+}
+
 module I18n
   module Tasks
     class BaseTask
@@ -211,6 +219,15 @@ RSpec.describe 'I18n' do
             expect(value).not_to match(
               Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
             )
+          end
+        end
+
+        it 'does not contain commonly misspelled words' do
+          flattened_yaml_data.each do |key, value|
+            locale = key.split('.', 2).first.to_sym
+            if COMMONLY_MISSPELLED_WORDS.key?(locale)
+              expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
+            end
           end
         end
       end
