@@ -2,7 +2,6 @@ module Users
   class TwoFactorAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include MfaSetupConcern
-    include PivCacConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup

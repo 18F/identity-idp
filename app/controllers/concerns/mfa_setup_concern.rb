@@ -76,7 +76,7 @@ module MfaSetupConcern
   end
 
   def check_if_possible_piv_user
-    if current_user.has_gov_or_mil_email? && current_user.piv_cac_recommended_visited_at.nil?
+    if current_user.has_gov_or_mil_email? && current_user.piv_cac_recommended_dismissed_at.nil?
       redirect_to login_piv_cac_recommended_path
     end
   end

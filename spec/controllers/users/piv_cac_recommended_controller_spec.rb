@@ -66,7 +66,7 @@ RSpec.describe Users::PivCacRecommendedController do
       post :confirm
 
       user.reload
-      expect(user.piv_cac_recommended_visited_at).to be_truthy
+      expect(user.piv_cac_recommended_dismissed_at).to be_truthy
     end
 
     it 'logs analytics' do
@@ -94,7 +94,7 @@ RSpec.describe Users::PivCacRecommendedController do
       post :skip
 
       user.reload
-      expect(user.piv_cac_recommended_visited_at).to be_truthy
+      expect(user.piv_cac_recommended_dismissed_at).to be_truthy
     end
 
     it 'logs analytics' do

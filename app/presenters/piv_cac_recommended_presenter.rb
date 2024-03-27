@@ -29,4 +29,4 @@ class PivCacRecommendedPresenter
       I18n.t('two_factor_authentication.piv_cac_upsell.choose_other_method')
     end
   end
-  end
+end
