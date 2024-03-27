@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*] do
   scenario 'confirms valid email and sets valid password' do
-    allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
     reset_email
     email = 'test@example.com'
     sign_up_with(email)
@@ -69,7 +68,6 @@ RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*]
 
   context 'confirmed user is signed out and tries to confirm again' do
     it 'redirects to sign in page with message that user is already confirmed' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
       sign_up_and_set_password
       logout(:user)
 
