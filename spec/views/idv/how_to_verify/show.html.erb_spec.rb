@@ -30,7 +30,8 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
 
     it 'a troubleshooting section' do
       expect(rendered).to have_content(
-       t('doc_auth.info.how_to_verify_troubleshooting_options_header'))
+        t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+      )
       expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
       expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
     end
