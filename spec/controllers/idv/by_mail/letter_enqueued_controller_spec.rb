@@ -11,16 +11,19 @@ RSpec.describe Idv::ByMail::LetterEnqueuedController do
   end
 
   context 'user needs USPS address verification' do
-    it 'renders the show template' do
+    it 'logs an analytics event' do
       stub_analytics
-
-      expect(@analytics).to receive(:track_event).with(
-        'IdV: letter enqueued visited',
-        proofing_components: nil,
-      )
 
       get :show
 
+      expect(@analytics).to have_logged_event(
+        'IdV: letter enqueued visited',
+        proofing_components: nil,
+      )
+    end
+
+    it 'renders the show template' do
+      get :show
       expect(response).to render_template :show
     end
   end

@@ -11,17 +11,12 @@ RSpec.describe Idv::ForgotPasswordController do
     before do
       stub_sign_in
       stub_analytics
-
-      allow(@analytics).to receive(:track_event)
     end
 
     it 'tracks the event in analytics when referer is nil' do
       get :new
 
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: forgot password visited',
-        proofing_components: nil,
-      )
+      expect(@analytics).to have_logged_event('IdV: forgot password visited')
     end
   end
 
@@ -32,7 +27,6 @@ RSpec.describe Idv::ForgotPasswordController do
       stub_sign_in(user)
       stub_analytics
       stub_attempts_tracker
-      allow(@analytics).to receive(:track_event)
     end
 
     it 'tracks appropriate events' do
@@ -42,10 +36,7 @@ RSpec.describe Idv::ForgotPasswordController do
 
       post :update
 
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: forgot password confirmed',
-        proofing_components: nil,
-      )
+      expect(@analytics).to have_logged_event('IdV: forgot password confirmed')
     end
   end
 end

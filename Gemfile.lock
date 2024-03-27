@@ -835,6 +835,7 @@ DEPENDENCIES
   redacted_struct
   redis (>= 3.2.0)
   redis-session-store!
+  request_store (~> 1.0)
   retries
   rotp (~> 6.1)
   rqrcode
