@@ -195,39 +195,24 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
   failure_message do |actual|
     matching_events = actual.events[event]
     if matching_events&.length == 1 && attributes_matcher.instance_of?(Hash)
-      # We found one matching event. Let's show the user a diff of the actual and expected
-      # attributes
-      expected = attributes_matcher
-      actual = matching_events.first
-      message = "Expected that FakeAnalytics would have received matching event #{event}\n"
-      message += "expected: #{expected}\n"
-      message += "     got: #{actual}\n\n"
-      message += "Diff:#{differ.diff(actual, expected)}"
-      message
+      failure_message_for_single_event_and_hash(
+        event_name: event,
+        actual_event_attributes: matching_events.first,
+        expected_event_attributes: attributes_matcher,
+      )
     elsif matching_events&.length == 1 &&
           attributes_matcher.instance_of?(RSpec::Matchers::BuiltIn::Include)
-      # We found one matching event and an `include` matcher. Let's show the user a diff of the
-      # actual and expected attributes
-      expected = attributes_matcher.expecteds.first
-      actual_attrs = matching_events.first
-      actual_compared = actual_attrs.slice(*expected.keys)
-      actual_ignored = actual_attrs.except(*expected.keys)
-      message = "Expected that FakeAnalytics would have received matching event #{event}"
-      message += "expected: include #{expected}\n"
-      message += "     got: #{actual_attrs}\n\n"
-      message += "Diff:#{differ.diff(actual_compared, expected)}\n"
-      message += "Attributes ignored by the include matcher:#{differ.diff(
-        actual_ignored, {}
-      )}"
-      message
+      failure_message_for_single_event_and_include_matcher(
+        event_name: event,
+        actual_event_attributes: matching_events.first,
+        include_matcher: attributes_matcher,
+      )
     else
-      <<~MESSAGE
-        Expected that FakeAnalytics would have received event #{event.inspect}
-        with #{attributes_matcher.inspect}.
-
-        Events received:
-        #{actual.events.pretty_inspect}
-      MESSAGE
+      default_failure_message(
+        event_name: event,
+        events_received: actual.events,
+        attributes_matcher:,
+      )
     end
   end
 
@@ -238,5 +223,57 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
                        end,
       color: RSpec::Matchers.configuration.color?,
     )
+  end
+
+  def default_failure_message(
+    event_name:,
+    events_received:,
+    attributes_matcher:
+  )
+    <<~MESSAGE
+      Expected that FakeAnalytics would have received event #{event_name.inspect}
+      with #{attributes_matcher.inspect}.
+
+      Events received:
+      #{events_received.pretty_inspect}
+    MESSAGE
+  end
+
+  def failure_message_for_single_event_and_hash(
+    event_name:,
+    actual_event_attributes:,
+    expected_event_attributes:
+  )
+    # We found one matching event. Let's show the user a diff of the actual and expected
+    # attributes
+    <<~MESSAGE
+      Expected that FakeAnalytics would have received matching event #{event_name}
+      expected: #{expected_event_attributes}
+           got: #{actual_event_attributes}
+
+      Diff:#{differ.diff(actual_event_attributes, expected_event_attributes)}
+    MESSAGE
+  end
+
+  def failure_message_for_single_event_and_include_matcher(
+    event_name:,
+    actual_event_attributes:,
+    include_matcher:
+  )
+    # We found one matching event and an `include` matcher. Let's show the user a diff of the
+    # actual and expected attributes
+
+    expected = include_matcher.expecteds.first
+
+    actual_compared = actual_event_attributes.slice(*expected.keys)
+    actual_ignored = actual_event_attributes.except(*expected.keys)
+
+    <<~MESSAGE
+      Expected that FakeAnalytics would have received matching event #{event_name}expected: include #{expected}
+           got: #{actual_event_attributes}
+
+      Diff:#{differ.diff(actual_compared, expected)}
+      Attributes ignored by the include matcher:#{differ.diff(actual_ignored, {})}
+    MESSAGE
   end
 end
