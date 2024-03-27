@@ -97,7 +97,11 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
-    complete_how_to_verify_step(remote: remote)
+    if remote
+      click_on t('forms.buttons.continue_remote')
+    else
+      click_on t('forms.buttons.continue_ipp')
+    end
   end
 
   def complete_document_capture_step(with_selfie: false)
