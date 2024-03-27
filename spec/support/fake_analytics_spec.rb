@@ -123,7 +123,7 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received matching event my_event
+              Expected that FakeAnalytics would have received matching event :my_event
               expected: {:arg1=>42}
                    got: {:arg1=>43}
 
@@ -213,7 +213,7 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received matching event my_event
+              Expected that FakeAnalytics would have received matching event :my_event
               expected: include {:arg1=>42}
                    got: {:arg1=>43}
 
@@ -303,7 +303,7 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received matching event my_event
+              Expected that FakeAnalytics would have received matching event :my_event
               expected: hash including {:arg1=>42}
                    got: {:arg1=>43}
 

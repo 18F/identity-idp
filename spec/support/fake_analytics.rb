@@ -257,7 +257,7 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
 
     [
       <<~MESSAGE.strip,
-        Expected that FakeAnalytics would have received matching event #{event_name}
+        Expected that FakeAnalytics would have received matching event #{event_name.inspect}
         expected: #{match_type}#{expected_event_attributes}
              got: #{actual_event_attributes}
 
