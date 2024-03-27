@@ -30,7 +30,7 @@ fr:
       title: La suppression de votre compte devrait être votre dernier recours
     pending:
       cancel_request: Demande d’annulation
-      cancelled: Nous avons annulé votre demande de suppression de votre compte.
+      canceled: Nous avons annulé votre demande de suppression de votre compte.
       confirm: Si vous annulez maintenant, vous devez créer une nouvelle demande et
         attendre encore %{interval} pour supprimer votre compte.
       header: Vous avez demandé de supprimer votre compte

@@ -29,7 +29,7 @@ fr:
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou
         les cartes d’identité délivrées par l’État
-      document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
+      document_capture_canceled: Vous avez annulé le téléchargement de vos photos
         d’identité sur votre téléphone.
       how_to_verify_form: Sélectionnez un moyen de vérifier votre identité.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
