@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe FakeAnalytics do
-  subject { described_class.new }
+  subject(:analytics) { described_class.new }
 
   describe '#have_logged_event' do
     context 'no arguments' do
-      let(:track_event) { -> { subject.track_event :my_event } }
+      let(:track_event) { -> { analytics.track_event :my_event } }
       let(:expectation) { -> { have_logged_event } }
 
       it 'raises if event was not logged' do
@@ -37,7 +37,7 @@ RSpec.describe FakeAnalytics do
     end
 
     context 'event name only' do
-      let(:track_event) { -> { subject.track_event :my_event } }
+      let(:track_event) { -> { analytics.track_event :my_event } }
       let(:expectation) { -> { have_logged_event :my_event } }
 
       it 'raises if no event has been logged' do
@@ -54,7 +54,7 @@ RSpec.describe FakeAnalytics do
       end
 
       it 'raises if another type of event has been logged' do
-        subject.track_event(:my_other_event)
+        analytics.track_event(:my_other_event)
 
         expect { expect(subject).to(expectation.call) }.
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
@@ -84,9 +84,9 @@ RSpec.describe FakeAnalytics do
     end
 
     context 'event name + hash' do
-      let(:track_event) { -> { subject.track_event :my_event, arg1: 42 } }
-      let(:track_event_with_different_args) { -> { subject.track_event :my_event, arg1: 43 } }
-      let(:track_other_event) { -> { subject.track_event :my_other_event } }
+      let(:track_event) { -> { analytics.track_event :my_event, arg1: 42 } }
+      let(:track_event_with_different_args) { -> { analytics.track_event :my_event, arg1: 43 } }
+      let(:track_other_event) { -> { analytics.track_event :my_other_event } }
       let(:expectation) { -> { have_logged_event :my_event, arg1: 42 } }
 
       it 'raises if no event has been logged' do
@@ -165,14 +165,14 @@ RSpec.describe FakeAnalytics do
     end
 
     context 'event name + include() matcher' do
-      let(:track_event) { -> { subject.track_event :my_event, arg1: 42 } }
+      let(:track_event) { -> { analytics.track_event :my_event, arg1: 42 } }
       let(:track_matching_event_with_more_args) do
         -> {
-          subject.track_event :my_event, arg1: 42, arg2: 43
+          analytics.track_event :my_event, arg1: 42, arg2: 43
         }
       end
-      let(:track_event_with_different_args) { -> { subject.track_event :my_event, arg1: 43 } }
-      let(:track_other_event) { -> { subject.track_event :my_other_event } }
+      let(:track_event_with_different_args) { -> { analytics.track_event :my_event, arg1: 43 } }
+      let(:track_other_event) { -> { analytics.track_event :my_other_event } }
       let(:expectation) { -> { have_logged_event :my_event, include(arg1: 42) } }
 
       it 'raises if no event has been logged' do
@@ -252,14 +252,14 @@ RSpec.describe FakeAnalytics do
     end
 
     context 'event name + hash_including() matcher' do
-      let(:track_event) { -> { subject.track_event :my_event, arg1: 42 } }
+      let(:track_event) { -> { analytics.track_event :my_event, arg1: 42 } }
       let(:track_matching_event_with_more_args) do
         -> {
-          subject.track_event :my_event, arg1: 42, arg2: 43
+          analytics.track_event :my_event, arg1: 42, arg2: 43
         }
       end
-      let(:track_event_with_different_args) { -> { subject.track_event :my_event, arg1: 43 } }
-      let(:track_other_event) { -> { subject.track_event :my_other_event } }
+      let(:track_event_with_different_args) { -> { analytics.track_event :my_event, arg1: 43 } }
+      let(:track_other_event) { -> { analytics.track_event :my_other_event } }
       let(:expectation) { -> { have_logged_event :my_event, hash_including(arg1: 42) } }
 
       it 'raises if no event has been logged' do
