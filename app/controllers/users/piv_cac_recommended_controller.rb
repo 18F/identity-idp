@@ -3,8 +3,8 @@ module Users
     include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
     include SecureHeadersConcern
-
-    before_action :authenticate_user!
+    
+    before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
     before_action :redirect_unless_user_email_is_gov_or_mil
 
@@ -20,7 +20,7 @@ module Users
       ).call
       analytics.piv_cac_recommended(action: :accepted)
       set_mfa_selections(['piv_cac'])
-      redirect_to next_setup_path
+      redirect_to confirmation_path(user_session[:mfa_selections].first)
     end
 
     def skip
