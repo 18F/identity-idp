@@ -29,7 +29,9 @@ ActiveRecord::Migration.maintain_test_schema!
 # run twice. It is recommended that you do not name files matching this glob to
 # end with _spec.rb. You can configure this pattern with the --pattern
 # option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
-Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each do |f|
+  require f unless f.end_with?('_spec.rb')
+end
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
