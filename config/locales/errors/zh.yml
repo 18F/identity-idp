@@ -1,0 +1,115 @@
+---
+zh:
+  errors:
+    account_reset:
+      cancel_token_invalid: 取消令牌无效
+      cancel_token_missing: 取消令牌缺失
+      granted_token_expired: 删除你 %{app_name} 账户的链接已过期。请创建另一个删除账户请求。
+      granted_token_invalid: 删除你 %{app_name} 账户的链接有误。请再次尝试点击你电邮中的链接。
+      granted_token_missing: 删除你 %{app_name} 账户的链接有误。请再次尝试点击你电邮中的链接。
+    attributes:
+      password:
+        avoid_using_phrases_that_are_easily_guessed: 避免使用容易被人猜出的短语，比如你电邮的一部分或与自己有关的日期。
+        too_short:
+          one: 密码必须至少有一个字符
+          other: 密码必须至少有%{count}个字符
+    capture_doc:
+      invalid_link: 链接已过期或有误。  请要求另外一个在手机上验证身份的链接。
+    confirm_password_incorrect: 密码不对。
+    doc_auth:
+      consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
+      doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。 
+      document_capture_cancelled: 你已取消了用手机上传身份证件照片。
+      how_to_verify_form: 选择一个验证身份的方法。
+      phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
+      rate_limited_heading: 我们无法验证你的身份证件。
+      rate_limited_subheading: 尝试再拍照片
+      rate_limited_text_html: '为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>'
+      selfie_fail_heading: We couldn’t match the photo of yourself to your ID
+      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
+      send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
+    enter_code:
+      rate_limited_html: 你输入错误验证码太多次。<strong> %{timeout} 后再试。</strong>
+    general: 哎呀，出错了。请再试一次。
+    invalid_totp: 代码有误。请再试一次。
+    manage_authenticator:
+      internal_error: 处理你的请求时内部出错。请再试一次。
+      remove_only_method_error: 你不能去掉自己唯一的身份证实方法。
+      unique_name_error: 名字已在使用。请使用一个不同的名字。
+    max_password_attempts_reached: 你输入了太多不正确的密码。你可以使用“忘了密码？”链接来重设密码。
+    messages:
+      already_confirmed: 已确认，请尝试登录
+      blank: 请填写这一字段。
+      blank_cert_element_req: We cannot detect a certificate in your request.
+      confirmation_code_incorrect: 验证码不对。你打字打对了吗？
+      confirmation_invalid_token: 确认链接有误。链接已过期，或者你已确认了你的账户。
+      confirmation_period_expired: 过期的确认链接。你可以点击“重新发送确认说明”来得到另一个。
+      expired: 已过期，请要求一个新的。
+      format_mismatch: 请使用与要求一致的格式。
+      gpo_otp_expired: 你的验证码已过期。请要求另外一封信来得到新代码。
+      improbable_phone: 电话号码有误。请保证你输入的电话号码无误。
+      inclusion: 没有在清单中
+      invalid_calling_area: 不支持给那个号码打的电话。如果你有一个可接受短信（SMS）的电话，请尝试用短信。
+      invalid_phone_number:
+        international: 输入一个位数正确的电话号码。
+        us: 输入 10 位的电话号码。
+      invalid_recaptcha_token: 你必须完成预防滥发邮件测验。
+      invalid_sms_number: 输入的电话号码不支持短信。尝试接听电话选项。
+      invalid_voice_number: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
+      missing_field: 请填写这一字段。
+      no_pending_profile: 没有等待验证的用户资料
+      not_a_number: 不是数字
+      otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
+      password_incorrect: 密码不对。
+      password_mismatch: 你的密码不一致
+      personal_key_incorrect: 个人密钥不对
+      phone_carrier: 抱歉，我们目前无法支持这一电话运营商。请选择一个不同的号码再试一次。
+      phone_confirmation_limited: 你尝试了太多次。请在 %{timeout}后再试。
+      phone_duplicate: 该账户已在使用你输入的电话号码作为身份证实器。请使用一个不同的电话号码。
+      phone_required: 电话号码是必需的。
+      phone_unsupported: 抱歉，我们目前无法发送短信（SMS）。请尝试下面的接听电话选项或者使用你的个人密钥。
+      premium_rate_phone: 这好像是一个高价电话号码。请选择一个不同的号码再试一次。
+      pwned_password: 你输入的密码不安全。名列因数据泄露而被暴露的已知密码清单上。
+      stronger_password: 输入一个强密码
+      too_long:
+        one: 太长（最多 1 个字符）
+        other: 太长（最多 %{count}个字符）
+      too_short:
+        one: 太短（最少一个字符）。
+        other: 太短（最少 %{count}个字符）。
+      try_again: 请再试一次。
+      unauthorized_authn_context: 未经授权的身份证实背景
+      unauthorized_nameid_format: 未经授权的 nameID 格式
+      unauthorized_service_provider: 未经授权的服务提供商
+      voip_check_error: 检查你的电话时出错，请再试一次。
+      voip_phone: 该号码是一个基于网络的（VOIP）电话服务。请选择一个不同的号码再试一次。
+      weak_password: 你的密码不够强。%{feedback}
+      wrong_length:
+        one: 长度不对（应当是 1 个字符）
+        other: 长度不对（应当是 %{count} 个字符）
+    piv_cac_setup:
+      unique_name: 这个名字已被使用。请选择一个不同的名字。
+    registration:
+      terms: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
+    sign_in:
+      bad_password_limit: 你已超出登录尝试允许最多次数。
+    two_factor_auth_setup:
+      must_select_additional_option: 请选择一个额外的身份证实方法。
+      must_select_option: 选择一个身份证实方法。
+    verify_personal_key:
+      rate_limited: 你尝试了太多次。请在 %{timeout}后再试。
+    webauthn_platform_setup:
+      account_setup_error: 我们无法添加人脸或触摸解锁。请再试一次或者 %{link}。
+      already_registered: 人脸或触摸解锁已在该设备上注册。请尝试添加另外一种身份证实方法。
+      attestation_error: 抱歉，但你的平台身份证实器好像不是一个FIDO身份证实器。请确保你的设备列在 https://fidoalliance.org/certification/fido-certified-products/ ，如果你认为这是我们的过错，请联系 %{link}。
+      choose_another_method: 选择另一个身份证实方法
+      general_error: 我们无法添加人脸或触摸解锁。再试一次或选择另一个身份证实方法。
+      not_supported: 你的浏览器不支持人脸或触摸解锁。请使用最新版本的 Google Chrome、Microsoft Edge 或 Safari 来使用人脸或触摸解锁。
+      unique_name: 这个名字已被使用。请选择一个不同的名字。
+    webauthn_setup:
+      additional_methods_link: 选择另一个身份证实方法
+      already_registered: 安全密钥已注册。请尝试一个不同的安全密钥。
+      attestation_error: 抱歉，但你的安全密钥好像不是一个 FIDO 安全密钥。请确保你的设备列在 https://fidoalliance.org/certification/fido-certified-products/ ，如果你认为这是我们的过错，请联系 %{link}。
+      general_error_html: 我们无法添加安全密钥，请再试一次或者 %{link_html}。
+      not_supported: 你的浏览器不支持安全密钥。请使用最新版本的 Google Chrome、Microsoft Edge 或 Safari 来使用安全密钥。
+      unique_name: 这个名字已被使用。请选择一个不同的名字。

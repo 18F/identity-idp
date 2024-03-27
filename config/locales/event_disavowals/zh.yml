@@ -1,0 +1,8 @@
+---
+zh:
+  event_disavowals:
+    errors:
+      event_already_disavowed: 你已使用了那个链接来更改密码。登录以更改你的密码。
+      event_disavowal_expired: 更改你密码的链接已过期。登录以更改你的密码。
+      event_not_found: 更改你密码的链接有误。登入来更改你的密码。
+      no_account: 没有与此事件相关的账户。

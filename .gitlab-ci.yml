@@ -504,7 +504,7 @@ review-app:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     on_stop: stop-review-app
-    auto_stop_in: 2 days
+    auto_stop_in: 7 days
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"

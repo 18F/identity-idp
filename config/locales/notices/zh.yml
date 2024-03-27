@@ -1,0 +1,53 @@
+---
+zh:
+  notices:
+    account_reactivation: 好！你有个人密钥。
+    authenticated_successfully: 成功验证。
+    backup_codes_configured: 备用代码加到了你账户。
+    backup_codes_deleted: 备用代码已从你账户删除。
+    dap_participation: 我们参与美国政府的数据分析计划。参见 analytics.usa.gov 的数据
+    forgot_password:
+      first_paragraph_end: 带有重设你密码的链接。跟随链接继续重设你的密码。
+      first_paragraph_start: 我们已发电邮到
+      no_email_sent_explanation_start: 没有收到电邮？
+      resend_email_success: 我们发了另外一个重设密码的电邮。
+    password_changed: 你更改了密码。
+    phone_confirmed: 你账户添加了一个电话。
+    piv_cac_configured: 你账户添加了一个 PIV/CAC 卡。
+    piv_cac_disabled: PIV/CAC 已从你账户删除。
+    privacy:
+      privacy_act_statement: 隐私法声明
+      security_and_privacy_practices: 安全实践和隐私法声明
+    resend_confirmation_email:
+      success: 我们发送了另外一个确认电邮。
+    session_cleared: 为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
+    session_timedout: 我们已将你登出。为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
+    signed_up_and_confirmed:
+      first_paragraph_end: 带有重设你密码的链接。点击链接去继续把这个电邮添加到你的账户。
+      first_paragraph_start: 我们已发电邮到
+      no_email_sent_explanation_start: 没有收到电邮？
+    signed_up_but_unconfirmed:
+      first_paragraph_end: 带有确认你电邮的链接。点击链接来继续设立你的账户。
+      first_paragraph_start: 我们已发电邮到
+      no_email_sent_explanation_start: 没有收到电邮？
+      resend_confirmation_email: Resend the confirmation email
+    timeout_warning:
+      partially_signed_in:
+        continue: 继续登录
+        live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
+        message_html: 为了你的安全， '%{time_left_in_session_html} 后我们将取消你的登录。'
+        sign_out: 取消登录
+      signed_in:
+        continue: 保持我登录状态
+        live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
+        message_html: 为了你的安全，我们会在 %{time_left_in_session_html} 后将你登出，除非你告诉我们不要这样做。
+        sign_out: 把我登出
+    totp_configured: 你账户添加了一个身份证实应用程序。
+    totp_disabled: 身份证实应用程序已从你账户删除。
+    use_diff_email:
+      link: 使用一个不同的电邮地址
+      text_html: 或者，%{link_html}
+    webauthn_configured: 你账户添加了一个安全密钥。
+    webauthn_deleted: 安全密钥已从你账户删除。
+    webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
+    webauthn_platform_deleted: 人脸或触摸解锁已从你账户删除。

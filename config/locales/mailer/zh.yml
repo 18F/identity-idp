@@ -1,0 +1,11 @@
+---
+zh:
+  mailer:
+    about: 关于 %{app_name}
+    email_reuse_notice:
+      subject: 该电邮地址已与一个账户相关。
+    help_html: 如果需要帮助，请访问 %{link_html}
+    logo: '%{app_name} 标志'
+    no_reply: 请勿对该信息作出回复。
+    privacy_policy: 隐私政策
+    sent_at: 在 %{formatted_timestamp}时发出

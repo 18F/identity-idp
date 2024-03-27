@@ -1,0 +1,43 @@
+---
+zh:
+  telephony:
+    account_deleted_notice: This text message confirms you have deleted your %{app_name} account.
+    account_reset_cancellation_notice: 删除你 %{app_name} 账户的请求已被取消。
+    account_reset_notice: 按照你的请求，你的 %{app_name} 账户会在 24 小时后删除。不想删除你的账户？登入你的 %{app_name} 账户去取消。
+    authentication_otp:
+      sms: |-
+        %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
+
+        @%{domain} #%{code}
+      voice: 你好! 你的 6-%{format_type} %{app_name} 一次性代码是 %{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
+    confirmation_ipp_enrollment_result:
+      sms: |-
+        %{app_name}: 你在 %{proof_date}去了邮局。查查你的电邮看一下结果。不是你？马上报告此事：%{contact_number}。关于： %{reference_string}
+    confirmation_otp:
+      sms: |-
+        %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
+
+        @%{domain} #%{code}
+      voice: 你好! 你的 6-%{format_type} %{app_name} 一次性代码是 %{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
+    doc_auth_link: |-
+      %{app_name}: %{Link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
+    error:
+      friendly_message:
+        daily_voice_limit_reached: 你的一次性代码未能发出，因为已超出 24 小时内拨打这个电话号码的最多次数。你可以请求通过短信发送代码，或使用另外一个号码来接听电话。
+        duplicate_endpoint: 输入的电话号码有误。
+        generic: 你的一次性代码未能发送。
+        invalid_calling_area: 不支持拨打那个电话号码。如果你有可接受短信的电话，请尝试用短信。
+        invalid_phone_number: 输入的电话号码有误。
+        opt_out: 输入的电话号码选择不接受短信。
+        permanent_failure: 输入的电话号码有误。
+        rate_limited: 那个号码目前短信量太大。  请稍后再试。
+        sms_unsupported: 输入的电话号码不支持短信。尝试接听电话选项。
+        temporary_failure: 我们目前遇到技术困难。  请稍后再试。
+        timeout: 服务器反应时间过长。请再试一次。
+        unknown_failure: 我们目前遇到技术困难。  请稍后再试。
+        voice_unsupported: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
+    format_type:
+      character: 字符
+      digit: 数码
+    personal_key_regeneration_notice: 已给你的 %{app_name} 账户发放了一个新个人密钥。如果不是你，请重设你的密码。
+    personal_key_sign_in_notice: 你的个人密钥刚被用来登录你的 %{app_name} 账户。如果不是你，请重设你的密码。

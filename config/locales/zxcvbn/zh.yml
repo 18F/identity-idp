@@ -1,0 +1,34 @@
+---
+zh:
+  zxcvbn:
+    feedback:
+      a_word_by_itself_is_easy_to_guess: 单字容易被人猜出
+      add_another_word_or_two_uncommon_words_are_better: 再加一两个字不常见的字更好
+      all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: 都是大写几乎和都是小写一样容易被人猜出
+      avoid_dates_and_years_that_are_associated_with_you: 避免与你相关的日期和年份
+      avoid_recent_years: 避免最近几年的年份
+      avoid_repeated_words_and_characters: 避免重复字和字符
+      avoid_sequences: 避免排序
+      avoid_years_that_are_associated_with_you: 避免与你相关的年份
+      capitalization_doesnt_help_very_much: 把字母大写并无多大帮助
+      common_names_and_surnames_are_easy_to_guess: 常见姓名容易被猜出
+      dates_are_often_easy_to_guess: 日期常常容易被猜出
+      for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases:
+        强密码请使用被空格分开的几个字，但避免常见短语
+      names_and_surnames_by_themselves_are_easy_to_guess: 名字和姓氏本身容易被猜出
+      no_need_for_symbols_digits_or_uppercase_letters: 不需要符号、数字或大写字母
+      predictable_substitutions_like__instead_of_a_dont_help_very_much: 用‘@’ 代替‘a’这样的可预测替换，并无多大帮助
+      recent_years_are_easy_to_guess: 近年的年份容易被猜出
+      repeats_like_aaa_are_easy_to_guess: “aaa”这样的重复容易被猜出
+      repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: “abcabcabc”这样的重复与“abc”这样的重复相比，只是稍微难猜一点
+      reversed_words_arent_much_harder_to_guess: 反向拼写的字也不太难猜
+      sequences_like_abc_or_6543_are_easy_to_guess: abc 或 6543 这样的排序容易猜
+      short_keyboard_patterns_are_easy_to_guess: 在键盘上有规律的简短组合容易猜
+      straight_rows_of_keys_are_easy_to_guess: 直接一行键也容易猜
+      there_is_no_need_for_symbols_digits_or_uppercase_letters: 没必要使用符号、数字或大写字母
+      this_is_a_top_10_common_password: 这是最常见的 10 个密码之一
+      this_is_a_top_100_common_password: 这是最常见的 100 个密码之一
+      this_is_a_very_common_password: 这是很常见的一个密码
+      this_is_similar_to_a_commonly_used_password: 这与常见密码很像
+      use_a_few_words_avoid_common_phrases: 使用几个字，但避免常见短语
+      use_a_longer_keyboard_pattern_with_more_turns: 使用键盘上长些的曲里拐弯的键组合

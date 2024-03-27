@@ -1,0 +1,51 @@
+---
+zh:
+  openid_connect:
+    authorization:
+      errors:
+        bad_client_id: Bad client_id
+        invalid_verified_within_duration:
+          one: value must be at least %{count} day or older
+          other: value must be at least %{count} days or older
+        invalid_verified_within_format: Unrecognized format for verified_within
+        missing_ial: Missing a valid IAL level
+        no_auth: The acr_values are not authorized
+        no_valid_acr_values: No acceptable acr_values found
+        no_valid_scope: No valid scope values found
+        no_valid_vtr: No acceptable vots found
+        prompt_invalid: No valid prompt values found
+        redirect_uri_invalid: redirect_uri is invalid
+        redirect_uri_no_match: redirect_uri does not match registered redirect_uri
+        unauthorized_scope: Unauthorized scope
+    logout:
+      confirm: Yes, sign out of %{app_name}
+      deny: No, go to my account page
+      errors:
+        client_id_invalid: client_id was not recognized
+        client_id_missing: client_id is missing
+        id_token_hint: id_token_hint was not recognized
+        id_token_hint_present: This application is misconfigured and should not be
+          sending id_token_hint. Please send client_id instead.
+        no_client_id_or_id_token_hint: This application is misconfigured and must send
+          either client_id or id_token_hint.
+      heading: Do you want to sign out of %{app_name}?
+      heading_with_sp: Do you want to sign out of %{app_name} and return to
+        %{service_provider_name}?
+    token:
+      errors:
+        expired_code: is expired
+        invalid_aud: Invalid audience claim, expected %{url}
+        invalid_authentication: Client must authenticate via PKCE or private_key_jwt,
+          missing either code_challenge or client_assertion
+        invalid_code: is invalid because doesn’t match any user. Please see our
+          documentation at https://developers.login.gov/oidc/#token
+        invalid_code_verifier: code_verifier did not match code_challenge
+        invalid_iat: iat must be an integer or floating point Unix timestamp
+          representing a time in the past
+        invalid_signature: Could not validate assertion against any registered public keys
+    user_info:
+      errors:
+        malformed_authorization: Malformed Authorization header
+        no_authorization: No Authorization header provided
+        not_found: Could not find authorization for the contents of the provided
+          access_token or it may have expired

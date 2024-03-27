@@ -1,0 +1,7 @@
+---
+zh:
+  user_authorization_confirmation:
+    continue: 继续
+    currently_logged_in: '你已用以下电邮登入:'
+    or: 或者
+    sign_in: 换电邮

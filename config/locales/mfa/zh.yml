@@ -1,0 +1,12 @@
+---
+zh:
+  mfa:
+    account_info: 添加另外一个身份证实方法可以预防你在失去其他方法后被锁在账户外。
+    add: 添加另外一个方法
+    info: 选择一个多因素身份证实方法来增加更多一层安全防线。我们建议你选择至少两个不同方法，以防你丢失其中一个。
+    recommendation: We recommend you select at least two different options in case you lose one of your methods.
+    second_method_warning:
+      link: 添加第二个身份证实方法。
+      text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
+    skip: 现在先跳过
+    webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。

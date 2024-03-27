@@ -1,0 +1,41 @@
+---
+zh:
+  devise:
+    confirmations:
+      already_confirmed:  你的电邮地址已确认。%{action} 
+      confirmed: 你已确认了你的电邮地址。
+      confirmed_but_must_set_password: 你已确认了你的电邮地址。
+      confirmed_but_remove_from_other_account:  该电邮地址已与一个 %{app_name}账户相关联，所以我们不能把它加到另外一个账户上。你必须首先将其从与之相关的账户中删除或去掉。要做到这一点，请用该电邮地址登录。 
+      confirmed_but_sign_in: 你已确认了你的电邮地址。请登录来查看你的用户资料。
+      sign_in: 请登录。
+    failure:
+      already_authenticated: ''
+      inactive: 你的账户尚未激活。
+      invalid_html:  你输入的电邮或密码是错的。尝试 %{link_html}。 
+      invalid_link_text: 重设你的密码
+      last_attempt: 你还能再试一次，然后你的账户就会被锁住。
+      locked: 你的账户已被锁住。
+      not_found_in_database_html:  你输入的电邮或密码是错的。尝试 %{link_html}。 
+      not_found_in_database_link_text: 重设你的密码
+      session_limited: 你的登录凭据在另一个浏览器被使用。请再次登录在该浏览器中继续。
+      timeout: 你的时间已过。请再次登入来继续。
+      unauthenticated: 你的时间已过。请再次登入来继续。
+      unconfirmed: 你需要确认电邮地址才能继续。
+    mailer:
+      password_updated:
+        subject: 你的密码已更改。
+    passwords:
+      choose_new_password: 选择一个新密码。
+      invalid_token: 重设密码的令牌有误。请再试一下。
+      no_token: 要重设你的密码，请使用你收到的重设密码电邮里的链接。如果在把链接黏贴到浏览器中，请务必黏贴整个链接。
+      send_instructions: 几分钟后你会收到电邮，告诉你如何重设密码。
+      send_paranoid_instructions: 几分钟后你会收到电邮，告诉你如何重设密码。
+      token_expired: 你重设密码用时过长。请再试一下。
+      updated: 你的密码已更改。你现在已登入。
+      updated_not_active: 你的密码已更改。请用你的新密码登录。
+    registrations:
+      close_window: 完成后可以关闭这一窗口。
+      destroyed: 你的账户已成功删除。
+    sessions:
+      signed_in: ''
+      signed_out: 你现在已登出。

@@ -1,0 +1,6 @@
+---
+zh:
+  valid_email:
+    validations:
+      email:
+        invalid: 电邮地址无效

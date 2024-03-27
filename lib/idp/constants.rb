@@ -1,6 +1,6 @@
 module Idp
   module Constants
-    AVAILABLE_LOCALES = %w[en es fr]
+    AVAILABLE_LOCALES = %w[en es fr zh]
     UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
 
     KMS_LOG_FILENAME = 'kms.log'
