@@ -20,7 +20,7 @@ module Users
       ).call
       analytics.piv_cac_recommended(action: :accepted)
       set_mfa_selections(['piv_cac'])
-      redirect_to confirmation_path(user_session[:mfa_selections].first)
+      redirect_to firs_mfa_selection_path
     end
 
     def skip

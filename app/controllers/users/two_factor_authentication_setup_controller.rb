@@ -74,7 +74,7 @@ module Users
       user_session[:mfa_selections] = @two_factor_options_form.selection
 
       if user_session[:mfa_selections].first.present?
-        redirect_to confirmation_path(user_session[:mfa_selections].first)
+        redirect_to firs_mfa_selection_path
       else
         redirect_to after_mfa_setup_path
       end
