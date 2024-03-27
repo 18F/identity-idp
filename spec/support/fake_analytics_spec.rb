@@ -13,7 +13,6 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
           assert_error_messages_equal(err, <<~MESSAGE)
             Expected that FakeAnalytics would have received event nil
-            with nil.
   
             Events received:
             {}
@@ -45,7 +44,6 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with nil.
 
               Events received:
               {}
@@ -60,7 +58,6 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with nil.
 
               Events received:
               {:my_other_event=>[{}]}
@@ -94,7 +91,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with {:arg1=>42}.
+              with {:arg1=>42}
 
               Events received:
               {}
@@ -109,7 +106,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with {:arg1=>42}.
+              with {:arg1=>42}
 
               Events received:
               {:my_other_event=>[{}]}
@@ -184,7 +181,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>.
+              with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>
 
               Events received:
               {}
@@ -199,7 +196,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>.
+              with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>
 
               Events received:
               {:my_other_event=>[{}]}
@@ -274,7 +271,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>.
+              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>
 
               Events received:
               {}
@@ -289,7 +286,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>.
+              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>
 
               Events received:
               {:my_other_event=>[{}]}

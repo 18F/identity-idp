@@ -237,13 +237,16 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
     events_received:,
     attributes_matcher:
   )
-    <<~MESSAGE
-      Expected that FakeAnalytics would have received event #{event_name.inspect}
-      with #{attributes_matcher.inspect}.
 
-      Events received:
-      #{events_received.pretty_inspect}
-    MESSAGE
+    [
+      "Expected that FakeAnalytics would have received event #{event_name.inspect}",
+      attributes_matcher.nil? ? nil : "with #{attributes_matcher.inspect}",
+      <<~RECEIVED,
+
+        Events received:
+        #{events_received.pretty_inspect}
+      RECEIVED
+    ].compact.join("\n")
   end
 
   def failure_message_with_diff(
