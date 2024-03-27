@@ -180,9 +180,11 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       let(:participate_in_dap) { false }
 
       it 'does not render DAP analytics' do
-        render
+        allow(view).to receive(:javascript_packs_tag_once)
+        expect(view).not_to receive(:javascript_packs_tag_once).
+          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
 
-        expect(view).not_to render_template(partial: 'shared/_dap_analytics')
+        render
       end
     end
 
@@ -190,9 +192,11 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       let(:participate_in_dap) { true }
 
       it 'renders DAP analytics' do
-        render
+        allow(view).to receive(:javascript_packs_tag_once)
+        expect(view).to receive(:javascript_packs_tag_once).
+          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
 
-        expect(view).to render_template(partial: 'shared/_dap_analytics')
+        render
       end
     end
   end

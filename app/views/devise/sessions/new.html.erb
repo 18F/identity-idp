@@ -86,5 +86,12 @@
   </p>
 <% end %>
 
-<%= render 'shared/dap_analytics' if IdentityConfig.store.participate_in_dap %>
 <%= javascript_packs_tag_once('platform-authenticator-available') %>
+<% if IdentityConfig.store.participate_in_dap %>
+  <!-- <%= t('notices.dap_participation') %> -->
+  <%= javascript_packs_tag_once(
+        'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA&subagency=TTS',
+        async: true,
+        id: '_fed_an_ua_tag',
+      ) %>
+<% end %>
