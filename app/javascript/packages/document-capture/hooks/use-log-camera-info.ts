@@ -27,7 +27,7 @@ function getCameraInfo(videoTrack) {
   return cameraInfo;
 }
 
-async function updateConstraintsAndLogInfo(videoDevice, trackEvent) {
+async function updateConstraintsAndGetLogInfo(videoDevice, trackEvent) {
   // See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode
   const updatedConstraints = getConstraints(videoDevice.deviceId);
   try {
@@ -51,9 +51,10 @@ function logsHaveSameValuesButDifferentName(logOne, logTwo) {
   return false;
 }
 
-function condenseLogs(logs) {
-  // Okay, so the goal is to group logs into sets based on height/width/framerate
-  const condensedLogs = logs.reduce((accumulator, currentLog) => {
+function condenseCameraLogs(cameraLogs) {
+  // Group logs into sets based on height/width/framerate and return that set
+  // with the label field indicating all the cameras
+  const condensedLogs = cameraLogs.reduce((accumulator, currentLog) => {
     for (let i = 0; i < accumulator.length; i++) {
       const recordedLog = accumulator[i];
       if (logsHaveSameValuesButDifferentName(currentLog, recordedLog)) {
@@ -63,7 +64,7 @@ function condenseLogs(logs) {
         return accumulator;
       }
     }
-    // Add that log to condensed logs
+    // Add a new log to condensed logs, when it doesn't match the existing ones
     return accumulator.concat(currentLog);
   }, []);
   return condensedLogs;
@@ -72,12 +73,11 @@ function condenseLogs(logs) {
 async function logCameraInfo(trackEvent) {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-  const logs = await Promise.all(
-    videoDevices.map((videoDevice) => updateConstraintsAndLogInfo(videoDevice, trackEvent)),
+  const cameraLogs = await Promise.all(
+    videoDevices.map((videoDevice) => updateConstraintsAndGetLogInfo(videoDevice, trackEvent)),
   );
-  const condensedLogs = condenseLogs(logs);
-  console.log(condensedLogs);
-  trackEvent('idv_camera_info_logged', { camera_info: condensedLogs });
+  const condensedCameraLogs = condenseCameraLogs(cameraLogs);
+  trackEvent('idv_camera_info_logged', { camera_info: condensedCameraLogs });
 }
 
 // This function is intended to be used only after camera permissions have been granted
