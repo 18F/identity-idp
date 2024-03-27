@@ -9,7 +9,7 @@ RSpec.describe FakeAnalytics do
       let(:code_under_test) { -> { expect(analytics).to have_logged_event } }
 
       it 'raises if event was not logged' do
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
           assert_error_messages_equal(err, <<~MESSAGE)
             Expected that FakeAnalytics would have received event nil
@@ -23,7 +23,7 @@ RSpec.describe FakeAnalytics do
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
@@ -31,7 +31,7 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe FakeAnalytics do
       let(:code_under_test) { -> { expect(analytics).to have_logged_event(:my_event) } }
 
       it 'raises if no event has been logged' do
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -56,7 +56,7 @@ RSpec.describe FakeAnalytics do
       it 'raises if another type of event has been logged' do
         analytics.track_event(:my_other_event)
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -70,7 +70,7 @@ RSpec.describe FakeAnalytics do
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
@@ -78,7 +78,7 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe FakeAnalytics do
       let(:code_under_test) { -> { expect(analytics).to have_logged_event(:my_event, arg1: 42) } }
 
       it 'raises if no event has been logged' do
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -105,7 +105,7 @@ RSpec.describe FakeAnalytics do
       it 'raises if another type of event has been logged' do
         track_other_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -120,7 +120,7 @@ RSpec.describe FakeAnalytics do
       it 'raises if only a non-matching event of the same type has been logged' do
         track_event_with_different_args.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received matching event my_event
@@ -139,19 +139,19 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event_with_different_args.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
@@ -159,7 +159,7 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
     end
@@ -180,7 +180,7 @@ RSpec.describe FakeAnalytics do
       end
 
       it 'raises if no event has been logged' do
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -195,7 +195,7 @@ RSpec.describe FakeAnalytics do
       it 'raises if another type of event has been logged' do
         track_other_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -210,7 +210,7 @@ RSpec.describe FakeAnalytics do
       it 'raises if only a non-matching event of the same type has been logged' do
         track_event_with_different_args.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received matching event my_eventexpected: include {:arg1=>42}
@@ -230,19 +230,19 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event_with_different_args.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
@@ -250,7 +250,7 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
     end
@@ -271,7 +271,7 @@ RSpec.describe FakeAnalytics do
       end
 
       it 'raises if no event has been logged' do
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -286,7 +286,7 @@ RSpec.describe FakeAnalytics do
       it 'raises if another type of event has been logged' do
         track_other_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -301,7 +301,7 @@ RSpec.describe FakeAnalytics do
       it 'raises if only a non-matching event of the same type has been logged' do
         track_event_with_different_args.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
@@ -317,19 +317,19 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event_with_different_args.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
       it 'does not raise if event was logged 1x' do
         track_event.call
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
 
@@ -337,7 +337,7 @@ RSpec.describe FakeAnalytics do
         track_event.call
         track_event.call
 
-        expect { code_under_test.call }.
+        expect(&code_under_test).
           not_to raise_error(RSpec::Expectations::ExpectationNotMetError)
       end
     end
