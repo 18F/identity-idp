@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe FakeAnalytics do
-  subject(:analytics) { described_class.new }
+  subject(:analytics) { FakeAnalytics.new }
 
   describe '#have_logged_event' do
     context 'no arguments' do
@@ -336,10 +336,6 @@ RSpec.describe FakeAnalytics do
   end
 
   describe FakeAnalytics::PiiAlerter do
-    subject(:analytics) do
-      FakeAnalytics.new
-    end
-
     it 'throws an error when pii is passed in' do
       expect { analytics.track_event('Trackable Event') }.to_not raise_error
 
@@ -357,6 +353,82 @@ RSpec.describe FakeAnalytics do
     it 'throws an error when it detects sample PII in the payload' do
       expect { analytics.track_event('Trackable Event', some_benign_key: 'FAKEY MCFAKERSON') }.
         to raise_error(FakeAnalytics::PiiDetected)
+    end
+  end
+
+  describe FakeAnalytics::UndocumentedParamsChecker do
+    it 'errors when undocumented parameters are sent' do
+      expect do
+        analytics.idv_phone_confirmation_otp_submitted(
+          success: true,
+          errors: true,
+          code_expired: true,
+          code_matches: true,
+          second_factor_attempts_count: true,
+          second_factor_locked_at: true,
+          proofing_components: true,
+          some_new_undocumented_keyword: true,
+        )
+      end.to raise_error(FakeAnalytics::UndocumentedParams, /some_new_undocumented_keyword/)
+    end
+
+    it 'does not error when undocumented params are allowed',
+       allowed_extra_analytics: [:fun_level] do
+      analytics.idv_phone_confirmation_otp_submitted(
+        success: true,
+        errors: true,
+        code_expired: true,
+        code_matches: true,
+        second_factor_attempts_count: true,
+        second_factor_locked_at: true,
+        proofing_components: true,
+        fun_level: 1000,
+      )
+
+      expect(analytics).to have_logged_event(
+        'IdV: phone confirmation otp submitted',
+        hash_including(:fun_level),
+      )
+    end
+
+    it 'does not error when undocumented params are allowed via *', allowed_extra_analytics: [:*] do
+      analytics.idv_phone_confirmation_otp_submitted(
+        success: true,
+        errors: true,
+        code_expired: true,
+        code_matches: true,
+        second_factor_attempts_count: true,
+        second_factor_locked_at: true,
+        proofing_components: true,
+        fun_level: 1000,
+      )
+
+      expect(analytics).to have_logged_event(
+        'IdV: phone confirmation otp submitted',
+        hash_including(:fun_level),
+      )
+    end
+
+    it 'does not error when string tags are documented as options' do
+      analytics.idv_doc_auth_submitted_image_upload_vendor(
+        success: nil,
+        errors: nil,
+        exception: nil,
+        state: nil,
+        state_id_type: nil,
+        async: nil,
+        submit_attempts: nil,
+        remaining_submit_attempts: nil,
+        client_image_metrics: nil,
+        flow_path: nil,
+        liveness_checking_required: nil,
+        'DocumentName' => 'some_name',
+      )
+
+      expect(analytics).to have_logged_event(
+        'IdV: doc auth image upload vendor submitted',
+        hash_including('DocumentName'),
+      )
     end
   end
 
