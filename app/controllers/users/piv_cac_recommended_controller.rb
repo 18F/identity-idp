@@ -6,7 +6,7 @@ module Users
 
     before_action :authenticate_user!
     before_action :apply_secure_headers_override
-    before_action :user_email_is_gov_or_mil?
+    before_action :redirect_unless_user_email_is_gov_or_mil
 
     def show
       @recommended_presenter = PivCacRecommendedPresenter.new(current_user)
@@ -34,7 +34,7 @@ module Users
 
     private
 
-    def user_email_is_gov_or_mil
+    def redirect_unless_user_email_is_gov_or_mil
       redirect_to after_sign_in_path_for(current_user) unless current_user.has_gov_or_mil_email?
     end
   end
