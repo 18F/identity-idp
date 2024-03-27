@@ -6,7 +6,7 @@ RSpec.describe FakeAnalytics do
   describe '#have_logged_event' do
     context 'no arguments' do
       let(:track_event) { -> { analytics.track_event :my_event } }
-      let(:code_under_test) { -> { expect(subject).to have_logged_event } }
+      let(:code_under_test) { -> { expect(analytics).to have_logged_event } }
 
       it 'raises if event was not logged' do
         expect { code_under_test.call }.
