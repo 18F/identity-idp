@@ -135,7 +135,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Hybrid Handoff with opt in disabled midstream' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: true)
+        click_on t('forms.buttons.continue_remote')
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
@@ -160,7 +160,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Hybrid Handoff with opt in enabled the whole time' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: true)
+        click_on t('forms.buttons.continue_remote')
       end
 
       it 'should be bounced back to How to Verify' do
@@ -181,7 +181,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Document Capture with opt in disabled midstream' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: false)
+        click_on t('forms.buttons.continue_ipp')
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
@@ -210,7 +210,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Document Capture with opt in enabled the whole time' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: false)
+        click_on t('forms.buttons.continue_ipp')
       end
 
       it 'should be bounced back to How to Verify' do
