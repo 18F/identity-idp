@@ -86,21 +86,16 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'and when sp has opted into ipp' do
       let(:in_person_proofing_opt_in_enabled) { true }
 
-      it 'displays expected content and requires a choice' do
+      it 'displays expected content and navigates to choice' do
         expect(page).to have_current_path(idv_how_to_verify_path)
 
-        # Try to continue without an option
-        click_continue
-
-        expect(page).to have_current_path(idv_how_to_verify_path)
-        expect(page).to have_content(t('errors.doc_auth.how_to_verify_form'))
-
-        complete_how_to_verify_step(remote: true)
+        # Choose remote option
+        click_on t('forms.buttons.continue_remote')
         expect(page).to have_current_path(idv_hybrid_handoff_url)
 
-        # go back and also test remote: false case
+        # go back and choose in person option
         page.go_back
-        complete_how_to_verify_step(remote: false)
+        click_on t('forms.buttons.continue_ipp')
         expect(page).to have_current_path(idv_document_capture_path)
       end
     end
