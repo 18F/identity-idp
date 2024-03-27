@@ -125,7 +125,7 @@ en:
         which one is which.
     webauthn_setup:
       intro: Use your physical security key to add an additional layer of protection
-        to your Login.gov account to prevent unauthorized access.
+        to your %{app_name} account to prevent unauthorized access.
       learn_more: Learn more about security keys
       nickname: Security key nickname
       saving: Saving your credentials …

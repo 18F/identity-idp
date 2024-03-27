@@ -60,9 +60,9 @@
         <% end %>
         <%= c.with_item(heading: t('forms.webauthn_setup.step_2')) do %>
             <% if @mobile %>
-              <%= image_tag asset_url('mfa-options/security_key_mobile.gif'), class: "rounded-xl", alt: t('forms.webauthn_setup.step_2_image_mobile_alt') %>
+              <%= image_tag asset_url('mfa-options/security_key_mobile.gif'), class: 'rounded-xl', alt: t('forms.webauthn_setup.step_2_image_mobile_alt') %>
             <% else %>
-              <%= image_tag asset_url('mfa-options/security_key.gif'), class: "rounded-xl", alt: t('forms.webauthn_setup.step_2_image_alt') %>
+              <%= image_tag asset_url('mfa-options/security_key.gif'), class: 'rounded-xl', alt: t('forms.webauthn_setup.step_2_image_alt') %>
             <% end %>
           <% end %>
         <%= c.with_item(heading: t('forms.webauthn_setup.step_3')) do %>
@@ -90,7 +90,7 @@
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
         },
-      ) %>   
+      ) %>
   <%= render SubmitButtonComponent.new(class: 'display-block margin-y-5').with_content(@presenter.button_text) %>
 <% end %>
 

@@ -132,7 +132,7 @@ es:
         huella digital, podrá distinguirlos.
     webauthn_setup:
       intro: Utilice su clave de seguridad física para añadir un nivel adicional de
-        protección a su cuenta de Login.gov y evitar accesos no autorizados.
+        protección a su cuenta de %{app_name} y evitar accesos no autorizados.
       learn_more: Obtenga información sobre claves de seguridad
       nickname: Apodo clave de seguridad
       saving: Guardando sus credenciales …

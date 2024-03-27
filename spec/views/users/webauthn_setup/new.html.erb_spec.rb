@@ -50,7 +50,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       it 'does not displays info alert' do
         render
 
-        expect(rendered).to_not have_content(I18n.t('forms.webauthn_platform_setup.info_text'))
+        expect(rendered).to_not have_content(t('forms.webauthn_platform_setup.info_text'))
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       it 'displays info alert' do
         render
 
-        expect(rendered).to have_content(I18n.t('forms.webauthn_platform_setup.info_text'))
+        expect(rendered).to have_content(t('forms.webauthn_platform_setup.info_text'))
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       it 'does not displays info alert' do
         render
 
-        expect(rendered).to_not have_content(I18n.t('forms.webauthn_platform_setup.info_text'))
+        expect(rendered).to_not have_content(t('forms.webauthn_platform_setup.info_text'))
       end
     end
   end
@@ -92,19 +92,19 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     it 'displays the step 1 heading' do
       render
 
-      expect(rendered).to have_css('h2', text: I18n.t('forms.webauthn_setup.step_1'))
+      expect(rendered).to have_css('h2', text: t('forms.webauthn_setup.step_1'))
     end
 
     it 'displays the step 2 heading' do
       render
 
-      expect(rendered).to have_css('h2', text: I18n.t('forms.webauthn_setup.step_2'))
+      expect(rendered).to have_css('h2', text: t('forms.webauthn_setup.step_2'))
     end
 
     it 'displays the step 3 heading' do
       render
 
-      expect(rendered).to have_css('h2', text: I18n.t('forms.webauthn_setup.step_3'))
+      expect(rendered).to have_css('h2', text: t('forms.webauthn_setup.step_3'))
     end
 
     it 'displays the nickname input field' do

@@ -137,7 +137,7 @@ fr:
         reconnaître.
     webauthn_setup:
       intro: Utilisez votre clé de sécurité physique pour ajouter une couche de
-        protection supplémentaire à votre compte Login.gov pour empêcher tout
+        protection supplémentaire à votre compte %{app_name} pour empêcher tout
         accès non autorisé.
       learn_more: En savoir plus sur les clés de sécurité
       nickname: Pseudo clé de sécurité

@@ -83,7 +83,7 @@ class WebauthnSetupPresenter < SetupPresenter
         ),
       )
     else
-      t('forms.webauthn_setup.intro')
+      t('forms.webauthn_setup.intro', app_name: APP_NAME)
     end
   end
 
