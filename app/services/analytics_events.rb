@@ -811,7 +811,7 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path whether the user is in the hybrid or standard flow
-  # @param [Hash] camera_info Information on the users cameras max resolution
+  # @param [Array] camera_info Information on the users cameras max resolution
   # as  captured by the browser
   def idv_camera_info_logged(flow_path:, camera_info:, **_extra)
     track_event(

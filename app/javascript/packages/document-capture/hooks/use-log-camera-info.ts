@@ -52,16 +52,20 @@ function logsHaveSameValuesButDifferentName(logOne, logTwo) {
 }
 
 function condenseLogs(logs) {
-  const firstLog = logs[0];
-  const condensedLogs = logs.reduce((accumulator, log) => {
-      if (logsHaveSameValuesButDifferentName(log, firstLog)) {
-        console.log('cameraname', log.label)
-        return;
+  // Okay, so the goal is to group logs into sets based on height/width/framerate
+  const condensedLogs = logs.reduce((accumulator, currentLog) => {
+    for (let i = 0; i < accumulator.length; i++) {
+      const recordedLog = accumulator[i];
+      if (logsHaveSameValuesButDifferentName(currentLog, recordedLog)) {
+        // Append to the label field for that log in condensed logs
+        const newLabel = `${recordedLog.label}, ${currentLog.label}`;
+        accumulator[i].label = newLabel;
+        return accumulator;
       }
-      return accumulator.concat(log);
-    },
-    [firstLog],
-  );
+    }
+    // Add that log to condensed logs
+    return accumulator.concat(currentLog);
+  }, []);
   return condensedLogs;
 }
 
@@ -71,9 +75,9 @@ async function logCameraInfo(trackEvent) {
   const logs = await Promise.all(
     videoDevices.map((videoDevice) => updateConstraintsAndLogInfo(videoDevice, trackEvent)),
   );
-  console.log(logs);
   const condensedLogs = condenseLogs(logs);
   console.log(condensedLogs);
+  trackEvent('idv_camera_info_logged', { camera_info: condensedLogs });
 }
 
 // This function is intended to be used only after camera permissions have been granted
