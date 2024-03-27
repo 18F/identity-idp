@@ -820,12 +820,25 @@ module AnalyticsEvents
 
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
+  # @param [String,nil] enrollment_code IPP enrollment code
+  # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
   # The user chose to go back instead of cancel IDV
-  def idv_cancellation_go_back(step:, proofing_components: nil, **extra)
+  def idv_cancellation_go_back(
+    step:,
+    proofing_components: nil,
+    cancelled_enrollment: nil,
+    enrollment_code: nil,
+    enrollment_id: nil,
+    **extra
+  )
     track_event(
       'IdV: cancellation go back',
       step: step,
       proofing_components: proofing_components,
+      cancelled_enrollment: cancelled_enrollment,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -2544,8 +2557,10 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
+  # @param [String] address_verification_method "phone" or "gpo"
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
+    address_verification_method:,
     fraud_review_pending:,
     fraud_rejection:,
     in_person_verification_pending:,
@@ -2555,6 +2570,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: personal key submitted',
+      address_verification_method: address_verification_method,
       in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
@@ -2565,11 +2581,23 @@ module AnalyticsEvents
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] address_verification_method "phone" or "gpo"
+  # @param [Boolean,nil] in_person_verification_pending
+  # @param [Boolean] encrypted_profiles_missing True if user's session had no encrypted pii
   # User visited IDV personal key page
-  def idv_personal_key_visited(proofing_components: nil, **extra)
+  def idv_personal_key_visited(
+    proofing_components: nil,
+    address_verification_method: nil,
+    in_person_verification_pending: nil,
+    encrypted_profiles_missing: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key visited',
       proofing_components: proofing_components,
+      address_verification_method: address_verification_method,
+      in_person_verification_pending: in_person_verification_pending,
+      encrypted_profiles_missing: encrypted_profiles_missing,
       **extra,
     )
   end
@@ -2633,6 +2661,7 @@ module AnalyticsEvents
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [String] phone_fingerprint Fingerprint string identifying phone number
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
@@ -2643,6 +2672,7 @@ module AnalyticsEvents
     area_code:,
     rate_limit_exceeded:,
     telephony_response:,
+    phone_fingerprint:,
     proofing_components: nil,
     **extra
   )
@@ -2655,6 +2685,7 @@ module AnalyticsEvents
       area_code: area_code,
       rate_limit_exceeded: rate_limit_exceeded,
       telephony_response: telephony_response,
+      phone_fingerprint: phone_fingerprint,
       proofing_components: proofing_components,
       **extra,
     )
@@ -3035,10 +3066,16 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] location
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
+  # @param [String,nil] enrollment_code IPP enrollment code
+  # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
   # User started over idv
   def idv_start_over(
     step:,
     location:,
+    cancelled_enrollment: nil,
+    enrollment_code: nil,
+    enrollment_id: nil,
     proofing_components: nil,
     **extra
   )
@@ -3047,6 +3084,9 @@ module AnalyticsEvents
       step: step,
       location: location,
       proofing_components: proofing_components,
+      cancelled_enrollment: cancelled_enrollment,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -3832,12 +3872,14 @@ module AnalyticsEvents
   # Tracks if otp phone validation failed
   # @identity.idp.previous_event_name Twilio Phone Validation Failed
   # @param [String] error
+  # @param [string] message
   # @param [String] context
   # @param [String] country
-  def otp_phone_validation_failed(error:, context:, country:, **extra)
+  def otp_phone_validation_failed(error:, message:, context:, country:, **extra)
     track_event(
       'Vendor Phone Validation failed',
       error: error,
+      message: message,
       context: context,
       country: country,
       **extra,

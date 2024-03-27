@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Idv::AnalyticsEventsEnhancer do
   let(:user) { build(:user) }
+  let(:sp) { nil }
+  let(:session) { nil }
   let(:analytics_class) do
     Class.new(FakeAnalytics) do
       include AnalyticsEvents
@@ -16,8 +18,10 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
 
       attr_reader :called_kwargs
 
-      def initialize(user:)
+      def initialize(user:, sp:, session:)
         @user = user
+        @sp = sp
+        @session = session
       end
 
       def track_event(_event, **kwargs)
@@ -25,7 +29,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       end
     end
   end
-  let(:analytics) { analytics_class.new(user: user) }
+  let(:analytics) { analytics_class.new(user: user, sp: sp, session: session) }
 
   it 'enhances idv_ methods by default, but ignores those in IGNORED_METHODS' do
     enhancer_source_file = described_class.const_source_location(:IGNORED_METHODS).first

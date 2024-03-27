@@ -38,8 +38,11 @@ module Identity
     )
     IdentityConfig.build_store(configuration)
 
-    AssetSources.manifest_path = Rails.public_path.join('packs', 'manifest.json')
-    AssetSources.cache_manifest = Rails.env.production? || Rails.env.test?
+    config.asset_sources = AssetSources.new(
+      manifest_path: Rails.public_path.join('packs', 'manifest.json'),
+      cache_manifest: Rails.env.production? || Rails.env.test?,
+      i18n_locales: Idp::Constants::AVAILABLE_LOCALES,
+    )
 
     console do
       if ENV['ALLOW_CONSOLE_DB_WRITE_ACCESS'] != 'true' &&

@@ -5,7 +5,9 @@ class PendingProfilePolicy
     @biometric_comparison_requested = biometric_comparison_requested
   end
 
-  def user_has_usable_pending_profile?
+  def user_has_pending_profile?
+    return false if user.blank?
+
     if biometric_comparison_requested?
       pending_biometric_profile?
     else
@@ -16,10 +18,6 @@ class PendingProfilePolicy
   private
 
   attr_reader :user, :resolved_authn_context_result, :biometric_comparison_requested
-
-  def active_biometric_profile?
-    user.active_profile&.idv_level == 'unsupervised_with_selfie'
-  end
 
   def pending_biometric_profile?
     user.pending_profile&.idv_level == 'unsupervised_with_selfie'
