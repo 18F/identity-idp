@@ -618,6 +618,44 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             expect(response).to redirect_to(idv_url)
             expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
           end
+
+          context 'user has a pending biometric profile' do
+            let(:vtr_settings) do
+              saml_settings(
+                overrides: {
+                  issuer: sp1_issuer,
+                  authn_context: 'C1.C2.P1',
+                },
+              )
+            end
+
+            it 'does not redirect to proofing if sp does not request biometrics' do
+              create(
+                :profile,
+                :verify_by_mail_pending,
+                :with_pii,
+                idv_level: :unsupervised_with_selfie,
+                user: user,
+              )
+              saml_get_auth(vtr_settings)
+              expect(response).to redirect_to(sign_up_completed_url)
+              expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1'])
+            end
+
+            it 'redirects to the please call page if user has a fraudualent profile' do
+              create(
+                :profile,
+                :fraud_review_pending,
+                :with_pii,
+                idv_level: :unsupervised_with_selfie,
+                user: user,
+              )
+
+              saml_get_auth(vtr_settings)
+              expect(response).to redirect_to(idv_please_call_url)
+              expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1'])
+            end
+          end
         end
 
         context 'the user has proofed with a biometric check' do
@@ -743,6 +781,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
+            authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: sp1_issuer,
             force_authn: false,
@@ -768,6 +807,8 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           ial: Idp::Constants::IAL2,
           billed_ial: Idp::Constants::IAL2,
           sign_in_flow:,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          vtr: nil,
         )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
@@ -888,6 +929,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
+            authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
             force_authn: false,
@@ -913,6 +955,8 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           ial: 0,
           billed_ial: 2,
           sign_in_flow:,
+          acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+          vtr: nil,
         )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
@@ -953,6 +997,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
+          requested_ial: 'http://idmanagement.gov/ns/assurance/loa/5',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1124,6 +1173,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
+            authn_context: request_authn_contexts,
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
@@ -1172,6 +1222,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           authn_context_comparison: 'exact',
           service_provider: nil,
           request_signed: true,
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          matching_cert_serial: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1216,6 +1271,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           authn_context_comparison: 'exact',
           service_provider: nil,
           request_signed: true,
+          requested_ial: 'http://idmanagement.gov/ns/assurance/loa/5',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          matching_cert_serial: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1478,18 +1538,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
     context 'cert element in SAML request is blank' do
       let(:user) { create(:user, :fully_registered) }
       let(:service_provider) { build(:service_provider, issuer: 'http://localhost:3000') }
-      let(:analytics_hash) do
-        {
-          success: false,
-          errors: { service_provider: ['We cannot detect a certificate in your request.'] },
-          error_details: { service_provider: { blank_cert_element_req: true } },
-          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
-          authn_context_comparison: 'exact',
-          service_provider: 'http://localhost:3000',
-          request_signed: true,
-        }
-      end
 
       before do
         stub_analytics
@@ -1544,6 +1592,22 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
       it 'notes it in the analytics event' do
         generate_saml_response(user, saml_settings)
+        analytics_hash = {
+          success: false,
+          errors: { service_provider: ['We cannot detect a certificate in your request.'] },
+          error_details: { service_provider: { blank_cert_element_req: true } },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
+          authn_context_comparison: 'exact',
+          service_provider: 'http://localhost:3000',
+          request_signed: true,
+          requested_ial: 'none',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          matching_cert_serial: nil,
+        }
+
         expect(@analytics).to have_received(:track_event).
           with('SAML Auth', analytics_hash)
       end
@@ -1692,6 +1756,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1842,6 +1911,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
+            authn_context: request_authn_contexts,
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
@@ -2288,6 +2358,10 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
+            authn_context: [
+              Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            ],
             requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -2337,6 +2411,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
+            authn_context: request_authn_contexts,
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
@@ -2349,6 +2424,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           ial: 1,
           billed_ial: 1,
           sign_in_flow: :sign_in,
+          acr_values: [
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          ].join(' '),
+          vtr: nil,
         )
 
         generate_saml_response(user)
@@ -2381,6 +2461,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request', {
+            authn_context: request_authn_contexts,
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
@@ -2393,6 +2474,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           ial: 1,
           billed_ial: 1,
           sign_in_flow: :sign_in,
+          acr_values: [
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          ].join(' '),
+          vtr: nil,
         )
 
         generate_saml_response(user)

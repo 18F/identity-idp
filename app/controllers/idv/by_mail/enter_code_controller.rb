@@ -15,8 +15,16 @@ module Idv
         # slightly different copy on this screen.
         @user_did_not_receive_letter = !!params[:did_not_receive_letter]
 
+        gpo_mail = Idv::GpoMail.new(current_user)
+        @can_request_another_letter =
+          FeatureManagement.gpo_verification_enabled? &&
+          !gpo_mail.rate_limited? &&
+          !gpo_mail.profile_too_old?
+
         analytics.idv_verify_by_mail_enter_code_visited(
           source: if @user_did_not_receive_letter then 'gpo_reminder_email' end,
+          otp_rate_limited: rate_limiter.limited?,
+          user_can_request_another_letter: @can_request_another_letter,
         )
 
         if rate_limiter.limited?
@@ -27,12 +35,6 @@ module Idv
         @last_date_letter_was_sent = last_date_letter_was_sent
         @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
         @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
-
-        gpo_mail = Idv::GpoMail.new(current_user)
-        @can_request_another_letter =
-          FeatureManagement.gpo_verification_enabled? &&
-          !gpo_mail.rate_limited? &&
-          !gpo_mail.profile_too_old?
 
         if pii_locked?
           redirect_to capture_password_url

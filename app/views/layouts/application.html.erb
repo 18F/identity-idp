@@ -1,3 +1,7 @@
+<%= content_for(:head) do %>
+  <%= javascript_include_tag('init.js') %>
+<% end %>
+
 <%= extends_layout :base, body_class: local_assigns.fetch(:body_class, 'site tablet:bg-primary-lighter') do %>
   <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
   <div class="usa-overlay"></div>
@@ -34,4 +38,6 @@
                  session_timeout_in: Devise.timeout_in,
                } %>
   <% end %>
+
+  <%= javascript_packs_tag_once('application') %>
 <% end %>

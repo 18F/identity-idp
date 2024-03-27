@@ -18,14 +18,14 @@ RSpec.describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(
+      get :new
+
+      expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
         request_came_from: 'no referer',
         step: nil,
         proofing_components: nil,
       )
-
-      get :new
     end
 
     it 'tracks the event in analytics when referer is present' do
@@ -33,28 +33,28 @@ RSpec.describe Idv::CancellationsController do
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
 
-      expect(@analytics).to receive(:track_event).with(
+      get :new
+
+      expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
         request_came_from: 'users/sessions#new',
         step: nil,
         proofing_components: nil,
       )
-
-      get :new
     end
 
     it 'tracks the event in analytics when step param is present' do
       stub_sign_in
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(
+      get :new, params: { step: 'first' }
+
+      expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
         request_came_from: 'no referer',
         step: 'first',
         proofing_components: nil,
       )
-
-      get :new, params: { step: 'first' }
     end
 
     context 'when no session' do
@@ -104,7 +104,6 @@ RSpec.describe Idv::CancellationsController do
 
   describe '#update' do
     let(:user) { create(:user) }
-    let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
     before do
       stub_sign_in(user)
@@ -112,32 +111,39 @@ RSpec.describe Idv::CancellationsController do
     end
 
     it 'logs cancellation go back' do
-      expect(@analytics).to receive(:track_event).with(
+      put :update, params: { step: 'first', cancel: 'true' }
+
+      expect(@analytics).to have_logged_event(
         'IdV: cancellation go back',
         step: 'first',
         proofing_components: nil,
+        cancelled_enrollment: nil,
+        enrollment_code: nil,
+        enrollment_id: nil,
       )
-
-      put :update, params: { step: 'first', cancel: 'true' }
-    end
-
-    it 'logs cancellation go back with extra analytics attributes for barcode step' do
-      expect(@analytics).to receive(:track_event).with(
-        'IdV: cancellation go back',
-        step: 'barcode',
-        proofing_components: nil,
-        cancelled_enrollment: false,
-        enrollment_code: enrollment.enrollment_code,
-        enrollment_id: enrollment.id,
-      )
-
-      put :update, params: { step: 'barcode', cancel: 'true' }
     end
 
     it 'redirects to idv_path' do
       put :update, params: { cancel: 'true' }
 
       expect(response).to redirect_to idv_url
+    end
+
+    context 'in-person proofing' do
+      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
+
+      it 'logs cancellation go back with extra analytics attributes for barcode step' do
+        put :update, params: { step: 'barcode', cancel: 'true' }
+
+        expect(@analytics).to have_logged_event(
+          'IdV: cancellation go back',
+          step: 'barcode',
+          proofing_components: nil,
+          cancelled_enrollment: false,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+        )
+      end
     end
 
     context 'with go back path stored in session' do
@@ -162,13 +168,13 @@ RSpec.describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(
+      delete :destroy, params: { step: 'first' }
+
+      expect(@analytics).to have_logged_event(
         'IdV: cancellation confirmed',
         step: 'first',
         proofing_components: nil,
       )
-
-      delete :destroy, params: { step: 'first' }
     end
 
     context 'when no session' do

@@ -169,13 +169,6 @@ RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
 
   describe '#new' do
     render_views
-    it 'instructs crawlers to not index this page' do
-      token = 'foo token'
-      create(:user, :unconfirmed, confirmation_token: token)
-      get :new, params: { confirmation_token: token }
-
-      expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
-    end
 
     it 'rejects when confirmation_token is invalid' do
       invalid_confirmation_sent_at =

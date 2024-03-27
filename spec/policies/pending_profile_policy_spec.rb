@@ -21,7 +21,7 @@ RSpec.describe PendingProfilePolicy do
     )
   end
 
-  describe '#user_has_usable_pending_profile?' do
+  describe '#user_has_pending_profile?' do
     context 'has an active non-biometric profile and biometric comparison is requested' do
       let(:idv_level) { :unsupervised_with_selfie }
       before do
@@ -34,7 +34,7 @@ RSpec.describe PendingProfilePolicy do
         let(:vtr) { ['C2.Pb'] }
 
         it 'has a usable pending profile' do
-          expect(policy.user_has_usable_pending_profile?).to eq(true)
+          expect(policy.user_has_pending_profile?).to eq(true)
         end
       end
 
@@ -43,7 +43,7 @@ RSpec.describe PendingProfilePolicy do
         let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
         it 'has a usable pending profile' do
-          expect(policy.user_has_usable_pending_profile?).to eq(true)
+          expect(policy.user_has_pending_profile?).to eq(true)
         end
       end
     end
@@ -56,7 +56,7 @@ RSpec.describe PendingProfilePolicy do
           create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
         end
 
-        it { expect(policy.user_has_usable_pending_profile?).to eq(true) }
+        it { expect(policy.user_has_pending_profile?).to eq(true) }
       end
 
       context 'user has an active profile' do
@@ -64,7 +64,7 @@ RSpec.describe PendingProfilePolicy do
           create(:profile, :active, :verified, idv_level: idv_level, user: user)
         end
 
-        it { expect(policy.user_has_usable_pending_profile?).to eq(false) }
+        it { expect(policy.user_has_pending_profile?).to eq(false) }
       end
 
       context 'user has active legacy profile with a pending fraud biometric profile' do
@@ -73,7 +73,7 @@ RSpec.describe PendingProfilePolicy do
           create(:profile, :fraud_review_pending, idv_level: :unsupervised_with_selfie, user: user)
         end
 
-        it { expect(policy.user_has_usable_pending_profile?).to eq(true) }
+        it { expect(policy.user_has_pending_profile?).to eq(true) }
       end
     end
   end
