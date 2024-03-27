@@ -24,6 +24,7 @@ all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 account_reset_token_valid_for_days: 1
+account_reset_fraud_user_wait_period_days:
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
 acuant_assure_id_password: ''
@@ -509,6 +510,7 @@ production:
 test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
+  account_reset_fraud_user_wait_period_days: 30
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://facial_match.example.com
   acuant_passlive_url: https://liveness.example.com

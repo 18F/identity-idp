@@ -45,5 +45,20 @@ RSpec.describe AccountReset::FindPendingRequestForUser do
 
       it { expect(subject.call).to be_nil }
     end
+
+    context 'fraud user' do
+      let(:user) { create(:user, :fraud_review_pending) }
+      let(:user2) { create(:user, :fraud_rejection) }
+      context 'when a request exists, and it hasnt been granted yet but over a day' do
+        let(:requested_at) { 30.hours.ago }
+
+        it { expect(subject.call).to eq(account_reset_request) }
+      end
+      context 'when a request has expired' do
+        let(:requested_at) { 1.year.ago }
+
+        it { expect(subject.call).to be_nil }
+      end
+    end
   end
 end

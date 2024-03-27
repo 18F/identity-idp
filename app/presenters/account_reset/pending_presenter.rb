@@ -1,5 +1,6 @@
 module AccountReset
   class PendingPresenter
+    include AccountResetConcern
     include ActionView::Helpers::DateHelper
 
     attr_reader :account_reset_request
@@ -9,7 +10,7 @@ module AccountReset
     end
 
     def time_remaining_until_granted(now: Time.zone.now)
-      wait_time = IdentityConfig.store.account_reset_wait_period_days.days
+      wait_time = account_reset_wait_period_days(user)
 
       distance_of_time_in_words(
         now,
@@ -19,8 +20,12 @@ module AccountReset
       )
     end
 
-    def account_reset_deletion_period_hours
-      IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
+    def account_reset_deletion_period
+      account_reset_deletion_period_interval(user)
+    end
+
+    def user
+      account_reset_request.user
     end
   end
 end

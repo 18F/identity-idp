@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AccountReset::PendingController do
+  include ActionView::Helpers::DateHelper
+  include AccountResetHelper
   let(:user) { create(:user) }
 
   before do
@@ -13,6 +15,67 @@ RSpec.describe AccountReset::PendingController do
         get :show
 
         expect(response).to render_template('pages/page_not_found')
+      end
+    end
+  end
+
+  describe '#confirm' do
+    before do
+    end
+    context 'non-fraud user' do
+      it 'should have @account_reset_deletion_period_interval to match regular wait period' do
+        create_account_reset_request_for(user)
+
+        get :confirm
+        current_time = Time.zone.now
+        time_in_hours = distance_of_time_in_words(
+          current_time,
+          current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+          true,
+          accumulate_on: :hours,
+        )
+        expect(controller.view_assigns['account_reset_deletion_period_interval']).
+          to eq(time_in_hours)
+      end
+    end
+
+    context 'fraud user' do
+      let(:user) { create(:user, :fraud_review_pending) }
+      context 'fraud wait period not set' do
+        before do
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days).
+            and_return(nil)
+        end
+
+        it 'should have @account_reset_deletion_period to match regular wait period' do
+          create_account_reset_request_for(user)
+
+          get :confirm
+          current_time = Time.zone.now
+          time_in_hours = distance_of_time_in_words(
+            current_time,
+            current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+            true,
+            accumulate_on: :hours,
+          )
+          expect(controller.view_assigns['account_reset_deletion_period_interval']).
+            to eq(time_in_hours)
+        end
+      end
+
+      it 'should have @account_reset_deletion_period_interval to match fraud wait period' do
+        create_account_reset_request_for(user)
+
+        get :confirm
+        current_time = Time.zone.now
+        time_in_hours = distance_of_time_in_words(
+          current_time,
+          current_time + IdentityConfig.store.account_reset_fraud_user_wait_period_days.days,
+          true,
+          accumulate_on: :days,
+        )
+        expect(controller.view_assigns['account_reset_deletion_period_interval']).
+          to eq(time_in_hours)
       end
     end
   end
