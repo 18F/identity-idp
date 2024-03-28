@@ -74,6 +74,10 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).any?
   end
 
+  def has_gov_or_mil_email?
+    confirmed_email_addresses.any?(&:gov_or_mil?)
+  end
+
   def accepted_rules_of_use_still_valid?
     if self.accepted_terms_at.present?
       self.accepted_terms_at > IdentityConfig.store.rules_of_use_updated_at &&

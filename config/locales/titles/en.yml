@@ -59,6 +59,7 @@ en:
       new: Use your PIV/CAC to sign in to your account
     piv_cac_setup:
       new: Use your PIV/CAC card to secure your account
+      upsell: Enhance your account security with a government employee ID
     present_piv_cac: Present your PIV/CAC
     present_webauthn: Connect your hardware security key
     reactivate_account: Reactivate your account
