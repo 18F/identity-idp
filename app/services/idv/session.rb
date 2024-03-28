@@ -201,12 +201,16 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
-    def has_pii_from_user_in_flow_session
+    def pii_from_user_in_flow_session
       user_session.dig('idv/in_person', :pii_from_user)
     end
 
+    def has_pii_from_user_in_flow_session?
+      !!pii_from_user_in_flow_session
+    end
+
     def invalidate_in_person_pii_from_user!
-      if has_pii_from_user_in_flow_session
+      if has_pii_from_user_in_flow_session?
         user_session['idv/in_person'][:pii_from_user] = nil
         # Mark the FSM step as incomplete so that it can be re-entered.
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
@@ -218,12 +222,12 @@ module Idv
     end
 
     def ipp_document_capture_complete?
-      has_pii_from_user_in_flow_session &&
+      has_pii_from_user_in_flow_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
     end
 
     def ipp_state_id_complete?
-      has_pii_from_user_in_flow_session &&
+      has_pii_from_user_in_flow_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end
 
@@ -285,7 +289,7 @@ module Idv
 
     private
 
-    attr_accessor :user_session
+    attr_reader :user_session
 
     def set_idv_session
       user_session[:idv] = new_idv_session unless user_session.key?(:idv)
