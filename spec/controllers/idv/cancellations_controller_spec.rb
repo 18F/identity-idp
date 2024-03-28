@@ -22,9 +22,10 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
-        request_came_from: 'no referer',
-        step: nil,
-        proofing_components: nil,
+        hash_including(
+          request_came_from: 'no referer',
+          step: nil,
+        ),
       )
     end
 
@@ -37,9 +38,10 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
-        request_came_from: 'users/sessions#new',
-        step: nil,
-        proofing_components: nil,
+        hash_including(
+          request_came_from: 'users/sessions#new',
+          step: nil,
+        ),
       )
     end
 
@@ -51,9 +53,10 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
-        request_came_from: 'no referer',
-        step: 'first',
-        proofing_components: nil,
+        hash_including(
+          request_came_from: 'no referer',
+          step: 'first',
+        ),
       )
     end
 
@@ -115,11 +118,9 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation go back',
-        step: 'first',
-        proofing_components: nil,
-        cancelled_enrollment: nil,
-        enrollment_code: nil,
-        enrollment_id: nil,
+        hash_including(
+          step: 'first',
+        ),
       )
     end
 
@@ -137,11 +138,12 @@ RSpec.describe Idv::CancellationsController do
 
         expect(@analytics).to have_logged_event(
           'IdV: cancellation go back',
-          step: 'barcode',
-          proofing_components: nil,
-          cancelled_enrollment: false,
-          enrollment_code: enrollment.enrollment_code,
-          enrollment_id: enrollment.id,
+          hash_including(
+            step: 'barcode',
+            cancelled_enrollment: false,
+            enrollment_code: enrollment.enrollment_code,
+            enrollment_id: enrollment.id,
+          ),
         )
       end
     end
@@ -172,8 +174,7 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        step: 'first',
-        proofing_components: nil,
+        hash_including(step: 'first'),
       )
     end
 

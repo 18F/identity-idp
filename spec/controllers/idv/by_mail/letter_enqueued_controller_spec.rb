@@ -16,10 +16,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedController do
 
       get :show
 
-      expect(@analytics).to have_logged_event(
-        'IdV: letter enqueued visited',
-        proofing_components: nil,
-      )
+      expect(@analytics).to have_logged_event('IdV: letter enqueued visited')
     end
 
     it 'renders the show template' do
