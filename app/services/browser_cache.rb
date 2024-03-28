@@ -7,6 +7,7 @@ class BrowserCache
   # to: https://github.com/fnando/browser/blob/fa4f685482c315b8/lib/browser/browser.rb#L64-L65
   # @param [String] user_agent
   # @return [Browser]
+  # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
   def self.parse(user_agent)
     return DEFAULT_BROWSER if user_agent.nil?
 
@@ -19,4 +20,5 @@ class BrowserCache
   def self.clear
     @cache.clear
   end
+  # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
 end

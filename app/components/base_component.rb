@@ -3,6 +3,7 @@ class BaseComponent < ViewComponent::Base
     render_assets unless rendered_assets?
   end
 
+  # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
   def self.scripts
     @scripts ||= begin
       scripts = sidecar_files_basenames(['ts'])
@@ -18,6 +19,7 @@ class BaseComponent < ViewComponent::Base
       stylesheets
     end
   end
+  # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
 
   def unique_id
     @unique_id ||= SecureRandom.hex(4)

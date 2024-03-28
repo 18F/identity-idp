@@ -2,8 +2,10 @@ module Test
   class FakeS3Controller < ApplicationController
     skip_before_action :verify_authenticity_token
 
+    # rubocop:disable ThreadSafety/ClassAndModuleAttributes
     cattr_accessor :data
     self.data ||= {}
+    # rubocop:enable ThreadSafety/ClassAndModuleAttributes
 
     # Intended for use in tests to clear stored data
     def self.clear!

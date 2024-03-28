@@ -505,10 +505,12 @@ class IdentityConfig
     config.add(:weekly_auth_funnel_report_config, type: :json)
     config.add(:x509_presented_hash_attribute_requested_issuers, type: :json)
 
+    # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
     @key_types = config.key_types.freeze
     @unused_keys = config_map.keys - config.written_env.keys.freeze
     config.written_env.freeze
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
+    # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
   end
 end

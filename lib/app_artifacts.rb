@@ -5,9 +5,11 @@ class AppArtifacts
     attr_reader :store
   end
 
+  # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
   def self.setup(&block)
     @store = Store.new.build(&block)
   end
+  # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
 
   # Intermediate class used to build a Struct for config via DSL
   class Store

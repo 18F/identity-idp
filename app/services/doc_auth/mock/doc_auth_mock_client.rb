@@ -9,12 +9,14 @@ module DocAuth
       end
 
       class << self
-        # These will need to be refactored
+        # rubocop:disable ThreadSafety/ClassAndModuleAttributes
         attr_reader :response_mocks
         attr_accessor :last_uploaded_front_image
         attr_accessor :last_uploaded_back_image
+        # rubocop:enable ThreadSafety/ClassAndModuleAttributes
       end
 
+      # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
       def self.mock_response!(method:, response:)
         @response_mocks ||= {}
         @response_mocks[method.to_sym] = response
@@ -25,6 +27,7 @@ module DocAuth
         @last_uploaded_front_image = nil
         @last_uploaded_back_image = nil
       end
+      # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
 
       # rubocop:disable Lint/UnusedMethodArgument
       def post_front_image(image:, instance_id:)

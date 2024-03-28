@@ -17,6 +17,7 @@ class BrowserSupport
   }.freeze
 
   class << self
+    # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
     def supported?(user_agent)
       return false if user_agent.nil?
       return true if browser_support_config.nil?
@@ -77,5 +78,6 @@ class BrowserSupport
         nil
       end
     end
+    # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
   end
 end
