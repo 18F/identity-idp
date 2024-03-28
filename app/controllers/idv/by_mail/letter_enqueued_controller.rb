@@ -12,7 +12,7 @@ module Idv
         analytics.idv_letter_enqueued_visit
         @presenter = LetterEnqueuedPresenter.new(
           idv_session.pii_from_doc,
-          decorated_sp_session
+          decorated_sp_session,
         )
       end
 

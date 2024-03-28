@@ -13,7 +13,7 @@ module Idv
         [
           pii[:address1],
           pii[:address2],
-          "#{pii[:city]}, #{pii[:state]} #{pii[:zipcode]}"
+          "#{pii[:city]}, #{pii[:state]} #{pii[:zipcode]}",
         ].compact
       end
 
@@ -31,10 +31,15 @@ module Idv
         else
           account_path
         end
-      end        
+      end
+
+      def url_options
+        {}
+      end
 
       private
-        attr_reader :pii, :decorated_sp_session
+
+      attr_reader :pii, :decorated_sp_session
     end
   end
 end
