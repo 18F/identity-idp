@@ -22,6 +22,7 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
+      @mobile = mobile?
       @presenter = WebauthnSetupPresenter.new(
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
