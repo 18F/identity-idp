@@ -16,6 +16,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
 
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth) { false }
+  let(:skip_doc_auth_from_handoff) { false }
   let(:opted_in_to_in_person_proofing) { false }
 
   before do
@@ -47,6 +48,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_version: acuant_version,
       doc_auth_selfie_capture: selfie_capture_enabled,
       skip_doc_auth: skip_doc_auth,
+      skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
     }
   end
@@ -102,6 +104,13 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       render_partial
       expect(rendered).to have_css(
         "#document-capture-form[data-doc-auth-selfie-capture='false']",
+      )
+    end
+
+    it 'sends skip_doc_auth_from_handoff to in the frontend' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-skip-doc-auth-from-handoff='false']",
       )
     end
 

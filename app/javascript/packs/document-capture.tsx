@@ -37,7 +37,9 @@ interface AppRootData {
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
+  skipDocAuthFromHandoff: string;
   howToVerifyURL: string;
+  previousStepUrl: string;
   uiExitQuestionSectionEnabled: string;
   docAuthSelfieDesktopTestMode: string;
 }
@@ -105,7 +107,9 @@ const {
   optedInToInPersonProofing,
   usStatesTerritories = '',
   skipDocAuth,
+  skipDocAuthFromHandoff,
   howToVerifyUrl,
+  previousStepUrl,
   uiExitQuestionSectionEnabled = '',
   docAuthSelfieDesktopTestMode,
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -131,7 +135,9 @@ const App = composeComponents(
         optedInToInPersonProofing: optedInToInPersonProofing === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
         skipDocAuth: skipDocAuth === 'true',
+        skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
         howToVerifyURL: howToVerifyUrl,
+        previousStepURL: previousStepUrl,
       },
     },
   ],

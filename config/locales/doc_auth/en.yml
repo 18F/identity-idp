@@ -209,6 +209,8 @@ en:
         at a participating Post Office
       how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
+      hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can
+        verify your identity at a United States Post Office instead.
       image_loaded: Image loaded
       image_loading: Image loading
       image_updated: Image updated
