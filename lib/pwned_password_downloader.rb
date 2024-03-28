@@ -13,7 +13,7 @@ class PwnedPasswordDownloader
 
   alias_method :output_progress?, :output_progress
 
-  RANGE_API_ROOT = 'https://api.pwnedpasswords.com/range/'
+  RANGE_API_ROOT = 'https://api.pwnedpasswords.com/range/'.freeze
   SHA1_LENGTH = 40
   HASH_PREFIX_LENGTH = 5
   OCCURRENCE_OFFSET = SHA1_LENGTH - HASH_PREFIX_LENGTH + ':'.length

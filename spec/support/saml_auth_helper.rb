@@ -2,8 +2,8 @@ require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
-  PATH_YEAR = '2024'
-  SP_ISSUER = 'http://localhost:3000'
+  PATH_YEAR = '2024'.freeze
+  SP_ISSUER = 'http://localhost:3000'.freeze
 
   def saml_settings(overrides: {})
     settings = OneLogin::RubySaml::Settings.new

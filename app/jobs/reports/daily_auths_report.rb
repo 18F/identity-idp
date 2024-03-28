@@ -1,6 +1,6 @@
 module Reports
   class DailyAuthsReport < BaseReport
-    REPORT_NAME = 'daily-auths-report'
+    REPORT_NAME = 'daily-auths-report'.freeze
 
     attr_reader :report_date
 

@@ -2,7 +2,7 @@ require 'csv'
 
 module Reports
   class DuplicateSsnReport < BaseReport
-    REPORT_NAME = 'duplicate-ssn-report'
+    REPORT_NAME = 'duplicate-ssn-report'.freeze
 
     attr_accessor :report_date
 

@@ -2,7 +2,7 @@ require 'csv'
 
 module Reports
   class DailyDropoffsReport < BaseReport
-    REPORT_NAME = 'daily-dropoffs-report'
+    REPORT_NAME = 'daily-dropoffs-report'.freeze
 
     STEPS = %w[
       welcome

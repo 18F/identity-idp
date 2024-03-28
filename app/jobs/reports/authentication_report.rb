@@ -2,7 +2,7 @@ require 'reporting/authentication_report'
 
 module Reports
   class AuthenticationReport < BaseReport
-    REPORT_NAME = 'authentication-report'
+    REPORT_NAME = 'authentication-report'.freeze
 
     attr_accessor :report_date
 

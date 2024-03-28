@@ -1,10 +1,10 @@
 module Proofing
   module Mock
     class ResolutionMockClient
-      UNVERIFIABLE_ZIP_CODE = '00000'
+      UNVERIFIABLE_ZIP_CODE = '00000'.freeze
       NO_CONTACT_SSN = /000-?00-?0000/
-      TRANSACTION_ID = 'resolution-mock-transaction-id-123'
-      REFERENCE = 'aaa-bbb-ccc'
+      TRANSACTION_ID = 'resolution-mock-transaction-id-123'.freeze
+      REFERENCE = 'aaa-bbb-ccc'.freeze
 
       def proof(applicant)
         first_name = applicant[:first_name]

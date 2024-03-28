@@ -1,6 +1,6 @@
 module Idv
   class UnavailableController < ApplicationController
-    ALLOWED_FROM_LOCATIONS = [SignUp::RegistrationsController::CREATE_ACCOUNT]
+    ALLOWED_FROM_LOCATIONS = [SignUp::RegistrationsController::CREATE_ACCOUNT].freeze
 
     before_action :redirect_if_idv_available_and_from_create_account
 

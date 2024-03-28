@@ -1,7 +1,7 @@
 module Telephony
   module Test
     class SmsSender
-      LANDLINE_PHONE_NUMBER = '+1 225-555-3000'
+      LANDLINE_PHONE_NUMBER = '+1 225-555-3000'.freeze
 
       # rubocop:disable Lint/UnusedMethodArgument
       def deliver(message:, to:, country_code:, otp: nil)

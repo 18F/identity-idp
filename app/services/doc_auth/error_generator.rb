@@ -11,7 +11,7 @@ module DocAuth
   class IdTypeErrorHandler < ErrorHandler
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
     def handle(response_info)
       get_id_type_errors(response_info[:classification_info])
     end
@@ -121,7 +121,7 @@ module DocAuth
         back: [Errors::MULTIPLE_BACK_ID_FAILURES],
         selfie: [Errors::SELFIE_FAILURE],
         hints: false,
-      }
+      }.freeze
 
     private
 
@@ -252,7 +252,7 @@ module DocAuth
     GENERAL = :general
 
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
 
     ERROR_KEYS = [
       ID,

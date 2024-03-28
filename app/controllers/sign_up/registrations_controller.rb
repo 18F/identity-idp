@@ -6,7 +6,7 @@ module SignUp
     before_action :require_no_authentication
     before_action :redirect_if_ial2_and_idv_unavailable
 
-    CREATE_ACCOUNT = 'create_account'
+    CREATE_ACCOUNT = 'create_account'.freeze
 
     def new
       @register_user_email_form = RegisterUserEmailForm.new(
