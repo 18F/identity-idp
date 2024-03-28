@@ -229,13 +229,9 @@ en:
         verified information, please %{link_html}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
-      come_back_later_html: <p>Letters take <strong>5 to 10 days</strong> to arrive.
-        Sign back in to enter your verification code once you get your letter.
-      come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
-      come_back_later_password_html: <strong>Don’t forget your password.</strong><br
-        /> If you reset your password, the verification code in your letter will
-        no longer work and you’ll have to verify your identity again.
-      come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
+      come_back_later_html: Letters take <strong>5 to 10
+        days</strong> to arrive.  Sign back in to enter your
+        verification code once you get your letter.
       confirm: We secured your verified information
       enter_password:
         by_mail_password_reminder_html: <strong>Remember your password.</strong> The
