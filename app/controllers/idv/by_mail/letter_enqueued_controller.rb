@@ -10,6 +10,13 @@ module Idv
 
       def show
         analytics.idv_letter_enqueued_visit
+        @pii = {
+          address1: "Address 1",
+          address2: "Address 2",
+          city: "City",
+          state: "ST",
+          zipcode: "99999",
+        }
       end
 
       private
