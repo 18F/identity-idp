@@ -20,18 +20,18 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     idv_session.pii_from_doc = pii
   end
 
-  describe "#address_lines" do
-    context "when address2 is not present" do
+  describe '#address_lines' do
+    context 'when address2 is not present' do
       let(:pii) do
         {
-          address1: "123 Some St",
-          city: "Anytown",
-          state: "OK",
-          zipcode: "99999",
+          address1: '123 Some St',
+          city: 'Anytown',
+          state: 'OK',
+          zipcode: '99999',
         }
       end
 
-      it "shows a 2 line address" do
+      it 'shows a 2 line address' do
         expect(presenter.address_lines).to eq(
           [
             '123 Some St',
@@ -41,18 +41,18 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
       end
     end
 
-    context "when address2 is present" do
+    context 'when address2 is present' do
       let(:pii) do
         {
-          address1: "456 Cross St",
-          address2: "Apt 3G",
-          city: "Thatville",
-          state: "UT",
-          zipcode: "88888",
+          address1: '456 Cross St',
+          address2: 'Apt 3G',
+          city: 'Thatville',
+          state: 'UT',
+          zipcode: '88888',
         }
       end
 
-      it "shows a 3 line address" do
+      it 'shows a 3 line address' do
         expect(presenter.address_lines).to eq(
           [
             '456 Cross St',
@@ -64,33 +64,33 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     end
   end
 
-  describe "#button_text" do
-    context "when there is no SP" do
-      it "is a plain Continue button" do
+  describe '#button_text' do
+    context 'when there is no SP' do
+      it 'is a plain Continue button' do
         expect(presenter.button_text).to eq(t('idv.buttons.continue_plain'))
       end
     end
 
-    context "when there is an SP" do
-      let(:service_provider) { double("service provider") }
+    context 'when there is an SP' do
+      let(:service_provider) { double('service provider') }
 
-      it "is an Exit button" do
+      it 'is an Exit button' do
         expect(presenter.button_text).to eq(t('idv.cancel.actions.exit', app_name: APP_NAME))
       end
     end
   end
 
-  describe "#button_destination" do
-    context "when there is no SP" do
-      it "is the account page" do
+  describe '#button_destination' do
+    context 'when there is no SP' do
+      it 'is the account page' do
         expect(presenter.button_destination).to eq(account_path)
       end
     end
 
-    context "when there is an SP" do
-      let(:service_provider) { double("service provider") }
+    context 'when there is an SP' do
+      let(:service_provider) { double('service provider') }
 
-      it "is a return to SP button" do
+      it 'is a return to SP button' do
         expect(presenter.button_destination).to eq(
           return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later)
         )
