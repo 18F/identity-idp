@@ -136,6 +136,9 @@ class HaveLoggedEventMatcher
   end
 
   def ignored_attributes_description(actual_attributes)
+    using_matcher = !expected_attributes.nil? && !expected_attributes.instance_of?(Hash)
+    return if !using_matcher
+
     ignored_attributes = actual_attributes.except(*expected_attributes_hash.keys)
     return if ignored_attributes.empty?
 

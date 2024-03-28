@@ -120,6 +120,11 @@ RSpec.describe FakeAnalytics do
     context 'event name + hash' do
       let(:track_event) { -> { analytics.track_event :my_event, arg1: 42 } }
       let(:track_event_with_different_args) { -> { analytics.track_event :my_event, arg1: 43 } }
+      let(:track_event_with_extra_args) do
+        -> {
+          analytics.track_event :my_event, arg1: 42, arg2: 43
+        }
+      end
       let(:track_other_event) { -> { analytics.track_event :my_other_event } }
       let(:code_under_test) { -> { expect(analytics).to have_logged_event(:my_event, arg1: 42) } }
 
@@ -165,6 +170,24 @@ RSpec.describe FakeAnalytics do
               @@ -1 +1 @@
               -:arg1 => 42,
               +:arg1 => 43,              
+            MESSAGE
+          end
+      end
+
+      it 'raises if an event that matches but has additional args has been logged' do
+        track_event_with_extra_args.call
+
+        expect(&code_under_test).
+          to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
+            assert_error_messages_equal(err, <<~MESSAGE)
+              Expected that FakeAnalytics would have received event :my_event
+              expected: {:arg1=>42}
+                   got: {:arg1=>42, :arg2=>43}
+
+              Diff:
+              @@ -1,2 +1,3 @@
+               :arg1 => 42,
+              +:arg2 => 43,
             MESSAGE
           end
       end
