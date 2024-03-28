@@ -289,12 +289,10 @@ es:
       verify_identity: Le pediremos su identificación, número de teléfono y otros
         datos personales para verificar su identidad comparándola con los
         registros públicos.
-      # 1st set delete verify_identity and keep description
-      # 2nd set keep verify_identity and delete description
       verify_online_description: Esta opción es mejor si tiene un teléfono para tomar
         fotografías de su identificación.
-      verify_online_instruction: Tomará fotografías de tu identificación para
-        verificar tu identidad completamente en línea. La mayoría de los
+      verify_online_instruction: Tomará fotografías de su identificación para
+        verificar su identidad completamente en línea. La mayoría de los
         usuarios finalizan este proceso de una sola vez.
       verify_online_link_text: Obtenga más información sobre la verificación en línea
       you_entered: 'Ud. entregó:'
