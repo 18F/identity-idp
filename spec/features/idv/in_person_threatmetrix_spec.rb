@@ -249,39 +249,37 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true, allowed_extra_analyt
         end
       end
 
-      # To be completed in a future ticket
-      # context 'User fails IPP and fails TMX review' do
-      #   it_behaves_like 'initially shows the user the barcode page'
+      context 'User fails IPP and fails TMX review' do
+        it_behaves_like 'initially shows the user the barcode page'
 
-      #   it 'allows the user to restart the flow', allow_browser_log: true do
-      #     deactivate_profile_update_enrollment(status: :failed)
+        it 'allows the user to restart the flow', allow_browser_log: true do
+          deactivate_profile_update_enrollment(status: :failed)
 
-      #     visit_idp_from_sp_with_ial2(sp)
-      #     # user should not see the please call page as they failed ipp
-      #     expect(page).not_to have_current_path(idv_please_call_path)
-      #     # redo the flow:
-      #     complete_entire_ipp_flow(user, tmx_status)
-      #     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-      #   end
-      # end
+          visit_idp_from_sp_with_ial2(sp)
+          # user should not see the please call page as they failed ipp
+          expect(page).not_to have_current_path(idv_please_call_path)
+          # redo the flow:
+          complete_entire_ipp_flow(user, tmx_status)
+          expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+        end
+      end
 
-      # To be completed in a future ticket
-      # context 'User cancels IPP after being deactivated for TMX review',
-      #         allow_browser_log: true do
-      #   it 'allows the user to restart IPP' do
-      #     # set fraud review to pending:
-      #     profile.deactivate_for_fraud_review
-      #     profile.reload
-      #
-      #     # cancel the enrollment
-      #     click_link t('links.cancel')
-      #     # user can restart
-      #     click_on t('idv.cancel.actions.start_over')
-      #
-      #     # user should be redirected to the welcome path when they cancel
-      #     expect(page).to have_current_path(idv_welcome_path)
-      #   end
-      # end
+      context 'User cancels IPP after being deactivated for TMX review',
+              allow_browser_log: true do
+        it 'allows the user to restart IPP' do
+          # set fraud review to pending:
+          profile.deactivate_for_fraud_review
+          profile.reload
+
+          # cancel the enrollment
+          click_link t('links.cancel')
+          # user can restart
+          click_on t('idv.cancel.actions.start_over')
+
+          # user should be redirected to the welcome path when they cancel
+          expect(page).to have_current_path(idv_welcome_path)
+        end
+      end
     end
   end
 
