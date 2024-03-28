@@ -76,10 +76,6 @@ class FeatureManagement
     IdentityConfig.store.saml_secret_rotation_enabled
   end
 
-  def self.disallow_all_web_crawlers?
-    IdentityConfig.store.disallow_all_web_crawlers
-  end
-
   def self.gpo_upload_enabled?
     # leaving the usps name for backwards compatibility
     IdentityConfig.store.usps_upload_enabled

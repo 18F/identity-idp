@@ -34,10 +34,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f7dd59de0c860e9d78ab4f05e8365153a2a9b25a
-  tag: 0.19.1-18f
+  revision: 4c858dab80cfe32081a7e6bd7cd76c43cc3ec778
+  tag: 0.19.2-18f
   specs:
-    saml_idp (0.19.1.pre.18f)
+    saml_idp (0.19.2.pre.18f)
       activesupport
       builder
       faraday
@@ -254,7 +254,7 @@ GEM
       marcel (~> 1.0)
       nokogiri (~> 1.10, >= 1.10.4)
       rubyzip (>= 1.3.0, < 3)
-    cbor (0.5.9.6)
+    cbor (0.5.9.8)
     chunky_png (1.4.0)
     coderay (1.1.3)
     coercible (1.0.0)
@@ -473,6 +473,8 @@ GEM
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
     profanity_filter (0.1.1)
+    prometheus_exporter (2.1.0)
+      webrick
     propshaft (0.7.0)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
@@ -813,6 +815,7 @@ DEPENDENCIES
   phonelib
   premailer-rails (>= 1.12.0)
   profanity_filter
+  prometheus_exporter
   propshaft
   pry-byebug
   pry-doc

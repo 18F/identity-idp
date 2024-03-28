@@ -28,7 +28,7 @@ module OpenidConnect
     def index
       if @authorize_form.ial2_or_greater?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
-        return redirect_to url_for_pending_profile_reason if user_has_usable_pending_profile?
+        return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
         return redirect_to idv_url if selfie_needed?
       end
@@ -53,10 +53,6 @@ module OpenidConnect
         resolved_authn_context_result: resolved_authn_context_result,
         biometric_comparison_requested: biometric_comparison_requested?,
       )
-    end
-
-    def user_has_usable_pending_profile?
-      pending_profile_policy.user_has_usable_pending_profile?
     end
 
     def block_biometric_requests_in_production
@@ -160,6 +156,7 @@ module OpenidConnect
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
+          vtr_param: params[:vtr],
         ),
       )
       return if result.success?
@@ -218,6 +215,8 @@ module OpenidConnect
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
+        vtr: sp_session[:vtr],
+        acr_values: sp_session[:acr_values],
       )
       track_billing_events
     end

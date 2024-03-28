@@ -15,7 +15,6 @@ RSpec.describe Idv::ResendOtpController do
 
   before do
     stub_analytics
-    allow(@analytics).to receive(:track_event)
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
@@ -64,7 +63,7 @@ RSpec.describe Idv::ResendOtpController do
         proofing_components: nil,
       }
 
-      expect(@analytics).to have_received(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp resent',
         expected_result,
       )
@@ -91,23 +90,22 @@ RSpec.describe Idv::ResendOtpController do
       end
 
       before do
-        stub_analytics
         allow(Telephony).to receive(:send_confirmation_otp).and_return(telephony_response)
       end
 
       it 'tracks an analytics events' do
-        expect(@analytics).to receive(:track_event).ordered.with(
+        post :create
+
+        expect(@analytics).to have_logged_event(
           'IdV: phone confirmation otp resent',
           hash_including(
             success: false,
             telephony_response: telephony_response,
           ),
         )
-        expect(@analytics).to receive(:track_event).ordered.with(
+        expect(@analytics).to have_logged_event(
           'Vendor Phone Validation failed', telephony_error_analytics_hash
         )
-
-        post :create
       end
     end
   end

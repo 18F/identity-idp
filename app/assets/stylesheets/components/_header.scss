@@ -1,0 +1,12 @@
+@use 'uswds-core' as *;
+
+.page-header--basic {
+  @include u-flex('align-center', 'justify-center');
+  @include u-display('flex');
+  @include u-height(7);
+  @include u-bg('primary-lighter');
+
+  @include at-media('tablet') {
+    @include u-height(9);
+  }
+}

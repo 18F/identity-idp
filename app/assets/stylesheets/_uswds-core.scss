@@ -1,5 +1,6 @@
 @forward '@18f/identity-design-system/packages/uswds-core' with (
   $theme-body-font-size: 'sm',
+  $theme-button-icon-gap: 0.5,
   $theme-font-path: '',
   $theme-image-path: '',
   $theme-global-border-box-sizing: true,

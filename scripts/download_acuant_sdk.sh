@@ -55,6 +55,9 @@ echo "Copying SDK files to '${PUBLIC_DIR}'..."
 mkdir -p "$PUBLIC_DIR"
 cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/*.min.js "$PUBLIC_DIR/"
 cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/*.wasm "$PUBLIC_DIR/"
+cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/*.json "$PUBLIC_DIR/"
+cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/tiny_face_detector* "$PUBLIC_DIR/"
+cp "$TEMP_DIR"/Acuant-JavascriptWebSDKV11-*/webSdk/face_landmark* "$PUBLIC_DIR/"
 
 echo "Done! You can commit the files in ${PUBLIC_DIR}."
 

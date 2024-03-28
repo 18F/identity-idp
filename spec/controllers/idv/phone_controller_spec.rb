@@ -53,7 +53,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
     stub_up_to(:verify_info, idv_session: subject.idv_session)
     stub_analytics
     stub_attempts_tracker
-    allow(@analytics).to receive(:track_event)
   end
 
   describe '#new' do
@@ -123,13 +122,12 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
 
       before do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
       end
 
       it 'logs an event showing that the user wants to choose a different number' do
         get :new, params: params
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: use different phone number',
           step: step,
           proofing_components: nil,
@@ -139,14 +137,13 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
 
     it 'shows phone form if async process times out and allows successful resubmission' do
       stub_analytics
-      allow(@analytics).to receive(:track_event)
 
       # setting the document capture session to a nonexistent uuid will trigger async
       # missing behavior
       subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
 
       get :new
-      expect(@analytics).to have_received(:track_event).with('Proofing Address Result Missing')
+      expect(@analytics).to have_logged_event('Proofing Address Result Missing')
       expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone, otp_delivery_preference: :sms } }
@@ -313,7 +310,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
             phone: { improbable_phone: true },
             otp_delivery_preference: { inclusion: true },
           },
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           country_code: nil,
           area_code: nil,
           carrier: 'Test Mobile Carrier',
@@ -324,9 +320,7 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           **ab_test_args,
         }
 
-        expect(@analytics).to have_received(:track_event).with(
-          'IdV: phone confirmation form', result
-        )
+        expect(@analytics).to have_logged_event('IdV: phone confirmation form', result)
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
       end
     end
@@ -364,7 +358,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           errors: {},
           area_code: '703',
           country_code: 'US',
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
           otp_delivery_preference: 'sms',
@@ -373,9 +366,7 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           **ab_test_args,
         }
 
-        expect(@analytics).to have_received(:track_event).with(
-          'IdV: phone confirmation form', result
-        )
+        expect(@analytics).to have_logged_event('IdV: phone confirmation form', result)
       end
 
       it 'updates the doc auth log for the user with verify_phone_submit step' do
@@ -462,7 +453,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
           country_code: proofing_phone.country,
           area_code: proofing_phone.area_code,
-          pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             vendor_name: 'AddressMock',
             exception: nil,
@@ -473,32 +463,37 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           proofing_components: nil,
         }
 
-        expect(@analytics).to receive(:track_event).ordered.with(
+        put :create, params: { idv_phone_form: { phone: good_phone } }
+
+        expect(@analytics).to have_logged_event(
           'IdV: phone confirmation form', hash_including(:success)
         )
-        expect(@analytics).to receive(:track_event).ordered.with(
+
+        expect(response).to redirect_to idv_phone_path
+
+        get :new
+
+        expect(@analytics).to have_logged_event(
           'IdV: phone confirmation vendor', result
         )
-
-        put :create, params: { idv_phone_form: { phone: good_phone } }
-        expect(response).to redirect_to idv_phone_path
-        get :new
       end
     end
 
     it 'tracks that the hybrid handoff phone was used' do
-      expect(@analytics).to receive(:track_event).ordered.with(
-        'IdV: phone confirmation form', hash_including(:success)
-      )
-      expect(@analytics).to receive(:track_event).ordered.with(
-        'IdV: phone confirmation vendor', hash_including(hybrid_handoff_phone_used: true)
-      )
-
       subject.idv_session.phone_for_mobile_flow = good_phone
 
       put :create, params: { idv_phone_form: { phone: good_phone } }
       expect(response).to redirect_to idv_phone_path
+
+      expect(@analytics).to have_logged_event(
+        'IdV: phone confirmation form', hash_including(:success)
+      )
+
       get :new
+
+      expect(@analytics).to have_logged_event(
+        'IdV: phone confirmation vendor', hash_including(hybrid_handoff_phone_used: true)
+      )
     end
 
     context 'when verification fails' do
@@ -539,7 +534,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           errors: {
             phone: ['The phone number could not be verified.'],
           },
-          pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             vendor_name: 'AddressMock',
             exception: nil,
@@ -550,18 +544,19 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           proofing_components: nil,
         }
 
-        expect(@analytics).to receive(:track_event).ordered.with(
+        put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+        expect(@analytics).to have_logged_event(
           'IdV: phone confirmation form', hash_including(:success)
         )
 
-        put :create, params: { idv_phone_form: { phone: bad_phone } }
-
-        expect(@analytics).to receive(:track_event).ordered.with(
-          'IdV: phone confirmation vendor', result
-        )
         expect(response).to redirect_to idv_phone_path
 
         get :new
+
+        expect(@analytics).to have_logged_event(
+          'IdV: phone confirmation vendor', result
+        )
       end
 
       context 'when the user is rate limited by submission' do

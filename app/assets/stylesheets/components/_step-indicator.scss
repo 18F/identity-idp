@@ -109,7 +109,7 @@ lg-step-indicator {
 
 .step-indicator__step--complete::before {
   background-color: color('white');
-  background-image: url('/alert/success.svg');
+  background-image: url('/alerts/success.svg');
 }
 
 .step-indicator__step:not(:last-child)::after {
