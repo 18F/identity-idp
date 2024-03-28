@@ -142,7 +142,9 @@ class UserMailer < ActionMailer::Base
   def new_device_sign_in_attempt(fully_authenticated:, events:, disavowal_token:)
     with_user_locale(user) do
       @fully_authenticated = fully_authenticated
-      @events = events
+      @events_by_location = events.
+        map { |event| [IpGeocoder.new(event.device.last_ip), event] }.
+        group_by { |geocoder,| geocoder.location }
       @disavowal_token = disavowal_token
       @i18n_scope = fully_authenticated ?
         [:user_mailer, :new_device_sign_in_attempt, :sign_in_after_2fa] :

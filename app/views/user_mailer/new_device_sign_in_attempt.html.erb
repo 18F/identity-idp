@@ -10,9 +10,7 @@
   </p>
 <% end %>
 
-<% @events.map { |event| [IpGeocoder.new(event.device.last_ip), event] }.
-     group_by { |geocoder,| geocoder.location }.
-     each do |location, geocoder_events| %>
+<% @events_by_location.each do |location, geocoder_events| %>
   <div class="margin-top-5">
     <table class="usa-table">
       <thead>
