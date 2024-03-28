@@ -1,5 +1,8 @@
+require 'rspec/matchers/built_in/count_expectation'
+
 class HaveLoggedEventMatcher
   include RSpec::Matchers::Composable
+  include RSpec::Matchers::BuiltIn::CountExpectation
 
   def initialize(
     expected_event_name: nil,
@@ -45,14 +48,21 @@ class HaveLoggedEventMatcher
   def matches?(actual)
     @actual = actual
 
-    if expected_event_name.nil? && expected_attributes.nil?
-      events.count > 0
-    elsif expected_attributes.nil?
-      events.has_key?(expected_event_name)
-    else
-      events[expected_event_name]&.any? do |actual_attributes|
-        values_match?(expected_attributes, actual_attributes)
+    matched_events =
+      if expected_event_name.nil? && expected_attributes.nil?
+        events.values.flatten
+      elsif expected_attributes.nil?
+        events[expected_event_name] || []
+      else
+        (events[expected_event_name] || []).filter do |actual_attributes|
+          values_match?(expected_attributes, actual_attributes)
+        end
       end
+
+    if has_expected_count?
+      expected_count_matches?(matched_events.length)
+    else
+      matched_events.length > 0
     end
   end
 
@@ -61,14 +71,18 @@ class HaveLoggedEventMatcher
   attr_reader :expected_event_name, :expected_attributes
 
   def default_failure_message
-    [
-      "Expected that FakeAnalytics would have received event #{expected_event_name.inspect}",
-      expected_attributes.nil? ? nil : "with #{expected_attributes.inspect}",
-      <<~RECEIVED,
+    with_attributes = expected_attributes.nil? ? nil : "with #{expected_attributes.inspect}"
 
-        Events received:
-        #{events.pretty_inspect}
-      RECEIVED
+    received = <<~RECEIVED
+
+      Events received:
+      #{events.pretty_inspect}
+    RECEIVED
+
+    [
+      expectation_description,
+      with_attributes,
+      received,
     ].compact.join("\n")
   end
 
@@ -87,6 +101,15 @@ class HaveLoggedEventMatcher
     end
   end
 
+  def expectation_description(adjective = nil)
+    adjective = adjective ? "#{adjective} " : ''
+    [
+      "Expected that FakeAnalytics would have received #{adjective}event",
+      expected_event_name.inspect,
+      has_expected_count? ? count_failure_reason('it was received').strip : nil,
+    ].compact.join(' ')
+  end
+
   def failure_message_with_diff(
     expected_attributes:,
     actual_attributes:,
@@ -97,7 +120,7 @@ class HaveLoggedEventMatcher
 
     [
       <<~MESSAGE.strip,
-        Expected that FakeAnalytics would have received matching event #{expected_event_name.inspect}
+        #{expectation_description(match_type ? "matching" : nil)}
         expected: #{match_type}#{expected_attributes}
              got: #{actual_attributes}
 
