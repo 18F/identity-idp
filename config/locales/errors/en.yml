@@ -54,6 +54,8 @@ en:
       blank: Please fill in this field.
       blank_cert_element_req: We cannot detect a certificate in your request.
       confirmation_code_incorrect: Incorrect verification code
+      confirmation_invalid_token: Invalid confirmation link. Either the link expired
+        or you already confirmed your account.
       confirmation_period_expired: Expired confirmation link. You can click “Resend
         confirmation instructions” to get another one.
       expired: has expired, please request a new one
