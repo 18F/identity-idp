@@ -43,7 +43,7 @@ en:
         start_over: If you start over, you will restart this process from the beginning.
       headings:
         confirmation:
-          hybrid: You have cancelled uploading photos of your ID on this phone
+          hybrid: You have canceled uploading photos of your ID on this phone
         exit:
           with_sp: Exit %{app_name} and return to %{sp_name}
           without_sp: Exit identity verification and go to your account page

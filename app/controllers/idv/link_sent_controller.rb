@@ -72,7 +72,7 @@ module Idv
     def render_document_capture_cancelled
       redirect_to idv_hybrid_handoff_url
       idv_session.flow_path = nil
-      failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
+      failure(I18n.t('errors.doc_auth.document_capture_canceled'))
     end
 
     def render_step_incomplete_error

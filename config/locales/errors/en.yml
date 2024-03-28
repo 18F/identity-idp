@@ -25,7 +25,7 @@ en:
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
       doc_type_not_supported_heading: We only accept a driver’s license or a state ID
-      document_capture_cancelled: You have cancelled uploading photos of your ID on your phone.
+      document_capture_canceled: You have canceled uploading photos of your ID on your phone.
       how_to_verify_form: Select a way to verify your identity.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.

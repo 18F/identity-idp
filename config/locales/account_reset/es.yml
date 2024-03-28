@@ -30,7 +30,7 @@ es:
       title: Eliminar tu cuenta debería ser tu último recurso
     pending:
       cancel_request: Cancelar petición
-      cancelled: Hemos cancelado su solicitud para eliminar su cuenta.
+      canceled: Hemos cancelado su solicitud para eliminar su cuenta.
       confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras
         %{interval} para eliminar su cuenta.
       header: Solicitaste eliminar tu cuenta
