@@ -10,6 +10,7 @@ class HaveLoggedEventMatcher
   )
     @expected_event_name = expected_event_name
     @expected_attributes = expected_attributes
+    exactly(1)
   end
 
   def failure_message
