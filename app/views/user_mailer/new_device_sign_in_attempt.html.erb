@@ -3,8 +3,15 @@
     <%= I18n.interpolate(
           info_p,
           reset_password_link_html: link_to(
-            t(:reset_password, scope: @i18n_scope),
+            t('user_mailer.new_device_sign_in_attempt.reset_password'),
             event_disavowal_url(disavowal_token: @disavowal_token),
+          ),
+          authentication_methods_link_html: link_to(
+            t('user_mailer.new_device_sign_in_attempt.authentication_methods'),
+            MarketingSite.help_center_article_url(
+              category: 'manage-your-account',
+              article: 'add-or-change-your-authentication-method',
+            ),
           ),
         ).html_safe %>
   </p>
