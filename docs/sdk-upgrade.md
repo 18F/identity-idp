@@ -43,8 +43,31 @@ Steps:
 
     ![acuant-version-location](https://user-images.githubusercontent.com/546123/232644328-35922329-ad30-489e-943f-4125c009f74d.png)
 
+7. Assuming the version is correct and you have it set in your `application.yml`, you are ready to test it.
 
-7. Assuming the version is correct, you are ready to test it. On your phone, tap to photograph your state ID card. Point the camera at the card. Ensure the SDK finds the edges of the card and captures an image. Normally the SDK will put a yellowish box over the card to show where it believes the edges are.
+    1. See below for a sample chart of what you might want to test.
+    <br>
+
+    | device  | chrome | firefox | safari | manual capture | sdk capture | upload |
+    |---------|--------|---------|--------|----------------|-------------|--------|
+    | ios     |        |         |        |                |             |        |
+    | android |        |   N/A   |   N/A  |                |             |        |
+
+    1. Look at the [Testing Considerations](#testing-considerations) for other ideas on what you might want to test.
+    1. Here is a sample plan:
+        - For each combination of devices and browsers above:
+            1. Set `doc_auth_selfie_capture_enabled: true` in your `application.yml`
+            1. Locally go to `/test/oidc/login` and choose `biometrics`
+            1. First test document capture
+                1. On your phone, tap to photograph your state ID card
+                1. Point the camera at the card
+                1. Ensure the SDK finds the edges of the card and captures an image. Normally the SDK will put a yellowish box over the card to show where it believes the edges are
+            1. Then test selfie capture. Make sure you see:
+                1. an outline for the face
+                1. hint text when your face is not aligned (like - "Too close to the frame" and "Face not found")
+                1. make sure you're able to take a picture of yourself that is then saved and displayed on the `verify/document_capture` page
+            1. Follow through until your identity is verified
+            1. Go to the next device / browser combination
 
 8. After you have photographed the front and back of your card, you have tested the SDK locally. You do not need to submit the images. If you have both an Android and an iPhone, test the SDK with both of them. (Or, pair with someone who has the other type of phone.)
 
@@ -132,6 +155,11 @@ Browser:
   * Chrome
   * Firefox
   * Safari
+
+Capture methods:
+  * SDK
+  * Upload
+  * Native camera capture
 
 ## Monitor A/B testing
 
