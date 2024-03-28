@@ -578,7 +578,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
             'Rate Limit Reached',
             {
               limiter_type: :proof_address,
-              step_name: :phone,
             },
           )
         end
