@@ -4,8 +4,6 @@
 module Aws
   module SES
     class Base
-      cattr_accessor :region_pool
-
       def initialize(*); end
 
       def deliver(mail)
