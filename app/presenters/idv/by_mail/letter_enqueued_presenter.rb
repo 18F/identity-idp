@@ -4,9 +4,9 @@ module Idv
       include ActionView::Helpers::TranslationHelper
       include Rails.application.routes.url_helpers
 
-      def initialize(pii, decorated_sp_session)
-        @pii = pii
-        @decorated_sp_session = decorated_sp_session
+      def initialize(idv_session)
+        @pii = idv_session.pii_from_doc
+        @sp = idv_session.service_provider
       end
 
       def address_lines
@@ -18,7 +18,7 @@ module Idv
       end
 
       def button_text
-        if decorated_sp_session.sp_name.present?
+        if sp
           t('idv.cancel.actions.exit', app_name: APP_NAME)
         else
           t('idv.buttons.continue_plain')
@@ -26,7 +26,7 @@ module Idv
       end
 
       def button_destination
-        if decorated_sp_session.sp_name.present?
+        if sp
           return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later)
         else
           account_path
@@ -39,7 +39,7 @@ module Idv
 
       private
 
-      attr_reader :pii, :decorated_sp_session
+      attr_reader :pii, :sp
     end
   end
 end
