@@ -224,7 +224,7 @@ en:
         sign_in_after_2fa: Authenticated
         sign_in_before_2fa: Signed in with password
         sign_in_unsuccessful_2fa: Failed to authenticate
-      new_sign_in_from: New sign in from %{location}
+      new_sign_in_from: New sign-in potentially located in %{location}
       reset_password: reset your password
       sign_in_after_2fa:
         info_html:
