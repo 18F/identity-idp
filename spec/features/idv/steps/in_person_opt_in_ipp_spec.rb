@@ -466,7 +466,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
       sign_in_via_branded_page(user)
       complete_welcome_step
       complete_agreement_step
-      complete_how_to_verify_step(remote: true)
+      click_on t('forms.buttons.continue_remote')
       expect(page).to have_current_path(idv_hybrid_handoff_url)
       complete_hybrid_handoff_step
       complete_document_capture_step

@@ -31,6 +31,8 @@ en:
       cancel: Yes, cancel
       confirm: Confirm
       continue: Continue
+      continue_ipp: Continue in person
+      continue_remote: Continue online
       delete: Delete
       disable: Delete
       edit: Edit

@@ -35,6 +35,8 @@ fr:
       cancel: Oui, annuler
       confirm: Confirmer
       continue: Continuer
+      continue_ipp: Continuer en personne
+      continue_remote: Continuer en ligne
       delete: Effacer
       disable: Effacer
       edit: Modifier
