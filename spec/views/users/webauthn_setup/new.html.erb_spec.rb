@@ -81,11 +81,27 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
 
   context 'non-platform webauthn' do
     let(:platform_authenticator) { false }
+
     it 'displays the form' do
       render
 
       expect(rendered).to have_content(
         t('two_factor_authentication.two_factor_choice_options.webauthn').downcase,
+      )
+    end
+
+    it 'links to help screen' do
+      render
+
+      expect(rendered).to have_link(
+        t('forms.webauthn_setup.learn_more'),
+        href: help_center_redirect_path(
+          category: 'get-started',
+          article: 'authentication-options',
+          article_anchor: 'security-key',
+          flow: :two_factor_authentication,
+          step: :security_key_setup,
+        ),
       )
     end
 
