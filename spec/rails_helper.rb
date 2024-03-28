@@ -22,14 +22,10 @@ require 'capybara/webmock'
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
-# Requires supporting ruby files with custom matchers and macros, etc, in
-# spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
-# run as spec files by default. This means that files in spec/support that end
-# in _spec.rb will both be required and run as specs, causing the specs to be
-# run twice. It is recommended that you do not name files matching this glob to
-# end with _spec.rb. You can configure this pattern with the --pattern
-# option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
-Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+# Require all .rb files in spec/support _except_ things that are actually specs.
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each do |f|
+  require f unless f.end_with?('_spec.rb')
+end
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -121,7 +117,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    RequestStore.clear!
     Rails.cache.clear
   end
 

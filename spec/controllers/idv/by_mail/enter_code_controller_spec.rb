@@ -43,6 +43,8 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code visited',
           source: nil,
+          otp_rate_limited: false,
+          user_can_request_another_letter: true,
         )
         expect(response).to render_template('idv/by_mail/enter_code/index')
       end
@@ -74,6 +76,8 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code visited',
             source: nil,
+            user_can_request_another_letter: true,
+            otp_rate_limited: true,
           )
         end
       end
@@ -84,6 +88,16 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
         it 'sets @can_request_another_letter to false' do
           action
           expect(assigns(:can_request_another_letter)).to eql(false)
+        end
+
+        it 'augments analytics event' do
+          action
+          expect(@analytics).to have_logged_event(
+            'IdV: enter verify by mail code visited',
+            source: nil,
+            user_can_request_another_letter: false,
+            otp_rate_limited: false,
+          )
         end
       end
 
@@ -100,6 +114,8 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code visited',
             source: 'gpo_reminder_email',
+            user_can_request_another_letter: true,
+            otp_rate_limited: false,
           )
         end
       end

@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
   def javascript_packs_tag_once(*names, **attributes)
-    scripts = RequestStore.store[:scripts]
-    if scripts
-      RequestStore.store[:scripts].merge!(names.index_with(attributes))
-    else
-      RequestStore.store[:scripts] = names.index_with(attributes)
-    end
+    @scripts = @scripts.to_h.merge(names.index_with(attributes))
     nil
   end
 
@@ -16,9 +12,9 @@ module ScriptHelper
   def render_javascript_pack_once_tags(...)
     capture do
       javascript_packs_tag_once(...)
-      return if RequestStore.store[:scripts].blank?
+      return if @scripts.blank?
       concat javascript_assets_tag
-      RequestStore.store[:scripts].each do |name, attributes|
+      @scripts.each do |name, attributes|
         asset_sources.get_sources(name).each do |source|
           concat javascript_include_tag(
             source,
@@ -46,7 +42,7 @@ module ScriptHelper
   end
 
   def javascript_assets_tag
-    assets = asset_sources.get_assets(*RequestStore.store[:scripts].keys)
+    assets = asset_sources.get_assets(*@scripts.keys)
 
     if assets.present?
       asset_map = assets.index_with { |path| asset_path(path, host: asset_host(path)) }
@@ -71,3 +67,4 @@ module ScriptHelper
     end
   end
 end
+# rubocop:enable Rails/HelperInstanceVariable

@@ -486,6 +486,8 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
       ial: 1,
       billed_ial: 1,
       sign_in_flow: 'create_account',
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      vtr: nil,
     )
   end
 
