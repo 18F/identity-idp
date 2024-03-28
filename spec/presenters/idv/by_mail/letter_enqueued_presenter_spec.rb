@@ -36,7 +36,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
           [
             '123 Some St',
             'Anytown, OK 99999',
-          ]
+          ],
         )
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
             '456 Cross St',
             'Apt 3G',
             'Thatville, UT 88888',
-          ]
+          ],
         )
       end
     end
@@ -92,7 +92,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
 
       it 'is a return to SP button' do
         expect(presenter.button_destination).to eq(
-          return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later)
+          return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later),
         )
       end
     end
