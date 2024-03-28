@@ -77,7 +77,7 @@ class IdentityConfig
       raise "unexpected #{key}: #{value}, expected one of #{enum}"
     end
 
-    @written_env[key] = converted_value
+    @written_env[key] = converted_value.freeze
     @written_env
   end
 
@@ -505,8 +505,9 @@ class IdentityConfig
     config.add(:weekly_auth_funnel_report_config, type: :json)
     config.add(:x509_presented_hash_attribute_requested_issuers, type: :json)
 
-    @key_types = config.key_types
-    @unused_keys = config_map.keys - config.written_env.keys
+    @key_types = config.key_types.freeze
+    @unused_keys = config_map.keys - config.written_env.keys.freeze
+    config.written_env.freeze
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end
