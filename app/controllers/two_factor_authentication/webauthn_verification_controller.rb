@@ -68,6 +68,7 @@ module TwoFactorAuthentication
     end
 
     def handle_invalid_webauthn(result)
+      handle_invalid_verification_for_authentication_context
       flash[:error] = result.first_error_message
 
       if platform_authenticator?

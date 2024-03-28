@@ -98,6 +98,10 @@ module TwoFactorAuthenticatableMethods
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
   def handle_invalid_otp(type:, context: nil)
+    if context == UserSessionContext::AUTHENTICATION_CONTEXT
+      handle_invalid_verification_for_authentication_context
+    end
+
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
@@ -146,6 +150,10 @@ module TwoFactorAuthenticatableMethods
 
   def update_invalid_user
     current_user.increment_second_factor_attempts_count!
+  end
+
+  def handle_invalid_verification_for_authentication_context
+    create_user_event(:sign_in_unsuccessful_2fa)
   end
 
   def handle_valid_verification_for_confirmation_context(auth_method:)
