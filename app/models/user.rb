@@ -212,16 +212,15 @@ class User < ApplicationRecord
   def in_person_enrollment_status
     pending_profile&.in_person_enrollment&.status
   end
-  
+
   def ipp_enrollment_status_not_passed?
     !in_person_enrollment_status.blank? &&
-    in_person_enrollment_status != 'passed'
+      in_person_enrollment_status != 'passed'
   end
 
   def has_in_person_enrollment?
     pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
   end
-
 
   # Trust `pending_profile` rather than enrollment associations
   def has_establishing_in_person_enrollment_safe?
