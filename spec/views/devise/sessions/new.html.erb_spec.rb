@@ -168,4 +168,36 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       expect(rendered).to_not have_link t('account.login.piv_cac')
     end
   end
+
+  describe 'DAP analytics' do
+    let(:participate_in_dap) { false }
+
+    before do
+      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(participate_in_dap)
+    end
+
+    context 'when configured to not participate in dap' do
+      let(:participate_in_dap) { false }
+
+      it 'does not render DAP analytics' do
+        allow(view).to receive(:javascript_packs_tag_once)
+        expect(view).not_to receive(:javascript_packs_tag_once).
+          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
+
+        render
+      end
+    end
+
+    context 'when configured to participate in dap' do
+      let(:participate_in_dap) { true }
+
+      it 'renders DAP analytics' do
+        allow(view).to receive(:javascript_packs_tag_once)
+        expect(view).to receive(:javascript_packs_tag_once).
+          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
+
+        render
+      end
+    end
+  end
 end

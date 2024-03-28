@@ -40,15 +40,6 @@ module ApplicationHelper
     )
   end
 
-  def session_with_trust?
-    current_user || page_with_trust?
-  end
-
-  def page_with_trust?
-    return false if current_page?(controller: '/users/sessions', action: 'new')
-    return true
-  end
-
   def ial2_requested?
     resolved_authn_context_result.identity_proofing?
   end
