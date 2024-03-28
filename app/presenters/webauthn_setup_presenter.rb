@@ -34,16 +34,18 @@ class WebauthnSetupPresenter < SetupPresenter
   end
 
   def learn_more_html
-    new_tab_link_to(
-      t('forms.webauthn_setup.learn_more'),
-      help_center_redirect_path(
-        category: 'get-started',
-        article: 'authentication-options',
-        article_anchor: 'security-key',
-        flow: :two_factor_authentication,
-        step: :security_key_setup,
-      ),
-    )
+    if !@platform_authenticator
+      new_tab_link_to(
+        t('forms.webauthn_setup.learn_more'),
+        help_center_redirect_path(
+          category: 'get-started',
+          article: 'authentication-options',
+          article_anchor: 'security-key',
+          flow: :two_factor_authentication,
+          step: :security_key_setup,
+        ),
+      )
+    end
   end
 
   def page_title
