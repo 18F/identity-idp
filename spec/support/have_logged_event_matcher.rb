@@ -15,31 +15,8 @@ class HaveLoggedEventMatcher
   def failure_message
     matching_events = events[expected_event_name]
 
-    attributes_hash = expected_attributes.instance_of?(Hash) && expected_attributes
-    include_matcher =
-      expected_attributes.instance_of?(RSpec::Matchers::BuiltIn::Include) && expected_attributes
-    hash_including_matcher =
-      expected_attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher) &&
-      expected_attributes
-
-    if matching_events&.length == 1 && attributes_hash
-      failure_message_with_diff(
-        actual_attributes: matching_events.first,
-        expected_attributes: attributes_hash,
-      )
-    elsif matching_events&.length == 1 && include_matcher
-      failure_message_with_diff(
-        actual_attributes: matching_events.first,
-        expected_attributes: include_matcher.expecteds.first,
-        ignored_attributes: matching_events.first.except(*include_matcher.expecteds.first.keys),
-        match_type: 'include',
-      )
-    elsif matching_events&.length == 1 && hash_including_matcher
-      failure_message_with_diff(
-        actual_attributes: matching_events.first,
-        expected_attributes: hash_including_matcher.instance_variable_get(:@expected),
-        match_type: 'hash including',
-      )
+    if matching_events&.length == 1
+      failure_message_with_diff(matching_events.first)
     else
       default_failure_message
     end
@@ -71,7 +48,9 @@ class HaveLoggedEventMatcher
   attr_reader :expected_event_name, :expected_attributes
 
   def default_failure_message
-    with_attributes = expected_attributes.nil? ? nil : "with #{expected_attributes.inspect}"
+    with_attributes = expected_attributes.nil? ?
+      nil :
+      "with #{format_attributes(expected_attributes)}"
 
     received = <<~RECEIVED
 
@@ -101,8 +80,8 @@ class HaveLoggedEventMatcher
     end
   end
 
-  def expectation_description(adjective = nil)
-    adjective = adjective ? "#{adjective} " : ''
+  def expectation_description
+    adjective = attributes_matcher_description(expected_attributes) ? 'matching ' : ''
     [
       "Expected that FakeAnalytics would have received #{adjective}event",
       expected_event_name.inspect,
@@ -110,27 +89,69 @@ class HaveLoggedEventMatcher
     ].compact.join(' ')
   end
 
-  def failure_message_with_diff(
-    expected_attributes:,
-    actual_attributes:,
-    ignored_attributes: {},
-    match_type: nil
-  )
-    match_type = match_type ? "#{match_type} " : ''
+  def expected_attributes_hash
+    resolve_attributes_hash(expected_attributes)
+  end
 
+  def attributes_matcher_description(attributes)
+    if attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
+      'include'
+    elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
+      'hash_including'
+    end
+  end
+
+  def diff_description(actual_attributes)
+    <<~DIFF
+      expected: #{format_attributes(expected_attributes)}
+           got: #{format_attributes(actual_attributes)}
+
+      Diff:#{differ.diff(actual_attributes, expected_attributes_hash)}
+    DIFF
+  end
+
+  def failure_message_with_diff(actual_attributes)
     [
-      <<~MESSAGE.strip,
-        #{expectation_description(match_type ? "matching" : nil)}
-        expected: #{match_type}#{expected_attributes}
-             got: #{actual_attributes}
-
-        Diff:#{differ.diff(actual_attributes, expected_attributes)}
-      MESSAGE
-
-      ignored_attributes && ignored_attributes.empty? ? nil : <<~DIFF.strip,
-        Attributes ignored by the include matcher:#{differ.diff(ignored_attributes, {})}
-      DIFF
+      expectation_description,
+      diff_description(actual_attributes),
+      ignored_attributes_description(actual_attributes),
     ].compact.join("\n")
+  end
+
+  def format_attributes(attributes)
+    return '' if attributes.nil?
+
+    desc = attributes_matcher_description(attributes)
+    resolved_attributes = resolve_attributes_hash(attributes)
+
+    if desc
+      args = resolved_attributes.keys.map do |key|
+        "#{key}: #{resolved_attributes[key].inspect}"
+      end.join(', ')
+
+      "#{desc}(#{args})"
+    else
+      resolved_attributes.inspect
+    end
+  end
+
+  def ignored_attributes_description(actual_attributes)
+    ignored_attributes = actual_attributes.except(*expected_attributes_hash.keys)
+    return if ignored_attributes.empty?
+
+    diff = differ.diff(ignored_attributes, {})
+
+    "Attributes ignored by the include matcher: #{diff}"
+  end
+
+  def resolve_attributes_hash(attributes)
+    if attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
+      attributes.expecteds.first
+    elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
+      attributes.instance_variable_get(:@expected)
+    else
+      attributes
+    end
   end
 end
 

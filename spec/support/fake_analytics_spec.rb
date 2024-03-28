@@ -157,7 +157,7 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received matching event :my_event
+              Expected that FakeAnalytics would have received event :my_event
               expected: {:arg1=>42}
                    got: {:arg1=>43}
 
@@ -260,8 +260,8 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>
+              Expected that FakeAnalytics would have received matching event :my_event
+              with include(arg1: 42)
 
               Events received:
               {}
@@ -275,8 +275,8 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>
+              Expected that FakeAnalytics would have received matching event :my_event
+              with include(arg1: 42)
 
               Events received:
               {:my_other_event=>[{}]}
@@ -291,7 +291,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received matching event :my_event
-              expected: include {:arg1=>42}
+              expected: include(arg1: 42)
                    got: {:arg1=>43}
 
               Diff:
@@ -341,8 +341,8 @@ RSpec.describe FakeAnalytics do
           expect(&code_under_test).
             to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
               assert_error_messages_equal(err, <<~MESSAGE)
-                Expected that FakeAnalytics would have received event :my_event once but it was received 0 times
-                with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>
+                Expected that FakeAnalytics would have received matching event :my_event once but it was received 0 times
+                with include(arg1: 42)
 
                 Events received:
                 {}
@@ -363,8 +363,8 @@ RSpec.describe FakeAnalytics do
           expect(&code_under_test).
             to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received event :my_event once but it was received twice
-              with #<RSpec::Matchers::BuiltIn::Include:<id> @expecteds=[{:arg1=>42}]>
+              Expected that FakeAnalytics would have received matching event :my_event once but it was received twice
+              with include(arg1: 42)
 
               Events received:
               {:my_event=>[{:arg1=>42}, {:arg1=>42}]}
@@ -393,8 +393,8 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>
+              Expected that FakeAnalytics would have received matching event :my_event
+              with hash_including(arg1: 42)
 
               Events received:
               {}
@@ -408,8 +408,8 @@ RSpec.describe FakeAnalytics do
         expect(&code_under_test).
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received event :my_event
-              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>
+              Expected that FakeAnalytics would have received matching event :my_event
+              with hash_including(arg1: 42)
 
               Events received:
               {:my_other_event=>[{}]}
@@ -424,7 +424,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received matching event :my_event
-              expected: hash including {:arg1=>42}
+              expected: hash_including(arg1: 42)
                    got: {:arg1=>43}
 
               Diff:
@@ -474,8 +474,8 @@ RSpec.describe FakeAnalytics do
           expect(&code_under_test).
             to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
               assert_error_messages_equal(err, <<~MESSAGE)
-                Expected that FakeAnalytics would have received event :my_event once but it was received 0 times
-                with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>
+                Expected that FakeAnalytics would have received matching event :my_event once but it was received 0 times
+                with hash_including(arg1: 42)
 
                 Events received:
                 {}
@@ -496,8 +496,8 @@ RSpec.describe FakeAnalytics do
           expect(&code_under_test).
             to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
-              Expected that FakeAnalytics would have received event :my_event once but it was received twice
-              with #<RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher:<id> @expected={:arg1=>42}>
+              Expected that FakeAnalytics would have received matching event :my_event once but it was received twice
+              with hash_including(arg1: 42)
 
               Events received:
               {:my_event=>[{:arg1=>42}, {:arg1=>42}]}
