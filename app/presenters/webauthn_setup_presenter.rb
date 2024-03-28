@@ -38,7 +38,7 @@ class WebauthnSetupPresenter < SetupPresenter
       t('forms.webauthn_setup.learn_more'),
       help_center_redirect_path(
         category: 'get-started',
-        article: 'security-key',
+        article: 'authentication-options',
         article_anchor: 'security-key',
         flow: :two_factor_authentication,
         step: :security_key_setup,
