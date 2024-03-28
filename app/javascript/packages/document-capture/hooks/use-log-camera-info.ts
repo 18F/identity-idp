@@ -1,7 +1,16 @@
 import { useEffect, useContext, useRef } from 'react';
 import AnalyticsContext from '../context/analytics';
 
-function getConstraints(deviceId) {
+type TrackEventType = (event: string, payload?: object | undefined) => void;
+interface CameraLog {
+  label: string;
+  frameRate: number | undefined;
+  height: number | undefined;
+  width: number | undefined;
+}
+type CameraLogs = (CameraLog | undefined)[];
+
+function getConstraints(deviceId: string) {
   return {
     video: {
       width: {
@@ -17,7 +26,7 @@ function getConstraints(deviceId) {
   };
 }
 
-function getCameraInfo(videoTrack) {
+function getCameraInfo(videoTrack: MediaStreamTrack) {
   const cameraInfo = {
     label: videoTrack.label,
     frameRate: videoTrack.getSettings().frameRate,
@@ -27,7 +36,10 @@ function getCameraInfo(videoTrack) {
   return cameraInfo;
 }
 
-async function updateConstraintsAndGetLogInfo(videoDevice, trackEvent) {
+async function updateConstraintsAndGetLogInfo(
+  videoDevice: MediaDeviceInfo,
+  trackEvent: TrackEventType,
+) {
   // See https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints/facingMode
   const updatedConstraints = getConstraints(videoDevice.deviceId);
   try {
@@ -40,7 +52,7 @@ async function updateConstraintsAndGetLogInfo(videoDevice, trackEvent) {
   }
 }
 
-function logsHaveSameValuesButDifferentName(logOne, logTwo) {
+function logsHaveSameValuesButDifferentName(logOne: CameraLog, logTwo: CameraLog) {
   if (
     logOne.height === logTwo.height &&
     logOne.width === logTwo.width &&
@@ -51,13 +63,14 @@ function logsHaveSameValuesButDifferentName(logOne, logTwo) {
   return false;
 }
 
-function condenseCameraLogs(cameraLogs) {
+function condenseCameraLogs(cameraLogs: CameraLogs) {
   // Group logs into sets based on height/width/framerate and return that set
   // with the label field indicating all the cameras
+  const initialArray: CameraLog[] = [];
   const condensedLogs = cameraLogs.reduce((accumulator, currentLog) => {
     for (let i = 0; i < accumulator.length; i++) {
-      const recordedLog = accumulator[i];
-      if (logsHaveSameValuesButDifferentName(currentLog, recordedLog)) {
+      const recordedLog: CameraLog = accumulator[i];
+      if (currentLog && logsHaveSameValuesButDifferentName(currentLog, recordedLog)) {
         // Append to the label field for that log in condensed logs
         const newLabel = `${recordedLog.label}, ${currentLog.label}`;
         accumulator[i].label = newLabel;
@@ -65,12 +78,15 @@ function condenseCameraLogs(cameraLogs) {
       }
     }
     // Add a new log to condensed logs, when it doesn't match the existing ones
-    return accumulator.concat(currentLog);
-  }, []);
+    if (currentLog) {
+      return accumulator.concat(currentLog);
+    }
+    return accumulator;
+  }, initialArray);
   return condensedLogs;
 }
 
-async function logCameraInfo(trackEvent) {
+async function logCameraInfo(trackEvent: TrackEventType) {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const videoDevices = devices.filter((device) => device.kind === 'videoinput');
   const cameraLogs = await Promise.all(
@@ -83,7 +99,13 @@ async function logCameraInfo(trackEvent) {
 // This function is intended to be used only after camera permissions have been granted
 // hasStartedCropping only happens after an image has been captured with the Acuant SDK,
 // which means that camera permissions have been granted.
-function useLogCameraInfo({ isBackOfId, hasStartedCropping }) {
+function useLogCameraInfo({
+  isBackOfId,
+  hasStartedCropping,
+}: {
+  isBackOfId: boolean;
+  hasStartedCropping: boolean;
+}) {
   const didLogCameraInfoRef = useRef(false);
   const { trackEvent } = useContext(AnalyticsContext);
 
