@@ -2,6 +2,12 @@ module WebAuthnHelper
   include JavascriptDriverHelper
   include ActionView::Helpers::UrlHelper
 
+  def click_setup
+    if page.has_button?(t('forms.webauthn_setup.set_up'))
+      click_button t('forms.webauthn_setup.set_up')
+    end
+  end
+
   def mock_webauthn_setup_challenge
     allow(WebAuthn::Credential).to receive(:options_for_create).and_return(
       instance_double(

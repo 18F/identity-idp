@@ -20,12 +20,6 @@ RSpec.describe WebauthnSetupPresenter do
     )
   end
 
-  describe '#image_path' do
-    subject { presenter.image_path }
-
-    it { is_expected.to eq('security-key.svg') }
-  end
-
   describe '#page_title' do
     subject { presenter.page_title }
 
@@ -64,12 +58,6 @@ RSpec.describe WebauthnSetupPresenter do
 
   context 'with platform_authenticator' do
     let(:platform_authenticator) { true }
-
-    describe '#image_path' do
-      subject { presenter.image_path }
-
-      it { is_expected.to eq('platform-authenticator.svg') }
-    end
 
     describe '#page_title' do
       subject { presenter.page_title }
