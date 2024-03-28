@@ -1,23 +1,25 @@
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-    steps: step_indicator_steps,
-    current_step: :get_a_letter,
-    locale_scope: 'idv',
-    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-  ) %>
+        steps: step_indicator_steps,
+        current_step: :get_a_letter,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      )
+  %>
 <% end %>
 
 <% self.title = t('titles.idv.come_back_soon') %>
 
 <%= image_tag(
-  asset_url('come-back.svg'),
-  size: '140', class: 'display-block margin-left-0 margin-bottom-2',
-  alt: t('idv.images.come_back_later')
-) %>
+      asset_url('come-back.svg'),
+      size: '140', class: 'display-block margin-left-0 margin-bottom-2',
+      alt: t('idv.images.come_back_later')
+    )
+%>
 
 <%= render PageHeadingComponent.new(class: 'text-left').with_content(t('idv.titles.come_back_later')) %>
 
-<p><%= t('idv.gpo.will_send_to')%></p>
+<p><%= t('idv.gpo.will_send_to') %></p>
 
 <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1">
   <dl class='grid-col-fill margin-y-0'>
@@ -34,7 +36,8 @@
 </div>
 
 <%= link_to(
-  @presenter.button_text,
-  @presenter.button_destination,
-  class: 'usa-button usa-button--big usa-button--wide',
-) %>
+      @presenter.button_text,
+      @presenter.button_destination,
+      class: 'usa-button usa-button--big usa-button--wide',
+    )
+%>
