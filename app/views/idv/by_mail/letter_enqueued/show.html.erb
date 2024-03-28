@@ -21,17 +21,11 @@
 
 <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1">
   <dl class='grid-col-fill margin-y-0'>
-    <div>
-      <dd class="display-inline margin-left-0"> <%= @pii[:address1] %> </dd>
-    </div>
-    <% if @pii.key?(:address2) %>
+    <% @presenter.address_lines.each do |address_line| %>
       <div>
-        <dd class="display-inline margin-left-0"> <%= @pii[:address2].presence %> </dd>
+        <dd class="margin-left-0"> <%= address_line %> </dd>
       </div>
     <% end %>
-    <div>
-      <dd class="display-inline margin-left-0"> <%= "#{@pii[:city]}, #{@pii[:state]}, #{@pii[:zipcode]}" %> </dd>
-    </div>
   </dl>
 </div>
 
@@ -41,14 +35,14 @@
 
 <% if decorated_sp_session.sp_name.present? %>
   <%= link_to(
-    t('idv.cancel.actions.exit', app_name: APP_NAME),
-    return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later),
+    @presenter.button_text,
+    @presenter.button_destination,
     class: 'usa-button usa-button--big usa-button--wide',
   ) %>
 <% else %>
   <%= link_to(
-    t('idv.buttons.continue_plain'),
-    account_path,
+    @presenter.button_text,
+    @presenter.button_destination,
     class: 'usa-button usa-button--big usa-button--wide',
   ) %>
 <% end %>
