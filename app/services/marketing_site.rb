@@ -7,6 +7,7 @@ class MarketingSite
 
   HELP_CENTER_ARTICLES = %w[
     get-started/authentication-options
+    manage-your-account/add-or-change-your-authentication-method
     manage-your-account/personal-key
     trouble-signing-in/face-or-touch-unlock
     verify-your-identity/accepted-identification-documents

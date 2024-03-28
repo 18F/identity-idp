@@ -266,6 +266,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
                    new_device: nil }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
 
         patch :confirm, params: params
       end

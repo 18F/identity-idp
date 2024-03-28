@@ -213,6 +213,12 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         post :create, params: payload
       end
+
+      it 'records unsuccessful 2fa event' do
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
+
+        post :create, params: payload
+      end
     end
   end
 end

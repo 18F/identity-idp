@@ -25,6 +25,7 @@ class Event < ApplicationRecord
     email_deleted: 20,
     phone_added: 21,
     password_invalidated: 22,
+    sign_in_unsuccessful_2fa: 23,
   }
 
   validates :event_type, presence: true

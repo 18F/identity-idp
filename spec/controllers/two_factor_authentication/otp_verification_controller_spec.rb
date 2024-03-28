@@ -122,8 +122,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
   end
 
   describe '#create' do
-    let(:parsed_phone) { Phonelib.parse(subject.current_user.default_phone_configuration.phone) }
+    let(:parsed_phone) { Phonelib.parse(controller.current_user.default_phone_configuration.phone) }
     context 'when the user enters an invalid OTP during authentication context' do
+      subject(:response) { post :create, params: { code: '12345', otp_delivery_preference: 'sms' } }
+
       before do
         sign_in_before_2fa
         controller.user_session[:mfa_selections] = ['sms']
@@ -155,13 +157,11 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with({ reauthentication: false, success: false })
-
-        post :create, params:
-        { code: '12345',
-          otp_delivery_preference: 'sms' }
       end
 
       it 'increments second_factor_attempts_count' do
+        response
+
         expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
@@ -170,12 +170,22 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
       end
 
       it 'displays flash error message' do
+        response
+
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
       end
 
       it 'does not set auth_method and requires 2FA' do
+        response
+
         expect(controller.user_session[:auth_events]).to eq nil
         expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+      end
+
+      it 'records unsuccessful 2fa event' do
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
+
+        response
       end
     end
 
