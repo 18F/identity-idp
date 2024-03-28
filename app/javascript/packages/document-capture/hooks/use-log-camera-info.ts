@@ -64,7 +64,7 @@ function logsHaveSameValuesButDifferentName(logOne: CameraLog, logTwo: CameraLog
 }
 
 function condenseCameraLogs(cameraLogs: CameraLogs) {
-  // Group logs into sets based on height/width/framerate and return one log for each 
+  // Group logs into sets based on height/width/framerate and return one log for each
   // Go from this:
   // [
   //  { label: 'Front Camera',          height: 3024, width: 4032, frameRate: 30}]
