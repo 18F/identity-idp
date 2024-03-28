@@ -26,11 +26,8 @@ function InPersonPrepareStep({ toPreviousStep }) {
   } = useContext(InPersonContext);
 
   function goBack() {
-    if (skipDocAuthFromHandoff && previousStepURL) {
-      // directly from handoff page
+    if (previousStepURL && (skipDocAuthFromHandoff || skipDocAuth)) {
       forceRedirect(previousStepURL);
-    } else if (skipDocAuth && howToVerifyURL) {
-      forceRedirect(howToVerifyURL);
     } else {
       toPreviousStep();
     }
