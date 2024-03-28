@@ -272,7 +272,7 @@ class UserMailerPreview < ActionMailer::Preview
   private
 
   def user
-    unsaveable(
+    @user ||= unsaveable(
       User.new(
         email_addresses: [email_address_record],
         devices: [
