@@ -21,9 +21,9 @@
 
 <p><%= t('idv.gpo.will_send_to') %></p>
 
-<div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1">
+<div class="padding-bottom-1 padding-top-1">
   <% @presenter.address_lines.each do |address_line| %>
-    <p><%= address_line %></p>
+    <p class="margin-bottom-0"><%= address_line %></p>
   <% end %>
 </div>
 
