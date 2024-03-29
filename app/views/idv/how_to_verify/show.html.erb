@@ -3,15 +3,24 @@
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.how_to_verify')) %>
 <p id='how-to-verify-info'><%= t('doc_auth.info.how_to_verify') %></p>
 
-<%= simple_form_for(
+  <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
+    <div class="grid-col-12 tablet:grid-col-auto">
+        <%= image_tag asset_url('idv/remote.svg'),
+                              width: 88,
+                              height: 88,
+                              class: 'margin-right-1 margin-top-4',
+                              alt: t('image_description.laptop_and_phone')
+        %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-fill">
+    <%= simple_form_for(
       @idv_how_to_verify_form,
       html: { autocomplete: 'off',
               'aria-label': t('forms.buttons.continue_remote') },
       method: :put,
       url: idv_how_to_verify_url,
     ) do |f|
-%>
-  <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light">
+    %>
     <%= f.hidden_field(
           :selection,
           value: Idv::HowToVerifyForm::REMOTE,
@@ -19,64 +28,52 @@
     <%= f.label(
           :selection_remote,
         ) do %>
-          <div class="grid-row">
-            <%= image_tag asset_url('idv/remote.svg'),
-                          width: 88,
-                          height: 88,
-                          class: 'margin-right-1',
-                          alt: t('image_description.laptop_and_phone')
-            %>
-            <div class="tablet:grid-col">
               <h2 class="margin-top-0"><%= t('doc_auth.headings.verify_online') %></h2>
               <div>
                 <p><%= t('doc_auth.info.verify_online_instruction') %></p>
                 <p><%= t('doc_auth.info.verify_online_description') %></p>
               </div>
-            </div>
-          </div>
+
         <% end %>
-        <div class="grid-row margin-x-2">
-          <%= f.submit t('forms.buttons.continue_remote'), class: 'display-block margin-top-3 margin-bottom-5 margin-x-10' %>
-        </div>
+          <%= f.submit t('forms.buttons.continue_remote'), class: 'display-block margin-top-3 margin-bottom-5' %>
+    <% end %>
+    </div>
   </div>
-<% end %>
-<%= simple_form_for(
-      @idv_how_to_verify_form,
-      html: { autocomplete: 'off',
-              'aria-label': t('forms.buttons.continue_ipp') },
-      method: :put,
-      url: idv_how_to_verify_url,
-    ) do |f|
-%>
-  <div role="group" aria-labelledby="how-to-verify-info">
-    <%= f.hidden_field(
-          :selection,
-          value: Idv::HowToVerifyForm::IPP,
-        ) %>
-    <%= f.label(
-          :selection_ipp,
-        ) do %>
-          <div class="grid-row">
-            <%= image_tag asset_url('idv/in-person.svg'),
+<div role="group" aria-labelledby="how-to-verify-info" class="grid-row">
+<div class="grid-col-12 tablet:grid-col-auto">
+  <%= image_tag asset_url('idv/in-person.svg'),
                           width: 88,
                           height: 88,
-                          class: 'margin-right-1',
+                          class: 'margin-right-1 margin-top-4',
                           alt: t('image_description.post_office')
-            %>
-            <div class="tablet:grid-col">
-              <h3 class="h2 margin-top-0"><%= t('doc_auth.headings.verify_at_post_office') %></h3>
-              <div>
-                <p><%= t('doc_auth.info.verify_at_post_office_instruction') %></p>
-                <p><%= t('doc_auth.info.verify_at_post_office_description') %></p>
-              </div>
+  %>
+</div>
+  <div class="grid-col-12 tablet:grid-col-fill">
+    <%= simple_form_for(
+          @idv_how_to_verify_form,
+          html: { autocomplete: 'off',
+                  'aria-label': t('forms.buttons.continue_ipp') },
+          method: :put,
+          url: idv_how_to_verify_url,
+        ) do |f|
+    %>
+      <%= f.hidden_field(
+            :selection,
+            value: Idv::HowToVerifyForm::IPP,
+          ) %>
+      <%= f.label(
+            :selection_ipp,
+          ) do %>
+            <h3 class="h2 margin-top-0"><%= t('doc_auth.headings.verify_at_post_office') %></h3>
+            <div>
+              <p><%= t('doc_auth.info.verify_at_post_office_instruction') %></p>
+              <p><%= t('doc_auth.info.verify_at_post_office_description') %></p>
             </div>
-          </div>
-        <% end %>
-        <div class="grid-row margin-x-2">
-          <%= f.submit t('forms.buttons.continue_ipp'), class: 'display-block margin-top-3 margin-bottom-5 margin-x-10', outline: true %>
-        </div>
+          <% end %>
+      <%= f.submit t('forms.buttons.continue_ipp'), class: 'display-block margin-top-3 margin-bottom-5', outline: true %>
+    <% end %>
   </div>
-<% end %>
+</div>
 
 <%= render(
       'shared/troubleshooting_options',
