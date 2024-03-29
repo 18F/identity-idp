@@ -80,7 +80,7 @@ module Idv
       end
 
       def note_if_user_did_not_receive_letter
-        if !current_user && params[:did_not_receive_letter]
+        if !current_user && user_can_request_another_letter?
           # Stash that the user didn't receive their letter.
           # Once the authentication process completes, they'll be redirected to complete their
           # GPO verification...
@@ -144,7 +144,7 @@ module Idv
       # GPO reminder emails include an "I did not receive my letter!" link that results in
       # slightly different copy on this screen.
       def user_did_not_receive_letter?
-        !!params[:did_not_receive_letter]
+        !!params[:did_not_receive_letter].present?
       end
 
       def user_can_request_another_letter?
