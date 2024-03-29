@@ -24,12 +24,13 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
   return (
     <>
       {!isReady && <LoadingSpinner />}
-      <div id={acuantCaptureContainerId} />
-      <p aria-live="assertive">
-        {imageCaptureText && (
-          <span className="document-capture-selfie-feedback">{imageCaptureText}</span>
-        )}
-      </p>
+      <div id={acuantCaptureContainerId}>
+        <p aria-live="assertive">
+          {imageCaptureText && (
+            <span className="document-capture-selfie-feedback">{imageCaptureText}</span>
+          )}
+        </p>
+      </div>
       <button type="button" onClick={onSelfieCaptureClosed} className="usa-sr-only">
         {t('doc_auth.buttons.close')}
       </button>
