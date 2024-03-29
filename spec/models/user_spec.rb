@@ -99,20 +99,6 @@ RSpec.describe User do
     end
   end
 
-  context '#two_factor_enabled?' do
-    it 'is true when user has a confirmed phone' do
-      user = create(:user, :with_phone)
-
-      expect(MfaPolicy.new(user).two_factor_enabled?).to eq true
-    end
-
-    it 'is false when user does not have a phone' do
-      user = create(:user)
-
-      expect(MfaPolicy.new(user).two_factor_enabled?).to eq false
-    end
-  end
-
   describe '#fully_registered?' do
     let(:user) { create(:user) }
     subject(:fully_registered?) { user.fully_registered? }

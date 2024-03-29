@@ -81,10 +81,10 @@ class MfaContext
 
   def two_factor_enabled?
     return true if phone_configurations.any?(&:mfa_enabled?)
-    return true if piv_cac_configurations.any?(&:mfa_enabled?)
-    return true if auth_app_configurations.any?(&:mfa_enabled?)
-    return true if backup_code_configurations.any?(&:mfa_enabled?)
     return true if webauthn_configurations.any?(&:mfa_enabled?)
+    return true if backup_code_configurations.any?(&:mfa_enabled?)
+    return true if auth_app_configurations.any?(&:mfa_enabled?)
+    return true if piv_cac_configurations.any?(&:mfa_enabled?)
     return false
   end
 

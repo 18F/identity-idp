@@ -67,8 +67,10 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
     <>
       {!isReady && <LoadingSpinner />}
       <div id={acuantCaptureContainerId} />
-      <p aria-live="assertive" className="document-capture-selfie-feedback">
-        {imageCaptureText}
+      <p aria-live="assertive">
+        {imageCaptureText && (
+          <span className="document-capture-selfie-feedback">{imageCaptureText}</span>
+        )}
       </p>
       <button type="button" onClick={onSelfieCaptureClosed} className="usa-sr-only">
         {t('doc_auth.buttons.close')}

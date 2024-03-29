@@ -29,7 +29,7 @@ fr:
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou
         les cartes d’identité délivrées par l’État
-      document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
+      document_capture_canceled: Vous avez annulé le téléchargement de vos photos
         d’identité sur votre téléphone.
       how_to_verify_form: Sélectionnez un moyen de vérifier votre identité.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
@@ -40,8 +40,8 @@ fr:
       rate_limited_text_html: 'Pour votre sécurité, nous limitons le nombre de fois où
         vous pouvez tenter de vérifier un document en ligne. <strong>Veuillez
         réessayer dans %{timeout}.</strong>'
-      selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à votre
-        pièce d’identité
+      selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à celle
+        figurant sur votre pièce d’identité.
       selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
       send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans
         %{timeout}. Vous pouvez également revenir en arrière et choisir
@@ -63,7 +63,7 @@ fr:
       already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
       blank: Veuillez remplir ce champ.
       blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
-      confirmation_code_incorrect: Code de vérification incorrect. L’avez-vous saisi correctement ?
+      confirmation_code_incorrect: Code de vérification incorrect
       confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré
         ou vous avez déjà confirmé votre compte.
       confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer

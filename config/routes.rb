@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   get '/openid_connect/logout' => 'openid_connect/logout#index'
   delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
+  get '/robots.txt' => 'robots#index'
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 
   # i18n routes. Alphabetically sorted.

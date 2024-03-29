@@ -8,10 +8,10 @@ en:
         get_a_letter: Get a letter in the mail
         getting_started: Getting started
         go_to_the_post_office: Go to the Post Office
-        secure_account: Secure your account
+        secure_account: Re-enter your password
         verify_id: Verify your ID
         verify_info: Verify your information
-        verify_phone_or_address: Verify phone or address
+        verify_phone_or_address: Verify your phone number
     status:
       complete: Completed
       current: Current step

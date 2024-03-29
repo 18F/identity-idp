@@ -44,21 +44,23 @@ module Reporting
       IDV_DOC_AUTH_PHONE_VISITED = 'IdV: phone of record visited'
       IDV_ENTER_PASSWORD_VISITED = 'idv_enter_password_visited'
       OLD_IDV_ENTER_PASSWORD_VISITED = 'IdV: review info visited'
+      IDV_PENDING_GPO = 'IdV: USPS address letter enqueued'
       IDV_ENTER_PASSWORD_SUBMITTED = 'idv_enter_password_submitted'
       OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
       IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
+      IDV_FINAL_RESOLUTION = 'IdV: final resolution'
 
       def self.all_events
         constants.map { |c| const_get(c) }
       end
     end
 
+    module Results
+      IDV_FINAL_RESOLUTION_VERIFIED = 'IdV: final resolution - Verified'
+    end
+
     def as_emailable_reports
       [
-        Reporting::EmailableReport.new(
-          title: 'Proofing Funnel Definitions',
-          table: proofing_definition_table,
-        ),
         Reporting::EmailableReport.new(
           title: 'Step Definitions',
           table: step_definition_table,
@@ -229,63 +231,20 @@ module Reporting
           ),
         ],
         [
-          'Blanket proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_personal_key_submitted,
-            denominator: idv_doc_auth_welcome_submitted,
-          ),
-        ],
-        [
-          'Actual proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_enter_password_visited,
-            denominator: idv_doc_auth_image_vendor_submitted,
-          ),
-        ],
-        [
-          'Verified proofing rate',
-          '',
-          '',
-          '',
-          percent(
-            numerator: idv_personal_key_submitted,
-            denominator: idv_doc_auth_image_vendor_submitted,
-          ),
+          'Workflow Complete - Total Pending',
+          idv_final_resolution_total_pending,
         ],
       ]
     end
 
-    # rubocop:disable Layout/LineLength
-    def proofing_definition_table
-      [
-        ['Term', 'Description', 'Definition', 'Calculated'],
-        [
-          'Blanket Proofing',
-          'Full funnel: People who started proofing from welcome screen, successfully got verified credential and encrypted account',
-          'Percentage of users that successfully proofed over the total number of users that began the proofing process',
-          'Steps: "Verified" divided by "User agreement"',
-        ],
-        [
-          'Actual Proofing',
-          'Proofing funnel: People that submit and get verified',
-          'Percentage of users who submitted documents, passed instant verify and phone finder',
-          'Steps: "Encrypt account: enter password" divided by "Document submitted"',
-        ],
-        [
-          'Verified Proofing',
-          'Proofing + encryption: People that get verified, encypt account and are passed back to Service Provider',
-          'Number of users who submitted documents, passed instant verify and phone finder, encrypted account, and sent to consent screen for sharing data with Service Provider',
-          'Steps: "Verified" divided by "Document submitted"',
-        ],
-      ]
+    def idv_final_resolution_total_pending
+      @idv_final_resolution_total_pending ||=
+        (data[Events::IDV_FINAL_RESOLUTION] - data[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
     end
-    # rubocop:enable Layout/LineLength
+
+    def idv_final_resolution_verified
+      data[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
+    end
 
     def step_definition_table
       [
@@ -333,6 +292,10 @@ module Reporting
         [
           'Verified (event)',
           'Users who confirm their personal key and complete setting up their verified account',
+        ],
+        [
+          'Workflow Complete - Total Pending',
+          'Total count of users who are pending IDV',
         ],
       ]
     end
@@ -383,9 +346,12 @@ module Reporting
       data[Events::IDV_PERSONAL_KEY_SUBMITTED].count
     end
 
+    def idv_pending_gpo
+      data[Events::IDV_PENDING_GPO].count
+    end
+
     def as_tables
       [
-        proofing_definition_table,
         step_definition_table,
         overview_table,
         dropoff_metrics_table,
@@ -438,6 +404,14 @@ module Reporting
 
         fetch_results.each do |row|
           event_users[row['name']] << row['user_id']
+
+          event = row['name']
+          case event
+          when Events::IDV_FINAL_RESOLUTION
+            if row['identity_verified'] == '1'
+              event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id
+            end
+          end
         end
 
         event_users

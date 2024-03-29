@@ -1,7 +1,7 @@
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
-        current_step: :secure_account,
+        current_step: StepIndicatorComponent::ALL_STEPS_COMPLETE,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>

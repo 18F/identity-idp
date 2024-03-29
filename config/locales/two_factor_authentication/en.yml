@@ -14,7 +14,7 @@ en:
         %{interval} from the time you made the request to complete the process.
         Please check back later.
       successful_cancel: Thank you. Your request to delete your %{app_name} account
-        has been cancelled.
+        has been canceled.
       text_html: If you can’t use any of the authentication methods above, you can
         reset your preferences by %{link_html}.
     attempt_remaining_warning_html:
@@ -155,6 +155,7 @@ en:
       google_policy_link: Privacy Policy
       google_tos_link: Terms of Service
       login_tos_link: Mobile Terms of Use
+    recommended: Recommended
     totp_header_text: Enter your authentication app code
     two_factor_aal3_choice: Additional authentication required
     two_factor_aal3_choice_intro: This app requires a higher level of security. You

@@ -820,12 +820,25 @@ module AnalyticsEvents
 
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
+  # @param [String,nil] enrollment_code IPP enrollment code
+  # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
   # The user chose to go back instead of cancel IDV
-  def idv_cancellation_go_back(step:, proofing_components: nil, **extra)
+  def idv_cancellation_go_back(
+    step:,
+    proofing_components: nil,
+    cancelled_enrollment: nil,
+    enrollment_code: nil,
+    enrollment_id: nil,
+    **extra
+  )
     track_event(
       'IdV: cancellation go back',
       step: step,
       proofing_components: proofing_components,
+      cancelled_enrollment: cancelled_enrollment,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -2544,8 +2557,10 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
+  # @param [String] address_verification_method "phone" or "gpo"
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
+    address_verification_method:,
     fraud_review_pending:,
     fraud_rejection:,
     in_person_verification_pending:,
@@ -2555,6 +2570,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: personal key submitted',
+      address_verification_method: address_verification_method,
       in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
@@ -2565,11 +2581,23 @@ module AnalyticsEvents
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] address_verification_method "phone" or "gpo"
+  # @param [Boolean,nil] in_person_verification_pending
+  # @param [Boolean] encrypted_profiles_missing True if user's session had no encrypted pii
   # User visited IDV personal key page
-  def idv_personal_key_visited(proofing_components: nil, **extra)
+  def idv_personal_key_visited(
+    proofing_components: nil,
+    address_verification_method: nil,
+    in_person_verification_pending: nil,
+    encrypted_profiles_missing: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key visited',
       proofing_components: proofing_components,
+      address_verification_method: address_verification_method,
+      in_person_verification_pending: in_person_verification_pending,
+      encrypted_profiles_missing: encrypted_profiles_missing,
       **extra,
     )
   end
@@ -2633,6 +2661,7 @@ module AnalyticsEvents
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [String] phone_fingerprint Fingerprint string identifying phone number
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
@@ -2643,6 +2672,7 @@ module AnalyticsEvents
     area_code:,
     rate_limit_exceeded:,
     telephony_response:,
+    phone_fingerprint:,
     proofing_components: nil,
     **extra
   )
@@ -2655,6 +2685,7 @@ module AnalyticsEvents
       area_code: area_code,
       rate_limit_exceeded: rate_limit_exceeded,
       telephony_response: telephony_response,
+      phone_fingerprint: phone_fingerprint,
       proofing_components: proofing_components,
       **extra,
     )
@@ -2879,12 +2910,15 @@ module AnalyticsEvents
   end
 
   # User closed the SDK for taking a selfie without submitting a photo
+  # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_capture_closed_without_photo(captureAttempts: nil, **extra)
+  def idv_sdk_selfie_image_capture_closed_without_photo(acuant_version:, captureAttempts: nil,
+                                                        **extra)
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
+      acuant_version: acuant_version,
       captureAttempts: captureAttempts,
       **extra,
     )
@@ -2894,12 +2928,14 @@ module AnalyticsEvents
   # User encountered an error with the SDK selfie process
   #   Error code 1: camera permission not granted
   #   Error code 2: unexpected errors
+  # @param [String] acuant_version
   # @param [Integer] sdk_error_code SDK code for the error encountered
   # @param [String] sdk_error_message SDK message for the error encountered
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
+    acuant_version:,
     sdk_error_code:,
     sdk_error_message:,
     captureAttempts: nil,
@@ -2907,6 +2943,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_sdk_selfie_image_capture_failed,
+      acuant_version: acuant_version,
       sdk_error_code: sdk_error_code,
       sdk_error_message: sdk_error_message,
       captureAttempts: captureAttempts,
@@ -2916,14 +2953,25 @@ module AnalyticsEvents
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User opened the SDK to take a selfie
+  # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
-  def idv_sdk_selfie_image_capture_opened(captureAttempts: nil, **extra)
-    track_event(:idv_sdk_selfie_image_capture_opened, captureAttempts: captureAttempts, **extra)
+  def idv_sdk_selfie_image_capture_opened(
+    acuant_version:,
+    captureAttempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_capture_opened,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User took a selfie image with the SDK, or uploaded a selfie using the file picker
+  # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
   # @param [Integer] failedImageResubmission
@@ -2937,6 +2985,7 @@ module AnalyticsEvents
   # @param [Integer] width width of image added in pixels
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_added(
+    acuant_version:,
     captureAttempts:,
     failedImageResubmission:,
     fingerprint:,
@@ -2951,6 +3000,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_selfie_image_added,
+      acuant_version: acuant_version,
       captureAttempts: captureAttempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
@@ -3016,10 +3066,16 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] location
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
+  # @param [String,nil] enrollment_code IPP enrollment code
+  # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
   # User started over idv
   def idv_start_over(
     step:,
     location:,
+    cancelled_enrollment: nil,
+    enrollment_code: nil,
+    enrollment_id: nil,
     proofing_components: nil,
     **extra
   )
@@ -3028,6 +3084,9 @@ module AnalyticsEvents
       step: step,
       location: location,
       proofing_components: proofing_components,
+      cancelled_enrollment: cancelled_enrollment,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -3741,6 +3800,7 @@ module AnalyticsEvents
   # @param [String] scope
   # @param [Array] acr_values
   # @param [Array] vtr
+  # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
@@ -3748,6 +3808,7 @@ module AnalyticsEvents
     scope:,
     acr_values:,
     vtr:,
+    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     **extra
@@ -3758,6 +3819,7 @@ module AnalyticsEvents
       scope: scope,
       acr_values: acr_values,
       vtr: vtr,
+      vtr_param: vtr_param,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
       **extra,
@@ -3813,12 +3875,14 @@ module AnalyticsEvents
   # Tracks if otp phone validation failed
   # @identity.idp.previous_event_name Twilio Phone Validation Failed
   # @param [String] error
+  # @param [string] message
   # @param [String] context
   # @param [String] country
-  def otp_phone_validation_failed(error:, context:, country:, **extra)
+  def otp_phone_validation_failed(error:, message:, context:, country:, **extra)
     track_event(
       'Vendor Phone Validation failed',
       error: error,
+      message: message,
       context: context,
       country: country,
       **extra,
@@ -4398,6 +4462,12 @@ module AnalyticsEvents
   # @param [Array] authn_context
   # @param [String] authn_context_comparison
   # @param [String] service_provider
+  # @param [String] endpoint
+  # @param [Boolean] idv
+  # @param [Boolean] finish_profile
+  # @param [Integer] requested_ial
+  # @param [Boolean] request_signed
+  # @param [String] matching_cert_serial
   def saml_auth(
     success:,
     errors:,
@@ -4405,6 +4475,12 @@ module AnalyticsEvents
     authn_context:,
     authn_context_comparison:,
     service_provider:,
+    endpoint:,
+    idv:,
+    finish_profile:,
+    requested_ial:,
+    request_signed:,
+    matching_cert_serial:,
     **extra
   )
     track_event(
@@ -4415,29 +4491,47 @@ module AnalyticsEvents
       authn_context: authn_context,
       authn_context_comparison: authn_context_comparison,
       service_provider: service_provider,
+      endpoint: endpoint,
+      idv: idv,
+      finish_profile: finish_profile,
+      requested_ial: requested_ial,
+      request_signed: request_signed,
+      matching_cert_serial: matching_cert_serial,
       **extra,
     )
   end
 
   # @param [Integer] requested_ial
-  # @param [String,nil] requested_aal_authn_context
-  # @param [Boolean,nil] force_authn
+  # @param [Array] authn_context
+  # @param [String, nil] requested_aal_authn_context
+  # @param [String, nil] requested_vtr_authn_context
+  # @param [Boolean] force_authn
+  # @param [Boolean] final_auth_request
   # @param [String] service_provider
+  # @param [Boolean] user_fully_authenticated
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
+    authn_context:,
     requested_aal_authn_context:,
+    requested_vtr_authn_context:,
     force_authn:,
+    final_auth_request:,
     service_provider:,
+    user_fully_authenticated:,
     **extra
   )
     track_event(
       'SAML Auth Request',
       {
         requested_ial: requested_ial,
+        authn_context: authn_context,
         requested_aal_authn_context: requested_aal_authn_context,
+        requested_vtr_authn_context: requested_vtr_authn_context,
         force_authn: force_authn,
+        final_auth_request: final_auth_request,
         service_provider: service_provider,
+        user_fully_authenticated: user_fully_authenticated,
         **extra,
       }.compact,
     )
@@ -4563,12 +4657,16 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [Integer] billed_ial
   # @param [String, nil] sign_in_flow
-  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, **extra)
+  # @param [String, nil] vtr
+  # @param [String, nil] acr_values
+  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, vtr:, acr_values:, **extra)
     track_event(
       'SP redirect initiated',
       ial:,
       billed_ial:,
       sign_in_flow:,
+      vtr: vtr,
+      acr_values: acr_values,
       **extra,
     )
   end
@@ -4725,10 +4823,16 @@ module AnalyticsEvents
 
   # Tracks when user visits MFA selection page
   # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
-  def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] gov_or_mil_email Whether registered user has government email
+  def user_registration_2fa_setup_visit(
+    enabled_mfa_methods_count:,
+    gov_or_mil_email:,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup visited',
       enabled_mfa_methods_count:,
+      gov_or_mil_email:,
       **extra,
     )
   end

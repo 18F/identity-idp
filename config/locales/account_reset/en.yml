@@ -29,7 +29,7 @@ en:
       title: Deleting your account should be your last resort
     pending:
       cancel_request: Cancel request
-      cancelled: We have cancelled your request to delete your account.
+      canceled: We have canceled your request to delete your account.
       confirm: If you cancel now, you must create a new request and wait another
         %{interval} to delete your account.
       header: You requested to delete your account

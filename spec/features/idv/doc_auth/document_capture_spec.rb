@@ -325,7 +325,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               expect(page).to have_current_path(idv_phone_url)
             end
           end
-          context 'selfie with no liveness or poor quality is uploaded',
+          context 'selfie with error is uploaded',
                   allow_browser_log: true do
             it 'try again and page show no liveness inline error message' do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
@@ -421,7 +421,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               submit_images
               message = strip_tags(t('errors.doc_auth.selfie_fail_heading'))
               expect(page).to have_content(message)
-              detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_poor_quality'))
+              detail_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
               security_message = strip_tags(
                 t(
                   'idv.warning.attempts_html',
