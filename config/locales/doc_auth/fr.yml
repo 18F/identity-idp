@@ -218,9 +218,9 @@ fr:
       text_message: Nous avons envoyé un message à votre téléphone
       upload_from_computer: Continuer sur cet ordinateur
       upload_from_phone: Utilisez votre téléphone pour prendre des photos
-      verify_at_post_office: Vérifiez votre identité en ligne
+      verify_at_post_office: Vérifiez votre identité un bureau de poste
       verify_identity: Vérifier votre identité
-      verify_online: Confirmez votre identité en ligne
+      verify_online: Vérifiez votre identité en ligne
       welcome: Vérifions votre identité pour %{sp_name}
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
