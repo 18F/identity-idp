@@ -31,6 +31,10 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
         closeTextButton.setAttribute('aria-label', label);
       }
     };
+
+    // Stop retrying after an arbitrary number of times
+    const maxRetrys = 10;
+    let retries = 0;
     const intervalId = setInterval(() => {
       // Find the div that Acuant attaches the capture pane to, then retrieve the capture pane (shadowRoot)
       // https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM
@@ -43,6 +47,15 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
         findElementAndAddAriaLabel(shadowRoot, 'button.shoot', 'capture-button-aria-label');
         // Find and label the green checkmark captuure icon button that finalizes the selfie and closes the window
         findElementAndAddAriaLabel(shadowRoot, 'img.shoot', 'finish-capture-button-aria-label');
+        // Stop the interval after adding the labels
+        clearInterval(intervalId);
+      }
+
+      // Limit the number of times it can run
+      retries += 1;
+      if (retries >= maxRetrys) {
+        // Stop the interval when maxRetrys is reached
+        clearInterval(intervalId);
       }
       // This is how often to try finding the buttons in ms
     }, 500);
