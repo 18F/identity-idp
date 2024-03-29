@@ -38,7 +38,7 @@ class SessionEncryptor
     :city,
     :dob,
     :state_id_expiration,
-  ).values
+  ).values.freeze
   SENSITIVE_REGEX = %r{#{SENSITIVE_DEFAULT_FIELDS.join('|')}}i
 
   def load(value)

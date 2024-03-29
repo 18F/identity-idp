@@ -57,8 +57,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   attr_accessor :enrollment_outcomes
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
-  REQUEST_DELAY_IN_SECONDS = IdentityConfig.store.
-    get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
+  REQUEST_DELAY_IN_SECONDS = (IdentityConfig.store.
+    get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND).freeze
 
   def proofer
     @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer

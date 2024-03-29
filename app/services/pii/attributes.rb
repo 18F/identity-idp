@@ -42,5 +42,5 @@ module Pii
     def ==(other)
       eql?(other)
     end
-  end
+  end.freeze
 end

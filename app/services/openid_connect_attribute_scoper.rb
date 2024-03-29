@@ -17,19 +17,19 @@ class OpenidConnectAttributeScoper
     social_security_number
   ].freeze
 
-  VALID_SCOPES = %w[
+  VALID_SCOPES = (%w[
     email
     all_emails
     openid
     profile:verified_at
-  ] + X509_SCOPES + IAL2_SCOPES
+  ] + X509_SCOPES + IAL2_SCOPES).freeze
 
-  VALID_IAL1_SCOPES = %w[
+  VALID_IAL1_SCOPES = (%w[
     email
     all_emails
     openid
     profile:verified_at
-  ] + X509_SCOPES
+  ] + X509_SCOPES).freeze
 
   ATTRIBUTE_SCOPES_MAP = {
     email: %w[email],
@@ -58,7 +58,7 @@ class OpenidConnectAttributeScoper
     end
   end.with_indifferent_access.freeze
 
-  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys
+  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys.freeze
 
   attr_reader :scopes
 

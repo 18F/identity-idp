@@ -27,7 +27,7 @@ module Telephony
             credentials: credentials,
           )
         end
-      end
+      end.freeze
 
       # rubocop:disable Metrics/BlockLength
       # rubocop:disable Lint/UnusedMethodArgument

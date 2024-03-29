@@ -10,4 +10,4 @@ Encryption::RegionalCiphertextPair = RedactedStruct.new(
   def multi_or_single_region_ciphertext
     multi_region_ciphertext.presence || single_region_ciphertext
   end
-end
+end.freeze
