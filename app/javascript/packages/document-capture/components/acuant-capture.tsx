@@ -340,7 +340,7 @@ function AcuantCapture(
   const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
-  const [imageCaptureText, setImageCaptureText] = useState('');
+  //const [imageCaptureText, setImageCaptureText] = useState('');
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
@@ -514,14 +514,14 @@ function AcuantCapture(
   function onSelfieCaptureOpen() {
     trackEvent('idv_sdk_selfie_image_capture_opened', { captureAttempts });
 
-    setImageCaptureText('');
+    //setImageCaptureText('');
     setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {
     trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', { captureAttempts });
 
-    setImageCaptureText('');
+    //setImageCaptureText('');
     setIsCapturingEnvironment(false);
   }
 
@@ -675,7 +675,7 @@ function AcuantCapture(
   }
 
   function onImageCaptureFeedback(text: string) {
-    setImageCaptureText(text);
+    //setImageCaptureText(text);
   }
 
   return (
@@ -711,7 +711,7 @@ function AcuantCapture(
             hideCloseButton
           >
             <AcuantSelfieCaptureCanvas
-              imageCaptureText={imageCaptureText}
+              imageCaptureText={'text'}
               onSelfieCaptureClosed={onSelfieCaptureClosed}
             />
           </FullScreen>

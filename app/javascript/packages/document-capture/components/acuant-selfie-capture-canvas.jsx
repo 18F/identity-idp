@@ -21,6 +21,7 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
   // The Acuant SDK script AcuantPassiveLiveness attaches to whatever element has
   // this id. It then uses that element as the root for the full screen selfie capture
   const acuantCaptureContainerId = 'acuant-face-capture-container';
+  console.log('rerender canvas')
   return (
     <>
       {!isReady && <LoadingSpinner />}
