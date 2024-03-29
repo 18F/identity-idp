@@ -513,15 +513,11 @@ function AcuantCapture(
 
   function onSelfieCaptureOpen() {
     trackEvent('idv_sdk_selfie_image_capture_opened', { captureAttempts });
-
-    setImageCaptureText('');
     setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {
     trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', { captureAttempts });
-
-    setImageCaptureText('');
     setIsCapturingEnvironment(false);
   }
 
@@ -674,10 +670,6 @@ function AcuantCapture(
     });
   }
 
-  function onImageCaptureFeedback(text: string) {
-    setImageCaptureText(text);
-  }
-
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -703,17 +695,13 @@ function AcuantCapture(
           onImageCaptureFailure={onSelfieCaptureFailure}
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
-          onImageCaptureFeedback={onImageCaptureFeedback}
         >
           <FullScreen
             ref={fullScreenRef}
             label={t('doc_auth.accessible_labels.document_capture_dialog')}
             hideCloseButton
           >
-            <AcuantSelfieCaptureCanvas
-              imageCaptureText={imageCaptureText}
-              onSelfieCaptureClosed={onSelfieCaptureClosed}
-            />
+            <AcuantSelfieCaptureCanvas onSelfieCaptureClosed={onSelfieCaptureClosed} />
           </FullScreen>
         </AcuantSelfieCamera>
       )}
