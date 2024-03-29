@@ -114,14 +114,15 @@ module DocAuth
       error == Errors::SELFIE_FAILURE
     end
 
-    SELFIE_GENERAL_FAILURE_ERROR =
+    def selfie_general_failure_error
       {
         general: [Errors::SELFIE_FAILURE],
         front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
         back: [Errors::MULTIPLE_BACK_ID_FAILURES],
         selfie: [Errors::SELFIE_FAILURE],
         hints: false,
-      }.freeze
+      }
+    end
 
     private
 
@@ -317,7 +318,7 @@ module DocAuth
 
       # if selfie itself is ok, but we have selfie related error
       if selfie_error_handler.is_generic_selfie_error?(selfie_error)
-        return SelfieErrorHandler::SELFIE_GENERAL_FAILURE_ERROR
+        return selfie_error_handler.selfie_general_failure_error
       end
 
       # other vendor response detail error
