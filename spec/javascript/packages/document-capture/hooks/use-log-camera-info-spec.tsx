@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { useLogCameraInfo } from '@18f/identity-document-capture/hooks/use-log-camera-info';
 import { AnalyticsContextProvider } from '@18f/identity-document-capture/context/analytics';
 import { useDefineProperty } from '@18f/identity-test-helpers';
-import userEvent from '@testing-library/user-event';
+import { waitFor } from '@testing-library/dom';
 
 interface MockComponentProps {
   isBackOfId: boolean;
@@ -60,9 +60,7 @@ describe('document-capture/hooks/use-log-camera-info', () => {
       </AnalyticsContextProvider>,
     );
 
-    // This click is not triggering anything, it's the easiest way I found to make the test wait bit until the async
-    // trackEvent can be called, I can't get 'waitFor' to work
-    await userEvent.click(await findByText('mockcomponent'));
+    await waitFor(() => findByText('mockcomponent'));
     expect(trackEvent).to.have.been.calledWith('idv_camera_info_logged');
   });
 
@@ -75,9 +73,7 @@ describe('document-capture/hooks/use-log-camera-info', () => {
       </AnalyticsContextProvider>,
     );
 
-    // This click is not triggering anything, it's the easiest way I found to make the test wait bit until the async
-    // trackEvent can be called, I can't get 'waitFor' to work
-    await userEvent.click(await findByText('mockcomponent'));
+    await waitFor(() => findByText('mockcomponent'));
     expect(trackEvent).not.to.have.been.called();
   });
 
@@ -90,9 +86,7 @@ describe('document-capture/hooks/use-log-camera-info', () => {
       </AnalyticsContextProvider>,
     );
 
-    // This click is not triggering anything, it's the easiest way I found to make the test wait bit until the async
-    // trackEvent can be called, I can't get 'waitFor' to work
-    await userEvent.click(await findByText('mockcomponent'));
+    await waitFor(() => findByText('mockcomponent'));
     expect(trackEvent).not.to.have.been.called();
   });
 
@@ -107,9 +101,7 @@ describe('document-capture/hooks/use-log-camera-info', () => {
       </AnalyticsContextProvider>,
     );
 
-    // This click is not triggering anything, it's the easiest way I found to make the test wait bit until the async
-    // trackEvent can be called, I can't get 'waitFor' to work
-    await userEvent.click(await findByText('mockcomponent'));
+    await waitFor(() => findByText('mockcomponent'));
     expect(trackEvent).to.have.been.calledWith('idv_camera_info_error');
   });
 });
