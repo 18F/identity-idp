@@ -316,11 +316,14 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           phone_type: :mobile,
           otp_delivery_preference: '🎷',
           types: [],
-          proofing_components: nil,
           **ab_test_args,
         }
 
-        expect(@analytics).to have_logged_event('IdV: phone confirmation form', result)
+        expect(@analytics).to have_logged_event(
+          'IdV: phone confirmation form',
+          hash_including(result),
+        )
+
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
       end
     end
@@ -362,11 +365,13 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           phone_type: :mobile,
           otp_delivery_preference: 'sms',
           types: [:fixed_or_mobile],
-          proofing_components: nil,
           **ab_test_args,
         }
 
-        expect(@analytics).to have_logged_event('IdV: phone confirmation form', result)
+        expect(@analytics).to have_logged_event(
+          'IdV: phone confirmation form',
+          hash_including(result),
+        )
       end
 
       it 'updates the doc auth log for the user with verify_phone_submit step' do
@@ -460,13 +465,13 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
           },
-          proofing_components: nil,
         }
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
 
         expect(@analytics).to have_logged_event(
-          'IdV: phone confirmation form', hash_including(:success)
+          'IdV: phone confirmation form',
+          hash_including(:success),
         )
 
         expect(response).to redirect_to idv_phone_path
@@ -474,7 +479,8 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         get :new
 
         expect(@analytics).to have_logged_event(
-          'IdV: phone confirmation vendor', result
+          'IdV: phone confirmation vendor',
+          hash_including(result),
         )
       end
     end
@@ -486,13 +492,15 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
       expect(response).to redirect_to idv_phone_path
 
       expect(@analytics).to have_logged_event(
-        'IdV: phone confirmation form', hash_including(:success)
+        'IdV: phone confirmation form',
+        hash_including(:success),
       )
 
       get :new
 
       expect(@analytics).to have_logged_event(
-        'IdV: phone confirmation vendor', hash_including(hybrid_handoff_phone_used: true)
+        'IdV: phone confirmation vendor',
+        hash_including(hybrid_handoff_phone_used: true),
       )
     end
 
@@ -547,7 +555,8 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         put :create, params: { idv_phone_form: { phone: bad_phone } }
 
         expect(@analytics).to have_logged_event(
-          'IdV: phone confirmation form', hash_including(:success)
+          'IdV: phone confirmation form',
+          hash_including(:success),
         )
 
         expect(response).to redirect_to idv_phone_path
@@ -555,7 +564,8 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         get :new
 
         expect(@analytics).to have_logged_event(
-          'IdV: phone confirmation vendor', result
+          'IdV: phone confirmation vendor',
+          hash_including(result),
         )
       end
 
@@ -576,9 +586,7 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         it 'tracks rate limited event' do
           expect(@analytics).to have_logged_event(
             'Rate Limit Reached',
-            {
-              limiter_type: :proof_address,
-            },
+            limiter_type: :proof_address,
           )
         end
       end

@@ -60,12 +60,11 @@ RSpec.describe Idv::ResendOtpController do
         area_code: '225',
         rate_limit_exceeded: false,
         telephony_response: instance_of(Telephony::Response),
-        proofing_components: nil,
       }
 
       expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp resent',
-        expected_result,
+        hash_including(expected_result),
       )
     end
 

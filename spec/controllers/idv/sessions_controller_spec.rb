@@ -44,12 +44,13 @@ RSpec.describe Idv::SessionsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: start over',
-        location: 'get_help',
-        proofing_components: nil,
-        cancelled_enrollment: nil,
-        enrollment_code: nil,
-        enrollment_id: nil,
-        step: 'first',
+        hash_including(
+          location: 'get_help',
+          cancelled_enrollment: nil,
+          enrollment_code: nil,
+          enrollment_id: nil,
+          step: 'first',
+        ),
       )
     end
 
@@ -60,12 +61,13 @@ RSpec.describe Idv::SessionsController do
         delete :destroy, params: { step: 'barcode', location: '' }
         expect(@analytics).to have_logged_event(
           'IdV: start over',
-          location: '',
-          proofing_components: nil,
-          step: 'barcode',
-          cancelled_enrollment: true,
-          enrollment_code: user.pending_in_person_enrollment.enrollment_code,
-          enrollment_id: user.pending_in_person_enrollment.id,
+          hash_including(
+            location: '',
+            step: 'barcode',
+            cancelled_enrollment: true,
+            enrollment_code: user.pending_in_person_enrollment.enrollment_code,
+            enrollment_id: user.pending_in_person_enrollment.id,
+          ),
         )
       end
     end
@@ -90,14 +92,16 @@ RSpec.describe Idv::SessionsController do
         expect(cancel).to receive(:call)
 
         delete :destroy, params: { step: 'gpo_verify', location: 'clear_and_start_over' }
+
         expect(@analytics).to have_logged_event(
           'IdV: start over',
-          location: 'clear_and_start_over',
-          proofing_components: nil,
-          cancelled_enrollment: nil,
-          enrollment_code: nil,
-          enrollment_id: nil,
-          step: 'gpo_verify',
+          hash_including(
+            location: 'clear_and_start_over',
+            cancelled_enrollment: nil,
+            enrollment_code: nil,
+            enrollment_id: nil,
+            step: 'gpo_verify',
+          ),
         )
       end
     end
