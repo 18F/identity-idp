@@ -5,21 +5,22 @@
 
   <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
     <div class="grid-col-12 tablet:grid-col-auto">
-        <%= image_tag asset_url('idv/remote.svg'),
-                              width: 88,
-                              height: 88,
-                              class: 'margin-right-1 margin-top-4',
-                              alt: t('image_description.laptop_and_phone')
-        %>
+        <%= image_tag(
+              asset_url('idv/remote.svg'),
+              width: 88,
+              height: 88,
+              class: 'margin-right-1 margin-top-4',
+              alt: t('image_description.laptop_and_phone'),
+            ) %>
     </div>
     <div class="grid-col-12 tablet:grid-col-fill">
     <%= simple_form_for(
-      @idv_how_to_verify_form,
-      html: { autocomplete: 'off',
-              'aria-label': t('forms.buttons.continue_remote') },
-      method: :put,
-      url: idv_how_to_verify_url,
-    ) do |f|
+          @idv_how_to_verify_form,
+          html: { autocomplete: 'off',
+                  'aria-label': t('forms.buttons.continue_remote') },
+          method: :put,
+          url: idv_how_to_verify_url,
+        ) do |f|
     %>
     <%= f.hidden_field(
           :selection,
@@ -41,12 +42,13 @@
   </div>
 <div role="group" aria-labelledby="how-to-verify-info" class="grid-row">
 <div class="grid-col-12 tablet:grid-col-auto">
-  <%= image_tag asset_url('idv/in-person.svg'),
-                          width: 88,
-                          height: 88,
-                          class: 'margin-right-1 margin-top-4',
-                          alt: t('image_description.post_office')
-  %>
+  <%= image_tag(
+        asset_url('idv/in-person.svg'),
+        width: 88,
+        height: 88,
+        class: 'margin-right-1 margin-top-4',
+        alt: t('image_description.post_office'),
+      ) %>
 </div>
   <div class="grid-col-12 tablet:grid-col-fill">
     <%= simple_form_for(
