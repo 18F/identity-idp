@@ -49,7 +49,7 @@ module ProfanityDetector
 
     min_profanity_length, max_profanity_length = profanity_by_length.keys.minmax
 
-    return [regex_by_length, min_profanity_length, max_profanity_length]
+    [regex_by_length, min_profanity_length, max_profanity_length]
   end
 
   REGEX_BY_LENGTH, MIN_PROFANITY_LENGTH, MAX_PROFANITY_LENGTH = self.preprocess_lengths!
