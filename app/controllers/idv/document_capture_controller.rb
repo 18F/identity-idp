@@ -113,8 +113,8 @@ module Idv
     end
 
     def allow_direct_ipp?
-      return false unless idv_session.welcome_visited == true &&
-                          idv_session.idv_consent_given == true
+      return false unless idv_session.welcome_visited &&
+                          idv_session.idv_consent_given
       # not allowed when no step param and action:show(get request)
       return false if params[:step].blank? || params[:action].to_s != 'show' ||
                       idv_session.flow_path == 'hybrid'
