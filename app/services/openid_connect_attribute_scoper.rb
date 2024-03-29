@@ -6,7 +6,7 @@ class OpenidConnectAttributeScoper
     x509:subject
     x509:issuer
     x509:presented
-  ]
+  ].freeze
 
   IAL2_SCOPES = %w[
     address
@@ -15,7 +15,7 @@ class OpenidConnectAttributeScoper
     profile:name
     profile:birthdate
     social_security_number
-  ]
+  ].freeze
 
   VALID_SCOPES = %w[
     email

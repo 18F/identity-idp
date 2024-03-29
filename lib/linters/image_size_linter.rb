@@ -18,7 +18,7 @@ module RuboCop
       class ImageSizeLinter < RuboCop::Cop::Cop
         MSG = 'Assign width and height to images'
 
-        RESTRICT_ON_SEND = [:image_tag]
+        RESTRICT_ON_SEND = [:image_tag].freeze
 
         def on_send(node)
           add_offense(node, location: :expression) if !valid?(node)

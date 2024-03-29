@@ -11,10 +11,10 @@ class GetUspsProofingResultsJob < ApplicationJob
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
-  ]
+  ].freeze
   SUPPORTED_SECONDARY_ID_TYPES = [
     'Visual Inspection of Name and Address on Primary ID Match',
-  ]
+  ].freeze
 
   queue_as :long_running
 

@@ -10,7 +10,7 @@ class ServiceProviderUpdater
 
   SP_IGNORED_ATTRIBUTES = %i[
     cert
-  ]
+  ].freeze
 
   def run(service_provider = nil)
     if service_provider.present?

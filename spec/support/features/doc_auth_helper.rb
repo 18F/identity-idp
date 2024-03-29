@@ -8,10 +8,10 @@ module DocAuthHelper
   include UserAgentHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-  GOOD_SSN_MASKED = '9**-**-***4'
-  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }
-  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
-  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
+  GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }.freeze
+  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
+  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
   def clear_and_fill_in(field_name, text)
     fill_in field_name, with: ''
