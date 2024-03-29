@@ -39,6 +39,7 @@ export function SelfieCaptureWithHeader({
     <>
       <hr className="margin-y-5" />
       <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
+      <p>{t('doc_auth.info.selfie_capture_content')}</p>
       <TipList
         title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
         titleClassName="margin-bottom-0 text-bold"
@@ -46,6 +47,7 @@ export function SelfieCaptureWithHeader({
           t('doc_auth.tips.document_capture_selfie_text1'),
           t('doc_auth.tips.document_capture_selfie_text2'),
           t('doc_auth.tips.document_capture_selfie_text3'),
+          t('doc_auth.tips.document_capture_selfie_text4'),
         ]}
       />
       <DocumentSideAcuantCapture

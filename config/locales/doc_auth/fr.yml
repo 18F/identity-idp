@@ -196,12 +196,13 @@ fr:
         pièce d’identité. Si les informations ci-dessous sont incorrectes,
         veuillez %{link_html} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
-      document_capture: Ajoutez des photos de votre pièce d’identité
+      document_capture: Ajoutez des photos de votre permis de conduire ou de votre
+        carte d’identité nationale
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      document_capture_selfie: Une photo de vous
+      document_capture_selfie: Photo de votre visage
       document_capture_subheader_id: Permis de conduire ou de carte d’identité d’État
-      document_capture_subheader_selfie: Photo de vous-même
+      document_capture_subheader_selfie: Photo de votre visage
       document_capture_with_selfie: Ajoutez des photos de votre pièce d’identité et une photo de vous-même
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
@@ -212,7 +213,7 @@ fr:
       no_ssn: Vous n’avez pas de numéro de sécurité sociale?
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
-      selfie: Photo
+      selfie: Photo de votre visage
       ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
       text_message: Nous avons envoyé un message à votre téléphone
@@ -280,6 +281,8 @@ fr:
         votre mot de passe. Le chiffrage signifie que vos données sont protégées
         et que vous êtes le/la seul(e) à pouvoir accéder à vos informations ou
         les modifier.
+      selfie_capture_content: Nous vérifierons que vous êtes bien la personne qui
+        figure sur votre pièce d’identité.
       selfie_capture_status:
         face_close_to_border: Trop près du cadre
         face_not_found: Visage non trouvé
@@ -338,15 +341,19 @@ fr:
       text4: Votre mot de passe enregistre et crypte vos informations personnelles.
     tips:
       document_capture_hint: Doit être un JPG ou PNG
-      document_capture_id_text1: Utilisez un fond sombre
+      document_capture_id_text1: Placez votre pièce d’identité sur une surface plane et sombre.
       document_capture_id_text2: Prenez la photo sur une surface plane
-      document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
-      document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
+      document_capture_id_text3: Évitez les reflets et les ombres sur votre pièce d’identité.
+      document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo.
       document_capture_selfie_id_header_text: Conseils pour prendre des photos claires
-      document_capture_selfie_selfie_text: Conseils pour prendre un photo claires
-      document_capture_selfie_text1: Tenez votre appareil à hauteur des yeux
-      document_capture_selfie_text2: Veillez à ce que l’ensemble de votre visage soit visible
-      document_capture_selfie_text3: Prenez votre photo dans un endroit bien éclairé
+      document_capture_selfie_selfie_text: Comment vous préparer pour votre photo
+      document_capture_selfie_text1: Enlevez tout vêtement ou accessoire qui pourrait
+        vous couvrir le visage. Nous vous conseillons d’enlever vos lunettes ou
+        votre chapeau.
+      document_capture_selfie_text2: Prenez votre photo dans un endroit bien éclairé.
+      document_capture_selfie_text3: Gardez une expression neutre.
+      document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est
+        visible dans le cercle vert.
       review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
       review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
