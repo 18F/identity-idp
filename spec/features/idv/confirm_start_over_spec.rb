@@ -14,7 +14,7 @@ RSpec.feature 'idv gpo confirm start over', js: true, allowed_extra_analytics: [
       gpo_verification_pending_at: 1.day.ago,
     )
   end
-  let(:gpo_confirmation_code) do
+  let!(:gpo_confirmation_code) do
     create(
       :gpo_confirmation_code,
       profile: profile,
@@ -52,7 +52,8 @@ RSpec.feature 'idv gpo confirm start over', js: true, allowed_extra_analytics: [
     it 'can cancel from confirmation screen' do
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
 
-      click_on t('idv.messages.clear_and_start_over')
+      click_on t('idv.gpo.address_accordion.title')
+      click_on t('idv.gpo.address_accordion.cta_link')
 
       expect(current_path).to eq idv_confirm_start_over_path
       expect(page).to have_content(t('idv.cancel.description.gpo.start_over'))
@@ -65,7 +66,8 @@ RSpec.feature 'idv gpo confirm start over', js: true, allowed_extra_analytics: [
     end
 
     it 'can return back to verify screen from confirm screen' do
-      click_on t('idv.messages.clear_and_start_over')
+      click_on t('idv.gpo.address_accordion.title')
+      click_on t('idv.gpo.address_accordion.cta_link')
       click_on t('forms.buttons.back')
 
       expect(fake_analytics).to have_logged_event('IdV: gpo confirm start over visited')

@@ -181,6 +181,11 @@ es:
       state: Estado
       zipcode: Código postal
     gpo:
+      address_accordion:
+        body: 'Le enviamos una carta con su código de verificación a:'
+        cta_html: ¿La dirección es incorrecta? %{cta_link_html}
+        cta_link: Borre su información y comience nuevamente.
+        title: ¿A dónde enviaron mi carta?
       alert_info: 'Enviamos una carta con su código de verificación a:'
       alert_rate_limit_warning_html: No puede solicitar más cartas por ahora. La fecha
         de su solicitud de carta anterior es el
@@ -198,14 +203,15 @@ es:
             <span>%{request_new_letter_link}</span>.
         title: '¿No recibió su carta?'
       form:
-        instructions: Introduzca el código de 10 caracteres de la carta que recibió.
         otp_label: Código de verificación
-        submit: Confirmar cuenta
+        submit: Enviar
         title: Confirme su cuenta
-      intro_html: '<p>Si ya recibió su carta, introduzca su código de verificación a
-        continuación. </p><p>Si su carta aún no ha llegado, tenga paciencia, ya
-        que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias
-        por su paciencia.</p>'
+      intro: Bienvenido de nuevo. Introduzca el código de 10 caracteres de la carta
+        que recibió.
+      last_letter_request_message_html: Usted solicitó una carta el
+        <strong>%{date_letter_was_sent}</strong>. Si aún no ha llegado, tenga
+        paciencia, ya que las cartas tardan hasta <strong>10 días</strong> en
+        llegar. Gracias por su paciencia.
       request_another_letter:
         button: Solicitar otra carta
         instructions_html: Solicite otra carta si tiene problemas con la carta actual o
@@ -215,7 +221,7 @@ es:
           por correo
         title: '¿Solicitar otra carta?'
       return_to_profile: Vuelva a su perfil
-      title: Bienvenido de nuevo
+      title: Introduzca su código de verificación
       wrong_address: '¿No es la dirección correcta?'
     images:
       come_back_later: Carta con una marca de verificación
