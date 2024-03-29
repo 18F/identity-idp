@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RulesOfUseForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper

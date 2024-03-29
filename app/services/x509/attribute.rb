@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stringex/unidecoder'
 require 'stringex/core_ext'
 

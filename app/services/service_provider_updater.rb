@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Update ServiceProvider table by pulling from the Dashboard app API (lower environments only)
 class ServiceProviderUpdater
   SP_PROTECTED_ATTRIBUTES = %i[

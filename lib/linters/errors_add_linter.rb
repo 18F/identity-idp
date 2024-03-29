@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
@@ -13,7 +15,7 @@ module RuboCop
       #   errors.add(:iss, 'invalid issuer', type: :invalid_issuer)
       #
       class ErrorsAddLinter < RuboCop::Cop::Cop
-        MSG = 'Please set a unique key for this error'.freeze
+        MSG = 'Please set a unique key for this error'
 
         RESTRICT_ON_SEND = [:add]
 

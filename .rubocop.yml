@@ -1127,6 +1127,16 @@ Style/For:
   Enabled: true
   EnforcedStyle: each
 
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - '.irbrc'
+    - '.rubocop.yml'
+    - 'Brewfile'
+    - 'Gemfile'
+    - 'Rakefile'
+
 Style/GlobalVars:
   Enabled: true
   AllowedVariables: []

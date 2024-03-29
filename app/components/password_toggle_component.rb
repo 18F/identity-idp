@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordToggleComponent < BaseComponent
   attr_reader :form, :field_options, :tag_options
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Rails/ApplicationRecord
 class WorkerJobApplicationRecord < ActiveRecord::Base
   self.abstract_class = true

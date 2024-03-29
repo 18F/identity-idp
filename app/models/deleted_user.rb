@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeletedUser < ApplicationRecord
   def self.create_from_user(user)
     return unless user

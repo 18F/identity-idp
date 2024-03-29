@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'otp_code_generator'
 
 module UserOtpMethods

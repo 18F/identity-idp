@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KeyRotator
   class AttributeEncryption
     def initialize(model)

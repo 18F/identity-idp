@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneNumberCapabilities
   def self.load_config
     YAML.load_file(

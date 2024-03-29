@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GetUspsProofingResultsJob < ApplicationJob
   MILLISECONDS_PER_SECOND = 1000.0 # Specify float value to use floating point math
   IPP_STATUS_PASSED = 'In-person passed'

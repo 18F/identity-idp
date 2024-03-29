@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TimeComponent < BaseComponent
   attr_reader :time, :tag_options
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   class BackupCodePresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include ActionView::Helpers::TranslationHelper
