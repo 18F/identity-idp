@@ -5,7 +5,7 @@ module Idv
       include Rails.application.routes.url_helpers
 
       def initialize(idv_session)
-        @pii = idv_session.pii_from_doc
+        @pii = idv_session.pii_from_doc || {}
         @sp = idv_session.service_provider
       end
 
