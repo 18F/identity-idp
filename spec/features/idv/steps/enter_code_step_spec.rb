@@ -84,6 +84,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
   end
 
   it 'renders an error with the enter code ui if an incorrect code is entered' do
+    visit new_user_session_path
     fill_in_credentials_and_submit(user.email, user.password)
     continue_as(user.email, user.password)
     uncheck(t('forms.messages.remember_device'))
@@ -91,12 +92,12 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
     click_submit_default
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
-    expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
+    expect(page).to have_css('h1', text: t('idv.gpo.title'))
 
     fill_in t('idv.gpo.form.otp_label'), with: 'incorrect1'
     click_button t('idv.gpo.form.submit')
 
-    expect(page).to have_css('h1', text: t('idv.gpo.intro_html'))
+    expect(page).to have_css('h1', text: t('idv.gpo.title'))
     expect(page).to have_content(t('errors.messages.confirmation_code_incorrect'))
   end
 
