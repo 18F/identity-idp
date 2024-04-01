@@ -144,7 +144,7 @@ module Idv
       # GPO reminder emails include an "I did not receive my letter!" link that results in
       # slightly different copy on this screen.
       def user_did_not_receive_letter?
-        !!params[:did_not_receive_letter].present?
+        params[:did_not_receive_letter].present?
       end
 
       def user_can_request_another_letter?
