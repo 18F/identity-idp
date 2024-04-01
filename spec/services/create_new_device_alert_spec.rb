@@ -17,7 +17,7 @@ RSpec.describe CreateNewDeviceAlert do
 
     it 'resets user sign_in_new_device_at to nil' do
       CreateNewDeviceAlert.new.perform(now)
-      expect(user.sign_in_new_device_at).to eq(nil)
+      expect(user.reload.sign_in_new_device_at).to eq(nil)
     end
   end
 end
