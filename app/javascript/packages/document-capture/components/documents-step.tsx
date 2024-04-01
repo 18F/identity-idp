@@ -15,9 +15,9 @@ import DocumentCaptureAbandon from './document-capture-abandon';
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
-}: {
+}: Readonly<{
   isSelfieCaptureEnabled: boolean;
-}) {
+}>) {
   const { t } = useI18n();
   return (
     <h2>
@@ -126,7 +126,9 @@ function DocumentsStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
-      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
+      {isSelfieCaptureEnabled && (
+        <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
+      )}
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
