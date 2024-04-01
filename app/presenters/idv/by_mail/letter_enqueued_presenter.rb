@@ -5,8 +5,10 @@ module Idv
       include Rails.application.routes.url_helpers
 
       def initialize(idv_session)
-        @pii = Pii::Cacher.new(idv_session.current_user, idv.user_session).
-          fetch(idv_session.current_user.gpo_verification_pending_profile.id)
+        @pii = Pii::Cacher.new(
+          idv_session.current_user,
+          idv_session.user_session,
+        ).fetch(idv_session.current_user.gpo_verification_pending_profile.id)
         @sp = idv_session.service_provider
       end
 
