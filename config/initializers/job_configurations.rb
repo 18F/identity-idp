@@ -29,6 +29,7 @@ else
       create_new_device_alert_send_emails: {
         class: 'CreateNewDeviceAlert',
         cron: cron_5m,
+        args: -> { [Time.zone.now] },
       },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
