@@ -6,13 +6,24 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     let(:disavowal_token) { 'the_disavowal_token' }
     let(:device) { create(:device, user: user) }
 
-    if IdentityConfig.store.feature_new_device_alert_aggregation
+    context 'aggregated new device alerts enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :feature_new_device_alert_aggregation,
+        ).and_return(true)
+      end
       it 'sets the user sign_in_new_device_at value to current datetime' do
         described_class.call(user, device, disavowal_token)
         expect(user.sign_in_new_device_at).not_to be_nil
       end
-    else
+    end
 
+    context 'aggregated new device alerts disenabled' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :feature_new_device_alert_aggregation,
+        ).and_return(false)
+      end
       it 'sends an email to all confirmed email addresses' do
         user.email_addresses.destroy_all
         confirmed_email_addresses = create_list(:email_address, 2, user: user)
