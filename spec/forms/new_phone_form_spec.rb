@@ -298,9 +298,8 @@ RSpec.describe NewPhoneForm do
 
     context 'blocklisted carrier numbers' do
       before do
-        allow(IdentityConfig.store).to receive(:phone_carrier_registration_blocklist).and_return(
-          ['Blocked Phone Carrier'],
-        )
+        allow(IdentityConfig.store).to receive(:phone_carrier_registration_blocklist_array).
+          and_return(['Blocked Phone Carrier'])
       end
 
       context 'when phone number carrier is in blocklist' do
