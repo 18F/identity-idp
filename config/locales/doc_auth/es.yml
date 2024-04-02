@@ -275,8 +275,7 @@ es:
         too_many_faces: Demasiados rostros
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
-      stepping_up_html: 'Verifica tu identidad de nuevo y tómate una foto para acceder
-        a este servicio. %{link_html}'
+      stepping_up_html: 'Verifica tu identidad de nuevo para acceder a este servicio. %{link_html}'
       tag: Recomendado
       upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de
         identidad desde esta computadora.
@@ -300,10 +299,9 @@ es:
       verify_online_link_text: Obtenga más información sobre la verificación en línea
       you_entered: 'Ud. entregó:'
     instructions:
-      bullet1: Tomar fotos de tu identificación oficial
-      bullet1_with_selfie: Tomar fotos tuyas y de tu identificación oficial
+      bullet1: Necesita una licencia de conducir o una tarjeta de identificación estatal
       bullet2: Ingresar tu Número de Seguro Social
-      bullet3: Confirmar tu número de teléfono
+      bullet3: Coincidencia de su número de teléfono
       bullet4: Ingresar de nuevo tu contraseña de %{app_name}
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
@@ -315,14 +313,9 @@ es:
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
-      text1: Utiliza tu licencia de conducir o identificación oficial estatal. No
-        aceptamos ningún otro tipo de identificación.
-      text1_with_selfie: Tómate una foto y toma fotografías de tu licencia de conducir
-        o identificación oficial estatal. No aceptamos ningún otro tipo de
-        identificación.
+      text1: No se aceptan otras formas de identificación. Revisaremos que usted sea la persona que figura en su identificación.
       text2: No necesitarás tu tarjeta física del seguro social.
-      text3: Tu número de teléfono te vincula con tu información personal. Luego de
-        confirmar tu información, te enviaremos un código.
+      text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
       text4: Tu contraseña permitirá guardar y encriptar tu información personal.
     tips:
       document_capture_hint: Debe ser un JPG o PNG
