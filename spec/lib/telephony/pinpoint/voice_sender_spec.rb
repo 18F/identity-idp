@@ -11,7 +11,7 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
   let(:backup_pinpoint_client) { Aws::PinpointSMSVoice::Client.new(stub_responses: true) }
   let(:backup_voice_config) { Telephony.config.pinpoint.voice_configs.last }
 
-  def mock_build_clients(client = pinpoint_client, backup_client = backup_pinpoint_client)
+  def mock_build_clients(client: pinpoint_client, backup_client: backup_pinpoint_client)
     clients = {
       voice_config => FakeConnectionPool.new { client },
     }
@@ -51,7 +51,7 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
       # More deterministic sending phone
       Telephony.config.pinpoint.voice_configs.first.longcode_pool = [sending_phone]
 
-      mock_build_clients(pinpoint_client, nil)
+      mock_build_clients(client: pinpoint_client, backup_client: nil)
     end
 
     it 'initializes a pinpoint sms and voice client and uses that to send a message' do

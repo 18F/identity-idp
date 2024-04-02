@@ -24,7 +24,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
     let(:status_message) { 'some status message' }
 
     before do
-      mock_build_clients(mock_client, nil)
+      mock_build_clients(client: mock_client, backup_client: nil)
 
       Pinpoint::MockClient.message_response_result_status_code = status_code
       Pinpoint::MockClient.message_response_result_delivery_status = delivery_status
@@ -175,7 +175,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:country_code) { 'PH' }
 
       it 'sends a message with a sender_id and no origination number' do
-        mock_build_clients(mock_client, nil)
+        mock_build_clients(client: mock_client, backup_client: nil)
         response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (604) 456-7890',
@@ -207,7 +207,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
 
     context 'in the US' do
       it 'sends a message with a shortcode and no sender_id' do
-        mock_build_clients(mock_client, nil)
+        mock_build_clients(client: mock_client, backup_client: nil)
         response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (414) 456-7890',
@@ -241,7 +241,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:country_code) { 'PR' }
 
       it 'sends a message with a longcode and no sender_id' do
-        mock_build_clients(mock_client, nil)
+        mock_build_clients(client: mock_client, backup_client: nil)
         response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (939) 456-7890',
@@ -275,7 +275,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:country_code) { 'MX' }
 
       it 'sends a message with a longcode and no sender_id' do
-        mock_build_clients(mock_client, nil)
+        mock_build_clients(client: mock_client, backup_client: nil)
         response = subject.deliver(
           message: 'This is a test!',
           to: '+525555555555',
@@ -429,7 +429,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       end
 
       before do
-        mock_build_clients(mock_client, nil)
+        mock_build_clients(client: mock_client, backup_client: nil)
 
         allow(mock_client).to receive(:send_messages).and_return(phone_numbers)
         allow(backup_mock_client).to receive(:send_messages).and_return(phone_numbers)
@@ -447,7 +447,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
     end
   end
 
-  def mock_build_clients(client = mock_client, backup_client = backup_mock_client)
+  def mock_build_clients(client: mock_client, backup_client: backup_mock_client)
     clients = {
       sms_config => FakeConnectionPool.new { client },
     }
@@ -478,7 +478,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         sms.application_id = 'backup-sms-application-id'
       end
 
-      mock_build_clients(pinpoint_client, pinpoint_client)
+      mock_build_clients(client: pinpoint_client, backup_client: pinpoint_client)
     end
 
     context 'successful network requests' do
