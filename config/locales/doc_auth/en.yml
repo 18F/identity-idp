@@ -54,9 +54,10 @@ en:
         heading: We couldn’t read the barcode on your ID.
       camera:
         blocked: Your camera is blocked
-        blocked_detail: We don’t have permission to access the camera. Please check your
-          browser or system settings, reload this page, or upload a photo
-          instead.
+        blocked_detail_html: <strong>Allow access to your camera to take photos for
+          %{app_name}.</strong><span>Try taking photos again and allowing
+          permission. If that doesn’t work, you may need to check your device
+          settings to allow access.</span>
         failed: Camera failed to start, please try again.
       card_type: Try again with your driver’s license or state ID card.
       doc:
