@@ -22,10 +22,6 @@ module Idv
       t('doc_auth.headings.welcome', sp_name: sp_name)
     end
 
-    def selfie_required?
-      decorated_sp_session.selfie_required?
-    end
-
     def explanation_text(help_link)
       if first_time_idv?
         t(
@@ -44,17 +40,10 @@ module Idv
 
     def bullet_points
       [
-        if selfie_required?
-          bullet_point(
-            t('doc_auth.instructions.bullet1_with_selfie'),
-            t('doc_auth.instructions.text1_with_selfie'),
-          )
-        else
-          bullet_point(
-            t('doc_auth.instructions.bullet1'),
-            t('doc_auth.instructions.text1'),
-          )
-        end,
+        bullet_point(
+          t('doc_auth.instructions.bullet1'),
+          t('doc_auth.instructions.text1'),
+        ),
 
         bullet_point(
           t('doc_auth.instructions.bullet2'),
