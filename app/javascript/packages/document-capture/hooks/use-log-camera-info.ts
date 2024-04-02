@@ -48,7 +48,7 @@ async function updateConstraintsAndGetLogInfo(
     const cameras = videoTracks.map((videoTrack) => getCameraInfo(videoTrack));
     return cameras[0];
   } catch (error) {
-    trackEvent('idv_camera_info_error');
+    trackEvent('idv_camera_info_error', { error });
   }
 }
 

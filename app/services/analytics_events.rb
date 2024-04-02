@@ -806,8 +806,9 @@ module AnalyticsEvents
     )
   end
 
-  def idv_camera_info_error
-    track_event(:idv_camera_info_error)
+  # @param [Hash] error
+  def idv_camera_info_error(error:)
+    track_event(:idv_camera_info_error, error: error)
   end
 
   # @param [String] flow_path whether the user is in the hybrid or standard flow
