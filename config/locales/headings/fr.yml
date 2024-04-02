@@ -18,6 +18,7 @@ fr:
     add_info:
       phone: Ajouter un numéro de téléphone
     cancellations:
+      login_exit_prompt: Êtes-vous sûr de vouloir annuler et quitter Login.gov?
       prompt: Es-tu sûre de vouloir annuler?
     create_account_new_users: Créer un compte pour les nouveaux utilisateurs
     create_account_with_sp:
