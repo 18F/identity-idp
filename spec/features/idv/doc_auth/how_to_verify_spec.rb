@@ -10,7 +10,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
   let(:in_person_proofing_enabled) { true }
   let(:in_person_proofing_opt_in_enabled) { false }
   let(:service_provider_in_person_proofing_enabled) { true }
-
+  let(:biometric_comparison_required) { false }
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) {
       in_person_proofing_enabled
@@ -20,7 +20,10 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     }
     allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
       and_return(service_provider_in_person_proofing_enabled)
-    visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+    visit_idp_from_sp_with_ial2(
+      :oidc, **{ client_id: ipp_service_provider.issuer,
+                 biometric_comparison_required: biometric_comparison_required }
+    )
     sign_in_via_branded_page(user)
     complete_doc_auth_steps_before_agreement_step
     complete_agreement_step
@@ -86,22 +89,39 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'and when sp has opted into ipp' do
       let(:in_person_proofing_opt_in_enabled) { true }
 
-      it 'displays expected content and requires a choice' do
+      it 'displays expected content and navigates to choice' do
         expect(page).to have_current_path(idv_how_to_verify_path)
 
-        # Try to continue without an option
-        click_continue
-
-        expect(page).to have_current_path(idv_how_to_verify_path)
-        expect(page).to have_content(t('errors.doc_auth.how_to_verify_form'))
-
-        complete_how_to_verify_step(remote: true)
+        # Choose remote option
+        click_on t('forms.buttons.continue_remote')
         expect(page).to have_current_path(idv_hybrid_handoff_url)
 
-        # go back and also test remote: false case
+        # go back and choose in person option
         page.go_back
-        complete_how_to_verify_step(remote: false)
+        click_on t('forms.buttons.continue_ipp')
         expect(page).to have_current_path(idv_document_capture_path)
+      end
+
+      context 'when selfie is enabled' do
+        include InPersonHelper
+
+        let(:biometric_comparison_required) { false }
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+            and_return(true)
+        end
+        it 'goes to direct IPP if selected and can come back' do
+          expect(page).to have_current_path(idv_how_to_verify_path)
+          expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
+          complete_how_to_verify_step(remote: false)
+          expect(page).to have_current_path(idv_document_capture_path)
+          expect_in_person_step_indicator_current_step(
+            t('step_indicator.flows.idv.find_a_post_office'),
+          )
+          expect(page).to have_content(t('headings.verify'))
+          click_on t('forms.buttons.back')
+          expect(page).to have_current_path(idv_how_to_verify_path)
+        end
       end
     end
 
@@ -140,7 +160,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Hybrid Handoff with opt in disabled midstream' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: true)
+        click_on t('forms.buttons.continue_remote')
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
@@ -165,7 +185,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Hybrid Handoff with opt in enabled the whole time' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: true)
+        click_on t('forms.buttons.continue_remote')
       end
 
       it 'should be bounced back to How to Verify' do
@@ -186,7 +206,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Document Capture with opt in disabled midstream' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: false)
+        click_on t('forms.buttons.continue_ipp')
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
@@ -215,7 +235,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     context 'Going back from Document Capture with opt in enabled the whole time' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        complete_how_to_verify_step(remote: false)
+        click_on t('forms.buttons.continue_ipp')
       end
 
       it 'should be bounced back to How to Verify' do

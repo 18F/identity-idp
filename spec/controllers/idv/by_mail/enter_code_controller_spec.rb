@@ -364,7 +364,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
 
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
 
-      it 'redirects to the index page to show errors' do
+      it 'renders to the index page to show errors' do
         action
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
@@ -382,7 +382,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           submit_attempts: 1,
           error_details: { otp: { confirmation_code_incorrect: true } },
         )
-        expect(response).to redirect_to(idv_verify_by_mail_enter_code_url)
+        expect(response).to render_template(:index)
       end
 
       it 'does not 500 with missing form keys' do

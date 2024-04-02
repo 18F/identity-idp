@@ -28,6 +28,7 @@ RSpec.feature 'Accessibility on IDV pages', :js, allowed_extra_analytics: [:*] d
       complete_agreement_step
 
       expect(current_path).to eq idv_how_to_verify_path
+      expect(page).to have_unique_form_landmark_labels
       expect_page_to_have_no_accessibility_violations(page)
     end
 
