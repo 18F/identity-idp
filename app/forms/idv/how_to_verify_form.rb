@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Idv
   class HowToVerifyForm
     include ActiveModel::Model
 
-    REMOTE = 'remote'.freeze
-    IPP = 'ipp'.freeze
+    REMOTE = 'remote'
+    IPP = 'ipp'
 
     attr_reader :selection
 

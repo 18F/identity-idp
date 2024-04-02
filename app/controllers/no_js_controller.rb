@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NoJsController < ApplicationController
   SESSION_KEY = :no_js_css
 

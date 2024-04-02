@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class IdTokenBuilder
-  JWT_SIGNING_ALGORITHM = 'RS256'.freeze
+  JWT_SIGNING_ALGORITHM = 'RS256'
   NUM_BYTES_FIRST_128_BITS = 128 / 8
 
   attr_reader :identity, :now

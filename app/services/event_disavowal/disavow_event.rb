@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventDisavowal
   class DisavowEvent
     attr_reader :event

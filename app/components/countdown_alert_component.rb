@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CountdownAlertComponent < BaseComponent
   attr_reader :show_at_remaining, :alert_options, :countdown_options, :redirect_url, :tag_options
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoExpirationJob < ApplicationJob
   queue_as :low
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class FlowPolicy
     attr_reader :idv_session, :user

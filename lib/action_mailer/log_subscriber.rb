@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # By default, when emails are delivered via ActiveJob, the recipients' email
 # is logged in a line like "Sent mail to test@test.com". Rails does not provide
 # an easy way to filter out emails from the logs. To protect user privacy, we

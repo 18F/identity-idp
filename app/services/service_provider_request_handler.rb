@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServiceProviderRequestHandler
   def initialize(url:, session:, protocol_request:, protocol:)
     @url = url

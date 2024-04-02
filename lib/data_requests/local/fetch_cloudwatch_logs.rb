@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'reporting/cloudwatch_client'
 
 module DataRequests

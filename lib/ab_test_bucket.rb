@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AbTestBucket
   attr_reader :buckets, :experiment_name, :default_bucket
 

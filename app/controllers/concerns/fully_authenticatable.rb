@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FullyAuthenticatable
   def delete_branded_experience(logout: false)
     ServiceProviderRequestProxy.delete(request_id)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SignUp
   class EmailsController < ApplicationController
     def show

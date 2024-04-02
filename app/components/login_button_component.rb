@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LoginButtonComponent < BaseComponent
   VALID_COLORS = ['primary', 'primary-darker', 'primary-lighter'].freeze
 

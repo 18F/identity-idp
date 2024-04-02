@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EncryptedDocumentStorage
   class S3Storage
     def write_image(encrypted_image:, name:)

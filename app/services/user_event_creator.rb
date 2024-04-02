@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserEventCreator
   COOKIE_LENGTH = 128
 

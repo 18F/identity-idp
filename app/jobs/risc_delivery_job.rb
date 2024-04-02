@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RiscDeliveryJob < ApplicationJob
   queue_as :low
 

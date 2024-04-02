@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # In order to perform scrypt calculation of password in a single
 # place for both password and PII encryption, we override
 # a few methods to build the encrypted_password via UserAccessKey

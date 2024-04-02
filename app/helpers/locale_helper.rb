@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LocaleHelper
   def locale_url_param
     active_locale = I18n.locale

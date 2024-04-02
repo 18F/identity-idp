@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 # Null object pattern substitute for ServiceProviderIdentity
 class NullIdentity
-  SERVICE_PROVIDER = 'null-identity-service-provider'.freeze
+  SERVICE_PROVIDER = 'null-identity-service-provider'
 
   def service_provider
     SERVICE_PROVIDER

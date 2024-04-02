@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class SmsOptInController < ApplicationController
     before_action :load_phone

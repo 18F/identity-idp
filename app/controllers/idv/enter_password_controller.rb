@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class EnterPasswordController < ApplicationController
     include Idv::AvailabilityConcern

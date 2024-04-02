@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module PushNotification
   class ReproofCompletedEvent
     include IssSubEvent
 
-    EVENT_TYPE = 'https://schemas.login.gov/secevent/risc/event-type/reproof-completed'.freeze
+    EVENT_TYPE = 'https://schemas.login.gov/secevent/risc/event-type/reproof-completed'
 
     attr_reader :user
 

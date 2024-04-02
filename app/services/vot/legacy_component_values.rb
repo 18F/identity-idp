@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Vot
   module LegacyComponentValues
     ## Identity proofing ACR values

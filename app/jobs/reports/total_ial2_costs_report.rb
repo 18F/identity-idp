@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 module Reports
   class TotalIal2CostsReport < BaseReport
-    REPORT_NAME = 'total-ial2-costs'.freeze
+    REPORT_NAME = 'total-ial2-costs'
     NUM_LOOKBACK_DAYS = 45
 
     def perform(date)

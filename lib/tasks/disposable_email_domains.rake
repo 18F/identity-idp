@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Rails/SkipsModelValidations
 require 'csv'
 namespace :disposable_email_domains do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Joins Users to ServiceProviders
 class ServiceProviderIdentity < ApplicationRecord
   self.table_name = :identities

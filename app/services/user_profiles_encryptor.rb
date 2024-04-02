@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserProfilesEncryptor
   class MissingPiiError < StandardError
   end

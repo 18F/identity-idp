@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EncryptedDocumentStorage
   class DocumentWriter
     def encrypt_and_write_document(

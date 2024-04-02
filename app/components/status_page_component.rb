@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StatusPageComponent < BaseComponent
   ICONS = {
     info: [:question],
