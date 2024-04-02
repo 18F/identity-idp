@@ -148,6 +148,14 @@ class UserMailer < ActionMailer::Base
         [:user_mailer, :new_device_sign_in_attempt, :sign_in_after_2fa] :
         [:user_mailer, :new_device_sign_in_attempt, :sign_in_before_2fa]
 
+      failed_times = events.count { |event| event.event_type == 'sign_in_unsuccessful_2fa' }
+      if failed_times > 1
+        @failed_times_text = t(
+          'user_mailer.new_device_sign_in_attempt.failed_times',
+          count: failed_times,
+        )
+      end
+
       mail(to: email_address.email, subject: t(:subject, scope: @i18n_scope))
     end
   end

@@ -101,14 +101,16 @@ class UserMailerPreview < ActionMailer::Preview
             device: user.devices.first,
           ),
         ),
-        unsaveable(
-          Event.new(
-            event_type: :sign_in_unsuccessful_2fa,
-            created_at: Time.zone.now,
-            user:,
-            device: user.devices.first,
-          ),
-        ),
+        *Array.new((params['failed_times'] || 1).to_i) do
+          unsaveable(
+            Event.new(
+              event_type: :sign_in_unsuccessful_2fa,
+              created_at: Time.zone.now,
+              user:,
+              device: user.devices.first,
+            ),
+          )
+        end,
       ],
       disavowal_token: SecureRandom.hex,
     )

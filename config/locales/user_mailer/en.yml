@@ -224,6 +224,9 @@ en:
         sign_in_after_2fa: Authenticated
         sign_in_before_2fa: Signed in with password
         sign_in_unsuccessful_2fa: Failed to authenticate
+      failed_times:
+        one: ' %{count} time'
+        other: ' %{count} times'
       new_sign_in_from: New sign-in potentially located in %{location}
       reset_password: reset your password
       sign_in_after_2fa:
@@ -237,7 +240,7 @@ en:
       sign_in_before_2fa:
         info_html:
           - Your Login.gov email and password were used to sign in from a new
-            device but <strong>failed to authenticate</strong>.
+            device but <strong>failed to authenticate%{failed_times}</strong>.
           - If you recognize this activity, you don’t need to do anything.
           - Two-factor authentication protects your account from unauthorized
             access. If this wasn’t you, %{reset_password_link_html} immediately.
