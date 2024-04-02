@@ -17,6 +17,7 @@ module Telephony
 
       # One connection pool per config (aka per-region)
       # @param [Hash<PinpointSmsConfig, ConnectionPool<Aws::Pinpoint::Client>>]
+      # rubocop:disable Style/MutableConstant
       CLIENT_POOL = Hash.new do |h, sms_config|
         h[sms_config] = ConnectionPool.new(size: IdentityConfig.store.pinpoint_voice_pool_size) do
           credentials = AwsCredentialBuilder.new(sms_config).call
@@ -27,7 +28,8 @@ module Telephony
             credentials: credentials,
           )
         end
-      end.freeze
+      end
+      # rubocop:enable Style/MutableConstant
 
       # rubocop:disable Metrics/BlockLength
       # rubocop:disable Lint/UnusedMethodArgument
