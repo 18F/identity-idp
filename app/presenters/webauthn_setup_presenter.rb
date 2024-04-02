@@ -25,14 +25,6 @@ class WebauthnSetupPresenter < SetupPresenter
     @url_options = url_options
   end
 
-  def image_path
-    if @platform_authenticator
-      'platform-authenticator.svg'
-    else
-      'security-key.svg'
-    end
-  end
-
   def learn_more_html
     if !@platform_authenticator
       new_tab_link_to(
