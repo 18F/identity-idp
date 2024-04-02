@@ -596,6 +596,30 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         end
       end
 
+      it 'rate limits between OTPs' do
+        sign_in_before_2fa(@user)
+        allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+
+        freeze_time do
+          (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
+            subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+            get :send_code, params: otp_delivery_form_sms
+          end
+
+          timeout = distance_of_time_in_words(
+            RateLimiter.attempt_window_in_minutes(:phone_confirmation).minutes,
+          )
+
+          expect(flash[:error]).to eq(
+            I18n.t(
+              'errors.messages.phone_confirmation_limited',
+              timeout: timeout,
+            ),
+          )
+          expect(response).to redirect_to authentication_methods_setup_url
+        end
+      end
+
       it 'marks the user as locked out after too many attempts on sign up' do
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'

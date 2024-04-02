@@ -216,6 +216,11 @@ class RateLimiter
         max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,
         attempt_window: IdentityConfig.store.otp_delivery_blocklist_findtime,
       },
+      single_phone_otp: {
+        max_attempts: 2,
+        attempt_window: IdentityConfig.store.
+        single_phone_otp_max_attempt_window_in_seconds.seconds.in_minutes.to_i,
+      },
     }.with_indifferent_access
   end
 
