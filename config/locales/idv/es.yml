@@ -218,7 +218,7 @@ es:
         title: ¿Solicitar otra carta?
       return_to_profile: Regrese a su perfil
       title: Bienvenido de nuevo
-      will_send_to: "La hemos enviado a:"
+      will_send_to: 'La hemos enviado a:'
       wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación
@@ -242,9 +242,9 @@ es:
         información verificada, por favor, %{link_html}.
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
-      come_back_later_html: Las cartas tardan entre <strong>5 y 10
-        días</strong> en llegar. Vuelva a iniciar sesión para
-        introducir el código de verificación cuando reciba la carta.
+      come_back_later_html: Las cartas tardan entre <strong>5 y 10 días</strong> en
+        llegar. Vuelva a iniciar sesión para introducir el código de
+        verificación cuando reciba la carta.
       confirm: Hemos asegurado su información verificada
       enter_password:
         by_mail_password_reminder_html: <strong>Recuerde su contraseña.</strong> El

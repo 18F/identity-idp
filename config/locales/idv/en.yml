@@ -207,7 +207,7 @@ en:
         title: Request another letter?
       return_to_profile: Return to your profile
       title: Welcome back
-      will_send_to: "We'll mail a letter to:"
+      will_send_to: 'We’ll mail a letter to:'
       wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
@@ -229,9 +229,8 @@ en:
         verified information, please %{link_html}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
-      come_back_later_html: Letters take <strong>5 to 10
-        days</strong> to arrive.  Sign back in to enter your
-        verification code once you get your letter.
+      come_back_later_html: Letters take <strong>5 to 10 days</strong> to arrive. Sign
+        back in to enter your verification code once you get your letter.
       confirm: We secured your verified information
       enter_password:
         by_mail_password_reminder_html: <strong>Remember your password.</strong> The
