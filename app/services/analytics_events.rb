@@ -807,7 +807,7 @@ module AnalyticsEvents
   end
 
   # @param [Hash] error
-  def idv_camera_info_error(error:)
+  def idv_camera_info_error(error:, **_extra)
     track_event(:idv_camera_info_error, error: error)
   end
 
