@@ -96,6 +96,10 @@ class User < ApplicationRecord
     identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
   end
 
+  def active_profile?
+    active_profile.present?
+  end
+
   def active_profile
     return @active_profile if defined?(@active_profile) && @active_profile&.active
     @active_profile = profiles.verified.find(&:active?)

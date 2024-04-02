@@ -27,16 +27,16 @@ module Idv
     end
 
     def explanation_text(help_link)
-      if step_up_selfie_required?
+      if first_time_idv?
         t(
-          'doc_auth.info.stepping_up_html',
-          sp_name:,
+          'doc_auth.info.getting_started_html',
+          sp_name: sp_name,
           link_html: help_link,
         )
       else
         t(
-          'doc_auth.info.getting_started_html',
-          sp_name: sp_name,
+          'doc_auth.info.stepping_up_html',
+          sp_name:,
           link_html: help_link,
         )
       end
@@ -85,9 +85,8 @@ module Idv
       OpenStruct.new(bullet: bullet, text: text)
     end
 
-    def step_up_selfie_required?
-      !!(current_user&.identity_verified? || current_user&.pending_profile?) &&
-        selfie_required?
+    def first_time_idv?
+      !decorated_sp_session&.current_user&.active_profile?
     end
   end
 end

@@ -18,7 +18,7 @@ RSpec.describe Idv::WelcomePresenter do
     )
   end
 
-  let(:user) { nil }
+  let(:user) { build(:user) }
 
   before do
     allow(view_context).to receive(:current_user).and_return(user)
@@ -35,7 +35,7 @@ RSpec.describe Idv::WelcomePresenter do
   describe 'the explanation' do
     let(:help_link) { '<a href="https://www.example.com>Learn more about verifying your identity</a>' }
 
-    context 'when a selfie is not required' do
+    context 'for first-time users' do
       it 'uses the getting started message' do
         expect(presenter.explanation_text(help_link)).to eq(
           t(
@@ -46,51 +46,18 @@ RSpec.describe Idv::WelcomePresenter do
         )
       end
     end
-    context 'when a selfie is required' do
-      let(:sp_session) do
-        { biometric_comparison_required: true }
-      end
 
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-      end
+    context 'as part of a step-up for an existing verified user' do
+      let(:user) { build(:user, :proofed) }
 
-      it 'uses the getting started message' do
+      it 'uses the stepping up message' do
         expect(presenter.explanation_text(help_link)).to eq(
           t(
-            'doc_auth.info.getting_started_html',
+            'doc_auth.info.stepping_up_html',
             sp_name: sp.friendly_name,
             link_html: help_link,
           ),
         )
-      end
-
-      context 'as part of a step-up for an existing verified user' do
-        let(:user) { build(:user, :proofed) }
-
-        it 'uses the stepping up message' do
-          expect(presenter.explanation_text(help_link)).to eq(
-            t(
-              'doc_auth.info.stepping_up_html',
-              sp_name: sp.friendly_name,
-              link_html: help_link,
-            ),
-          )
-        end
-      end
-
-      context 'as part of a step-up for a user in the middle of GPO' do
-        let(:user) { create(:user, :with_pending_gpo_profile) }
-
-        it 'uses the stepping up message' do
-          expect(presenter.explanation_text(help_link)).to eq(
-            t(
-              'doc_auth.info.stepping_up_html',
-              sp_name: sp.friendly_name,
-              link_html: help_link,
-            ),
-          )
-        end
       end
     end
   end
