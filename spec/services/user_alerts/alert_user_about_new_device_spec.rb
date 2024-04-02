@@ -9,7 +9,7 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     context 'aggregated new device alerts enabled' do
       before do
         allow(IdentityConfig.store).to receive(
-          :feature_new_device_alert_aggregation,
+          :feature_new_device_alert_aggregation_enabled,
         ).and_return(true)
       end
       it 'sets the user sign_in_new_device_at value to current datetime' do
@@ -21,7 +21,7 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     context 'aggregated new device alerts disenabled' do
       before do
         allow(IdentityConfig.store).to receive(
-          :feature_new_device_alert_aggregation,
+          :feature_new_device_alert_aggregation_enabled,
         ).and_return(false)
       end
       it 'sends an email to all confirmed email addresses' do

@@ -19,5 +19,11 @@ RSpec.describe CreateNewDeviceAlert do
       CreateNewDeviceAlert.new.perform(now)
       expect(user.reload.sign_in_new_device_at).to eq(nil)
     end
+
+    it 'disregards a user with sign_in_new_device_at set to nil' do
+      user.update! sign_in_new_device_at: nil
+      emails_sent = CreateNewDeviceAlert.new.perform(now)
+      expect(emails_sent).to eq(0)
+    end
   end
 end

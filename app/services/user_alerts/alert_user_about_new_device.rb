@@ -3,7 +3,7 @@
 module UserAlerts
   class AlertUserAboutNewDevice
     def self.call(user, device, disavowal_token)
-      if IdentityConfig.store.feature_new_device_alert_aggregation
+      if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
         user.sign_in_new_device_at ||= Time.zone.now
         user.save!
       else
@@ -20,6 +20,19 @@ module UserAlerts
             disavowal_token: disavowal_token,
           ).deliver_now_or_later
         end
+      end
+    end
+    if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
+      def self.send_alert(events)
+        # Stub out for possible email in follow-up work
+        # disavowal_token = SecureRandom.urlsafe_base64(32)
+
+        # user.confirmed_email_addresses.each do |email_address|
+        #   UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
+        #     events: events,
+        #     disavowal_token: disavowal_token,
+        #   ).deliver_now_or_later
+        # end
       end
     end
   end

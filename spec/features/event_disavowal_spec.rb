@@ -25,7 +25,7 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
   context 'when aggregated new device alerts is disabled' do
     before do
       allow(IdentityConfig.store).to receive(
-        :feature_new_device_alert_aggregation,
+        :feature_new_device_alert_aggregation_enabled,
       ).and_return(false)
     end
     scenario 'disavowing a new device sign in' do
