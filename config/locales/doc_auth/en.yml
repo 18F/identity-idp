@@ -255,7 +255,7 @@ en:
       verify_online_link_text: Learn more about verifying online
       you_entered: 'You entered:'
     instructions:
-      bullet1: Have a driver's license or state ID.
+      bullet1: Have a driver’s license or state ID.
       bullet2: Enter your Social Security number
       bullet3: Match to your phone number
       bullet4: Re-enter your %{app_name} password
@@ -268,9 +268,11 @@ en:
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
-      text1: Other forms of ID are not accepted. We'll check that you are the person on your ID.
+      text1: Other forms of ID are not accepted. We’ll check that you are the person
+        on your ID.
       text2: You will not need your physical SSN card.
-      text3: We match your phone number with your personal information and send a one-time code to your phone.
+      text3: We match your phone number with your personal information and send a
+        one-time code to your phone.
       text4: Your password saves and encrypts your personal information.
     tips:
       document_capture_hint: Must be a JPG or PNG

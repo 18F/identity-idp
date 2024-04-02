@@ -287,7 +287,8 @@ fr:
         too_many_faces: Trop de visages
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
         nom, date de naissance et adresse.
-      stepping_up_html: 'Vérifiez à nouveau votre identité pour accéder à ce service. %{link_html}'
+      stepping_up_html: 'Vérifiez à nouveau votre identité pour accéder à ce service.
+        %{link_html}'
       tag: Recommandation
       upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de
         votre carte d’identité depuis cet ordinateur.
@@ -325,9 +326,11 @@ fr:
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1: Les autres pièces d’identité ne sont pas acceptées. Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
+      text1: Les autres pièces d’identité ne sont pas acceptées. Nous vérifierons que
+        vous êtes la personne figurant sur la pièce d’identité.
       text2: Vous n’aurez pas besoin de votre carte de sécurité sociale.
-      text3: Nous comparons votre numéro de téléphone à vos informations personnelles et vous envoyons un code à usage unique sur votre téléphone.
+      text3: Nous comparons votre numéro de téléphone à vos informations personnelles
+        et vous envoyons un code à usage unique sur votre téléphone.
       text4: Votre mot de passe enregistre et crypte vos informations personnelles.
     tips:
       document_capture_hint: Doit être un JPG ou PNG

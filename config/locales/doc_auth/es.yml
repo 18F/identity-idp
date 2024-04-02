@@ -275,7 +275,8 @@ es:
         too_many_faces: Demasiados rostros
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
-      stepping_up_html: 'Verifica tu identidad de nuevo para acceder a este servicio. %{link_html}'
+      stepping_up_html: 'Verifica tu identidad de nuevo para acceder a este servicio.
+        %{link_html}'
       tag: Recomendado
       upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de
         identidad desde esta computadora.
@@ -313,9 +314,11 @@ es:
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
-      text1: No se aceptan otras formas de identificación. Revisaremos que usted sea la persona que figura en su identificación.
+      text1: No se aceptan otras formas de identificación. Revisaremos que usted sea
+        la persona que figura en su identificación.
       text2: No necesitarás tu tarjeta física del seguro social.
-      text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
+      text3: Revisamos que su número de teléfono coincida con su información personal
+        y enviamos un código de un solo uso a su teléfono.
       text4: Tu contraseña permitirá guardar y encriptar tu información personal.
     tips:
       document_capture_hint: Debe ser un JPG o PNG
