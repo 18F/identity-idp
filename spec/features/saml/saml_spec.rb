@@ -503,7 +503,8 @@ RSpec.feature 'saml api', allowed_extra_analytics: [:*] do
       click_submit_default_twice
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
-        [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
+        [{ authn_context: request_authn_contexts,
+           requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
            service_provider: 'http://localhost:3000',
            requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
            force_authn: false,
@@ -537,11 +538,22 @@ RSpec.feature 'saml api', allowed_extra_analytics: [:*] do
       click_agree_and_continue
       click_submit_default_twice
 
+      expected_analytics_authn_context = [
+        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+      ]
+
       expect(fake_analytics.events['SAML Auth Request']).to eq(
-        [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
-           service_provider: 'saml_sp_ial2',
-           force_authn: false,
-           user_fully_authenticated: false }],
+        [
+          {
+            authn_context: expected_analytics_authn_context,
+            requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
+            service_provider: 'saml_sp_ial2',
+            force_authn: false,
+            user_fully_authenticated: false,
+          },
+        ],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -564,7 +576,8 @@ RSpec.feature 'saml api', allowed_extra_analytics: [:*] do
       click_submit_default_twice
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
-        [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
+        [{ authn_context: request_authn_contexts,
+           requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
            service_provider: 'http://localhost:3000',
            requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
            force_authn: false,

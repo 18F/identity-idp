@@ -206,9 +206,11 @@ en:
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: You have the option to verify your identity online, or in person
-        at a participating Post Office
+        at a participating Post Office.
       how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
+      hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can
+        verify your identity at a United States Post Office instead.
       image_loaded: Image loaded
       image_loading: Image loading
       image_updated: Image updated
@@ -242,14 +244,13 @@ en:
         this computer after you take photos. Your mobile phone must have a
         camera and a web browser.
       verify_at_post_office_description: This option is better if you don’t have a
-        mobile device or an easy way to take photos of your ID.
+        phone to take photos of your ID.
       verify_at_post_office_instruction: You’ll enter your ID information online, and
         verify your identity in person at a participating Post Office.
       verify_at_post_office_link_text: Learn more about verifying in person
       verify_identity: We’ll ask for your ID, phone number, and other personal
         information to verify your identity against public records.
-      verify_online_description: This option is better if you have a mobile device or
-        a way to take photos of your ID.
+      verify_online_description: This option is better if you have a phone to take photos of your ID.
       verify_online_instruction: You’ll take photos of your ID to verify your identity
         fully online. Most users finish this process in one sitting.
       verify_online_link_text: Learn more about verifying online
@@ -288,7 +289,6 @@ en:
       document_capture_selfie_text1: Hold your device at eye level
       document_capture_selfie_text2: Make sure your whole face is visible
       document_capture_selfie_text3: Take your photo in a well-lit place
-      most_common: Most Common
       review_issues_id_header_text: 'Review the images of your state‑issued ID:'
       review_issues_id_text1: Did you use a dark background?
       review_issues_id_text2: Did you take the photo on a flat surface?

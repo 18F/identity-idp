@@ -10,7 +10,7 @@ en:
         agency whose service you are trying to access.
       subject: We couldn’t verify your identity
     account_reset_cancel:
-      intro_html: This email confirms you have cancelled your request to delete your
+      intro_html: This email confirms you have canceled your request to delete your
         %{app_name_html} account.
       subject: Request canceled
     account_reset_complete:
@@ -20,8 +20,8 @@ en:
       button: Yes, continue deleting
       cancel_link_text: please cancel
       help_html: If you don’t want to delete your account, %{cancel_account_reset_html}.
-      intro_html: Your %{hours} hour waiting period has ended. Please complete step 2
-        of the process.<br><br> If you’ve been unable to locate your
+      intro_html: Your waiting period of %{waiting_period} has ended. Please complete
+        step 2 of the process.<br><br> If you’ve been unable to locate your
         authentication methods, select “confirm deletion” to delete your
         %{app_name} account.<br><br> In the future, if you need to access
         participating government websites who use %{app_name}, you can create a
@@ -33,13 +33,14 @@ en:
         to cancel.
       header: Your account will be deleted in %{interval}
       intro_html: 'As a security measure, %{app_name} requires a two-step process to
-        delete your account:<br><br> Step One: There is a %{hours} hour waiting
-        period if you have lost access to your authentication methods and need
-        to delete your account. If you locate your authentication methods, you
-        can sign in to your %{app_name} account to cancel this request.<br><br>
-        Step Two: After your %{hours} hour waiting period, you will receive an
-        email that will ask you to confirm the deletion of your %{app_name}
-        account. Your account will not be deleted until you confirm.'
+        delete your account:<br><br> Step One: There is a waiting period of
+        %{waiting_period} if you have lost access to your authentication methods
+        and need to delete your account. If you locate your authentication
+        methods, you can sign in to your %{app_name} account to cancel this
+        request.<br><br> Step Two: After the waiting period of
+        %{waiting_period}, you will receive an email that will ask you to
+        confirm the deletion of your %{app_name} account. Your account will not
+        be deleted until you confirm.'
       subject: How to delete your %{app_name} account
     account_verified:
       change_password_link: change your password

@@ -109,9 +109,11 @@ RSpec.describe 'cancel IdV', allowed_extra_analytics: [:*] do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        proofing_components: { document_check: 'mock', document_type: 'state_id' },
-        request_came_from: 'idv/ssn#show',
-        step: 'ssn',
+        hash_including(
+          proofing_components: { document_check: 'mock', document_type: 'state_id' },
+          request_came_from: 'idv/ssn#show',
+          step: 'ssn',
+        ),
       )
 
       expect(page).to have_unique_form_landmark_labels
