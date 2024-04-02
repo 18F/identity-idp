@@ -1,5 +1,7 @@
 import { useContext } from 'react';
+import { formatHTML } from '@18f/identity-react-i18n';
 import { t } from '@18f/identity-i18n';
+import { getConfigValue } from '@18f/identity-config';
 import { FormError, FormStepsContext } from '@18f/identity-form-steps';
 import type {
   FormStepError,
@@ -28,9 +30,18 @@ interface DocumentSideAcuantCaptureProps {
 export class CameraAccessDeclinedError extends FormError {
   get message() {
     return this.isDetail
-      ? t('doc_auth.errors.camera.blocked_detail')
+      ? t('doc_auth.errors.camera.blocked_detail_html', {
+          app_name: getConfigValue('appName'),
+        })
       : t('doc_auth.errors.camera.blocked');
   }
+}
+
+function cameraMessageProcessor(message: string) {
+  return formatHTML(message, {
+    strong: ({ children }) => <strong>{children}</strong>,
+    span: ({ children }) => <span className="display-block margin-top-1em">{children}</span>,
+  });
 }
 
 function DocumentSideAcuantCapture({
@@ -73,7 +84,15 @@ function DocumentSideAcuantCapture({
       }}
       onCameraAccessDeclined={() => {
         onError(new CameraAccessDeclinedError(), { field: side });
-        onError(new CameraAccessDeclinedError(undefined, { isDetail: true }));
+        onError(
+          new CameraAccessDeclinedError(
+            undefined,
+            {
+              isDetail: true,
+            },
+            cameraMessageProcessor,
+          ),
+        );
       }}
       errorMessage={error ? error.message : undefined}
       name={side}

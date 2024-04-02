@@ -74,9 +74,10 @@ fr:
         heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
       camera:
         blocked: Votre appareil photo est bloqué
-        blocked_detail: Nous n’avons pas la permission d’accéder à l’appareil photo.
-          Veuillez vérifier les paramètres de votre navigateur ou de votre
-          système, recharger cette page ou télécharger une photo à la place.
+        blocked_detail_html: Nous n’avons pas la permission d’accéder à l’appareil
+          photo. Veuillez vérifier les paramètres de votre navigateur ou de
+          votre système, recharger cette page ou télécharger une photo à la
+          place.
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
       card_type: Réessayez avec votre permis de conduire ou carte d’identité délivrée
         par l’État.

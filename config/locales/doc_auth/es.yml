@@ -67,7 +67,7 @@ es:
         heading: No pudimos leer el código de barras en su ID.
       camera:
         blocked: Su cámara está bloqueada
-        blocked_detail: No tenemos permiso para acceder a la cámara. Por favor,
+        blocked_detail_html: No tenemos permiso para acceder a la cámara. Por favor,
           compruebe la configuración de su navegador o sistema, recargue esta
           página o suba una foto en su lugar.
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
