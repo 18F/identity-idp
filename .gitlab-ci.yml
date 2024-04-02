@@ -72,7 +72,7 @@ workflow:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod" || $CI_COMMIT_BRANCH =~ /^stages\/rc-.+/'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod" || $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
 
 install:
@@ -751,7 +751,7 @@ ecr-scan-ci:
 build-rc-container:
   stage: eks_release
   rules:
-    - if: $CI_COMMIT_BRANCH =~ /^stages\/rc-.+/
+    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
     - when: never    
   needs: []
   environment:
@@ -797,6 +797,9 @@ test-deployment:
   stage: eks_release
   needs:
     - job: build-rc-container
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
+    - when: never
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
