@@ -934,8 +934,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         to receive(:biometric_comparison_required?).
         and_return(true)
       allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
-      allow_any_instance_of(DocumentCaptureSessionResult).
-        to receive(:selfie_status).and_return(:success)
 
       perform_in_browser(:desktop) do
         sign_in_and_2fa_user(user)
