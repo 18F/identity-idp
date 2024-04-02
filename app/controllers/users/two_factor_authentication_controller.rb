@@ -186,6 +186,10 @@ module Users
           context: context,
         )
       end
+
+      if exceeded_short_term_otp_rate_limit?
+        return handle_too_many_short_term_otp_sends(method: method, default: default)
+      end
       return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
       @telephony_result = send_user_otp(method)
@@ -259,6 +263,19 @@ module Users
         user: current_user,
         rate_limit_type: :phone_confirmation,
       )
+    end
+
+    def short_term_otp_rate_limiter
+      @short_term_otp_rate_limiter ||= RateLimiter.new(
+        user: current_user,
+        rate_limit_type: :short_term_phone_otp,
+      )
+    end
+
+    def exceeded_short_term_otp_rate_limit?
+      return false unless IdentityConfig.store.short_term_phone_otp_rate_limiter_enabled
+      short_term_otp_rate_limiter.increment!
+      short_term_otp_rate_limiter.limited?
     end
 
     def exceeded_phone_confirmation_limit?
@@ -342,6 +359,21 @@ module Users
 
     def webauthn_params
       { platform: current_user.webauthn_configurations.platform_authenticators.present? }
+    end
+
+    def handle_too_many_short_term_otp_sends(method:, default:)
+      flash[:error] = t(
+        'errors.messages.phone_confirmation_limited',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [short_term_otp_rate_limiter.expires_at, Time.zone.now].compact.max,
+        ),
+      )
+
+      redirect_to login_two_factor_url(
+        otp_delivery_preference: method,
+        otp_make_default_number: default,
+      )
     end
 
     def handle_too_many_confirmation_sends
