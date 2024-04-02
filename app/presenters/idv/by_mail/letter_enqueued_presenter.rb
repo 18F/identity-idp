@@ -6,7 +6,9 @@ module Idv
 
       def initialize(idv_session)
         @pii = idv_session.pii_from_doc ||
-               idv_session.user_session.dig('idv/in_person', :pii_from_user)
+               idv_session.user_session.dig('idv/in_person', :pii_from_user) ||
+               Pii::Cacher.new(idv_session.current_user, idv_session.user_session).
+                 fetch(idv_session.current_user.gpo_verification_pending_profile.id)
         @sp = idv_session.service_provider
       end
 
