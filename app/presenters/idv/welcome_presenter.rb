@@ -26,13 +26,12 @@ module Idv
       if first_time_idv?
         t(
           'doc_auth.info.getting_started_html',
-          sp_name: sp_name,
+          sp_name:,
           link_html: help_link,
         )
       else
         t(
           'doc_auth.info.stepping_up_html',
-          sp_name:,
           link_html: help_link,
         )
       end
