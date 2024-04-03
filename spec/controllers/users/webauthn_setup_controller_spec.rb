@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
   include WebAuthnHelper
+  include UserAgentHelper
 
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
@@ -59,6 +60,16 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
 
         get :new
       end
+
+      context 'with a mobile device' do
+        it 'sets mobile to true' do
+          request.headers['User-Agent'] = mobile_user_agent
+
+          get :new
+          expect(assigns(:mobile)).to be true
+        end
+      end
+
       context 'when adding webauthn platform to existing user MFA methods' do
         it 'should set need_to_set_up_additional_mfa to false' do
           get :new, params: { platform: true }
@@ -249,10 +260,22 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
 
       context 'with a single MFA method chosen on account creation' do
         let(:mfa_selections) { ['webauthn_platform'] }
+
         it 'should direct user to second mfa suggestion page' do
           patch :confirm, params: params
 
           expect(response).to redirect_to(auth_method_confirmation_url)
+        end
+
+        context 'with a mobile device' do
+          let(:mfa_selections) { ['webauthn'] }
+
+          it 'sets mobile to true' do
+            request.headers['User-Agent'] = mobile_user_agent
+
+            get :new
+            expect(assigns(:mobile)).to be true
+          end
         end
       end
 
