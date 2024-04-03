@@ -151,6 +151,19 @@ const App = composeComponents(
       passiveLivenessSrc: getSelfieCaptureEnabled()
         ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
         : undefined,
+      faceLandmarkWeightsSrc: getSelfieCaptureEnabled()
+        ? acuantVersion && `/acuant/${acuantVersion}/tiny_face_detector_model-weights_manifest.json`
+        : undefined,
+      tinyFaceLandmarkWeightsSrc: getSelfieCaptureEnabled()
+        ? acuantVersion &&
+          `/acuant/${acuantVersion}/face_landmark_68_tiny_model-weights_manifest.json`
+        : undefined,
+      faceLandmarkModelSrc: getSelfieCaptureEnabled()
+        ? acuantVersion && `/acuant/${acuantVersion}/face_landmark_68_tiny_model.bin`
+        : undefined,
+      faceLandmarkShardSrc: getSelfieCaptureEnabled()
+        ? acuantVersion && `/acuant/${acuantVersion}/tiny_face_detector_model-shard1`
+        : undefined,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
       endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
       glareThreshold,
