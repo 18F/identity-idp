@@ -65,8 +65,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def new_device_sign_in_attempt_after_2fa
-    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_attempt(
-      fully_authenticated: true,
+    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_after_2fa(
       events: [
         unsaveable(
           Event.new(
@@ -90,8 +89,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def new_device_sign_in_attempt_before_2fa
-    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_attempt(
-      fully_authenticated: false,
+    UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_before_2fa(
       events: [
         unsaveable(
           Event.new(
