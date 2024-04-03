@@ -12,6 +12,9 @@
         <% events.each do |event| %>
           <tr>
             <td class="font-family-mono">
+              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa') %>
+              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa') %>
+              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa') %>
               <%= t(event.event_type, scope: [:user_mailer, :new_device_sign_in_attempts, :events]) %><br />
               <%= EasternTimePresenter.new(event.created_at) %>
             </td>
