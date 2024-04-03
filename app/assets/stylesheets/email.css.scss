@@ -1,4 +1,4 @@
-@use '@18f/identity-design-system/packages/uswds-core' as * with (
+@use 'uswds-core' as * with (
   $theme-table-border-color: 'base-lighter',
   $theme-table-header-background-color: 'base-lightest'
 );
