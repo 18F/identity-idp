@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Monkey-patch Capybara::Node::Simple#visible? to consider a dialog element without an open
 # attribute as hidden.
 #
