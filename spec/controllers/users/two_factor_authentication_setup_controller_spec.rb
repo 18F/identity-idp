@@ -29,7 +29,7 @@ RSpec.describe(
       context 'having already visited the PIV interstitial page' do
         it 'tracks the visit in analytics' do
           get :index
-  
+
           expect(@analytics).to have_logged_event(
             'User Registration: 2FA Setup visited',
             enabled_mfa_methods_count: 0,
@@ -45,11 +45,10 @@ RSpec.describe(
 
         it 'redirects user to piv_recommended_path' do
           get :index
-  
+
           expect(response).to redirect_to(login_piv_cac_recommended_url)
         end
       end
-      
     end
 
     context 'when signed out' do
