@@ -30,7 +30,7 @@ class IdentityConfig
     end,
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
-      value.parse_csv.to_a
+      CSV.parse_line(value).to_a
     end,
     integer: proc do |value|
       Integer(value)
