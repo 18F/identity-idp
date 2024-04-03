@@ -468,6 +468,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  feature_new_device_alert_aggregation_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true

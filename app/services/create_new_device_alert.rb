@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateNewDeviceAlert < ApplicationJob
   include UserAlerts
   queue_as :long_running
@@ -24,9 +26,7 @@ class CreateNewDeviceAlert < ApplicationJob
   end
 
   def clear_new_device_and_send_email(user)
-    user.sign_in_new_device_at = nil
-    user.save
-    AlertUserAboutNewDevice.send_alert(user.recent_events)
+    AlertUserAboutNewDevice.send_alert(user)
 
     true
   end
