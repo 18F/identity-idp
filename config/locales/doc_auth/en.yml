@@ -255,7 +255,7 @@ en:
       verify_online_link_text: Learn more about verifying online
       you_entered: 'You entered:'
     instructions:
-      bullet1: Have a driver’s license or state ID.
+      bullet1: Have a driver’s license or state ID
       bullet2: Enter your Social Security number
       bullet3: Match to your phone number
       bullet4: Re-enter your %{app_name} password
