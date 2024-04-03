@@ -806,6 +806,9 @@ test-deployment:
   interruptible: true
   tags:
     - build-pool
+  image:
+    name: bitnami/git:latest
+    entrypoint: ['']
   before_script:
     - apt-get update && apt-get install -y yq
   script:
