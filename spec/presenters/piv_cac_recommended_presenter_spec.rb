@@ -73,7 +73,7 @@ RSpec.describe PivCacRecommendedPresenter do
     end
   end
 
-  describe '#skip_type' do
+  describe '#skip_text' do
     context 'when existing user' do
       let(:user) { create(:user, :with_phone, { email: 'example@example.mil' }) }
       it 'should return skip text' do

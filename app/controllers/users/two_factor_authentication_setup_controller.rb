@@ -74,12 +74,7 @@ module Users
 
     def process_valid_form
       user_session[:mfa_selections] = @two_factor_options_form.selection
-
-      if user_session[:mfa_selections].first.present?
-        redirect_to firs_mfa_selection_path
-      else
-        redirect_to after_mfa_setup_path
-      end
+      redirect_to(first_mfa_selection_path || after_mfa_setup_path)
     end
 
     def two_factor_options_form_params

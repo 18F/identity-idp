@@ -56,7 +56,7 @@ module MfaSetupConcern
     mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2
   end
 
-  def firs_mfa_selection_path
+  def first_mfa_selection_path
     confirmation_path(user_session[:mfa_selections].first)
   end
 
