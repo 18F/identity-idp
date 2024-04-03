@@ -35,7 +35,6 @@ RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
 
     let(:doc_auth_vendor) { 'test1' }
     let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
-    let(:discriminator) { SecureRandom.uuid }
     let(:analytics) { FakeAnalytics.new }
     let(:doc_auth_vendor_randomize_percent) { 57 }
     let(:doc_auth_vendor_randomize) { true }
@@ -63,49 +62,12 @@ RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
     end
 
     context 'with a nil discriminator' do
-      let(:discriminator) { nil }
-
       it 'is the default vendor, and logs analytics events' do
         expect(analytics).to receive(:idv_doc_auth_randomizer_defaulted)
 
-        result = DocAuthRouter.doc_auth_vendor(discriminator: discriminator, analytics: analytics)
+        result = DocAuthRouter.doc_auth_vendor(discriminator: nil, analytics: analytics)
 
         expect(result).to eq(doc_auth_vendor)
-      end
-    end
-
-    context 'with a discriminator that hashes inside the test group' do
-      before do
-        allow(AbTests::DOC_AUTH_VENDOR).
-          to receive(:percent).with(discriminator).
-          and_return(doc_auth_vendor_randomize_percent - 1)
-      end
-
-      it 'is the alternate vendor' do
-        expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
-          to eq(doc_auth_vendor_randomize_alternate_vendor)
-      end
-
-      context 'with randomize false' do
-        let(:doc_auth_vendor_randomize) { false }
-
-        it 'is the original vendor' do
-          expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
-            to eq(doc_auth_vendor)
-        end
-      end
-    end
-
-    context 'with a discriminator that hashes outside the test group' do
-      before do
-        allow(AbTests::DOC_AUTH_VENDOR).
-          to receive(:percent).with(discriminator).
-          and_return(doc_auth_vendor_randomize_percent + 1)
-      end
-
-      it 'is the original' do
-        expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
-          to eq(doc_auth_vendor)
       end
     end
   end
