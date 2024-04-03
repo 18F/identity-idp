@@ -769,6 +769,7 @@ build-rc-container:
     - echo $CI_ENVIRONMENT_SLUG
     - echo $CI_COMMIT_BRANCH
     - echo $CI_COMMIT_SHA
+    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/') 
     - |-
       KANIKOCFG="\"credsStore\":\"ecr-login\""
       if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
@@ -780,7 +781,7 @@ build-rc-container:
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_review_app.Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-idp/rc:${CI_COMMIT_BRANCH}"
+      --destination "${ECR_REGISTRY}/identity-idp/rc:${rcTag}"
       --cache-repo="${ECR_REGISTRY}/identity-idp/rc/cache"
       --cache-ttl=168h
       --cache=true
@@ -811,10 +812,11 @@ test-deployment:
   #before_script:
   #  - apt-get update && apt-get install -y yq
   script:
+    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
-    - yq -i eval ".idp.image.tag = \"${CI_COMMIT_BRANCH}\"" ./environments/${testEnvironment}.yaml
-    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" && git push origin ${gitBranch}
+    - yq -i eval ".idp.image.tag = \"${rcTag}\"" ./environments/${testEnvironment}.yaml
+    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}" && git push origin ${gitBranch}
     - git push -o merge_request.create -o merge_requests.target=main -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
  
 # Testing step for test environment
