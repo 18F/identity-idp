@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StoreSpMetadataInSession
   def initialize(session:, request_id:)
     @session = session

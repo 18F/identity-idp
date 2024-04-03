@@ -1,7 +1,17 @@
+# frozen_string_literal: true
+
 module EffectiveUser
   def effective_user
     return current_user if effective_user_id == current_user&.id
-    return User.find_by(id: effective_user_id) if effective_user_id
+
+    user = User.find_by(id: effective_user_id) if effective_user_id
+
+    if user.nil?
+      session.delete(:doc_capture_user_id)
+      return current_user
+    end
+
+    user
   end
 
   private

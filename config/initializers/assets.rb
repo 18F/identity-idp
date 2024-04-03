@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Be sure to restart your server when you modify this file.
 
 require 'extensions/propshaft/asset'
@@ -11,4 +13,5 @@ Rails.application.config.assets.paths.push(
   'node_modules/intl-tel-input/build/css',
   'node_modules/@18f/identity-design-system/dist/assets/img',
   'node_modules/@18f/identity-design-system/dist/assets/fonts',
+  'node_modules/@18f/identity-design-system/dist/assets/js',
 )

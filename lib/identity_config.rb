@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'csv'
+
 class IdentityConfig
   GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
   GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
@@ -26,7 +30,7 @@ class IdentityConfig
     end,
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
-      value.split(',')
+      value.parse_csv.to_a
     end,
     integer: proc do |value|
       Integer(value)
@@ -108,6 +112,7 @@ class IdentityConfig
     config.add(:aamva_verification_url)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
+    config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)
     config.add(:account_suspended_support_code, type: :string)
     config.add(:acuant_assure_id_password)
     config.add(:acuant_assure_id_subscription_id)
@@ -171,7 +176,6 @@ class IdentityConfig
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disable_logout_get_request, type: :boolean)
-    config.add(:disallow_all_web_crawlers, type: :boolean)
     config.add(:disposable_email_services, type: :json)
     config.add(:doc_auth_attempt_window_in_minutes, type: :integer)
     config.add(:doc_auth_check_failed_image_resubmission_enabled, type: :boolean)
@@ -351,7 +355,7 @@ class IdentityConfig
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)
-    config.add(:phone_carrier_registration_blocklist, type: :comma_separated_string_list)
+    config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)
     config.add(:phone_confirmation_max_attempts, type: :integer)
     config.add(
@@ -375,6 +379,7 @@ class IdentityConfig
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url, type: :string)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
+    config.add(:prometheus_exporter, type: :boolean)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_ssn_max_attempt_window_in_minutes, type: :integer)
@@ -503,6 +508,7 @@ class IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
+    config.add(:x509_presented_hash_attribute_requested_issuers, type: :json)
 
     @key_types = config.key_types
     @unused_keys = config_map.keys - config.written_env.keys

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::PersonalKeyController do
   include FlowPolicyHelper
   include SamlAuthHelper
   include PersonalKeyValidator
@@ -442,12 +442,13 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
-          address_verification_method: 'phone',
-          fraud_review_pending: false,
-          fraud_rejection: false,
-          in_person_verification_pending: false,
-          deactivation_reason: nil,
-          proofing_components: nil,
+          hash_including(
+            address_verification_method: 'phone',
+            fraud_review_pending: false,
+            fraud_rejection: false,
+            in_person_verification_pending: false,
+            deactivation_reason: nil,
+          ),
         )
       end
     end
@@ -489,12 +490,13 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
-          address_verification_method: 'phone',
-          fraud_review_pending: false,
-          fraud_rejection: false,
-          deactivation_reason: nil,
-          in_person_verification_pending: false,
-          proofing_components: nil,
+          hash_including(
+            address_verification_method: 'phone',
+            fraud_review_pending: false,
+            fraud_rejection: false,
+            in_person_verification_pending: false,
+            proofing_components: nil,
+          ),
         )
       end
     end
@@ -517,12 +519,13 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
-            address_verification_method: 'phone',
-            fraud_review_pending: false,
-            fraud_rejection: false,
-            in_person_verification_pending: false,
-            deactivation_reason: nil,
-            proofing_components: nil,
+            hash_including(
+              address_verification_method: 'phone',
+              fraud_review_pending: false,
+              fraud_rejection: false,
+              in_person_verification_pending: false,
+              proofing_components: nil,
+            ),
           )
         end
       end
@@ -544,12 +547,13 @@ RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
 
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
-            fraud_review_pending: true,
-            fraud_rejection: false,
-            address_verification_method: 'phone',
-            in_person_verification_pending: false,
-            deactivation_reason: nil,
-            proofing_components: nil,
+            hash_including(
+              fraud_review_pending: true,
+              fraud_rejection: false,
+              address_verification_method: 'phone',
+              in_person_verification_pending: false,
+              deactivation_reason: nil,
+            ),
           )
         end
       end

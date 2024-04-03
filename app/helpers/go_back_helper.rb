@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GoBackHelper
   def go_back_path
     referer_string = request.referer

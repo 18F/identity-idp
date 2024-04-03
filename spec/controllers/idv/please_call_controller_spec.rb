@@ -34,14 +34,15 @@ RSpec.describe Idv::PleaseCallController do
     expect(response).to redirect_to(idv_not_verified_url)
   end
 
-  it 'renders the show template' do
+  it 'logs an analytics event' do
     stub_analytics
 
-    expect(@analytics).to receive(:track_event).with(
-      'IdV: Verify please call visited',
-      proofing_components: nil,
-    )
+    get :show
 
+    expect(@analytics).to have_logged_event('IdV: Verify please call visited')
+  end
+
+  it 'renders the show template' do
     get :show
 
     expect(response).to render_template :show

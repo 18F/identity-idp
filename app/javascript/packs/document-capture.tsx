@@ -37,8 +37,11 @@ interface AppRootData {
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
+  skipDocAuthFromHandoff: string;
   howToVerifyURL: string;
+  previousStepUrl: string;
   uiExitQuestionSectionEnabled: string;
+  docAuthSelfieDesktopTestMode: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -104,8 +107,11 @@ const {
   optedInToInPersonProofing,
   usStatesTerritories = '',
   skipDocAuth,
+  skipDocAuthFromHandoff,
   howToVerifyUrl,
+  previousStepUrl,
   uiExitQuestionSectionEnabled = '',
+  docAuthSelfieDesktopTestMode,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -129,7 +135,9 @@ const App = composeComponents(
         optedInToInPersonProofing: optedInToInPersonProofing === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
         skipDocAuth: skipDocAuth === 'true',
+        skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
         howToVerifyURL: howToVerifyUrl,
+        previousStepURL: previousStepUrl,
       },
     },
   ],
@@ -178,6 +186,15 @@ const App = composeComponents(
     },
   ],
   [
+    SelfieCaptureContext.Provider,
+    {
+      value: {
+        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+        isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
+      },
+    },
+  ],
+  [
     FailedCaptureAttemptsContextProvider,
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
@@ -189,14 +206,6 @@ const App = composeComponents(
     {
       value: {
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-      },
-    },
-  ],
-  [
-    SelfieCaptureContext.Provider,
-    {
-      value: {
-        isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
     },
   ],

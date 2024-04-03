@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeletedAccountsReport
   def self.call(service_provider, days_ago)
     report_sql = <<~SQL

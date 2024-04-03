@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ByMail::RequestLetterController, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::ByMail::RequestLetterController,
+               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -165,12 +166,13 @@ RSpec.describe Idv::ByMail::RequestLetterController, allowed_extra_analytics: [:
 
         expect(@analytics).to have_logged_event(
           'IdV: USPS address letter requested',
-          resend: false,
-          phone_step_attempts: 1,
-          first_letter_requested_at: nil,
-          hours_since_first_letter: 0,
-          proofing_components: nil,
-          **ab_test_args,
+          hash_including(
+            resend: false,
+            phone_step_attempts: 1,
+            first_letter_requested_at: nil,
+            hours_since_first_letter: 0,
+            **ab_test_args,
+          ),
         )
       end
 
@@ -221,23 +223,26 @@ RSpec.describe Idv::ByMail::RequestLetterController, allowed_extra_analytics: [:
 
         expect(@analytics).to have_logged_event(
           'IdV: USPS address letter requested',
-          resend: true,
-          phone_step_attempts: 1,
-          first_letter_requested_at: pending_profile.gpo_verification_pending_at,
-          hours_since_first_letter: 24,
-          proofing_components: nil,
-          **ab_test_args,
+          hash_including(
+            resend: true,
+            phone_step_attempts: 1,
+            first_letter_requested_at: pending_profile.gpo_verification_pending_at,
+            hours_since_first_letter: 24,
+            **ab_test_args,
+          ),
         )
 
         expect(@analytics).to have_logged_event(
           'IdV: USPS address letter enqueued',
-          resend: true,
-          first_letter_requested_at: pending_profile.gpo_verification_pending_at,
-          hours_since_first_letter: 24,
-          enqueued_at: Time.zone.now,
-          phone_step_attempts: 1,
-          proofing_components: nil,
-          **ab_test_args,
+          hash_including(
+            resend: true,
+            first_letter_requested_at: pending_profile.gpo_verification_pending_at,
+            hours_since_first_letter: 24,
+            enqueued_at: Time.zone.now,
+            phone_step_attempts: 1,
+            proofing_components: nil,
+            **ab_test_args,
+          ),
         )
       end
 

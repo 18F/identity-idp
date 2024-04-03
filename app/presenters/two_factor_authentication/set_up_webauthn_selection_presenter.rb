@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class SetUpWebauthnSelectionPresenter < SetUpSelectionPresenter
     def type
@@ -14,6 +16,10 @@ module TwoFactorAuthentication
 
     def info
       t('two_factor_authentication.two_factor_choice_options.webauthn_info')
+    end
+
+    def phishing_resistant?
+      true
     end
 
     def mfa_configuration_count

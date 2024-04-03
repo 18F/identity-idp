@@ -270,20 +270,6 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe '#disallow_all_web_crawlers?' do
-    it 'returns true when IdentityConfig setting is true' do
-      allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { true }
-
-      expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
-    end
-
-    it 'returns false when IdentityConfig setting is false' do
-      allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { false }
-
-      expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
-    end
-  end
-
   describe '#identity_pki_local_dev?' do
     context 'when in development mode' do
       before(:each) do

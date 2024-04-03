@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'identity/hostdata'
 
 module Reports
   class SpUserCountsReport < BaseReport
-    REPORT_NAME = 'sp-user-counts-report'.freeze
+    REPORT_NAME = 'sp-user-counts-report'
 
     def perform(_date)
       user_counts = transaction_with_timeout do

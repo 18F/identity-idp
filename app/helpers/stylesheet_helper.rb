@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Rails/HelperInstanceVariable
 module StylesheetHelper
   def stylesheet_tag_once(*names)

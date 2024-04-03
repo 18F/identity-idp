@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PivCacAuthenticationSetupPresenter < PivCacAuthenticationSetupBasePresenter
   def title
     t('titles.piv_cac_setup.new')

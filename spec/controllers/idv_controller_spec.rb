@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe IdvController, allowed_extra_analytics: [:*] do
+RSpec.describe IdvController do
   before do
     stub_sign_in
   end
@@ -12,9 +12,8 @@ RSpec.describe IdvController, allowed_extra_analytics: [:*] do
     end
 
     it 'tracks page visit' do
-      expect(@analytics).to receive(:track_event).with(analytics_name)
-
       get :index
+      expect(@analytics).to have_logged_event(analytics_name)
     end
 
     it 'does not track page visit if profile is active' do
@@ -22,9 +21,9 @@ RSpec.describe IdvController, allowed_extra_analytics: [:*] do
 
       stub_sign_in(profile.user)
 
-      expect(@analytics).to_not receive(:track_event).with(analytics_name)
-
       get :index
+
+      expect(@analytics).not_to have_logged_event(analytics_name)
     end
 
     it 'redirects to please call page if fraud review is pending' do
@@ -59,10 +58,11 @@ RSpec.describe IdvController, allowed_extra_analytics: [:*] do
 
       context 'but user needs to redo idv with biometric' do
         let(:current_sp) { create(:service_provider) }
+
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
           session[:sp] =
-            { issuer: current_sp.issuer, biometric_comparison_required: true }
+            { issuer: current_sp.issuer, vtr: ['C2.Pb'], biometric_comparison_required: true }
         end
 
         it 'redirects to welcome' do

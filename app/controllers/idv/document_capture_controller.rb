@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class DocumentCaptureController < ApplicationController
     include Idv::AvailabilityConcern
@@ -7,7 +9,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
-    before_action :confirm_step_allowed
+    before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
     before_action :override_csp_to_allow_acuant
 
     def show
@@ -47,6 +49,7 @@ module Idv
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         skip_doc_auth: idv_session.skip_doc_auth,
+        skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         doc_auth_selfie_capture: decorated_sp_session.selfie_required?,
       }.merge(
@@ -62,7 +65,9 @@ module Idv
         preconditions: ->(idv_session:, user:) {
                          idv_session.flow_path == 'standard' && (
                            # mobile
+                           idv_session.skip_doc_auth_from_handoff ||
                            idv_session.skip_hybrid_handoff ||
+                            idv_session.skip_doc_auth ||
                             !idv_session.selfie_check_required || # desktop but selfie not required
                              idv_session.desktop_selfie_test_mode_enabled?
                          )
@@ -107,6 +112,23 @@ module Idv
         extra = { stored_result_present: stored_result.present? }
         failure(I18n.t('doc_auth.errors.general.network_error'), extra)
       end
+    end
+
+    def allow_direct_ipp?
+      return false unless idv_session.welcome_visited &&
+                          idv_session.idv_consent_given
+      # not allowed when no step param and action:show(get request)
+      return false if params[:step].blank? || params[:action].to_s != 'show' ||
+                      idv_session.flow_path == 'hybrid'
+      # Only allow direct access to document capture if IPP available
+      return false unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
+                          Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
+      @previous_step_url = params[:step] == 'hybrid_handoff' ? idv_hybrid_handoff_path : nil
+      # allow
+      idv_session.flow_path = 'standard'
+      idv_session.skip_doc_auth_from_handoff = true
+      idv_session.skip_hybrid_handoff = nil
+      true
     end
   end
 end

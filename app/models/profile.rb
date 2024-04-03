@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profile < ApplicationRecord
   belongs_to :user
   # rubocop:disable Rails/InverseOf
@@ -207,6 +209,7 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
+      in_person_verification_pending_at: nil,
     )
   end
 

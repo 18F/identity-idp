@@ -34,6 +34,8 @@ es:
       cancel: Sí, cancelar
       confirm: Confirmar
       continue: Continuar
+      continue_ipp: Continúe en persona
+      continue_remote: Continúe en línea
       delete: Borrar
       disable: Borrar
       edit: Editar

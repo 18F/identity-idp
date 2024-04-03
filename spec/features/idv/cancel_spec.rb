@@ -109,9 +109,11 @@ RSpec.describe 'cancel IdV', allowed_extra_analytics: [:*] do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        proofing_components: { document_check: 'mock', document_type: 'state_id' },
-        request_came_from: 'idv/ssn#show',
-        step: 'ssn',
+        hash_including(
+          proofing_components: { document_check: 'mock', document_type: 'state_id' },
+          request_came_from: 'idv/ssn#show',
+          step: 'ssn',
+        ),
       )
 
       expect(page).to have_unique_form_landmark_labels
@@ -124,8 +126,10 @@ RSpec.describe 'cancel IdV', allowed_extra_analytics: [:*] do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation go back',
-        step: 'ssn',
-        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        hash_including(
+          proofing_components: { document_check: 'mock', document_type: 'state_id' },
+          step: 'ssn',
+        ),
       )
 
       click_link t('links.cancel')
@@ -133,9 +137,10 @@ RSpec.describe 'cancel IdV', allowed_extra_analytics: [:*] do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: start over',
-        location: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id' },
-        step: 'ssn',
+        hash_including(
+          proofing_components: { document_check: 'mock', document_type: 'state_id' },
+          step: 'ssn',
+        ),
       )
 
       complete_doc_auth_steps_before_ssn_step
@@ -145,8 +150,10 @@ RSpec.describe 'cancel IdV', allowed_extra_analytics: [:*] do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        step: 'ssn',
-        proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        hash_including(
+          step: 'ssn',
+          proofing_components: { document_check: 'mock', document_type: 'state_id' },
+        ),
       )
     end
   end

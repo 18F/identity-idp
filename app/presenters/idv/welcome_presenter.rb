@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class WelcomePresenter
     include ActionView::Helpers::TranslationHelper
@@ -25,7 +27,7 @@ module Idv
     end
 
     def explanation_text(help_link)
-      if selfie_required?
+      if step_up_selfie_required?
         t(
           'doc_auth.info.stepping_up_html',
           sp_name:,
@@ -65,7 +67,7 @@ module Idv
         ),
 
         bullet_point(
-          t('doc_auth.instructions.bullet4', app_name: sp_name),
+          t('doc_auth.instructions.bullet4', app_name: APP_NAME),
           t('doc_auth.instructions.text4'),
         ),
       ]
@@ -75,8 +77,17 @@ module Idv
 
     attr_accessor :decorated_sp_session
 
+    def current_user
+      decorated_sp_session&.current_user
+    end
+
     def bullet_point(bullet, text)
       OpenStruct.new(bullet: bullet, text: text)
+    end
+
+    def step_up_selfie_required?
+      !!(current_user&.identity_verified? || current_user&.pending_profile?) &&
+        selfie_required?
     end
   end
 end

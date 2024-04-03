@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneErrorsController do
+RSpec.describe Idv::PhoneErrorsController,
+               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
@@ -14,7 +15,6 @@ RSpec.describe Idv::PhoneErrorsController do
   before do
     allow(subject).to receive(:remaining_submit_attempts).and_return(5)
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     if user
@@ -59,13 +59,13 @@ RSpec.describe Idv::PhoneErrorsController do
           end
 
           it 'logs an event' do
-            expect(@analytics).to receive(:track_event).with(
+            get action
+            expect(@analytics).to have_logged_event(
               'IdV: phone error visited',
               hash_including(
                 type: action,
               ),
             )
-            get action
           end
 
           context 'fetch() request from form-steps-wait JS' do
@@ -77,11 +77,8 @@ RSpec.describe Idv::PhoneErrorsController do
               expect(response).to have_http_status(204)
             end
             it 'does not log an event' do
-              expect(@analytics).not_to receive(:track_event).with(
-                'IdV: phone error visited',
-                anything,
-              )
               get action
+              expect(@analytics).not_to have_logged_event('IdV: phone error visited')
             end
           end
         end
@@ -158,7 +155,7 @@ RSpec.describe Idv::PhoneErrorsController do
       it 'logs an event' do
         get action
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: phone error visited',
           type: action,
           remaining_submit_attempts: 4,
@@ -211,7 +208,7 @@ RSpec.describe Idv::PhoneErrorsController do
       it 'logs an event' do
         get action
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: phone error visited',
           type: action,
           remaining_submit_attempts: 4,
@@ -243,7 +240,7 @@ RSpec.describe Idv::PhoneErrorsController do
 
           get action
 
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'IdV: phone error visited',
             type: action,
             limiter_expires_at: attempted_at + rate_limit_window,
@@ -263,11 +260,8 @@ RSpec.describe Idv::PhoneErrorsController do
         end
 
         it 'does not log an event' do
-          expect(@analytics).not_to receive(:track_event).with(
-            'IdV: phone error visited',
-            anything,
-          )
           get action
+          expect(@analytics).not_to have_logged_event('IdV: phone error visited')
         end
       end
     end

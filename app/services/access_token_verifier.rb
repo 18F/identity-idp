@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccessTokenVerifier
   include ActionView::Helpers::TranslationHelper
   include ActiveModel::Model

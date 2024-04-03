@@ -171,6 +171,7 @@ fr:
       google_policy_link: règles de confidentialité
       google_tos_link: conditions de service
       login_tos_link: conditions d’utilisation
+    recommended: Recommandation
     totp_header_text: Entrez votre code d’application d’authentification
     two_factor_aal3_choice: Authentification supplémentaire requise
     two_factor_aal3_choice_intro: Cette application nécessite un niveau de sécurité
@@ -199,8 +200,8 @@ fr:
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
       webauthn: Clef de sécurité
-      webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous
-        branchez sur votre appareil.
+      webauthn_info: Connectez votre clé de sécurité physique à votre appareil. Vous
+        n’aurez pas besoin d’entrer un code.
       webauthn_platform: Déverrouillage facial ou tactile
       webauthn_platform_info: Utilisez votre visage ou votre empreinte digitale pour
         accéder à votre compte sans code à usage unique.

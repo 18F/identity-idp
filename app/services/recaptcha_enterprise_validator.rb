@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class RecaptchaEnterpriseValidator < RecaptchaValidator
-  BASE_VERIFICATION_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1/projects'.freeze
+  BASE_VERIFICATION_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1/projects'
 
   private
 

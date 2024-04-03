@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordStrengthComponent < BaseComponent
   attr_reader :input_id, :forbidden_passwords, :minimum_length, :tag_options
 

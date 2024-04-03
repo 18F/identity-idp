@@ -7,6 +7,7 @@ es:
       document_capture_dialog: Captura del documento
     buttons:
       add_new_photos: Añadir nuevas fotos
+      close: Cerrar
       continue: Continuar
       take_or_upload_picture_html: '<lg-take-photo>Toma una
         foto</lg-take-photo><lg-or> o </lg-or> <lg-upload>Sube una
@@ -48,10 +49,10 @@ es:
           identidad. Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
-        selfie_not_live: 'Intenta volver a tomarte una foto. Asegúrate de que tu rostro
-          completo esté claro y visible en la foto.'
-        selfie_poor_quality: 'Intenta volver a tomarte una foto. Asegúrate de que tu
-          rostro completo esté claro y visible en la foto.'
+        selfie_not_live: Intente tomar de nuevo una foto de usted. Asegúrese de que su
+          rostro se vea claramente en la foto.
+        selfie_poor_quality: 'Intente tomar de nuevo una foto de usted. Asegúrese de que
+          su rostro se vea claramente en la foto.'
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
           nuevas fotos.
         visible_color_check: No pudimos verificar su documento de identidad. Puede que
@@ -107,7 +108,8 @@ es:
         network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
           enviar sus imágenes de nuevo más tarde.
         no_liveness: Intente tomar nuevas fotografías.
-        selfie_failure: No pudimos verificar su foto. Trate de tomarse otra foto.
+        selfie_failure: Intente tomar de nuevo sus fotos. Asegúrese de que sus fotos
+          estén claras y enfocadas.
       glare:
         failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que su foto tenga
@@ -194,6 +196,7 @@ es:
       front: Anverso de su licencia de conducir o identificación estatal
       how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
+      hybrid_handoff_selfie: Ingrese su número de celular para cambiar de dispositivo
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
       no_ssn: ¿No tiene un número de Seguro Social?
@@ -241,6 +244,9 @@ es:
       how_to_verify_troubleshooting_options_header: ¿Quiere saber más sobre cómo verificar su identidad?
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
+      hybrid_handoff_ipp_html: <strong>¿No tiene celular?</strong> Como alternativa,
+        puede verificar su identidad en una oficina de correos de Estados
+        Unidos.
       image_loaded: Imagen cargada
       image_loading: Cargando la imagen
       image_updated: Imagen actualizada
@@ -259,14 +265,14 @@ es:
       no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de
         su identidad.
       review_examples_of_photos: Revisa ejemplos de cómo hacer fotos nítidas de tu documento de identidad.
-      secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
-        significa que sus datos están protegidos y solo usted podrá acceder o
-        modificar su información.
+      secure_account: Cifraremos su cuenta cuando vuelva a introducir su contraseña.
+        La encriptación significa que sus datos están protegidos y solo usted
+        podrá acceder o modificar su información.
       selfie_capture_status:
-        face_close_to_border: DEMASIADO CERCA DEL MARCO
-        face_not_found: NO SE DETECTÓ EL ROSTRO
-        face_too_small: ROSTRO DEMASIADO PEQUEÑO
-        too_many_faces: DEMASIADOS ROSTROS
+        face_close_to_border: Demasiado cerca del marco
+        face_not_found: No se detectó el rostro
+        face_too_small: Rostro demasiado pequeño
+        too_many_faces: Demasiados rostros
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
       stepping_up_html: 'Verifica tu identidad de nuevo y tómate una foto para acceder
@@ -277,20 +283,20 @@ es:
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a cambiar a
         esta computadora después de tomar las fotos. Su teléfono móvil debe
         tener una cámara y un navegador web.
-      verify_at_post_office_description: Esta opción es mejor si no tiene un
-        dispositivo móvil o una manera fácil de tomar fotografías de su
-        identificación.
+      verify_at_post_office_description: Esta opción es mejor si no tiene un teléfono
+        para tomar fotografías de su identificación.
       verify_at_post_office_instruction: Ingresará su información de identificación en
-        línea y verificará tu identidad en persona en una oficina de correos
+        línea y verificará su identidad en persona en una oficina de correos
         participante.
       verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
-      verify_identity: Le preguntaremos sus datos personales para verificar su
-        identidad comparándola con los registros públicos.
-      verify_online_description: La mayoría de los usuarios finalizan este proceso de
-        una sola vez. Esta opción es mejor si tiene un dispositivo móvil o una
-        forma de tomar fotografías de su identificación.
-      verify_online_instruction: Tomará fotografías de tu identificación para
-        verificar tu identidad completamente en línea.
+      verify_identity: Le pediremos su identificación, número de teléfono y otros
+        datos personales para verificar su identidad comparándola con los
+        registros públicos.
+      verify_online_description: Esta opción es mejor si tiene un teléfono para tomar
+        fotografías de su identificación.
+      verify_online_instruction: Tomará fotografías de su identificación para
+        verificar su identidad completamente en línea. La mayoría de los
+        usuarios finalizan este proceso de una sola vez.
       verify_online_link_text: Obtenga más información sobre la verificación en línea
       you_entered: 'Ud. entregó:'
     instructions:
@@ -329,7 +335,6 @@ es:
       document_capture_selfie_text1: Mantenga el dispositivo al mismo nivel que los ojos
       document_capture_selfie_text2: Asegúrate de que tu rostro completo sea visible
       document_capture_selfie_text3: Tómese la foto en un sitio con buena iluminación
-      most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: '¿Ha usado un fondo oscuro?'

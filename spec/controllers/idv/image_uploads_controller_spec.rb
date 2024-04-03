@@ -56,33 +56,20 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).to receive(:track_event).with(
-          'IdV: doc auth image upload form submitted,',
-          success: false,
-          errors: {
-            front: ['Please fill in this field.'],
-          },
-          error_details: {
-            front: { blank: true },
-          },
-          user_id: user.uuid,
-          submit_attempts: 1,
-          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-        ).exactly(0).times
-
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: doc auth image upload vendor submitted',
-          any_args,
-        )
-
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
           any_args,
         )
 
         action
+
+        expect(@analytics).not_to have_logged_event(
+          'IdV: doc auth image upload form submitted,',
+        )
+
+        expect(@analytics).not_to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+        )
 
         expect_funnel_update_counts(user, 0)
       end
@@ -117,26 +104,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).to receive(:track_event).with(
-          'IdV: doc auth image upload form submitted',
-          success: false,
-          errors: {
-            front: [I18n.t('doc_auth.errors.not_a_file')],
-          },
-          error_details: {
-            front: { not_a_file: true },
-          },
-          user_id: user.uuid,
-          submit_attempts: 1,
-          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: nil,
-          back_image_fingerprint: an_instance_of(String),
-          selfie_image_fingerprint: nil,
-          liveness_checking_required: boolean,
-        )
-
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
           { address: nil,
@@ -153,13 +120,28 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             success: false },
         )
 
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: doc auth image upload vendor submitted',
-          # Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-          any_args,
+        action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth image upload form submitted',
+          success: false,
+          errors: {
+            front: [I18n.t('doc_auth.errors.not_a_file')],
+          },
+          error_details: {
+            front: { not_a_file: true },
+          },
+          user_id: user.uuid,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          flow_path: 'standard',
+          front_image_fingerprint: nil,
+          back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
-        action
+        expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
 
         expect_funnel_update_counts(user, 0)
       end
@@ -253,26 +235,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).to receive(:track_event).with(
-          'IdV: doc auth image upload form submitted',
-          success: false,
-          errors: {
-            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
-          },
-          error_details: {
-            limit: { rate_limited: true },
-          },
-          user_id: user.uuid,
-          submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
-          remaining_submit_attempts: 0,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: an_instance_of(String),
-          back_image_fingerprint: an_instance_of(String),
-          selfie_image_fingerprint: nil,
-          liveness_checking_required: boolean,
-        )
-
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_rate_limited,
         )
@@ -295,12 +257,28 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             success: false },
         )
 
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: doc auth image upload vendor submitted',
-          any_args,
+        action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth image upload form submitted',
+          success: false,
+          errors: {
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
+          },
+          error_details: {
+            limit: { rate_limited: true },
+          },
+          user_id: user.uuid,
+          submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          remaining_submit_attempts: 0,
+          flow_path: 'standard',
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
+          liveness_checking_required: boolean,
         )
 
-        action
+        expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
 
         expect_funnel_update_counts(user, 0)
       end
@@ -405,14 +383,31 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :idv_document_upload_submitted,
+          success: true,
+          document_back_image_filename: nil,
+          document_front_image_filename: nil,
+          document_image_encryption_key: nil,
+          document_state: 'MT',
+          document_number: '1111111111111',
+          document_issued: '2019-12-31',
+          document_expiration: '2099-12-31',
+          first_name: 'FAKEY',
+          last_name: 'MCFAKERSON',
+          date_of_birth: '1938-10-06',
+          address: '1 FAKE RD',
+        )
+
+        action
+
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -420,7 +415,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           liveness_checking_required: boolean,
         )
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
           success: true,
           errors: {},
@@ -438,7 +433,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
-          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
@@ -467,7 +461,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           workflow: an_instance_of(String),
         )
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
           success: true,
           errors: {},
@@ -475,7 +469,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -483,24 +476,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           liveness_checking_required: boolean,
           classification_info: a_kind_of(Hash),
         )
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          success: true,
-          document_back_image_filename: nil,
-          document_front_image_filename: nil,
-          document_image_encryption_key: nil,
-          document_state: 'MT',
-          document_number: '1111111111111',
-          document_issued: '2019-12-31',
-          document_expiration: '2099-12-31',
-          first_name: 'FAKEY',
-          last_name: 'MCFAKERSON',
-          date_of_birth: '1938-10-06',
-          address: '1 FAKE RD',
-        )
-
-        action
 
         expect_funnel_update_counts(user, 1)
       end
@@ -606,92 +581,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             stub_analytics
             stub_attempts_tracker
 
-            expect(@analytics).to receive(:track_event).with(
-              'IdV: doc auth image upload form submitted',
-              success: true,
-              errors: {},
-              user_id: user.uuid,
-              submit_attempts: 1,
-              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
-              flow_path: 'standard',
-              front_image_fingerprint: an_instance_of(String),
-              back_image_fingerprint: an_instance_of(String),
-              selfie_image_fingerprint: nil,
-              liveness_checking_required: boolean,
-            )
-
-            expect(@analytics).to receive(:track_event).with(
-              'IdV: doc auth image upload vendor submitted',
-              success: true,
-              errors: {},
-              attention_with_barcode: false,
-              async: false,
-              billed: true,
-              exception: nil,
-              doc_auth_result: 'Passed',
-              state: 'ND',
-              state_id_type: 'drivers_license',
-              user_id: user.uuid,
-              submit_attempts: 1,
-              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              client_image_metrics: {
-                front: { glare: 99.99 },
-                back: { glare: 99.99 },
-              },
-              pii_like_keypaths: pii_like_keypaths,
-              flow_path: 'standard',
-              vendor_request_time_in_ms: a_kind_of(Float),
-              front_image_fingerprint: an_instance_of(String),
-              back_image_fingerprint: an_instance_of(String),
-              selfie_image_fingerprint: nil,
-              doc_type_supported: boolean,
-              doc_auth_success: boolean,
-              selfie_status: :not_processed,
-              liveness_checking_required: boolean,
-              selfie_live: true,
-              selfie_quality_good: true,
-              address_line2_present: nil,
-              alert_failure_count: nil,
-              conversation_id: nil,
-              request_id: nil,
-              decision_product_status: nil,
-              image_metrics: nil,
-              log_alert_results: nil,
-              portrait_match_results: nil,
-              processed_alerts: nil,
-              product_status: nil,
-              reference: nil,
-              transaction_reason_code: nil,
-              transaction_status: nil,
-              vendor: nil,
-            )
-
-            expect(@analytics).to receive(:track_event).with(
-              'IdV: doc auth image upload vendor pii validation',
-              success: false,
-              errors: {
-                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
-              },
-              error_details: {
-                name: { name: true },
-              },
-              attention_with_barcode: false,
-              user_id: user.uuid,
-              submit_attempts: 1,
-              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
-              flow_path: 'standard',
-              front_image_fingerprint: an_instance_of(String),
-              back_image_fingerprint: an_instance_of(String),
-              selfie_image_fingerprint: nil,
-              liveness_checking_required: boolean,
-              classification_info: hash_including(
-                Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
-                Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
-              ),
-            )
-
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
@@ -709,24 +598,14 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             )
 
             action
-          end
-        end
 
-        context 'due to invalid State' do
-          let(:state) { 'Maryland' }
-
-          it 'tracks state validation errors in analytics' do
-            stub_analytics
-            stub_attempts_tracker
-
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
               errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -734,7 +613,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               liveness_checking_required: boolean,
             )
 
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor submitted',
               success: true,
               errors: {},
@@ -743,7 +622,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               billed: true,
               exception: nil,
               doc_auth_result: 'Passed',
-              state: 'Maryland',
+              state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
@@ -752,7 +631,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
@@ -780,20 +658,19 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
             )
 
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                state: [I18n.t('doc_auth.errors.general.no_liveness')],
+                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               error_details: {
-                state: { inclusion: true },
+                name: { name: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -804,6 +681,15 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
               ),
             )
+          end
+        end
+
+        context 'due to invalid State' do
+          let(:state) { 'Maryland' }
+
+          it 'tracks state validation errors in analytics' do
+            stub_analytics
+            stub_attempts_tracker
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
@@ -822,24 +708,14 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             )
 
             action
-          end
-        end
 
-        context 'but doc_pii validation fails due to missing state_id_number' do
-          let(:state_id_number) { nil }
-
-          it 'tracks state_id_number validation errors in analytics' do
-            stub_analytics
-            stub_attempts_tracker
-
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
               errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -847,7 +723,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               liveness_checking_required: boolean,
             )
 
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor submitted',
               success: true,
               errors: {},
@@ -856,7 +732,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               billed: true,
               exception: nil,
               doc_auth_result: 'Passed',
-              state: 'ND',
+              state: 'Maryland',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
@@ -865,7 +741,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
@@ -893,27 +768,38 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
             )
 
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                state_id_number: [I18n.t('doc_auth.errors.general.no_liveness')],
+                state: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                state_id_number: { blank: true },
+                state: { inclusion: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
-              classification_info: hash_including(:Front, :Back),
+              classification_info: hash_including(
+                Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+                Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+              ),
             )
+          end
+        end
+
+        context 'but doc_pii validation fails due to missing state_id_number' do
+          let(:state_id_number) { nil }
+
+          it 'tracks state_id_number validation errors in analytics' do
+            stub_analytics
+            stub_attempts_tracker
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
@@ -932,24 +818,14 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             )
 
             action
-          end
-        end
 
-        context 'but doc_pii validation fails due to invalid DOB' do
-          let(:dob) { nil }
-
-          it 'tracks dob validation errors in analytics' do
-            stub_analytics
-            stub_attempts_tracker
-
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
               errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -957,7 +833,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               liveness_checking_required: boolean,
             )
 
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor submitted',
               success: true,
               errors: {},
@@ -975,7 +851,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
@@ -1003,20 +878,19 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
             )
 
-            expect(@analytics).to receive(:track_event).with(
+            expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                state_id_number: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                dob: { dob: true },
+                state_id_number: { blank: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -1024,6 +898,15 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
             )
+          end
+        end
+
+        context 'but doc_pii validation fails due to invalid DOB' do
+          let(:dob) { nil }
+
+          it 'tracks dob validation errors in analytics' do
+            stub_analytics
+            stub_attempts_tracker
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
@@ -1042,6 +925,86 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             )
 
             action
+
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth image upload form submitted',
+              success: true,
+              errors: {},
+              user_id: user.uuid,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
+            )
+
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor submitted',
+              success: true,
+              errors: {},
+              attention_with_barcode: false,
+              async: false,
+              billed: true,
+              exception: nil,
+              doc_auth_result: 'Passed',
+              state: 'ND',
+              state_id_type: 'drivers_license',
+              user_id: user.uuid,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              client_image_metrics: {
+                front: { glare: 99.99 },
+                back: { glare: 99.99 },
+              },
+              flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              doc_type_supported: boolean,
+              doc_auth_success: boolean,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              request_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
+            )
+
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+              success: false,
+              errors: {
+                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+              },
+              error_details: {
+                dob: { dob: true },
+              },
+              attention_with_barcode: false,
+              user_id: user.uuid,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
+              liveness_checking_required: boolean,
+              classification_info: hash_including(:Front, :Back),
+            )
           end
         end
       end
@@ -1075,14 +1038,15 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
       it 'tracks events' do
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(
+        action
+
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -1090,7 +1054,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           liveness_checking_required: boolean,
         )
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
           success: false,
           errors: {
@@ -1110,7 +1074,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             back: { glare: 99.99 },
           },
           doc_auth_result: nil,
-          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
@@ -1138,8 +1101,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           vendor: nil,
         )
 
-        action
-
         expect_funnel_update_counts(user, 1)
       end
     end
@@ -1165,14 +1126,15 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
       it 'tracks events' do
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(
+        action
+
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -1180,7 +1142,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           liveness_checking_required: boolean,
         )
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
           success: false,
           errors: {
@@ -1202,7 +1164,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
-          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
@@ -1230,8 +1191,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           vendor: nil,
           workflow: an_instance_of(String),
         )
-
-        action
 
         expect_funnel_update_counts(user, 1)
       end

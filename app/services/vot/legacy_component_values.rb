@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Vot
   module LegacyComponentValues
     ## Identity proofing ACR values
@@ -76,11 +78,13 @@ module Vot
       requirements: [:aal2, :hspd12],
     )
 
+    NAME_HASH = constants.map do |constant|
+      component_value = const_get(constant)
+      [component_value.name, component_value]
+    end.to_h
+
     def self.by_name
-      @by_name ||= constants.map do |constant|
-        component_value = const_get(constant)
-        [component_value.name, component_value]
-      end.to_h
+      NAME_HASH
     end
   end
 end

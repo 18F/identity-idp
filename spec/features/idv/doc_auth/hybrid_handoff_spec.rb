@@ -11,8 +11,15 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
+  let(:doc_auth_selfie_capture_enabled) { false }
+  let(:biometric_comparison_required) { false }
 
   before do
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(doc_auth_selfie_capture_enabled)
+    if biometric_comparison_required
+      visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: biometric_comparison_required)
+    end
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
@@ -207,6 +214,452 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
       expect(document_capture_session).to be
       expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
+    end
+  end
+
+  context 'on a desktop device and selfie is allowed' do
+    let(:doc_auth_selfie_capture_enabled) { true }
+    before do
+      complete_doc_auth_steps_before_hybrid_handoff_step
+    end
+
+    describe 'when selfie is required by sp' do
+      let(:biometric_comparison_required) { true }
+      it 'has expected UI elements' do
+        mobile_form = find('#form-to-submit-photos-through-mobile')
+        expect(mobile_form).to have_name(t('forms.buttons.send_link'))
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff_selfie'))
+      end
+      context 'on a desktop choose ipp', js: true do
+        let(:in_person_doc_auth_button_enabled) { true }
+        let(:sp_ipp_enabled) { true }
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).
+            and_return(in_person_doc_auth_button_enabled)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).
+            and_return(sp_ipp_enabled)
+          complete_doc_auth_steps_before_hybrid_handoff_step
+        end
+
+        context 'when ipp is enabled' do
+          it 'proceeds to ipp if selected and can go back' do
+            expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+            click_on t('in_person_proofing.headings.prepare')
+            expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
+            click_on t('forms.buttons.back')
+            expect(page).to have_current_path(idv_hybrid_handoff_path)
+          end
+        end
+
+        context 'when ipp is disabled' do
+          let(:in_person_doc_auth_button_enabled) { false }
+          let(:sp_ipp_enabled) { false }
+          it 'has no ipp option can be selected' do
+            expect(page).to_not have_content(
+              strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')),
+            )
+            expect(page).to_not have_content(
+              t('in_person_proofing.headings.prepare'),
+            )
+          end
+        end
+      end
+    end
+
+    describe 'when selfie is not required by sp' do
+      let(:biometric_comparison_required) { false }
+      it 'has expected UI elements' do
+        mobile_form = find('#form-to-submit-photos-through-mobile')
+        desktop_form = find('#form-to-submit-photos-through-desktop')
+
+        expect(mobile_form).to have_name(t('forms.buttons.send_link'))
+        expect(desktop_form).to have_name(t('forms.buttons.upload_photos'))
+      end
+    end
+  end
+end
+RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
+                                                               allowed_extra_analytics: [:*] do
+  include IdvStepHelper
+  include DocAuthHelper
+  include InPersonHelper
+
+  def verify_handoff_page_selfie_version_content(page)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+    expect(page).to have_selector(
+      'h1',
+      text: t('doc_auth.headings.hybrid_handoff_selfie'),
+    )
+  end
+
+  def verify_handoff_page_non_selfie_version_content(page)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+    expect(page).to_not have_selector(
+      'h1',
+      text: t('doc_auth.headings.hybrid_handoff_selfie'),
+    )
+    expect(page).to have_selector(
+      'h1',
+      text: t('doc_auth.headings.hybrid_handoff'),
+    )
+  end
+
+  def verify_handoff_page_no_ipp_option_shown(page)
+    expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+    expect(page).to_not have_link(
+      t('in_person_proofing.headings.prepare'),
+      href: idv_document_capture_path(step: :hybrid_handoff),
+    )
+  end
+
+  def verify_handoff_page_ipp_section_and_link(page)
+    expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
+    expect(page).to have_link(
+      t('in_person_proofing.headings.prepare'),
+      href: idv_document_capture_path(step: :hybrid_handoff),
+    )
+    click_on t('in_person_proofing.headings.prepare')
+    expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+    expect(page).to have_content(t('headings.verify'))
+    click_on t('forms.buttons.back')
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+  end
+
+  def verify_upload_photos_section_and_link(page)
+    expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+    click_on t('forms.buttons.upload_photos')
+    expect(page).to have_current_path(idv_document_capture_url)
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+    click_link t('links.cancel')
+    expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
+    expect(current_path).to eq(idv_cancel_path)
+  end
+
+  def verify_no_upload_photos_section_and_link(page)
+    expect(page).to_not have_content(t('doc_auth.headings.upload_from_computer'))
+  end
+
+  context 'on a desktop device with various ipp and selfie configuration' do
+    let(:in_person_proofing_enabled) { true }
+    let(:sp_ipp_enabled) { true }
+    let(:in_person_proofing_opt_in_enabled) { true }
+    let(:doc_auth_selfie_capture_enabled) { true }
+    let(:biometric_comparison_required) { true }
+    let(:user) { user_with_2fa }
+
+    before do
+      service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
+      unless sp_ipp_enabled
+        service_provider.in_person_proofing_enabled = false
+        service_provider.save!
+      end
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(
+        in_person_proofing_enabled,
+      )
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
+        in_person_proofing_opt_in_enabled,
+      )
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+        and_return(doc_auth_selfie_capture_enabled)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(sp_ipp_enabled)
+      visit_idp_from_sp_with_ial2(
+        :oidc,
+        **{ client_id: service_provider.issuer,
+            biometric_comparison_required: biometric_comparison_required },
+      )
+      sign_in_via_branded_page(user)
+      complete_doc_auth_steps_before_agreement_step
+      complete_agreement_step
+    end
+    context 'when ipp is available system wide' do
+      context 'when in person proofing opt in enabled' do
+        context 'when sp ipp is available' do
+          before do
+            expect(page).to have_current_path(idv_how_to_verify_path)
+            click_on t('forms.buttons.continue_remote')
+          end
+          context 'when selfie is enabled system wide' do
+            describe 'when selfie is required by sp' do
+              it 'shows selfie version of top content and ipp option section' do
+                verify_handoff_page_selfie_version_content(page)
+                verify_handoff_page_ipp_section_and_link(page)
+                verify_no_upload_photos_section_and_link(page)
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+          context 'when selfie is disabled system wide' do
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+        context 'when sp ipp is not available' do
+          let(:sp_ipp_enabled) { false }
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'shows selfie version of top content, no ipp option section,
+                  no upload section' do
+                verify_handoff_page_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_no_upload_photos_section_and_link(page)
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+      end
+
+      context 'when in person proofing opt in disabled' do
+        let(:in_person_proofing_opt_in_enabled) { false }
+        context 'when sp ipp is not available' do
+          let(:sp_ipp_enabled) { false }
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'shows selfie version of top content, no upload section,
+                  no ipp option section' do
+                verify_handoff_page_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_no_upload_photos_section_and_link(page)
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+        context 'when sp ipp is available' do
+          let(:sp_ipp_enabled) { true }
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    context 'when ipp is not available system wide' do
+      let(:in_person_proofing_enabled) { false }
+      context 'when ipp opt in is enabled' do
+        let(:in_person_proofing_opt_in_enabled) { true }
+        context 'when sp ipp is available' do
+          let(:sp_ipp_enabled) { true }
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'shows selfie version of top content, no upload section,
+                  no ipp option section' do
+                verify_handoff_page_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_no_upload_photos_section_and_link(page)
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content with upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+        context 'when sp ipp is not available' do
+          let(:sp_ipp_enabled) { false }
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content with upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'shows selfie version of top content, no upload section,
+                  no ipp option section' do
+                verify_handoff_page_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_no_upload_photos_section_and_link(page)
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+      end
+
+      context 'when ipp opt in is disabled' do
+        let(:in_person_proofing_opt_in_enabled) { false }
+        context 'when sp ipp is enabled' do
+          let(:sp_ipp_enabled) { true }
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'shows selfie version of top content, no upload section,
+                  no ipp option section' do
+                verify_handoff_page_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_no_upload_photos_section_and_link(page)
+              end
+            end
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie is not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+        context 'when sp ipp is not enabled' do
+          let(:sp_ipp_enabled) { false }
+          context 'when selfie is enabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { true }
+            describe 'when selfie required by sp' do
+              let(:biometric_comparison_required) { true }
+              it 'shows selfie version of top content, no upload section,
+                  no ipp option section' do
+                verify_handoff_page_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_no_upload_photos_section_and_link(page)
+              end
+            end
+            describe 'when selfie not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+          context 'when selfie is disabled system wide' do
+            let(:doc_auth_selfie_capture_enabled) { false }
+            describe 'when selfie not required by sp' do
+              let(:biometric_comparison_required) { false }
+              it 'shows non selfie version of top content and upload section,
+                  no ipp option section' do
+                verify_handoff_page_non_selfie_version_content(page)
+                verify_handoff_page_no_ipp_option_shown(page)
+                verify_upload_photos_section_and_link(page)
+              end
+            end
+          end
+        end
+      end
     end
   end
 end

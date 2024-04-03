@@ -1,0 +1,20 @@
+<%= simple_form_for(
+      @gpo_verify_form,
+      url: idv_verify_by_mail_enter_code_path,
+      html: { autocomplete: 'off', method: :post },
+    ) do |f| %>
+  <div class="grid-row margin-top-neg-2 margin-bottom-5">
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= render ValidatedFieldComponent.new(
+            form: f,
+            name: :otp,
+            maxlength: 10,
+            required: true,
+            autofocus: true,
+            label: t('idv.gpo.form.otp_label'),
+          ) %>
+      <%= hidden_field_tag :did_not_receive_letter, @user_did_not_receive_letter ? '1' : nil %>
+      <%= f.submit t('idv.gpo.form.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
+    </div>
+  </div>
+<% end %>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FeatureManagement
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'
@@ -74,10 +76,6 @@ class FeatureManagement
 
   def self.enable_saml_cert_rotation?
     IdentityConfig.store.saml_secret_rotation_enabled
-  end
-
-  def self.disallow_all_web_crawlers?
-    IdentityConfig.store.disallow_all_web_crawlers
   end
 
   def self.gpo_upload_enabled?

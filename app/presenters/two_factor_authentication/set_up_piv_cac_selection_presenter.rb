@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class SetUpPivCacSelectionPresenter < SetUpSelectionPresenter
     def type
@@ -10,6 +12,18 @@ module TwoFactorAuthentication
 
     def info
       t('two_factor_authentication.two_factor_choice_options.piv_cac_info')
+    end
+
+    def phishing_resistant?
+      true
+    end
+
+    def recommended?
+      user.confirmed_email_addresses.any?(&:gov_or_mil?)
+    end
+
+    def desktop_only?
+      true
     end
 
     def single_configuration_only?

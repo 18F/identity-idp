@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module Steps
     module ThreatMetrixStepHelper
@@ -19,7 +21,7 @@ module Idv
       # @return [Array<String>]
       def threatmetrix_javascript_urls(session_id)
         sources = if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-                    AssetSources.get_sources('mock-device-profiling')
+                    Rails.application.config.asset_sources.get_sources('mock-device-profiling')
                   else
                     ['https://h.online-metrix.net/fp/tags.js']
                   end

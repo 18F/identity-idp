@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class SecurityEvent < ApplicationRecord
-  AUTHORIZATION_FRAUD_DETECTED = 'https://schemas.login.gov/secevent/risc/event-type/authorization-fraud-detected'.freeze
-  IDENTITY_FRAUD_DETECTED = 'https://schemas.login.gov/secevent/risc/event-type/identity-fraud-detected'.freeze
+  AUTHORIZATION_FRAUD_DETECTED = 'https://schemas.login.gov/secevent/risc/event-type/authorization-fraud-detected'
+  IDENTITY_FRAUD_DETECTED = 'https://schemas.login.gov/secevent/risc/event-type/identity-fraud-detected'
 
   EVENT_TYPES = [
     AUTHORIZATION_FRAUD_DETECTED,

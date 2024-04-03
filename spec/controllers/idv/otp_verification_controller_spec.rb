@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Idv::OtpVerificationController do
+RSpec.describe Idv::OtpVerificationController,
+               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
   let(:user) { create(:user) }
 
   let(:phone) { '2255555000' }
@@ -28,7 +29,6 @@ RSpec.describe Idv::OtpVerificationController do
   before do
     stub_analytics
     stub_attempts_tracker
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     sign_in(user)
@@ -81,10 +81,7 @@ RSpec.describe Idv::OtpVerificationController do
     it 'tracks an analytics event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: phone confirmation otp visited',
-        proofing_components: nil,
-      )
+      expect(@analytics).to have_logged_event('IdV: phone confirmation otp visited')
     end
   end
 
@@ -180,13 +177,12 @@ RSpec.describe Idv::OtpVerificationController do
         code_matches: true,
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
-        proofing_components: nil,
         **ab_test_args,
       }
 
-      expect(@analytics).to have_received(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp submitted',
-        expected_result,
+        hash_including(expected_result),
       )
     end
 

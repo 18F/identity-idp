@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
   extend Forwardable
@@ -55,9 +57,7 @@ module SamlIdpAuthConcern
   def validate_service_provider_and_authn_context
     return if result.success?
 
-    analytics.saml_auth(
-      **result.to_h.merge(request_signed: saml_request.signed?),
-    )
+    capture_analytics
     render 'saml_idp/auth/error', status: :bad_request
   end
 

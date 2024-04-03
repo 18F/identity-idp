@@ -1,10 +1,7 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class SetUpWebauthnPlatformSelectionPresenter < SetUpSelectionPresenter
-    def initialize(user:, configuration: nil)
-      @user = user
-      @configuration = configuration
-    end
-
     def type
       :webauthn_platform
     end
@@ -30,6 +27,10 @@ module TwoFactorAuthentication
         'two_factor_authentication.two_factor_choice_options.webauthn_platform_info',
         app_name: APP_NAME,
       )
+    end
+
+    def phishing_resistant?
+      true
     end
 
     def single_configuration_only?

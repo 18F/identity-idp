@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Telephony
   # @!attribute [r] carrier
   #   @return [String, nil] the carrier for the phone number

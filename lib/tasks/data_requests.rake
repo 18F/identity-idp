@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :data_requests do
   # UUIDS=123abc,456def rake data_requests:lookup_users_by_device
   desc 'Recursively lookup users using a network of shared devices'

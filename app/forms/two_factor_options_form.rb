@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TwoFactorOptionsForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper

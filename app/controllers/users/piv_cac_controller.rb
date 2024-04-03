@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module Users
   class PivCacController < ApplicationController
     include ReauthenticationRequiredConcern
+    include PivCacConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_recently_authenticated_2fa
@@ -33,6 +36,7 @@ module Users
         create_user_event(:piv_cac_disabled)
         revoke_remember_device(current_user)
         deliver_push_notification
+        clear_piv_cac_information
 
         flash[:success] = presenter.delete_success_alert_text
         redirect_to account_path

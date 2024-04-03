@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/timeout/base'
 
 module Rack
@@ -10,10 +12,6 @@ module Rack
     ].flat_map do |path|
       [path] + Idp::Constants::AVAILABLE_LOCALES.map { |locale| "/#{locale}#{path}" }
     end + ['/api/verify/images']
-
-    class << self
-      attr_accessor :excludes
-    end
 
     def call_with_excludes(env)
       if EXCLUDES.any? { |path| env['REQUEST_URI']&.start_with?(path) }

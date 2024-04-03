@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BrowserCache
   @cache = LruRedux::Cache.new(1_000)
   DEFAULT_BROWSER = Browser.new(nil)

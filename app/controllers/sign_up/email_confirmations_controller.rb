@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SignUp
   class EmailConfirmationsController < ApplicationController
     include UnconfirmedUserConcern

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   include NonNullUuid
 
@@ -211,6 +213,11 @@ class User < ApplicationRecord
   # @return [String] enrollment status
   def in_person_enrollment_status
     pending_profile&.in_person_enrollment&.status
+  end
+
+  def ipp_enrollment_status_not_passed?
+    !in_person_enrollment_status.blank? &&
+      in_person_enrollment_status != 'passed'
   end
 
   def has_in_person_enrollment?

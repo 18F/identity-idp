@@ -37,13 +37,14 @@ RSpec.describe Analytics do
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
   let(:success_state) { 'GET|fake_path|Trackable Event' }
+  let(:session) { {} }
 
   subject(:analytics) do
     Analytics.new(
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
-      session: {},
+      session: session,
       ahoy: ahoy,
     )
   end
@@ -109,30 +110,6 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
 
-    # relies on prepending the FakeAnalytics::PiiAlerter mixin
-    it 'throws an error when pii is passed in' do
-      allow(ahoy).to receive(:track)
-
-      expect { analytics.track_event('Trackable Event') }.to_not raise_error
-
-      expect { analytics.track_event('Trackable Event', first_name: 'Bobby') }.
-        to raise_error(FakeAnalytics::PiiDetected)
-
-      expect do
-        analytics.track_event('Trackable Event', nested: [{ value: { first_name: 'Bobby' } }])
-      end.to raise_error(FakeAnalytics::PiiDetected)
-
-      expect { analytics.track_event('Trackable Event', decrypted_pii: '{"first_name":"Bobby"}') }.
-        to raise_error(FakeAnalytics::PiiDetected)
-    end
-
-    it 'throws an error when it detects sample PII in the payload' do
-      allow(ahoy).to receive(:track)
-
-      expect { analytics.track_event('Trackable Event', some_benign_key: 'FAKEY MCFAKERSON') }.
-        to raise_error(FakeAnalytics::PiiDetected)
-    end
-
     it 'does not alert when pii_like_keypaths is passed' do
       allow(ahoy).to receive(:track) do |_name, attributes|
         # does not forward :pii_like_keypaths
@@ -181,76 +158,113 @@ RSpec.describe Analytics do
     end
   end
 
-  it 'errors when undocumented parameters are sent' do
-    expect do
-      analytics.idv_phone_confirmation_otp_submitted(
-        success: true,
-        errors: true,
-        code_expired: true,
-        code_matches: true,
-        second_factor_attempts_count: true,
-        second_factor_locked_at: true,
-        proofing_components: true,
-        some_new_undocumented_keyword: true,
-      )
-    end.to raise_error(FakeAnalytics::UndocumentedParams, /some_new_undocumented_keyword/)
+  context 'with an SP request vtr saved in the session' do
+    context 'identity verified' do
+      let(:session) { { sp: { vtr: ['C1.P1'] } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            component_values: { 'C1' => true, 'C2' => true, 'P1' => true },
+            identity_proofing: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'phishing resistant and requiring biometric comparison' do
+      let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            biometric_comparison: true,
+            component_values: {
+              'C1' => true,
+              'C2' => true,
+              'Ca' => true,
+              'P1' => true,
+              'Pb' => true,
+            },
+            identity_proofing: true,
+            phishing_resistant: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
   end
 
-  it 'does not error when undocumented params are allowed', allowed_extra_analytics: [:fun_level] do
-    expect(ahoy).to receive(:track).with(
-      kind_of(String),
-      hash_including(event_properties: hash_including(:fun_level)),
-    )
+  context 'with SP request acr_values saved in the session' do
+    context 'legacy IAL1' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            component_values: { 'ial/1' => true },
+          },
+        }
+      end
 
-    analytics.idv_phone_confirmation_otp_submitted(
-      success: true,
-      errors: true,
-      code_expired: true,
-      code_matches: true,
-      second_factor_attempts_count: true,
-      second_factor_locked_at: true,
-      proofing_components: true,
-      fun_level: 1000,
-    )
-  end
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
 
-  it 'does not error when undocumented params are allowed via *', allowed_extra_analytics: [:*] do
-    expect(ahoy).to receive(:track).with(
-      kind_of(String),
-      hash_including(event_properties: hash_including(:fun_level)),
-    )
+        analytics.track_event('Trackable Event')
+      end
+    end
 
-    analytics.idv_phone_confirmation_otp_submitted(
-      success: true,
-      errors: true,
-      code_expired: true,
-      code_matches: true,
-      second_factor_attempts_count: true,
-      second_factor_locked_at: true,
-      proofing_components: true,
-      fun_level: 1000,
-    )
-  end
+    context 'legacy IAL2' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            component_values: { 'ial/2' => true },
+            identity_proofing: true,
+          },
+        }
+      end
 
-  it 'does not error when string tags are documented as options' do
-    expect(ahoy).to receive(:track).with(
-      kind_of(String),
-      hash_including(event_properties: hash_including('DocumentName')),
-    )
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
 
-    analytics.idv_doc_auth_submitted_image_upload_vendor(
-      success: nil,
-      errors: nil,
-      exception: nil,
-      state: nil,
-      state_id_type: nil,
-      async: nil,
-      submit_attempts: nil,
-      remaining_submit_attempts: nil,
-      client_image_metrics: nil,
-      flow_path: nil,
-      liveness_checking_required: nil,
-      'DocumentName' => 'some_name',
-    )
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'legacy IALMAX' do
+      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF } } }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            component_values: { 'ial/0' => true },
+            ialmax: true,
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
   end
 end

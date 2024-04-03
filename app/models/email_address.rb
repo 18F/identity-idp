@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailAddress < ApplicationRecord
   include EncryptableAttribute
 
@@ -29,6 +31,10 @@ class EmailAddress < ApplicationRecord
     expiration_time = confirmation_sent_at +
                       IdentityConfig.store.add_email_link_valid_for_hours.hours
     Time.zone.now > expiration_time
+  end
+
+  def gov_or_mil?
+    email.end_with?('.gov', '.mil')
   end
 
   class << self
