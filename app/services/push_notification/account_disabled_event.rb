@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module PushNotification
   # This is used for account suspension
   class AccountDisabledEvent
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-disabled'.freeze
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-disabled'
 
     attr_reader :user
 

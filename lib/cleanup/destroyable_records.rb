@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DestroyableRecords
   attr_reader :service_provider, :integration, :issuer, :stdin, :stdout
 

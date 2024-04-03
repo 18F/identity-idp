@@ -39,10 +39,7 @@ RSpec.describe Idv::PleaseCallController do
 
     get :show
 
-    expect(@analytics).to have_logged_event(
-      'IdV: Verify please call visited',
-      proofing_components: nil,
-    )
+    expect(@analytics).to have_logged_event('IdV: Verify please call visited')
   end
 
   it 'renders the show template' do

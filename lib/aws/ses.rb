@@ -1,11 +1,11 @@
+# frozen_string_literal: true
+
 ##
 # ActionMailer delivery method for SES inspired by https://github.com/drewblas/aws-ses
 #
 module Aws
   module SES
     class Base
-      cattr_accessor :region_pool
-
       def initialize(*); end
 
       def deliver(mail)

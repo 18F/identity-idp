@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idp
   module Constants
     AVAILABLE_LOCALES = %w[en es fr]

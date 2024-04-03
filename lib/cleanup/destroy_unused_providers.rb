@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './lib/cleanup/destroyable_records'
 # Remove unused issuers
 #

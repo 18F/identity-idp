@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneNumberCapabilities
   def self.load_config
     YAML.load_file(
@@ -11,19 +13,28 @@ class PhoneNumberCapabilities
 
   attr_reader :phone, :phone_confirmed
 
-  def self.translated_international_codes
-    @translated_intl_codes_data = nil if Rails.env.development?
-    return @translated_intl_codes_data[I18n.locale] if @translated_intl_codes_data
-
-    @translated_intl_codes_data = Hash.new { |h, k| h[k] = {} }
+  def self.generate_translated_international_codes_data
+    translated_intl_codes_data = Hash.new { |h, k| h[k] = {} }
     I18n.available_locales.each do |locale|
       INTERNATIONAL_CODES.each do |k, value|
-        @translated_intl_codes_data[locale][k] =
+        translated_intl_codes_data[locale][k] =
           value.merge('name' => I18n.t("countries.#{k.downcase}", locale: locale))
       end
     end
-    @translated_intl_codes_data[I18n.locale]
+    translated_intl_codes_data
   end
+
+  def self.translated_international_codes
+    translated_intl_codes_data = if Rails.env.development?
+                                   generate_translated_international_codes_data
+                                 else
+                                   TRANSLATED_INTL_CODES_DATA
+                                 end
+
+    translated_intl_codes_data[I18n.locale] if translated_intl_codes_data
+  end
+
+  TRANSLATED_INTL_CODES_DATA = generate_translated_international_codes_data
 
   def initialize(phone, phone_confirmed:)
     @phone = phone

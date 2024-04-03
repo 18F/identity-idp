@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module PushNotification
   class EmailChangedEvent
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/identifier-changed'.freeze
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/identifier-changed'
 
     attr_reader :user, :email
 

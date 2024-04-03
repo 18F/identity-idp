@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TotpVerificationForm
   def initialize(user, code)
     @user = user

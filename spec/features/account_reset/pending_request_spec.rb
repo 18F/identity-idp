@@ -32,7 +32,7 @@ RSpec.feature 'Pending account reset request sign in', allowed_extra_analytics: 
 
     click_on t('account_reset.pending.cancel_request')
     click_on t('forms.buttons.continue')
-    expect(page).to have_content(t('account_reset.pending.cancelled'))
+    expect(page).to have_content(t('account_reset.pending.canceled'))
 
     click_on t('links.continue_sign_in')
     expect(page).to have_content(t('two_factor_authentication.header_text'))

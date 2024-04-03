@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Monkey-patch SimpleForm::ErrorNotification to customize markup to reuse alert partial, which
 # requires more markup customization than is possible through default options.
 #

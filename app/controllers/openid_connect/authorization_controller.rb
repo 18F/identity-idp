@@ -156,6 +156,7 @@ module OpenidConnect
         **result.to_h.except(:redirect_uri, :code_digest).merge(
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
+          vtr_param: params[:vtr],
         ),
       )
       return if result.success?
@@ -214,6 +215,8 @@ module OpenidConnect
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
+        vtr: sp_session[:vtr],
+        acr_values: sp_session[:acr_values],
       )
       track_billing_events
     end

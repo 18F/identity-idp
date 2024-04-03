@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StepIndicatorStepComponent < BaseComponent
   attr_reader :title, :status, :tag_options
 

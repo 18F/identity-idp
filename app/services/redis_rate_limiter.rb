@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Implementation of https://redis.com/redis-best-practices/basic-rate-limiting/
 class RedisRateLimiter
   class LimitError < StandardError; end

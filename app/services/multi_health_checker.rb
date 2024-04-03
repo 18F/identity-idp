@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MultiHealthChecker
   Summary = Struct.new(:statuses) do
     def healthy?

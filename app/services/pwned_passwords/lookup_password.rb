@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PwnedPasswords
   class LookupPassword
     PWNED_PASSWORD_FILE = Rails.root.join(IdentityConfig.store.pwned_passwords_file_path).freeze

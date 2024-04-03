@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :rotate do
   # benchmark: 100k updates in 00:28:35 with cost '800$8$1$'
   # e.g.

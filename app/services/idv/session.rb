@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
@@ -25,6 +27,7 @@ module Idv
       selfie_check_performed
       selfie_check_required
       skip_doc_auth
+      skip_doc_auth_from_handoff
       skip_hybrid_handoff
       ssn
       threatmetrix_review_status

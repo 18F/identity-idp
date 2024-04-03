@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlertIconComponent < BaseComponent
   ICON_SOURCE = {
     warning: 'status/warning.svg',

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FormEmailValidator
   extend ActiveSupport::Concern
   include ActionView::Helpers::TranslationHelper

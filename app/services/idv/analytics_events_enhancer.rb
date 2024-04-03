@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module AnalyticsEventsEnhancer
     IGNORED_METHODS = %i[
@@ -84,7 +86,6 @@ module Idv
       idv_in_person_usps_proofing_results_job_unexpected_response
       idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review
       idv_in_person_usps_request_enroll_exception
-      idv_intro_visit
       idv_ipp_deactivated_for_never_visiting_post_office
       idv_link_sent_capture_doc_polling_complete
       idv_link_sent_capture_doc_polling_started
@@ -109,6 +110,20 @@ module Idv
       idv_warning_shown
     ].to_set.freeze
 
+    STANDARD_ARGUMENTS = %i[
+      proofing_components
+      active_profile_idv_level
+      pending_profile_idv_level
+    ].freeze
+
+    METHODS_WITH_PROFILE_HISTORY = %i[
+      idv_doc_auth_verify_proofing_results
+      idv_intro_visit
+      idv_final
+      idv_please_call_visited
+      idv_start_over
+    ].to_set.freeze
+
     def self.included(_mod)
       raise 'this mixin is intended to be prepended, not included'
     end
@@ -117,7 +132,7 @@ module Idv
       mod.instance_methods.each do |method_name|
         if should_enhance_method?(method_name)
           mod.define_method method_name do |**kwargs|
-            super(**kwargs, **common_analytics_attributes)
+            super(**kwargs, **analytics_attributes(method_name))
           end
         end
       end
@@ -125,16 +140,48 @@ module Idv
 
     def self.should_enhance_method?(method_name)
       return false if IGNORED_METHODS.include?(method_name)
-
       method_name.start_with?('idv_')
+    end
+
+    def self.extra_args_for_method(method_name)
+      return [] unless should_enhance_method?(method_name)
+
+      args = STANDARD_ARGUMENTS
+
+      if METHODS_WITH_PROFILE_HISTORY.include?(method_name)
+        args = [
+          *args,
+          :profile_history,
+        ]
+      end
+
+      args
     end
 
     private
 
-    def common_analytics_attributes
-      {
-        proofing_components: proofing_components,
-      }.compact
+    def analytics_attributes(method_name)
+      AnalyticsEventsEnhancer.extra_args_for_method(method_name).
+        index_with do |arg_name|
+          send(arg_name.to_s).presence
+        end.
+        compact
+    end
+
+    def active_profile_idv_level
+      user&.respond_to?(:active_profile) && user&.active_profile&.idv_level
+    end
+
+    def pending_profile_idv_level
+      user&.respond_to?(:pending_profile) && user&.pending_profile&.idv_level
+    end
+
+    def profile_history
+      return if !user&.respond_to?(:profiles)
+
+      (user&.profiles || []).
+        sort_by { |profile| profile.created_at }.
+        map { |profile| ProfileLogging.new(profile) }
     end
 
     def proofing_components

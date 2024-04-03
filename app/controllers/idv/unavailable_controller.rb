@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class UnavailableController < ApplicationController
     ALLOWED_FROM_LOCATIONS = [SignUp::RegistrationsController::CREATE_ACCOUNT]

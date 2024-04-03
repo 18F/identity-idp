@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class HybridHandoffController < ApplicationController
     include Idv::AvailabilityConcern
@@ -13,6 +15,11 @@ module Idv
       @upload_disabled = idv_session.selfie_check_required &&
                          !idv_session.desktop_selfie_test_mode_enabled?
 
+      @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
+                                        Idv::InPersonConfig.enabled_for_issuer?(
+                                          decorated_sp_session.sp_issuer,
+                                        )
+
       @selfie_required = idv_session.selfie_check_required
 
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
@@ -22,6 +29,8 @@ module Idv
         true
       )
 
+      # reset if we visit or come back
+      idv_session.skip_doc_auth_from_handoff = nil
       render :show, locals: extra_view_variables
     end
 
@@ -55,7 +64,9 @@ module Idv
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given &&
-                          self.selected_remote(idv_session: idv_session)
+                           (self.selected_remote(idv_session: idv_session) || # from opt-in screen
+                             # back from ipp doc capture screen
+                             idv_session.skip_doc_auth_from_handoff)
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil

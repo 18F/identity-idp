@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NewPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator
@@ -109,7 +111,7 @@ class NewPhoneForm
   def validate_allowed_carrier
     return if phone.blank? || phone_info.blank?
 
-    if IdentityConfig.store.phone_carrier_registration_blocklist.include?(phone_info.carrier)
+    if IdentityConfig.store.phone_carrier_registration_blocklist_array.include?(phone_info.carrier)
       errors.add(:phone, I18n.t('errors.messages.phone_carrier'), type: :phone_carrier)
     end
   end

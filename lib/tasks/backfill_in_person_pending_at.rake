@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :profiles do
   desc 'Backfill the in_person_verification_pending_at value column.'
 

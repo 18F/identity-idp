@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UserMailer handles all email sending to the User class. It expects to be called using `with`
 # that receives a `user` and `email_address`. This pattern is preferred as the User and
 # EmailAddress database records are needed across any email being sent.
@@ -15,6 +17,7 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
+  include AccountResetConcern
   include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
@@ -144,10 +147,10 @@ class UserMailer < ActionMailer::Base
   def account_reset_request(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token
-      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
       @header = t(
         'user_mailer.account_reset_request.header',
-        interval: account_reset_deletion_period_interval,
+        interval: @account_reset_deletion_period_interval,
       )
       mail(
         to: email_address.email,
@@ -160,7 +163,7 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
-      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
       @account_reset_token_valid_period = account_reset_token_valid_period
       mail(
         to: email_address.email,
@@ -430,21 +433,6 @@ class UserMailer < ActionMailer::Base
   end
 
   private
-
-  def account_reset_deletion_period_interval
-    current_time = Time.zone.now
-
-    distance_of_time_in_words(
-      current_time,
-      current_time + IdentityConfig.store.account_reset_wait_period_days.days,
-      true,
-      accumulate_on: :hours,
-    )
-  end
-
-  def account_reset_deletion_period_hours
-    IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
-  end
 
   def account_reset_token_valid_period
     current_time = Time.zone.now

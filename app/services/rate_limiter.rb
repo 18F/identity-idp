@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is similar to RedisRateLimiter, but differs in that
 # the rate limit period begins once the maximum number of allowed
 # attempts has been reached.

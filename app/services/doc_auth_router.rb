@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helps route between various doc auth backends
 module DocAuthRouter
   ERROR_TRANSLATIONS = {
@@ -197,18 +199,11 @@ module DocAuthRouter
   def self.doc_auth_vendor(discriminator: nil, analytics: nil)
     case AbTests::DOC_AUTH_VENDOR.bucket(discriminator)
     when :alternate_vendor
-      vendor = IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+      IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
     else
       analytics&.idv_doc_auth_randomizer_defaulted if discriminator.blank?
 
-      vendor = IdentityConfig.store.doc_auth_vendor
+      IdentityConfig.store.doc_auth_vendor
     end
-
-    # if vendor is not set to mock and selfie enabled use lexisnexis
-    if FeatureManagement.idv_allow_selfie_check? &&
-       vendor != Idp::Constants::Vendors::MOCK
-      vendor = Idp::Constants::Vendors::LEXIS_NEXIS
-    end
-    vendor
   end
 end

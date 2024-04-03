@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Pii
   DEPRECATED_PII_ATTRIBUTES = [
     :otp, # https://github.com/18F/identity-idp/pull/1661

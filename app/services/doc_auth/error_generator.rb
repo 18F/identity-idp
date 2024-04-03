@@ -116,7 +116,7 @@ module DocAuth
 
     SELFIE_GENERAL_FAILURE_ERROR =
       {
-        general: [Errors::SELFIE_NOT_LIVE],
+        general: [Errors::SELFIE_FAILURE],
         front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
         back: [Errors::MULTIPLE_BACK_ID_FAILURES],
         selfie: [Errors::SELFIE_FAILURE],

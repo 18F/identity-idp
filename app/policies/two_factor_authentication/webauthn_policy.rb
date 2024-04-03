@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   # The WebauthnPolicy class is responsible for handling the user policy of webauthn
   class WebauthnPolicy

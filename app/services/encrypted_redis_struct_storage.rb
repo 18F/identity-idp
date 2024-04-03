@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Use this class to store a plain Struct in redis. It will be stored
 # encrypted and by default will expire, the struct must have a +redis_key_prefix+
 # class method

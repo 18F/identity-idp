@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClickObserverComponent < BaseComponent
   attr_reader :event_name, :tag_options
 

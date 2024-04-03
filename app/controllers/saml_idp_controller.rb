@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'saml_idp_constants'
 require 'saml_idp'
 
@@ -136,6 +138,7 @@ class SamlIdpController < ApplicationController
 
     analytics.saml_auth_request(
       requested_ial: requested_ial,
+      authn_context: saml_request&.requested_authn_contexts,
       requested_aal_authn_context: saml_request&.requested_aal_authn_context,
       requested_vtr_authn_context: saml_request&.requested_vtr_authn_context,
       force_authn: saml_request&.force_authn?,
@@ -181,6 +184,8 @@ class SamlIdpController < ApplicationController
       ial: resolved_authn_context_int_ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
       sign_in_flow: session[:sign_in_flow],
+      vtr: sp_session[:vtr],
+      acr_values: sp_session[:acr_values],
     )
     track_billing_events
   end

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class RecaptchaValidator
-  VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze
+  VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'
   RESULT_ERRORS = ['missing-input-secret', 'invalid-input-secret']
   VALID_RECAPTCHA_VERSIONS = [2, 3]
 
