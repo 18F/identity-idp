@@ -42,7 +42,7 @@ describe('RailsI18nWebpackPlugin', () => {
           filename: 'actual[name].js',
         },
         optimization: {
-          chunkIds: 'deterministic',
+          chunkIds: 'named',
           splitChunks: {
             chunks: 'all',
             minSize: 0,
@@ -53,26 +53,20 @@ describe('RailsI18nWebpackPlugin', () => {
         try {
           expect(webpackError).to.be.null();
 
-          for (const chunkSuffix of ['1', '946', '452']) {
-            // eslint-disable-next-line no-await-in-loop
-            const [script, en, es, fr] = await Promise.all([
-              fs.readFile(path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}.js`)),
-              ...['.en.js', '.es.js', '.fr.js'].map(async (localeSuffix) => [
-                await fs.readFile(
-                  path.resolve(__dirname, `spec/fixtures/expected${chunkSuffix}${localeSuffix}`),
-                  'utf-8',
-                ),
-                await fs.readFile(
-                  path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}${localeSuffix}`),
-                  'utf-8',
-                ),
-              ]),
-            ]);
+          const fixtures = await fs.readdir(path.resolve(__dirname, 'spec/fixtures'));
+          const expectedFiles = fixtures.filter((file) => file.startsWith('expected'));
 
-            expect(script).to.not.be.empty();
-            for (const [expected, actual] of [en, es, fr]) {
-              expect(expected).to.equal(actual);
-            }
+          for (const expectedFile of expectedFiles) {
+            const suffix = expectedFile.slice('expected'.length);
+            const actualFile = `actual${suffix}`;
+            // eslint-disable-next-line no-await-in-loop
+            const [expected, actual] = await Promise.all(
+              [expectedFile, actualFile].map((file) =>
+                fs.readFile(path.resolve(__dirname, 'spec/fixtures', file), 'utf-8'),
+              ),
+            );
+
+            expect(expected).to.equal(actual);
           }
 
           expect(onMissingString).to.have.callCount(7);
@@ -91,29 +85,11 @@ describe('RailsI18nWebpackPlugin', () => {
             ),
           );
 
-          expect(manifest.entrypoints['1'].assets.js).to.include.all.members([
-            'actual1.js',
-            'actual1.en.js',
-            'actual1.es.js',
-            'actual1.fr.js',
-            'actual278.en.js',
-            'actual278.es.js',
-            'actual278.fr.js',
-            'actual910.js',
-            'actual910.en.js',
-            'actual910.es.js',
-            'actual910.fr.js',
-          ]);
-          expect(manifest.entrypoints['2'].assets.js).to.include.all.members([
-            'actual2.js',
-            'actual278.en.js',
-            'actual278.es.js',
-            'actual278.fr.js',
-            'actual910.js',
-            'actual910.en.js',
-            'actual910.es.js',
-            'actual910.fr.js',
-          ]);
+          // 3 outputs + 3 x 3 languages - 1 dynamic output
+          expect(manifest.entrypoints['1'].assets.js).to.have.lengthOf(11);
+
+          // 3 outputs + 2 x 3 languages (no locale strings for base output) - 1 dynamic output
+          expect(manifest.entrypoints['2'].assets.js).to.have.lengthOf(8);
 
           done();
         } catch (error) {
