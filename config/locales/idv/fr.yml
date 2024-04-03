@@ -196,26 +196,22 @@ fr:
         cta_html: Ce n’est pas la bonne adresse? %{cta_link_html}
         cta_link: Effacez vos renseignements et recommencez.
         title: Où ma lettre a-t-elle été envoyée?
-      alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à :'
       alert_rate_limit_warning_html: Vous ne pouvez pas demander d’autres lettres pour
         le moment. Votre demande de lettre précédente a été effectuée le
         <strong>%{date_letter_was_sent}</strong>.
-      clear_and_start_over: Effacez vos renseignements et recommencez
       did_not_receive_letter:
         form:
-          instructions: Si vous avez disposez de votre lettre, veuillez entrer le code à
-            10 caractères qu’elle contient.
-        intro:
-          be_patient_html: Veuillez noter que les lettres mettent jusqu’à <strong>10
-            jours</strong> pour arriver. Nous vous remercions de votre patience.
-          request_new_letter_link: demander une nouvelle lettre
-          request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
-            pouvez <span>%{request_new_letter_link}</span>.
+          instructions: Si vous avez votre lettre, veuillez saisir le code à 10 caractères
+            qu’elle contient.
+        intro_html: Vous avez demandé pour la dernière fois de recevoir un courrier le
+          <strong>%{date_letter_was_sent}</strong>.
+        request_a_new_letter_html: Demandez à recevoir un nouveau courrier si plus de
+          <strong>10 jours</strong> se sont écoulés depuis la dernière fois que
+          vous en avez demandé un ou si votre code de vérification a expiré.
         title: Vous n’avez pas reçu votre lettre ?
       form:
         otp_label: Code de vérification
         submit: Valider
-        title: Confirmez votre compte
       intro: Bienvenue à nouveau. Saisissez le code à 10 caractères contenu dans le
         courrier que vous avez reçu.
       last_letter_request_message_html: Vous avez demandé pour la dernière fois de
@@ -233,14 +229,12 @@ fr:
         title: Vous voulez demander une autre lettre ?
       return_to_profile: Retourner à votre profil
       title: Saisir votre code de vérification
-      wrong_address: Pas la bonne adresse ?
     images:
       come_back_later: Lettre avec une coche
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier les
         informations qui ont été vérifiées, veuillez %{link_html}.
       activated_link: nous contacter
-      clear_and_start_over: Effacer mes renseignements et recommencer
       come_back_later_html: '<p>Les lettres mettent <strong>5 à 10 jours</strong> pour
         arriver par courrier prioritaire via USPS.</p> <p>Une fois votre lettre
         arrivée, connectez-vous à %{app_name} et saisissez votre code de

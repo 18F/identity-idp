@@ -179,25 +179,21 @@ en:
         cta_html: Not the right address? %{cta_link_html}
         cta_link: Clear your information and start over.
         title: Where was my letter sent?
-      alert_info: 'We sent a letter with your verification code to:'
       alert_rate_limit_warning_html: You can’t request more letters right now. Your
         previous letter request was on <strong>%{date_letter_was_sent}</strong>.
-      clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
         form:
           instructions: If you have your letter, enter the 10-character code from the
             letter you received.
-        intro:
-          be_patient_html: Please note that letters take up to <strong>10 days</strong> to
-            arrive. Thank you for your patience.
-          request_new_letter_link: request a new letter
-          request_new_letter_prompt_html: If you haven’t received your letter, you may
-            <span>%{request_new_letter_link}</span>.
+        intro_html: You last requested a letter on
+          <strong>%{date_letter_was_sent}</strong>.
+        request_a_new_letter_html: Request a new letter if it’s been over <strong>10
+          days</strong> since you last requested a letter or if your
+          verification code has expired.
         title: Didn’t get your letter?
       form:
         otp_label: Verification code
         submit: Submit
-        title: Confirm your account
       intro: Welcome back. Enter the 10-character code from the letter you received.
       last_letter_request_message_html: You last requested a letter on
         <strong>%{date_letter_was_sent}</strong>. If your letter hasn’t arrived
@@ -212,14 +208,12 @@ en:
         title: Request another letter?
       return_to_profile: Return to your profile
       title: Enter your verification code
-      wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link_html}.
       activated_link: contact us
-      clear_and_start_over: Clear my information and start over
       come_back_later_html: <p>Letters take <strong>5 to 10 days</strong> to arrive
         via USPS First-Class Mail.</p> <p>Once your letter arrives, sign in to
         %{app_name}, and enter your verification code when prompted.</p>

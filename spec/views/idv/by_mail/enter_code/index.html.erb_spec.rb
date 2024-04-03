@@ -51,24 +51,26 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
       expect(rendered).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
     end
 
-    it 'has a special intro paragraph' do
+    it 'has a special body text' do
       expect(rendered).to have_content(
         strip_tags(
           t(
-            'idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html',
-            request_new_letter_link:
-              t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+            'idv.gpo.did_not_receive_letter.intro_html',
+            date_letter_was_sent: I18n.l(
+              last_date_letter_was_sent,
+              format: :event_date,
+            ),
           ),
         ),
       )
       expect(rendered).to have_content(
-        strip_tags(t('idv.gpo.did_not_receive_letter.intro.be_patient_html')),
+        strip_tags(t('idv.gpo.did_not_receive_letter.request_a_new_letter_html')),
       )
     end
 
     it 'links to requesting a new letter' do
       expect(rendered).to have_link(
-        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        t('idv.messages.gpo.resend'),
         href: idv_request_letter_path,
       )
     end
@@ -79,25 +81,29 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
       )
     end
 
-    it 'does not link to requesting a new letter at the bottom of the page' do
-      expect(rendered).not_to have_link(
-        t('idv.messages.gpo.resend'),
-        href: idv_request_letter_path,
-      )
-    end
-
     context 'user is NOT allowed to request another GPO letter' do
       let(:can_request_another_letter) { false }
 
-      it 'still has a special intro' do
+      it 'still has a special body text' do
         expect(rendered).to have_content(
-          strip_tags(t('idv.gpo.did_not_receive_letter.intro.be_patient_html')),
+          strip_tags(
+            t(
+              'idv.gpo.did_not_receive_letter.intro_html',
+              date_letter_was_sent: I18n.l(
+                last_date_letter_was_sent,
+                format: :event_date,
+              ),
+            ),
+          ),
+        )
+        expect(rendered).to have_content(
+          strip_tags(t('idv.gpo.did_not_receive_letter.request_a_new_letter_html')),
         )
       end
 
       it 'does not link to requesting a new letter' do
-        expect(rendered).not_to have_link(
-          t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        expect(rendered).to_not have_link(
+          t('idv.messages.gpo.resend'),
           href: idv_request_letter_path,
         )
       end
