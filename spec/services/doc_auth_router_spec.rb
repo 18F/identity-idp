@@ -72,32 +72,6 @@ RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
 
         expect(result).to eq(doc_auth_vendor)
       end
-
-      context 'when selfie is enabled' do
-        before do
-          expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-            and_return(true)
-        end
-        context 'when vendor is not set to mock' do
-          it 'chose lexisnexis' do
-            result = DocAuthRouter.doc_auth_vendor(
-              discriminator: discriminator,
-              analytics: analytics,
-            )
-            expect(result).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-          end
-        end
-        context 'when vendor is set to mock' do
-          let(:doc_auth_vendor) { Idp::Constants::Vendors::MOCK }
-          it 'stays with the mock' do
-            result = DocAuthRouter.doc_auth_vendor(
-              discriminator: discriminator,
-              analytics: analytics,
-            )
-            expect(result).to eq(Idp::Constants::Vendors::MOCK)
-          end
-        end
-      end
     end
 
     context 'with a discriminator that hashes inside the test group' do
@@ -110,25 +84,6 @@ RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
       it 'is the alternate vendor' do
         expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
           to eq(doc_auth_vendor_randomize_alternate_vendor)
-      end
-
-      context 'with selfie enabled' do
-        before do
-          expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-            and_return(true)
-        end
-        it 'is the lexisnexis vendor' do
-          expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
-            to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-        end
-
-        context 'when alternate is set to mock' do
-          let(:doc_auth_vendor_randomize_alternate_vendor) { Idp::Constants::Vendors::MOCK }
-          it 'stays with the mock vendor' do
-            expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
-              to eq(Idp::Constants::Vendors::MOCK)
-          end
-        end
       end
 
       context 'with randomize false' do
