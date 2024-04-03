@@ -806,8 +806,8 @@ test-deployment:
   interruptible: true
   tags:
     - build-pool
-  #before_script:
-  #  - apt-get update && apt-get install -y yq
+  before_script:
+    - apt-get update && apt-get install -y yq
   script:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
