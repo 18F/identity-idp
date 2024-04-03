@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FraudReviewChecker
   attr_reader :user
 

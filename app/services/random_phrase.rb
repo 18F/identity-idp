@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper for generating and normalizing random strings, that can be formatted as groups of 4 letters
 class RandomPhrase
   attr_reader :words, :separator

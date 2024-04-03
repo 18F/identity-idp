@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module ByMail
     class EnterCodeController < ApplicationController
@@ -11,34 +13,21 @@ module Idv
       before_action :confirm_verification_needed
 
       def index
-        # GPO reminder emails include an "I did not receive my letter!" link that results in
-        # slightly different copy on this screen.
-        @user_did_not_receive_letter = !!params[:did_not_receive_letter]
-
         analytics.idv_verify_by_mail_enter_code_visited(
-          source: if @user_did_not_receive_letter then 'gpo_reminder_email' end,
+          source: user_did_not_receive_letter? ? 'gpo_reminder_email' : nil,
+          otp_rate_limited: rate_limiter.limited?,
+          user_can_request_another_letter: user_can_request_another_letter?,
         )
 
         if rate_limiter.limited?
-          redirect_to idv_enter_code_rate_limited_url
-          return
+          return redirect_to idv_enter_code_rate_limited_url
+        elsif pii_locked?
+          return redirect_to capture_password_url
         end
 
-        @last_date_letter_was_sent = last_date_letter_was_sent
-        @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
-        @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
-
-        gpo_mail = Idv::GpoMail.new(current_user)
-        @can_request_another_letter =
-          FeatureManagement.gpo_verification_enabled? &&
-          !gpo_mail.rate_limited? &&
-          !gpo_mail.profile_too_old?
-
-        if pii_locked?
-          redirect_to capture_password_url
-        else
-          render :index
-        end
+        prefilled_code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
+        @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii, otp: prefilled_code)
+        render_enter_code_form
       end
 
       def pii
@@ -66,18 +55,22 @@ module Idv
           if rate_limiter.limited?
             redirect_to idv_enter_code_rate_limited_url
           else
-            flash[:error] = @gpo_verify_form.errors.first.message if !rate_limiter.limited?
-            redirect_to idv_verify_by_mail_enter_code_url
+            render_enter_code_form
           end
-          return
+        else
+          prepare_for_personal_key
+          redirect_to idv_personal_key_url
         end
-
-        prepare_for_personal_key
-
-        redirect_to idv_personal_key_url
       end
 
       private
+
+      def render_enter_code_form
+        @can_request_another_letter = user_can_request_another_letter?
+        @user_did_not_receive_letter = user_did_not_receive_letter?
+        @last_date_letter_was_sent = last_date_letter_was_sent
+        render :index
+      end
 
       def pending_in_person_enrollment?
         return false unless IdentityConfig.store.in_person_proofing_enabled
@@ -89,7 +82,7 @@ module Idv
       end
 
       def note_if_user_did_not_receive_letter
-        if !current_user && params[:did_not_receive_letter]
+        if !current_user && user_did_not_receive_letter?
           # Stash that the user didn't receive their letter.
           # Once the authentication process completes, they'll be redirected to complete their
           # GPO verification...
@@ -150,9 +143,29 @@ module Idv
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
       end
 
+      # GPO reminder emails include an "I did not receive my letter!" link that results in
+      # slightly different copy on this screen.
+      def user_did_not_receive_letter?
+        params[:did_not_receive_letter].present?
+      end
+
+      def user_can_request_another_letter?
+        return @user_can_request_another_letter if defined?(@user_can_request_another_letter)
+        gpo_mail = Idv::GpoMail.new(current_user)
+        @user_can_request_another_letter =
+          FeatureManagement.gpo_verification_enabled? &&
+          !gpo_mail.rate_limited? &&
+          !gpo_mail.profile_too_old?
+      end
+
       def last_date_letter_was_sent
-        current_user.gpo_verification_pending_profile&.gpo_confirmation_codes&.
-          pluck(:updated_at)&.max
+        return @last_date_letter_was_sent if defined?(@last_date_letter_was_sent)
+
+        @last_date_letter_was_sent = current_user.
+          gpo_verification_pending_profile&.
+          gpo_confirmation_codes&.
+          pluck(:updated_at)&.
+          max
       end
     end
   end

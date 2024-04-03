@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IconListComponent < BaseComponent
   renders_many :items, ->(**kwargs, &block) do
     IconListItemComponent.new(icon:, color:, **kwargs, &block)

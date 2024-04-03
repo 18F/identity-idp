@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './spec/support/oidc_auth_helper'
 module Test
   class OidcTestController < ApplicationController

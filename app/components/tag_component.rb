@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TagComponent < BaseComponent
   attr_reader :big, :informative, :tag_options
   alias_method :big?, :big

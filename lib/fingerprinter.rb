@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Fingerprinter
   def self.fingerprint_cert(ssl_cert)
     return nil unless ssl_cert

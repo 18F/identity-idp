@@ -76,7 +76,7 @@ RSpec.describe Reporting::DropOffReport do
   describe '#to_csvs' do
     it 'generates a csv' do
       csv_string_list = report.to_csvs
-      expect(csv_string_list.count).to be 4
+      expect(csv_string_list.count).to be 3
 
       csvs = csv_string_list.map { |csv| CSV.parse(csv) }
 
@@ -135,7 +135,6 @@ RSpec.describe Reporting::DropOffReport do
   def expected_tables(strings: false)
     [
       # these two tables are static
-      report.proofing_definition_table,
       report.step_definition_table,
       [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
@@ -155,8 +154,8 @@ RSpec.describe Reporting::DropOffReport do
         ['Phone finder (page view)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
         ['Encrypt account: enter password (page view)'] + string_or_num(strings, 1, 1, 0.5, 0.2),
         ['Personal key input (page view)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
-        ['USPS letter enqueued (event)'] + string_or_num(strings, 0, 1, 1.0, 0.0),
         ['Verified (event)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
+        ['Workflow Complete - Total Pending'] + string_or_num(strings, 0),
       ],
     ]
   end

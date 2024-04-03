@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 DeviceDecorator = Struct.new(:device) do
   delegate :last_used_at, :id, to: :device
 

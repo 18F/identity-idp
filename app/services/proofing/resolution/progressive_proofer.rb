@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Resolution
     # Uses a combination of LexisNexis InstantVerify and AAMVA checks to verify that

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :db do
   desc 'Tear down and recreate the sp_return_logs index'
   task rebuild_sp_return_logs_index: :environment do

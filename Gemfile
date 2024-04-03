@@ -64,7 +64,6 @@ gem 'rack-timeout', require: false
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.1-18f'
-gem 'request_store', '~> 1.0'
 gem 'retries'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'

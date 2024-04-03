@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Vot
   class Parser
     class ParseException < StandardError; end

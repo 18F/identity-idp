@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
   before_action :confirm_two_factor_authenticated

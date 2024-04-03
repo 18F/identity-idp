@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module X509
   Attributes = Struct.new(
     :subject, :issuer, :presented

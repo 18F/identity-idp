@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IdentityConfig
   GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
   GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
@@ -108,6 +110,7 @@ class IdentityConfig
     config.add(:aamva_verification_url)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
+    config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)
     config.add(:account_suspended_support_code, type: :string)
     config.add(:acuant_assure_id_password)
     config.add(:acuant_assure_id_subscription_id)
@@ -350,7 +353,7 @@ class IdentityConfig
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)
-    config.add(:phone_carrier_registration_blocklist, type: :comma_separated_string_list)
+    config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)
     config.add(:phone_confirmation_max_attempts, type: :integer)
     config.add(

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IdvController < ApplicationController
   include IdvSessionConcern
   include AccountReactivationConcern

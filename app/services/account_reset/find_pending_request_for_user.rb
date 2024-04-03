@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module AccountReset
   class FindPendingRequestForUser
+    include AccountResetConcern
     attr_reader :user
 
     def initialize(user)
@@ -13,7 +16,7 @@ module AccountReset
         cancelled_at: nil,
       ).where(
         'requested_at > ?',
-        IdentityConfig.store.account_reset_wait_period_days.days.ago,
+        account_reset_wait_period_days(user).ago,
       ).order(requested_at: :asc).first
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Agreements::PartnerAccount < ApplicationRecord
   self.table_name = 'partner_accounts'
 

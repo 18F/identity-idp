@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class ProfileMaker
     attr_reader :pii_attributes

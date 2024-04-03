@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FraudReviewConcern
   extend ActiveSupport::Concern
 
@@ -26,8 +28,7 @@ module FraudReviewConcern
 
   def in_person_prevent_fraud_redirection?
     IdentityConfig.store.in_person_proofing_enforce_tmx &&
-      !current_user.in_person_enrollment_status.nil? &&
-      current_user.in_person_enrollment_status != 'passed'
+      current_user.ipp_enrollment_status_not_passed?
   end
 
   def redirect_to_fraud_review

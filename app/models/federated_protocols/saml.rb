@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FederatedProtocols
   class Saml
     def initialize(request)

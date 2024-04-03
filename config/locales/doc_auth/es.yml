@@ -49,8 +49,8 @@ es:
           identidad. Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
-        selfie_not_live: 'Intente tomar de nuevo sus fotos. Asegúrese de que sus fotos
-          estén claras y enfocadas.'
+        selfie_not_live: Intente tomar de nuevo una foto de usted. Asegúrese de que su
+          rostro se vea claramente en la foto.
         selfie_poor_quality: 'Intente tomar de nuevo una foto de usted. Asegúrese de que
           su rostro se vea claramente en la foto.'
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
@@ -108,7 +108,8 @@ es:
         network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
           enviar sus imágenes de nuevo más tarde.
         no_liveness: Intente tomar nuevas fotografías.
-        selfie_failure: No pudimos verificar su foto. Intente tomar una nueva foto.
+        selfie_failure: Intente tomar de nuevo sus fotos. Asegúrese de que sus fotos
+          estén claras y enfocadas.
       glare:
         failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que su foto tenga
@@ -243,6 +244,9 @@ es:
       how_to_verify_troubleshooting_options_header: ¿Quiere saber más sobre cómo verificar su identidad?
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
+      hybrid_handoff_ipp_html: <strong>¿No tiene celular?</strong> Como alternativa,
+        puede verificar su identidad en una oficina de correos de Estados
+        Unidos.
       image_loaded: Imagen cargada
       image_loading: Cargando la imagen
       image_updated: Imagen actualizada
@@ -279,21 +283,20 @@ es:
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a cambiar a
         esta computadora después de tomar las fotos. Su teléfono móvil debe
         tener una cámara y un navegador web.
-      verify_at_post_office_description: Esta opción es mejor si no tiene un
-        dispositivo móvil o una manera fácil de tomar fotografías de su
-        identificación.
+      verify_at_post_office_description: Esta opción es mejor si no tiene un teléfono
+        para tomar fotografías de su identificación.
       verify_at_post_office_instruction: Ingresará su información de identificación en
-        línea y verificará tu identidad en persona en una oficina de correos
+        línea y verificará su identidad en persona en una oficina de correos
         participante.
       verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
       verify_identity: Le pediremos su identificación, número de teléfono y otros
         datos personales para verificar su identidad comparándola con los
         registros públicos.
-      verify_online_description: La mayoría de los usuarios finalizan este proceso de
-        una sola vez. Esta opción es mejor si tiene un dispositivo móvil o una
-        forma de tomar fotografías de su identificación.
-      verify_online_instruction: Tomará fotografías de tu identificación para
-        verificar tu identidad completamente en línea.
+      verify_online_description: Esta opción es mejor si tiene un teléfono para tomar
+        fotografías de su identificación.
+      verify_online_instruction: Tomará fotografías de su identificación para
+        verificar su identidad completamente en línea. La mayoría de los
+        usuarios finalizan este proceso de una sola vez.
       verify_online_link_text: Obtenga más información sobre la verificación en línea
       you_entered: 'Ud. entregó:'
     instructions:
@@ -332,7 +335,6 @@ es:
       document_capture_selfie_text1: Mantenga el dispositivo al mismo nivel que los ojos
       document_capture_selfie_text2: Asegúrate de que tu rostro completo sea visible
       document_capture_selfie_text3: Tómese la foto en un sitio con buena iluminación
-      most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: '¿Ha usado un fondo oscuro?'

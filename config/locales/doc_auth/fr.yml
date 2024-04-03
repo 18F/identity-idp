@@ -52,8 +52,9 @@ fr:
           d’identité. Essayez de prendre de nouvelles photos.
         ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
           contrôle. Essayez de prendre de nouvelles photos.
-        selfie_not_live: 'Essayez de prendre de nouvelles photos de vous-même. Veillez à
-          ce que toutes vos photos soient claires et nettes.'
+        selfie_not_live: Essayez de prendre une nouvelle photo de vous-même.
+          Assurez-vous que l’ensemble de votre visage soit clair et visible sur
+          la photo.
         selfie_poor_quality: 'Essayez de prendre une nouvelle photo de vous-même.
           Assurez-vous que l’ensemble de votre visage soit clair et visible sur
           la photo.'
@@ -114,8 +115,8 @@ fr:
         network_error: Nous avons des difficultés techniques de notre côté. Veuillez
           essayer de soumettre à nouveau vos images plus tard.
         no_liveness: Essayez de prendre de nouvelles photos.
-        selfie_failure: Nous n’avons pas pu vérifier votre photo. Essayez de prendre une
-          nouvelle photo.
+        selfie_failure: Essayez de prendre de nouvelles photos de vous-même. Veillez à
+          ce que toutes vos photos soient claires et nettes.
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo peut avoir
@@ -217,9 +218,9 @@ fr:
       text_message: Nous avons envoyé un message à votre téléphone
       upload_from_computer: Continuer sur cet ordinateur
       upload_from_phone: Utilisez votre téléphone pour prendre des photos
-      verify_at_post_office: Confirmez votre identité un bureau de poste
+      verify_at_post_office: Vérifiez votre identité un bureau de poste
       verify_identity: Vérifier votre identité
-      verify_online: Confirmez votre identité en ligne
+      verify_online: Vérifiez votre identité en ligne
       welcome: Vérifions votre identité pour %{sp_name}
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
@@ -247,11 +248,14 @@ fr:
       getting_started_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: Pour plus d’informations sur la vérification de votre identité
-      how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne ou
+      how_to_verify: Vous avez la possibilité de vérifier votre identité en ligne ou
         en personne dans un bureau de poste participant.
       how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de vérifier votre identité?
       hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
+      hybrid_handoff_ipp_html: <strong>Vous n’avez pas de téléphone
+        cellulaire?</strong> Vous pouvez vérifier votre identité dans un bureau
+        de poste américain.
       image_loaded: Image chargée
       image_loading: Chargement de l’image
       image_updated: Image mise à jour
@@ -291,9 +295,8 @@ fr:
       upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet
         ordinateur après avoir pris des photos. Votre téléphone portable doit
         être équipé d’un appareil photo et d’un navigateur web.
-      verify_at_post_office_description: Cette option est préférable si vous ne
-        disposez pas d’un appareil mobile ou d’un moyen facile de prendre des
-        photos de votre pièce d’identité.
+      verify_at_post_office_description: Cette option est préférable si vous n’avez
+        pas de téléphone pour prendre des photos de votre pièce d’identité.
       verify_at_post_office_instruction: Vous saisissez vos données d’identification
         en ligne et confirmez votre identité en personne dans un bureau de poste
         participant.
@@ -301,12 +304,11 @@ fr:
       verify_identity: Nous vous demanderons votre pièce d’identité, numéro de
         téléphone et d’autres renseignements personnels afin de confirmer votre
         identité par rapport aux registres publics.
-      verify_online_description: La plupart des utilisateurs terminent ce processus en
-        une seule fois. Cette option est préférable si vous disposez d’un
-        appareil mobile ou d’un moyen de prendre des photos de votre pièce
-        d’identité.
+      verify_online_description: Cette option est préférable si vous disposez d’un
+        téléphone pour prendre des photos de votre pièce d’identité.
       verify_online_instruction: Vous prendrez des photos de votre pièce d’identité
-        pour confirmer votre identité entièrement en ligne.
+        pour confirmer votre identité entièrement en ligne. La plupart des
+        utilisateurs terminent ce processus en une seule fois.
       verify_online_link_text: En savoir plus sur la confirmation en ligne
       you_entered: 'Tu as soumis:'
     instructions:
@@ -345,7 +347,6 @@ fr:
       document_capture_selfie_text1: Tenez votre appareil à hauteur des yeux
       document_capture_selfie_text2: Veillez à ce que l’ensemble de votre visage soit visible
       document_capture_selfie_text3: Prenez votre photo dans un endroit bien éclairé
-      most_common: Le plus commun
       review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
       review_issues_id_text2: Avez-vous pris la photo sur une surface plane?

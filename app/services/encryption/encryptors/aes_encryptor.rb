@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This module is still needed by existing functionality, but any new AES encryption
 # should prefer using AesEncryptorV2 and AesCipherV2.
 module Encryption
@@ -5,7 +7,7 @@ module Encryption
     class AesEncryptor
       include Encodable
 
-      DELIMITER = '.'.freeze
+      DELIMITER = '.'
 
       # "It is a riddle, wrapped in a mystery, inside an enigma; but perhaps there is a key."
       #  - Winston Churchill, https://en.wiktionary.org/wiki/a_riddle_wrapped_up_in_an_enigma

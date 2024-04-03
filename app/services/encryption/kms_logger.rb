@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Encryption
   class KmsLogger
     def self.log(action, key_id:, context: nil)

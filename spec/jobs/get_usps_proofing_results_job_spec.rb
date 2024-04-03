@@ -900,8 +900,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(
                 reason: 'Unexpected number of days before enrollment expired',
+                job_name: 'GetUspsProofingResultsJob',
               ),
-              job_name: 'GetUspsProofingResultsJob',
             )
           end
         end
