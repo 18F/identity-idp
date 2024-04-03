@@ -249,8 +249,8 @@ es:
       new_sign_in_from: Nuevo inicio de sesión potencialmente ubicado en %{location}
     new_device_sign_in_before_2fa:
       info_p1_html:
-        one: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar
-          desde un nuevo dispositivo, pero <strong>la autenticación dio
+        one: Su correo electrónico y su contraseña de %{app_name} se usaron para
+          ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio
           error</strong>.
         other: Su correo electrónico y su contraseña de %{app_name} se usaron para
           ingresar desde un nuevo dispositivo, pero <strong>error al autenticar

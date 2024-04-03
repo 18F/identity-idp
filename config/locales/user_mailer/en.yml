@@ -220,8 +220,8 @@ en:
       subject: New sign-in with your %{app_name} account
     new_device_sign_in_after_2fa:
       authentication_methods: authentication methods
-      info_p1: Your %{app_name} email and password were used to sign-in and authenticate
-        on a new device.
+      info_p1: Your %{app_name} email and password were used to sign-in and
+        authenticate on a new device.
       info_p2: If you recognize this activity, you don’t need to do anything.
       info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your
         %{authentication_methods_link_html} immediately.
@@ -237,8 +237,8 @@ en:
       info_p1_html:
         one: Your %{app_name} email and password were used to sign in from a new device
           but <strong>failed to authenticate</strong>.
-        other: Your %{app_name} email and password were used to sign in from a new device
-          but <strong>failed to authenticate %{count} times</strong>
+        other: Your %{app_name} email and password were used to sign in from a new
+          device but <strong>failed to authenticate %{count} times</strong>
       info_p2: If you recognize this activity, you don’t need to do anything.
       info_p3_html: Two-factor authentication protects your account from unauthorized
         access. If this wasn’t you, %{reset_password_link_html} immediately.
