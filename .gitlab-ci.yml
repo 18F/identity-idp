@@ -390,7 +390,7 @@ trigger_devops:
             prune: true
         source:
           repoURL: git@gitlab.login.gov:lg-public/identity-idp-helm-chart.git
-          targetRevision: use-init-containers
+          targetRevision: main
           path: .
           helm:
             parameters:
