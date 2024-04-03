@@ -815,7 +815,8 @@ test-deployment:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
-    - yq -i eval ".idp.image.tag = \"${rcTag}\"" ./environments/${testEnvironment}.yaml
+    - yqFilter=".idp.image.tag=\"${rcTag}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}" && git push origin ${gitBranch}
     - git push -o merge_request.create -o merge_requests.target=main -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
  
