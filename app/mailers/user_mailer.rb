@@ -143,7 +143,10 @@ class UserMailer < ActionMailer::Base
       @events = events
       @disavowal_token = disavowal_token
 
-      mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in_after_2fa.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -156,7 +159,10 @@ class UserMailer < ActionMailer::Base
       @disavowal_token = disavowal_token
       @failed_times = events.count { |event| event.event_type == 'sign_in_unsuccessful_2fa' }
 
-      mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in_before_2fa.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
+      )
     end
   end
 

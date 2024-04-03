@@ -234,13 +234,13 @@ es:
       subject: Nuevo initio de sesion con su %{app_name} cuenta
     new_device_sign_in_after_2fa:
       authentication_methods: métodos de autenticación
-      info_p1: Su correo electrónico y su contraseña de Login.gov se usaron para
+      info_p1: Su correo electrónico y su contraseña de %{app_name} se usaron para
         iniciar sesión y para la autenticación desde un nuevo dispositivo.
       info_p2: Si reconoce esta actividad, no tiene que hacer nada.
       info_p3_html: Si no fue usted, %{reset_password_link_html} y cambie sus
         %{authentication_methods_link_html} inmediatamente.
       reset_password: restablezca la contraseña
-      subject: Nuevo inicio de sesión y autenticación con su cuenta de Login.gov
+      subject: Nuevo inicio de sesión y autenticación con su cuenta de %{app_name}
     new_device_sign_in_attempts:
       events:
         sign_in_after_2fa: Autenticado
@@ -249,10 +249,10 @@ es:
       new_sign_in_from: Nuevo inicio de sesión potencialmente ubicado en %{location}
     new_device_sign_in_before_2fa:
       info_p1_html:
-        one: Su correo electrónico y su contraseña de Login.gov se usaron para ingresar
+        one: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar
           desde un nuevo dispositivo, pero <strong>la autenticación dio
           error</strong>.
-        other: Su correo electrónico y su contraseña de Login.gov se usaron para
+        other: Su correo electrónico y su contraseña de %{app_name} se usaron para
           ingresar desde un nuevo dispositivo, pero <strong>error al autenticar
           %{count} veces</strong>
       info_p2: Si reconoce esta actividad, no tiene que hacer nada.
@@ -260,7 +260,7 @@ es:
         autorizados. Si no fue usted, %{reset_password_link_html}
         inmediatamente.
       reset_password: restablezca la contraseña
-      subject: Nuevo inicio de sesión con su cuenta de Login.gov
+      subject: Nuevo inicio de sesión con su cuenta de %{app_name}
     password_changed:
       disavowal_link: restablecer su contraseña
       help_html: Si no realizó este cambio, %{disavowal_link_html}. Para más ayuda,
