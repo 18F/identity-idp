@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebauthnVerifyButtonComponent < BaseComponent
   attr_reader :credentials, :user_challenge, :tag_options
 

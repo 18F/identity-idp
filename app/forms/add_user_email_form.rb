@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUserEmailForm
   include ActiveModel::Model
   include FormAddEmailValidator

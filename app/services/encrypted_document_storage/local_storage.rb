@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EncryptedDocumentStorage
   class LocalStorage
     # Used in tests to verify results

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpinnerButtonComponent < BaseComponent
   DEFAULT_LONG_WAIT_DURATION = 15.seconds
 

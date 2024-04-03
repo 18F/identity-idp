@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OutageStatus
   include ActionView::Helpers::TranslationHelper
 

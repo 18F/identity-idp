@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoConfirmation < ApplicationRecord
   self.table_name = 'usps_confirmations'
 

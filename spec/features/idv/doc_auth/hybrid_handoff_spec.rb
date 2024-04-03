@@ -380,8 +380,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         context 'when sp ipp is available' do
           before do
             expect(page).to have_current_path(idv_how_to_verify_path)
-            choose t('doc_auth.tips.most_common')
-            click_on t('doc_auth.buttons.continue')
+            click_on t('forms.buttons.continue_remote')
           end
           context 'when selfie is enabled system wide' do
             describe 'when selfie is required by sp' do

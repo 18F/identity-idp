@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DownloadButtonComponent < ButtonComponent
   attr_reader :file_data, :file_name, :tag_options
 

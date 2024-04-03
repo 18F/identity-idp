@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Agreements
   class IaaOrderSeeder < BaseSeeder
     # The core functionality of this class is defined in BaseSeeder

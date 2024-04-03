@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ial2ProfileConcern
   extend ActiveSupport::Concern
 

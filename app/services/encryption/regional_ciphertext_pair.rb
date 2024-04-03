@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Encryption::RegionalCiphertextPair = RedactedStruct.new(
   :single_region_ciphertext, :multi_region_ciphertext, keyword_init: true
 ) do

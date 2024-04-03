@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountResetRequest < ApplicationRecord
   self.ignored_columns = %w[reported_fraud_at]
 

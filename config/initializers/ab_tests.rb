@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ab_test_bucket'
 
 module AbTests

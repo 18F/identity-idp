@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SessionTimeoutModalPresenter
   def initialize(user_fully_authenticated:)
     @user_fully_authenticated = user_fully_authenticated

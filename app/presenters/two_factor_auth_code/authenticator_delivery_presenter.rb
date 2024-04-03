@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   class AuthenticatorDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     def header

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Handles SET events (Security Event Tokens)
 class SecurityEventForm
   include ActionView::Helpers::TranslationHelper
@@ -6,14 +8,14 @@ class SecurityEventForm
 
   # From https://tools.ietf.org/html/draft-ietf-secevent-http-push-00#section-2.3
   module ErrorCodes
-    DUP = 'dup'.freeze
-    JWS = 'jws'.freeze
-    JWT_AUD = 'jwtAud'.freeze
-    JWT_CRYPTO = 'jwtCrypto'.freeze
-    JWT_HDR = 'jwtHdr'.freeze
-    JWT_PARSE = 'jwtParse'.freeze
-    SET_DATA = 'setData'.freeze
-    SET_TYPE = 'setType'.freeze
+    DUP = 'dup'
+    JWS = 'jws'
+    JWT_AUD = 'jwtAud'
+    JWT_CRYPTO = 'jwtCrypto'
+    JWT_HDR = 'jwtHdr'
+    JWT_PARSE = 'jwtParse'
+    SET_DATA = 'setData'
+    SET_TYPE = 'setType'
   end
 
   validate :validate_iss

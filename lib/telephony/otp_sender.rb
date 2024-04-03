@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Telephony
   class OtpSender
     attr_reader :recipient_phone, :otp, :expiration, :otp_format, :channel, :domain, :country_code,

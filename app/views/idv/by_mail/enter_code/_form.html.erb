@@ -13,7 +13,7 @@
             autofocus: true,
             label: t('idv.gpo.form.otp_label'),
           ) %>
-      <%= hidden_field_tag :did_not_receive_letter, @did_not_receive_letter %>
+      <%= hidden_field_tag :did_not_receive_letter, @user_did_not_receive_letter ? '1' : nil %>
       <%= f.submit t('idv.gpo.form.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
     </div>
   </div>

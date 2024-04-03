@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module HybridMobile
     # Controller responsible for taking a `document-capture-session` UUID and configuring

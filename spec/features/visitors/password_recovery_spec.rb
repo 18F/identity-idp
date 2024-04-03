@@ -8,7 +8,6 @@ RSpec.feature 'Password Recovery', allowed_extra_analytics: [:*] do
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
       user = create(:user, :fully_registered)
 
       visit root_path
@@ -34,7 +33,6 @@ RSpec.feature 'Password Recovery', allowed_extra_analytics: [:*] do
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
-      expect(page.html).not_to include(t('notices.dap_participation'))
       expect(current_path).to eq edit_user_password_path
     end
   end

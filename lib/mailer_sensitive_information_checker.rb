@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MailerSensitiveInformationChecker
   class SensitiveKeyError < StandardError; end
 

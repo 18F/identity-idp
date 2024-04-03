@@ -6,7 +6,6 @@ RSpec.describe 'layouts/application.html.erb' do
   let(:title_content) { 'Example' }
 
   before do
-    allow(view).to receive(:user_fully_authenticated?).and_return(true)
     allow(view).to receive(:decorated_sp_session).and_return(
       ServiceProviderSessionCreator.new(
         sp: nil,
@@ -16,9 +15,6 @@ RSpec.describe 'layouts/application.html.erb' do
       ).create_session,
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')
-    allow(view).to receive(:current_user).and_return(User.new)
-    controller.request.path_parameters[:controller] = 'users/sessions'
-    controller.request.path_parameters[:action] = 'new'
     view.title = title_content if title_content
   end
 
@@ -144,52 +140,6 @@ RSpec.describe 'layouts/application.html.erb' do
 
         expect(view).to_not render_template(partial: 'session_timeout/_expire_session')
       end
-    end
-  end
-
-  context 'user is not authenticated and is not on page with trust' do
-    it 'displays the DAP analytics' do
-      allow(view).to receive(:current_user).and_return(nil)
-      allow(view).to receive(:page_with_trust?).and_return(false)
-      allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:decorated_sp_session).and_return(
-        ServiceProviderSessionCreator.new(
-          sp: nil,
-          view_context: nil,
-          sp_session: {},
-          service_provider_request: nil,
-        ).create_session,
-      )
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
-
-      render
-
-      expect(view).to render_template(partial: 'shared/_dap_analytics')
-    end
-  end
-
-  context 'user is fully authenticated' do
-    it 'does not render the DAP analytics' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
-
-      render
-
-      expect(view).not_to render_template(partial: 'shared/_dap_analytics')
-    end
-  end
-
-  context 'current_user is present but is not fully authenticated' do
-    before do
-      allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
-    end
-
-    it 'does not render the DAP analytics' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
-
-      render
-
-      expect(view).not_to render_template(partial: 'shared/_dap_analytics')
     end
   end
 

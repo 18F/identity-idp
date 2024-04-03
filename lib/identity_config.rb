@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IdentityConfig
   GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
   GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
@@ -351,7 +353,7 @@ class IdentityConfig
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)
-    config.add(:phone_carrier_registration_blocklist, type: :comma_separated_string_list)
+    config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)
     config.add(:phone_confirmation_max_attempts, type: :integer)
     config.add(

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   class Response
     include ApplicationHelper
