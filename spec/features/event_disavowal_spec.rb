@@ -52,7 +52,6 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
       Capybara.reset_session!
       visit root_path
       signin(user.email, user.password)
-      disavow_last_action_and_reset_password
     end
   end
 
