@@ -104,12 +104,12 @@ build-review-image:
   variables:
     BRANCH_TAGGING_STRING: ''
   rules:
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
         BRANCH_TAGGING_STRING: '--destination ${ECR_REGISTRY}/identity-idp/review:main'
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
-      when: never
   tags:
     - build-pool
   image:
@@ -798,9 +798,6 @@ test-deployment:
   stage: eks_release
   needs:
     - job: build-rc-container
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
-    - when: never
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
