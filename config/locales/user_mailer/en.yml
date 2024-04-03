@@ -224,7 +224,7 @@ en:
         on a new device.
       info_p2: If you recognize this activity, you don’t need to do anything.
       info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your
-        %{authentication_methods_link_html} methods immediately.
+        %{authentication_methods_link_html} immediately.
       reset_password: reset your password
       subject: New sign-in and authentication with your Login.gov account
     new_device_sign_in_attempts:
