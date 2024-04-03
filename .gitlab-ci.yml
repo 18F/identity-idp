@@ -507,9 +507,9 @@ review-app:
     on_stop: stop-review-app
     auto_stop_in: 2 days
   rules:
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
 
 stop-review-app:
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
@@ -723,10 +723,10 @@ secret_detection:
 ecr-scan-review-app:
   extends: .container_scan_template
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   needs:
     - job: build-review-image
   stage: scan
