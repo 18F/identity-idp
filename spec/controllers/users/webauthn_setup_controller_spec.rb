@@ -57,6 +57,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           )
 
         expect(@irs_attempts_api_tracker).not_to receive(:track_event)
+        expect(controller.send(:mobile?)).to be false
 
         get :new
       end
@@ -66,7 +67,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           request.headers['User-Agent'] = mobile_user_agent
 
           get :new
-          expect(assigns(:mobile)).to be true
+          expect(controller.send(:mobile?)).to be true
         end
       end
 
@@ -155,7 +156,18 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
 
-    describe 'webauthn platform #new' do
+    describe '#new' do
+      context 'with a mobile device' do
+        let(:mfa_selections) { ['webauthn'] }
+
+        it 'sets mobile to true' do
+          request.headers['User-Agent'] = mobile_user_agent
+
+          get :new
+          expect(controller.send(:mobile?)).to be true
+        end
+      end
+
       context 'when in account creation flow and selected multiple mfa' do
         let(:mfa_selections) { ['webauthn_platform', 'voice'] }
         before do
@@ -180,6 +192,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           get :new, params: { platform: true }
           additional_mfa_check = assigns(:need_to_set_up_additional_mfa)
           expect(additional_mfa_check).to be_truthy
+          expect(controller.send(:mobile?)).to be false
         end
       end
 
@@ -265,17 +278,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           patch :confirm, params: params
 
           expect(response).to redirect_to(auth_method_confirmation_url)
-        end
-
-        context 'with a mobile device' do
-          let(:mfa_selections) { ['webauthn'] }
-
-          it 'sets mobile to true' do
-            request.headers['User-Agent'] = mobile_user_agent
-
-            get :new
-            expect(assigns(:mobile)).to be true
-          end
         end
       end
 

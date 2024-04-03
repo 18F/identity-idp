@@ -59,7 +59,7 @@
               ) %>
         <% end %>
         <%= c.with_item(heading: t('forms.webauthn_setup.step_2')) do %>
-            <% if @mobile %>
+            <% if mobile? %>
               <%= image_tag asset_url('mfa-options/security_key_mobile.gif'), width: 420, height: 193, class: 'height-auto rounded-xl', alt: t('forms.webauthn_setup.step_2_image_mobile_alt') %>
             <% else %>
               <%= image_tag asset_url('mfa-options/security_key.gif'), width: 420, height: 193, class: 'height-auto rounded-xl', alt: t('forms.webauthn_setup.step_2_image_alt') %>

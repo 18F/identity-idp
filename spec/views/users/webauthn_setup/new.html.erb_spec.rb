@@ -21,6 +21,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:user_session).and_return(user_session)
     allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
+    allow(view).to receive(:mobile?).and_return(false)
     assign(:platform_authenticator, platform_authenticator)
     assign(:user_session, user_session)
     assign(:presenter, presenter)
@@ -136,23 +137,21 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     end
 
     describe 'security key image' do
+      it 'displays the security key image' do
+        render
+
+        expect(rendered).to match(/src=".*security_key-.*\.gif"/)
+      end
+
       context 'when on a mobile device' do
-        before { assign(:mobile, true) }
+        before do
+          allow(view).to receive(:mobile?).and_return(true)
+        end
 
         it 'displays the mobile security key image' do
           render
 
           expect(rendered).to match(/src=".*security_key_mobile-.*\.gif"/)
-        end
-      end
-
-      context 'when on a non-mobile device' do
-        before { assign(:mobile, false) }
-
-        it 'displays the security key image' do
-          render
-
-          expect(rendered).to match(/src=".*security_key-.*\.gif"/)
         end
       end
     end

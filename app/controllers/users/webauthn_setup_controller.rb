@@ -13,6 +13,7 @@ module Users
     before_action :validate_existing_platform_authenticator
 
     helper_method :in_multi_mfa_selection_flow?
+    helper_method :mobile?
 
     def new
       form = WebauthnVisitForm.new(
@@ -22,7 +23,6 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
-      @mobile = mobile?
       @presenter = WebauthnSetupPresenter.new(
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
