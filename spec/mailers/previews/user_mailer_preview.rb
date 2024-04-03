@@ -64,7 +64,7 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def new_device_sign_in_attempt_after_2fa
+  def new_device_sign_in_after_2fa
     UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_after_2fa(
       events: [
         unsaveable(
@@ -88,7 +88,7 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def new_device_sign_in_attempt_before_2fa
+  def new_device_sign_in_before_2fa
     UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in_before_2fa(
       events: [
         unsaveable(
