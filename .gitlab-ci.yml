@@ -418,6 +418,7 @@ trigger_devops:
             - values.yaml
             values: |
               dashboard:
+                enabled: true
                 env:
                 - name: KUBERNETES_REVIEW_APP
                   value: 'true'
