@@ -1218,6 +1218,10 @@ Style/MultilineMemoization:
 Style/MultilineWhenThen:
   Enabled: true
 
+Style/MutableConstant:
+  Enabled: true
+  EnforcedStyle: strict
+
 Style/NegatedWhile:
   Enabled: true
 

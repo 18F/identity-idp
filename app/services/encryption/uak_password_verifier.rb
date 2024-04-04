@@ -28,7 +28,7 @@ module Encryption
           password_cost: password_cost,
         }.to_json
       end
-    end
+    end.freeze
 
     def self.digest(password)
       salt = SecureRandom.hex(32)

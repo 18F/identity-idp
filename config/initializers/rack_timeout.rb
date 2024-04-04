@@ -4,14 +4,14 @@ require 'rack/timeout/base'
 
 module Rack
   class Timeout
-    EXCLUDES = [
+    EXCLUDES = ([
       '/verify/verify_info',
       '/verify/phone',
       '/verify/document_capture',
       '/verify/link_sent',
     ].flat_map do |path|
       [path] + Idp::Constants::AVAILABLE_LOCALES.map { |locale| "/#{locale}#{path}" }
-    end + ['/api/verify/images']
+    end + ['/api/verify/images']).freeze
 
     def call_with_excludes(env)
       if EXCLUDES.any? { |path| env['REQUEST_URI']&.start_with?(path) }

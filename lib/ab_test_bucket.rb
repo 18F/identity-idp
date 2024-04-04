@@ -3,6 +3,8 @@
 class AbTestBucket
   attr_reader :buckets, :experiment_name, :default_bucket
 
+  MAX_SHA = (16 ** 64) - 1
+
   def initialize(experiment_name:, buckets: {}, default_bucket: :default)
     @buckets = buckets
     @experiment_name = experiment_name
@@ -30,8 +32,7 @@ class AbTestBucket
   private
 
   def percent(discriminator)
-    max_sha = (16 ** 64) - 1
-    Digest::SHA256.hexdigest("#{discriminator}:#{experiment_name}").to_i(16).to_f / max_sha * 100
+    Digest::SHA256.hexdigest("#{discriminator}:#{experiment_name}").to_i(16).to_f / MAX_SHA * 100
   end
 
   def valid_bucket_data_structure?

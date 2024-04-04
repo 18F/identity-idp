@@ -13,6 +13,6 @@ module DocAuth
         :sharpness_threshold,
         :glare_threshold,
       ],
-    )
+    ).freeze
   end
 end

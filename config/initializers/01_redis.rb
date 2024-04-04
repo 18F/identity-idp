@@ -4,8 +4,8 @@
 # This is done because rack_attack.rb needs to reference the Throttle pool defined here.
 REDIS_POOL = ConnectionPool.new(size: IdentityConfig.store.redis_pool_size) do
   Redis.new(url: IdentityConfig.store.redis_url)
-end
+end.freeze
 
 REDIS_THROTTLE_POOL = ConnectionPool.new(size: IdentityConfig.store.redis_throttle_pool_size) do
   Redis.new(url: IdentityConfig.store.redis_throttle_url)
-end
+end.freeze

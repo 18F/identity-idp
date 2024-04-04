@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods

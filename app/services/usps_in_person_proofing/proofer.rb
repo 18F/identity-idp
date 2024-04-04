@@ -4,7 +4,7 @@ module UspsInPersonProofing
   class Proofer
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
     # Automatically refresh our auth token if it is within this many minutes of expiring
-    AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES = 1.minute
+    AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES = 1.minute.freeze
 
     # Makes HTTP request to get nearby in-person proofing facilities
     # Requires address, city, state and zip code.
