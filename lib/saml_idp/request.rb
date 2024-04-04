@@ -11,7 +11,6 @@ module SamlIdp
       if raw
         log "#{'~' * 20} RAW Request #{'~' * 20}\n#{raw}\n#{'~' * 18} Done RAW Request #{'~' * 17}\n"
         decoded = Base64.decode64(raw.gsub(/\\r/, '').gsub(/\\n/, ''))
-        log "#{'~' * 20} Decoded Request #{'~' * 20}\n#{decoded}\n#{'~' * 18} Done Decoded Request #{'~' * 17}\n"
         zstream = Zlib::Inflate.new(-Zlib::MAX_WBITS)
         begin
           inflated = zstream.inflate(decoded).tap do
