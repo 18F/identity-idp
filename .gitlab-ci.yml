@@ -824,7 +824,7 @@ test-deployment:
     - yqFilter=".idp.image.tag=\"${rcTag}\""
     - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
-    - git push -o merge_request.create -o merge_requests.target=main -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" -o merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment" https://oauth2:${OAUTH_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git "${gitBranch}"
+    - git push -o merge_request.create -o merge_requests.target=main -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" -o merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment" https://${OAUTH_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git "${gitBranch}"
  
 # Testing step for test environment
 
