@@ -199,10 +199,10 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.8.0)
       aws-eventstream (~> 1, >= 1.0.2)
-    axe-core-api (4.7.0)
+    axe-core-api (4.9.0)
       dumb_delegator
       virtus
-    axe-core-rspec (4.7.0)
+    axe-core-rspec (4.9.0)
       axe-core-api
       dumb_delegator
       virtus
@@ -448,7 +448,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.0)
-    nokogiri (1.16.2)
+    nokogiri (1.16.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     openssl (3.0.2)
