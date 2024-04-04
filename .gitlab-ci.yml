@@ -799,7 +799,7 @@ test-deployment:
   rules:
     - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
     - when: never
-#  needs:
+  needs: []
 #    - job: build-rc-container
   environment:
     name: $CI_COMMIT_BRANCH
