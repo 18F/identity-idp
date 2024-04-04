@@ -833,6 +833,6 @@ test-deployment:
 
 # Prod approval gate
 
-git config --global user.email "login-team-mary@login.gov"# Create Gitlab Release?
+# Create Gitlab Release?
 
 # Deploy to prod
