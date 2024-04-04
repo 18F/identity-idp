@@ -19,7 +19,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   end
 
   before do
-    assign(:presenter, Idv::ByMail::LetterEnqueuedPresenter.new(idv_session))
+    assign(:presenter, Idv::ByMail::LetterEnqueuedPresenter.new(idv_session, url_options: {}))
 
     allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
     render
