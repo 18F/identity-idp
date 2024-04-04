@@ -38,21 +38,6 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
     end
   end
 
-  context 'when aggregated new device alerts is enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(
-        :feature_new_device_alert_aggregation_enabled,
-      ).and_return(true)
-    end
-    scenario 'disavowing a new device sign in' do
-      allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
-      signin(user.email, user.password)
-      Capybara.reset_session!
-      visit root_path
-      signin(user.email, user.password)
-    end
-  end
-
   scenario 'disavowing a personal key sign in' do
     signin(user.email, user.password)
     choose_another_security_option(:personal_key)

@@ -20,8 +20,8 @@ class CreateNewDeviceAlert < ApplicationJob
 
   def sql_query_for_users_with_new_device
     <<~SQL
-      sign_in_new_device_at < :tvalue AND
-      sign_in_new_device_at IS NOT NULL
+      sign_in_new_device_at IS NOT NULL AND
+      sign_in_new_device_at < :tvalue
     SQL
   end
 
