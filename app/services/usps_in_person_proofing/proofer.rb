@@ -51,7 +51,7 @@ module UspsInPersonProofing
         state: applicant.state,
         zipCode: applicant.zip_code,
         emailAddress: applicant.email,
-        IPPAssuranceLevel: '1.5',
+        IPPAssuranceLevel: '2.0',
       }
 
       res = faraday.post(url, body, dynamic_headers) do |req|
