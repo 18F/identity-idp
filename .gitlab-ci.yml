@@ -164,6 +164,39 @@ check_changelog:
         exit 0
       fi
 
+database_migrations:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  variables:
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity_idp_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: postgis/postgis:13-3.3
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  script:
+    - *bundle_install
+    - cp config/application.yml.default config/application.yml
+    - cp config/service_providers.localdev.yml config/service_providers.yml
+    - cp config/agencies.localdev.yml config/agencies.yml
+    - cp config/iaa_gtcs{.localdev,}.yml
+    - cp config/iaa_orders{.localdev,}.yml
+    - cp config/iaa_statuses{.localdev,}.yml
+    - cp config/integration_statuses{.localdev,}.yml
+    - cp config/integrations{.localdev,}.yml
+    - cp config/partner_account_statuses{.localdev,}.yml
+    - cp config/partner_accounts{.localdev,}.yml
+    - bundle exec rake db:create db:migrate --trace
+
 specs:
   stage: test
   needs:
@@ -218,8 +251,7 @@ specs:
     - cp -a certs.example certs
     - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\" > config/application.yml"
-    - bundle exec rake db:create db:migrate --trace
-    - bundle exec rake db:seed
+    - bundle exec rake db:prepare
     - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
 
 lint:
