@@ -1,0 +1,75 @@
+<svg viewBox="0 0 262 127" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="security-key-how-to-mobile-b-LOOP">
+    <g clip-path="url(#clip0_164_2539)">
+      <rect width="262" height="126.468" rx="8" fill="#F2F9FF"></rect>
+      <g id="security-key">
+        <animateTransform
+          attributeName="transform"
+          attributeType="xml"
+          type="translate"
+          dur="4s"
+          keyTimes="0; 0.25; 0.45; 0.75; 0.875; 1"
+          values="0,0; 0,0; 0,-76; 0,-76; 0,0; 0,0"
+          keySplines="
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1"
+          repeatCount="indefinite" />
+        <g id="Vector">
+          <path d="M109 111C109 108.791 110.791 107 113 107H149C151.209 107 153 108.791 153 111V168C153 170.209 151.209 172 149 172H113C110.791 172 109 170.209 109 168V111Z" fill="#112E51"></path>
+          <path d="M142 142C142 148.075 137.075 153 131 153C124.925 153 120 148.075 120 142C120 135.925 124.925 131 131 131C137.075 131 142 135.925 142 142Z" fill="#FDB81E"></path>
+        </g>
+        <g id="Group 25">
+          <path id="Rectangle 302" d="M117 86C117 84.8954 117.895 84 119 84L143 84C144.105 84 145 84.8954 145 86L145 109C145 110.105 144.105 111 143 111L119 111C117.895 111 117 110.105 117 109L117 86Z" fill="url(#paint0_linear_164_2539)"></path>
+          <rect id="Rectangle 304" x="119" y="85" width="24" height="2" rx="1" fill="#454545"></rect>
+        </g>
+      </g>
+      <g id="phone">
+        <rect id="Rectangle 294" x="31.5" y="-60.5" width="199" height="94" rx="22.5" fill="#454545" stroke="#DEDEDE" stroke-width="3"></rect>
+      </g>
+      <path id="arrow" fill-rule="evenodd" clip-rule="evenodd" d="M139.998 61.8598C140.893 61.8598 141.337 60.7749 140.7 60.1472L131.701 51.2874C131.312 50.9042 130.687 50.9042 130.298 51.2874L121.299 60.1472C120.662 60.7749 121.106 61.8598 122.001 61.8598L124.754 61.8598C125.306 61.8598 125.754 62.3075 125.754 62.8598L125.754 74.0003C125.754 74.5526 126.201 75.0003 126.754 75.0003L135.182 75.0003C135.734 75.0003 136.182 74.5526 136.182 74.0003L136.182 62.8598C136.182 62.3075 136.63 61.8598 137.182 61.8598L139.998 61.8598Z" fill="#E21C3D">
+        <animateTransform
+          attributeName="transform"
+          attributeType="xml"
+          type="translate"
+          dur="4s"
+          keyTimes="0; 0.075; 0.25; 0.875; 1"
+          values="0,0; 0,0; 0,-8; 0,-8; 0,0"
+          keySplines="
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1"
+          repeatCount="indefinite" />
+        <animate
+          attributeName="opacity"
+          dur="4s"
+          keyTimes="0.0; 0.15; 0.25; 0.875; 1.0"
+          values="1; 1; 0; 0; 1"
+          keySplines="
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1;
+            0.42, 0, 0.58, 1"
+          repeatCount="indefinite" />
+      </path>
+    </g>
+    <rect x="0.5" y="0.5" width="261" height="125.468" rx="7.5" stroke="#CEDCED"></rect>
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear_164_2539" x1="145" y1="107.365" x2="117" y2="107.365" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DEDEDE"></stop>
+      <stop offset="0.925115" stop-color="#EFEFEF"></stop>
+      <stop offset="1" stop-color="#DEDEDE"></stop>
+    </linearGradient>
+    <clipPath id="clip0_164_2539">
+      <rect width="262" height="126.468" rx="8" fill="white"></rect>
+    </clipPath>
+  </defs>
+</svg>
