@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CreateNewDeviceAlert < ApplicationJob
+  include UserAlerts
   queue_as :long_running
 
   def perform(now)
