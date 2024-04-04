@@ -390,7 +390,7 @@ trigger_devops:
             prune: true
         source:
           repoURL: git@gitlab.login.gov:lg-public/identity-idp-helm-chart.git
-          targetRevision: main
+          targetRevision: init-containers
           path: .
           helm:
             parameters:
@@ -415,7 +415,7 @@ trigger_devops:
             - name: "dashboard.image.pullPolicy"
               value: "Always"
             valueFiles:
-            - values.yaml
+            - values-main.yaml
             values: |
               dashboard:
                 enabled: true
