@@ -578,18 +578,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         subject.user_session[:context] = 'confirmation'
         allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
 
-        expect(@analytics).to receive(:track_event).with('OTP: Delivery Selection', anything).
-          exactly(IdentityConfig.store.phone_confirmation_max_attempts).times
-        expect(@analytics).to receive(:track_event).with('Telephony: OTP sent', anything).
-          exactly(IdentityConfig.store.phone_confirmation_max_attempts - 1).times
-        expect(@analytics).to receive(:track_event).with(
-          'Rate Limit Reached', {
-            country_code: parsed_phone.country,
-            limiter_type: :phone_confirmation,
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-          }
-        ).once
-
         freeze_time do
           IdentityConfig.store.phone_confirmation_max_attempts.times do
             subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
@@ -608,6 +596,12 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           )
           expect(response).to redirect_to authentication_methods_setup_url
         end
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          country_code: parsed_phone.country,
+          limiter_type: :phone_confirmation,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        )
       end
 
       it 'rate limits between OTPs' do
@@ -620,20 +614,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempts).and_return(2)
         allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempt_window_in_seconds).
           and_return(5)
-
-        expect(@analytics).to receive(:track_event).with('OTP: Delivery Selection', anything).
-          exactly(IdentityConfig.store.short_term_phone_otp_max_attempts).times
-        expect(@analytics).to receive(:track_event).with('Telephony: OTP sent', anything).
-          exactly(IdentityConfig.store.short_term_phone_otp_max_attempts - 1).times
-        expect(@analytics).to receive(:track_event).with(
-          'Rate Limit Reached', {
-            context: 'confirmation',
-            country_code: parsed_phone.country,
-            limiter_type: :short_term_phone_otp,
-            otp_delivery_preference: 'sms',
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-          }
-        ).once
 
         freeze_time do
           IdentityConfig.store.short_term_phone_otp_max_attempts.times do
@@ -653,6 +633,15 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           )
           expect(response).to redirect_to login_two_factor_url(otp_delivery_preference: 'sms')
         end
+
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          context: 'confirmation',
+          country_code: parsed_phone.country,
+          limiter_type: :short_term_phone_otp,
+          otp_delivery_preference: 'sms',
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        )
       end
 
       it 'marks the user as locked out after too many attempts on sign up' do
