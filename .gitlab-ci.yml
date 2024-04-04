@@ -817,11 +817,9 @@ test-deployment:
     - git config --global user.email "login-team-mary@login.gov"
     - git config --global user.name "GitLab"
   script:
-    - echo $OAUTH_TOKEN
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
-    - git clone -b main --single-branch https://connor.mccarthy:${ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - cd $CI_PROJECT_DIR/identity-idp-helm-chart
-    - git checkout -b ${gitBranch}
+    - git clone -b main --single-branch https://gitlab-ci-bot:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+    - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
     - yqFilter=".idp.image.tag=\"${rcTag}\""
     - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
@@ -835,6 +833,6 @@ test-deployment:
 
 # Prod approval gate
 
-# Create Gitlab Release?
+git config --global user.email "login-team-mary@login.gov"# Create Gitlab Release?
 
 # Deploy to prod
