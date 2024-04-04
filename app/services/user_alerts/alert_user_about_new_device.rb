@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserAlerts
   class AlertUserAboutNewDevice
     def self.call(user, device, disavowal_token)

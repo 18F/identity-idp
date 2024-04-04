@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'csv'
+
 class IdentityConfig
   GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
   GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
@@ -26,7 +30,7 @@ class IdentityConfig
     end,
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
-      value.split(',')
+      value.parse_csv.to_a
     end,
     integer: proc do |value|
       Integer(value)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reporting
   class AccountReuseReport
     attr_reader :report_date

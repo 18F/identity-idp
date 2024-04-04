@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DisposableEmailDomain < ApplicationRecord
   def self.disposable?(domain)
     exists?(name: subdomains(domain))

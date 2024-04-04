@@ -15,8 +15,8 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
       visit account_two_factor_authentication_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include("form-action https://*.pivcac.test.example.com 'self';"))
+      expect(page.response_headers['Content-Security-Policy'].split(';').map(&:strip)).
+        to(include("form-action https://*.pivcac.test.example.com 'self'"))
 
       nonce = piv_cac_nonce_from_form_action
 

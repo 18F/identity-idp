@@ -77,6 +77,15 @@ RSpec.describe AssetSources do
       ]
     end
 
+    it 'returns identity for any missing, url-like names' do
+      expect(asset_sources.get_sources('application', 'https://example.com/main.js')).to eq [
+        'application.en.js',
+        'vendor.js',
+        'application.js',
+        'https://example.com/main.js',
+      ]
+    end
+
     context 'unset manifest' do
       let(:manifest_content) { nil }
 

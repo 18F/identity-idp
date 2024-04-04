@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OpenidConnectLogoutForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper

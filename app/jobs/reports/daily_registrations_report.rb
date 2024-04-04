@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reports
   class DailyRegistrationsReport < BaseReport
     REPORT_NAME = 'daily-registrations-report'

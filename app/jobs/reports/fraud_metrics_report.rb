@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'csv'
 require 'reporting/fraud_metrics_lg99_report'
 
 module Reports
   class FraudMetricsReport < BaseReport
-    REPORT_NAME = 'fraud-metrics-report'.freeze
+    REPORT_NAME = 'fraud-metrics-report'
 
     attr_reader :report_date
 

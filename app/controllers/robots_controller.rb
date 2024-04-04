@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RobotsController < ApplicationController
   ALLOWED_ROUTES = %i[
     new_user_session

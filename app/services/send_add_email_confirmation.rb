@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SendAddEmailConfirmation
   attr_reader :user
 

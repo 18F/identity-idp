@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserAlerts
   class AlertUserAboutAccountRejected
     def self.call(user)

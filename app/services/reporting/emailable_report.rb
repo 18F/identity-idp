@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reporting
   # Represents tabular data and how to render the table in an email body and
   # name it as an attachment

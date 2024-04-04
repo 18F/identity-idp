@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   ProfileLogging = Struct.new(:profile) do
     def as_json

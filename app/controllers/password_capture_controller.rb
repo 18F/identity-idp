@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordCaptureController < ApplicationController
   include Ial2ProfileConcern
   include TwoFactorAuthenticatableMethods

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FrontendErrorLogger
   class FrontendError < StandardError; end
 

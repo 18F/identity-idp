@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoConfirmationCode < ApplicationRecord
   self.ignored_columns = [:bounced_at]
 

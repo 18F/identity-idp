@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper that checks connectivity with AAMVA
 class AamvaTest
   def test_connectivity

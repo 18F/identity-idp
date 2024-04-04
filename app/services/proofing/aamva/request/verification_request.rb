@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'erb'
 require 'faraday'
 require 'rexml/document'
@@ -9,11 +11,11 @@ module Proofing
   module Aamva
     module Request
       class VerificationRequest
-        CONTENT_TYPE = 'application/soap+xml;charset=UTF-8'.freeze
+        CONTENT_TYPE = 'application/soap+xml;charset=UTF-8'
         DEFAULT_VERIFICATION_URL =
-          'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'.freeze
+          'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
         SOAP_ACTION =
-          '"http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData"'.freeze
+          '"http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData"'
 
         extend Forwardable
 
