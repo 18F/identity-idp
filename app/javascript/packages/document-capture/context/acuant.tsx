@@ -273,7 +273,7 @@ function AcuantContextProvider({
       window.AcuantJavascriptWebSdk.setUnexpectedErrorCallback((error_message) => {
         trackEvent('idv_sdk_error_before_init', {
           success: false,
-          error_message: error_message,
+          error_message,
           liveness_checking_required: isSelfieCaptureEnabled,
         });
       });
