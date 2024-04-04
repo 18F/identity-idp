@@ -751,7 +751,7 @@ ecr-scan-ci:
 build-rc-container:
   stage: eks_release
   rules:
-    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
+#    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
     - when: never    
   needs: []
   environment:
@@ -796,8 +796,11 @@ build-rc-container:
 # Deploy RC Container to testing environment. Requires updating identity-idp-helm-chart, creating and merging an MR.
 test-deployment:
   stage: eks_release
-  needs:
-    - job: build-rc-container
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
+    - when: never
+#  needs:
+#    - job: build-rc-container
   environment:
     name: $CI_COMMIT_BRANCH
   variables:
@@ -816,11 +819,12 @@ test-deployment:
   script:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
+    - cd $CI_PROJECT_DIR/identity-idp-helm-chart
+    - git checkout -b ${gitBranch}
     - yqFilter=".idp.image.tag=\"${rcTag}\""
     - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
-    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}" && git push origin ${gitBranch}
-    - git push -o merge_request.create -o merge_requests.target=main -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" -o merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment" origin "${gitBranch}"
+    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
+    - git push -o merge_request.create -o merge_requests.target=main -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" -o merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment" https://oauth2:${OAUTH_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git "${gitBranch}"
  
 # Testing step for test environment
 
