@@ -170,6 +170,23 @@ RSpec::Matchers.define :have_unique_form_landmark_labels do
   end
 end
 
+RSpec::Matchers.define :have_unique_ids do
+  def ids(page)
+    page.all(:css, '[id]').map { |element| element[:id] }
+  end
+
+  match do |page|
+    page_ids = ids(page)
+    page_ids.uniq.count == page_ids.count
+  end
+
+  failure_message do |page|
+    page_ids = ids(page)
+    duplicate = page_ids.detect { |id| page_ids.count(id) > 1 }
+    "Expected no duplicate element IDs. Found duplicate: #{duplicate}"
+  end
+end
+
 RSpec::Matchers.define :tag_decorative_svgs_with_role do
   def decorative_svgs(page)
     page.all(:css, 'img[alt=""][src$=".svg" i]')
@@ -314,6 +331,7 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
     # Axe flags redundant img role on img elements, but is necessary for a Safari bug
     # See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#identifying_svg_as_an_image
     excluding('img[alt=""][src$=".svg" i]')
+  expect(page).to have_unique_ids
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
   expect(page).to have_valid_markup if validate_markup
