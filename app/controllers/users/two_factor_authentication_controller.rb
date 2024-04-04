@@ -362,6 +362,14 @@ module Users
     end
 
     def handle_too_many_short_term_otp_sends(method:, default:)
+      analytics.rate_limit_reached(
+        limiter_type: short_term_otp_rate_limiter.rate_limit_type,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        context: context,
+        otp_delivery_preference: method,
+      )
+
       flash[:error] = t(
         'errors.messages.phone_confirmation_limited',
         timeout: distance_of_time_in_words(
@@ -377,6 +385,12 @@ module Users
     end
 
     def handle_too_many_confirmation_sends
+      analytics.rate_limit_reached(
+        limiter_type: phone_confirmation_rate_limiter.rate_limit_type,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+      )
+
       flash[:error] = t(
         'errors.messages.phone_confirmation_limited',
         timeout: distance_of_time_in_words(

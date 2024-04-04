@@ -572,13 +572,27 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       end
 
       it 'rate limits confirmation OTPs on sign up' do
+        parsed_phone = Phonelib.parse(@unconfirmed_phone)
+        stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
         allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
 
+        expect(@analytics).to receive(:track_event).with('OTP: Delivery Selection', anything).
+          exactly(IdentityConfig.store.phone_confirmation_max_attempts).times
+        expect(@analytics).to receive(:track_event).with('Telephony: OTP sent', anything).
+          exactly(IdentityConfig.store.phone_confirmation_max_attempts - 1).times
+        expect(@analytics).to receive(:track_event).with(
+          'Rate Limit Reached', {
+            country_code: parsed_phone.country,
+            limiter_type: :phone_confirmation,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          }
+        ).once
+
         freeze_time do
-          (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
-            subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+          IdentityConfig.store.phone_confirmation_max_attempts.times do
+            subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
             get :send_code, params: otp_delivery_form_sms
           end
 
@@ -597,6 +611,8 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       end
 
       it 'rate limits between OTPs' do
+        parsed_phone = Phonelib.parse(@unconfirmed_phone)
+        stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
         allow(IdentityConfig.store).to receive(:short_term_phone_otp_rate_limiter_enabled).
@@ -605,9 +621,23 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempt_window_in_seconds).
           and_return(5)
 
+        expect(@analytics).to receive(:track_event).with('OTP: Delivery Selection', anything).
+          exactly(IdentityConfig.store.short_term_phone_otp_max_attempts).times
+        expect(@analytics).to receive(:track_event).with('Telephony: OTP sent', anything).
+          exactly(IdentityConfig.store.short_term_phone_otp_max_attempts - 1).times
+        expect(@analytics).to receive(:track_event).with(
+          'Rate Limit Reached', {
+            context: 'confirmation',
+            country_code: parsed_phone.country,
+            limiter_type: :short_term_phone_otp,
+            otp_delivery_preference: 'sms',
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          }
+        ).once
+
         freeze_time do
           IdentityConfig.store.short_term_phone_otp_max_attempts.times do
-            subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+            subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
             get :send_code, params: otp_delivery_form_sms
           end
 
