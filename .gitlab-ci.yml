@@ -600,9 +600,7 @@ trigger_devops:
     - echo https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
-
-
-
+    
 review-app:
   stage: review
   allow_failure: true
