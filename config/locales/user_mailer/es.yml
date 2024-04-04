@@ -232,6 +232,35 @@ es:
         visite el %{app_name_html} %{help_link_html} o el %{contact_link_html}.
       info: 'Su cuenta %{app_name} acaba de iniciar sesión en un nuevo dispositivo.'
       subject: Nuevo initio de sesion con su %{app_name} cuenta
+    new_device_sign_in_after_2fa:
+      authentication_methods: métodos de autenticación
+      info_p1: Su correo electrónico y su contraseña de %{app_name} se usaron para
+        iniciar sesión y para la autenticación desde un nuevo dispositivo.
+      info_p2: Si reconoce esta actividad, no tiene que hacer nada.
+      info_p3_html: Si no fue usted, %{reset_password_link_html} y cambie sus
+        %{authentication_methods_link_html} inmediatamente.
+      reset_password: restablezca la contraseña
+      subject: Nuevo inicio de sesión y autenticación con su cuenta de %{app_name}
+    new_device_sign_in_attempts:
+      events:
+        sign_in_after_2fa: Autenticado
+        sign_in_before_2fa: Inicia sesión con contraseña
+        sign_in_unsuccessful_2fa: Error al autenticar
+      new_sign_in_from: Nuevo inicio de sesión potencialmente ubicado en %{location}
+    new_device_sign_in_before_2fa:
+      info_p1_html:
+        one: Su correo electrónico y su contraseña de %{app_name} se usaron para
+          ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio
+          error</strong>.
+        other: Su correo electrónico y su contraseña de %{app_name} se usaron para
+          ingresar desde un nuevo dispositivo, pero <strong>error al autenticar
+          %{count} veces</strong>
+      info_p2: Si reconoce esta actividad, no tiene que hacer nada.
+      info_p3_html: La autenticación de dos factores protege su cuenta de accesos no
+        autorizados. Si no fue usted, %{reset_password_link_html}
+        inmediatamente.
+      reset_password: restablezca la contraseña
+      subject: Nuevo inicio de sesión con su cuenta de %{app_name}
     password_changed:
       disavowal_link: restablecer su contraseña
       help_html: Si no realizó este cambio, %{disavowal_link_html}. Para más ayuda,
