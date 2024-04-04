@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe WebauthnSetupPresenter do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
+  include LinkHelper
 
   let(:user) { build(:user) }
   let(:user_fully_authenticated) { false }
@@ -20,12 +21,6 @@ RSpec.describe WebauthnSetupPresenter do
     )
   end
 
-  describe '#image_path' do
-    subject { presenter.image_path }
-
-    it { is_expected.to eq('security-key.svg') }
-  end
-
   describe '#page_title' do
     subject { presenter.page_title }
 
@@ -41,7 +36,26 @@ RSpec.describe WebauthnSetupPresenter do
   describe '#intro_html' do
     subject { presenter.intro_html }
 
-    it { is_expected.to eq(t('forms.webauthn_setup.intro_html')) }
+    it { is_expected.to eq(t('forms.webauthn_setup.intro', app_name: APP_NAME)) }
+  end
+
+  describe '#learn_more_html' do
+    subject { presenter.learn_more_html }
+
+    it {
+      is_expected.to eq(
+        new_tab_link_to(
+          t('forms.webauthn_setup.learn_more'),
+          help_center_redirect_path(
+            category: 'get-started',
+            article: 'authentication-options',
+            article_anchor: 'security-key',
+            flow: :two_factor_authentication,
+            step: :security_key_setup,
+          ),
+        ),
+      )
+    }
   end
 
   describe '#nickname_label' do
@@ -59,17 +73,11 @@ RSpec.describe WebauthnSetupPresenter do
   describe '#button_text' do
     subject { presenter.button_text }
 
-    it { is_expected.to eq(t('forms.webauthn_setup.continue')) }
+    it { is_expected.to eq(t('forms.webauthn_setup.set_up')) }
   end
 
   context 'with platform_authenticator' do
     let(:platform_authenticator) { true }
-
-    describe '#image_path' do
-      subject { presenter.image_path }
-
-      it { is_expected.to eq('platform-authenticator.svg') }
-    end
 
     describe '#page_title' do
       subject { presenter.page_title }
@@ -102,6 +110,12 @@ RSpec.describe WebauthnSetupPresenter do
           ),
         )
       end
+    end
+
+    describe '#learn_more_html' do
+      subject { presenter.learn_more_html }
+
+      it { is_expected.to eq(nil) }
     end
 
     describe '#nickname_label' do
