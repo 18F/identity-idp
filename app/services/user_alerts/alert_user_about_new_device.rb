@@ -24,16 +24,30 @@ module UserAlerts
     end
 
     def self.send_alert(user)
-      user.update(sign_in_new_device_at: nil)
-      # Stub out for possible email in follow-up work
-      # disavowal_token = SecureRandom.urlsafe_base64(32)
+      events = user.events.where(
+        created_at: user.sign_in_new_device_at..,
+        event_type: [
+          'sign_in_before_2fa',
+          'sign_in_unsuccessful_2fa',
+          'sign_in_after_2fa',
+        ],
+      ).order(:created_at)
 
-      # user.confirmed_email_addresses.each do |email_address|
-      #   UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
-      #     events: events,
-      #     disavowal_token: disavowal_token,
-      #   ).deliver_now_or_later
-      # end
+      disavowal_event = events.reverse_each.find(&:disavowal_token_fingerprint)
+      disavowal_token = disavowal_event.disavowal_token_fingerprint
+
+      user.confirmed_email_addresses.each do |email_address|
+        mailer = UserMailer.with(user:, email_address:)
+        mail = case disavowal_event.event_type
+        when 'sign_in_before_2fa'
+          mailer.new_device_sign_in_before_2fa(events:, disavowal_token:)
+        when 'sign_in_after_2fa'
+          mailer.new_device_sign_in_after_2fa(events:, disavowal_token:)
+        end
+        mail.deliver_now_or_later
+      end
+
+      user.update(sign_in_new_device_at: nil)
     end
   end
 end
