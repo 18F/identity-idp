@@ -7,8 +7,8 @@ Each component must implement a class extending the `BaseComponent` class.
 Optional files:
 
 - `.html.erb`: Used as the template for the component
-- `.ts`: A corresponding JavaScript bundle will be created and loaded automatically any time the component is rendered.
-- `.scss`: A corresponding CSS stylesheet will be created and loaded automatically any time the component is rendered.
+- `.ts`: A corresponding JavaScript bundle will be created and loaded automatically any time the component is rendered
+- `.scss`: A corresponding CSS stylesheet will be created and loaded automatically any time the component is rendered
 
 Example:
 
