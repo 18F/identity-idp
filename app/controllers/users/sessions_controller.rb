@@ -117,6 +117,7 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
+      check_password_compromised
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       redirect_to next_url_after_valid_authentication
@@ -204,6 +205,10 @@ module Users
     def sign_in_params
       params[resource_name]&.permit(:email) if request.post?
     end
+  end
+
+  def check_password_compromised
+    PwnedPasswords::LookupPassword.call(auth_params[:password])
   end
 
   def unsafe_redirect_error(_exception)
