@@ -613,7 +613,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_04_154024) do
     t.string "encrypted_recovery_code_digest_multi_region"
     t.datetime "second_mfa_reminder_dismissed_at"
     t.datetime "piv_cac_recommended_dismissed_at"
-    t.datetime "check_password_compromised_at"
     t.datetime "sign_in_new_device_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sign_in_new_device_at"], name: "index_users_on_sign_in_new_device_at"
