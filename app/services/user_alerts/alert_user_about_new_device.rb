@@ -2,22 +2,22 @@
 
 module UserAlerts
   class AlertUserAboutNewDevice
-    def self.call(user, device, disavowal_token)
+    def self.call(event:)
       if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
-        user.sign_in_new_device_at ||= Time.zone.now
-        user.save
+        event.user.sign_in_new_device_at ||= event.created_at
+        event.user.save
       else
-        device_decorator = DeviceDecorator.new(device)
+        device_decorator = DeviceDecorator.new(event.device)
         login_location = device_decorator.last_sign_in_location_and_ip
         device_name = device_decorator.nice_name
 
-        user.confirmed_email_addresses.each do |email_address|
-          UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
+        event.user.confirmed_email_addresses.each do |email_address|
+          UserMailer.with(user: event.user, email_address: email_address).new_device_sign_in(
             date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
               strftime('%B %-d, %Y %H:%M Eastern Time'),
             location: login_location,
             device_name: device_name,
-            disavowal_token: disavowal_token,
+            disavowal_token: event.disavowal_token,
           ).deliver_now_or_later
         end
       end
