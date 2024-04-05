@@ -14,7 +14,7 @@ class SecurityKeyImageComponent < BaseComponent
 
   def call
     # rubocop:disable Rails/OutputSafety
-    @svg_tag ||= Nokogiri::HTML5.fragment(read_svg).tap do |doc|
+    Nokogiri::HTML5.fragment(read_svg).tap do |doc|
       doc.at_css('svg').tap do |svg|
         svg[:class] = css_class
         svg[:role] = 'img'
