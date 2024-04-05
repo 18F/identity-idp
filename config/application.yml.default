@@ -107,6 +107,7 @@ encrypted_document_storage_s3_bucket: ''
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
+feature_new_device_alert_aggregation_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
@@ -212,6 +213,7 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
+new_device_alert_delay_in_minutes: 5
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect_uuid_override_map: '{}'
@@ -469,6 +471,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  feature_new_device_alert_aggregation_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
