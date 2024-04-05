@@ -35,6 +35,14 @@ RSpec.describe SecurityKeyImageComponent, type: :component do
     it 'adds classes via class option' do
       expect(rendered).to have_css('.width-full.height-auto.foo-bar.foo-baz')
     end
+
+    context 'with HTML-unsafe content added via attributes' do
+      let(:tag_options) { { foo: 'aaa"<script>alert();</script>' } }
+
+      it 'correctly escapes the content' do
+        expect(rendered).to_not include('<script>')
+      end
+    end
   end
 
   it 'adds the alt text as a title tag' do
