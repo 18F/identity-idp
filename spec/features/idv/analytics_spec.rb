@@ -677,8 +677,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
     end
     allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
       and_return(false)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
-      and_return(false)
   end
 
   context 'Happy path' do
@@ -869,6 +867,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         to receive(:service_provider_homepage_url).and_return(return_sp_url)
       allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).
         to receive(:sp_name).and_return(sp_friendly_name)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+        and_return(false)
 
       start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)
