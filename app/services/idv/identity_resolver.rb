@@ -9,17 +9,15 @@ module Idv
     end
 
     def resolve_identity(
-        pii_from_doc:,
-        pii_from_user: nil
-      )
+      input:
+    )
 
       enumerator = plugins.each
 
-      original_pii_from_doc = pii_from_doc.freeze
-      original_pii_from_user = pii_from_user.freeze
+      original_input = input
       final_result = Hash.new.freeze
 
-      next_plugin = ->(next_plugin:, result: nil, pii_from_doc: nil, pii_from_user: nil) do
+      next_plugin = ->(result:, input:) do
         plugin = enumerator.next
 
         # next_plugin_proxy allows plugins to selectively overwrite elements.
@@ -27,22 +25,29 @@ module Idv
         #
         #  - `next_plugin.call` to invoke the next plugin with the original input + result
         #  - `next_plugin.call result: {...}` to override the result
+        #  - `next_plugin.call my_key: "foo"` to add `my_key` to the result
         #
 
-        next_plugin_proxy = ->(pii_from_doc: nil, pii_from_user: nil, result: nil) do
-          final_result = final_result.merge(result).freeze if result
+        next_plugin_proxy = ->(input: nil, result: nil, **kwargs) do
+          if result.nil?
+            if kwargs.any?
+              final_result = final_result.merge(kwargs).freeze
+            end
+          else
+            if kwargs.any?
+              raise "Can't specify result: and additional arguments"
+            end
+            final_result = result.freeze
+          end
 
           next_plugin.call(
-            pii_from_doc: pii_from_doc || original_pii_from_doc,
-            pii_from_user: pii_from_user || original_pii_from_user,
+            input: input || original_input,
             result: final_result,
-            next_plugin: next_plugin_proxy,
           )
         end
 
         plugin.resolve_identity(
-          pii_from_doc:,
-          pii_from_user:,
+          input:,
           result:,
           next_plugin: next_plugin_proxy,
         )
@@ -52,9 +57,7 @@ module Idv
 
       next_plugin.call(
         result: final_result,
-        pii_from_doc:,
-        pii_from_user:,
-        next_plugin:,
+        input:,
       )
     end
 
