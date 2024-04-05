@@ -70,6 +70,10 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY).
+          and_call_original
+
         freeze_time do
           post :create, params: payload
 
