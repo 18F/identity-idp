@@ -85,15 +85,15 @@
     opacity: 1;
   }
   25% {
-    transform: translate(0, -8);
     opacity: 0;
+    transform: translate(0, -8);
   }
   87.5% {
-    transform: translate(0, -8);
     opacity: 0;
+    transform: translate(0, -8);
   }
   100% {
-    transform: translate(0, 0);
     opacity: 1;
+    transform: translate(0, 0);
   }
 }
