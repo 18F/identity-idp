@@ -24,10 +24,11 @@ const { values: flags, positionals: fileArgs } = parseArgs({
     watch: { type: 'boolean' },
     'out-dir': { type: 'string' },
     'load-path': { type: 'string', multiple: true, default: [] },
+    verbose: { type: 'boolean', short: 'v' },
   },
 });
 
-const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [] } = flags;
+const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [], verbose } = flags;
 loadPaths.push(...getDefaultLoadPaths());
 
 const sassCompiler = await initAsyncSassCompiler();
@@ -62,6 +63,10 @@ const isSassException = (error) => 'span' in /** @type {SassException} */ (error
  * @return {Promise<void|void[]>}
  */
 function build(files) {
+  if (verbose) {
+    console.log('Building files', files);
+  }
+
   return Promise.all(
     files.map(async (file) => {
       const { loadedUrls } = await buildFile(file, options);
