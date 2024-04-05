@@ -24,6 +24,8 @@ module UserAlerts
     end
 
     def self.send_alert(user)
+      return false unless user.sign_in_new_device_at
+
       events = user.events.where(
         created_at: user.sign_in_new_device_at..,
         event_type: [
