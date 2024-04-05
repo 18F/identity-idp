@@ -5,7 +5,6 @@ es:
     flows:
       idv:
         find_a_post_office: Encuentre una oficina de correos
-        #        get_a_letter: Reciba una carta por correo
         getting_started: Inicio
         go_to_the_post_office: Vaya a la oficina de correos
         re_enter_password: Vuelve a ingresar tu contraseña

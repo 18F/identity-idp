@@ -27,8 +27,6 @@ module Idv
         **opt_in_analytics_properties,
       )
 
-      @step_indicator_step = step_indicator_step
-
       if pii_is_missing?
         redirect_to_retrieve_pii
       else
