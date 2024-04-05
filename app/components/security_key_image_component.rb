@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class SecurityKeyImageComponent < BaseComponent
-  def initialize(mobile:)
+  attr_reader :tag_options
+
+  def initialize(mobile:, **tag_options)
     @mobile = mobile
+    @tag_options = tag_options
   end
 
   def mobile?
@@ -17,6 +20,15 @@ class SecurityKeyImageComponent < BaseComponent
         svg[:width] = 420
         svg[:class] = css_class
         svg[:role] = 'img'
+
+        tag_options.except(:data, :aria).each do |key, value|
+          svg[key] = value
+        end
+        [:data, :aria].each do |prefix|
+          tag_options[prefix]&.each do |key, value|
+            svg[:"#{prefix}-#{key}"] = value
+          end
+        end
 
         svg << "<title>#{title}</title>"
       end
