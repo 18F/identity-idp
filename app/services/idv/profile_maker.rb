@@ -47,10 +47,12 @@ module Idv
     private
 
     def set_idv_level(in_person_verification_needed:, selfie_check_performed:)
-      if in_person_verification_needed && IdentityConfig.store.in_person_proofing_enforce_tmx
-        :in_person
-      elsif in_person_verification_needed && !IdentityConfig.store.in_person_proofing_enforce_tmx
-        :legacy_in_person
+      if in_person_verification_needed
+        if IdentityConfig.store.in_person_proofing_enforce_tmx
+          :in_person
+        else
+          :legacy_in_person
+        end
       elsif FeatureManagement.idv_allow_selfie_check? && selfie_check_performed
         :unsupervised_with_selfie
       else
