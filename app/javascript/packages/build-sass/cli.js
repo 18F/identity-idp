@@ -14,6 +14,8 @@ import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 /** @typedef {import('sass-embedded').Exception} SassException */
 /** @typedef {import('./').BuildOptions} BuildOptions */
+/** @typedef {import('node:child_process').ChildProcess} ChildProcess */
+/** @typedef {import('sass-embedded').AsyncCompiler & { process: ChildProcess}} SassAsyncCompiler */
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProduction = env === 'production';
@@ -80,7 +82,8 @@ function build(files) {
       console.error(error);
 
       if (isWatching && isSassException(error)) {
-        watchOnce(getErrorSassStackPaths(error.sassStack), () => build(files));
+        const { spawnfile } = /** @type {SassAsyncCompiler} */ (sassCompiler).process;
+        watchOnce(getErrorSassStackPaths(error.sassStack, spawnfile), () => build(files));
       } else {
         throw error;
       }
