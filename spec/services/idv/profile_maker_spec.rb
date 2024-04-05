@@ -136,7 +136,7 @@ RSpec.describe Idv::ProfileMaker do
     end
 
     context 'with in_person_verification_needed' do
-      context 'when threatmetrix is disabled' do
+      context 'when threatmetrix decisioning is disabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
             and_return(in_person_proofing_enforce_tmx_mock)
@@ -151,6 +151,7 @@ RSpec.describe Idv::ProfileMaker do
             selfie_check_performed: false,
           )
         end
+
         it 'creates a pending profile for in person verification' do
           expect(profile.activated_at).to be_nil
           expect(profile.active).to eq(false)
@@ -162,6 +163,7 @@ RSpec.describe Idv::ProfileMaker do
           expect(profile.initiating_service_provider).to eq(nil)
           expect(profile.verified_at).to be_nil
         end
+
         it 'marks the profile as legacy_in_person' do
           expect(profile.idv_level).to eql('legacy_in_person')
         end
@@ -169,7 +171,7 @@ RSpec.describe Idv::ProfileMaker do
     end
 
     context 'with in_person_verification_needed' do
-      context 'when threatmetrix is enabled' do
+      context 'when threatmetrix decisioning is enabled' do
         let(:in_person_proofing_enforce_tmx_mock) { true }
 
         before do
@@ -186,6 +188,7 @@ RSpec.describe Idv::ProfileMaker do
             selfie_check_performed: false,
           )
         end
+
         it 'creates a pending profile for in person verification' do
           expect(profile.activated_at).to be_nil
           expect(profile.active).to eq(false)
@@ -197,6 +200,7 @@ RSpec.describe Idv::ProfileMaker do
           expect(profile.initiating_service_provider).to eq(nil)
           expect(profile.verified_at).to be_nil
         end
+
         it 'marks the profile as in_person' do
           expect(profile.idv_level).to eql('in_person')
         end
