@@ -16,12 +16,10 @@ class SecurityKeyImageComponent < BaseComponent
     # rubocop:disable Rails/OutputSafety
     @svg_tag ||= Nokogiri::HTML5.fragment(read_svg).tap do |doc|
       doc.at_css('svg').tap do |svg|
-        svg[:height] = 193
-        svg[:width] = 420
         svg[:class] = css_class
         svg[:role] = 'img'
 
-        tag_options.except(:data, :aria).each do |key, value|
+        tag_options.except(:class, :data, :aria).each do |key, value|
           svg[key] = value
         end
         [:data, :aria].each do |prefix|
@@ -38,8 +36,10 @@ class SecurityKeyImageComponent < BaseComponent
 
   def css_class
     [
+      'width-full',
       'height-auto',
       mobile? && 'security-key--mobile',
+      *tag_options[:class],
     ].select(&:present?).join(' ')
   end
 

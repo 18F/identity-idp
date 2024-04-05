@@ -8,19 +8,14 @@ RSpec.describe SecurityKeyImageComponent, type: :component do
   let(:mobile) { false }
   let(:tag_options) { {} }
 
-  it 'sets the height, width and role' do
-    aggregate_failures do
-      svg = rendered.at_css('svg')
-
-      expect(svg['height']).to eq('193')
-      expect(svg['width']).to eq('420')
-      expect(svg['role']).to eq('img')
-    end
+  it 'sets the role' do
+    expect(rendered).to have_css('svg[role=img]')
   end
 
   context 'tag options' do
     let(:tag_options) do
       {
+        class: %w[foo-bar foo-baz],
         foo: 1,
         data: { foo: 2 },
         aria: { foo: 3 },
@@ -35,6 +30,10 @@ RSpec.describe SecurityKeyImageComponent, type: :component do
         expect(svg['data-foo']).to eq('2')
         expect(svg['aria-foo']).to eq('3')
       end
+    end
+
+    it 'adds classes via class option' do
+      expect(rendered).to have_css('.width-full.height-auto.foo-bar.foo-baz')
     end
   end
 
