@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::IdentityResolver do
+RSpec.describe Idv::Resolution::IdentityResolver do
   let(:input) { {} }
 
   it 'calls all plugins' do

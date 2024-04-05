@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
-  module Idv::IdentityResolver
+  module Resolution
     Input = Data.new.freeze
   end
 end
