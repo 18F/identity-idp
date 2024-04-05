@@ -10,6 +10,10 @@
 
 .security-key-image__arrow {
   animation: security-key-image__arrow__move 4s ease-in-out infinite;
+
+  @media (prefers-reduced-motion) {
+    animation: none;
+  }
 }
 
 .security-key--mobile {
@@ -67,7 +71,6 @@
     opacity: 0;
     transform: translate(-10, 0);
   }
-
   100% {
     opacity: 1;
     transform: translate(0, 0);
