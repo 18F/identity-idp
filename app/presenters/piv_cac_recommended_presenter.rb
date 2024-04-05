@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PivCacRecommendedPresenter
-  attr_accessor :user
+  attr_reader :user
   def initialize(user)
     @user = user
   end
