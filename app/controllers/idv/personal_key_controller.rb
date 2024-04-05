@@ -134,7 +134,7 @@ module Idv
       redirect_to fix_broken_personal_key_url
     end
 
-    public def step_indicator_step
+    def step_indicator_step
       return :secure_account if idv_session.verify_by_mail?
       return :go_to_the_post_office if in_person_proofing?
 
