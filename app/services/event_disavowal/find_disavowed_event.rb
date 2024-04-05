@@ -15,7 +15,8 @@ module EventDisavowal
     private
 
     def event
-      @event ||= Event.find_by(disavowal_token_fingerprint: disavowal_token_fingerprints)
+      return @event if defined?(@event)
+      @event = Event.find_by(disavowal_token_fingerprint: disavowal_token_fingerprints)
     end
 
     def disavowal_token_fingerprints
