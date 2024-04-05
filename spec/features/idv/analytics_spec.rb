@@ -677,6 +677,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
     end
     allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
       and_return(false)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+      and_return(false)
   end
 
   context 'Happy path' do
