@@ -4,7 +4,7 @@ module Proofing
   module LexisNexis
     module Ddp
       class Proofer
-        VALID_REVIEW_STATUSES = %w[pass review reject]
+        VALID_REVIEW_STATUSES = %w[pass review reject].freeze
 
         attr_reader :config
 

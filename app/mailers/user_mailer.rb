@@ -138,6 +138,37 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_after_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_before_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+      @failed_times = events.count { |event| event.event_type == 'sign_in_unsuccessful_2fa' }
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   def personal_key_regenerated
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.personal_key_regenerated.subject'))

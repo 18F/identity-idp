@@ -34,10 +34,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 4c858dab80cfe32081a7e6bd7cd76c43cc3ec778
-  tag: 0.19.2-18f
+  revision: 95369fdd9336773b9983c8de71eb35a8c92e9683
+  tag: 0.19.3-18f
   specs:
-    saml_idp (0.19.2.pre.18f)
+    saml_idp (0.19.3.pre.18f)
       activesupport
       builder
       faraday
@@ -199,10 +199,10 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.8.0)
       aws-eventstream (~> 1, >= 1.0.2)
-    axe-core-api (4.7.0)
+    axe-core-api (4.9.0)
       dumb_delegator
       virtus
-    axe-core-rspec (4.7.0)
+    axe-core-rspec (4.9.0)
       axe-core-api
       dumb_delegator
       virtus
@@ -448,7 +448,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.0)
-    nokogiri (1.16.2)
+    nokogiri (1.16.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     openssl (3.0.2)
@@ -456,7 +456,7 @@ GEM
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
     parallel (1.24.0)
-    parser (3.3.0.0)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
@@ -611,19 +611,19 @@ GEM
     rspec-support (3.12.1)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.59.0)
+    rubocop (1.62.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.4)
+      parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.30.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.2)
+      parser (>= 3.3.0.4)
     rubocop-capybara (2.19.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.24.0)
@@ -842,7 +842,7 @@ DEPENDENCIES
   rspec-rails (~> 6.0)
   rspec-retry
   rspec_junit_formatter
-  rubocop (~> 1.59.0)
+  rubocop (~> 1.62.0)
   rubocop-performance (~> 1.20.2)
   rubocop-rails (>= 2.5.2)
   rubocop-rspec

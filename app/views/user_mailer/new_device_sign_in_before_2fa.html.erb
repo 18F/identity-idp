@@ -1,0 +1,19 @@
+<p class="margin-bottom-2">
+  <%= t('user_mailer.new_device_sign_in_before_2fa.info_p1_html', count: @failed_times, app_name: APP_NAME) %>
+</p>
+
+<p class="margin-bottom-2">
+  <%= t('user_mailer.new_device_sign_in_before_2fa.info_p2') %>
+</p>
+
+<p>
+  <%= t(
+        'user_mailer.new_device_sign_in_before_2fa.info_p3_html',
+        reset_password_link_html: link_to(
+          t('user_mailer.new_device_sign_in_before_2fa.reset_password'),
+          event_disavowal_url(disavowal_token: @disavowal_token),
+        ),
+      ) %>
+</p>
+
+<%= render 'user_mailer/shared/new_device_sign_in_attempts' %>

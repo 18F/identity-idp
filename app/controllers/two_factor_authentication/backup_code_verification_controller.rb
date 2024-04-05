@@ -52,6 +52,7 @@ module TwoFactorAuthentication
     end
 
     def handle_invalid_backup_code
+      handle_invalid_verification_for_authentication_context
       update_invalid_user
 
       flash.now[:error] = t('two_factor_authentication.invalid_backup_code')

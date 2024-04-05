@@ -233,6 +233,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
 
         post :create, params: payload
       end
+
+      it 'records unsuccessful 2fa event' do
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
+
+        post :create, params: payload
+      end
     end
 
     it 'does not generate a new personal key if the user enters an invalid key' do

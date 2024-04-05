@@ -9,7 +9,7 @@ module Idv
     before_action :handle_fraud_rejection
     before_action :confirm_fraud_pending
 
-    FRAUD_REVIEW_CONTACT_WITHIN_DAYS = 14.days
+    FRAUD_REVIEW_CONTACT_WITHIN_DAYS = 14.days.freeze
 
     def show
       analytics.idv_please_call_visited

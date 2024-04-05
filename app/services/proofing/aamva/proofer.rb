@@ -19,7 +19,7 @@ module Proofing
           :verification_request_timeout,
           :verification_url,
         ],
-      )
+      ).freeze
 
       attr_reader :config
 

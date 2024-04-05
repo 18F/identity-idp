@@ -138,10 +138,20 @@ fr:
         déverrouillage facial ou pour le déverrouillage tactile, vous saurez les
         reconnaître.
     webauthn_setup:
-      continue: Continuer
-      intro_html: '<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme
-        méthode d’authentification. Vous pouvez ajouter autant de clés de
-        sécurité que vous le souhaitez. Pour commencer, donnez d’abord un surnom
-        à votre clé de sécurité.</p>'
+      intro: Utilisez votre clé de sécurité physique pour ajouter une couche de
+        protection supplémentaire à votre compte %{app_name} pour empêcher tout
+        accès non autorisé.
+      learn_more: En savoir plus sur les clés de sécurité
       nickname: Pseudo clé de sécurité
       saving: Enregistrement de vos informations d’identification …
+      set_up: Configurer votre clé de sécurité
+      step_1: Donnez-lui un surnom
+      step_1a: Si vous ajoutez plus d’une clé de sécurité, vous saurez reconnaître
+        chacune d’entre elles.
+      step_2: Insérer votre clé de sécurité
+      step_2_image_alt: Insertion d’une clé de sécurité dans le côté droit d’un
+        ordinateur portable
+      step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
+      step_3: Configurer une clé de sécurité
+      step_3a: Cliquez sur « Configurer votre clé de sécurité » ci-dessous et suivez
+        les instructions de votre navigateur.

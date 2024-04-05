@@ -18,7 +18,7 @@ class PwnedPasswordDownloader
   RANGE_API_ROOT = 'https://api.pwnedpasswords.com/range/'
   SHA1_LENGTH = 40
   HASH_PREFIX_LENGTH = 5
-  OCCURRENCE_OFFSET = SHA1_LENGTH - HASH_PREFIX_LENGTH + ':'.length
+  OCCURRENCE_OFFSET = (SHA1_LENGTH - HASH_PREFIX_LENGTH + ':'.length).freeze
 
   def initialize(
     destination: 'tmp/pwned',
