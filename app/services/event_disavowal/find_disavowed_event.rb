@@ -15,11 +15,8 @@ module EventDisavowal
     private
 
     def event
-      # Use `#all` here instead of `#first` to avoid setting a 'LIMIT 1' to the
-      # postgres query which causes it to run slowly.
-      @event ||= Event.where(
-        disavowal_token_fingerprint: disavowal_token_fingerprints,
-      ).all[0]
+      return @event if defined?(@event)
+      @event = Event.find_by(disavowal_token_fingerprint: disavowal_token_fingerprints)
     end
 
     def disavowal_token_fingerprints
