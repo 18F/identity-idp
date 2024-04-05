@@ -15,9 +15,9 @@ import DocumentCaptureAbandon from './document-capture-abandon';
 
 export function DocumentCaptureSubheaderOne({
   isSelfieCaptureEnabled,
-}: Readonly<{
+}: {
   isSelfieCaptureEnabled: boolean;
-}>) {
+}) {
   const { t } = useI18n();
   return (
     <h2>
