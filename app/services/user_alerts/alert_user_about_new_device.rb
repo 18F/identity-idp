@@ -34,6 +34,7 @@ module UserAlerts
       ).order(:created_at)
 
       disavowal_event = events.reverse_each.find(&:disavowal_token_fingerprint)
+      return false unless disavowal_event
       disavowal_token = disavowal_event.disavowal_token_fingerprint
 
       user.confirmed_email_addresses.each do |email_address|
@@ -48,6 +49,7 @@ module UserAlerts
       end
 
       user.update(sign_in_new_device_at: nil)
+      true
     end
   end
 end
