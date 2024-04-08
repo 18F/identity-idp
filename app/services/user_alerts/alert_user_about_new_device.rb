@@ -2,12 +2,13 @@
 
 module UserAlerts
   class AlertUserAboutNewDevice
-    def self.call(event:)
+    def self.call(event:, disavowal_token:)
       if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
         event.user.sign_in_new_device_at ||= event.created_at
         event.user.save
       else
-        device_decorator = DeviceDecorator.new(event.device)
+        device = event.device
+        device_decorator = DeviceDecorator.new(device)
         login_location = device_decorator.last_sign_in_location_and_ip
         device_name = device_decorator.nice_name
 
@@ -17,7 +18,7 @@ module UserAlerts
               strftime('%B %-d, %Y %H:%M Eastern Time'),
             location: login_location,
             device_name: device_name,
-            disavowal_token: event.disavowal_token,
+            disavowal_token: disavowal_token,
           ).deliver_now_or_later
         end
       end
