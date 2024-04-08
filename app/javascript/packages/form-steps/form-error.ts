@@ -11,6 +11,8 @@ export interface FormErrorOptions {
    * Field associated with the error.
    */
   field?: string;
+
+  messageProcessor?: (message: string) => string | ReactNode;
 }
 
 class FormError extends Error {
@@ -20,16 +22,12 @@ class FormError extends Error {
 
   messageProcessor?: (message: string) => string | ReactNode;
 
-  constructor(
-    message?: string,
-    options?: FormErrorOptions,
-    messageProcessor?: (message: string) => string | ReactNode,
-  ) {
+  constructor(message?: string, options?: FormErrorOptions) {
     super(message);
 
     this.isDetail = Boolean(options?.isDetail);
     this.field = options?.field;
-    this.messageProcessor = messageProcessor;
+    this.messageProcessor = options?.messageProcessor;
   }
 }
 
