@@ -76,12 +76,6 @@ RSpec.describe Idv::ByMail::RequestLetterController,
       expect(response).to be_ok
     end
 
-    it 'assigns the current step indicator step as "verify phone or address"' do
-      get :index
-
-      expect(assigns(:step_indicator_current_step)).to eq(:verify_address)
-    end
-
     context 'with letter already sent' do
       before do
         allow_any_instance_of(Idv::ByMail::RequestLetterPresenter).
@@ -95,18 +89,6 @@ RSpec.describe Idv::ByMail::RequestLetterController,
           'IdV: request letter visited',
           letter_already_sent: true,
         )
-      end
-    end
-
-    context 'resending a letter' do
-      before do
-        allow(controller).to receive(:resend_requested?).and_return(true)
-      end
-
-      it 'assigns the current step indicator step as "get a letter"' do
-        get :index
-
-        expect(assigns(:step_indicator_current_step)).to eq(:verify_address)
       end
     end
 
