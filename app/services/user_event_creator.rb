@@ -79,11 +79,12 @@ class UserEventCreator
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
   def create_event_for_new_device(event_type:, user:, disavowal_token:)
     if user.fully_registered? && user.has_devices? && disavowal_token.nil?
-      event, disavowal_token = Device.transaction do
+      device, event, disavowal_token = Device.transaction do
         device = create_device_for_user(user)
-        create_user_event_with_disavowal(event_type, user, device)
+        event, disavowal_token = create_user_event_with_disavowal(event_type, user, device)
+        [device, event, disavowal_token]
       end
-      send_new_device_notification(event:, disavowal_token:)
+      send_new_device_notification(event:, device:, disavowal_token:)
       [event, disavowal_token]
     else
       Device.transaction do
@@ -116,8 +117,8 @@ class UserEventCreator
     cookies.permanent[:device] = device_cookie unless device_cookie == cookies[:device]
   end
 
-  def send_new_device_notification(event:, disavowal_token:)
-    UserAlerts::AlertUserAboutNewDevice.call(event:, disavowal_token:)
+  def send_new_device_notification(event:, device:, disavowal_token:)
+    UserAlerts::AlertUserAboutNewDevice.call(event:, device:, disavowal_token:)
   end
 
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
