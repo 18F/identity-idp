@@ -66,9 +66,11 @@ es:
         heading: No pudimos leer el código de barras en su ID.
       camera:
         blocked: Su cámara está bloqueada
-        blocked_detail_html: No tenemos permiso para acceder a la cámara. Por favor,
-          compruebe la configuración de su navegador o sistema, recargue esta
-          página o suba una foto en su lugar.
+        blocked_detail_html: <strong>Permita el acceso a su cámara para tomar las
+          fotografías de %{app_name}.</strong><span>Intente tomar las
+          fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal
+          vez necesite revisar la configuración de su dispositivo para permitir
+          el acceso.</span>
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       card_type: Solo se aceptan licencias de conducir o documentos de identidad
         estatales.
