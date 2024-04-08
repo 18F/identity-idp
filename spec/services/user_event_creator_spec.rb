@@ -65,7 +65,11 @@ RSpec.describe UserEventCreator do
         event, _disavowal_token = subject.create_user_event(event_type, user)
 
         expect(event).to be_a(Event)
-        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).with(event:)
+        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).with(
+          event: user.events.first,
+          device: user.events.first.device,
+          disavowal_token: instance_of(String),
+        )
       end
     end
 
@@ -100,7 +104,11 @@ RSpec.describe UserEventCreator do
         event, _disavowal_token = subject.create_user_event(event_type, user)
 
         expect(event).to be_a(Event)
-        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).with(event:)
+        expect(UserAlerts::AlertUserAboutNewDevice).to have_received(:call).with(
+          event: user.events.first,
+          device: user.events.first.device,
+          disavowal_token: instance_of(String),
+        )
       end
     end
   end
