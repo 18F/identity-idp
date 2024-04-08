@@ -13,10 +13,10 @@ module Idv
         input:
       )
 
-        enumerator = plugins.each
-
         original_input = input
         final_result = Hash.new.freeze
+
+        enumerator = plugins.each
 
         next_plugin = ->(result:, input:) do
           plugin = enumerator.next
@@ -24,7 +24,7 @@ module Idv
           # next_plugin_proxy allows plugins to selectively overwrite elements.
           # For example, a plugin could do:
           #
-          #  - `next_plugin.call` to invoke the next plugin with the original input + result
+          #  - `next_plugin.call` to invoke the next plugin w/ original input + in-progress result
           #  - `next_plugin.call result: {...}` to override the result
           #  - `next_plugin.call my_key: "foo"` to add `my_key` to the result
           #
