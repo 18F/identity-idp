@@ -1,20 +1,13 @@
 @use 'uswds-core' as *;
 
-.login-button.usa-button--big > .login-button__logo {
-  font-size: 1.8rem;
-  margin-top: -2px;
-}
-
 .login-button__logo {
   margin-left: 2px;
-  font-size: 1.45rem;
   vertical-align: middle;
-  color: transparent;
-  background: no-repeat 100% url('logo.svg');
+  display: inline;
+}
 
-  .login-button--primary-darker & {
-    background-image: url('logo-white.svg');
-  }
+.login-button.usa-button--big > .login-button__logo {
+  margin-top: 2px;
 }
 
 .login-button.login-button--primary-lighter {

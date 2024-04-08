@@ -1,10 +1,14 @@
 class LoginButtonComponentPreview < ButtonComponentPreview
+  include ActiveModel::Conversion
+# @after_render :inject_style
+
   # @!group Preview
   def default
-    render(LoginButtonComponent.new(style: get_css))
-  end
+      render(LoginButtonComponent.new)
+  end  
   # @!endgroup
 
+  # @after_render :inject_style
   # @param big toggle "Change button size"
   # @param color select [primary,primary-darker,primary-lighter] "Select button color"
   def workbench(
@@ -19,6 +23,8 @@ class LoginButtonComponentPreview < ButtonComponentPreview
     )
   end
 
+  private
+
   def css_file_path
     Rails.root.join(
       'app',
@@ -28,8 +34,17 @@ class LoginButtonComponentPreview < ButtonComponentPreview
     )
   end
 
-  def get_css
-    File.read(css_file_path)
+  def css
+   File.read(css_file_path)
+  end
+
+  def inject_style(html)
+    <<~HTML
+    <style>
+      #{css}
+    </style>
+    #{html}
+    HTML
   end
 
 end

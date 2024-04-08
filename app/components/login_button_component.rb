@@ -3,7 +3,7 @@
 class LoginButtonComponent < BaseComponent
   VALID_COLORS = ['primary', 'primary-darker', 'primary-lighter'].freeze
 
-  attr_reader :color, :big, :css, :tag_options
+  attr_reader :color, :big, :width, :height, :tag_options
 
   def initialize(color: 'primary', big: false, **tag_options)
     if !VALID_COLORS.include?(color)
@@ -11,9 +11,10 @@ class LoginButtonComponent < BaseComponent
     end
 
     @big = big
+    @width = big ? 150 : 100
+    @height = big ? 40 : 25
     @color = color
     @tag_options = tag_options
-
   end
 
   def css_class
