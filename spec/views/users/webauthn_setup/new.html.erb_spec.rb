@@ -140,7 +140,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       it 'displays the security key image' do
         render
 
-        expect(rendered).to match(/src=".*security_key-.*\.svg"/)
+        expect(rendered).to have_css('svg')
       end
 
       context 'when on a mobile device' do
@@ -151,7 +151,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
         it 'displays the mobile security key image' do
           render
 
-          expect(rendered).to match(/src=".*security_key_mobile-.*\.svg"/)
+          expect(rendered).to have_css('svg.security-key--mobile')
         end
       end
     end

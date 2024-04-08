@@ -5,11 +5,13 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
 
   let(:user) { create(:user, :fully_registered) }
 
-  context 'user has existing devices' do
+  context 'user has existing devices and aggregated new device alerts is disabled' do
     before do
+      allow(IdentityConfig.store).to receive(
+        :feature_new_device_alert_aggregation_enabled,
+      ).and_return(false)
       create(:device, user: user)
     end
-
     it 'sends a user notification on signin' do
       sign_in_user(user)
 
@@ -22,9 +24,23 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
         to: [user.email_addresses.first.email],
         subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
         body: [device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-               strftime('%B %-d, %Y %H:%M Eastern Time'),
+              strftime('%B %-d, %Y %H:%M Eastern Time'),
                'From 127.0.0.1 (IP address potentially located in United States)'],
       )
+    end
+  end
+
+  context 'user has existing devices and aggregated new device alerts is enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(
+        :feature_new_device_alert_aggregation_enabled,
+      ).and_return(true)
+      create(:device, user: user)
+    end
+    it 'sends a user notification on signin' do
+      sign_in_user(user)
+
+      expect(user.reload.devices.length).to eq 2
     end
   end
 

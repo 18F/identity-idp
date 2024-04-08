@@ -580,7 +580,7 @@ GEM
     rgeo-activerecord (7.0.1)
       activerecord (>= 5.0)
       rgeo (>= 1.0.0)
-    rotp (6.2.0)
+    rotp (6.3.0)
     rouge (4.2.0)
     rqrcode (2.1.0)
       chunky_png (~> 1.0)
@@ -836,7 +836,7 @@ DEPENDENCIES
   redis (>= 3.2.0)
   redis-session-store!
   retries
-  rotp (~> 6.1)
+  rotp (~> 6.3, >= 6.3.0)
   rqrcode
   rspec (~> 3.12.0)
   rspec-rails (~> 6.0)
