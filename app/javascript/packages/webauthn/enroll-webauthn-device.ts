@@ -23,6 +23,8 @@ interface EnrollOptions {
   excludeCredentials: PublicKeyCredentialDescriptor[];
 
   authenticatorAttachment?: AuthenticatorAttachment;
+
+  publicKeyCredentialHints?: string;
 }
 
 interface EnrollResult {
@@ -35,6 +37,13 @@ interface EnrollResult {
   authenticatorDataFlagsValue?: number;
 
   transports?: string[];
+}
+
+interface AuthenticatorSelectionCriteria {
+  authenticatorAttachment?: 'platform' | 'cross-platform' | undefined;
+  requireResidentKey?: boolean | undefined;
+  userVerification?: 'required' | 'preferred' | 'discouraged' | undefined;
+  publicKeyCredentialHints?: 'client' | 'security-key';
 }
 
 /**
@@ -76,6 +85,7 @@ async function enrollWebauthnDevice({
   challenge,
   excludeCredentials,
   authenticatorAttachment,
+  publicKeyCredentialHints,
 }: EnrollOptions): Promise<EnrollResult> {
   const credential = (await navigator.credentials.create({
     publicKey: {
@@ -89,7 +99,8 @@ async function enrollWebauthnDevice({
         // Prevents user from needing to use PIN with Security Key
         userVerification: 'discouraged',
         authenticatorAttachment,
-      },
+        publicKeyCredentialHints,
+      } as AuthenticatorSelectionCriteria,
       excludeCredentials,
     },
   })) as PublicKeyCredential;
