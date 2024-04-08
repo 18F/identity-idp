@@ -12,11 +12,15 @@ module TwoFactorAuthenticatableMethods
 
   def handle_valid_verification_for_authentication_context(auth_method:)
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
-    create_user_event_with_disavowal(:sign_in_after_2fa)
+    disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
 
     if IdentityConfig.store.feature_new_device_alert_aggregation_enabled &&
        current_user.sign_in_new_device_at
-      UserAlerts::AlertUserAboutNewDevice.send_alert(current_user)
+      UserAlerts::AlertUserAboutNewDevice.send_alert(
+        user: current_user,
+        disavowal_event:,
+        disavowal_token:,
+      )
     end
 
     reset_second_factor_attempts_count
