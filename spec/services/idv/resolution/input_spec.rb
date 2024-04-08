@@ -70,11 +70,11 @@ RSpec.describe Idv::Resolution::Input do
   end
 
   describe Idv::Resolution::StateId do
-    describe '#from_pii_from_doc' do
-      let(:pii_from_doc) do
-        Idp::Constants::MOCK_IDV_APPLICANT
-      end
+    let(:pii_from_doc) do
+      Idp::Constants::MOCK_IDV_APPLICANT
+    end
 
+    describe '#from_pii_from_doc' do
       it 'works' do
         actual = described_class.from_pii_from_doc(pii_from_doc)
         expect(actual).to eql(
@@ -93,6 +93,45 @@ RSpec.describe Idv::Resolution::Input do
             number: '1111111111111',
             issuing_jurisdiction: 'ND',
             type: 'drivers_license',
+          ),
+        )
+      end
+    end
+
+    describe '#to_pii_from_doc' do
+      it 'can convert' do
+        actual = described_class.new(
+          first_name: 'FAKEY',
+          middle_name: nil,
+          last_name: 'MCFAKERSON',
+          dob: '1938-10-06',
+          address: Idv::Resolution::Address.new(
+            address1: '1 FAKE RD',
+            address2: nil,
+            city: 'GREAT FALLS',
+            state: 'MT',
+            zipcode: '59010',
+          ),
+          number: '1111111111111',
+          issuing_jurisdiction: 'ND',
+          type: 'drivers_license',
+        ).to_pii_from_doc
+        expect(actual).to eql(
+          pii_from_doc.slice(
+            *%i[
+              first_name
+              middle_name
+              last_name
+              dob
+              address1
+              address2
+              city
+              state
+              zipcode
+              state_id_type
+              state_id_jurisdiction
+              state_id_number
+            ],
           ),
         )
       end

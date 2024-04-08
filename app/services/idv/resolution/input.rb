@@ -28,6 +28,7 @@ module Idv
       :address,
       :dob,
     ) do
+      # Converts a pii_from_doc structure into a StateId
       def self.from_pii_from_doc(pii_from_doc)
         StateId.new(
           type: pii_from_doc[:state_id_type],
@@ -47,6 +48,20 @@ module Idv
             ),
           ),
         )
+      end
+
+      # Converts a StateId to a pii_from_doc structure
+      def to_pii_from_doc
+        {
+          state_id_type: type,
+          state_id_number: number,
+          state_id_jurisdiction: issuing_jurisdiction,
+          first_name:,
+          middle_name:,
+          last_name:,
+          dob:,
+          **address.to_h,
+        }
       end
     end.freeze
 

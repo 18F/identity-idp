@@ -15,7 +15,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
 
   let(:result_so_far) { {} }
 
-  let(:supported_jurisdictions) { ['WA', 'DE', 'MT'] }
+  let(:supported_jurisdictions) { ['WA', 'DE', 'ND'] }
 
   let(:unsupported_jurisdiction) { 'OR' }
 
@@ -49,7 +49,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       let(:state_id) do
         Idv::Resolution::StateId.from_pii_from_doc(
           Idp::Constants::MOCK_IDV_APPLICANT.merge(
-            state: unsupported_jurisdiction,
+            state_id_jurisdiction: unsupported_jurisdiction,
           ),
         )
       end
@@ -68,6 +68,23 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
     end
 
     context 'state id from supported jurisidiction' do
+      before do
+        allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(true)
+      end
+
+      it 'calls the proofer' do
+        next_plugin = spy
+        expect(next_plugin).to receive(:call).with(
+          aamva: satisfy do |value|
+            expect(value).to be_instance_of(Proofing::StateIdResult)
+            expect(value).to have_attributes(success: true)
+          end,
+        )
+
+        subject.resolve_identity(input:, result: result_so_far, next_plugin:)
+      end
+
+      context 'when the proofer has an exeception'
     end
   end
 end

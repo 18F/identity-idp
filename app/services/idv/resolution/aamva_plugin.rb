@@ -24,6 +24,10 @@ module Idv
             },
           )
         end
+
+        next_plugin.call(
+          aamva: proofer.proof(input.state_id.to_pii_from_doc),
+        )
       end
 
       def unsupported_jurisdiction?(input)
