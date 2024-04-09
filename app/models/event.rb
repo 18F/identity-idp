@@ -28,7 +28,7 @@ class Event < ApplicationRecord
     phone_added: 21,
     password_invalidated: 22,
     sign_in_unsuccessful_2fa: 23,
-    sign_in_notification_window_lapsed: 24,
+    sign_in_notification_timeframe_expired: 24,
   }
 
   validates :event_type, presence: true

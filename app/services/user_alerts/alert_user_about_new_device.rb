@@ -38,7 +38,7 @@ module UserAlerts
       user.confirmed_email_addresses.each do |email_address|
         mailer = UserMailer.with(user:, email_address:)
         mail = case disavowal_event.event_type
-        when 'sign_in_notification_window_lapsed'
+        when 'sign_in_notification_timeframe_expired'
           mailer.new_device_sign_in_before_2fa(events:, disavowal_token:)
         when 'sign_in_after_2fa'
           mailer.new_device_sign_in_after_2fa(events:, disavowal_token:)

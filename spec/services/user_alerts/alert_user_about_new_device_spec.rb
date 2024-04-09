@@ -72,12 +72,12 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
         to(nil)
     end
 
-    context 'with sign in notification lapsed disavowal event' do
+    context 'with sign in notification expired disavowal event' do
       let(:disavowal_event) do
         create(
           :event,
           user:,
-          event_type: :sign_in_notification_window_lapsed,
+          event_type: :sign_in_notification_timeframe_expired,
           created_at: 5.minutes.ago,
         )
       end
@@ -104,7 +104,7 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
           created_at: 8.minutes.ago,
         )
 
-        # 3. Exclude sign in notification window lapsed event
+        # 3. Exclude sign in notification timeframe expired event
         disavowal_event
 
         delivery = instance_double(ActionMailer::MessageDelivery)
