@@ -3162,6 +3162,34 @@ module AnalyticsEvents
     )
   end
 
+  # Acuant SDK errored after loading but before initialization
+  # @param [Boolean] success
+  # @param [String] error_message
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_sdk_error_before_init(
+    success:,
+    error_message:,
+    liveness_checking_required:,
+    acuant_version:,
+    captureAttempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_error_before_init,
+      success:,
+      error_message: error_message,
+      liveness_checking_required:,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
   # User closed the SDK for taking a selfie without submitting a photo
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
