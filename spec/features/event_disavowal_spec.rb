@@ -7,6 +7,7 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
     before do
       allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
         and_return(true)
+      user.devices << create(:device)
     end
 
     scenario 'disavowing a sign-in after 2fa' do
