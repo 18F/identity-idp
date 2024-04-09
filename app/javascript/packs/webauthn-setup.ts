@@ -56,7 +56,7 @@ function webauthn() {
           .filter(Boolean),
       ),
       authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
-      publicKeyCredentialHints: platformAuthenticator ? 'client-device' : 'security-key',
+      hints: platformAuthenticator ? ['client-device', 'hybrid'] : ['security-key'],
     })
       .then((result) => {
         (document.getElementById('webauthn_id') as HTMLInputElement).value = result.webauthnId;

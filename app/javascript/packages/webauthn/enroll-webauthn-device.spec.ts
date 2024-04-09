@@ -62,7 +62,7 @@ describe('enrollWebauthnDevice', () => {
         challenge,
         excludeCredentials,
         authenticatorAttachment: 'cross-platform',
-        publicKeyCredentialHints: 'security-key',
+        hints: ['security-key'],
       });
 
       expect(navigator.credentials.create).to.have.been.calledWith({
@@ -88,7 +88,7 @@ describe('enrollWebauthnDevice', () => {
           authenticatorSelection: {
             userVerification: 'discouraged',
             authenticatorAttachment: 'cross-platform',
-            publicKeyCredentialHints: 'security-key',
+            hints: ['security-key'],
           },
           excludeCredentials: [
             {
@@ -134,14 +134,14 @@ describe('enrollWebauthnDevice', () => {
           challenge,
           excludeCredentials,
           authenticatorAttachment: 'platform',
-          publicKeyCredentialHints: 'client-device',
+          hints: ['client-device'],
         });
 
         expect(navigator.credentials.create).to.have.been.calledWithMatch({
           publicKey: {
             authenticatorSelection: {
               authenticatorAttachment: 'platform',
-              publicKeyCredentialHints: 'client-device',
+              hints: ['client-device'],
             },
           },
         });
