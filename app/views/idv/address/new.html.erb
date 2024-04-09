@@ -21,7 +21,7 @@
 %>
 
 <%= simple_form_for(
-      :idv_form,
+      @address_form,
       url: idv_address_path,
       method: 'POST',
       html: { autocomplete: 'off', class: 'margin-top-5' },
@@ -35,7 +35,6 @@
         hint_html: { class: @presenter.hint_class },
         required: true,
         maxlength: 255,
-        input_html: { value: @presenter.pii['address1'] },
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
@@ -45,7 +44,6 @@
         hint_html: { class: @presenter.hint_class },
         required: false,
         maxlength: 255,
-        input_html: { value: @presenter.pii['address2'] },
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
@@ -55,7 +53,6 @@
         hint_html: { class: @presenter.hint_class },
         required: true,
         maxlength: 255,
-        input_html: { value: @presenter.pii['city'] },
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
@@ -63,7 +60,6 @@
         collection: us_states_territories,
         label: t('idv.form.state'),
         required: true,
-        selected: @presenter.pii['state'],
       ) %>
   <div class="tablet:grid-col-6">
     <%# using :tel for mobile numeric keypad %>
@@ -76,7 +72,7 @@
           hint_html: { class: @presenter.hint_class },
           required: true,
           pattern: '(\d{5}([\-]\d{4})?)',
-          input_html: { value: @presenter.pii['zipcode'], class: 'zipcode' },
+          input_html: { class: 'zipcode' },
           error_messages: {
             patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
           },
