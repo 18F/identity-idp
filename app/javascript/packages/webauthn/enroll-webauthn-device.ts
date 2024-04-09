@@ -39,7 +39,7 @@ interface EnrollResult {
   transports?: string[];
 }
 
-interface AuthenticatorSelectionCriteria {
+interface AuthenticatorSelectionCriteriaWithHints {
   authenticatorAttachment?: 'platform' | 'cross-platform' | undefined;
   requireResidentKey?: boolean | undefined;
   userVerification?: 'required' | 'preferred' | 'discouraged' | undefined;
@@ -100,7 +100,7 @@ async function enrollWebauthnDevice({
         userVerification: 'discouraged',
         authenticatorAttachment,
         publicKeyCredentialHints,
-      } as AuthenticatorSelectionCriteria,
+      } as AuthenticatorSelectionCriteriaWithHints,
       excludeCredentials,
     },
   })) as PublicKeyCredential;
