@@ -40,16 +40,23 @@ class ResolutionProofingJob < ApplicationJob
 
     user = User.find_by(id: user_id)
 
-    callback_log_data = make_vendor_proofing_requests(
-      timer: timer,
-      user: user,
-      applicant_pii: applicant_pii,
-      threatmetrix_session_id: threatmetrix_session_id,
-      request_ip: request_ip,
-      should_proof_state_id: should_proof_state_id,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      instant_verify_ab_test_discriminator: instant_verify_ab_test_discriminator,
-    )
+    callback_log_data = if IdentityConfig.store.idv_new_identity_resolver_enabled
+                          proof_with_new_identity_resolver(
+                            user: user,
+                            applicant_pii: applicant_pii,
+                          )
+      else
+        make_vendor_proofing_requests(
+          timer: timer,
+          user: user,
+          applicant_pii: applicant_pii,
+          threatmetrix_session_id: threatmetrix_session_id,
+          request_ip: request_ip,
+          should_proof_state_id: should_proof_state_id,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          instant_verify_ab_test_discriminator: instant_verify_ab_test_discriminator,
+        )
+      end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
@@ -78,6 +85,7 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress:,
     instant_verify_ab_test_discriminator:
   )
+
     result = resolution_proofer(instant_verify_ab_test_discriminator).proof(
       applicant_pii: applicant_pii,
       user_email: user&.confirmed_email_addresses&.first&.email,
@@ -111,6 +119,27 @@ class ResolutionProofingJob < ApplicationJob
 
   def logger_info_hash(hash)
     logger.info(hash.to_json)
+  end
+
+  # @return [CallbackLogData]
+  def proof_with_new_identity_resolver(applicant_pii:, **)
+    plugins = [
+      Idv::Resolution::AamvaPlugin.new,
+    ]
+
+    resolver = Idv::Resolution::IdentityResolver.new(plugins:)
+
+    input = Idv::Resolution::Input.from_pii(applicant_pii)
+
+    result = resolver.resolve_identity(input:)
+
+    CallbackLogData.new(
+      device_profiling_success: nil,
+      resolution_success: nil,
+      residential_resolution_success: nil,
+      result:,
+      state_id_success: nil,
+    )
   end
 
   def resolution_proofer(instant_verify_ab_test_discriminator)

@@ -66,5 +66,5 @@ module Idv
 
       attr_reader :plugins
     end
-end
+  end
 end

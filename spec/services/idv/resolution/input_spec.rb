@@ -2,11 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Idv::Resolution::Input do
   describe '#from_pii' do
-    let(:pii) { nil }
-
-    subject { described_class.from_pii(pii) }
-
-    context 'with drivers license' do
+    context 'with idv applicant' do
+      subject { described_class.from_pii(pii) }
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
 
       it 'maps state_id' do
@@ -47,7 +44,45 @@ RSpec.describe Idv::Resolution::Input do
       end
     end
 
-    context 'with residential address' do
+    context 'with ipp applicant who has same address as id' do
+      subject { described_class.from_pii(pii) }
+      let(:pii) { Idp::Constants::MOCK_IPP_APPLICANT }
+
+      it 'maps state_id correctly' do
+        expect(subject.state_id).to eql(
+          Idv::Resolution::StateId.new(
+            first_name: 'FAKEY',
+            middle_name: nil,
+            last_name: 'MCFAKERSON',
+            dob: '1938-10-06',
+            address: Idv::Resolution::Address.new(
+              address1: '123 Way St',
+              address2: '2nd Address Line',
+              city: 'Best City',
+              state: 'VA',
+              zipcode: '12345',
+            ),
+            number: '1111111111111',
+            issuing_jurisdiction: 'Virginia',
+            type: nil,
+          ),
+        )
+      end
+      it 'maps address correctly' do
+        expect(subject.address_of_residence).to eql(
+          Idv::Resolution::Address.new(
+            address1: '123 Way St',
+            address2: '2nd Address Line',
+            city: 'Best City',
+            state: 'VA',
+            zipcode: '12345',
+          ),
+        )
+      end
+    end
+
+    context 'with ipp applicant who has different address on id' do
+      subject { described_class.from_pii(pii) }
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
 
       it 'maps identity_doc stuff to state_id' do
@@ -82,6 +117,85 @@ RSpec.describe Idv::Resolution::Input do
           ),
         )
       end
+    end
+  end
+
+  describe '#initialize' do
+    it 'accepts a hash for state_id' do
+      actual = described_class.new(
+        state_id: {
+          first_name: 'FAKEY',
+          middle_name: nil,
+          last_name: 'MCFAKERSON',
+          dob: '1938-10-06',
+          address: {
+            address1: '1 FAKE RD',
+            city: 'GREAT FALLS',
+            state: 'MT',
+            zipcode: '59010',
+          },
+          number: '1111111111111',
+          issuing_jurisdiction: 'ND',
+          type: 'drivers_license',
+        },
+      )
+
+      expected = described_class.new(
+        state_id: Idv::Resolution::StateId.new(
+          first_name: 'FAKEY',
+          middle_name: nil,
+          last_name: 'MCFAKERSON',
+          dob: '1938-10-06',
+          address: Idv::Resolution::Address.new(
+            address1: '1 FAKE RD',
+            city: 'GREAT FALLS',
+            state: 'MT',
+            zipcode: '59010',
+          ),
+          number: '1111111111111',
+          issuing_jurisdiction: 'ND',
+          type: 'drivers_license',
+        ),
+      )
+
+      expect(actual).to eql(expected)
+    end
+
+    it 'accepts a hash for address_of_residence' do
+      actual = described_class.new(
+        address_of_residence: {
+          address1: '1234 Fake St.',
+          city: 'Faketown',
+          state: 'OH',
+          zipcode: '34567',
+        },
+      )
+
+      expected = described_class.new(
+        address_of_residence: Idv::Resolution::Address.new(
+          address1: '1234 Fake St.',
+          city: 'Faketown',
+          state: 'OH',
+          zipcode: '34567',
+        ),
+      )
+
+      expect(actual).to eql(expected)
+    end
+
+    it 'accepts a hash for other' do
+      actual = described_class.new(
+        other: {
+          ssn: '999-88-7777',
+        },
+      )
+      expected = described_class.new(
+        other: Idv::Resolution::OtherAttributes.new(
+          ssn: '999-88-7777',
+        ),
+      )
+
+      expect(actual).to eql(expected)
     end
   end
 

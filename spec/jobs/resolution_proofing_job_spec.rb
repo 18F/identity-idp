@@ -577,6 +577,87 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
+    context 'idv_new_identity_resolver_enabled is true' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_new_identity_resolver_enabled).and_return(true)
+      end
+
+      it 'does not call ProgressiverProofer' do
+        expect_any_instance_of(Proofing::Resolution::ProgressiveProofer).not_to receive(:proof)
+
+        stub_vendor_requests
+
+        perform
+      end
+
+      describe 'AAMVA plugin' do
+        it 'calls the mock aamva proofer' do
+          expect_any_instance_of(Idv::Resolution::AamvaPlugin).to receive(:resolve_identity).with(
+            input: Idv::Resolution::Input.new(
+              state_id: {
+                type: 'drivers_license',
+                number: '1111111111111',
+                issuing_jurisdiction: 'ND',
+                first_name: 'FAKEY',
+                middle_name: nil,
+                last_name: 'MCFAKERSON',
+                dob: '1938-10-06',
+                address: {
+                  address1: '1 FAKE RD',
+                  address2: nil,
+                  city: 'GREAT FALLS',
+                  state: 'MT',
+                  zipcode: '59010',
+                },
+              },
+              address_of_residence: {
+                address1: '1 FAKE RD',
+                address2: nil,
+                city: 'GREAT FALLS',
+                state: 'MT',
+                zipcode: '59010',
+              },
+              other: {
+                ssn: '900-66-1234',
+              },
+            ),
+            result: anything,
+            next_plugin: anything,
+          ).and_call_original
+
+          stub_vendor_requests
+
+          perform
+        end
+
+        it 'includes an AAMVA result' do
+          stub_vendor_requests
+
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result).to include(
+            state_id: {
+              errors: {},
+              exception: nil,
+              success: true,
+              transaction_id: '1234-abcd-efgh',
+              vendor_name: 'aamva:state_id',
+              verified_attributes: %w[
+                address
+                state_id_number
+                state_id_type
+                dob
+                last_name
+                first_name
+              ],
+            },
+          )
+        end
+      end
+    end
+
     def stub_vendor_requests(
       instant_verify_response: LexisNexisFixtures.instant_verify_success_response_json,
       threatmetrix_response: LexisNexisFixtures.ddp_success_response_json,

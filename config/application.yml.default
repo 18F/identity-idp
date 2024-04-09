@@ -126,6 +126,7 @@ idv_acuant_sdk_version_default: '11.9.2'
 idv_acuant_sdk_version_alternate: '11.9.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
+idv_new_identity_resolver_enabled: false
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false

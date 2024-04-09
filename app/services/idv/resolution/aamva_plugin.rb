@@ -6,10 +6,9 @@ module Idv
         next_plugin:,
         **
       )
-
         if input.state_id.nil?
           return next_plugin.call(
-            aamva: {
+            state_id: {
               success: false,
               reason: :no_state_id,
             },
@@ -18,7 +17,7 @@ module Idv
 
         if unsupported_jurisdiction?(input)
           return next_plugin.call(
-            aamva: {
+            state_id: {
               success: false,
               reason: :unsupported_jurisdiction,
             },
@@ -26,7 +25,7 @@ module Idv
         end
 
         next_plugin.call(
-          aamva: proofer.proof(input.state_id.to_pii_from_doc),
+          state_id: proofer.proof(input.state_id.to_pii_from_doc),
         )
       end
 

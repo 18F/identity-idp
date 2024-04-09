@@ -28,6 +28,32 @@ module Idv
       :address,
       :dob,
     ) do
+      def initialize(
+        type: nil,
+        number: nil,
+        issuing_jurisdiction: nil,
+        first_name: nil,
+        middle_name: nil,
+        last_name: nil,
+        address: nil,
+        dob: nil
+      )
+        if address.is_a?(Hash)
+          address = Address.new(**address)
+        end
+
+        super(
+          type:,
+          number:,
+          issuing_jurisdiction:,
+          first_name:,
+          middle_name:,
+          last_name:,
+          address:,
+          dob:,
+        )
+      end
+
       # Converts a pii_from_doc structure into a StateId
       def self.from_pii_from_doc(pii_from_doc)
         StateId.new(
@@ -79,7 +105,18 @@ module Idv
         address_of_residence: nil,
         other: nil
       )
-        super(state_id:, address_of_residence:, other:)
+
+        super(
+          state_id: state_id.is_a?(Hash) ?
+            StateId.new(**state_id) :
+            state_id,
+          address_of_residence: address_of_residence.is_a?(Hash) ?
+            Address.new(**address_of_residence) :
+            address_of_residence,
+          other: other.is_a?(Hash) ?
+            OtherAttributes.new(**other) :
+            other
+          )
       end
 
       # Converts data from...some other form...into an Input

@@ -242,6 +242,7 @@ class IdentityConfig
     config.add(:idv_contact_phone_number, type: :string)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
+    config.add(:idv_new_identity_resolver_enabled, type: :boolean)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
