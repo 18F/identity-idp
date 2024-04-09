@@ -17,7 +17,8 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
       it 'sets the user sign_in_new_device_at value to time of the given event' do
         described_class.call(event:, device:, disavowal_token:)
 
-        expect(user.sign_in_new_device_at).to be_present.and eq(event.created_at)
+        expect(user.sign_in_new_device_at.change(usec: 0)).to be_present.
+          and eq(event.created_at.change(usec: 0))
       end
     end
 
@@ -66,8 +67,8 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     end
 
     it 'unsets sign_in_new_device_at on the user' do
-      expect { result }.to change { user.reload.sign_in_new_device_at }.
-        from(sign_in_new_device_at).
+      expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }.
+        from(sign_in_new_device_at.change(usec: 0)).
         to(nil)
     end
 
