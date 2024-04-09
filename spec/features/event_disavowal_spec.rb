@@ -21,8 +21,21 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
         sign_in_user(user)
       end
 
+      Capybara.reset_session!
       CreateNewDeviceAlert.new.perform(Time.zone.now)
+
       disavow_last_action_and_reset_password
+    end
+
+    context 'user with piv or cac' do
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+      scenario 'disavowing a sign-in after 2fa using piv or cac' do
+        signin_with_piv(user)
+        Capybara.reset_session!
+
+        disavow_last_action_and_reset_password
+      end
     end
   end
 
@@ -213,7 +226,11 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
     signin(user.email, 'NewVal!dPassw0rd')
 
     # We should be on the MFA screen because we logged in with the new password
-    expect(page).to have_content(t('two_factor_authentication.header_text'))
-    expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    if user.piv_cac_configurations.any?
+      expect(page).to have_current_path(login_two_factor_piv_cac_path)
+    else
+      expect(page).to have_content(t('two_factor_authentication.header_text'))
+      expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    end
   end
 end

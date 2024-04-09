@@ -43,10 +43,35 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
     context 'when authenticating without new device sign in' do
       let(:user) { create(:user) }
 
-      it 'does not send an alert' do
-        expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
+      context 'when alert aggregation feature is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
+            and_return(false)
+        end
 
-        result
+        it 'does not send an alert' do
+          expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
+
+          result
+        end
+      end
+
+      context 'when alert aggregation feature is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
+            and_return(true)
+        end
+
+        it 'sends the new device alert using 2fa event date' do
+          expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
+            expect(user.reload.sign_in_new_device_at).to eq(args[:disavowal_event].created_at)
+            expect(args[:user]).to eq(user)
+            expect(args[:disavowal_event]).to be_kind_of(Event)
+            expect(args[:disavowal_token]).to be_kind_of(String)
+          end
+
+          result
+        end
       end
     end
 
