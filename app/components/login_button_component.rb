@@ -11,8 +11,8 @@ class LoginButtonComponent < BaseComponent
     end
 
     @big = big
-    @width = big ? 150 : 100
-    @height = big ? 40 : 25
+    @width = big ? '10rem' : '7rem'
+    @height = big ? '2rem' : '1.25rem'
     @color = color
     @tag_options = tag_options
   end
