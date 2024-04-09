@@ -236,6 +236,7 @@ class ApplicationController < ActionController::Base
     return reactivate_account_url if user_needs_to_reactivate_account?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
+    return user_password_compromised_url if user_session[:redirect_to_phone_compromised]
     signed_in_url
   end
 

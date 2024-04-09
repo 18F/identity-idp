@@ -5341,6 +5341,14 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the user is notified their password is compromised
+  def user_password_compromised_visited(**extra)
+    track_event(
+      :user_password_compromised_visited,
+      **extra,
+    )
+  end
+
   # Tracks when the user is suspended and attempts to sign in, triggering the please call page.
   def user_suspended_please_call_visited(**extra)
     track_event(

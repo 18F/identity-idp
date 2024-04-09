@@ -208,7 +208,29 @@ module Users
   end
 
   def check_password_compromised
-    PwnedPasswords::LookupPassword.call(auth_params[:password])
+    return if current_user.check_password_compromised_at.present? && 
+      eligible_for_password_lookup?
+
+    user_session[:redirect_to_phone_compromised] = PwnedPasswords::LookupPassword.call(auth_params[:password])
+    update_user_check_password_compromised_at
+  end
+
+
+  def eligible_for_password_lookup?
+    # We want to have a threshold to see how many users fall into this to do a check
+    IdentityConfig.store.check_user_password_compromised_enabled && 
+      randomize_check_password?
+  end
+
+  def update_user_check_password_compromised_at
+    UpdateUser.new(
+      user: current_user,
+      attributes: { check_password_compromised_at: Time.zone.now },
+    ).call
+  end
+
+  def randomize_check_password?
+    SecureRandom.random_number(1000) > 900 
   end
 
   def unsafe_redirect_error(_exception)
