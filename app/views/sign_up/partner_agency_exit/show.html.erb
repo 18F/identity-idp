@@ -31,7 +31,7 @@
 <% end %>
 
 <%= button_to(
-      account_path,
+      @presenter.return_to_sp_url,
       method: :get,
       class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
     ) do %>
