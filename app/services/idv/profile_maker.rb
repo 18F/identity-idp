@@ -49,7 +49,7 @@ module Idv
     def set_idv_level(in_person_verification_needed:, selfie_check_performed:)
       if in_person_verification_needed
         if IdentityConfig.store.in_person_proofing_enforce_tmx &&
-          FeatureManagement.proofing_device_profiling_decisioning_enabled?
+           FeatureManagement.proofing_device_profiling_decisioning_enabled?
           :in_person
         else
           :legacy_in_person
