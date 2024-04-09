@@ -365,7 +365,8 @@ class User < ApplicationRecord
   end
 
   def identity_verified_with_selfie?
-    active_profile&.idv_level == 'unsupervised_with_selfie'
+    biometric_comparison_idv_levels = ['unsupervised_with_selfie', 'in_person']
+    biometric_comparison_idv_levels.include?(active_profile&.idv_level)
   end
 
   def reproof_for_irs?(service_provider:)

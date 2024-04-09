@@ -477,6 +477,16 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 end
               end
 
+              context 'bioemtric comparison was performed in-person' do
+                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                  user.active_profile.idv_level = :in_person
+
+                  action
+
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
               context 'selfie capture not enabled, biometric_comparison_check requested by sp' do
                 let(:selfie_capture_enabled) { false }
                 it 'returns status not_acceptable' do
