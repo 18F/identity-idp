@@ -39,10 +39,7 @@ interface EnrollResult {
   transports?: string[];
 }
 
-interface AuthenticatorSelectionCriteriaWithHints {
-  authenticatorAttachment?: 'platform' | 'cross-platform' | undefined;
-  requireResidentKey?: boolean | undefined;
-  userVerification?: 'required' | 'preferred' | 'discouraged' | undefined;
+interface AuthenticatorSelectionCriteriaWithHints extends AuthenticatorSelectionCriteria {
   publicKeyCredentialHints?: 'client' | 'security-key';
 }
 
