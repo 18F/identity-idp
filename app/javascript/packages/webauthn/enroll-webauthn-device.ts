@@ -40,7 +40,7 @@ interface EnrollResult {
 }
 
 interface AuthenticatorSelectionCriteriaWithHints extends AuthenticatorSelectionCriteria {
-  publicKeyCredentialHints?: 'client' | 'security-key';
+  publicKeyCredentialHints?: 'client-device' | 'security-key';
 }
 
 /**

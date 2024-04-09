@@ -134,12 +134,14 @@ describe('enrollWebauthnDevice', () => {
           challenge,
           excludeCredentials,
           authenticatorAttachment: 'platform',
+          publicKeyCredentialHints: 'security-key',
         });
 
         expect(navigator.credentials.create).to.have.been.calledWithMatch({
           publicKey: {
             authenticatorSelection: {
               authenticatorAttachment: 'platform',
+              publicKeyCredentialHints: 'client-device',
             },
           },
         });
