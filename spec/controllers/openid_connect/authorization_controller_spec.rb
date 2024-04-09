@@ -477,7 +477,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 end
               end
 
-              context 'bioemtric comparison was performed in-person' do
+              context 'biometric comparison was performed in-person' do
                 it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                   user.active_profile.idv_level = :in_person
 
