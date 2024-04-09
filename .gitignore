@@ -7,5 +7,5 @@
 /doc
 /pkg
 /tags
-/Gemfile.lock
+vendor
 clacks*.gem

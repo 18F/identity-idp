@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors = ["Jon Phenow", 'Peter Karman']
   s.email = %q{peter.karman@gsa.gov}
   s.homepage = %q{http://github.com/18F/saml_idp}
-  s.summary = %q{SAML Indentity Provider in Ruby}
+  s.summary = %q{SAML Identity Provider in Ruby}
   s.description = %q{SAML IdP (Identity Provider) library in ruby}
   s.date = Time.now.utc.strftime("%Y-%m-%d")
   s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + [
@@ -47,17 +47,18 @@ section of the README.
   s.add_dependency('nokogiri', '>= 1.10.2')
   s.add_dependency("pkcs11")
 
-  s.add_development_dependency("capybara", "~> 3.15.1")
+  s.add_development_dependency("capybara", "~> 3.40")
   s.add_development_dependency("listen")
   s.add_development_dependency "pry-byebug"
-  s.add_development_dependency("rails", "~> 5.1")
+  s.add_development_dependency("rails", "~> 7.1")
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
   s.add_development_dependency "rubocop", "0.76.0"
-  s.add_development_dependency "ruby-saml", "~> 1.11.0"
-  s.add_development_dependency "simplecov", "~> 0.17.0"
+  s.add_development_dependency "ruby-saml", "~> 1.16.0"
+  s.add_development_dependency "simplecov", "~> 0.22.0"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency("timecop")
-  s.add_development_dependency("xmlenc", ">= 0.6.4")
+  s.add_development_dependency("rexml")
+  s.add_development_dependency("xmlenc", ">= 0.7.1")
 end
 

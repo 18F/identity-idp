@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # Specify the Ruby version you desire here
-      - image: cimg/ruby:2.7
+      - image: cimg/ruby:3.3.0
         environment:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: a989576c2cf27161879ca9dfc4044dcd07ffc9d4b03827f6d464fcfff6c896a0
@@ -26,7 +26,7 @@ jobs:
           name: Install dependencies
           command: |
             gem install bundler
-            bundle install --jobs=4 --retry=3 --path vendor/bundle
+            bundle install --jobs=4 --retry=3
       - run:
           name: Install Code Climate Test Reporter
           command: |
