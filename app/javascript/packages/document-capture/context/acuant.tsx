@@ -270,6 +270,7 @@ function AcuantContextProvider({
       }
       window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
 
+      // Unclear if/how this is called. Implemented just in case, but this is untested.
       window.AcuantJavascriptWebSdk.setUnexpectedErrorCallback((errorMessage) => {
         trackEvent('idv_sdk_error_before_init', {
           success: false,
