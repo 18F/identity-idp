@@ -23,5 +23,4 @@ class LoginButtonComponent < BaseComponent
     classes << "login-button login-button--#{color}"
     classes
   end
-
 end

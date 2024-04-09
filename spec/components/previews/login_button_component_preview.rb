@@ -1,11 +1,11 @@
 class LoginButtonComponentPreview < ButtonComponentPreview
   include ActiveModel::Conversion
-# @after_render :inject_style
+  # @after_render :inject_style
 
   # @!group Preview
   def default
-      render(LoginButtonComponent.new)
-  end  
+    render(LoginButtonComponent.new)
+  end
   # @!endgroup
 
   # @after_render :inject_style
@@ -35,16 +35,15 @@ class LoginButtonComponentPreview < ButtonComponentPreview
   end
 
   def css
-   File.read(css_file_path)
+    File.read(css_file_path)
   end
 
   def inject_style(html)
     <<~HTML
-    <style>
-      #{css}
-    </style>
-    #{html}
+      <style>
+        #{css}
+      </style>
+      #{html}
     HTML
   end
-
 end
