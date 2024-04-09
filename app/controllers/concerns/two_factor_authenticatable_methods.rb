@@ -15,7 +15,7 @@ module TwoFactorAuthenticatableMethods
     disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
 
     if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
-      if current_user.sign_in_new_device_at.blank?
+      if current_user.sign_in_new_device_at.blank? && user_session[:new_device]
         current_user.update(sign_in_new_device_at: disavowal_event.created_at)
       end
 
