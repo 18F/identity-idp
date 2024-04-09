@@ -24,7 +24,7 @@ interface EnrollOptions {
 
   authenticatorAttachment?: AuthenticatorAttachment;
 
-  publicKeyCredentialHints?: string;
+  publicKeyCredentialHints?: 'client-device' | 'security-key';
 }
 
 interface EnrollResult {
