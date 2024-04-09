@@ -20,7 +20,7 @@ class LoginButtonComponent < BaseComponent
   def svg
     Rails.root.join(
       'app', 'assets', 'images',
-      (color != "primary-darker" ? 'logo.svg' : 'logo-white.svg')
+      (color == "primary-darker" ? 'logo-white.svg' : 'logo.svg')
     ).read
   end
 
