@@ -234,6 +234,7 @@ class ApplicationController < ActionController::Base
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
     return reactivate_account_url if user_needs_to_reactivate_account?
+    return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     return user_password_compromised_url if user_session[:redirect_to_phone_compromised]
@@ -260,6 +261,15 @@ class ApplicationController < ActionController::Base
     return false if current_user.password_reset_profile.blank?
     return false if pending_profile_newer_than_password_reset_profile?
     resolved_authn_context_result.identity_proofing?
+  end
+
+  def user_recommended_for_piv_cac?
+    current_user.piv_cac_recommended_dismissed_at.nil? && current_user.has_gov_or_mil_email? &&
+      !user_already_has_piv?
+  end
+
+  def user_already_has_piv?
+    MfaContext.new(current_user).piv_cac_configurations.present?
   end
 
   def pending_profile_newer_than_password_reset_profile?

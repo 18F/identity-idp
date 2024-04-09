@@ -73,4 +73,4 @@ en:
     webauthn_platform_setup:
       new: Add face or touch unlock
     webauthn_setup:
-      new: Add your security key
+      new: Insert your security key

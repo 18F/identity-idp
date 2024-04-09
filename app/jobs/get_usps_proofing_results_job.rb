@@ -11,10 +11,10 @@ class GetUspsProofingResultsJob < ApplicationJob
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
-  ]
+  ].freeze
   SUPPORTED_SECONDARY_ID_TYPES = [
     'Visual Inspection of Name and Address on Primary ID Match',
-  ]
+  ].freeze
 
   queue_as :long_running
 
@@ -57,8 +57,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   attr_accessor :enrollment_outcomes
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
-  REQUEST_DELAY_IN_SECONDS = IdentityConfig.store.
-    get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
+  REQUEST_DELAY_IN_SECONDS = (IdentityConfig.store.
+    get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND).freeze
 
   def proofer
     @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer

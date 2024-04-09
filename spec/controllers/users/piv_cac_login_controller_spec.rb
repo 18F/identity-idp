@@ -22,8 +22,11 @@ RSpec.describe Users::PivCacLoginController do
       let(:token) { 'TEST:abcdefg' }
 
       context 'an invalid token' do
-        before { get :new, params: { token: token } }
+        subject(:response) { get :new, params: { token: token } }
+
         it 'tracks the login attempt' do
+          response
+
           expect(@analytics).to have_logged_event(
             :piv_cac_login,
             errors: {},
@@ -34,6 +37,12 @@ RSpec.describe Users::PivCacLoginController do
 
         it 'redirects to the error url' do
           expect(response).to redirect_to(login_piv_cac_error_url(error: 'token.bad'))
+        end
+
+        it 'records unsuccessful 2fa event' do
+          expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
+
+          response
         end
       end
 

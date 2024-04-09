@@ -32,7 +32,7 @@ module Vot
       def expanded_component_values
         component_values.map(&:name).join('.')
       end
-    end
+    end.freeze
 
     attr_reader :vector_of_trust, :acr_values
 

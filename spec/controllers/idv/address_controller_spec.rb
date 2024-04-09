@@ -97,5 +97,18 @@ RSpec.describe Idv::AddressController do
           error_details: nil },
       )
     end
+
+    context 'with invalid params' do
+      render_views
+
+      it 'renders errors if they occur' do
+        params[:idv_form][:zipcode] = 'this is invalid'
+
+        put :update, params: params
+
+        expect(response).to render_template(:new)
+        expect(response.body).to include(t('idv.errors.pattern_mismatch.zipcode'))
+      end
+    end
   end
 end

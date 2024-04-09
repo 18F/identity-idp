@@ -59,6 +59,8 @@ es:
       new: Use su PIV / CAC para iniciar sesión en su cuenta
     piv_cac_setup:
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
+      upsell: Aumente la seguridad de su cuenta con una identificación de empleado del
+        gobierno.
     present_piv_cac: Presenta tu PIV/CAC
     present_webauthn: Conecte su clave de seguridad de hardware
     reactivate_account: Reactive su cuenta

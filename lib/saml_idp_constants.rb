@@ -34,7 +34,7 @@ module Saml
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='
 
-      VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts
+      VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts.freeze
       IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {

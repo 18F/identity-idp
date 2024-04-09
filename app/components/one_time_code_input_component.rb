@@ -16,7 +16,7 @@ class OneTimeCodeInputComponent < BaseComponent
   alias_method :autofocus?, :autofocus
 
   # @see https://tc39.es/ecma262/#prod-SyntaxCharacter
-  JS_REGEXP_SYNTAX_CHARACTER = Regexp.union(%w[^ $ \ . * + ? ( ) [ ] { } |])
+  JS_REGEXP_SYNTAX_CHARACTER = Regexp.union(%w[^ $ \ . * + ? ( ) [ ] { } |]).freeze
 
   # @param [FormBuilder] form Form builder instance.
   # @param [Symbol] name Field name. Defaults to `:code`.

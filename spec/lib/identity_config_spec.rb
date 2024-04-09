@@ -30,6 +30,24 @@ RSpec.describe IdentityConfig do
     end
   end
 
+  describe '::CONVERTERS' do
+    describe 'comma_separated_string_list' do
+      it 'respects double-quotes for embedded commas' do
+        config = IdentityConfig.new({ csv_value: 'one,two,"three,four"' })
+        config.add(:csv_value, type: :comma_separated_string_list)
+
+        expect(config.written_env).to eq(csv_value: ['one', 'two', 'three,four'])
+      end
+
+      it 'parses empty value as empty array' do
+        config = IdentityConfig.new({ csv_value: '' })
+        config.add(:csv_value, type: :comma_separated_string_list)
+
+        expect(config.written_env).to eq(csv_value: [])
+      end
+    end
+  end
+
   describe 'idv_contact_phone_number' do
     it 'has config value for contact phone number' do
       contact_number = IdentityConfig.store.idv_contact_phone_number

@@ -11,7 +11,7 @@ CATEGORIES = [
   'Bug Fixes',
   'Internal',
   'Upcoming Features',
-]
+].freeze
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
 DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'

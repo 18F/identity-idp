@@ -29,7 +29,7 @@ module Encryption
       def uak_password_digest?
         encryption_key.present?
       end
-    end
+    end.freeze
 
     def initialize
       @aes_cipher = AesCipher.new

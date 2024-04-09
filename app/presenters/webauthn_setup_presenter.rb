@@ -4,6 +4,7 @@ class WebauthnSetupPresenter < SetupPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::TranslationHelper
+  include LinkHelper
 
   attr_reader :url_options
 
@@ -26,11 +27,18 @@ class WebauthnSetupPresenter < SetupPresenter
     @url_options = url_options
   end
 
-  def image_path
-    if @platform_authenticator
-      'platform-authenticator.svg'
-    else
-      'security-key.svg'
+  def learn_more_html
+    if !@platform_authenticator
+      new_tab_link_to(
+        t('forms.webauthn_setup.learn_more'),
+        help_center_redirect_path(
+          category: 'get-started',
+          article: 'authentication-options',
+          article_anchor: 'security-key',
+          flow: :two_factor_authentication,
+          step: :security_key_setup,
+        ),
+      )
     end
   end
 
@@ -71,7 +79,7 @@ class WebauthnSetupPresenter < SetupPresenter
         ),
       )
     else
-      t('forms.webauthn_setup.intro_html')
+      t('forms.webauthn_setup.intro', app_name: APP_NAME)
     end
   end
 
@@ -87,7 +95,7 @@ class WebauthnSetupPresenter < SetupPresenter
     if @platform_authenticator
       t('forms.webauthn_platform_setup.continue')
     else
-      t('forms.webauthn_setup.continue')
+      t('forms.webauthn_setup.set_up')
     end
   end
 end

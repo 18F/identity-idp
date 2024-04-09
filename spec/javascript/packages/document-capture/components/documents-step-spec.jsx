@@ -152,7 +152,7 @@ describe('document-capture/components/documents-step', () => {
       ],
       [DocumentsStep],
     );
-    const { getByRole, getByLabelText } = render(<App />);
+    const { queryByRole, getByRole, getByLabelText } = render(<App />);
 
     const front = getByLabelText('doc_auth.headings.document_capture_front');
     const back = getByLabelText('doc_auth.headings.document_capture_back');
@@ -160,7 +160,7 @@ describe('document-capture/components/documents-step', () => {
       name: 'doc_auth.headings.document_capture',
       level: 1,
     });
-    const idHeader = getByRole('heading', {
+    const idHeader = queryByRole('heading', {
       name: 'doc_auth.headings.document_capture_subheader_id',
       level: 2,
     });
@@ -168,6 +168,6 @@ describe('document-capture/components/documents-step', () => {
     expect(front).to.be.ok();
     expect(back).to.be.ok();
     expect(pageHeader).to.be.ok();
-    expect(idHeader).to.be.ok();
+    expect(idHeader).to.be.not.ok();
   });
 });

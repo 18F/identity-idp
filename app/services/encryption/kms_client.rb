@@ -22,7 +22,7 @@ module Encryption
         instance_profile_credentials_retries: 5, # defaults to 0 retries
         region: IdentityConfig.store.aws_region, # The region in which the client is being instantiated
       )
-    end
+    end.freeze
     # rubocop:enable Layout/LineLength
 
     attr_reader :kms_key_id
