@@ -1,7 +1,7 @@
-  require 'rails_helper'
+require 'rails_helper'
 
 RSpec.describe Idv::AddressForm do
-  let(:pii) {
+  let(:pii) do
     {
       first_name: 'Test',
       last_name: 'McTesterson',
@@ -11,9 +11,9 @@ RSpec.describe Idv::AddressForm do
       state: 'TX',
       zipcode: '11111',
     }
-  }
+  end
 
-  let(:params) {
+  let(:params) do
     {
       address1: '456 Other St',
       address2: 'Apt 1',
@@ -21,7 +21,7 @@ RSpec.describe Idv::AddressForm do
       state: 'IL',
       zipcode: '22222',
     }
-  }
+  end
 
   it 'is initialized with values from the hash in the initializer' do
     address_form = Idv::AddressForm.new(pii)
