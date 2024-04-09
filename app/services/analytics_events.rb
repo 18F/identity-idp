@@ -4429,6 +4429,21 @@ module AnalyticsEvents
     track_event(:piv_cac_login_visited)
   end
 
+  # @param [String] action what action user made
+  # Tracks when user submits an action on Piv Cac recommended page
+  def piv_cac_recommended(action: nil, **extra)
+    track_event(
+      :piv_cac_recommended,
+      action: action,
+      **extra,
+    )
+  end
+
+  # Tracks when user visits piv cac recommended
+  def piv_cac_recommended_visited
+    track_event(:piv_cac_recommended_visited)
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
   # @identity.idp.previous_event_name PIV CAC setup visited
   # Tracks when user's piv cac setup
