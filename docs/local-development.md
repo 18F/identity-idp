@@ -217,7 +217,7 @@ $ make run-https
 
 Or, to run on a different host:
 
-```
+```bash
 $ HOST=0.0.0.0 make run-https
 ```
 
