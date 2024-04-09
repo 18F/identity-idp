@@ -464,7 +464,7 @@ production:
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
   email_registrations_per_ip_track_only_mode: true
-  enable_test_routes: false
+  enable_test_routes: true
   enable_usps_verification: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
