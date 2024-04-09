@@ -64,7 +64,9 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
         it 'sends the new device alert using 2fa event date' do
           expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
-            expect(user.reload.sign_in_new_device_at).to eq(args[:disavowal_event].created_at)
+            expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
+              args[:disavowal_event].created_at.change(usec: 0),
+            )
             expect(args[:user]).to eq(user)
             expect(args[:disavowal_event]).to be_kind_of(Event)
             expect(args[:disavowal_token]).to be_kind_of(String)
