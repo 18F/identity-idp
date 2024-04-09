@@ -33,14 +33,10 @@ class LoginButtonComponentPreview < ButtonComponentPreview
     )
   end
 
-  def css
-    File.read(css_file_path)
-  end
-
   def inject_style(html)
     <<~HTML
       <style>
-        #{css}
+        #{css_file_path.read}
       </style>
       #{html}
     HTML
