@@ -107,6 +107,7 @@ encrypted_document_storage_s3_bucket: ''
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
+feature_new_device_alert_aggregation_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
@@ -212,6 +213,7 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
+new_device_alert_delay_in_minutes: 5
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect_uuid_override_map: '{}'
@@ -229,6 +231,9 @@ participate_in_dap: false
 password_max_attempts: 3
 personal_key_retired: true
 phone_carrier_registration_blocklist_array: '[]'
+short_term_phone_otp_max_attempt_window_in_seconds: 10
+short_term_phone_otp_max_attempts: 2
+short_term_phone_otp_rate_limiter_enabled: true
 phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
@@ -466,6 +471,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  feature_new_device_alert_aggregation_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
@@ -483,6 +489,7 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
+  short_term_phone_otp_rate_limiter_enabled: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -579,6 +586,7 @@ test:
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  short_term_phone_otp_rate_limiter_enabled: false
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'

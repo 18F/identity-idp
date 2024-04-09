@@ -1,3 +1,13 @@
+## Unreleased
+
+### New Features
+
+- Add support for verbose CLI output using `--verbose` flag (`-v` shorthand), which currently outputs files being built.
+
+### Bug Fixes
+
+- Fix rebuild after error when using `--watch` mode.
+
 ## 3.0.0
 
 ### Breaking Changes

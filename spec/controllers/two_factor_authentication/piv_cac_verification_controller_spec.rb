@@ -19,7 +19,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
 
   before(:each) do
     session_info = { piv_cac_nonce: nonce }
-    allow(subject).to receive(:user_session).and_return(session_info)
+    allow(controller).to receive(:user_session).and_return(session_info)
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
       'uuid' => user.piv_cac_configurations.first.x509_dn_uuid,
       'subject' => x509_subject,
@@ -163,14 +163,16 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
     end
 
     context 'when the user presents an invalid piv/cac' do
+      subject(:response) { get :show, params: { token: 'bad-token' } }
+
       before do
         stub_sign_in_before_2fa(user)
-
-        get :show, params: { token: 'bad-token' }
       end
 
       it 'increments second_factor_attempts_count' do
-        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+        response
+
+        expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
       it 'redirects to the piv/cac entry screen' do
@@ -178,16 +180,28 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
       end
 
       it 'displays flash error message' do
+        response
+
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
       end
 
       it 'resets the piv/cac session information' do
-        expect(subject.user_session[:decrypted_x509]).to be_nil
+        response
+
+        expect(controller.user_session[:decrypted_x509]).to be_nil
       end
 
       it 'does not set auth_method and requires 2FA' do
-        expect(subject.user_session[:auth_events]).to eq nil
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+        response
+
+        expect(controller.user_session[:auth_events]).to eq nil
+        expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+      end
+
+      it 'records unsuccessful 2fa event' do
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
+
+        response
       end
     end
 

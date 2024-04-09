@@ -89,7 +89,7 @@ class AccountShowPresenter
     :dob,
     :phone,
     keyword_init: true,
-  )
+  ).freeze
 
   def obfuscated_pii_accessor
     PiiAccessor.new(

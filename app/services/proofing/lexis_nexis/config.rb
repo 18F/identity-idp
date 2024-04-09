@@ -23,6 +23,6 @@ module Proofing
         :request_mode,
         :request_timeout,
       ],
-    )
+    ).freeze
   end
 end

@@ -33,7 +33,7 @@ module Encryption
           )
           decode(encoded_encrypted_data)
         end
-      end
+      end.freeze
 
       def initialize(password)
         @password = password

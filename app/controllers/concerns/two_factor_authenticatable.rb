@@ -9,7 +9,7 @@ module TwoFactorAuthenticatable
   DIRECT_OTP_LENGTH = 6
   PROOFING_DIRECT_OTP_LENGTH = 6
   ALLOWED_OTP_DRIFT_SECONDS = 30
-  DIRECT_OTP_VALID_FOR_MINUTES = IdentityConfig.store.otp_valid_for
+  DIRECT_OTP_VALID_FOR_MINUTES = IdentityConfig.store.otp_valid_for.freeze
   DIRECT_OTP_VALID_FOR_SECONDS = DIRECT_OTP_VALID_FOR_MINUTES * 60
   REMEMBER_2FA_COOKIE = 'remember_tfa'
 

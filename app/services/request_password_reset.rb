@@ -85,4 +85,4 @@ RequestPasswordReset = RedactedStruct.new(
       EmailAddress.find_with_confirmed_or_unconfirmed_email(email)
     end
   end
-end
+end.freeze
