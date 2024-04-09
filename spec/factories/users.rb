@@ -182,6 +182,7 @@ FactoryBot.define do
 
       after :create do |user, evaluator|
         user.create_registration_log(registered_at: evaluator.registered_at)
+        user.devices << create(:device)
       end
     end
 

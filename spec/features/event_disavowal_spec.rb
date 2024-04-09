@@ -3,6 +3,29 @@ require 'rails_helper'
 RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
+  context 'with aggregated sign-in notifications enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
+        and_return(true)
+    end
+
+    scenario 'disavowing a sign-in after 2fa' do
+      sign_in_live_with_2fa(user)
+      Capybara.reset_session!
+
+      disavow_last_action_and_reset_password
+    end
+
+    scenario 'disavowing a sign-in before 2fa' do
+      travel_to (IdentityConfig.store.new_device_alert_delay_in_minutes + 1).minutes.ago do
+        sign_in_user(user)
+      end
+
+      CreateNewDeviceAlert.new.perform(Time.zone.now)
+      disavow_last_action_and_reset_password
+    end
+  end
+
   scenario 'disavowing a password reset' do
     perform_disavowable_password_reset
     disavow_last_action_and_reset_password
