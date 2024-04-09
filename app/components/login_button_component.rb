@@ -17,6 +17,27 @@ class LoginButtonComponent < BaseComponent
     @tag_options = tag_options
   end
 
+  def svg
+    Rails.root.join(
+      'app', 'assets', 'images',
+      (color != "primary-darker" ? 'logo.svg' : 'logo-white.svg')
+    ).read
+  end
+
+  def inject_svg
+    # rubocop:disable Rails/OutputSafety
+    Nokogiri::HTML5.fragment(svg).tap do |doc|
+      doc.at_css('svg').tap do |svg|
+        svg[:role] = 'img'
+        svg[:width] = width
+        svg[:height] = height
+        svg << "<title>#{APP_NAME}</title>"
+      end
+    end.to_s.html_safe
+    # rubocop:enable Rails/OutputSafety
+  end
+
+
   def css_class
     classes = ['usa-button', *tag_options[:class]]
     classes << 'usa-button--big' if big

@@ -1,5 +1,4 @@
 class LoginButtonComponentPreview < ButtonComponentPreview
-  include ActiveModel::Conversion
   # @after_render :inject_style
 
   # @!group Preview
