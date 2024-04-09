@@ -22,13 +22,14 @@ module FraudReviewConcern
   end
 
   def handle_fraud_rejection
+    return if in_person_prevent_fraud_redirection?
     redirect_to_fraud_rejection if fraud_rejection?
   end
 
   def in_person_prevent_fraud_redirection?
     IdentityConfig.store.in_person_proofing_enforce_tmx &&
       current_user.ipp_enrollment_status_not_passed? &&
-      fraud_review_pending?
+      (fraud_review_pending? || fraud_rejection?)
   end
 
   def redirect_to_fraud_review
