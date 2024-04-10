@@ -66,9 +66,10 @@ RSpec.feature 'Password Recovery', allowed_extra_analytics: [:*] do
       user = create(:user, :unconfirmed)
       confirm_last_user
       reset_email
-      visit sign_up_email_resend_path
+      visit sign_up_email_path
       fill_in t('forms.registration.labels.email'), with: user.email
-      click_button t('forms.buttons.resend_confirmation')
+      check t('sign_up.terms', app_name: APP_NAME)
+      click_submit_default
       open_last_email
       click_email_link_matching(/confirmation_token/)
     end

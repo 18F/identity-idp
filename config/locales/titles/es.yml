@@ -8,7 +8,6 @@ es:
     backup_codes: No pierda sus códigos de respaldo
     confirmations:
       delete: Por favor confirmar
-      new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
     doc_auth:
       address: Actualice su dirección postal

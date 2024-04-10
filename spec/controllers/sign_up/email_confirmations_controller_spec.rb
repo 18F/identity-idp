@@ -33,7 +33,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: nil }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
-      expect(response).to redirect_to sign_up_email_resend_path
+      expect(response).to redirect_to sign_up_register_path
     end
 
     it 'tracks blank email confirmation token' do
@@ -47,7 +47,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: '' }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
-      expect(response).to redirect_to sign_up_email_resend_path
+      expect(response).to redirect_to sign_up_register_path
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
@@ -61,7 +61,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: "''" }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
-      expect(response).to redirect_to sign_up_email_resend_path
+      expect(response).to redirect_to sign_up_register_path
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
@@ -75,7 +75,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: '""' }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
-      expect(response).to redirect_to sign_up_email_resend_path
+      expect(response).to redirect_to sign_up_register_path
     end
 
     it 'tracks already confirmed token' do
@@ -128,7 +128,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: 'foo' }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
-      expect(response).to redirect_to sign_up_email_resend_path
+      expect(response).to redirect_to sign_up_register_path
     end
 
     it 'tracks blank confirmation_sent_at as expired token' do
@@ -159,7 +159,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: 'foo' }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
-      expect(response).to redirect_to sign_up_email_resend_path
+      expect(response).to redirect_to sign_up_register_path
     end
 
     describe 'sp metadata' do

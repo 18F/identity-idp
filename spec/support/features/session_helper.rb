@@ -373,7 +373,8 @@ module Features
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
+      expect(page).to have_current_path sign_up_register_path(request_id: sp_request_id)
+      expect(page).to have_content t('errors.messages.confirmation_invalid_token')
 
       submit_resend_email_confirmation_form_with_correct_email(email)
 

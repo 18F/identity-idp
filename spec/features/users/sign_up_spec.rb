@@ -271,7 +271,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     it 'returns them to the resend email confirmation page' do
       visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
 
-      expect(page).to have_current_path(sign_up_email_resend_path)
+      expect(page).to have_current_path(sign_up_register_path)
 
       expect(page).
         to have_content t('errors.messages.confirmation_invalid_token')
