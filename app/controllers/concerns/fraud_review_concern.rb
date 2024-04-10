@@ -26,6 +26,10 @@ module FraudReviewConcern
     redirect_to_fraud_rejection if fraud_rejection?
   end
 
+  # Returns true if the user has not passed IPP at the post office and is
+  # flagged for fraud review, or has been rejected for fraud.
+  # Ultimately this is to allow users who fail at the post office to create another enrollment
+  # bypassing the typical flow of showing the Please Call or Fraud Rejection screens.
   def in_person_prevent_fraud_redirection?
     IdentityConfig.store.in_person_proofing_enforce_tmx &&
       current_user.ipp_enrollment_status_not_passed? &&
