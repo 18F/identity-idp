@@ -25,6 +25,8 @@ class User < ApplicationRecord
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
 
+  BIOMETRIC_COMPARISON_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
+
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -365,7 +367,7 @@ class User < ApplicationRecord
   end
 
   def identity_verified_with_selfie?
-    active_profile&.idv_level == 'unsupervised_with_selfie'
+    BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
   end
 
   def reproof_for_irs?(service_provider:)
