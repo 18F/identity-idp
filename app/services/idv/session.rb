@@ -36,7 +36,7 @@ module Idv
       welcome_visited
     ].freeze
 
-    attr_reader :current_user, :gpo_otp, :service_provider, :user_session
+    attr_reader :current_user, :gpo_otp, :service_provider
 
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
@@ -256,6 +256,8 @@ module Idv
     end
 
     private
+
+    attr_reader :user_session
 
     def set_idv_session
       user_session[:idv] = new_idv_session unless user_session.key?(:idv)
