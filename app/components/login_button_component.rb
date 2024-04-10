@@ -10,8 +10,8 @@ class LoginButtonComponent < BaseComponent
       raise ArgumentError, "`color` #{color}} is invalid, expected one of #{VALID_COLORS}"
     end
     @big = big
-    @width = big ? '8.88rem' : '7.4rem'
-    @height = big ? '1.2rem' : '1rem'
+    @width = big ? '11.1rem' : '7.4rem'
+    @height = big ? '1.5rem' : '1rem'
     @color = color
     @tag_options = tag_options
   end
