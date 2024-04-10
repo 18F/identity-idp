@@ -5,8 +5,7 @@ module SignUp
     before_action :confirm_user_authenticated_for_2fa_setup
 
     def show
-      redirect_url = sp_return_url_resolver.return_to_sp_url
-      @presenter = ReturnToSpPresenter.new(return_to_sp_url: redirect_url)
+      @return_to_sp_url = sp_return_url_resolver.return_to_sp_url
     end
   end
 end
