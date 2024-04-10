@@ -3,7 +3,13 @@ require 'rails_helper'
 RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
   include Rails.application.routes.url_helpers
 
-  subject(:presenter) { described_class.new(idv_session, url_options: {}) }
+  subject(:presenter) do
+    described_class.new(
+      idv_session,
+      user_session: {},
+      url_options: {},
+    )
+  end
 
   let(:idv_session) do
     Idv::Session.new(

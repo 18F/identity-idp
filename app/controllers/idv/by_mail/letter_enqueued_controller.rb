@@ -10,7 +10,7 @@ module Idv
 
       def show
         analytics.idv_letter_enqueued_visit
-        @presenter = LetterEnqueuedPresenter.new(idv_session, url_options:)
+        @presenter = LetterEnqueuedPresenter.new(idv_session, user_session:, url_options:)
       end
 
       private
