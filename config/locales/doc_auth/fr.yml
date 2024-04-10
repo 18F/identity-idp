@@ -289,7 +289,7 @@ fr:
         nom, date de naissance et adresse.
       stepping_up_html: Vérifiez à nouveau votre identité pour accéder à ce service.
         Pour plus d’informations sur la vérification de votre identité
-        %{sp_name}
+        %{link_html}
       tag: Recommandation
       upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de
         votre carte d’identité depuis cet ordinateur.
