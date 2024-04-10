@@ -46,6 +46,36 @@ RSpec.describe Idv::Resolution::IdentityResolver do
     )
   end
 
+  it 'allows altering input' do
+    plugin_a = double
+    expect(plugin_a).to receive(:call) do |input:, next_plugin:, **|
+      next_plugin.call(
+        input: input.with(
+          state_id: input.state_id.with(
+            first_name: 'CHANGED',
+          ),
+        ),
+      )
+    end
+
+    plugin_b = double
+    expect(plugin_b).to receive(:call) do |input:, **|
+      expect(input.state_id.first_name).to eql('CHANGED')
+    end
+
+    resolver = described_class.new(
+      plugins: [plugin_a, plugin_b],
+    )
+
+    input = Idv::Resolution::Input.new(
+      state_id: {
+        first_name: 'original',
+      },
+    )
+
+    resolver.resolve_identity(input:)
+  end
+
   it 'allows merging values into the result' do
     plugin_a = double
     expect(plugin_a).to receive(:call) do |next_plugin:, **|
