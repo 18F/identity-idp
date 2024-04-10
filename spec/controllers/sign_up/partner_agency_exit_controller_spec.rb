@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe SignUp::PartnerAgencyExitController do
+  let(:current_sp) { build(:service_provider) }
+
   before do
     allow(subject).to receive(:current_sp).and_return(current_sp)
-    stub_analytics
-    allow(@analytics).to receive(:track_event)
   end
 
   describe '#show' do
