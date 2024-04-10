@@ -439,7 +439,8 @@ module Features
 
     def submit_resend_email_confirmation_form_with_correct_email(email)
       fill_in t('forms.registration.labels.email'), with: email
-      click_button t('forms.buttons.resend_confirmation')
+      check t('sign_up.terms', app_name: APP_NAME)
+      click_submit_default
     end
 
     def click_confirmation_link_in_email(email)
