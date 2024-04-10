@@ -6,11 +6,15 @@ module Idv
 
       attr_reader :url_options
 
+      def self.find_pii(idv_session)
+        idv_session.pii_from_doc ||
+          idv_session.user_session.dig('idv/in_person', :pii_from_user) ||
+          Pii::Cacher.new(idv_session.current_user, idv_session.user_session).
+            fetch(idv_session.current_user&.gpo_verification_pending_profile&.id)
+      end
+
       def initialize(idv_session, url_options:)
-        @pii = idv_session.pii_from_doc ||
-               idv_session.user_session.dig('idv/in_person', :pii_from_user) ||
-               Pii::Cacher.new(idv_session.current_user, idv_session.user_session).
-                 fetch(idv_session.current_user&.gpo_verification_pending_profile&.id)
+        @pii = LetterEnqueuedPresenter.find_pii(idv_session)
         @sp = idv_session.service_provider
         @url_options = url_options
       end
