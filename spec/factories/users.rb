@@ -197,6 +197,21 @@ FactoryBot.define do
       end
     end
 
+    trait :proofed_with_selfie do
+      fully_registered
+
+      after :build do |user|
+        create(
+          :profile,
+          :active,
+          :verified,
+          :with_pii,
+          idv_level: :unsupervised_with_selfie,
+          user: user,
+        )
+      end
+    end
+
     trait :with_pending_in_person_enrollment do
       after :build do |user|
         profile = create(:profile, :with_pii, :in_person_verification_pending, user: user)
