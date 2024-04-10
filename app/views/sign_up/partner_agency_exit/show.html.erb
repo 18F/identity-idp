@@ -22,7 +22,7 @@
 </ul>
 
 <div class="col-12">
-<%= button_to(
+<%= link_to(
       sign_up_completed_path,
       method: :get,
       class: 'usa-button usa-button--wide usa-button--big margin-bottom-2 margin-top-3',
@@ -30,7 +30,7 @@
   <%= t('account.login_exit.keep_going') %>
 <% end %>
 
-<%= button_to(
+<%= link_to(
       @presenter.return_to_sp_url,
       method: :get,
       class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
