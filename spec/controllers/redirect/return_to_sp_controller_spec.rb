@@ -15,6 +15,45 @@ RSpec.describe Redirect::ReturnToSpController do
 
       expect(response).to redirect_to sign_up_partner_agency_exit_url
     end
+
+    context 'when there is an SP request in the session' do
+      it 'tracks analytics' do
+        redirect_uri = 'https://sp.gov/result'
+        state = '123abc'
+        sp_request_url = UriService.add_params(
+          'https://example.gov/authorize', state: state, redirect_uri: redirect_uri
+        )
+        session[:sp] = { request_url: sp_request_url }
+
+        get 'cancel'
+
+        expected_redirect_uri = SpReturnUrlResolver.new(
+          service_provider: current_sp, oidc_state: state, oidc_redirect_uri: redirect_uri,
+        ).return_to_sp_url
+
+        expect(@analytics).to have_received(:track_event).with(
+          'Return to SP: Cancelled',
+          hash_including(redirect_url: expected_redirect_uri),
+        )
+
+        expect(response).to redirect_to(sign_up_partner_agency_exit_url)
+      end
+    end
+
+    context 'when there is an SP in the session without a request url' do
+      it 'redirects to the configured request url' do
+        current_sp.return_to_sp_url = 'https://sp.gov/return_to_sp'
+
+        get 'cancel'
+
+        expect(@analytics).to have_received(:track_event).with(
+          'Return to SP: Cancelled',
+          hash_including(redirect_url: 'https://sp.gov/return_to_sp'),
+        )
+
+        expect(response).to redirect_to(sign_up_partner_agency_exit_url)
+      end
+    end
   end
 
   describe '#failure_to_proof' do
