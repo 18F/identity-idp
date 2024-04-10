@@ -41,7 +41,7 @@ RSpec.describe Redirect::ReturnToSpController do
     end
 
     context 'when there is an SP in the session without a request url' do
-      it 'redirects to the configured request url' do
+      it 'tracks analytics' do
         current_sp.return_to_sp_url = 'https://sp.gov/return_to_sp'
 
         get 'cancel'
