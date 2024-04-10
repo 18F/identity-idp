@@ -92,6 +92,7 @@ export function useAcuant() {
         START_FAIL_CODE: 'start-fail-code',
         REPEAT_FAIL_CODE: 'repeat-fail-code',
         SEQUENCE_BREAK_CODE: 'sequence-break-code',
+        setUnexpectedErrorCallback: sinon.stub(),
       };
       // @ts-ignore
       window.AcuantCamera = { isCameraSupported, triggerCapture };

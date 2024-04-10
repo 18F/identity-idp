@@ -12,6 +12,7 @@ declare let AcuantCamera: AcuantCameraInterface;
 
 declare global {
   interface AcuantJavascriptWebSdkInterface {
+    setUnexpectedErrorCallback(arg0: (error: string) => void): unknown;
     initialize: AcuantInitialize;
     START_FAIL_CODE: string;
     REPEAT_FAIL_CODE: string;
@@ -268,6 +269,16 @@ function AcuantContextProvider({
         loadAcuantSdk();
       }
       window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
+
+      // Unclear if/how this is called. Implemented just in case, but this is untested.
+      window.AcuantJavascriptWebSdk.setUnexpectedErrorCallback((errorMessage) => {
+        trackEvent('idv_sdk_error_before_init', {
+          success: false,
+          error_message: errorMessage,
+          liveness_checking_required: isSelfieCaptureEnabled,
+        });
+      });
+
       window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
           window.AcuantJavascriptWebSdk.start?.(() => {

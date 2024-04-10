@@ -23,16 +23,31 @@ RSpec.describe(
     end
 
     context 'with user having gov or mil email' do
-      let(:user) { create(:user, email: 'example@example.gov') }
+      let(:user) do
+        create(:user, email: 'example@example.gov', piv_cac_recommended_dismissed_at: Time.zone.now)
+      end
+      context 'having already visited the PIV interstitial page' do
+        it 'tracks the visit in analytics' do
+          get :index
 
-      it 'tracks the visit in analytics' do
-        get :index
+          expect(@analytics).to have_logged_event(
+            'User Registration: 2FA Setup visited',
+            enabled_mfa_methods_count: 0,
+            gov_or_mil_email: true,
+          )
+        end
+      end
 
-        expect(@analytics).to have_logged_event(
-          'User Registration: 2FA Setup visited',
-          enabled_mfa_methods_count: 0,
-          gov_or_mil_email: true,
-        )
+      context 'directed to page without having visited PIV interstitial page' do
+        let(:user) do
+          create(:user, email: 'example@example.gov')
+        end
+
+        it 'redirects user to piv_recommended_path' do
+          get :index
+
+          expect(response).to redirect_to(login_piv_cac_recommended_url)
+        end
       end
     end
 

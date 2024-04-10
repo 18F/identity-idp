@@ -169,6 +169,16 @@ module Idv
       session[:failed_phone_step_params] ||= []
     end
 
+    def updated_user_address=(updated_user_address)
+      session[:updated_user_address] = nil if updated_user_address.nil?
+      session[:updated_user_address] = updated_user_address.to_h
+    end
+
+    def updated_user_address
+      return nil if session[:updated_user_address].blank?
+      Pii::Address.new(**session[:updated_user_address])
+    end
+
     def add_failed_phone_step_number(phone)
       parsed_phone = Phonelib.parse(phone)
       phone_e164 = parsed_phone.e164

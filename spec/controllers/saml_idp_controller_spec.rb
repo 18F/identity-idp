@@ -658,9 +658,21 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           end
         end
 
-        context 'the user has proofed with a biometric check' do
+        context 'the user has proofed with a biometric check remotely' do
           before do
             user.active_profile.update!(idv_level: :unsupervised_with_selfie)
+          end
+
+          it 'does not redirect to proofing' do
+            saml_get_auth(vtr_settings)
+            expect(response).to redirect_to(sign_up_completed_url)
+            expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
+          end
+        end
+
+        context 'the user has proofed with a biometric check in-person' do
+          before do
+            user.active_profile.update!(idv_level: :in_person)
           end
 
           it 'does not redirect to proofing' do

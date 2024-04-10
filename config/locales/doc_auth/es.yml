@@ -186,13 +186,14 @@ es:
         información que aparece a continuación es incorrecta, por favor,
         %{link_html} de su ID emitido por el estado.
       capture_scan_warning_link: suba nuevas fotos
-      document_capture: Incluir fotos de su identificación
-      document_capture_back: Parte trasera de su documento de identidad
-      document_capture_front: Parte delantera de su documento de identidad
-      document_capture_selfie: Una foto tuya
-      document_capture_subheader_id: Licencia de conducir o con un documento de identidad estatal
-      document_capture_subheader_selfie: Foto suya
-      document_capture_with_selfie: Incluir fotos de su identificación y una foto suya
+      document_capture: Añade fotos de tu licencia de conducir o credencial de
+        identificación oficial
+      document_capture_back: Reverso de su identificación
+      document_capture_front: Frente de su identificación
+      document_capture_selfie: Fotografía de su cara
+      document_capture_subheader_id: Licencia de conducir o tarjeta de identificación estatal
+      document_capture_subheader_selfie: Fotografía de su cara
+      document_capture_with_selfie: Agregue las fotos de su identificación y una foto de usted
       front: Anverso de su licencia de conducir o identificación estatal
       how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
@@ -202,7 +203,7 @@ es:
       no_ssn: ¿No tiene un número de Seguro Social?
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
-      selfie: Foto
+      selfie: Fotografía de su cara
       ssn: Ingrese su número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
       text_message: Enviamos un mensaje a su teléfono
@@ -268,6 +269,7 @@ es:
       secure_account: Cifraremos su cuenta cuando vuelva a introducir su contraseña.
         La encriptación significa que sus datos están protegidos y solo usted
         podrá acceder o modificar su información.
+      selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
       selfie_capture_status:
         face_close_to_border: Demasiado cerca del marco
         face_not_found: No se detectó el rostro
@@ -326,15 +328,17 @@ es:
       text4: Tu contraseña permitirá guardar y encriptar tu información personal.
     tips:
       document_capture_hint: Debe ser un JPG o PNG
-      document_capture_id_text1: Use un fondo oscuro
-      document_capture_id_text2: Tome la foto en una superficie plana
-      document_capture_id_text3: No use el flash de su cámara
-      document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
-      document_capture_selfie_id_header_text: Consejos para obtener fotografías nítidas
-      document_capture_selfie_selfie_text: Consejos para obtener una foto nítidas
-      document_capture_selfie_text1: Mantenga el dispositivo al mismo nivel que los ojos
-      document_capture_selfie_text2: Asegúrate de que tu rostro completo sea visible
-      document_capture_selfie_text3: Tómese la foto en un sitio con buena iluminación
+      document_capture_id_text1: Coloque su identificación en una superficie plana y de color oscuro.
+      document_capture_id_text2: Tómese la foto en un lugar bien iluminado.
+      document_capture_id_text3: Evite que se vean reflejos o sombras en su identificación.
+      document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB.
+      document_capture_selfie_id_header_text: Cómo tomar fotos nítidas de su identificación
+      document_capture_selfie_selfie_text: Cómo prepararse para tomar su foto
+      document_capture_selfie_text1: Quite cualquier prenda o accesorio que pueda
+        cubrirle la cara. Sugerimos que se quite los anteojos o el sombrero.
+      document_capture_selfie_text2: Tómese la foto en un lugar bien iluminado.
+      document_capture_selfie_text3: Mantenga una expresión neutral.
+      document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: '¿Ha usado un fondo oscuro?'
