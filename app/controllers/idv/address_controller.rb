@@ -35,7 +35,7 @@ module Idv
         action: :new,
         next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
-        undo_step: ->(idv_session:, user:) {},
+        undo_step: ->(idv_session:, user:) { idv_session.updated_user_address = nil },
       )
     end
 
@@ -53,12 +53,23 @@ module Idv
         state: @address_form.state,
         zipcode: @address_form.zipcode,
       )
+      idv_session.updated_user_address = address_from_form
       redirect_to idv_verify_info_url
     end
 
     def failure
       @presenter = AddressPresenter.new
       render :new
+    end
+
+    def address_from_form
+      Pii::Address.new(
+        address1: @address_form.address1,
+        address2: @address_form.address2,
+        city: @address_form.city,
+        state: @address_form.state,
+        zipcode: @address_form.zipcode,
+      )
     end
 
     def profile_params
