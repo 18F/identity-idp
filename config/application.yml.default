@@ -97,6 +97,7 @@ doc_auth_selfie_desktop_test_mode: false
 doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
+drop_off_report_config: '[{"email":"ursula@example.com","issuers":"urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"}]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 email_registrations_per_ip_limit: 20
@@ -593,6 +594,7 @@ test:
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'
+  drop_off_report_config: '[{"email":"ursula@example.com","issuers":"urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"}]'
   team_all_login_emails: '["b@example.com", "c@example.com"]'
   team_daily_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   team_daily_reports_emails: '["a@example.com", "d@example.com"]'
