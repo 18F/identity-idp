@@ -91,18 +91,29 @@ module Idv
       end
     end.freeze
 
+    # OtherAttributes is a grab-bag of other information needed for various
+    # aspects of identity resolution.
     OtherAttributes = Data.define(
       :ssn,
       :email,
       :threatmetrix_session_id,
       :ip,
+      :sp_app_id,
     ) do
-      def initialize(ssn: nil, email: nil, threatmetrix_session_id: nil, ip: nil, **)
+      def initialize(
+        ssn: nil,
+        email: nil,
+        threatmetrix_session_id: nil,
+        ip: nil,
+        sp_app_id: nil,
+        **
+      )
         super(
           ssn:,
           email:,
           threatmetrix_session_id:,
-          ip:
+          ip:,
+          sp_app_id:
         )
       end
     end.freeze

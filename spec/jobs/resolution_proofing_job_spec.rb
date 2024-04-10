@@ -619,6 +619,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
               },
               other: {
                 ssn: '900-66-1234',
+                email: user.email,
+                threatmetrix_session_id:,
+                ip: request_ip,
+                sp_app_id: nil,
               },
             ),
             result: anything,
@@ -652,6 +656,29 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 last_name
                 first_name
               ],
+            },
+          )
+        end
+      end
+
+      describe 'Threatmetrix plugin' do
+        it 'adds a Threatmetrix result' do
+          stub_vendor_requests
+
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result).to include(
+            threatmetrix: {
+              client: 'lexisnexis',
+              context: {},
+              errors: {},
+              exception: nil,
+              response_body: instance_of(Hash),
+              review_status: 'pass',
+              success: true,
+              transaction_id: '1234',
             },
           )
         end

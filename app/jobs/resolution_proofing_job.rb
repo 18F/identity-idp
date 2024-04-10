@@ -40,23 +40,27 @@ class ResolutionProofingJob < ApplicationJob
 
     user = User.find_by(id: user_id)
 
-    callback_log_data = if IdentityConfig.store.idv_new_identity_resolver_enabled
-                          proof_with_new_identity_resolver(
-                            user: user,
-                            applicant_pii: applicant_pii,
-                          )
-      else
-        make_vendor_proofing_requests(
-          timer: timer,
-          user: user,
-          applicant_pii: applicant_pii,
-          threatmetrix_session_id: threatmetrix_session_id,
-          request_ip: request_ip,
-          should_proof_state_id: should_proof_state_id,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-          instant_verify_ab_test_discriminator: instant_verify_ab_test_discriminator,
-        )
-      end
+    callback_log_data = nil
+    if IdentityConfig.store.idv_new_identity_resolver_enabled
+      callback_log_data = proof_with_new_identity_resolver(
+        user: user,
+        applicant_pii: applicant_pii,
+        request_ip:,
+        threatmetrix_session_id: threatmetrix_session_id,
+        timer:,
+      )
+    else
+      callback_log_data = make_vendor_proofing_requests(
+        timer: timer,
+        user: user,
+        applicant_pii: applicant_pii,
+        threatmetrix_session_id: threatmetrix_session_id,
+        request_ip: request_ip,
+        should_proof_state_id: should_proof_state_id,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        instant_verify_ab_test_discriminator: instant_verify_ab_test_discriminator,
+      )
+    end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
@@ -122,14 +126,29 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   # @return [CallbackLogData]
-  def proof_with_new_identity_resolver(applicant_pii:, **)
+  def proof_with_new_identity_resolver(
+    applicant_pii:,
+    request_ip:,
+    threatmetrix_session_id:,
+    timer:,
+    user:,
+    **
+  )
     plugins = [
+      Idv::Resolution::ThreatmetrixPlugin.new(timer:),
       Idv::Resolution::AamvaPlugin.new,
     ]
 
     resolver = Idv::Resolution::IdentityResolver.new(plugins:)
 
-    input = Idv::Resolution::Input.from_pii(applicant_pii)
+    input = Idv::Resolution::Input.from_pii(applicant_pii).
+      with(other: {
+        email: user&.confirmed_email_addresses&.first&.email,
+        threatmetrix_session_id:,
+        ip: request_ip,
+        ssn: applicant_pii[:ssn],
+        sp_app_id: applicant_pii[:uuid_prefix],
+      })
 
     result = resolver.resolve_identity(input:)
 
