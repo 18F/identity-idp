@@ -20,7 +20,7 @@ class LoginButtonComponent < BaseComponent
   def svg
     Rails.root.join(
       'app', 'assets', 'images',
-      (color == "primary-darker" ? 'logo-white.svg' : 'logo.svg')
+      (color == 'primary-darker' ? 'logo-white.svg' : 'logo.svg')
     ).read
   end
 
@@ -37,7 +37,6 @@ class LoginButtonComponent < BaseComponent
     end.to_s.html_safe
     # rubocop:enable Rails/OutputSafety
   end
-
 
   def css_class
     classes = ['usa-button', *tag_options[:class]]
