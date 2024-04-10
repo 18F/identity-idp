@@ -247,7 +247,7 @@ fr:
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
       getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et
         non de quelqu’un qui se fait passer pour vous. %{link_html}'
-      getting_started_learn_more: En savoir plus sur la vérification de votre identité [[[link]]]
+      getting_started_learn_more: En savoir plus sur la vérification de votre identité
       how_to_verify: Vous avez la possibilité de vérifier votre identité en ligne ou
         en personne dans un bureau de poste participant.
       how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de vérifier votre identité?
