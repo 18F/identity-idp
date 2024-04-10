@@ -47,7 +47,7 @@ module Idv
 
       def pii
         @pii ||= idv_session.pii_from_doc ||
-                 user_session.dig('idv/in_person', :pii_from_user) ||
+                 user_session.pii_from_user ||
                  Pii::Cacher.new(current_user, user_session).
                    fetch(current_user&.gpo_verification_pending_profile&.id)
       end
