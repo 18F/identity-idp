@@ -8,6 +8,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
       idv_session,
       user_session: {},
       url_options: {},
+      current_user: nil,
     )
   end
 
