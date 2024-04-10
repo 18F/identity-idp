@@ -74,6 +74,33 @@ RSpec.describe Idv::Resolution::IdentityResolver do
     )
   end
 
+  it 'allows overriding the result' do
+    plugin_a = double
+    expect(plugin_a).to receive(:call) do |next_plugin:, **|
+      next_plugin.call plugin_a: 'foo'
+    end
+
+    plugin_b = double
+    expect(plugin_b).to receive(:call) do |next_plugin:, **|
+      next_plugin.call result: { plugin_b: 'bar' }
+    end
+
+    resolver = described_class.new(
+      plugins: [
+        plugin_a,
+        plugin_b,
+      ],
+    )
+
+    result = resolver.resolve_identity(input:)
+
+    expect(result).to eql(
+      {
+        plugin_b: 'bar',
+      },
+    )
+  end
+
   it 'raises if you try to overwrite and merge into result' do
     plugin = double
     expect(plugin).to receive(:call) do |next_plugin:, **|
