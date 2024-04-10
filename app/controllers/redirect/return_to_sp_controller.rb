@@ -17,6 +17,10 @@ module Redirect
       redirect_to(redirect_url, allow_other_host: true)
     end
 
+    def confirm
+      @return_to_sp_url = sp_return_url_resolver.return_to_sp_url
+    end
+
     private
 
     def sp_return_url_resolver
