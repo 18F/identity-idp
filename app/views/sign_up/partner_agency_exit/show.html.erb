@@ -21,20 +21,21 @@
   </li>
 </ul>
 
-<div class="col-12">
-<%= link_to(
-      sign_up_completed_path,
-      method: :get,
-      class: 'usa-button usa-button--wide usa-button--big margin-bottom-2 margin-top-3',
-    ) do %>
-  <%= t('account.login_exit.keep_going') %>
-<% end %>
+<div class="grid-row">
+  <div class="grid-col-6">
+    <%= link_to(
+          sign_up_completed_path,
+          method: :get,
+          class: 'usa-button usa-button--wide usa-button--big margin-bottom-2 margin-top-3',
+        ) do %>
+      <%= t('account.login_exit.keep_going') %>
+    <% end %>
 
-<%= link_to(
-      @presenter.return_to_sp_url,
-      method: :get,
-      class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
-    ) do %>
-  <%= t('account.login_exit.exit') %>
-<% end %>
+    <%= link_to(
+          @presenter.return_to_sp_url,
+          class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
+        ) do %>
+      <%= t('account.login_exit.exit') %>
+    <% end %>
+  </div>
 </div>
