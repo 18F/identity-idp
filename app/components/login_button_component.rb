@@ -29,6 +29,7 @@ class LoginButtonComponent < BaseComponent
     Nokogiri::HTML5.fragment(svg).tap do |doc|
       doc.at_css('svg').tap do |svg|
         svg[:role] = 'img'
+        svg[:class] = 'login-button__logo'
         svg[:width] = width
         svg[:height] = height
         svg << "<title>#{APP_NAME}</title>"
