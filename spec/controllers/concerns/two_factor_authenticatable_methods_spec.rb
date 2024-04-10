@@ -62,17 +62,35 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
             and_return(true)
         end
 
-        it 'sends the new device alert using 2fa event date' do
-          expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
-            expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
-              args[:disavowal_event].created_at.change(usec: 0),
-            )
-            expect(args[:user]).to eq(user)
-            expect(args[:disavowal_event]).to be_kind_of(Event)
-            expect(args[:disavowal_token]).to be_kind_of(String)
+        context 'with an existing device' do
+          before do
+            controller.user_session[:new_device] = false
           end
 
-          result
+          it 'does not send an alert' do
+            expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
+
+            result
+          end
+        end
+
+        context 'with a new device' do
+          before do
+            controller.user_session[:new_device] = true
+          end
+
+          it 'sends the new device alert using 2fa event date' do
+            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
+              expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
+                args[:disavowal_event].created_at.change(usec: 0),
+              )
+              expect(args[:user]).to eq(user)
+              expect(args[:disavowal_event]).to be_kind_of(Event)
+              expect(args[:disavowal_token]).to be_kind_of(String)
+            end
+
+            result
+          end
         end
       end
     end
@@ -99,11 +117,29 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
             and_return(true)
         end
 
-        it 'sends the new device alert' do
-          expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert).
-            with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
+        context 'with an existing device' do
+          before do
+            controller.user_session[:new_device] = false
+          end
 
-          result
+          it 'does not send an alert' do
+            expect(UserAlerts::AlertUserAboutNewDevice).to_not receive(:send_alert)
+
+            result
+          end
+        end
+
+        context 'with a new device' do
+          before do
+            controller.user_session[:new_device] = true
+          end
+
+          it 'sends the new device alert' do
+            expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert).
+              with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
+
+            result
+          end
         end
       end
     end
