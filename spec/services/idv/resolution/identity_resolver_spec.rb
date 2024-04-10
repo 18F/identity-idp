@@ -5,12 +5,12 @@ RSpec.describe Idv::Resolution::IdentityResolver do
 
   it 'calls all plugins' do
     plugin_a = double
-    expect(plugin_a).to receive(:resolve_identity) do |input:, result:, next_plugin:|
+    expect(plugin_a).to receive(:call) do |input:, result:, next_plugin:|
       next_plugin.call
     end
 
     plugin_b = double
-    expect(plugin_b).to receive(:resolve_identity)
+    expect(plugin_b).to receive(:call)
 
     resolver = described_class.new(
       plugins: [
@@ -24,14 +24,14 @@ RSpec.describe Idv::Resolution::IdentityResolver do
 
   it 'allows plugins to stop the chain' do
     plugin_a = double
-    expect(plugin_a).to receive(:resolve_identity) do |input:, result:, next_plugin:|
+    expect(plugin_a).to receive(:call) do |result:, **|
       result.merge(
         result_from_plugin_a: true,
       )
     end
 
     plugin_b = double
-    expect(plugin_b).not_to receive(:resolve_identity)
+    expect(plugin_b).not_to receive(:call)
 
     resolver = described_class.new(
       plugins: [plugin_a, plugin_b],
@@ -48,12 +48,12 @@ RSpec.describe Idv::Resolution::IdentityResolver do
 
   it 'allows merging values into the result' do
     plugin_a = double
-    expect(plugin_a).to receive(:resolve_identity) do |next_plugin:, **kwargs|
+    expect(plugin_a).to receive(:call) do |next_plugin:, **|
       next_plugin.call plugin_a: 'foo'
     end
 
     plugin_b = double
-    expect(plugin_b).to receive(:resolve_identity) do |next_plugin:, **kwargs|
+    expect(plugin_b).to receive(:call) do |next_plugin:, **|
       next_plugin.call plugin_b: 'bar'
     end
 
@@ -76,7 +76,7 @@ RSpec.describe Idv::Resolution::IdentityResolver do
 
   it 'raises if you try to overwrite and merge into result' do
     plugin = double
-    expect(plugin).to receive(:resolve_identity) do |next_plugin:, **kwargs|
+    expect(plugin).to receive(:call) do |next_plugin:, **|
       next_plugin.call result: { foo: true }, bar: true
     end
 

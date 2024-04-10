@@ -25,7 +25,7 @@ module Idv
           # For example, a plugin could do:
           #
           #  - `next_plugin.call` to invoke the next plugin w/ original input + in-progress result
-          #  - `next_plugin.call result: {...}` to override the result
+          #  - `next_plugin.call result: {...}` to *override* the result
           #  - `next_plugin.call my_key: "foo"` to add `my_key` to the result
           #
 
@@ -47,7 +47,7 @@ module Idv
             )
           end
 
-          plugin.resolve_identity(
+          plugin.call(
             input:,
             result:,
             next_plugin: next_plugin_proxy,

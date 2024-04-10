@@ -1,7 +1,7 @@
 module Idv
   module Resolution
     class AamvaPlugin
-      def resolve_identity(
+      def call(
         input:,
         next_plugin:,
         **

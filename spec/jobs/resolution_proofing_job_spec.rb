@@ -592,7 +592,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
       describe 'AAMVA plugin' do
         it 'calls the mock aamva proofer' do
-          expect_any_instance_of(Idv::Resolution::AamvaPlugin).to receive(:resolve_identity).with(
+          expect_any_instance_of(Idv::Resolution::AamvaPlugin).to receive(:call).with(
             input: Idv::Resolution::Input.new(
               state_id: {
                 type: 'drivers_license',

@@ -28,20 +28,20 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
     described_class.new
   end
 
-  describe '#resolve_identity' do
+  describe '#call' do
     context 'no state id present' do
       let(:state_id) { nil }
 
       it 'excuses itself' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          aamva: {
+          state_id: {
             success: false,
             reason: :no_state_id,
           },
         )
 
-        subject.resolve_identity(input:, result: result_so_far, next_plugin:)
+        subject.call(input:, result: result_so_far, next_plugin:)
       end
     end
 
@@ -57,13 +57,13 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'says it will not apply' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          aamva: {
+          state_id: {
             success: false,
             reason: :unsupported_jurisdiction,
           },
         )
 
-        subject.resolve_identity(input:, result: result_so_far, next_plugin:)
+        subject.call(input:, result: result_so_far, next_plugin:)
       end
     end
 
@@ -75,13 +75,13 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'calls the proofer' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          aamva: satisfy do |value|
+          state_id: satisfy do |value|
             expect(value).to be_instance_of(Proofing::StateIdResult)
             expect(value).to have_attributes(success: true)
           end,
         )
 
-        subject.resolve_identity(input:, result: result_so_far, next_plugin:)
+        subject.call(input:, result: result_so_far, next_plugin:)
       end
 
       context 'when the proofer has an exeception'
