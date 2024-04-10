@@ -230,7 +230,8 @@ module Users
   end
 
   def randomize_check_password?
-    SecureRandom.random_number(1000) > 900 
+    SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) > 
+      IdentityConfig.store.compromised_password_randomizer_threshold
   end
 
   def unsafe_redirect_error(_exception)
