@@ -303,7 +303,7 @@ es:
       bullet1: Necesita una licencia de conducir o una tarjeta de identificación estatal
       bullet2: Ingrese su número de Seguro Social
       bullet3: Coincidencia de su número de teléfono
-      bullet4: Vuelva a ingresar su contraseña de ${app_name}
+      bullet4: Vuelva a ingresar su contraseña de %{app_name}
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
         para verificar su identidad.
