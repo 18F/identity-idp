@@ -93,7 +93,19 @@ module Idv
 
     OtherAttributes = Data.define(
       :ssn,
-    ).freeze
+      :email,
+      :threatmetrix_session_id,
+      :ip,
+    ) do
+      def initialize(ssn: nil, email: nil, threatmetrix_session_id: nil, ip: nil, **)
+        super(
+          ssn:,
+          email:,
+          threatmetrix_session_id:,
+          ip:
+        )
+      end
+    end.freeze
 
     Input = Data.define(
       :state_id,

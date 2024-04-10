@@ -267,4 +267,31 @@ RSpec.describe Idv::Resolution::Input do
       end
     end
   end
+
+  describe Idv::Resolution::OtherAttributes do
+    describe '#initialize' do
+      it 'can be called without arguments' do
+        other = described_class.new
+        expect(other).not_to be_nil
+      end
+
+      it 'can be called with all arguments' do
+        other = described_class.new(
+          ssn: '99-00-1122',
+          email: 'test@example.org',
+          ip: '10.10.10.10',
+          sp_app_id: 'FOO',
+          threatmetrix_session_id: 'AF0CD935-992E-482D-80CD-BF2EBD7CCBFF',
+        )
+
+        expect(other.to_h).to eql(
+          ssn: '99-00-1122',
+          email: 'test@example.org',
+          ip: '10.10.10.10',
+          sp_app_id: 'FOO',
+          threatmetrix_session_id: 'AF0CD935-992E-482D-80CD-BF2EBD7CCBFF',
+        )
+      end
+    end
+  end
 end
