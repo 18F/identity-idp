@@ -111,6 +111,7 @@ class Profile < ApplicationRecord
 
   def tmx_status
     return nil unless IdentityConfig.store.in_person_proofing_enforce_tmx
+    return nil unless FeatureManagement.proofing_device_profiling_decisioning_enabled?
 
     fraud_pending_reason || :threatmetrix_pass
   end
