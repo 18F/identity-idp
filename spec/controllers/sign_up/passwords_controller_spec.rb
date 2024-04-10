@@ -162,7 +162,7 @@ RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
         user.reload
         expect(user.valid_password?(password)).to eq false
         expect(user.confirmed?).to eq false
-        expect(response).to redirect_to(sign_up_register_path)
+        expect(response).to redirect_to(sign_up_register_url)
       end
     end
   end
@@ -181,7 +181,7 @@ RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
       )
 
       get :new, params: { confirmation_token: token }
-      expect(response).to redirect_to(sign_up_register_path)
+      expect(response).to redirect_to(sign_up_register_url)
     end
   end
 end
