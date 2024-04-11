@@ -5,19 +5,19 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.cancellations.login_exit_prompt')) %>
 
 <p>
-  <%= t('account.login_exit.header')%>
+  <%= t('account.login_exit.header') %>
 </p>
 
 <ul class="usa-list">
   <li><%= t('account.login_exit.bullet1', app_name: APP_NAME) %></li>
   <li>
     <%= t(
-      'account.login_exit.bullet2_html',
-      link_html: link_to(
-        t('account.login_exit.account_page'),
-        account_path,
-      ),
-    ) %>
+          'account.login_exit.bullet2_html',
+          link_html: link_to(
+            t('account.login_exit.account_page'),
+            account_path,
+          ),
+        ) %>
   </li>
 </ul>
 

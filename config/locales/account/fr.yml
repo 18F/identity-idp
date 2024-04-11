@@ -71,11 +71,13 @@ fr:
         passe.
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
       tab_navigation: Onglets de création de compte
-    
+
     login_exit:
       account_page: page de compte
-      bullet1: Vous ne pourrez pas utiliser Login.gov pour accéder à %{app_name} tant que vous n'aurez pas partagé vos informations avec elle.
-      bullet2_html: Vous aurez toujours un compte Login.gov que vous pourrez gérer ou supprimer sur votre %{link_html}.
+      bullet1: Vous ne pourrez pas utiliser Login.gov pour accéder à %{app_name} tant
+        que vous n’aurez pas partagé vos informations avec elle.
+      bullet2_html: Vous aurez toujours un compte Login.gov que vous pourrez gérer ou
+        supprimer sur votre %{link_html}.
       exit: Quitter Login.gov
       header: <p>Si vous quittez Login.gov maintenant:</p>
       keep_going: Non, continuer

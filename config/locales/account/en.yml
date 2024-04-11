@@ -70,8 +70,8 @@ en:
       account_page: account page
       bullet1: You won’t be able to use Login.gov to access %{app_name} until you
         share your information with them.
-      bullet2_html: You’ll still have a Login.gov account which you can manage or delete on
-        your %{link_html}.
+      bullet2_html: You’ll still have a Login.gov account which you can manage or
+        delete on your %{link_html}.
       exit: Exit Login.gov
       header: 'If you exit Login.gov now:'
       keep_going: No, keep going
