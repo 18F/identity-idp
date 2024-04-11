@@ -237,7 +237,7 @@ class ApplicationController < ActionController::Base
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
-    return user_password_compromised_url if user_session[:redirect_to_phone_compromised]
+    return user_password_compromised_url if session[:redirect_to_phone_compromised].present?
     signed_in_url
   end
 
