@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import type { FC, FormEventHandler, RefCallback } from 'react';
+import type { FormEventHandler, RefCallback, FC } from 'react';
 import { Alert } from '@18f/identity-components';
 import { replaceVariables } from '@18f/identity-i18n';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
+import { formatHTML } from '@18f/identity-react-i18n';
 import RequiredValueMissingError from './required-value-missing-error';
 import FormStepsContext from './form-steps-context';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from './use-history-param';
 import useForceRender from './use-force-render';
-import FormError from './form-error';
 
 export interface FormStepError<V> {
   /**
@@ -218,16 +218,11 @@ function getFieldActiveErrorFieldElement(
     return fields[error.field!].element || undefined;
   }
 }
-
-export function StepErrorAlert({ error }: { error: Error }) {
-  const { message } = error;
-  const messageProcessor = error instanceof FormError ? error.messageProcessor : null;
-  const transformedMessage = messageProcessor ? messageProcessor(message) : message;
-  return (
-    <Alert key={message} type="error" className="margin-bottom-4">
-      {transformedMessage}
-    </Alert>
-  );
+function formatMessage(message: string) {
+  return formatHTML(message, {
+    strong: ({ children }) => <strong>{children}</strong>,
+    span: ({ children }) => <span className="display-block margin-top-1em">{children}</span>,
+  });
 }
 
 function FormSteps({
@@ -441,9 +436,14 @@ function FormSteps({
   return (
     <form ref={formRef} onSubmit={toNextStep} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
-      {stepErrors.map((error) => (
-        <StepErrorAlert key={error.message} error={error} />
-      ))}
+      {stepErrors.map((error) => {
+        const formattedMessage = formatMessage(error.message);
+        return (
+          <Alert key={error.message} type="error" className="margin-bottom-4">
+            {formattedMessage || error.message}
+          </Alert>
+        );
+      })}
       <FormStepsContext.Provider
         value={{ isLastStep, changeStepCanComplete, isSubmitting, onPageTransition }}
       >
