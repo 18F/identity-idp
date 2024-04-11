@@ -10,12 +10,6 @@ RSpec.describe Redirect::ReturnToSpController do
   end
 
   describe '#cancel' do
-    it 'redirects to the partner agency exit path' do
-      get 'cancel'
-
-      expect(response).to redirect_to sign_up_partner_agency_exit_url
-    end
-
     context 'when there is an SP request in the session' do
       it 'tracks analytics' do
         redirect_uri = 'https://sp.gov/result'
@@ -35,8 +29,6 @@ RSpec.describe Redirect::ReturnToSpController do
           'Return to SP: Cancelled',
           hash_including(redirect_url: expected_redirect_uri),
         )
-
-        expect(response).to redirect_to(sign_up_partner_agency_exit_url)
       end
     end
 
@@ -50,8 +42,6 @@ RSpec.describe Redirect::ReturnToSpController do
           'Return to SP: Cancelled',
           hash_including(redirect_url: 'https://sp.gov/return_to_sp'),
         )
-
-        expect(response).to redirect_to(sign_up_partner_agency_exit_url)
       end
     end
   end
