@@ -35,7 +35,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'excuses itself' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          state_id: {
+          aamva: {
             success: false,
             reason: :no_state_id,
           },
@@ -57,7 +57,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'says it will not apply' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          state_id: {
+          aamva: {
             success: false,
             reason: :unsupported_jurisdiction,
           },
@@ -75,7 +75,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'calls the proofer' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          state_id: satisfy do |value|
+          aamva: satisfy do |value|
             expect(value).to be_instance_of(Proofing::StateIdResult)
             expect(value).to have_attributes(success: true)
           end,
@@ -84,7 +84,9 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
         subject.call(input:, result: result_so_far, next_plugin:)
       end
 
-      context 'when the proofer has an exeception'
+      context 'when the proofer has an exeception' do
+        it 'returns a failure result'
+      end
     end
   end
 end
