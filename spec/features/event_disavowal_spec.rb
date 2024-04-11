@@ -35,14 +35,16 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
 
       CreateNewDeviceAlert.new.perform(Time.zone.now)
 
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      expect_delivered_email_count(2)
+      expect_delivered_email_count(1)
       expect_delivered_email(
         to: [user.email_addresses.first.email],
         subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
       )
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect_delivered_email_count(2)
       expect_delivered_email(
         to: [user.email_addresses.first.email],
         subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
