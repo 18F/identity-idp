@@ -69,6 +69,13 @@ GIT
       webrick (>= 1.7)
 
 GIT
+  remote: https://github.com/mitchellhenke/newrelic-ruby-agent.git
+  revision: 102c37f6fcecd17ac8764606c50b5f95971639a3
+  branch: mitchellhenke/include-cached-queries
+  specs:
+    newrelic_rpm (9.8.0)
+
+GIT
   remote: https://github.com/rack/rack-attack.git
   revision: d9fedfae4f7f6409f33857763391f4e18a6d7467
   ref: d9fedfae4f7f6409f33857763391f4e18a6d7467
@@ -445,7 +452,6 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     net-ssh (6.1.0)
-    newrelic_rpm (9.7.0)
     nio4r (2.7.3)
     nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
@@ -811,7 +817,7 @@ DEPENDENCIES
   multiset
   net-http-persistent (~> 4.0.2)
   net-sftp
-  newrelic_rpm (~> 9.0)
+  newrelic_rpm!
   nokogiri (~> 1.16.0)
   numbers_and_words (~> 0.11.12)
   pg
