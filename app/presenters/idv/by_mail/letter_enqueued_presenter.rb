@@ -56,7 +56,7 @@ module Idv
       end
 
       def pii_from_user_session
-        user_session.dig('idv/in_person', :pii_from_user)
+        idv_session.pii_from_user_in_flow_session
       end
 
       def pii_from_gpo_pending_profile
