@@ -70,18 +70,29 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
       end
     end
 
+    def add_to_idv_session(pii:)
+      idv_session.pii_from_doc = pii
+    end
+
+    def add_to_user_session(pii:)
+      user_session['idv/in_person'] = { pii_from_user: pii }
+    end
+
+    def add_to_gpo_pending_profile(pii:)
+      pii_cacher = Pii::Cacher.new(current_user, user_session)
+      gpo_profile_id = current_user.gpo_verification_pending_profile.id
+
+      pii_cacher.save_decrypted_pii(pii, gpo_profile_id)
+    end
+
     context 'with the pii in the idv session' do
-      before do
-        idv_session.pii_from_doc = pii
-      end
+      before { add_to_idv_session(pii:) }
 
       include_examples 'retrieves and formats the address correctly'
     end
 
     context 'with the pii in the user_session' do
-      before do
-        user_session['idv/in_person'] = { pii_from_user: pii }
-      end
+      before { add_to_user_session(pii:) }
 
       include_examples 'retrieves and formats the address correctly'
     end
@@ -89,11 +100,27 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     context 'with the pii in the gpo pending profile' do
       let(:current_user) { create(:user, :with_pending_gpo_profile) }
 
-      before do
-        pii_cacher = Pii::Cacher.new(current_user, user_session)
-        gpo_profile_id = current_user.gpo_verification_pending_profile.id
+      before { add_to_gpo_pending_profile(pii:) }
 
-        pii_cacher.save_decrypted_pii(pii, gpo_profile_id)
+      include_examples 'retrieves and formats the address correctly'
+    end
+
+    context 'with the pii in the idv session, the user session, and the gpo pending profile' do
+      let(:current_user) { create(:user, :with_pending_gpo_profile) }
+      before do
+        add_to_idv_session(pii:)
+        add_to_user_session(pii: { address1: 'bogus user session pii' })
+        add_to_gpo_pending_profile(pii: { address1: 'bogus gpo session pii' })
+      end
+
+      include_examples 'retrieves and formats the address correctly'
+    end
+
+    context 'with the pii in the user session and the gpo pending profile' do
+      let(:current_user) { create(:user, :with_pending_gpo_profile) }
+      before do
+        add_to_user_session(pii:)
+        add_to_gpo_pending_profile(pii: { address1: 'bogus gpo session pii' })
       end
 
       include_examples 'retrieves and formats the address correctly'
