@@ -35,10 +35,13 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'excuses itself' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          aamva: {
-            success: false,
-            reason: :no_state_id,
-          },
+          aamva: satisfy do |value|
+            expect(value).to be_instance_of(Proofing::StateIdResult)
+            expect(value).to have_attributes(
+              success: false,
+              exception: :state_id_missing,
+            )
+          end,
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -57,10 +60,13 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'says it will not apply' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          aamva: {
-            success: false,
-            reason: :unsupported_jurisdiction,
-          },
+          aamva: satisfy do |value|
+            expect(value).to be_instance_of(Proofing::StateIdResult)
+            expect(value).to have_attributes(
+              success: false,
+              exception: :unsupported_jurisdiction,
+            )
+          end,
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -119,7 +125,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       context 'when AAMVA exception already present' do
         let(:result_so_far) do
           {
-            aamva: Proofing::StateIdResult.new(success: false, exception: 'Oh no!'),
+            aamva: Proofing::StateIdResult.new(success: false, exception: :no_state_id),
           }
         end
         it 'makes a new proofer call' do

@@ -12,19 +12,13 @@ module Idv
 
         if input.state_id.nil?
           return next_plugin.call(
-            aamva: {
-              success: false,
-              reason: :no_state_id,
-            },
+            aamva: state_id_missing_result,
           )
         end
 
         if unsupported_jurisdiction?(input)
           return next_plugin.call(
-            aamva: {
-              success: false,
-              reason: :unsupported_jurisdiction,
-            },
+            aamva: unsupported_jurisdiction_result,
           )
         end
 
@@ -63,6 +57,20 @@ module Idv
               verification_url: IdentityConfig.store.aamva_verification_url,
             )
           end
+      end
+
+      def state_id_missing_result
+        Proofing::StateIdResult.new(
+          success: false,
+          exception: :state_id_missing,
+        )
+      end
+
+      def unsupported_jurisdiction_result
+        Proofing::StateIdResult.new(
+          success: false,
+          exception: :unsupported_jurisdiction,
+        )
       end
     end
   end
