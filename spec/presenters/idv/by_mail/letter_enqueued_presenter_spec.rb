@@ -26,6 +26,8 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
   let(:pii) { nil }
 
   describe '#address_lines' do
+    let(:current_user) { create(:user, :with_pending_gpo_profile) }
+
     shared_examples 'retrieves and formats the address correctly' do
       context 'when the address has no address2' do
         let(:pii) do
@@ -98,15 +100,12 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     end
 
     context 'with the pii in the gpo pending profile' do
-      let(:current_user) { create(:user, :with_pending_gpo_profile) }
-
       before { add_to_gpo_pending_profile(pii:) }
 
       include_examples 'retrieves and formats the address correctly'
     end
 
     context 'with the pii in the idv session, the user session, and the gpo pending profile' do
-      let(:current_user) { create(:user, :with_pending_gpo_profile) }
       before do
         add_to_idv_session(pii:)
         add_to_user_session(pii: { address1: 'bogus user session pii' })
@@ -117,7 +116,6 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     end
 
     context 'with the pii in the user session and the gpo pending profile' do
-      let(:current_user) { create(:user, :with_pending_gpo_profile) }
       before do
         add_to_user_session(pii:)
         add_to_gpo_pending_profile(pii: { address1: 'bogus gpo session pii' })
