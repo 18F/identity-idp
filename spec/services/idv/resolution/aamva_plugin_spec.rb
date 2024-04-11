@@ -35,10 +35,12 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'excuses itself' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          aamva: state_id_result_with(
-            success: false,
-            exception: :state_id_missing,
-          ),
+          aamva: {
+            state_id_address: state_id_result_with(
+              success: false,
+              exception: :state_id_missing,
+            ),
+          },
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -56,10 +58,12 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
 
       it 'says it will not apply' do
         next_plugin = next_plugin_expecting(
-          aamva: state_id_result_with(
-            success: false,
-            exception: :unsupported_jurisdiction,
-          ),
+          aamva: {
+            state_id_address: state_id_result_with(
+              success: false,
+              exception: :unsupported_jurisdiction,
+            ),
+          },
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -73,9 +77,11 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
 
       it 'calls the proofer' do
         next_plugin = next_plugin_expecting(
-          aamva: state_id_result_with(
-            success: true,
-          ),
+          aamva: {
+            state_id_address: state_id_result_with(
+              success: true,
+            ),
+          },
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -88,7 +94,9 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       context 'when successful AAMVA result already present' do
         let(:result_so_far) do
           {
-            aamva: Proofing::StateIdResult.new(success: true),
+            aamva: {
+              state_id_address: Proofing::StateIdResult.new(success: true),
+            },
           }
         end
         it 'does not do anything' do
@@ -101,7 +109,9 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       context 'when AAMVA failure already present' do
         let(:result_so_far) do
           {
-            aamva: Proofing::StateIdResult.new(success: false),
+            aamva: {
+              state_id_address: Proofing::StateIdResult.new(success: false),
+            },
           }
         end
         it 'does not do anything' do
@@ -114,16 +124,18 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       context 'when AAMVA exception already present' do
         let(:result_so_far) do
           {
-            aamva: Proofing::StateIdResult.new(success: false, exception: :no_state_id),
+            aamva: {
+              state_id_address: Proofing::StateIdResult.new(
+                success: false,
+                exception: :no_state_id,
+              ),
+            },
           }
         end
         it 'makes a new proofer call' do
           next_plugin = next_plugin_expecting(
-            {
-              aamva: satisfy do |value|
-                expect(value).to be_instance_of(Proofing::StateIdResult)
-                expect(value).to have_attributes(success: true)
-              end,
+            aamva: {
+              state_id_address: state_id_result_with(success: true),
             },
           )
           expect_any_instance_of(Proofing::Mock::StateIdMockClient).to receive(:proof).and_call_original

@@ -12,18 +12,24 @@ module Idv
 
         if input.state_id.nil?
           return next_plugin.call(
-            aamva: state_id_missing_result,
+            aamva: {
+              state_id_address: state_id_missing_result,
+            },
           )
         end
 
         if unsupported_jurisdiction?(input)
           return next_plugin.call(
-            aamva: unsupported_jurisdiction_result,
+            aamva: {
+              state_id_address: unsupported_jurisdiction_result,
+            },
           )
         end
 
         next_plugin.call(
-          aamva: proofer.proof(input.state_id.to_pii_from_doc),
+          aamva: {
+            state_id_address: proofer.proof(input.state_id.to_pii_from_doc),
+          },
         )
       end
 
@@ -36,10 +42,11 @@ module Idv
       private
 
       def aamva_already_called?(result)
-        return false unless result[:aamva]
+        result = result.dig(:aamva, :state_id_address)
+        return false unless result
 
         # If we don't have an exception, it's already been called
-        result[:aamva].exception.nil?
+        result.exception.nil?
       end
 
       def proofer
