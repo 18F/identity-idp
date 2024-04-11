@@ -108,20 +108,17 @@ function AcuantSelfieCamera({
       onError: (error) => {
         // Error occurred. Camera permission not granted will
         // manifest here with 1 as error code. Unexpected errors will have 2 as error code.
-        onImageCaptureFeedback('');
         onImageCaptureFailure(error);
       },
       onPhotoTaken: () => {
         // The photo has been taken and it's showing a preview with a button to accept or retake the image.
-        onImageCaptureFeedback('Photo captured');
+        onImageCaptureFeedback('');
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped
-        onImageCaptureFeedback('');
       },
       onCaptured: (base64Image) => {
         // Triggered when accept button is tapped
-        onImageCaptureFeedback('');
         onImageCaptureSuccess({ image: `data:image/jpeg;base64,${base64Image}` });
       },
     };
