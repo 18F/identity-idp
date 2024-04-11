@@ -374,6 +374,37 @@ RSpec.describe RegisterUserEmailForm do
       end
     end
 
+    context 'when terms accepted using castable value' do
+      it 'is successful' do
+        result = subject.submit(email: unregistered_email_address, terms_accepted: 'true')
+
+        expect(result.to_h).to eq(
+          success: true,
+          errors: {},
+          email_already_exists: false,
+          rate_limited: false,
+          user_id: User.find_with_email(unregistered_email_address).uuid,
+          domain_name: email_domain,
+        )
+      end
+    end
+
+    context 'when terms not accepted' do
+      it 'is unsuccessful with error for terms accepted' do
+        result = subject.submit(email: unregistered_email_address)
+
+        expect(result.to_h).to eq(
+          success: false,
+          errors: { terms_accepted: [t('errors.registration.terms')] },
+          error_details: { terms_accepted: { terms: true } },
+          email_already_exists: false,
+          rate_limited: false,
+          user_id: 'anonymous-uuid',
+          domain_name: email_domain,
+        )
+      end
+    end
+
     context 'when request_id is invalid' do
       it 'returns successful and does not include request_id in email' do
         invalid_id = 'fake_id'

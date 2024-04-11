@@ -59,6 +59,7 @@ module SignUp
 
       resend_confirmation = params[:user][:resend]
       session[:email] = @register_user_email_form.email
+      session[:terms_accepted] = @register_user_email_form.terms_accepted
       session[:sign_in_flow] = :create_account
 
       redirect_to sign_up_verify_email_url(resend: resend_confirmation)
