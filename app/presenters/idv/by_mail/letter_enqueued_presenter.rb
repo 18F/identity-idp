@@ -7,10 +7,10 @@ module Idv
       attr_reader :url_options
 
       def initialize(idv_session, current_user:, user_session:, url_options:)
-        @idv_session= idv_session
-        @current_user= current_user
-        @user_session= user_session
-        @url_options= url_options
+        @idv_session = idv_session
+        @current_user = current_user
+        @user_session = user_session
+        @url_options = url_options
       end
 
       def address_lines
@@ -39,17 +39,29 @@ module Idv
 
       private
 
-      attr_accessor :idv_session
+      attr_accessor :idv_session, :user_session
 
       def sp
         @sp ||= idv_session.service_provider
       end
 
       def pii
-        @pii ||= idv_session.pii_from_doc ||
-                 user_session.pii_from_user ||
-                 Pii::Cacher.new(current_user, user_session).
-                   fetch(current_user&.gpo_verification_pending_profile&.id)
+        @pii ||= pii_from_idv_session ||
+                 pii_from_user_session ||
+                 pii_from_gpo_pending_profile
+      end
+
+      def pii_from_idv_session
+        idv_session.pii_from_doc
+      end
+
+      def pii_from_user_session
+        user_session.pii_from_user
+      end
+
+      def pii_from_gpo_pending_profile
+        Pii::Cacher.new(current_user, user_session).
+          fetch(current_user&.gpo_verification_pending_profile&.id)
       end
     end
   end

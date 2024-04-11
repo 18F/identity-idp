@@ -6,7 +6,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
   subject(:presenter) do
     described_class.new(
       idv_session,
-      user_session: {},
+      user_session: user_session,
       url_options: {},
       current_user: nil,
     )
@@ -14,12 +14,14 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
 
   let(:idv_session) do
     Idv::Session.new(
-      user_session: {},
-      current_user: nil,
+      user_session: user_session,
+      current_user: current_user,
       service_provider: service_provider,
     )
   end
 
+  let(:current_user) { nil }
+  let(:user_session) { {} }
   let(:service_provider) { nil }
   let(:pii) { nil }
 
