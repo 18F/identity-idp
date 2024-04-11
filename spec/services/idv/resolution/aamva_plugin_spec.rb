@@ -35,13 +35,10 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       it 'excuses itself' do
         next_plugin = spy
         expect(next_plugin).to receive(:call).with(
-          aamva: satisfy do |value|
-            expect(value).to be_instance_of(Proofing::StateIdResult)
-            expect(value).to have_attributes(
-              success: false,
-              exception: :state_id_missing,
-            )
-          end,
+          aamva: state_id_result_with(
+            success: false,
+            exception: :state_id_missing,
+          ),
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -58,15 +55,11 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       end
 
       it 'says it will not apply' do
-        next_plugin = spy
-        expect(next_plugin).to receive(:call).with(
-          aamva: satisfy do |value|
-            expect(value).to be_instance_of(Proofing::StateIdResult)
-            expect(value).to have_attributes(
-              success: false,
-              exception: :unsupported_jurisdiction,
-            )
-          end,
+        next_plugin = next_plugin_expecting(
+          aamva: state_id_result_with(
+            success: false,
+            exception: :unsupported_jurisdiction,
+          ),
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -79,12 +72,10 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       end
 
       it 'calls the proofer' do
-        next_plugin = spy
-        expect(next_plugin).to receive(:call).with(
-          aamva: satisfy do |value|
-            expect(value).to be_instance_of(Proofing::StateIdResult)
-            expect(value).to have_attributes(success: true)
-          end,
+        next_plugin = next_plugin_expecting(
+          aamva: state_id_result_with(
+            success: true,
+          ),
         )
 
         subject.call(input:, result: result_so_far, next_plugin:)
@@ -101,8 +92,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
           }
         end
         it 'does not do anything' do
-          next_plugin = spy
-          expect(next_plugin).to receive(:call).with(no_args)
+          next_plugin = next_plugin_expecting(no_args)
           expect_any_instance_of(Proofing::Mock::StateIdMockClient).not_to receive(:proof)
           subject.call(input:, result: result_so_far, next_plugin:)
         end
@@ -115,8 +105,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
           }
         end
         it 'does not do anything' do
-          next_plugin = spy
-          expect(next_plugin).to receive(:call).with(no_args)
+          next_plugin = next_plugin_expecting(no_args)
           expect_any_instance_of(Proofing::Mock::StateIdMockClient).not_to receive(:proof)
           subject.call(input:, result: result_so_far, next_plugin:)
         end
@@ -129,8 +118,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
           }
         end
         it 'makes a new proofer call' do
-          next_plugin = spy
-          expect(next_plugin).to receive(:call).with(
+          next_plugin = next_plugin_expecting(
             {
               aamva: satisfy do |value|
                 expect(value).to be_instance_of(Proofing::StateIdResult)
@@ -142,6 +130,19 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
           subject.call(input:, result: result_so_far, next_plugin:)
         end
       end
+    end
+  end
+
+  def next_plugin_expecting(*args, **kwargs)
+    next_plugin = spy
+    expect(next_plugin).to receive(:call).with(*args, **kwargs)
+    next_plugin
+  end
+
+  def state_id_result_with(**kwargs)
+    satisfy do |value|
+      expect(value).to be_instance_of(Proofing::StateIdResult)
+      expect(value).to have_attributes(**kwargs)
     end
   end
 end
