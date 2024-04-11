@@ -39,7 +39,7 @@ module Idv
 
       private
 
-      attr_accessor :idv_session, :user_session
+      attr_accessor :idv_session, :user_session, :current_user
 
       def sp
         @sp ||= idv_session.service_provider
@@ -56,7 +56,7 @@ module Idv
       end
 
       def pii_from_user_session
-        user_session.pii_from_user
+        user_session.dig('idv/in_person', :pii_from_user)
       end
 
       def pii_from_gpo_pending_profile

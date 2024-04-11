@@ -8,7 +8,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
       idv_session: idv_session,
       user_session: user_session,
       url_options: {},
-      current_user: nil,
+      current_user: current_user,
     )
   end
 
@@ -25,51 +25,78 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
   let(:service_provider) { nil }
   let(:pii) { nil }
 
-  before do
-    idv_session.pii_from_doc = pii
-  end
-
   describe '#address_lines' do
-    context 'when address2 is not present' do
-      let(:pii) do
-        {
-          address1: '123 Some St',
-          city: 'Anytown',
-          state: 'OK',
-          zipcode: '99999',
-        }
+    shared_examples 'retrieves and formats the address correctly' do
+      context 'when the address has no address2' do
+        let(:pii) do
+          {
+            address1: '123 Some St',
+            city: 'Anytown',
+            state: 'OK',
+            zipcode: '99999',
+          }
+        end
+
+        it 'shows a 2 line address' do
+          expect(presenter.address_lines).to eq(
+            [
+              '123 Some St',
+              'Anytown, OK 99999',
+            ],
+          )
+        end
       end
 
-      it 'shows a 2 line address' do
-        expect(presenter.address_lines).to eq(
-          [
-            '123 Some St',
-            'Anytown, OK 99999',
-          ],
-        )
+      context 'when the address has an address2' do
+        let(:pii) do
+          {
+            address1: '456 Cross St',
+            address2: 'Apt 3G',
+            city: 'Thatville',
+            state: 'UT',
+            zipcode: '88888',
+          }
+        end
+
+        it 'shows a 3 line address' do
+          expect(presenter.address_lines).to eq(
+            [
+              '456 Cross St',
+              'Apt 3G',
+              'Thatville, UT 88888',
+            ],
+          )
+        end
       end
     end
 
-    context 'when address2 is present' do
-      let(:pii) do
-        {
-          address1: '456 Cross St',
-          address2: 'Apt 3G',
-          city: 'Thatville',
-          state: 'UT',
-          zipcode: '88888',
-        }
+    context 'with the pii in the idv session' do
+      before do
+        idv_session.pii_from_doc = pii
       end
 
-      it 'shows a 3 line address' do
-        expect(presenter.address_lines).to eq(
-          [
-            '456 Cross St',
-            'Apt 3G',
-            'Thatville, UT 88888',
-          ],
-        )
+      include_examples 'retrieves and formats the address correctly'
+    end
+
+    context 'with the pii in the user_session' do
+      before do
+        user_session['idv/in_person'] = { pii_from_user: pii }
       end
+
+      include_examples 'retrieves and formats the address correctly'
+    end
+
+    context 'with the pii in the gpo pending profile' do
+      let(:current_user) { create(:user, :with_pending_gpo_profile) }
+
+      before do
+        pii_cacher = Pii::Cacher.new(current_user, user_session)
+        gpo_profile_id = current_user.gpo_verification_pending_profile.id
+
+        pii_cacher.save_decrypted_pii(pii, gpo_profile_id)
+      end
+
+      include_examples 'retrieves and formats the address correctly'
     end
   end
 

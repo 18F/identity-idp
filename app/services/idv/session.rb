@@ -255,10 +255,6 @@ module Idv
       IdentityConfig.store.doc_auth_selfie_desktop_test_mode
     end
 
-    def pii_from_user
-      dig('idv/in_person', :pii_from_user)
-    end
-
     private
 
     attr_reader :user_session
