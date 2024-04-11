@@ -83,9 +83,19 @@ function UnknownError({
     );
   }
   if ((isFailedSelfieLivenessOrQuality || isFailedSelfie) && err) {
+    let selfieHelpCenterLink = helpCenterLink;
+    let selfieHelpCenterLinkText = t('doc_auth.errors.general.selfie_failure_help_link_text');
+    if (isFailedSelfieLivenessOrQuality) {
+      selfieHelpCenterLink += '#anchor'
+      selfieHelpCenterLinkText = t('doc_auth.errors.alerts.selfie_not_live_help_link_text');
+    }
     return (
       <>
-        <p>{err.message}</p>
+        <p>{err.message}{' '}{altIsFailedSelfieDontIncludeAttempts && (
+          <Link isExternal isNewTab href={selfieHelpCenterLink}>
+            {selfieHelpCenterLinkText}
+          </Link>
+        )}</p>
         <p>
           {!altIsFailedSelfieDontIncludeAttempts && (
             <HtmlTextWithStrongNoWrap
