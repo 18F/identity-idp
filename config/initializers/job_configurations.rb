@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 cron_5m = '0/5 * * * *'
 cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
@@ -23,6 +25,16 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
+      # Send new device alert notifications
+      create_new_device_alert_send_emails: (
+        if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
+          {
+            class: 'CreateNewDeviceAlert',
+            cron: cron_5m,
+            args: -> { [Time.zone.now] },
+          }
+        end
+      ),
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',

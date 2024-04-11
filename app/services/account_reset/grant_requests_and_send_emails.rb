@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountReset
   class GrantRequestsAndSendEmails < ApplicationJob
     queue_as :long_running

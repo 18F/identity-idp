@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Provides a component that accepts a date using the inputs specified
 # by USWDS here: https://designsystem.digital.gov/components/memorable-date/

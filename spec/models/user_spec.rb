@@ -1435,6 +1435,12 @@ RSpec.describe User do
       expect(user.identity_verified_with_selfie?).to eq false
     end
 
+    it 'return true if user has an active in-person profile' do
+      active_profile.idv_level = :in_person
+      active_profile.save
+      expect(user.identity_verified_with_selfie?).to eq true
+    end
+
     context 'user does not have active profile' do
       let(:active_profile) { nil }
       it 'returns false' do

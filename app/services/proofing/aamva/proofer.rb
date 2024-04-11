@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Aamva
     class Proofer
@@ -17,7 +19,7 @@ module Proofing
           :verification_request_timeout,
           :verification_url,
         ],
-      )
+      ).freeze
 
       attr_reader :config
 

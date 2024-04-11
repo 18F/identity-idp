@@ -822,12 +822,22 @@ module AnalyticsEvents
 
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user confirmed their choice to cancel going through IDV
-  def idv_cancellation_confirmed(step:, proofing_components: nil, **extra)
+  def idv_cancellation_confirmed(
+    step:,
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: cancellation confirmed',
       step: step,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -837,6 +847,8 @@ module AnalyticsEvents
   # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
   # @param [String,nil] enrollment_code IPP enrollment code
   # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user chose to go back instead of cancel IDV
   def idv_cancellation_go_back(
     step:,
@@ -844,6 +856,8 @@ module AnalyticsEvents
     cancelled_enrollment: nil,
     enrollment_code: nil,
     enrollment_id: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -853,6 +867,8 @@ module AnalyticsEvents
       cancelled_enrollment: cancelled_enrollment,
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -861,11 +877,15 @@ module AnalyticsEvents
   # @param [String] request_came_from the controller and action from the
   #   source such as "users/sessions#new"
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user clicked cancel during IDV (presented with an option to go back or confirm)
   def idv_cancellation_visited(
     step:,
     request_came_from:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -873,6 +893,8 @@ module AnalyticsEvents
       step: step,
       request_came_from: request_came_from,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -1254,6 +1276,8 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
@@ -1263,6 +1287,8 @@ module AnalyticsEvents
     in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -1274,6 +1300,8 @@ module AnalyticsEvents
       in_person_verification_pending: in_person_verification_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -1281,18 +1309,24 @@ module AnalyticsEvents
   # @param [Idv::ProofingComponentsLogging] proofing_components User's
   #        current proofing components
   # @param [String] address_verification_method The method (phone or gpo) being
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   #        used to verify the user's identity
   # User visited IDV password confirm page
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
     proofing_components: nil,
     address_verification_method: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
       :idv_enter_password_visited,
       address_verification_method: address_verification_method,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -1329,6 +1363,9 @@ module AnalyticsEvents
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -1340,6 +1377,9 @@ module AnalyticsEvents
     in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    profile_history: nil,
     **extra
   )
     track_event(
@@ -1351,26 +1391,47 @@ module AnalyticsEvents
       in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
+      profile_history: profile_history,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited forgot password page
-  def idv_forgot_password(proofing_components: nil, **extra)
+  def idv_forgot_password(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: forgot password visited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User confirmed forgot password
-  def idv_forgot_password_confirmed(proofing_components: nil, **extra)
+  def idv_forgot_password_confirmed(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: forgot password confirmed',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -1500,6 +1561,8 @@ module AnalyticsEvents
   #                  and now in hours
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # GPO letter was enqueued and the time at which it was enqueued
   def idv_gpo_address_letter_enqueued(
     enqueued_at:,
@@ -1508,6 +1571,8 @@ module AnalyticsEvents
     hours_since_first_letter:,
     phone_step_attempts:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -1518,6 +1583,8 @@ module AnalyticsEvents
       hours_since_first_letter: hours_since_first_letter,
       phone_step_attempts: phone_step_attempts,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -1528,6 +1595,8 @@ module AnalyticsEvents
   #                  and now in hours
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # GPO letter was requested
   def idv_gpo_address_letter_requested(
     resend:,
@@ -1535,6 +1604,8 @@ module AnalyticsEvents
     hours_since_first_letter:,
     phone_step_attempts:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -1544,6 +1615,8 @@ module AnalyticsEvents
       hours_since_first_letter:,
       phone_step_attempts:,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -1989,12 +2062,18 @@ module AnalyticsEvents
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user visited the "ready to verify" page for the in person proofing flow
   def idv_in_person_ready_to_verify_visit(proofing_components: nil,
+                                          active_profile_idv_level: nil,
+                                          pending_profile_idv_level: nil,
                                           **extra)
     track_event(
       'IdV: in person ready to verify visited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2429,8 +2508,25 @@ module AnalyticsEvents
   end
 
   # User visits IdV
-  def idv_intro_visit(**extra)
-    track_event('IdV: intro visited', **extra)
+  # @param [Hash,nil] proofing_components User's proofing components.
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
+  def idv_intro_visit(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    profile_history: nil,
+    **extra
+  )
+    track_event(
+      'IdV: intro visited',
+      proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
+      profile_history: profile_history,
+      **extra,
+    )
   end
 
   # @param [String] enrollment_id
@@ -2448,11 +2544,20 @@ module AnalyticsEvents
 
   # The user visited the "letter enqueued" page shown during the verify by mail flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @identity.idp.previous_event_name IdV: come back later visited
-  def idv_letter_enqueued_visit(proofing_components: nil, **extra)
+  def idv_letter_enqueued_visit(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: letter enqueued visited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2545,12 +2650,22 @@ module AnalyticsEvents
   # key creation
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [boolean] checked whether the user checked or un-checked
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   #                  the box with this click
-  def idv_personal_key_acknowledgment_toggled(checked:, proofing_components:, **extra)
+  def idv_personal_key_acknowledgment_toggled(
+    checked:,
+    proofing_components:,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key acknowledgment toggled',
       checked: checked,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2558,10 +2673,19 @@ module AnalyticsEvents
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_personal_key_downloaded(proofing_components: nil, **extra)
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  def idv_personal_key_downloaded(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key downloaded',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2572,6 +2696,8 @@ module AnalyticsEvents
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
   # @param [String] address_verification_method "phone" or "gpo"
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
     address_verification_method:,
@@ -2580,6 +2706,8 @@ module AnalyticsEvents
     in_person_verification_pending:,
     proofing_components: nil,
     deactivation_reason: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2590,6 +2718,8 @@ module AnalyticsEvents
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2598,12 +2728,16 @@ module AnalyticsEvents
   # @param [String] address_verification_method "phone" or "gpo"
   # @param [Boolean,nil] in_person_verification_pending
   # @param [Boolean] encrypted_profiles_missing True if user's session had no encrypted pii
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited IDV personal key page
   def idv_personal_key_visited(
     proofing_components: nil,
     address_verification_method: nil,
     in_person_verification_pending: nil,
     encrypted_profiles_missing: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2612,6 +2746,8 @@ module AnalyticsEvents
       address_verification_method: address_verification_method,
       in_person_verification_pending: in_person_verification_pending,
       encrypted_profiles_missing: encrypted_profiles_missing,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2620,12 +2756,16 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param ["sms", "voice"] otp_delivery_preference
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
     otp_delivery_preference:,
     errors:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2634,36 +2774,65 @@ module AnalyticsEvents
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user was rate limited for submitting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_attempts(proofing_components: nil, **extra)
+  def idv_phone_confirmation_otp_rate_limit_attempts(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'Idv: Phone OTP attempts rate limited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user was locked out for hitting the phone OTP rate limit during IDV
-  def idv_phone_confirmation_otp_rate_limit_locked_out(proofing_components: nil, **extra)
+  def idv_phone_confirmation_otp_rate_limit_locked_out(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'Idv: Phone OTP rate limited user',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user was rate limited for requesting too many OTPs during the IDV phone step
-  def idv_phone_confirmation_otp_rate_limit_sends(proofing_components: nil, **extra)
+  def idv_phone_confirmation_otp_rate_limit_sends(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'Idv: Phone OTP sends rate limited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2677,6 +2846,8 @@ module AnalyticsEvents
   # @param [Hash] telephony_response response from Telephony gem
   # @param [String] phone_fingerprint Fingerprint string identifying phone number
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
     success:,
@@ -2688,6 +2859,8 @@ module AnalyticsEvents
     telephony_response:,
     phone_fingerprint:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2701,6 +2874,8 @@ module AnalyticsEvents
       telephony_response: telephony_response,
       phone_fingerprint: phone_fingerprint,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2715,6 +2890,8 @@ module AnalyticsEvents
   # @param [Hash] telephony_response response from Telephony gem
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
     success:,
@@ -2727,6 +2904,8 @@ module AnalyticsEvents
     telephony_response:,
     adapter:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2741,6 +2920,8 @@ module AnalyticsEvents
       telephony_response: telephony_response,
       adapter: adapter,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2752,6 +2933,8 @@ module AnalyticsEvents
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # When a user attempts to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
@@ -2761,6 +2944,8 @@ module AnalyticsEvents
     second_factor_attempts_count:,
     second_factor_locked_at:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2772,16 +2957,27 @@ module AnalyticsEvents
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # When a user visits the page to confirm posession of a new phone number during the IDV process
-  def idv_phone_confirmation_otp_visit(proofing_components: nil, **extra)
+  def idv_phone_confirmation_otp_visit(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: phone confirmation otp visited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2789,11 +2985,15 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2801,6 +3001,8 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2810,12 +3012,16 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts number of submit attempts remaining
   #                  (previously called "remaining_attempts")
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
     type:,
     proofing_components: nil,
     limiter_expires_at: nil,
     remaining_submit_attempts: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2825,17 +3031,28 @@ module AnalyticsEvents
         proofing_components: proofing_components,
         limiter_expires_at: limiter_expires_at,
         remaining_submit_attempts: remaining_submit_attempts,
+        active_profile_idv_level: active_profile_idv_level,
+        pending_profile_idv_level: pending_profile_idv_level,
         **extra,
       }.compact,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited idv phone of record
-  def idv_phone_of_record_visited(proofing_components: nil, **extra)
+  def idv_phone_of_record_visited(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: phone of record visited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2845,12 +3062,16 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   def idv_phone_otp_delivery_selection_submitted(
     success:,
     otp_delivery_preference:,
     proofing_components: nil,
     errors: nil,
     error_details: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **extra
   )
     track_event(
@@ -2863,15 +3084,26 @@ module AnalyticsEvents
         proofing_components: proofing_components,
         **extra,
       }.compact,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited idv phone OTP delivery selection
-  def idv_phone_otp_delivery_selection_visit(proofing_components: nil, **extra)
+  def idv_phone_otp_delivery_selection_visit(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: Phone OTP delivery Selection Visited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2890,21 +3122,42 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name IdV: Verify setup errors visited
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # Tracks when the user reaches the verify please call page after failing proofing
-  def idv_please_call_visited(proofing_components: nil, **extra)
+  def idv_please_call_visited(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    profile_history: nil,
+    **extra
+  )
     track_event(
       'IdV: Verify please call visited',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
+      profile_history: profile_history,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The system encountered an error and the proofing results are missing
-  def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
+  def idv_proofing_resolution_result_missing(
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    **extra
+  )
     track_event(
       'IdV: proofing resolution result missing',
       proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
       **extra,
     )
   end
@@ -2922,6 +3175,34 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # Acuant SDK errored after loading but before initialization
+  # @param [Boolean] success
+  # @param [String] error_message
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_sdk_error_before_init(
+    success:,
+    error_message:,
+    liveness_checking_required:,
+    acuant_version:,
+    captureAttempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_error_before_init,
+      success:,
+      error_message: error_message,
+      liveness_checking_required:,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User closed the SDK for taking a selfie without submitting a photo
   # @param [String] acuant_version
@@ -3038,6 +3319,9 @@ module AnalyticsEvents
   # @param [String] source
   # @param [String] use_alternate_sdk
   # @param [Boolean] liveness_checking_required
+  # @param [Hash,nil] proofing_components User's proofing components.
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   def idv_selfie_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -3046,6 +3330,9 @@ module AnalyticsEvents
     source:,
     use_alternate_sdk:,
     liveness_checking_required: nil,
+    proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
     **_extra
   )
     track_event(
@@ -3057,6 +3344,9 @@ module AnalyticsEvents
       source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      proofing_components: proofing_components,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -3083,6 +3373,9 @@ module AnalyticsEvents
   # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
   # @param [String,nil] enrollment_code IPP enrollment code
   # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
+  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
+  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # User started over idv
   def idv_start_over(
     step:,
@@ -3091,6 +3384,9 @@ module AnalyticsEvents
     enrollment_code: nil,
     enrollment_id: nil,
     proofing_components: nil,
+    active_profile_idv_level: nil,
+    pending_profile_idv_level: nil,
+    profile_history: nil,
     **extra
   )
     track_event(
@@ -3101,6 +3397,9 @@ module AnalyticsEvents
       cancelled_enrollment: cancelled_enrollment,
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      active_profile_idv_level: active_profile_idv_level,
+      pending_profile_idv_level: pending_profile_idv_level,
+      profile_history: profile_history,
       **extra,
     )
   end
@@ -4142,6 +4441,21 @@ module AnalyticsEvents
 
   def piv_cac_login_visited
     track_event(:piv_cac_login_visited)
+  end
+
+  # @param [String] action what action user made
+  # Tracks when user submits an action on Piv Cac recommended page
+  def piv_cac_recommended(action: nil, **extra)
+    track_event(
+      :piv_cac_recommended,
+      action: action,
+      **extra,
+    )
+  end
+
+  # Tracks when user visits piv cac recommended
+  def piv_cac_recommended_visited
+    track_event(:piv_cac_recommended_visited)
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac setup visited

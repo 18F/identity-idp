@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class PivCacLoginController < ApplicationController
     include PivCacConcern
@@ -89,6 +91,7 @@ module Users
     end
 
     def process_invalid_submission
+      handle_invalid_verification_for_authentication_context
       session[:needs_to_setup_piv_cac_after_sign_in] = true if piv_cac_login_form.valid_token?
 
       process_token_with_error

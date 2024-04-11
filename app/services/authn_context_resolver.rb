@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthnContextResolver
   attr_reader :service_provider, :vtr, :acr_values
 

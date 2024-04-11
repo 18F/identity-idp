@@ -42,13 +42,13 @@ RSpec.describe 'Account connected applications', allowed_extra_analytics: [:*] d
     )
     expect(page).to_not have_link(identity_without_link.display_name)
 
-    expect(page).to have_content( \
+    expect(page).to have_content(
       t(
         'event_types.authenticated_at_html',
         service_provider_link_html: identity_with_link.display_name,
       ),
     )
-    expect(page).to have_link( \
+    expect(page).to have_link(
       identity_with_link.display_name, href: 'http://localhost:3000'
     )
 

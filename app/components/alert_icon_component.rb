@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlertIconComponent < BaseComponent
   ICON_SOURCE = {
     warning: 'status/warning.svg',
@@ -6,7 +8,7 @@ class AlertIconComponent < BaseComponent
     personal_key: 'status/personal-key.svg',
     info_question: 'status/info-question.svg',
     delete: 'status/delete.svg',
-  }
+  }.freeze
   DEFAULT_WIDTH = 88
   DEFAULT_HEIGHT = 88
 

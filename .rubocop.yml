@@ -74,7 +74,6 @@ IdentityIdp/ImageSizeLinter:
     - app/views/shared/_nav_branded.html.erb
     - app/views/sign_up/completions/show.html.erb
     - app/views/users/two_factor_authentication_setup/index.html.erb
-    - app/views/users/webauthn_setup/new.html.erb
 
 IdentityIdp/RedirectBackLinter:
   Enabled: true
@@ -1127,6 +1126,16 @@ Style/For:
   Enabled: true
   EnforcedStyle: each
 
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - '.irbrc'
+    - '.rubocop.yml'
+    - 'Brewfile'
+    - 'Gemfile'
+    - 'Rakefile'
+
 Style/GlobalVars:
   Enabled: true
   AllowedVariables: []
@@ -1207,6 +1216,10 @@ Style/MultilineMemoization:
 
 Style/MultilineWhenThen:
   Enabled: true
+
+Style/MutableConstant:
+  Enabled: true
+  EnforcedStyle: strict
 
 Style/NegatedWhile:
   Enabled: true

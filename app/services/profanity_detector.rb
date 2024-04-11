@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Detects profanity in a string, the list of profane words
 # comes from the profanity_filter gem for now
 module ProfanityDetector
@@ -20,12 +22,10 @@ module ProfanityDetector
   # ProfanityFilter::Base.profane? splits by word, but this
   # checks all substrings
   def profane?(str)
-    preprocess_if_needed!
-
     str_no_whitespace = str.gsub(/\W/, '').downcase
 
-    (min_profanity_length..[str_no_whitespace.length, max_profanity_length].min).each do |size|
-      profane_regex = @regex_by_length[size]
+    (MIN_PROFANITY_LENGTH..[str_no_whitespace.length, MAX_PROFANITY_LENGTH].min).each do |size|
+      profane_regex = REGEX_BY_LENGTH[size]
       next if profane_regex.nil?
       return true if profane_regex.match?(str_no_whitespace)
     end
@@ -33,14 +33,7 @@ module ProfanityDetector
     false
   end
 
-  class << self
-    attr_reader :min_profanity_length
-    attr_reader :max_profanity_length
-  end
-
-  def preprocess_if_needed!
-    return if @preprocessed
-
+  def self.preprocess_lengths!
     # Map of {Integer => Set<string>}
     profanity_by_length = Hash.new { |h, k| h[k] = Set.new }
 
@@ -49,15 +42,17 @@ module ProfanityDetector
     end
 
     # Map of {Integer => Regexp}
-    @regex_by_length = Hash.new
+    regex_by_length = Hash.new
 
     profanity_by_length.each do |k, v|
       escaped = v.to_a.map { |x| Regexp.escape(x) }
-      @regex_by_length[k] = Regexp.new("(#{escaped.join('|')})")
+      regex_by_length[k] = Regexp.new("(#{escaped.join('|')})")
     end
 
-    @min_profanity_length, @max_profanity_length = profanity_by_length.keys.minmax
+    min_profanity_length, max_profanity_length = profanity_by_length.keys.minmax
 
-    @preprocessed = true
+    [regex_by_length, min_profanity_length, max_profanity_length]
   end
+
+  REGEX_BY_LENGTH, MIN_PROFANITY_LENGTH, MAX_PROFANITY_LENGTH = self.preprocess_lengths!
 end

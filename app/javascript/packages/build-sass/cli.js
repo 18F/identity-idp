@@ -14,6 +14,8 @@ import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 /** @typedef {import('sass-embedded').Exception} SassException */
 /** @typedef {import('./').BuildOptions} BuildOptions */
+/** @typedef {import('node:child_process').ChildProcess} ChildProcess */
+/** @typedef {import('sass-embedded').AsyncCompiler & { process: ChildProcess}} SassAsyncCompiler */
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProduction = env === 'production';
@@ -24,10 +26,11 @@ const { values: flags, positionals: fileArgs } = parseArgs({
     watch: { type: 'boolean' },
     'out-dir': { type: 'string' },
     'load-path': { type: 'string', multiple: true, default: [] },
+    verbose: { type: 'boolean', short: 'v' },
   },
 });
 
-const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [] } = flags;
+const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [], verbose } = flags;
 loadPaths.push(...getDefaultLoadPaths());
 
 const sassCompiler = await initAsyncSassCompiler();
@@ -62,6 +65,10 @@ const isSassException = (error) => 'span' in /** @type {SassException} */ (error
  * @return {Promise<void|void[]>}
  */
 function build(files) {
+  if (verbose) {
+    console.log('Building files', files);
+  }
+
   return Promise.all(
     files.map(async (file) => {
       const { loadedUrls } = await buildFile(file, options);
@@ -75,7 +82,8 @@ function build(files) {
       console.error(error);
 
       if (isWatching && isSassException(error)) {
-        watchOnce(getErrorSassStackPaths(error.sassStack), () => build(files));
+        const { spawnfile } = /** @type {SassAsyncCompiler} */ (sassCompiler).process;
+        watchOnce(getErrorSassStackPaths(error.sassStack, spawnfile), () => build(files));
       } else {
         throw error;
       }

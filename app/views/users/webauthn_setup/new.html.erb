@@ -1,6 +1,8 @@
 <% self.title = @presenter.page_title %>
 
-<%= image_tag asset_url(@presenter.image_path), alt: '', width: '90', class: 'margin-left-1 margin-bottom-2', role: 'img' %>
+<% if @platform_authenticator %>
+  <%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', role: 'img' %>
+<% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
@@ -10,7 +12,10 @@
   <% end %>
 <% end %>
 
-<%= @presenter.intro_html %>
+<span id="webauthn-intro">
+  <%= @presenter.intro_html %>
+</span>
+<%= @presenter.learn_more_html unless @platform_authenticator %>
 
 <%= simple_form_for(
       '',
@@ -33,21 +38,35 @@
 
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
   <% if !@platform_authenticator %>
-    
-      <%= render ValidatedFieldComponent.new(
-            form: f,
-            name: :name,
-            required: true,
-            label: @presenter.nickname_label,
-            hint: @presenter.device_nickname_hint,
-            input_html: {
-              id: 'nickname',
-              class: 'font-family-mono',
-              size: 16,
-              maxlength: 20,
-            },
-          ) %>
-  <% end %> 
+    <fieldset aria-labelledby="webauthn-intro" class="padding-0 border-0 margin-y-4 margin-x-0">
+      <%= render ProcessListComponent.new(connected: true) do |c| %>
+        <%= c.with_item(heading: t('forms.webauthn_setup.step_1'), heading_id: 'step-1-label') do %>
+          <p><%= t('forms.webauthn_setup.step_1a') %></p>
+          <%= render ValidatedFieldComponent.new(
+                form: f,
+                name: :name,
+                required: true,
+                label: false,
+                hint: @presenter.device_nickname_hint,
+                wrapper_html: { class: 'margin-bottom-0' },
+                input_html: {
+                  aria: { labelledby: 'step-1-label' },
+                  id: 'nickname',
+                  class: 'font-family-mono',
+                  size: 16,
+                  maxlength: 20,
+                },
+              ) %>
+        <% end %>
+        <%= c.with_item(heading: t('forms.webauthn_setup.step_2')) do %>
+            <%= render SecurityKeyImageComponent.new(mobile: mobile?) %>
+          <% end %>
+        <%= c.with_item(heading: t('forms.webauthn_setup.step_3')) do %>
+          <p><%= t('forms.webauthn_setup.step_3a') %></p>
+        <% end %>
+      <% end %>
+    </fieldset>
+  <% end %>
   <div class="margin-y-4 text-center" id="spinner" hidden>
     <%= image_tag(
           asset_url('loading-badge.gif'),

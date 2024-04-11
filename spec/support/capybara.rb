@@ -1,6 +1,7 @@
 require 'capybara/rspec'
 require 'rack_session_access/capybara'
 require 'selenium/webdriver'
+require 'extensions/capybara/node/simple'
 
 # temporary fix for local development feature tests
 # remove when we get a new working version of Chromedriver

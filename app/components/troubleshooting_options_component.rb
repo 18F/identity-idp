@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TroubleshootingOptionsComponent < BaseComponent
   renders_one :header, 'TroubleshootingOptionsHeadingComponent'
   renders_many :options, BlockLinkComponent

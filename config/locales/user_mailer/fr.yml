@@ -22,7 +22,7 @@ fr:
       cancel_link_text: veuillez annuler
       help_html: Si vous ne souhaitez pas supprimer votre compte,
         %{cancel_account_reset_html}.
-      intro_html: Votre période d’attente de %{hours} heures est terminée. Veuillez
+      intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez
         terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à
         localiser vos méthodes d’authentification, sélectionnez “confirmer la
         suppression” pour supprimer votre compte %{app_name}.<br><br> À
@@ -36,15 +36,14 @@ fr:
         %{app_name} pour annuler.
       header: Votre compte sera supprimé dans %{interval}
       intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux
-        étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a une
-        période d’attente de %{hours} heures si vous avez perdu l’accès à vos
-        méthodes d’authentification et devez supprimer votre compte. Si vous
-        trouvez vos méthodes d’authentification, vous pouvez vous connecter à
-        votre compte %{app_name} pour annuler cette demande. <br> <br> Deuxième
-        étape: après votre période d’attente de %{hours} heures, vous recevrez
-        un e-mail qui vous demandera de confirmer la suppression de votre compte
-        %{app_name}. Votre compte ne sera pas supprimé tant que vous ne l’aurez
-        pas confirmé.'
+        étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a un delai
+        d’attente de %{waiting_period} si vous avez perdu l’accès à vos méthodes
+        d’authentification et devez supprimer votre compte. Si vous trouvez vos
+        méthodes d’authentification, vous pouvez vous connecter à votre compte
+        %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après
+        la période d’attente de %{waiting_period}, vous recevrez un e-mail qui
+        vous demandera de confirmer la suppression de votre compte %{app_name}.
+        Votre compte ne sera pas supprimé tant que vous n’aurez pas confirmé.'
       subject: Comment supprimer votre compte %{app_name}
     account_verified:
       change_password_link: changer votre mot de passe
@@ -238,6 +237,35 @@ fr:
         Pour plus d’aide, veuillez visiter le %{help_link_html} de
         %{app_name_html} ou %{contact_link_html}.
       info: 'Votre compte %{app_name} a été connecté sur un nouvel appareil.'
+      subject: Nouvelle connexion avec votre compte %{app_name}
+    new_device_sign_in_after_2fa:
+      authentication_methods: méthodes d’authentification
+      info_p1: Votre adresse e-mail et votre mot de passe %{app_name} ont été utilisés
+        pour se connecter et s’authentifier sur un nouvel appareil.
+      info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
+      info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez
+        immédiatement vos %{authentication_methods_link_html}.
+      reset_password: réinitialisez votre mot de passe
+      subject: Nouvelle connexion et authentification avec votre compte %{app_name}
+    new_device_sign_in_attempts:
+      events:
+        sign_in_after_2fa: Signé avec deuxième facteur
+        sign_in_before_2fa: Connecté avec mot de passe
+        sign_in_unsuccessful_2fa: Échec de l’authentification
+      new_sign_in_from: Nouvelle connexion potentiellement située à %{location}
+    new_device_sign_in_before_2fa:
+      info_p1_html:
+        one: Votre adresse électronique et votre mot de passe %{app_name} ont été
+          utilisés pour vous connecter à partir d’un nouvel appareil, mais
+          <strong>l’authentification a échoué</strong>.
+        other: Votre adresse électronique et votre mot de passe %{app_name} ont été
+          utilisés pour vous connecter à partir d’un nouvel appareil, mais
+          <strong>l’authentification a échoué %{count} reprises</strong>.
+      info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
+      info_p3_html: L’authentification à deux facteurs protège votre compte contre
+        tout accès non autorisé. Si ce n’est pas vous,
+        %{reset_password_link_html}.
+      reset_password: réinitialisez immédiatement votre mot de passe
       subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
       disavowal_link: réinitialiser votre mot de passe

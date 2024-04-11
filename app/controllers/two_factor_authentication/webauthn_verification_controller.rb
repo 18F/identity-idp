@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   # The WebauthnVerificationController class is responsible webauthn verification at sign in
   class WebauthnVerificationController < ApplicationController
@@ -68,6 +70,7 @@ module TwoFactorAuthentication
     end
 
     def handle_invalid_webauthn(result)
+      handle_invalid_verification_for_authentication_context
       flash[:error] = result.first_error_message
 
       if platform_authenticator?

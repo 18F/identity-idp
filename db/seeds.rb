@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # add config/service_providers.yml
 if ENV['KUBERNETES_REVIEW_APP'] == 'true' && ENV['DASHBOARD_URL'].present?
   dashboard_url = ENV['DASHBOARD_URL']

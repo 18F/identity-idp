@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondMfaReminderConcern
   def user_needs_second_mfa_reminder?
     return false if user_has_dismissed_second_mfa_reminder? || user_has_multiple_mfa_methods?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GooglePolicySite
   BASE_URL = URI('https://policies.google.com').freeze
 

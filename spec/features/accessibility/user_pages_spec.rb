@@ -36,7 +36,8 @@ RSpec.feature 'Accessibility on pages that require authentication', :js,
     scenario 'invalid confirmation token' do
       visit sign_up_create_email_confirmation_path(confirmation_token: '123456')
 
-      expect(current_path).to eq(sign_up_email_resend_path)
+      expect(current_path).to eq(sign_up_register_path)
+      expect(page).to have_content(t('errors.messages.confirmation_invalid_token'))
       expect_page_to_have_no_accessibility_violations(page)
     end
   end

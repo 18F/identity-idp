@@ -24,6 +24,7 @@ all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 account_reset_token_valid_for_days: 1
+account_reset_fraud_user_wait_period_days:
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
 acuant_assure_id_password: ''
@@ -106,6 +107,7 @@ encrypted_document_storage_s3_bucket: ''
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
+feature_new_device_alert_aggregation_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
@@ -211,6 +213,7 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
+new_device_alert_delay_in_minutes: 5
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect_uuid_override_map: '{}'
@@ -227,7 +230,10 @@ outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
 password_max_attempts: 3
 personal_key_retired: true
-phone_carrier_registration_blocklist: ''
+phone_carrier_registration_blocklist_array: '[]'
+short_term_phone_otp_max_attempt_window_in_seconds: 10
+short_term_phone_otp_max_attempts: 2
+short_term_phone_otp_rate_limiter_enabled: true
 phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
@@ -344,7 +350,7 @@ version_headers_enabled: false
 vtm_url: 'https://developer.login.gov/vot-trust-framework'
 use_dashboard_service_providers: false
 use_kms: false
-use_vot_in_sp_requests: false
+use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_ipp_password: ''
@@ -465,6 +471,7 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
+  feature_new_device_alert_aggregation_enabled: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
@@ -482,6 +489,7 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
+  short_term_phone_otp_rate_limiter_enabled: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -498,7 +506,6 @@ production:
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
-  use_vot_in_sp_requests: false
   usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
@@ -509,6 +516,7 @@ production:
 test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
+  account_reset_fraud_user_wait_period_days: 30
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://facial_match.example.com
   acuant_passlive_url: https://liveness.example.com
@@ -577,6 +585,7 @@ test:
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  short_term_phone_otp_rate_limiter_enabled: false
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'
@@ -591,7 +600,6 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
-  use_vot_in_sp_requests: true
   usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com

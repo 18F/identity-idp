@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountShowPresenter
   attr_reader :user, :decrypted_pii, :locked_for_session, :pii, :sp_session_request_url, :sp_name
 
@@ -87,7 +89,7 @@ class AccountShowPresenter
     :dob,
     :phone,
     keyword_init: true,
-  )
+  ).freeze
 
   def obfuscated_pii_accessor
     PiiAccessor.new(

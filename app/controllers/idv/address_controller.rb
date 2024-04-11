@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class AddressController < ApplicationController
     include Idv::AvailabilityConcern
@@ -9,12 +11,14 @@ module Idv
     def new
       analytics.idv_address_visit
 
-      @presenter = AddressPresenter.new(pii: idv_session.pii_from_doc)
+      @address_form = Idv::AddressForm.new(idv_session.pii_from_doc)
+      @presenter = AddressPresenter.new
     end
 
     def update
       clear_future_steps!
-      form_result = idv_form.submit(profile_params)
+      @address_form = Idv::AddressForm.new(idv_session.pii_from_doc)
+      form_result = @address_form.submit(profile_params)
       analytics.idv_address_submitted(**form_result.to_h)
       capture_address_edited(form_result)
       if form_result.success?
@@ -31,7 +35,7 @@ module Idv
         action: :new,
         next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
-        undo_step: ->(idv_session:, user:) {},
+        undo_step: ->(idv_session:, user:) { idv_session.updated_user_address = nil },
       )
     end
 
@@ -42,14 +46,30 @@ module Idv
     end
 
     def success
-      profile_params.each do |key, value|
-        idv_session.pii_from_doc[key] = value
-      end
+      idv_session.pii_from_doc = idv_session.pii_from_doc.merge(
+        address1: @address_form.address1,
+        address2: @address_form.address2,
+        city: @address_form.city,
+        state: @address_form.state,
+        zipcode: @address_form.zipcode,
+      )
+      idv_session.updated_user_address = address_from_form
       redirect_to idv_verify_info_url
     end
 
     def failure
-      redirect_to idv_address_url
+      @presenter = AddressPresenter.new
+      render :new
+    end
+
+    def address_from_form
+      Pii::Address.new(
+        address1: @address_form.address1,
+        address2: @address_form.address2,
+        city: @address_form.city,
+        state: @address_form.state,
+        zipcode: @address_form.zipcode,
+      )
     end
 
     def profile_params

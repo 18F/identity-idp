@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Provides a wrapper for accessing the redis cache out-of-band (using only the
 # session UUID) instead of having access to the user session from Devise/Warden.
 # Should only used outside of a normal browser session (such as the OpenID

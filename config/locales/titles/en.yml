@@ -8,7 +8,6 @@ en:
     backup_codes: Don’t lose your backup codes
     confirmations:
       delete: Please confirm
-      new: Resend confirmation instructions for your account
       show: Choose a password
     doc_auth:
       address: Update your mailing address
@@ -31,8 +30,8 @@ en:
       phone_verification: Phone number not verified
     forget_all_browsers: Forget all browsers
     idv:
+      canceled: Identity verification is canceled
       cancellation_prompt: Cancel identity verification
-      cancelled: Identity verification is cancelled
       come_back_soon: Come back soon
       enter_one_time_code: Enter your one-time code
       enter_password: Re-enter your password
@@ -59,6 +58,7 @@ en:
       new: Use your PIV/CAC to sign in to your account
     piv_cac_setup:
       new: Use your PIV/CAC card to secure your account
+      upsell: Enhance your account security with a government employee ID
     present_piv_cac: Present your PIV/CAC
     present_webauthn: Connect your hardware security key
     reactivate_account: Reactivate your account

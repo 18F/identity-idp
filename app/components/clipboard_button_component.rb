@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClipboardButtonComponent < BaseComponent
   attr_reader :clipboard_text, :button_options
 

@@ -7,11 +7,11 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
   include UserAgentHelper
 
-  GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-  GOOD_SSN_MASKED = '9**-**-***4'
-  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }
-  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
-  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
+  GOOD_SSN = (Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]).freeze
+  GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }.freeze
+  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
+  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
   def clear_and_fill_in(field_name, text)
     fill_in field_name, with: ''
@@ -72,22 +72,6 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.continue')
   end
 
-  def complete_how_to_verify_step(remote: true)
-    text_for_method = remote ? t(
-      'doc_auth.headings.verify_online',
-      app_name: APP_NAME,
-    ) : t(
-      'doc_auth.headings.verify_at_post_office',
-      app_name: APP_NAME,
-    )
-    find(
-      'label',
-      text: text_for_method,
-      wait: 5,
-    ).click
-    click_on t('doc_auth.buttons.continue')
-  end
-
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
     complete_agreement_step
@@ -113,7 +97,11 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
-    complete_how_to_verify_step(remote: remote)
+    if remote
+      click_on t('forms.buttons.continue_remote')
+    else
+      click_on t('forms.buttons.continue_ipp')
+    end
   end
 
   def complete_document_capture_step(with_selfie: false)

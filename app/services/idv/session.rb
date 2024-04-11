@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
@@ -25,6 +27,7 @@ module Idv
       selfie_check_performed
       selfie_check_required
       skip_doc_auth
+      skip_doc_auth_from_handoff
       skip_hybrid_handoff
       ssn
       threatmetrix_review_status
@@ -164,6 +167,16 @@ module Idv
 
     def failed_phone_step_numbers
       session[:failed_phone_step_params] ||= []
+    end
+
+    def updated_user_address=(updated_user_address)
+      session[:updated_user_address] = nil if updated_user_address.nil?
+      session[:updated_user_address] = updated_user_address.to_h
+    end
+
+    def updated_user_address
+      return nil if session[:updated_user_address].blank?
+      Pii::Address.new(**session[:updated_user_address])
     end
 
     def add_failed_phone_step_number(phone)

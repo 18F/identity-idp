@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class is similar to RedisRateLimiter, but differs in that
 # the rate limit period begins once the maximum number of allowed
 # attempts has been reached.
@@ -215,6 +217,11 @@ class RateLimiter
       phone_otp: {
         max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,
         attempt_window: IdentityConfig.store.otp_delivery_blocklist_findtime,
+      },
+      short_term_phone_otp: {
+        max_attempts: IdentityConfig.store.short_term_phone_otp_max_attempts,
+        attempt_window: IdentityConfig.store.
+          short_term_phone_otp_max_attempt_window_in_seconds.seconds.in_minutes.to_f,
       },
     }.with_indifferent_access
   end

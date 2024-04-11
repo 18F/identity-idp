@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module AccountReset
   class CreateRequest
+    include AccountResetConcern
     include ActionView::Helpers::DateHelper
 
     def initialize(user, requesting_issuer)
@@ -48,23 +51,12 @@ module AccountReset
       @telephony_response = Telephony.send_account_reset_notice(
         to: phone,
         country_code: Phonelib.parse(phone).country,
-        interval: account_reset_wait_period,
+        interval: account_reset_deletion_period_interval(user),
       )
     end
 
     def extra_analytics_attributes
       @telephony_response&.extra&.slice(:request_id, :message_id) || {}
-    end
-
-    def account_reset_wait_period
-      current_time = Time.zone.now
-
-      distance_of_time_in_words(
-        current_time,
-        current_time + IdentityConfig.store.account_reset_wait_period_days,
-        true,
-        accumulate_on: :hours,
-      )
     end
   end
 end

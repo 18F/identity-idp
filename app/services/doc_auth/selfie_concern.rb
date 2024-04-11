@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module SelfieConcern
     extend ActiveSupport::Concern
@@ -31,13 +33,13 @@ module DocAuth
 
   private
 
-    SELFIE_PERFORMED_STATUSES = %i[success fail]
+    SELFIE_PERFORMED_STATUSES = %i[success fail].freeze
 
     ERROR_TEXTS = {
       success: 'Successful. Liveness: Live',
       not_live: 'Liveness: NotLive',
       poor_quality: 'Liveness: PoorQuality',
-    }
+    }.freeze
 
     # @param [Object] portrait_match_results trueid portait match info
     def get_portrait_error(portrait_match_results)

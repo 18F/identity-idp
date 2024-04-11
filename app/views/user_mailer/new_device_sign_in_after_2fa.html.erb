@@ -1,0 +1,26 @@
+<p class="margin-bottom-2">
+  <%= t('user_mailer.new_device_sign_in_after_2fa.info_p1', app_name: APP_NAME) %>
+</p>
+
+<p class="margin-bottom-2">
+  <%= t('user_mailer.new_device_sign_in_after_2fa.info_p2') %>
+</p>
+
+<p>
+  <%= t(
+        'user_mailer.new_device_sign_in_after_2fa.info_p3_html',
+        reset_password_link_html: link_to(
+          t('user_mailer.new_device_sign_in_after_2fa.reset_password'),
+          event_disavowal_url(disavowal_token: @disavowal_token),
+        ),
+        authentication_methods_link_html: link_to(
+          t('user_mailer.new_device_sign_in_after_2fa.authentication_methods'),
+          MarketingSite.help_center_article_url(
+            category: 'manage-your-account',
+            article: 'add-or-change-your-authentication-method',
+          ),
+        ),
+      ) %>
+</p>
+
+<%= render 'user_mailer/shared/new_device_sign_in_attempts' %>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RequestPasswordReset = RedactedStruct.new(
   :email, :request_id, :analytics, :irs_attempts_api_tracker,
   keyword_init: true,
@@ -83,4 +85,4 @@ RequestPasswordReset = RedactedStruct.new(
       EmailAddress.find_with_confirmed_or_unconfirmed_email(email)
     end
   end
-end
+end.freeze

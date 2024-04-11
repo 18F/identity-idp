@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Encryption
   module Encryptors
     class PiiEncryptor
@@ -31,7 +33,7 @@ module Encryption
           )
           decode(encoded_encrypted_data)
         end
-      end
+      end.freeze
 
       def initialize(password)
         @password = password

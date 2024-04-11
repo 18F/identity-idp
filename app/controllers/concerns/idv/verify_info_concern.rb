@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
-    STEP_NAME = 'verify_info'.freeze
+    STEP_NAME = 'verify_info'
 
     def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid

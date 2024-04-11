@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
 require 'identity/hostdata'
@@ -8,7 +10,7 @@ module Deploy
   class Activate
     FILES_TO_LINK =
       %w[agencies iaa_gtcs iaa_orders iaa_statuses integration_statuses integrations
-         partner_account_statuses partner_accounts service_providers]
+         partner_account_statuses partner_accounts service_providers].freeze
 
     attr_reader :logger, :s3_client
 

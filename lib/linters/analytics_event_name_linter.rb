@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
       class AnalyticsEventNameLinter < RuboCop::Cop::Cop
-        RESTRICT_ON_SEND = [:track_event]
+        RESTRICT_ON_SEND = [:track_event].freeze
 
         # DO NOT ADD TO THIS LIST OR YOU WILL MAKE A KITTEN CRY!
         LEGACY_EVENT_NAMES = %w[
