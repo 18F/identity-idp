@@ -5,7 +5,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
 
   subject(:presenter) do
     described_class.new(
-      idv_session,
+      idv_session: idv_session,
       user_session: user_session,
       url_options: {},
       current_user: nil,

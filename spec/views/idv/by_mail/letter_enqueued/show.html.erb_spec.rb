@@ -22,7 +22,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
     assign(
       :presenter,
       Idv::ByMail::LetterEnqueuedPresenter.new(
-        idv_session,
+        idv_session: idv_session,
         user_session: {},
         url_options: {},
         current_user: nil,

@@ -6,7 +6,7 @@ module Idv
 
       attr_reader :url_options
 
-      def initialize(idv_session, current_user:, user_session:, url_options:)
+      def initialize(idv_session:, current_user:, user_session:, url_options:)
         @idv_session = idv_session
         @current_user = current_user
         @user_session = user_session
