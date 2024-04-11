@@ -142,24 +142,11 @@ module Features
       user
     end
 
-    def sign_up_with_backup_codes
-      user = create(:user, :unconfirmed, :with_backup_code)
-      confirm_last_user
-      user
-    end
-
     def sign_up_and_set_password
       user = sign_up
       user.password = VALID_PASSWORD
       fill_in t('forms.password'), with: user.password
       fill_in t('components.password_confirmation.confirm_label'), with: user.password
-      click_button t('forms.buttons.continue')
-      user
-    end
-
-    def sign_up_with_backup_codes_and_set_password
-      user = sign_up_with_backup_codes
-      fill_in t('forms.password'), with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
     end
@@ -268,17 +255,6 @@ module Features
       user
     end
 
-    def sign_in_live_with_piv_cac(user = user_with_piv_cac)
-      sign_in_user(user)
-      allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(true)
-      visit login_two_factor_piv_cac_path
-      stub_piv_cac_service
-      visit_piv_cac_service(
-        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-      )
-    end
-
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
       fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
@@ -317,11 +293,6 @@ module Features
       click_button t('sign_up.agree_and_continue')
     end
 
-    def enter_correct_otp_code_for_user(user)
-      fill_in 'code', with: user.reload.direct_otp
-      click_submit_default
-    end
-
     def perform_in_browser(name)
       old_session = Capybara.session_name
       Capybara.session_name = name
@@ -329,18 +300,7 @@ module Features
       Capybara.session_name = old_session
     end
 
-    def sign_in_with_totp_enabled_user
-      user = build(:user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD)
-      sign_in_user(user)
-      fill_in 'code', with: generate_totp_code(@secret)
-      click_submit_default
-    end
-
     def acknowledge_and_confirm_personal_key
-      click_acknowledge_personal_key
-    end
-
-    def click_acknowledge_personal_key
       checkbox_header = t('forms.personal_key.required_checkbox')
       find('label', text: /#{checkbox_header}/).click
       click_continue
@@ -413,7 +373,8 @@ module Features
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
+      expect(page).to have_current_path sign_up_register_path(request_id: sp_request_id)
+      expect(page).to have_content t('errors.messages.confirmation_invalid_token')
 
       submit_resend_email_confirmation_form_with_correct_email(email)
 
@@ -478,7 +439,8 @@ module Features
 
     def submit_resend_email_confirmation_form_with_correct_email(email)
       fill_in t('forms.registration.labels.email'), with: email
-      click_button t('forms.buttons.resend_confirmation')
+      check t('sign_up.terms', app_name: APP_NAME)
+      click_submit_default
     end
 
     def click_confirmation_link_in_email(email)
@@ -556,15 +518,6 @@ module Features
       code_field.set(totp_code)
 
       click_button 'Submit'
-    end
-
-    def set_up_2fa_with_backup_codes
-      select_2fa_option('backup_code')
-
-      expect(page).to have_current_path backup_code_setup_path
-
-      check t('forms.backup_code.saved')
-      click_button 'Continue'
     end
 
     def register_user_with_piv_cac(email = 'test@test.com')
@@ -683,20 +636,9 @@ module Features
       expect(current_path).to eq edit_user_password_path
     end
 
-    def fill_reset_password_form
-      fill_in t('forms.passwords.edit.labels.password'), with: 'newVal!dPassw0rd'
-      click_button t('forms.passwords.edit.buttons.submit')
-
-      expect(current_path).to eq new_user_session_path
-    end
-
     def expect_branded_experience
       # Check for branded experience as being the header containing the Login.gov and partner logos
       expect(page).to have_css(".page-header--basic img[alt='#{APP_NAME}'] ~ img")
-    end
-
-    def acknowledge_backup_code_confirmation
-      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
     end
 
     def set_hidden_field(id, value)

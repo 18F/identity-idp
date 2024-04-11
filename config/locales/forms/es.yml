@@ -40,7 +40,6 @@ es:
       disable: Borrar
       edit: Editar
       manage: Administrar
-      resend_confirmation: Reenviar instrucciones de confirmación
       send_link: Enviar enlace
       send_one_time_code: Enviar código
       submit:

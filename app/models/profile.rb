@@ -36,6 +36,7 @@ class Profile < ApplicationRecord
     legacy_unsupervised: 1,
     legacy_in_person: 2,
     unsupervised_with_selfie: 3,
+    in_person: 4,
   }
 
   attr_reader :personal_key
@@ -110,6 +111,7 @@ class Profile < ApplicationRecord
 
   def tmx_status
     return nil unless IdentityConfig.store.in_person_proofing_enforce_tmx
+    return nil unless FeatureManagement.proofing_device_profiling_decisioning_enabled?
 
     fraud_pending_reason || :threatmetrix_pass
   end
