@@ -805,7 +805,8 @@ test-deployment:
     name: $CI_COMMIT_BRANCH
   variables:
     testEnvironment: 'ekstest'
-    gitBranch: 'cmccarthy/deploy-${CI_COMMIT_BRANCH}-to-${testEnvironment}'  
+    gitBranch: 'cmccarthy/deploy-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
+    rcRepoName: '217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/rc'  
   interruptible: true
   tags:
     - build-pool
@@ -820,6 +821,8 @@ test-deployment:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
+    - yqFilter=".idp.image.repository=\"${rcRepoName}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
     - yqFilter=".idp.image.tag=\"${rcTag}\""
     - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
