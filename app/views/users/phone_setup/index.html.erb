@@ -24,7 +24,6 @@
         form: f,
         confirmed_phone: false,
         required: true,
-        captcha_exempt_countries: FeatureManagement.phone_recaptcha_enabled? ? PhoneRecaptchaValidator.exempt_countries : nil,
         class: 'margin-bottom-4',
       ) %>
 
