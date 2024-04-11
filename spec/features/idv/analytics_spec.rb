@@ -9,6 +9,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:proofing_device_profiling) { :enabled }
   let(:threatmetrix) { true }
+  let(:idv_level) { 'in_person' }
   let(:threatmetrix_response) do
     { client: nil,
       errors: {},
@@ -510,21 +511,21 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         in_person_verification_pending: true,
         address_verification_method: 'phone',
         encrypted_profiles_missing: false,
-        active_profile_idv_level: nil, pending_profile_idv_level: 'legacy_in_person',
+        active_profile_idv_level: nil, pending_profile_idv_level: idv_level,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
-        active_profile_idv_level: nil, pending_profile_idv_level: 'legacy_in_person',
+        active_profile_idv_level: nil, pending_profile_idv_level: idv_level,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: true, deactivation_reason: nil,
-        active_profile_idv_level: nil, pending_profile_idv_level: 'legacy_in_person',
+        active_profile_idv_level: nil, pending_profile_idv_level: idv_level,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: in person ready to verify visited' => {
-        active_profile_idv_level: nil, pending_profile_idv_level: 'legacy_in_person',
+        active_profile_idv_level: nil, pending_profile_idv_level: idv_level,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: user clicked what to bring link on ready to verify page' => {},
@@ -867,6 +868,8 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         to receive(:service_provider_homepage_url).and_return(return_sp_url)
       allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).
         to receive(:sp_name).and_return(sp_friendly_name)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+        and_return(true)
 
       start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)
@@ -890,6 +893,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
 
     context 'proofing_device_profiling disabled' do
       let(:proofing_device_profiling) { :disabled }
+      let(:idv_level) { 'legacy_in_person' }
       let(:threatmetrix) { false }
       let(:threatmetrix_response) do
         { client: 'tmx_disabled',

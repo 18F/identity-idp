@@ -56,6 +56,10 @@ module MfaSetupConcern
     mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2
   end
 
+  def first_mfa_selection_path
+    confirmation_path(user_session[:mfa_selections].first)
+  end
+
   def in_account_creation_flow?
     user_session[:in_account_creation_flow] || false
   end
@@ -68,9 +72,19 @@ module MfaSetupConcern
     user_session[:mfa_selection_index] || 0
   end
 
+  def set_mfa_selections(selections)
+    user_session[:mfa_selections] = selections
+  end
+
   def show_skip_additional_mfa_link?
     !(mfa_context.enabled_mfa_methods_count == 1 &&
        mfa_context.webauthn_platform_configurations.count == 1)
+  end
+
+  def check_if_possible_piv_user
+    if current_user.has_gov_or_mil_email? && current_user.piv_cac_recommended_dismissed_at.nil?
+      redirect_to login_piv_cac_recommended_path
+    end
   end
 
   private

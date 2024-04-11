@@ -806,6 +806,20 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Hash] error
+  def idv_camera_info_error(error:, **_extra)
+    track_event(:idv_camera_info_error, error: error)
+  end
+
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Array] camera_info Information on the users cameras max resolution
+  # as  captured by the browser
+  def idv_camera_info_logged(flow_path:, camera_info:, **_extra)
+    track_event(
+      :idv_camera_info_logged, flow_path: flow_path, camera_info: camera_info
+    )
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
@@ -3162,6 +3176,34 @@ module AnalyticsEvents
     )
   end
 
+  # Acuant SDK errored after loading but before initialization
+  # @param [Boolean] success
+  # @param [String] error_message
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_sdk_error_before_init(
+    success:,
+    error_message:,
+    liveness_checking_required:,
+    acuant_version:,
+    captureAttempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_error_before_init,
+      success:,
+      error_message: error_message,
+      liveness_checking_required:,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
   # User closed the SDK for taking a selfie without submitting a photo
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
@@ -4399,6 +4441,21 @@ module AnalyticsEvents
 
   def piv_cac_login_visited
     track_event(:piv_cac_login_visited)
+  end
+
+  # @param [String] action what action user made
+  # Tracks when user submits an action on Piv Cac recommended page
+  def piv_cac_recommended(action: nil, **extra)
+    track_event(
+      :piv_cac_recommended,
+      action: action,
+      **extra,
+    )
+  end
+
+  # Tracks when user visits piv cac recommended
+  def piv_cac_recommended_visited
+    track_event(:piv_cac_recommended_visited)
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
