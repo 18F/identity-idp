@@ -255,6 +255,9 @@ fr:
       new_sign_in_from: Nouvelle connexion potentiellement située à %{location}
     new_device_sign_in_before_2fa:
       info_p1_html:
+        zero: Votre adresse électronique et votre mot de passe %{app_name} ont été
+          utilisés pour vous connecter à partir d’un nouvel appareil, mais
+          <strong>l’authentification a échoué</strong>.
         one: Votre adresse électronique et votre mot de passe %{app_name} ont été
           utilisés pour vous connecter à partir d’un nouvel appareil, mais
           <strong>l’authentification a échoué</strong>.
