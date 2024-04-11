@@ -1,7 +1,6 @@
 class LoginButtonComponentPreview < ButtonComponentPreview
-  # @after_render :inject_style
-
   # @!group Preview
+  # @after_render :inject_style
   def default
     render(LoginButtonComponent.new)
   end
