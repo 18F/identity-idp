@@ -304,7 +304,6 @@ Rails.application.routes.draw do
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
     post '/sign_up/completed' => 'sign_up/completions#update'
-    get '/sign_up/partner_agency_exit' => 'sign_up/partner_agency_exit#show'
     get '/user_authorization_confirmation' => 'users/authorization_confirmation#new'
     post '/user_authorization_confirmation' => 'users/authorization_confirmation#create'
     match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy',
@@ -315,6 +314,7 @@ Rails.application.routes.draw do
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof',
         as: :return_to_sp_failure_to_proof
+    get '/redirect/return_to_sp/confirm' => 'redirect/return_to_sp#confirm'
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
     get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
