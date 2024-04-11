@@ -87,6 +87,55 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
       context 'when the proofer has an exeception' do
         it 'returns a failure result'
       end
+
+      context 'when successful AAMVA result already present' do
+        let(:result_so_far) do
+          {
+            aamva: Proofing::StateIdResult.new(success: true),
+          }
+        end
+        it 'does not do anything' do
+          next_plugin = spy
+          expect(next_plugin).to receive(:call).with(no_args)
+          expect_any_instance_of(Proofing::Mock::StateIdMockClient).not_to receive(:proof)
+          subject.call(input:, result: result_so_far, next_plugin:)
+        end
+      end
+
+      context 'when AAMVA failure already present' do
+        let(:result_so_far) do
+          {
+            aamva: Proofing::StateIdResult.new(success: false),
+          }
+        end
+        it 'does not do anything' do
+          next_plugin = spy
+          expect(next_plugin).to receive(:call).with(no_args)
+          expect_any_instance_of(Proofing::Mock::StateIdMockClient).not_to receive(:proof)
+          subject.call(input:, result: result_so_far, next_plugin:)
+        end
+      end
+
+      context 'when AAMVA exception already present' do
+        let(:result_so_far) do
+          {
+            aamva: Proofing::StateIdResult.new(success: false, exception: 'Oh no!'),
+          }
+        end
+        it 'makes a new proofer call' do
+          next_plugin = spy
+          expect(next_plugin).to receive(:call).with(
+            {
+              aamva: satisfy do |value|
+                expect(value).to be_instance_of(Proofing::StateIdResult)
+                expect(value).to have_attributes(success: true)
+              end,
+            },
+          )
+          expect_any_instance_of(Proofing::Mock::StateIdMockClient).to receive(:proof).and_call_original
+          subject.call(input:, result: result_so_far, next_plugin:)
+        end
+      end
     end
   end
 end

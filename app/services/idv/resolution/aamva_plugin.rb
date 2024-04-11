@@ -3,9 +3,13 @@ module Idv
     class AamvaPlugin
       def call(
         input:,
-        next_plugin:,
-        **
+        result:,
+        next_plugin:
       )
+        if aamva_already_called?(result)
+          return next_plugin.call
+        end
+
         if input.state_id.nil?
           return next_plugin.call(
             aamva: {
@@ -36,6 +40,13 @@ module Idv
       end
 
       private
+
+      def aamva_already_called?(result)
+        return false unless result[:aamva]
+
+        # If we don't have an exception, it's already been called
+        result[:aamva].exception.nil?
+      end
 
       def proofer
         @proofer ||=
