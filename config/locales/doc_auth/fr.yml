@@ -55,6 +55,7 @@ fr:
         selfie_not_live: Essayez de prendre une nouvelle photo de vous-même.
           Assurez-vous que l’ensemble de votre visage soit clair et visible sur
           la photo.
+        selfie_not_live_help_link_text: Consultez plus de conseils pour prendre une photo claire de vous-même
         selfie_poor_quality: 'Essayez de prendre une nouvelle photo de vous-même.
           Assurez-vous que l’ensemble de votre visage soit clair et visible sur
           la photo.'
@@ -117,6 +118,7 @@ fr:
         no_liveness: Essayez de prendre de nouvelles photos.
         selfie_failure: Essayez de prendre de nouvelles photos de vous-même. Veillez à
           ce que toutes vos photos soient claires et nettes.
+        selfie_failure_help_link_text: Consultez plus de conseils pour prendre des photos claires
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo peut avoir
