@@ -254,7 +254,7 @@ es:
           error</strong>.
         other: Su correo electrónico y su contraseña de %{app_name} se usaron para
           ingresar desde un nuevo dispositivo, pero <strong>error al autenticar
-          %{count} veces</strong>
+          %{count} veces</strong>.
       info_p2: Si reconoce esta actividad, no tiene que hacer nada.
       info_p3_html: La autenticación de dos factores protege su cuenta de accesos no
         autorizados. Si no fue usted, %{reset_password_link_html}
