@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Encryption
   class ContextlessKmsClient
     include Encodable
@@ -10,7 +12,7 @@ module Encryption
         instance_profile_credentials_timeout: 1, # defaults to 1 second
         instance_profile_credentials_retries: 5, # defaults to 0 retries
       )
-    end
+    end.freeze
 
     KEY_TYPE = {
       KMS: 'KMSx',

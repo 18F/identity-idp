@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Pii
   class Cacher
     attr_reader :user, :user_session

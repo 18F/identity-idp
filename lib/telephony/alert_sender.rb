@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Telephony
   class AlertSender
     SMS_MAX_LENGTH = 160

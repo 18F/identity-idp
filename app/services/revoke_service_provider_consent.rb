@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RevokeServiceProviderConsent
   attr_reader :identity, :now
 

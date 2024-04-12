@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 # Serve a static file from Rails so that the CORS middleware can add the correct headers
 class AnalyticsEventsController < ApplicationController
   prepend_before_action :skip_session_load
   prepend_before_action :skip_session_expiration
   skip_before_action :disable_caching
 
-  JSON_FILE = Rails.public_path.join('api', '_analytics-events.json')
+  JSON_FILE = Rails.public_path.join('api', '_analytics-events.json').freeze
 
   def index
     if File.exist?(JSON_FILE)

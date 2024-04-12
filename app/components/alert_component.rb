@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlertComponent < BaseComponent
   VALID_TYPES = %i[info success warning error emergency other].freeze
 

@@ -9,7 +9,7 @@ end
 require 'active_support/core_ext/object/blank'
 require 'active_support'
 
-RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?
+RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?.freeze
 
 RSpec.configure do |config|
   # see more settings at spec/rails_helper.rb

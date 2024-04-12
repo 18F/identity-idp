@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     module Ddp
@@ -189,7 +191,7 @@ module Proofing
           true_ip_score
           true_ip_worst_score
           unknown_session
-        ]
+        ].freeze
 
         # @param [Hash, nil] parsed JSON response body
         def self.redact(hash)

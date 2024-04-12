@@ -19,8 +19,6 @@ fr:
       phone: Ajouter un numéro de téléphone
     cancellations:
       prompt: Es-tu sûre de vouloir annuler?
-    confirmations:
-      new: Envoyer un autre courriel de confirmation
     create_account_new_users: Créer un compte pour les nouveaux utilisateurs
     create_account_with_sp:
       sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre
@@ -76,4 +74,4 @@ fr:
     webauthn_platform_setup:
       new: Déverrouillage facial ou tactile
     webauthn_setup:
-      new: Ajoutez votre clé de sécurité
+      new: Insérer votre clé de sécurité

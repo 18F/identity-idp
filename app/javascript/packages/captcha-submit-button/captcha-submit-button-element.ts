@@ -1,5 +1,3 @@
-export const CAPTCHA_EVENT_NAME = 'lg:captcha-submit-button:challenge';
-
 class CaptchaSubmitButtonElement extends HTMLElement {
   form: HTMLFormElement | null;
 
@@ -55,13 +53,7 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   }
 
   shouldInvokeChallenge(): boolean {
-    if (!this.recaptchaSiteKey) {
-      return false;
-    }
-
-    const event = new CustomEvent(CAPTCHA_EVENT_NAME, { bubbles: true, cancelable: true });
-    this.dispatchEvent(event);
-    return !event.defaultPrevented;
+    return !!this.recaptchaSiteKey;
   }
 
   handleFormSubmit = (event: SubmitEvent) => {

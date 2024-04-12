@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   class AuthAppConfiguration
     def self.create(user, otp_secret_key, totp_timestamp, name = Time.zone.now.to_s)

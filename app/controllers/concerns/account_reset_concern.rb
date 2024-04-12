@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountResetConcern
   include ActionView::Helpers::DateHelper
   def account_reset_deletion_period_interval(user)

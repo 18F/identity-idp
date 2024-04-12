@@ -81,6 +81,22 @@ RSpec.describe Idv::AddressController do
       )
     end
 
+    it 'adds updated_user_data to idv_session' do
+      expect do
+        put :update, params: params
+      end.to change { subject.idv_session.updated_user_address }
+
+      expect(subject.idv_session.updated_user_address).to eql(
+        Pii::Address.new(
+          address1: '1234 Main St',
+          address2: 'Apt B',
+          city: 'Beverly Hills',
+          state: 'CA',
+          zipcode: '90210',
+        ),
+      )
+    end
+
     it 'invalidates future steps' do
       expect(subject).to receive(:clear_future_steps!)
 
@@ -96,6 +112,26 @@ RSpec.describe Idv::AddressController do
           address_edited: true,
           error_details: nil },
       )
+    end
+
+    context 'with invalid params' do
+      render_views
+
+      it 'renders errors if they occur' do
+        params[:idv_form][:zipcode] = 'this is invalid'
+
+        put :update, params: params
+
+        expect(response).to render_template(:new)
+        expect(response.body).to include(t('idv.errors.pattern_mismatch.zipcode'))
+      end
+    end
+
+    xit 'has the correct `address_edited` value when submitted twice with the same data' do
+      put :update, params: params
+      expect(subject.idv_session.address_edited).to eq(true)
+      put :update, params: params
+      expect(subject.idv_session.address_edited).to eq(true)
     end
   end
 end

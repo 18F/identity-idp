@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class AddressForm
     include ActiveModel::Model
@@ -8,11 +10,11 @@ module Idv
     attr_accessor(*ATTRIBUTES)
 
     def self.model_name
-      ActiveModel::Name.new(self, nil, 'Address')
+      ActiveModel::Name.new(self, nil, 'IdvForm')
     end
 
     def initialize(pii)
-      @pii = pii
+      set_ivars_with_pii(pii)
       @address_edited = false
     end
 
@@ -31,13 +33,21 @@ module Idv
 
     private
 
+    def set_ivars_with_pii(pii)
+      pii = pii.symbolize_keys
+      @address1 = pii[:address1]
+      @address2 = pii[:address2]
+      @city = pii[:city]
+      @state = pii[:state]
+      @zipcode = pii[:zipcode]
+    end
+
     def consume_params(params)
-      params.each do |key, value|
-        raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-        send(:"#{key}=", value)
-        if send(key) != @pii[key] && (send(key).present? || @pii[key].present?)
+      ATTRIBUTES.each do |attribute_name|
+        if send(attribute_name).to_s != params[attribute_name].to_s
           @address_edited = true
         end
+        send(:"#{attribute_name}=", params[attribute_name].to_s)
       end
     end
 

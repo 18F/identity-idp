@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module LexisNexis
     Config = RedactedStruct.new(
@@ -37,6 +39,6 @@ module DocAuth
         raise 'config missing base_url' if !base_url
         raise 'config missing locale' if !locale
       end
-    end
+    end.freeze
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module AnalyticsEventsEnhancer
     IGNORED_METHODS = %i[

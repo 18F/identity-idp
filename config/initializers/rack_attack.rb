@@ -6,11 +6,11 @@ module Rack
   class Attack
     ALLOWED_CIDR_BLOCKS = IdentityConfig.store.requests_per_ip_cidr_allowlist.map do |x|
       IPAddr.new(x)
-    end
+    end.freeze
 
     EMAIL_REGISTRATION_PATHS = ['/sign_up/enter_email', '/en/sign_up/enter_email',
-                                '/es/sign_up/enter_email', '/fr/sign_up/enter_email']
-    SIGN_IN_PATHS = ['/', '/en', '/es', '/fr']
+                                '/es/sign_up/enter_email', '/fr/sign_up/enter_email'].freeze
+    SIGN_IN_PATHS = ['/', '/en', '/es', '/fr'].freeze
 
     # If the app is behind a load balancer, `ip` will return the IP of the
     # load balancer instead of the actual IP the request came from, and since

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Pii
   class Fingerprinter
     def self.current_key

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Aamva
     module Response

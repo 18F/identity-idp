@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FrontendLogger
   attr_reader :analytics, :event_map
 

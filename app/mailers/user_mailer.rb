@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UserMailer handles all email sending to the User class. It expects to be called using `with`
 # that receives a `user` and `email_address`. This pattern is preferred as the User and
 # EmailAddress database records are needed across any email being sent.
@@ -132,6 +134,37 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_after_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_before_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+      @failed_times = events.count { |event| event.event_type == 'sign_in_unsuccessful_2fa' }
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
       )
     end
   end

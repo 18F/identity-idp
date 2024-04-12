@@ -24,5 +24,8 @@ fr:
     piv_cac_enabled: Carte PIV/CAC associée
     sign_in_after_2fa: Signé avec deuxième facteur
     sign_in_before_2fa: Connecté avec mot de passe
+    sign_in_notification_timeframe_expired: Délai de notification pour la connexion
+      à partir d’un nouveau dispositif expiré
+    sign_in_unsuccessful_2fa: Échec de l’authentification
     webauthn_key_added: Clé de sécurité ajoutée
     webauthn_key_removed: Clé de sécurité retirée

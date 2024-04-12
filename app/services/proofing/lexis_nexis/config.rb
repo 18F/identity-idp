@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     Config = RedactedStruct.new(
@@ -21,6 +23,6 @@ module Proofing
         :request_mode,
         :request_timeout,
       ],
-    )
+    ).freeze
   end
 end

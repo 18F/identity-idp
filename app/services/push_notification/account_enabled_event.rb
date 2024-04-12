@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module PushNotification
   # This is used for account reinstatement
   class AccountEnabledEvent
     include IssSubEvent
 
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-enabled'.freeze
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-enabled'
 
     attr_reader :user
 

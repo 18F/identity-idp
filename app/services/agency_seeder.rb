@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Update Agency from config/agencies.yml (all environments in rake db:seed)
 class AgencySeeder
   def initialize(

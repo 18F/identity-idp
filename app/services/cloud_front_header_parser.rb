@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CloudFrontHeaderParser
   def initialize(request)
     @request = request

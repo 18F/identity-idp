@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebauthnVisitForm
   include ActiveModel::Model
   include ActionView::Helpers::UrlHelper

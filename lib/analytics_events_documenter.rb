@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'yard'
 require 'json'
 require 'optparse'
@@ -13,7 +15,7 @@ class AnalyticsEventsDocumenter
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
     pii_like_keypaths
-  ]
+  ].freeze
 
   attr_reader :database_path, :class_name
 

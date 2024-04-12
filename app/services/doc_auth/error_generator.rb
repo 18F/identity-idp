@@ -11,7 +11,7 @@ module DocAuth
   class IdTypeErrorHandler < ErrorHandler
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
     def handle(response_info)
       get_id_type_errors(response_info[:classification_info])
     end
@@ -114,7 +114,7 @@ module DocAuth
       error == Errors::SELFIE_FAILURE
     end
 
-    SELFIE_GENERAL_FAILURE_ERROR =
+    def selfie_general_failure_error
       {
         general: [Errors::SELFIE_FAILURE],
         front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
@@ -122,6 +122,7 @@ module DocAuth
         selfie: [Errors::SELFIE_FAILURE],
         hints: false,
       }
+    end
 
     private
 
@@ -252,7 +253,7 @@ module DocAuth
     GENERAL = :general
 
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
 
     ERROR_KEYS = [
       ID,
@@ -317,7 +318,7 @@ module DocAuth
 
       # if selfie itself is ok, but we have selfie related error
       if selfie_error_handler.is_generic_selfie_error?(selfie_error)
-        return SelfieErrorHandler::SELFIE_GENERAL_FAILURE_ERROR
+        return selfie_error_handler.selfie_general_failure_error
       end
 
       # other vendor response detail error

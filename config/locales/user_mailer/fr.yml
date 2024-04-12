@@ -238,6 +238,38 @@ fr:
         %{app_name_html} ou %{contact_link_html}.
       info: 'Votre compte %{app_name} a été connecté sur un nouvel appareil.'
       subject: Nouvelle connexion avec votre compte %{app_name}
+    new_device_sign_in_after_2fa:
+      authentication_methods: méthodes d’authentification
+      info_p1: Votre adresse e-mail et votre mot de passe %{app_name} ont été utilisés
+        pour se connecter et s’authentifier sur un nouvel appareil.
+      info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
+      info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez
+        immédiatement vos %{authentication_methods_link_html}.
+      reset_password: réinitialisez votre mot de passe
+      subject: Nouvelle connexion et authentification avec votre compte %{app_name}
+    new_device_sign_in_attempts:
+      events:
+        sign_in_after_2fa: Signé avec deuxième facteur
+        sign_in_before_2fa: Connecté avec mot de passe
+        sign_in_unsuccessful_2fa: Échec de l’authentification
+      new_sign_in_from: Nouvelle connexion potentiellement située à %{location}
+    new_device_sign_in_before_2fa:
+      info_p1_html:
+        one: Votre adresse électronique et votre mot de passe %{app_name} ont été
+          utilisés pour vous connecter à partir d’un nouvel appareil, mais
+          <strong>l’authentification a échoué</strong>.
+        other: Votre adresse électronique et votre mot de passe %{app_name} ont été
+          utilisés pour vous connecter à partir d’un nouvel appareil, mais
+          <strong>l’authentification a échoué %{count} reprises</strong>.
+        zero: Votre adresse électronique et votre mot de passe %{app_name} ont été
+          utilisés pour vous connecter à partir d’un nouvel appareil, mais
+          <strong>l’authentification a échoué</strong>.
+      info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
+      info_p3_html: L’authentification à deux facteurs protège votre compte contre
+        tout accès non autorisé. Si ce n’est pas vous,
+        %{reset_password_link_html}.
+      reset_password: réinitialisez immédiatement votre mot de passe
+      subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
       disavowal_link: réinitialiser votre mot de passe
       help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}.

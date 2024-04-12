@@ -27,7 +27,7 @@ RSpec.describe TwoFactorAuthentication::OptionsController, allowed_extra_analyti
     it 'redirects to login_two_factor_url if user selects sms' do
       post :create, params: { two_factor_options_form: { selection: 'sms' } }
 
-      expect(response).to redirect_to otp_send_url( \
+      expect(response).to redirect_to otp_send_url(
         otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
       )
     end
@@ -35,7 +35,7 @@ RSpec.describe TwoFactorAuthentication::OptionsController, allowed_extra_analyti
     it 'redirects to login_two_factor_url if user selects voice' do
       post :create, params: { two_factor_options_form: { selection: 'voice' } }
 
-      expect(response).to redirect_to otp_send_url( \
+      expect(response).to redirect_to otp_send_url(
         otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
       )
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Handles the INTERNAL redirect which happens when a service provider authentication request
 # is passed through the IDP's authentication flow (sign-in, MFA, etc.)
 # The original request was saved to the sp_session object, so we retrieve it to pass on the

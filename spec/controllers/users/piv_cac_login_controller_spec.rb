@@ -22,8 +22,11 @@ RSpec.describe Users::PivCacLoginController do
       let(:token) { 'TEST:abcdefg' }
 
       context 'an invalid token' do
-        before { get :new, params: { token: token } }
+        subject(:response) { get :new, params: { token: token } }
+
         it 'tracks the login attempt' do
+          response
+
           expect(@analytics).to have_logged_event(
             :piv_cac_login,
             errors: {},
@@ -34,6 +37,12 @@ RSpec.describe Users::PivCacLoginController do
 
         it 'redirects to the error url' do
           expect(response).to redirect_to(login_piv_cac_error_url(error: 'token.bad'))
+        end
+
+        it 'records unsuccessful 2fa event' do
+          expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
+
+          response
         end
       end
 
@@ -114,6 +123,7 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'sets the session correctly' do
+            expect(controller.user_session[:new_device]).to eq(true)
             expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
               to eq false
 
@@ -141,6 +151,16 @@ RSpec.describe Users::PivCacLoginController do
               presented: true,
             }
             expect(controller.user_session[:decrypted_x509]).to eq session_info.to_json
+          end
+
+          context 'from existing device' do
+            before do
+              allow(user).to receive(:new_device?).and_return(false)
+            end
+
+            it 'sets the session correctly' do
+              expect(controller.user_session[:new_device]).to eq(true)
+            end
           end
 
           context 'when the user has not accepted the most recent terms of use' do

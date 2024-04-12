@@ -1,9 +1,13 @@
-class IdentityConfig
-  GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
-  GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
-  GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp
+# frozen_string_literal: true
 
-  VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
+require 'csv'
+
+class IdentityConfig
+  GIT_SHA = `git rev-parse --short=8 HEAD`.chomp.freeze
+  GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first.freeze
+  GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp.freeze
+
+  VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage].freeze
 
   class << self
     attr_reader :store, :key_types, :unused_keys
@@ -26,7 +30,7 @@ class IdentityConfig
     end,
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
-      value.split(',')
+      CSV.parse_line(value).to_a
     end,
     integer: proc do |value|
       Integer(value)
@@ -56,7 +60,7 @@ class IdentityConfig
       Time.parse(value)
       # rubocop:enable Rails/TimeZone
     end,
-  }
+  }.freeze
 
   attr_reader :key_types
 
@@ -77,7 +81,7 @@ class IdentityConfig
       raise "unexpected #{key}: #{value}, expected one of #{enum}"
     end
 
-    @written_env[key] = converted_value
+    @written_env[key] = converted_value.freeze
     @written_env
   end
 
@@ -212,6 +216,7 @@ class IdentityConfig
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
+    config.add(:feature_new_device_alert_aggregation_enabled, type: :boolean)
     config.add(:geo_data_file_path, type: :string)
     config.add(:get_usps_proofing_results_job_cron, type: :string)
     config.add(:get_usps_proofing_results_job_reprocess_delay_minutes, type: :integer)
@@ -263,6 +268,7 @@ class IdentityConfig
     config.add(:in_person_public_address_search_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
+    config.add(:in_person_state_id_controller_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:invalid_gpo_confirmation_zipcode, type: :string)
@@ -321,6 +327,7 @@ class IdentityConfig
     config.add(:min_password_score, type: :integer)
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
     config.add(:mx_timeout, type: :integer)
+    config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
     config.add(
       :openid_connect_redirect,
@@ -351,7 +358,7 @@ class IdentityConfig
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)
-    config.add(:phone_carrier_registration_blocklist, type: :comma_separated_string_list)
+    config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)
     config.add(:phone_confirmation_max_attempts, type: :integer)
     config.add(
@@ -451,6 +458,9 @@ class IdentityConfig
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
     config.add(:show_unsupported_passkey_platform_authentication_setup, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
+    config.add(:short_term_phone_otp_max_attempts, type: :integer)
+    config.add(:short_term_phone_otp_max_attempt_window_in_seconds, type: :integer)
+    config.add(:short_term_phone_otp_rate_limiter_enabled, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
@@ -506,8 +516,9 @@ class IdentityConfig
     config.add(:weekly_auth_funnel_report_config, type: :json)
     config.add(:x509_presented_hash_attribute_requested_issuers, type: :json)
 
-    @key_types = config.key_types
-    @unused_keys = config_map.keys - config.written_env.keys
+    @key_types = config.key_types.freeze
+    @unused_keys = (config_map.keys - config.written_env.keys).freeze
+    config.written_env.freeze
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end

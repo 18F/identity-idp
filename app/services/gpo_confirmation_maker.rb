@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoConfirmationMaker
   class InvalidEntryError < StandardError
     def initialize(reason)

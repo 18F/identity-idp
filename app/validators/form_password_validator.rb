@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FormPasswordValidator
   extend ActiveSupport::Concern
 
@@ -18,7 +20,7 @@ module FormPasswordValidator
 
   private
 
-  ZXCVBN_TESTER = ::Zxcvbn::Tester.new
+  ZXCVBN_TESTER = ::Zxcvbn::Tester.new.freeze
 
   def strong_password
     return unless errors.messages.blank? && password_score.score < min_password_score

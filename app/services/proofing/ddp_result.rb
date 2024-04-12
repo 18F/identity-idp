@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   class DdpResult
     attr_reader :exception

@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'time'
 
 module Telephony
   module Pinpoint
     class VoiceSender
       # One connection pool per config (aka per-region)
+      # rubocop:disable Style/MutableConstant
       CLIENT_POOL = Hash.new do |h, voice_config|
         h[voice_config] = ConnectionPool.new(size: IdentityConfig.store.pinpoint_voice_pool_size) do
           credentials = AwsCredentialBuilder.new(voice_config).call
@@ -15,6 +18,7 @@ module Telephony
           )
         end
       end
+      # rubocop:enable Style/MutableConstant
 
       # rubocop:disable Lint/UnusedMethodArgument
       # rubocop:disable Metrics/BlockLength

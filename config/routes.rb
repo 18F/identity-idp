@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
   get '/api/analytics-events' => 'analytics_events#index'
@@ -142,6 +144,9 @@ Rails.application.routes.draw do
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
+      get 'login/piv_cac_recommended' => 'users/piv_cac_recommended#show'
+      post 'login/piv_cac_recommended/add' => 'users/piv_cac_recommended#confirm'
+      post 'login/piv_cac_recommended/skip' => 'users/piv_cac_recommended#skip'
     end
 
     if IdentityConfig.store.enable_test_routes
@@ -295,7 +300,7 @@ Rails.application.routes.draw do
         as: :sign_up_create_email_confirmation
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
-    get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
+    get '/sign_up/enter_email/resend' => redirect('/sign_up/enter_email')
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed

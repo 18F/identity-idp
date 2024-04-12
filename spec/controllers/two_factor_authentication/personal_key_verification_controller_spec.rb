@@ -70,6 +70,10 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY).
+          and_call_original
+
         freeze_time do
           post :create, params: payload
 
@@ -230,6 +234,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+        post :create, params: payload
+      end
+
+      it 'records unsuccessful 2fa event' do
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
 
         post :create, params: payload
       end

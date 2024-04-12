@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FeatureManagement
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'

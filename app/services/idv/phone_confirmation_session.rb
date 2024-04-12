@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class PhoneConfirmationSession
     attr_reader :code, :phone, :sent_at, :delivery_method

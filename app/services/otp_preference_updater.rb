@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OtpPreferenceUpdater
   def initialize(user:, preference:, phone_id:, default: nil)
     @user = user

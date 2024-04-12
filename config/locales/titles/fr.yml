@@ -8,7 +8,6 @@ fr:
     backup_codes: Ne perdez pas vos codes de sauvegarde
     confirmations:
       delete: Veuillez confirmer
-      new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
     doc_auth:
       address: Mettez à jour votre adresse postale
@@ -59,6 +58,7 @@ fr:
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
     piv_cac_setup:
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
+      upsell: Renforcer la sécurité de votre compte avec une carte d’employé fédéral
     present_piv_cac: Veuillez présenter votre carte PIV/CAC
     present_webauthn: Branchez votre clé de sécurité physique
     reactivate_account: Réactiver le profil

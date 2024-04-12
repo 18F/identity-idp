@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 class PhoneInputComponent < BaseComponent
   attr_reader :form,
               :confirmed_phone,
               :required,
               :allowed_countries,
               :delivery_methods,
-              :captcha_exempt_countries,
               :tag_options
 
   alias_method :f, :form
@@ -15,7 +16,6 @@ class PhoneInputComponent < BaseComponent
     allowed_countries: nil,
     delivery_methods: [:sms, :voice],
     required: false,
-    captcha_exempt_countries: nil,
     **tag_options
   )
     @allowed_countries = allowed_countries
@@ -23,7 +23,6 @@ class PhoneInputComponent < BaseComponent
     @form = form
     @required = required
     @delivery_methods = delivery_methods
-    @captcha_exempt_countries = captcha_exempt_countries
     @tag_options = tag_options
   end
 
