@@ -3,9 +3,13 @@ module Idv
     class InstantVerifyPlugin
       RESULTS_KEY = :instant_verify
 
-      attr_reader :timer
+      attr_reader :ab_test_discriminator, :timer
 
-      def initialize(timer: nil)
+      def initialize(
+        ab_test_discriminator: nil,
+        timer: nil
+      )
+        @ab_test_discriminator = ab_test_discriminator
         @timer = timer || JobHelpers::Timer.new
       end
 
@@ -74,6 +78,12 @@ module Idv
           **address.to_h,
           ssn: input.other.ssn,
         }
+      end
+
+      def lexisnexis_instant_verify_workflow
+        ab_test_variables = Idv::LexisNexisInstantVerify.new(ab_test_discriminator).
+          workflow_ab_testing_variables
+        ab_test_variables[:instant_verify_workflow]
       end
 
       def proofer
