@@ -33,7 +33,7 @@ module UserAlerts
           'sign_in_unsuccessful_2fa',
           'sign_in_after_2fa',
         ],
-      ).order(:created_at).includes(:device)
+      ).order(:created_at).includes(:device).limit(20).all.to_a
 
       user.confirmed_email_addresses.each do |email_address|
         mailer = UserMailer.with(user:, email_address:)
