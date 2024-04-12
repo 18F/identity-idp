@@ -12,7 +12,7 @@ RequestPasswordReset = RedactedStruct.new(
       analytics.rate_limit_reached(limiter_type: :reset_password_email)
       irs_attempts_api_tracker.forgot_password_email_rate_limited(email: email)
     elsif user.blank?
-      AnonymousMailer.with(email:).password_reset_missing_user(request_id:).deliver_now_or_later
+      AnonymousMailer.with(email:).password_reset_missing_user(request_id:).deliver_now
     elsif user.suspended?
       UserMailer.with(
         user: user,

@@ -26,7 +26,7 @@ RSpec.describe RequestPasswordReset do
         mail = instance_double(ActionMailer::MessageDelivery)
         expect(AnonymousMailer).to receive(:with).with(email:).and_return(mailer)
         expect(mailer).to receive(:password_reset_missing_user).with(request_id:).and_return(mail)
-        expect(mail).to receive(:deliver_now_or_later)
+        expect(mail).to receive(:deliver_now)
 
         RequestPasswordReset.new(
           email: email,
@@ -177,7 +177,7 @@ RSpec.describe RequestPasswordReset do
         mail = instance_double(ActionMailer::MessageDelivery)
         expect(AnonymousMailer).to receive(:with).with(email:).and_return(mailer)
         expect(mailer).to receive(:password_reset_missing_user).with(request_id:).and_return(mail)
-        expect(mail).to receive(:deliver_now_or_later)
+        expect(mail).to receive(:deliver_now)
 
         RequestPasswordReset.new(
           email:,

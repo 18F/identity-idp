@@ -3,13 +3,14 @@
 # AnonymousMailer handles all email sending not associated with a user. It expects to be called
 # using `with` that receives an `email` string value.
 #
-# Arguments sent to individual methods must not include personally-identifiable information (PII).
-# This includes email addresses. All method arguments are stored in the database when the email is
-# being sent asynchronusly by ActiveJob and we must not put PII in the database in plaintext.
+# You MUST deliver these messages using `deliver_now`. Anonymous messages rely on a plaintext email
+# address, which is personally-identifiable information (PII). All method arguments are stored in
+# the database when the email is being sent asynchronusly by ActiveJob and we must not put PII in
+# the database in plaintext.
 #
 # Example:
 #
-#   AnonymousMailer.with(email:).password_reset_missing_user(request_id:)
+#   AnonymousMailer.with(email:).password_reset_missing_user(request_id:).deliver_now
 #
 class AnonymousMailer < ActionMailer::Base
   include Mailable
