@@ -137,6 +137,8 @@ class ResolutionProofingJob < ApplicationJob
     plugins = [
       Idv::Resolution::ThreatmetrixPlugin.new(timer:),
       Idv::Resolution::AamvaPlugin.new,
+      Idv::Resolution::InstantVerifyPlugin.new,
+      Idv::Resolution::DeciderPlugin.new,
     ]
 
     resolver = Idv::Resolution::IdentityResolver.new(plugins:)
@@ -152,11 +154,32 @@ class ResolutionProofingJob < ApplicationJob
 
     result = resolver.resolve_identity(input:)
 
+    adapted_result = FormResponse.new(
+      success: result[:decider][:result] == :pass,
+      errors: {},
+      extra: {
+        exception: nil, # TODO
+        timed_out: false, # TODO
+        threatmetrix_review_status: result[:threatmetrix].review_status,
+        context: {
+          device_profiling_adjudication_reason: 'TODO',
+          resolution_adjudication_reason: 'TODO',
+          should_proof_state_id: 'TODO',
+          stages: {
+            resolution: result[:instant_verify][:state_id_address].to_h,
+            residential_address: result[:instant_verify][:address_of_residence].to_h,
+            state_id: result[:aamva][:state_id_address].to_h,
+            threatmetrix: result[:threatmetrix].to_h,
+          },
+        },
+      },
+    )
+
     CallbackLogData.new(
       device_profiling_success: nil,
       resolution_success: nil,
       residential_resolution_success: nil,
-      result:,
+      result: adapted_result,
       state_id_success: nil,
     )
   end
