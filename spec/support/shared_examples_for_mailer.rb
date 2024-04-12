@@ -1,4 +1,4 @@
-RSpec.shared_examples 'a system email' do |synchronous_only:|
+RSpec.shared_examples 'a system email' do |synchronous_only: false|
   it 'is from the default email' do
     expect(mail.from).to eq [IdentityConfig.store.email_from]
     expect(mail[:from].display_names).to eq [IdentityConfig.store.email_from_display_name]
