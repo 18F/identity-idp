@@ -10,6 +10,10 @@ RSpec.shared_examples 'a system email' do
     # https://www.caniemail.com/features/image-svg/
     expect(body).not_to have_css('img[src$=".svg"]')
   end
+
+  it 'does not error when delivered asynchronously' do
+    mail.deliver_later
+  end
 end
 
 # expects there to be a let(:user) in scope
