@@ -17,10 +17,7 @@ module Idv
         # in the stack.
         if !FeatureManagement.proofing_device_profiling_collecting_enabled?
           return next_plugin.call(
-            threatmetrix: {
-              success: false,
-              reason: :collecting_disabled,
-            },
+            threatmetrix: threatmetrix_disabled_result,
           )
         end
 
@@ -29,11 +26,7 @@ module Idv
         # go through fraud review)
         if input_missing_threatmetrix_session_id?(input)
           return next_plugin.call(
-            threatmetrix: {
-              success: false,
-              reason: :missing_session_id,
-              threatmetrix_result: 'reject',
-            },
+            threatmetrix: missing_session_id_result,
           )
         end
 
@@ -81,6 +74,14 @@ module Idv
         input&.other&.threatmetrix_session_id.blank?
       end
 
+      def missing_session_id_result
+        Proofing::DdpResult.new(
+          success: true,
+          client: 'tmx_missing_session_id',
+          review_status: 'reject',
+        )
+      end
+
       def proofer
         @proofer ||=
           if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
@@ -119,6 +120,14 @@ module Idv
         timer.time('threatmetrix') do
           lexisnexis_ddp_proofer.proof(ddp_pii)
         end
+      end
+
+      def threatmetrix_disabled_result
+        Proofing::DdpResult.new(
+          success: true,
+          client: 'tmx_disabled',
+          review_status: 'pass',
+        )
       end
     end
   end

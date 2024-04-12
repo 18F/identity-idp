@@ -2,24 +2,39 @@ require 'rails_helper'
 
 RSpec.describe Idv::Resolution::ThreatmetrixPlugin do
   let(:proofing_device_profiling) { :enabled }
+
   let(:input) { nil }
+
+  let(:threatmetrix_result) { nil }
+
+  let(:proofer) do
+    spy.tap do |proofer|
+      allow(proofer).to receive(:proof).and_return(threatmetrix_result)
+    end
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(proofing_device_profiling)
+
+    allow(subject).to receive(:proofer).and_return(proofer)
   end
 
   context 'ThreatMetrix collecting disabled' do
     let(:proofing_device_profiling) { :disabled }
 
     it 'augments result appropriately' do
-      next_plugin = spy
-      expect(next_plugin).to receive(:call).with(
-        threatmetrix: {
-          success: false,
-          reason: :collecting_disabled,
-        },
+      next_plugin = next_plugin_expecting(
+        threatmetrix: satisfy do |value|
+          expect(value).to be_instance_of(Proofing::DdpResult)
+          expect(value.success).to eql(true)
+          expect(value.client).to eql('tmx_disabled')
+          expect(value.review_status).to eql('pass')
+        end,
       )
+
+      expect(proofer).not_to receive(:proof)
+
       subject.call(
         input:,
         result: {},
@@ -39,14 +54,16 @@ RSpec.describe Idv::Resolution::ThreatmetrixPlugin do
       end
 
       it 'Marks with rejected result and calls the next plugin' do
-        next_plugin = spy
-        expect(next_plugin).to receive(:call).with(
-          threatmetrix: {
-            success: false,
-            reason: :missing_session_id,
-            threatmetrix_result: 'reject',
-          },
+        next_plugin = next_plugin_expecting(
+          threatmetrix: satisfy do |value|
+            expect(value).to be_instance_of(Proofing::DdpResult)
+            expect(value.success).to eql(true)
+            expect(value.client).to eql('tmx_missing_session_id')
+            expect(value.review_status).to eql('reject')
+          end,
         )
+
+        expect(proofer).not_to receive(:proof)
 
         subject.call(input:, result: {}, next_plugin:)
       end
@@ -71,12 +88,11 @@ RSpec.describe Idv::Resolution::ThreatmetrixPlugin do
     end
 
     it 'calls the ThreatMetrix proofer' do
-      next_plugin = spy
-      expect(next_plugin).to receive(:call).with(
-        threatmetrix: instance_of(Proofing::DdpResult),
+      next_plugin = next_plugin_expecting(
+        threatmetrix: threatmetrix_result,
       )
 
-      expect_any_instance_of(Proofing::Mock::DdpMockClient).to receive(:proof).
+      expect(proofer).to receive(:proof).
         with(
           { address1: '1 FAKE RD',
             address2: nil,
@@ -93,7 +109,7 @@ RSpec.describe Idv::Resolution::ThreatmetrixPlugin do
             threatmetrix_session_id: 'ABCD-1234',
             uuid_prefix: '1234',
             zipcode: '59010' },
-        ).and_call_original
+        ).and_return(threatmetrix_result)
 
       subject.call(
         input:,
@@ -101,5 +117,11 @@ RSpec.describe Idv::Resolution::ThreatmetrixPlugin do
         next_plugin:,
       )
     end
+  end
+
+  def next_plugin_expecting(*args, **kwargs)
+    next_plugin = spy
+    expect(next_plugin).to receive(:call).with(*args, **kwargs)
+    next_plugin
   end
 end
