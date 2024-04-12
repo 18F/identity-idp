@@ -126,7 +126,7 @@ lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
 	@# and you have no options to split that from the common bundles. If you need to increase this
 	@# budget and accept the fact that this will force end-users to endure longer load times, you
 	@# should set the new budget to within a few thousand bytes of the production-compiled size.
-	find app/assets/builds/application.css -size -190000c | grep .
+	find app/assets/builds/application.css -size -185000c | grep .
 	find public/packs/js/application-*.digested.js -size -5000c | grep .
 
 lint_migrations:
