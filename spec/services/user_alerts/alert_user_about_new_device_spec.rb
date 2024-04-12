@@ -6,6 +6,10 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
   let(:disavowal_token) { 'the_disavowal_token' }
   let(:device) { create(:device, user: user) }
 
+  before do
+    ActiveJob::Base.queue_adapter = :test
+  end
+
   describe '.call' do
     context 'aggregated new device alerts enabled' do
       before do
@@ -156,20 +160,32 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
         # 3. Exclude events not related to authentication, e.g. actions after sign-in
         create(:event, user:, event_type: :password_changed, created_at: 4.minutes.ago)
 
-        delivery = instance_double(ActionMailer::MessageDelivery)
-        expect(delivery).to receive(:deliver_now_or_later)
-        mailer = instance_double(UserMailer)
-        expect(UserMailer).to receive(:with).and_return(mailer)
-        expect(mailer).to receive(:new_device_sign_in_after_2fa).with(
-          events: [
-            sign_in_before_2fa_event,
-            sign_in_unsuccessful_2fa_event,
-            sign_in_after_2fa_event,
-          ],
-          disavowal_token:,
-        ).and_return(delivery)
+        # delivery = instance_double(ActionMailer::MessageDelivery)
+        # expect(delivery).to receive(:deliver_now_or_later)
+        # mailer = instance_double(UserMailer)
+        # expect(UserMailer).to receive(:with).and_return(mailer)
+        # expect(mailer).to receive(:new_device_sign_in_after_2fa).with(
+        #   events: [
+        #     sign_in_before_2fa_event,
+        #     sign_in_unsuccessful_2fa_event,
+        #     sign_in_after_2fa_event,
+        #   ],
+        #   disavowal_token:,
+        # ).and_return(delivery)
 
-        result
+        expect do
+          result
+        end.to have_enqueued_mail(UserMailer, :new_device_sign_in_after_2fa).with(
+          params: { user: user.reload, email_address: user.email_addresses.first },
+          args: [{
+            events: [
+              sign_in_before_2fa_event.reload,
+              sign_in_unsuccessful_2fa_event.reload,
+              sign_in_after_2fa_event.reload,
+            ],
+            disavowal_token: disavowal_token,
+          }],
+        )
       end
     end
 
