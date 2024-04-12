@@ -38,7 +38,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
           aamva: {
             state_id_address: state_id_result_with(
               success: false,
-              exception: :state_id_missing,
+              vendor_name: 'aamva_state_id_missing',
             ),
           },
         )
@@ -61,7 +61,7 @@ RSpec.describe Idv::Resolution::AamvaPlugin do
           aamva: {
             state_id_address: state_id_result_with(
               success: false,
-              exception: :unsupported_jurisdiction,
+              vendor_name: 'aamva_unsupported_jurisdiction',
             ),
           },
         )

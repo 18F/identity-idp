@@ -69,14 +69,14 @@ module Idv
       def state_id_missing_result
         Proofing::StateIdResult.new(
           success: false,
-          exception: :state_id_missing,
+          vendor_name: 'aamva_state_id_missing',
         )
       end
 
       def unsupported_jurisdiction_result
         Proofing::StateIdResult.new(
           success: false,
-          exception: :unsupported_jurisdiction,
+          vendor_name: 'aamva_unsupported_jurisdiction',
         )
       end
     end
