@@ -1,6 +1,8 @@
 module Idv
   module Resolution
     class InstantVerifyPlugin
+      RESULTS_KEY = :instant_verify
+
       attr_reader :timer
 
       def initialize(timer: nil)
@@ -9,58 +11,58 @@ module Idv
 
       def call(
         input:,
-        next_plugin:,
-        **
+        result:,
+        next_plugin:
       )
+        addresses = {
+          address_of_residence: input&.address_of_residence,
+          state_id_address: input&.state_id&.address,
+        }.compact
 
-        if !input.state_id
-          return next_plugin.call(
-            instant_verify: {
-              success: false,
-              reason: :no_state_id,
-            },
-          )
-        end
+        address_results = {
+            **(result[RESULTS_KEY] || {}),
+        }
 
-        addresses = addresses_to_proof(input)
+        any_failed = false
 
-        if addresses.empty?
-          return next_plugin.call(
-            instant_verify: {
-              success: false,
-              reason: :no_addresses,
-            },
-          )
-        end
+        addresses.each do |(key, address)|
+          # We can re-use a prior result for the same key or if the
+          # address represented by the key is the same as `address`
+          result_for_address = address_results[key] ||
+                               address_results.find do |(key, result)|
+                                 addresses[key] == address
+                               end&.last
 
-        address_results = addresses.each_with_object({}) do |(key, address), hash|
+          if can_reuse_result_for_address?(result_for_address)
+            address_results[key] = result_for_address
+            next
+          end
+
+          # We avoid making subsequent API requests if any prior ones failed
+          next if any_failed
+
           applicant = format_applicant_for_instant_verify(input, address)
-          hash[key] = proofer.proof(applicant)
+          result = proofer.proof(applicant)
+          address_results[key] = result
+
+          any_failed = !result.success
         end
 
-        success = address_results.all? do |(key, proofing_result)|
-          proofing_result.success
-        end
+        plugin_result = {}
+        plugin_result[RESULTS_KEY] = address_results
 
-        next_plugin.call(
-          instant_verify: {
-            success:,
-            **address_results,
-          },
-        )
+        next_plugin.call(**plugin_result)
       end
 
       private
 
-      def addresses_to_proof(input)
-        addresses = {
-          state_id_address: input&.state_id&.address,
-          address_of_residence: input&.address_of_residence,
-        }.compact
+      def can_reuse_result_for_address?(result)
+        return false if result.nil?
 
-        addresses.each_with_object({}) do |(key, address), hash|
-          hash[key] = address unless hash.value?(address)
-        end
+        # If a result resulted in an exception, don't reuse it
+        return false if result.exception
+
+        true
       end
 
       def format_applicant_for_instant_verify(
