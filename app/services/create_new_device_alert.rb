@@ -9,7 +9,7 @@ class CreateNewDeviceAlert < ApplicationJob
       sql_query_for_users_with_new_device,
       tvalue: now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes,
     ).each do |user|
-      emails_sent += 1 if clear_new_device_and_send_email(user)
+      emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
     end
 
     emails_sent
@@ -24,9 +24,10 @@ class CreateNewDeviceAlert < ApplicationJob
     SQL
   end
 
-  def clear_new_device_and_send_email(user)
-    UserAlerts::AlertUserAboutNewDevice.send_alert(user)
+  def expire_sign_in_notification_timeframe_and_send_alert(user)
+    disavowal_event, disavowal_token = UserEventCreator.new(current_user: user).
+      create_out_of_band_user_event_with_disavowal(:sign_in_notification_timeframe_expired)
 
-    true
+    UserAlerts::AlertUserAboutNewDevice.send_alert(user:, disavowal_event:, disavowal_token:)
   end
 end

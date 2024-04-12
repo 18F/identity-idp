@@ -261,6 +261,9 @@ fr:
         other: Votre adresse électronique et votre mot de passe %{app_name} ont été
           utilisés pour vous connecter à partir d’un nouvel appareil, mais
           <strong>l’authentification a échoué %{count} reprises</strong>.
+        zero: Votre adresse électronique et votre mot de passe %{app_name} ont été
+          utilisés pour vous connecter à partir d’un nouvel appareil, mais
+          <strong>l’authentification a échoué</strong>.
       info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
       info_p3_html: L’authentification à deux facteurs protège votre compte contre
         tout accès non autorisé. Si ce n’est pas vous,
