@@ -1,4 +1,4 @@
-RSpec.shared_examples 'a system email' do
+RSpec.shared_examples 'a system email' do |synchronous_only:|
   it 'is from the default email' do
     expect(mail.from).to eq [IdentityConfig.store.email_from]
     expect(mail[:from].display_names).to eq [IdentityConfig.store.email_from_display_name]
@@ -11,7 +11,7 @@ RSpec.shared_examples 'a system email' do
     expect(body).not_to have_css('img[src$=".svg"]')
   end
 
-  it 'does not error when delivered asynchronously' do
+  it 'does not error when delivered asynchronously', unless: synchronous_only do
     mail.deliver_later
   end
 end
