@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module Resolution
     class ThreatmetrixPlugin
@@ -32,15 +34,6 @@ module Idv
 
         applicant = format_applicant_for_threatmetrix(input)
 
-        if !applicant
-          return next_plugin.call(
-            threatmetrix: {
-              success: false,
-              reason: :invalid_applicant,
-            },
-          )
-        end
-
         proofer_result = timer.time('threatmetrix') do
           proofer.proof(applicant)
         end
@@ -51,8 +44,6 @@ module Idv
       end
 
       def format_applicant_for_threatmetrix(input)
-        return unless input.state_id && input.other
-
         {
           **input.state_id.to_h.slice(
             :first_name,
@@ -93,33 +84,6 @@ module Idv
               base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
             )
           end
-      end
-
-      def proof_with_threatmetrix_if_needed(
-        applicant_pii:,
-        user_email:,
-        threatmetrix_session_id:,
-        request_ip:,
-        timer:
-      )
-        unless FeatureManagement.proofing_device_profiling_collecting_enabled?
-          return threatmetrix_disabled_result
-        end
-
-        # The API call will fail without a session ID, so do not attempt to make
-        # it to avoid leaking data when not required.
-        return threatmetrix_disabled_result if threatmetrix_session_id.blank?
-
-        return threatmetrix_disabled_result unless applicant_pii
-
-        ddp_pii = applicant_pii.dup
-        ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-        ddp_pii[:email] = user_email
-        ddp_pii[:request_ip] = request_ip
-
-        timer.time('threatmetrix') do
-          lexisnexis_ddp_proofer.proof(ddp_pii)
-        end
       end
 
       def threatmetrix_disabled_result
