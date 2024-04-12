@@ -19,7 +19,8 @@
   <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Regular.woff2') %>
   <%= render_stylesheet_once_tags %>
-  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_link_tag 'application' %>
+  <%= stylesheet_link_tag 'print', media: :print, preload_links_header: false %>
   <%= csrf_meta_tags %>
 
   <%= favicon_link_tag(
