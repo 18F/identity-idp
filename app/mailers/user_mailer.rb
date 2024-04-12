@@ -38,6 +38,8 @@ class UserMailer < ActionMailer::Base
     ),
   )
 
+  layout 'mailer'
+
   def validate_user_and_email_address
     @user = params.fetch(:user)
     @email_address = params.fetch(:email_address)
@@ -56,10 +58,10 @@ class UserMailer < ActionMailer::Base
     )
   end
 
-  def email_confirmation_instructions(token, request_id:, instructions:)
+  def email_confirmation_instructions(token, request_id:)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
+      @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
@@ -67,21 +69,6 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.email_confirmation_instructions.subject'),
-      )
-    end
-  end
-
-  def unconfirmed_email_instructions(token, request_id:, instructions:)
-    with_user_locale(user) do
-      presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
-      @confirmation_period = presenter.confirmation_period
-      @request_id = request_id
-      @locale = locale_url_param
-      @token = token
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
       )
     end
   end

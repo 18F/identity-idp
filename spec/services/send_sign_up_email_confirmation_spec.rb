@@ -5,7 +5,6 @@ RSpec.describe SendSignUpEmailConfirmation do
     let(:user) { create(:user, confirmed_at: nil) }
     let(:email_address) { user.email_addresses.take }
     let(:request_id) { '1234-abcd' }
-    let(:instructions) { 'do the things' }
     let(:confirmation_token) { 'confirm-me' }
 
     before do
@@ -22,29 +21,13 @@ RSpec.describe SendSignUpEmailConfirmation do
     it 'sends the user an email with a confirmation link and the request id' do
       email_address.update!(confirmed_at: Time.zone.now)
 
-      subject.call(request_id: request_id, instructions: instructions)
+      subject.call(request_id: request_id)
       expect_delivered_email_count(1)
       expect_delivered_email(
         to: [user.email_addresses.first.email],
         subject: t('user_mailer.email_confirmation_instructions.subject'),
-        body: [request_id, instructions],
+        body: [request_id],
       )
-    end
-
-    context 'when resetting a password' do
-      it 'sends an email with a link to try another email if the current email is unconfirmed' do
-        subject.call(
-          request_id: request_id,
-          instructions: instructions,
-          password_reset_requested: true,
-        )
-
-        expect_delivered_email_count(1)
-        expect_delivered_email(
-          to: [email_address.email],
-          subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
-        )
-      end
     end
 
     it 'updates the confirmation values on the email address for the user' do

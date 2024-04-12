@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe RequestPasswordReset do
   describe '#perform' do
     let(:user) { create(:user) }
-    let(:email) { user.email_addresses.first.email }
+    let(:request_id) { SecureRandom.uuid }
+    let(:email_address) { user.email_addresses.first }
+    let(:email) { email_address.email }
     let(:irs_attempts_api_tracker) do
       instance_double(
         IrsAttemptsApi::Tracker,
@@ -17,32 +19,24 @@ RSpec.describe RequestPasswordReset do
     end
 
     context 'when the user is not found' do
-      it 'sends the account registration email' do
+      it 'sends the user missing email' do
         email = 'nonexistent@example.com'
 
-        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
-        expect(send_sign_up_email_confirmation).to receive(:call).with(
-          hash_including(
-            instructions: I18n.t(
-              'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
-              app_name: APP_NAME,
-            ),
-          ),
-        )
-        expect(SendSignUpEmailConfirmation).to receive(:new).and_return(
-          send_sign_up_email_confirmation,
-        )
+        mailer = instance_double(AnonymousMailer)
+        mail = instance_double(ActionMailer::MessageDelivery)
+        expect(AnonymousMailer).to receive(:with).with(email:).and_return(mailer)
+        expect(mailer).to receive(:password_reset_missing_user).with(request_id:).and_return(mail)
+        expect(mail).to receive(:deliver_now_or_later)
 
         RequestPasswordReset.new(
           email: email,
           irs_attempts_api_tracker: irs_attempts_api_tracker,
+          request_id: request_id,
         ).perform
-        user = User.find_with_email(email)
-        expect(user).to be_present
       end
     end
 
-    context 'when the user is found and confirmed' do
+    context 'when the user is found' do
       subject(:perform) do
         described_class.new(
           email: email,
@@ -91,7 +85,7 @@ RSpec.describe RequestPasswordReset do
       end
     end
 
-    context 'when the user is found and confirmed, but is suspended' do
+    context 'when the user is found, but is suspended' do
       subject(:perform) do
         described_class.new(
           email: email,
@@ -172,37 +166,23 @@ RSpec.describe RequestPasswordReset do
 
     context 'when the user is found and confirmed, but the email address is not' do
       let(:user) { create(:user, :with_multiple_emails) }
-
-      let(:unconfirmed_email_address) do
+      let(:email_address) do
         user.reload.email_addresses.last.tap do |email_address|
           email_address.update!(confirmed_at: nil)
         end
       end
 
-      it 'sends the account registration email' do
-        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
-        expect(send_sign_up_email_confirmation).to receive(:call).with(
-          hash_including(
-            instructions: I18n.t(
-              'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
-              app_name: APP_NAME,
-            ),
-          ),
-        )
-        expect(SendSignUpEmailConfirmation).to receive(:new).and_return(
-          send_sign_up_email_confirmation,
-        )
+      it 'sends the user missing email' do
+        mailer = instance_double(AnonymousMailer)
+        mail = instance_double(ActionMailer::MessageDelivery)
+        expect(AnonymousMailer).to receive(:with).with(email:).and_return(mailer)
+        expect(mailer).to receive(:password_reset_missing_user).with(request_id:).and_return(mail)
+        expect(mail).to receive(:deliver_now_or_later)
 
         RequestPasswordReset.new(
-          email: unconfirmed_email_address.email,
-        ).perform
-      end
-
-      it 'does not send a recovery activated push event' do
-        expect(PushNotification::HttpPush).to_not receive(:deliver)
-
-        RequestPasswordReset.new(
-          email: unconfirmed_email_address.email,
+          email:,
+          irs_attempts_api_tracker:,
+          request_id:,
         ).perform
       end
     end
