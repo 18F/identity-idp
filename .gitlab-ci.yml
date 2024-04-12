@@ -415,7 +415,7 @@ trigger_devops:
             - name: "dashboard.image.pullPolicy"
               value: "Always"
             valueFiles:
-            - values-main.yaml
+            - values.yaml
             values: |
               dashboard:
                 enabled: true
