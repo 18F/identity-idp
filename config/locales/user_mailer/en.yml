@@ -236,12 +236,12 @@ en:
       new_sign_in_from: New sign-in potentially located in %{location}
     new_device_sign_in_before_2fa:
       info_p1_html:
-        zero: Your %{app_name} email and password were used to sign in from a new device
-          but <strong>failed to authenticate</strong>.
         one: Your %{app_name} email and password were used to sign in from a new device
           but <strong>failed to authenticate</strong>.
         other: Your %{app_name} email and password were used to sign in from a new
           device but <strong>failed to authenticate %{count} times</strong>.
+        zero: Your %{app_name} email and password were used to sign in from a new device
+          but <strong>failed to authenticate</strong>.
       info_p2: If you recognize this activity, you don’t need to do anything.
       info_p3_html: Two-factor authentication protects your account from unauthorized
         access. If this wasn’t you, %{reset_password_link_html} immediately.
