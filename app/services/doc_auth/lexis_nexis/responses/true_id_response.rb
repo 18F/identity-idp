@@ -43,7 +43,7 @@ module DocAuth
         #    bar code attention
         def successful_result?
           doc_auth_success? &&
-            (@liveness_checking_enabled ? selfie_passed? : true)
+            (@liveness_checking_enabled ? selfie_check_performed? : true)
         end
 
         # all checks from document perspectives, without considering selfie:
@@ -52,13 +52,7 @@ module DocAuth
         #  bar code attention
         def doc_auth_success?
           # really it's everything else excluding selfie
-          ((transaction_status_passed? &&
-            true_id_product.present? &&
-            product_status_passed? &&
-            doc_auth_result_passed?
-           ) ||
-            attention_with_barcode?
-          ) && id_type_supported?
+          transaction_status_passed? && id_type_supported?
         end
 
         def error_messages
