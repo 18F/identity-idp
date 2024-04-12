@@ -23,6 +23,9 @@ module Idv
           state_id_address: input&.state_id&.address,
         }.compact
 
+        # address_results contains InstantVerify results for individual
+        # addresses. It is seeded with any InstantVerify results passed
+        # into this plugin (for idempotency).
         address_results = {
             **(result[RESULTS_KEY] || {}),
         }
