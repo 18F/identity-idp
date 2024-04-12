@@ -833,9 +833,9 @@ test-deployment:
     name: $CI_COMMIT_BRANCH
   variables:
     testEnvironment: 'ekstest'
-    gitBranch: 'cmccarthy/deploy-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
+    gitBranch: 'cmccarthy/deploy-idp-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
     gitMRTarget: 'cmccarthy/lifecycle-checks'
-    gitMRTitle: "Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}"
+    gitMRTitle: "Deploy IDP ${CI_COMMIT_BRANCH} to ${testEnvironment}"
     gitMRDescription: "Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
     rcRepoName: "${ECR_REGISTRY}/identity-idp/rc"  
   interruptible: true
