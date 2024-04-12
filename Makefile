@@ -21,8 +21,6 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	watch_events \
 	docker_setup \
 	download_acuant_sdk \
-	fast_setup \
-	fast_test \
 	help \
 	lint \
 	lint_analytics_events \
@@ -58,9 +56,6 @@ all: check
 
 setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
-
-fast_setup: ## Abbreviated setup script that skips linking some files
-	bin/fast_setup
 
 docker_setup: ## Setup script for Docker development
 	bin/docker_setup
@@ -189,10 +184,6 @@ test: $(CONFIG) ## Runs RSpec and yarn tests
 test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
 	bundle exec rake spec && yarn test
-
-fast_test: export RAILS_ENV := test
-fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
-	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
