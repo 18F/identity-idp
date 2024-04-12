@@ -68,12 +68,12 @@ en:
       tab_navigation: Account creation tabs
     login_exit:
       account_page: account page
-      bullet1: You won’t be able to use Login.gov to access %{app_name} until you
+      bullet1: You won’t be able to use %{app_name} to access %{sp_name} until you
         share your information with them.
-      bullet2_html: You’ll still have a Login.gov account which you can manage or
+      bullet2_html: You’ll still have a %{app_name} account which you can manage or
         delete on your %{link_html}.
-      exit: Exit Login.gov
-      header: 'If you exit Login.gov now:'
+      exit: Exit %{app_name}
+      header: 'If you exit %{app_name} now:'
       keep_going: No, keep going
     navigation:
       add_authentication_apps: Add authentication apps

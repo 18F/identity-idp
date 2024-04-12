@@ -69,12 +69,12 @@ es:
       tab_navigation: Pestañas de creación de cuenta
     login_exit:
       account_page: página de su cuenta
-      bullet1: No podrá utilizar Login.gov para acceder a %{app_name} hasta que les
+      bullet1: No podrá utilizar %{app_name} para acceder a %{sp_name} hasta que les
         comparta su información.
-      bullet2_html: Seguirá teniendo una cuenta de Login.gov que podrá administrar o
+      bullet2_html: Seguirá teniendo una cuenta de %{app_name} que podrá administrar o
         eliminar en la %{link_html}.
-      exit: Salir de Login.gov
-      header: <p>Si sale ahora de Login.gov:</p>
+      exit: Salir de %{app_name}
+      header: 'Si sale ahora de %{app_name}:'
       keep_going: No, deseo continuar
     navigation:
       add_authentication_apps: Agregar aplicaciones de autenticación

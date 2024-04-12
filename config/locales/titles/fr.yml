@@ -25,7 +25,7 @@ fr:
     enter_2fa_code:
       one_time_code: Entrez le code de sécurité à usage unique
       security_code: Entrez le code de sécurité à utilisation unique
-    exit_login: Êtes-vous sûr de vouloir annuler et quitter Login.gov?
+    exit_login: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
     failure:
       information_not_verified: Informations personnelles non vérifiées
       phone_verification: Numéro de téléphone non vérifié
