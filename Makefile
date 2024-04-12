@@ -19,7 +19,6 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	clobber_assets \
 	clobber_logs \
 	watch_events \
-	docker_setup \
 	download_acuant_sdk \
 	help \
 	lint \
@@ -56,9 +55,6 @@ all: check
 
 setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
-
-docker_setup: ## Setup script for Docker development
-	bin/docker_setup
 
 check: lint test ## Runs lint tests and spec tests
 

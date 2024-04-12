@@ -18,7 +18,6 @@ Refer to the [_Local Development_ documentation](./docs/local-development.md) to
 ## Documentation
 
 - [Back-end Architecture](docs/backend.md)
-- [Docker](docs/Docker.md)
 - [Front-end Architecture](docs/frontend.md)
 - [Local Development](docs/local-development.md)
 - [Mobile local development](docs/mobile.md)
