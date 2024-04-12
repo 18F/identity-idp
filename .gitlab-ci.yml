@@ -747,12 +747,43 @@ ecr-scan-ci:
   variables:
     ecr_repo: idp/ci
 
-# Build the RC container on RC Branch creation
-build-rc-container:
-  stage: eks_release
+############################################
+# EKS Container Lifecycle Pipelines
+############################################
+
+.eks_trigger_rules:
   rules:
     - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
-    - when: never    
+    - when: never
+
+.eks_deploy:
+  before_script:
+    - apt-get update && apt-get install -y yq
+    - git config --global user.email "login-team-mary@login.gov"
+    - git config --global user.name "GitLab"
+  script:
+    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
+    - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+    - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
+    - yqFilter=".idp.image.repository=\"${rcRepoName}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".idp.image.tag=\"${rcTag}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".worker.image.repository=\"${rcRepoName}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".worker.image.tag=\"${rcTag}\""
+    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
+    - git push -o merge_request.create -o merge_request.target=${gitMRTarget} -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title=${gitMRTitle} -o merge_request.description=${gitMRDescription} origin "${gitBranch}"
+
+# Build the RC container on RC Branch creation
+build-rc-container:
+  extends:
+    - .eks_trigger_rules
+  stage: eks_release
+#  rules:
+#    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
+#    - when: never    
   needs: []
   environment:
     name: $CI_COMMIT_BRANCH
@@ -795,10 +826,13 @@ build-rc-container:
 
 # Deploy RC Container to testing environment. Requires updating identity-idp-helm-chart, creating and merging an MR.
 test-deployment:
+  extends:
+    - .eks_trigger_rules
+    - .eks_deploy
   stage: eks_release
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
-    - when: never
+#  rules:
+#    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
+#    - when: never
   needs:
     - job: build-rc-container
   environment:
@@ -806,27 +840,30 @@ test-deployment:
   variables:
     testEnvironment: 'ekstest'
     gitBranch: 'cmccarthy/deploy-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
-    rcRepoName: '217680906704.dkr.ecr.us-west-2.amazonaws.com/identity-idp/rc'  
+    gitMRTarget: 'cmccarthy/lifecycle-checks'
+    gitMRTitle: "Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}"
+    gitMRDescription: "Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
+    rcRepoName: "${ECR_REGISTRY}/identity-idp/rc"  
   interruptible: true
   tags:
     - build-pool
   image:
     name: bitnami/git:latest
     entrypoint: ['']
-  before_script:
-    - apt-get update && apt-get install -y yq
-    - git config --global user.email "login-team-mary@login.gov"
-    - git config --global user.name "GitLab"
-  script:
-    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
-    - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
-    - yqFilter=".idp.image.repository=\"${rcRepoName}\""
-    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
-    - yqFilter=".idp.image.tag=\"${rcTag}\""
-    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
-    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
-    - git push -o merge_request.create -o merge_request.target=cmccarthy/lifecycle-checks -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" -o merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment" origin "${gitBranch}"
+#  before_script:
+#    - apt-get update && apt-get install -y yq
+#    - git config --global user.email "login-team-mary@login.gov"
+#    - git config --global user.name "GitLab"
+#  script:
+#    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
+#    - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+#    - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
+#    - yqFilter=".idp.image.repository=\"${rcRepoName}\""
+#    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+#    - yqFilter=".idp.image.tag=\"${rcTag}\""
+#    - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
+#    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
+#    - git push -o merge_request.create -o merge_request.target=cmccarthy/lifecycle-checks -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="Deploy ${CI_COMMIT_BRANCH} to ${testEnvironment}" -o merge_request.description="Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment" origin "${gitBranch}"
  
 # Testing step for test environment
 
