@@ -4,8 +4,8 @@
     "RequestId": "749574578",
     "TransactionStatus": "failed",
     "TransactionReasonCode": {
-      "Code": "trueid_pass",
-      "Description": "TRUEID PASS"
+      "Code": "trueid_fail",
+      "Description": "TRUEID FAIL"
     },
     "Reference": "923c0c86-6f68-47d6-979e-08ff9e53b631"
   }, "Products": [
