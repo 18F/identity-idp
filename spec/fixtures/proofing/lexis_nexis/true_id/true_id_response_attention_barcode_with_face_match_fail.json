@@ -2,7 +2,7 @@
   "Status": {
     "ConversationId": "31000438698728",
     "RequestId": "749574578",
-    "TransactionStatus": "passed",
+    "TransactionStatus": "failed",
     "TransactionReasonCode": {
       "Code": "trueid_pass",
       "Description": "TRUEID PASS"
@@ -13,7 +13,7 @@
     "ProductType": "TrueID",
     "ExecutedStepName": "True_ID_Step",
     "ProductConfigurationName": "GSA.V3.TrueID.Flow",
-    "ProductStatus": "pass",
+    "ProductStatus": "fail",
     "ParameterDetails": [
       {
         "Group": "AUTHENTICATION_RESULT",
