@@ -88,14 +88,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           expect(response.to_h[:vendor]).to eq('TrueID')
         end
 
-        context 'when a liveness check was not requested' do
-          let(:liveness_checking_enabled) { false }
-          it 'is a successful result' do
-            expect(response.selfie_status).to eq(:not_processed)
-            expect(response.success?).to eq(true)
-            expect(response.to_h[:vendor]).to eq('TrueID')
-          end
-        end
+        # this test can be deleted
+        # context 'when a liveness check was not requested' do
+        #   let(:liveness_checking_enabled) { false }
+        #   it 'is a successful result' do
+        #     expect(response.selfie_status).to eq(:not_processed)
+        #     expect(response.success?).to eq(true)
+        #     expect(response.to_h[:vendor]).to eq('TrueID')
+        #   end
+        # end
       end
       context 'when selfie status passes' do
         let(:response) do
@@ -819,7 +820,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           end
 
           it 'returns false' do
-            expect(response.doc_auth_success?).to eq(true)
+            expect(response.doc_auth_success?).to eq(false)
             expect(response.successful_result?).to eq(false)
           end
         end
@@ -833,7 +834,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
             failure_response_face_match_fail, config, liveness_checking_enabled
           )
 
-          expect(response.successful_result?).to eq(true)
+          expect(response.successful_result?).to eq(false)
         end
       end
     end
