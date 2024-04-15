@@ -1176,7 +1176,7 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith('idv_sdk_selfie_image_capture_opened');
@@ -1193,7 +1193,7 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
@@ -1212,7 +1212,7 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
@@ -1236,7 +1236,7 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
@@ -1402,16 +1402,19 @@ describe('document-capture/components/acuant-capture', () => {
       source: 'placeholder',
       isDrop: false,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'button',
       isDrop: false,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'upload',
       isDrop: false,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
   });
 
@@ -1432,6 +1435,7 @@ describe('document-capture/components/acuant-capture', () => {
       source: 'placeholder',
       isDrop: true,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
   });
 

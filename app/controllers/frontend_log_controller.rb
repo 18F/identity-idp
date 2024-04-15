@@ -35,7 +35,6 @@ class FrontendLogController < ApplicationController
     'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
     'IdV: prepare submitted' => :idv_in_person_prepare_submitted,
     'IdV: prepare visited' => :idv_in_person_prepare_visited,
-    'IdV: selfie image clicked' => :idv_selfie_image_clicked,
     'IdV: switch_back submitted' => :idv_in_person_switch_back_submitted,
     'IdV: switch_back visited' => :idv_in_person_switch_back_visited,
     'IdV: user clicked sp link on ready to verify page' => :idv_in_person_ready_to_verify_sp_link_clicked,
@@ -51,6 +50,7 @@ class FrontendLogController < ApplicationController
     idv_camera_info_error
     idv_camera_info_logged
     idv_sdk_error_before_init
+    idv_sdk_selfie_image_clicked
     idv_sdk_selfie_image_capture_closed_without_photo
     idv_sdk_selfie_image_capture_failed
     idv_sdk_selfie_image_capture_opened
