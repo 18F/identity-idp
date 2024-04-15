@@ -51,6 +51,7 @@ es:
           control. Intente tomar nuevas fotografías.
         selfie_not_live: Intente tomar de nuevo una foto de usted. Asegúrese de que su
           rostro se vea claramente en la foto.
+        selfie_not_live_help_link_text: Consulte más consejos para tomar una foto clara de su rostro
         selfie_poor_quality: 'Intente tomar de nuevo una foto de usted. Asegúrese de que
           su rostro se vea claramente en la foto.'
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
@@ -110,6 +111,7 @@ es:
         no_liveness: Intente tomar nuevas fotografías.
         selfie_failure: Intente tomar de nuevo sus fotos. Asegúrese de que sus fotos
           estén claras y enfocadas.
+        selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
       glare:
         failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que su foto tenga
