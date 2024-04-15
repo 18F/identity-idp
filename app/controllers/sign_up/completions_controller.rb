@@ -6,7 +6,6 @@ module SignUp
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
-    before_action :confirm_selfie_captured, if: :biometric_comparison_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
 
@@ -38,10 +37,6 @@ module SignUp
       redirect_to idv_url if current_user.identity_not_verified?
     end
 
-    def confirm_selfie_captured
-      redirect_to idv_url if !current_user.identity_verified_with_biometric_comparison?
-    end
-
     def verify_needs_completions_screen
       return_to_account unless needs_completion_screen_reason
     end
@@ -65,10 +60,6 @@ module SignUp
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
-    def biometric_comparison_required?
-      decorated_sp_session.biometric_comparison_required?
-    end
-
     def return_to_account
       track_completion_event('account-page')
       redirect_to account_url
@@ -78,7 +69,7 @@ module SignUp
       CompletionsDecider.new(user_agent: request.user_agent, request_url: sp_session[:request_url])
     end
 
-    def sign_user_out_and_instruct_to_go_back_to_mobile_app
+     def sign_user_out_and_instruct_to_go_back_to_mobile_app
       sign_out
       flash[:info] = t(
         'instructions.go_back_to_mobile_app',
