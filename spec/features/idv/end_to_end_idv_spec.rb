@@ -113,6 +113,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
       try_to_go_back_from_letter_enqueued
       validate_letter_enqueued_page
       complete_letter_enqueued
+      click_on t('account.login_exit.exit', app_name: APP_NAME)
       validate_return_to_sp
 
       visit sign_out_url
