@@ -334,7 +334,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          allow(controller.decorated_sp_session).to receive(:biometric_comparison_required?).and_return(true)
+          allow(controller.decorated_sp_session).to receive(:biometric_comparison_required?).
+            and_return(true)
         end
 
         it 'returns a successful response and modifies the session' do

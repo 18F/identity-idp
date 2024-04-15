@@ -20,7 +20,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     context 'selfie checks enabled' do
       before do
         decorated_sp_session = instance_double(ServiceProviderSession)
-        allow(decorated_sp_session).to receive(:biometric_comparison_required?).and_return(selfie_required)
+        allow(decorated_sp_session).to receive(:biometric_comparison_required?).
+          and_return(biometric_comparison_required)
         allow(controller).to receive(:decorated_sp_session).and_return(decorated_sp_session)
         stored_result = instance_double(DocumentCaptureSessionResult)
         allow(stored_result).to receive(:selfie_check_performed?).and_return(selfie_check_performed)
@@ -28,7 +29,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
 
       context 'SP requires biometric_comparison' do
-        let(:selfie_required) { true }
+        let(:biometric_comparison_required) { true }
 
         context 'selfie check performed' do
           let(:selfie_check_performed) { true }
@@ -46,7 +47,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
 
       context 'SP does not require biometric_comparison' do
-        let(:selfie_required) { false }
+        let(:biometric_comparison_required) { false }
 
         context 'selfie check performed' do
           let(:selfie_check_performed) { true }

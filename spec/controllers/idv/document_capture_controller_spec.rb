@@ -265,7 +265,8 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).and_return(false)
-        allow(subject.decorated_sp_session).to receive(:biometric_comparison_required?).and_return(true)
+        allow(subject.decorated_sp_session).to receive(:biometric_comparison_required?).
+          and_return(true)
       end
       it 'redirect back when accessed from handoff' do
         subject.idv_session.skip_hybrid_handoff = nil

@@ -69,7 +69,7 @@ module SignUp
       CompletionsDecider.new(user_agent: request.user_agent, request_url: sp_session[:request_url])
     end
 
-     def sign_user_out_and_instruct_to_go_back_to_mobile_app
+    def sign_user_out_and_instruct_to_go_back_to_mobile_app
       sign_out
       flash[:info] = t(
         'instructions.go_back_to_mobile_app',
