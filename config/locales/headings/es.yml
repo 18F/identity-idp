@@ -18,7 +18,7 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     cancellations:
-      login_exit_prompt: ¿Está seguro de que desea cancelar y salir de Login.gov?
+      login_exit_prompt: ¿Está seguro de que desea cancelar y salir de %{app_name}?
       prompt: '¿Estas seguro que quieres cancelar?'
     create_account_new_users: Crear una cuenta para usuarios nuevos
     create_account_with_sp:

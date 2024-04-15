@@ -74,7 +74,7 @@ es:
       bullet2_html: Seguirá teniendo una cuenta de %{app_name} que podrá administrar o
         eliminar en la %{link_html}.
       exit: Salir de %{app_name}
-      header: 'Si sale ahora de %{app_name}:'
+      header_html: <p>Si sale ahora de %{app_name}:</p>
       keep_going: No, deseo continuar
     navigation:
       add_authentication_apps: Agregar aplicaciones de autenticación
