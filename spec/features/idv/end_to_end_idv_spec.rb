@@ -95,7 +95,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
         update(in_person_proofing_enabled: true)
     end
 
-    scenario 'In person proofing verify by mail', js: true, allow_browser_log: true do
+    scenario 'In person proofing verify by mail', allow_browser_log: true do
       visit_idp_from_sp_with_ial2(sp)
       user = sign_up_and_2fa_ial1_user
 
@@ -113,7 +113,6 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
       try_to_go_back_from_letter_enqueued
       validate_letter_enqueued_page
       complete_letter_enqueued
-      click_on t('account.login_exit.exit', app_name: APP_NAME)
       validate_return_to_sp
 
       visit sign_out_url
