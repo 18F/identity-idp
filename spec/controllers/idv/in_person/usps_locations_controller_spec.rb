@@ -285,16 +285,16 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
 
     context 'with hybrid user' do
       let(:user) { nil }
-      let(:effective_user) { create(:user) }
+      let(:current_user) { create(:user) }
 
       before do
-        session[:doc_capture_user_id] = effective_user.id
+        session[:doc_capture_user_id] = current_user.id
       end
 
-      it 'writes the passed location to in-person enrollment associated with effective user' do
+      it 'writes the passed location to in-person enrollment associated with current user' do
         response
 
-        enrollment = effective_user.reload.establishing_in_person_enrollment
+        enrollment = current_user.reload.establishing_in_person_enrollment
 
         expect(enrollment.selected_location_details).to eq(
           selected_location[:usps_location].as_json,

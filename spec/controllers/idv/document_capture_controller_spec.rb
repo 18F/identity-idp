@@ -200,13 +200,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       end
     end
 
-    it 'does not use effective user outside of analytics_user in ApplicationControler' do
-      allow(subject).to receive(:analytics_user).and_return(subject.current_user)
-      expect(subject).not_to receive(:effective_user)
-
-      get :show
-    end
-
     context 'user is rate limited' do
       it 'redirects to rate limited page' do
         user = create(:user)

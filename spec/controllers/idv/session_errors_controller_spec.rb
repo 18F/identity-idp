@@ -106,10 +106,10 @@ RSpec.describe Idv::SessionErrorsController do
 
     context 'the user is in the hybrid flow' do
       render_views
-      let(:effective_user) { create(:user) }
+      let(:current_user) { create(:user) }
 
       before do
-        session[:doc_capture_user_id] = effective_user.id
+        session[:doc_capture_user_id] = current_user.id
       end
 
       it 'renders the error template' do
