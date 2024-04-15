@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe UserMailer, type: :mailer do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
   let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
@@ -203,6 +203,32 @@ RSpec.describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
+  end
+
+  describe '#new_device_sign_in_before_2fa' do
+    let(:event) { create(:event, event_type: :sign_in_before_2fa, user:, device: create(:device)) }
+    subject(:mail) do
+      UserMailer.with(user:, email_address:).new_device_sign_in_before_2fa(
+        events: user.events.where(event_type: 'sign_in_before_2fa').includes(:device).to_a,
+        disavowal_token: 'token',
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+  end
+
+  describe '#new_device_sign_in_after_2fa' do
+    let(:event) { create(:event, event_type: :sign_in_after_2fa, user:, device: create(:device)) }
+    subject(:mail) do
+      UserMailer.with(user:, email_address:).new_device_sign_in_after_2fa(
+        events: user.events.where(event_type: 'sign_in_after_2fa').includes(:device).to_a,
+        disavowal_token: 'token',
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
   end
 
   describe '#personal_key_regenerated' do
