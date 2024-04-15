@@ -304,27 +304,27 @@ module Idv
     end
 
     def add_proofing_costs(results)
-      results[:context][:stages].each do |stage, hash|
-        if stage == :resolution
-          # transaction_id comes from ConversationId
-          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-        elsif stage == :residential_address
-          next if pii[:same_address_as_id] == 'true'
-          next if hash[:vendor_name] == 'ResidentialAddressNotRequired'
-          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-        elsif stage == :state_id
-          next if hash[:exception].present?
-          next if hash[:vendor_name] == 'UnsupportedJurisdiction'
-          # transaction_id comes from TransactionLocatorId
-          add_cost(:aamva, transaction_id: hash[:transaction_id])
-          track_aamva
-        elsif stage == :threatmetrix
-          # transaction_id comes from request_id
-          tmx_id = hash[:transaction_id]
-          log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
-          add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
-        end
-      end
+      # results[:context][:stages].each do |stage, hash|
+      #   if stage == :resolution
+      #     # transaction_id comes from ConversationId
+      #     add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
+      #   elsif stage == :residential_address
+      #     next if pii[:same_address_as_id] == 'true'
+      #     next if hash[:vendor_name] == 'ResidentialAddressNotRequired'
+      #     add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
+      #   elsif stage == :state_id
+      #     next if hash[:exception].present?
+      #     next if hash[:vendor_name] == 'UnsupportedJurisdiction'
+      #     # transaction_id comes from TransactionLocatorId
+      #     add_cost(:aamva, transaction_id: hash[:transaction_id])
+      #     track_aamva
+      #   elsif stage == :threatmetrix
+      #     # transaction_id comes from request_id
+      #     tmx_id = hash[:transaction_id]
+      #     log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
+      #     add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
+      #   end
+      # end
     end
 
     def track_aamva

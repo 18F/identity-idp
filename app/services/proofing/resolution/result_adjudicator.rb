@@ -39,12 +39,12 @@ module Proofing
               device_profiling_adjudication_reason: device_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
               should_proof_state_id: should_proof_state_id?,
-              stages: {
-                resolution: resolution_result.to_h,
-                residential_address: residential_resolution_result.to_h,
-                state_id: state_id_result.to_h,
-                threatmetrix: device_profiling_result.to_h,
-              },
+              # stages: {
+              #   resolution: resolution_result.to_h,
+              #   residential_address: residential_resolution_result.to_h,
+              #   state_id: state_id_result.to_h,
+              #   threatmetrix: device_profiling_result.to_h,
+              # },
             },
           },
         )
