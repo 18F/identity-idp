@@ -123,6 +123,7 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'sets the session correctly' do
+            expect(controller.user_session[:new_device]).to eq(true)
             expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
               to eq false
 
@@ -150,6 +151,16 @@ RSpec.describe Users::PivCacLoginController do
               presented: true,
             }
             expect(controller.user_session[:decrypted_x509]).to eq session_info.to_json
+          end
+
+          context 'from existing device' do
+            before do
+              allow(user).to receive(:new_device?).and_return(false)
+            end
+
+            it 'sets the session correctly' do
+              expect(controller.user_session[:new_device]).to eq(true)
+            end
           end
 
           context 'when the user has not accepted the most recent terms of use' do

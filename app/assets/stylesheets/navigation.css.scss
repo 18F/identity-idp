@@ -1,5 +1,6 @@
 @use 'uswds-core' as *;
 
+@forward 'usa-header/src/styles/usa-header';
 @forward 'usa-nav/src/styles';
 @forward 'usa-sidenav/src/styles';
 

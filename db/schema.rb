@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_04_154024) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_11_163520) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "postgis"
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
