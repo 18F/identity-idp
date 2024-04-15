@@ -20,7 +20,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     context 'selfie checks enabled' do
       before do
         decorated_sp_session = instance_double(ServiceProviderSession)
-        allow(decorated_sp_session).to receive(:selfie_required?).and_return(selfie_required)
+        allow(decorated_sp_session).to receive(:biometric_comparison_required?).and_return(selfie_required)
         allow(controller).to receive(:decorated_sp_session).and_return(decorated_sp_session)
         stored_result = instance_double(DocumentCaptureSessionResult)
         allow(stored_result).to receive(:selfie_check_performed?).and_return(selfie_check_performed)

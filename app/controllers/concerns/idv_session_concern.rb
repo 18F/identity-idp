@@ -67,6 +67,6 @@ module IdvSessionConcern
   end
 
   def user_needs_biometric_comparison?
-    decorated_sp_session.selfie_required? && !current_user.identity_verified_with_selfie?
+    decorated_sp_session.biometric_comparison_required? && !current_user.identity_verified_with_biometric_comparison?
   end
 end

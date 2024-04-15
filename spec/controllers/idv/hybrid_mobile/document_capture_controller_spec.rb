@@ -79,7 +79,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
       context 'when a selfie is requested' do
         before do
           allow(subject).to receive(:decorated_sp_session).
-            and_return(double('decorated_session', { selfie_required?: true, sp_name: 'sp' }))
+            and_return(double('decorated_session', { biometric_comparison_required?: true, sp_name: 'sp' }))
         end
         context 'when selfie is required by sp session' do
           it 'requests FE to display selfie' do

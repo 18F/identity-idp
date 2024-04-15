@@ -32,8 +32,8 @@ class IdvController < ApplicationController
   private
 
   def already_verified?
-    if decorated_sp_session.selfie_required?
-      return current_user.identity_verified_with_selfie?
+    if decorated_sp_session.biometric_comparison_required?
+      return current_user.identity_verified_with_biometric_comparison?
     end
 
     return current_user.active_profile.present?

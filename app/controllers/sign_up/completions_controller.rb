@@ -39,7 +39,7 @@ module SignUp
     end
 
     def confirm_selfie_captured
-      redirect_to idv_url if !current_user.identity_verified_with_selfie?
+      redirect_to idv_url if !current_user.identity_verified_with_biometric_comparison?
     end
 
     def verify_needs_completions_screen
@@ -66,7 +66,7 @@ module SignUp
     end
 
     def biometric_comparison_required?
-      decorated_sp_session.selfie_required?
+      decorated_sp_session.biometric_comparison_required?
     end
 
     def return_to_account

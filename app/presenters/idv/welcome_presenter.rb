@@ -23,7 +23,7 @@ module Idv
     end
 
     def selfie_required?
-      decorated_sp_session.selfie_required?
+      decorated_sp_session.biometric_comparison_required?
     end
 
     def explanation_text(help_link)
