@@ -190,22 +190,22 @@ RSpec.describe ServiceProviderSession do
 
       it 'returns true when sp biometric_comparison_required is true' do
         sp_session[:biometric_comparison_required] = true
-        expect(subject.selfie_required?).to eq(true)
+        expect(subject.biometric_comparison_required?).to eq(true)
       end
 
       it 'returns true when sp biometric_comparison_required is truthy' do
         sp_session[:biometric_comparison_required] = 1
-        expect(subject.selfie_required?).to eq(true)
+        expect(subject.biometric_comparison_required?).to eq(true)
       end
 
       it 'returns false when sp biometric_comparison_required is false' do
         sp_session[:biometric_comparison_required] = false
-        expect(subject.selfie_required?).to eq(false)
+        expect(subject.biometric_comparison_required?).to eq(false)
       end
 
       it 'returns false when sp biometric_comparison_required is nil' do
         sp_session[:biometric_comparison_required] = nil
-        expect(subject.selfie_required?).to eq(false)
+        expect(subject.biometric_comparison_required?).to eq(false)
       end
     end
 
@@ -214,7 +214,7 @@ RSpec.describe ServiceProviderSession do
 
       it 'returns false' do
         sp_session[:biometric_comparison_required] = true
-        expect(subject.selfie_required?).to eq(false)
+        expect(subject.biometric_comparison_required?).to eq(false)
       end
     end
   end
