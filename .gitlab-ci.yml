@@ -773,7 +773,7 @@ ecr-scan-ci:
     - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
     - yqFilter=".worker.image.tag=\"${rcTag}\""
     - yq -iy ${yqFilter} ./environments/${testEnvironment}.yaml
-    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy ${rcTag} to ${testEnvironment}"
+    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy IDP ${rcTag} image to ${testEnvironment}"
     - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
 
 # Build the RC container on RC Branch creation
