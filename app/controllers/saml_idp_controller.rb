@@ -36,7 +36,7 @@ class SamlIdpController < ApplicationController
       return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
       return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
-      return redirect_to idv_url if selfie_needed?
+      return redirect_to idv_url if biometric_comparison_needed?
     end
     return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -112,7 +112,7 @@ class SamlIdpController < ApplicationController
     redirect_to capture_password_url
   end
 
-  def selfie_needed?
+  def biometric_comparison_needed?
     decorated_sp_session.selfie_required? &&
       !current_user.identity_verified_with_selfie?
   end
