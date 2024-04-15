@@ -299,6 +299,8 @@ module IdentityConfig
     config.add(:phone_setups_per_ip_limit, type: :integer)
     config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
+    config.add(:phone_submissions_per_fingerprint_limit, type: :integer)
+    config.add(:phone_submissions_per_fingerprint_max_attempts_window_in_minutes, type: :integer)
     config.add(:pii_lock_timeout_in_minutes, type: :integer)
     config.add(:pinpoint_sms_configs, type: :json)
     config.add(:pinpoint_sms_sender_id, type: :string, allow_nil: true)

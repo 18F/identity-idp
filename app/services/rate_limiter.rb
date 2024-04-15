@@ -214,6 +214,11 @@ class RateLimiter
         max_attempts: IdentityConfig.store.phone_confirmation_max_attempts,
         attempt_window: IdentityConfig.store.phone_confirmation_max_attempt_window_in_minutes,
       },
+      phone_submissions: {
+        max_attempts: IdentityConfig.store.phone_submissions_per_fingerprint_limit,
+        attempt_window: IdentityConfig.store.
+          phone_submissions_per_fingerprint_max_attempts_window_in_minutes,
+      },
       phone_otp: {
         max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,
         attempt_window: IdentityConfig.store.otp_delivery_blocklist_findtime,
