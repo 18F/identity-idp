@@ -6,7 +6,7 @@
 #
 # Arguments sent to UserMailer must not include personally-identifiable information (PII).
 # This includes email addresses. All arguments to UserMailer are stored in the database when the
-# email is being sent asynchronusly by ActiveJob and we must not put PII in the database in
+# email is being sent asynchronously by ActiveJob and we must not put PII in the database in
 # plaintext.
 #
 # Example:
