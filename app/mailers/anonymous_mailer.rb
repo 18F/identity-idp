@@ -5,7 +5,7 @@
 #
 # You MUST deliver these messages using `deliver_now`. Anonymous messages rely on a plaintext email
 # address, which is personally-identifiable information (PII). All method arguments are stored in
-# the database when the email is being sent asynchronusly by ActiveJob and we must not put PII in
+# the database when the email is being sent asynchronously by ActiveJob and we must not put PII in
 # the database in plaintext.
 #
 # Example:
