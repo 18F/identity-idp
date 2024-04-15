@@ -144,7 +144,6 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#email_confirmation_instructions' do
-    let(:instructions) { 'do the things' }
     let(:request_id) { '1234-abcd' }
     let(:token) { 'asdf123' }
 
@@ -153,7 +152,6 @@ RSpec.describe UserMailer, type: :mailer do
         email_confirmation_instructions(
           token,
           request_id: request_id,
-          instructions: instructions,
         )
     end
 
