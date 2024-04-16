@@ -12,7 +12,8 @@ module Users
     end
 
     def verify_feature_toggle_on?
-      redirect_to after_sign_in_path_for(current_user) unless FeatureManagement.check_password_enabled?
+      redirect_to after_sign_in_path_for(current_user) unless
+        FeatureManagement.check_password_enabled?
     end
   end
 end
