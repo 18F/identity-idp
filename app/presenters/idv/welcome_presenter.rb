@@ -22,21 +22,16 @@ module Idv
       t('doc_auth.headings.welcome', sp_name: sp_name)
     end
 
-    def selfie_required?
-      decorated_sp_session.selfie_required?
-    end
-
     def explanation_text(help_link)
-      if step_up_selfie_required?
+      if first_time_idv?
         t(
-          'doc_auth.info.stepping_up_html',
+          'doc_auth.info.getting_started_html',
           sp_name:,
           link_html: help_link,
         )
       else
         t(
-          'doc_auth.info.getting_started_html',
-          sp_name: sp_name,
+          'doc_auth.info.stepping_up_html',
           link_html: help_link,
         )
       end
@@ -44,17 +39,10 @@ module Idv
 
     def bullet_points
       [
-        if selfie_required?
-          bullet_point(
-            t('doc_auth.instructions.bullet1_with_selfie'),
-            t('doc_auth.instructions.text1_with_selfie'),
-          )
-        else
-          bullet_point(
-            t('doc_auth.instructions.bullet1'),
-            t('doc_auth.instructions.text1'),
-          )
-        end,
+        bullet_point(
+          t('doc_auth.instructions.bullet1'),
+          t('doc_auth.instructions.text1'),
+        ),
 
         bullet_point(
           t('doc_auth.instructions.bullet2'),
@@ -85,9 +73,8 @@ module Idv
       OpenStruct.new(bullet: bullet, text: text)
     end
 
-    def step_up_selfie_required?
-      !!(current_user&.identity_verified? || current_user&.pending_profile?) &&
-        selfie_required?
+    def first_time_idv?
+      !decorated_sp_session&.current_user&.active_profile?
     end
   end
 end

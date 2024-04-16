@@ -307,6 +307,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with(reauthentication: false, success: true)
 
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::SMS).
+          and_call_original
+
         freeze_time do
           post :create, params: {
             code: subject.current_user.reload.direct_otp,

@@ -12,8 +12,9 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
       ).and_return(false)
       create(:device, user: user)
     end
+
     it 'sends a user notification on signin' do
-      sign_in_user(user)
+      sign_in_live_with_2fa(user)
 
       expect(user.reload.devices.length).to eq 2
 
@@ -28,6 +29,20 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
                'From 127.0.0.1 (IP address potentially located in United States)'],
       )
     end
+
+    context 'from existing device' do
+      before do
+        Capybara.current_session.driver.browser.current_session.cookie_jar[:device] =
+          user.devices.first.cookie_uuid
+      end
+
+      it 'does not send a user notification on sign in' do
+        sign_in_live_with_2fa(user)
+
+        expect(user.reload.devices.length).to eq 1
+        expect_delivered_email_count(0)
+      end
+    end
   end
 
   context 'user has existing devices and aggregated new device alerts is enabled' do
@@ -37,10 +52,30 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
       ).and_return(true)
       create(:device, user: user)
     end
+
     it 'sends a user notification on signin' do
-      sign_in_user(user)
+      sign_in_live_with_2fa(user)
 
       expect(user.reload.devices.length).to eq 2
+      expect_delivered_email_count(1)
+      expect_delivered_email(
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+      )
+    end
+
+    context 'from existing device' do
+      before do
+        Capybara.current_session.driver.browser.current_session.cookie_jar[:device] =
+          user.devices.first.cookie_uuid
+      end
+
+      it 'does not send a user notification on sign in' do
+        sign_in_live_with_2fa(user)
+
+        expect(user.reload.devices.length).to eq 1
+        expect_delivered_email_count(0)
+      end
     end
   end
 

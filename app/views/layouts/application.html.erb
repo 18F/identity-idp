@@ -4,12 +4,6 @@
 
 <%= extends_layout :base, body_class: local_assigns.fetch(:body_class, 'site tablet:bg-primary-lighter') do %>
   <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
-  <div class="usa-overlay"></div>
-  <% if content_for?(:mobile_nav) %>
-    <div class="usa-header">
-      <%= yield(:mobile_nav) %>
-    </div>
-  <% end %>
   <%= render 'shared/banner' %>
   <%= content_tag(
         local_assigns[:user_main_tag] == false ? 'div' : 'main',

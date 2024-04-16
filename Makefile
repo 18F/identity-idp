@@ -19,10 +19,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	clobber_assets \
 	clobber_logs \
 	watch_events \
-	docker_setup \
 	download_acuant_sdk \
-	fast_setup \
-	fast_test \
 	help \
 	lint \
 	lint_analytics_events \
@@ -58,12 +55,6 @@ all: check
 
 setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
-
-fast_setup: ## Abbreviated setup script that skips linking some files
-	bin/fast_setup
-
-docker_setup: ## Setup script for Docker development
-	bin/docker_setup
 
 check: lint test ## Runs lint tests and spec tests
 
@@ -126,7 +117,7 @@ lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
 	@# and you have no options to split that from the common bundles. If you need to increase this
 	@# budget and accept the fact that this will force end-users to endure longer load times, you
 	@# should set the new budget to within a few thousand bytes of the production-compiled size.
-	find app/assets/builds/application.css -size -220000c | grep .
+	find app/assets/builds/application.css -size -185000c | grep .
 	find public/packs/js/application-*.digested.js -size -5000c | grep .
 
 lint_migrations:
@@ -189,10 +180,6 @@ test: $(CONFIG) ## Runs RSpec and yarn tests
 test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
 	bundle exec rake spec && yarn test
-
-fast_test: export RAILS_ENV := test
-fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
-	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
