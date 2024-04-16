@@ -53,8 +53,8 @@ class FrontendLogController < ApplicationController
     idv_sdk_selfie_image_capture_closed_without_photo
     idv_sdk_selfie_image_capture_failed
     idv_sdk_selfie_image_capture_opened
-    idv_sdk_selfie_image_clicked
     idv_selfie_image_added
+    idv_selfie_image_clicked
     phone_input_country_changed
   ].freeze
 
