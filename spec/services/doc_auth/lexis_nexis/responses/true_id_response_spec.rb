@@ -608,7 +608,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Failed' }),
           transaction_status: 'failed',
           transaction_reason_code: 'failed_true_id',
-          product_status: 'pass',
+          product_status: 'fail',
           decision_product_status: 'fail',
           doc_auth_result: 'Failed',
           processed_alerts: a_hash_including(:passed, :failed),
