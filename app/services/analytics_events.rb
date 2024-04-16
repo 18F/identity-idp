@@ -2930,7 +2930,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
-  # @param [:sms,:voice] delivery_method
+  # @param [:sms,:voice] otp_delivery_preference
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
@@ -2942,7 +2942,7 @@ module AnalyticsEvents
     errors:,
     code_expired:,
     code_matches:,
-    delivery_method:,
+    otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
     proofing_components: nil,
@@ -2956,7 +2956,7 @@ module AnalyticsEvents
       errors: errors,
       code_expired: code_expired,
       code_matches: code_matches,
-      delivery_method: delivery_method,
+      otp_delivery_preference: otp_delivery_preference,
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
       proofing_components: proofing_components,
