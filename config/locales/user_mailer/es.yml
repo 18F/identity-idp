@@ -167,12 +167,12 @@ es:
         retrasado
     in_person_please_call:
       body:
-        contact_message_html: Llame al <strong>%{contact_number}</strong> y facilíteles
+        contact_message_html: Llame al <strong>%{contact_number}</strong> y proporcione
           el código de error <strong>%{support_code}</strong>.
-        intro_html: Llame a nuestro centro de atención antes del
+        intro_html: Llame a nuestro centro de contacto antes del
           <strong>%{date}</strong> para seguir verificando su identidad.
       header: Llámenos
-      subject: Llame a %{app_name} para proseguir con la verificación de su identidad
+      subject: Llame a %{app_name} para continuar con la verificación de identidad
     in_person_ready_to_verify:
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_ready_to_verify_reminder:
