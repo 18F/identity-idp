@@ -136,6 +136,27 @@ describe('CaptchaSubmitButtonElement', () => {
           });
         });
       });
+
+      context('when recaptcha fails to load', () => {
+        beforeEach(() => {
+          delete (global as any).grecaptcha;
+        });
+
+        it('does not prevent default form submission', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+
+          let didSubmit = false;
+          form.addEventListener('submit', (event) => {
+            expect(event.defaultPrevented).to.equal(false);
+            event.preventDefault();
+            didSubmit = true;
+          });
+
+          await userEvent.click(button);
+          await waitFor(() => expect(didSubmit).to.be.true());
+        });
+      });
     });
   });
 });
