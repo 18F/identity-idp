@@ -37,7 +37,6 @@ en:
       disable: Delete
       edit: Edit
       manage: Manage
-      resend_confirmation: Resend confirmation instructions
       send_link: Send link
       send_one_time_code: Send code
       submit:

@@ -140,6 +140,7 @@ in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false
+in_person_state_id_controller_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_cron: '0/10 * * * *'
@@ -353,7 +354,7 @@ version_headers_enabled: false
 vtm_url: 'https://developer.login.gov/vot-trust-framework'
 use_dashboard_service_providers: false
 use_kms: false
-use_vot_in_sp_requests: false
+use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_ipp_password: ''
@@ -510,7 +511,6 @@ production:
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
-  use_vot_in_sp_requests: false
   usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
@@ -605,7 +605,6 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
-  use_vot_in_sp_requests: true
   usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com

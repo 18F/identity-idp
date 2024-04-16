@@ -373,7 +373,8 @@ module Features
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
+      expect(page).to have_current_path sign_up_register_path(request_id: sp_request_id)
+      expect(page).to have_content t('errors.messages.confirmation_invalid_token')
 
       submit_resend_email_confirmation_form_with_correct_email(email)
 
@@ -438,7 +439,8 @@ module Features
 
     def submit_resend_email_confirmation_form_with_correct_email(email)
       fill_in t('forms.registration.labels.email'), with: email
-      click_button t('forms.buttons.resend_confirmation')
+      check t('sign_up.terms', app_name: APP_NAME)
+      click_submit_default
     end
 
     def click_confirmation_link_in_email(email)

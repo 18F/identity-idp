@@ -70,22 +70,6 @@ RSpec.describe PhoneRecaptchaValidator do
     end
   end
 
-  describe '.exempt_countries' do
-    subject(:exempt_countries) { described_class.exempt_countries }
-
-    it 'returns an array of exempt countries' do
-      expect(exempt_countries).to eq([])
-    end
-
-    context 'with country overrides' do
-      let(:country_score_overrides_config) { { US: 0.0, CA: 0.1 } }
-
-      it 'returns an array of exempt countries' do
-        expect(exempt_countries).to eq([:US])
-      end
-    end
-  end
-
   describe '.country_score_overrides' do
     subject(:country_score_overrides) { described_class.country_score_overrides }
 

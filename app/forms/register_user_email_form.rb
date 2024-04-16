@@ -48,13 +48,13 @@ class RegisterUserEmailForm
   end
 
   def validate_terms_accepted
-    return if @terms_accepted || email_address_record&.user&.accepted_terms_at.present?
+    return if @terms_accepted
 
     errors.add(:terms_accepted, t('errors.registration.terms'), type: :terms)
   end
 
   def submit(params, instructions = nil)
-    @terms_accepted = params[:terms_accepted] == '1'
+    @terms_accepted = !!ActiveModel::Type::Boolean.new.cast(params[:terms_accepted])
     build_user_and_email_address_with_email(
       email: params[:email],
       email_language: params[:email_language],

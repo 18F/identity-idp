@@ -1,6 +1,22 @@
 require 'rails_helper'
 
 RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*] do
+  it 'requires user to accept rules of use when registering email' do
+    visit sign_up_email_path
+    fill_in t('forms.registration.labels.email'), with: 'test@example.com'
+    click_submit_default
+
+    expect(page).to have_current_path(sign_up_email_path)
+    expect(page).to have_content(t('errors.registration.terms'))
+
+    fill_in t('forms.registration.labels.email'), with: 'test@example.com'
+    check t('sign_up.terms', app_name: APP_NAME)
+    click_submit_default
+
+    expect(page).to have_current_path(sign_up_verify_email_url)
+    expect(page).not_to have_content(t('errors.registration.terms'))
+  end
+
   scenario 'confirms valid email and sets valid password' do
     reset_email
     email = 'test@example.com'

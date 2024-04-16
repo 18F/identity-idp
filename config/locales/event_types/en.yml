@@ -24,6 +24,7 @@ en:
     piv_cac_enabled: PIV/CAC card associated
     sign_in_after_2fa: Signed in with second factor
     sign_in_before_2fa: Signed in with password
+    sign_in_notification_timeframe_expired: Expired notification timeframe for sign-in from new device
     sign_in_unsuccessful_2fa: Failed to authenticate
     webauthn_key_added: Hardware security key added
     webauthn_key_removed: Hardware security key removed

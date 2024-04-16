@@ -5,7 +5,6 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'rails', '~> 7.1.3'
 
-gem 'activerecord-postgis-adapter', '~> 9.0'
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-cloudwatchlogs', require: false
@@ -24,7 +23,7 @@ gem 'caxlsx', require: false
 gem 'concurrent-ruby'
 gem 'connection_pool'
 gem 'csv'
-gem 'cssbundling-rails'
+gem 'cssbundling-rails', '1.0.0'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday', '~> 2'
@@ -70,7 +69,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.19.3-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.20.0-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false

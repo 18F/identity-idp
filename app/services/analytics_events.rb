@@ -806,6 +806,20 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Hash] error
+  def idv_camera_info_error(error:, **_extra)
+    track_event(:idv_camera_info_error, error: error)
+  end
+
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Array] camera_info Information on the users cameras max resolution
+  # as  captured by the browser
+  def idv_camera_info_logged(flow_path:, camera_info:, **_extra)
+    track_event(
+      :idv_camera_info_logged, flow_path: flow_path, camera_info: camera_info
+    )
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.

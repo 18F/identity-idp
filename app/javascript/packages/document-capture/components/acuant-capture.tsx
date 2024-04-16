@@ -28,6 +28,7 @@ import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
 import useCounter from '../hooks/use-counter';
+import { useLogCameraInfo } from '../hooks/use-log-camera-info';
 
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
@@ -344,6 +345,10 @@ function AcuantCapture(
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
+  // When it's the back of the ID we want to log information about the camera
+  // This hook does that.
+  const isBackOfId = name === 'back';
+  useLogCameraInfo({ isBackOfId, hasStartedCropping });
 
   const {
     failedCaptureAttempts,
