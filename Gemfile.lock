@@ -34,10 +34,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f86b4c5ef4281a53b3f13a1db2c2e5839fdf077d
-  tag: 0.20.0-18f
+  revision: dd8643b16c8214f7b791763538180d043af7ef65
+  tag: 0.20.2-18f
   specs:
-    saml_idp (0.19.3.pre.18f)
+    saml_idp (0.20.2.pre.18f)
       activesupport
       builder
       faraday
