@@ -1,41 +1,42 @@
-<% self.title = t('titles.exit_login', app_name: APP_NAME) %>
+<% self.title = t('titles.cancel_exit_login', app_name: APP_NAME) %>
 
-<%= render AlertIconComponent.new(icon_name: :warning, class: 'margin-bottom-4') %>
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME) } %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME)) %>
+  <p>
+    <%= t('account.login_cancel.header', app_name: APP_NAME) %>
+  </p>
 
-<p>
-  <%= t('account.login_cancel.header', app_name: APP_NAME) %>
-</p>
+  <ul class="usa-list">
+    <li><%= t('account.login_cancel.bullet1', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %></li>
+    <li>
+      <%= t(
+            'account.login_cancel.bullet2_html', app_name: APP_NAME,
+                                                 link_html: link_to(
+                                                   t('account.login_cancel.account_page'),
+                                                   account_path,
+                                                 )
+          ) %>
+    </li>
+  </ul>
 
-<ul class="usa-list">
-  <li><%= t('account.login_cancel.bullet1', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %></li>
-  <li>
-    <%= t(
-          'account.login_cancel.bullet2_html', app_name: APP_NAME,
-                                             link_html: link_to(
-                                               t('account.login_cancel.account_page'),
-                                               account_path,
-                                             )
-        ) %>
-  </li>
-</ul>
+  <div class="grid-row">
+    <div class="grid-col-6">
+      <%= link_to(
+            sign_up_completed_path,
+            method: :get,
+            class: 'usa-button usa-button--wide usa-button--big margin-bottom-2 margin-top-3',
+          ) do %>
+        <%= t('account.login_cancel.keep_going') %>
+      <% end %>
 
-<div class="grid-row">
-  <div class="grid-col-6">
-    <%= link_to(
-          sign_up_completed_path,
-          method: :get,
-          class: 'usa-button usa-button--wide usa-button--big margin-bottom-2 margin-top-3',
-        ) do %>
-      <%= t('account.login_cancel.keep_going') %>
-    <% end %>
-
-    <%= link_to(
-          @redirect_url,
-          class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
-        ) do %>
-      <%= t('account.login_cancel.exit', app_name: APP_NAME) %>
-    <% end %>
+      <%= link_to(
+            @redirect_url,
+            class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
+          ) do %>
+        <%= t('account.login_cancel.exit', app_name: APP_NAME) %>
+      <% end %>
+    </div>
   </div>
-</div>
+ 
+<% end %>

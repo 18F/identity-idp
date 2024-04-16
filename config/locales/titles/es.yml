@@ -6,6 +6,7 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     backup_codes: No pierda sus códigos de respaldo
+    cancel_exit_login: ¿Está seguro de que desea cancelar y salir de %{app_name}?
     confirmations:
       delete: Por favor confirmar
       show: Elija una contraseña
@@ -25,7 +26,6 @@ es:
     enter_2fa_code:
       one_time_code: Ingrese el código de seguridad de un solo uso
       security_code: Ingese su código de seguridad de sólo un uso
-    exit_login: ¿Está seguro de que desea cancelar y salir de %{app_name}?
     failure:
       information_not_verified: Información personal no verificada
       phone_verification: Número telefónico no verificado
