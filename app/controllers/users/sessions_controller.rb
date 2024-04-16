@@ -207,12 +207,12 @@ module Users
     end
 
     def check_password_compromised
-      return if current_user.check_password_compromised_at.present? ||
+      return if current_user.password_compromised_checked_at.present? ||
                 !eligible_for_password_lookup?
 
       session[:redirect_to_password_compromised] =
         PwnedPasswords::LookupPassword.call(auth_params[:password])
-      update_user_check_password_compromised_at
+      update_user_password_compromised_checked_at
     end
 
     def eligible_for_password_lookup?
@@ -220,10 +220,10 @@ module Users
         randomize_check_password?
     end
 
-    def update_user_check_password_compromised_at
+    def update_user_password_compromised_checked_at
       UpdateUser.new(
         user: current_user,
-        attributes: { check_password_compromised_at: Time.zone.now },
+        attributes: { password_compromised_checked_at: Time.zone.now },
       ).call
     end
 

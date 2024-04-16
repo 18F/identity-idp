@@ -210,11 +210,11 @@ RSpec.describe Users::SessionsController, devise: true do
               and_return(2)
           end
 
-          it 'updates user attribute check_password_compromised_at' do
-            expect(user.check_password_compromised_at).to be_falsey
+          it 'updates user attribute password_compromised_checked_at' do
+            expect(user.password_compromised_checked_at).to be_falsey
             post :create, params: { user: { email: user.email, password: user.password } }
             user.reload
-            expect(user.check_password_compromised_at).to be_truthy
+            expect(user.password_compromised_checked_at).to be_truthy
           end
 
           it 'stores in session redirect to check compromise' do
@@ -232,7 +232,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not store anything in user_session' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(user.check_password_compromised_at).to be_falsey
+            expect(user.password_compromised_checked_at).to be_falsey
           end
 
           it 'does not update the user ' do
@@ -255,11 +255,11 @@ RSpec.describe Users::SessionsController, devise: true do
               and_return(2)
           end
 
-          it 'updates user attribute check_password_compromised_at' do
-            expect(user.check_password_compromised_at).to be_falsey
+          it 'updates user attribute password_compromised_checked_at' do
+            expect(user.password_compromised_checked_at).to be_falsey
             post :create, params: { user: { email: user.email, password: user.password } }
             user.reload
-            expect(user.check_password_compromised_at).to be_truthy
+            expect(user.password_compromised_checked_at).to be_truthy
           end
 
           it 'stores in session false to attempt to redirect password compromised' do
@@ -277,7 +277,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not store anything in user_session' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(user.check_password_compromised_at).to be_falsey
+            expect(user.password_compromised_checked_at).to be_falsey
           end
 
           it 'does not update the user ' do

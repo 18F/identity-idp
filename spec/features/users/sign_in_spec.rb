@@ -1024,7 +1024,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
 
           expect(current_path).to eq account_path
           user.reload
-          expect(user.check_password_compromised_at).to be_truthy
+          expect(user.password_compromised_checked_at).to be_truthy
         end
       end
 
@@ -1042,7 +1042,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
 
           expect(current_path).to eq account_path
           user.reload
-          expect(user.check_password_compromised_at).to be_falsey
+          expect(user.password_compromised_checked_at).to be_falsey
         end
       end
     end
