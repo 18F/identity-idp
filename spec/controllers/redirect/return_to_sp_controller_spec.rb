@@ -10,8 +10,18 @@ RSpec.describe Redirect::ReturnToSpController do
   end
 
   describe '#cancel' do
+    context 'when there is no SP' do
+      let(:current_sp) { nil }
+
+      it 'redirects to the account page' do
+        get 'cancel'
+
+        expect(response).to redirect_to account_url
+      end
+    end
+
     context 'when there is an SP request in the session' do
-      it 'tracks analytics' do
+      it 'tracks analytics with the redirect URI and the request url' do
         redirect_uri = 'https://sp.gov/result'
         state = '123abc'
         sp_request_url = UriService.add_params(
@@ -33,7 +43,7 @@ RSpec.describe Redirect::ReturnToSpController do
     end
 
     context 'when there is an SP in the session without a request url' do
-      it 'tracks analytics' do
+      it 'tracks analytics with the correct url' do
         current_sp.return_to_sp_url = 'https://sp.gov/return_to_sp'
 
         get 'cancel'
