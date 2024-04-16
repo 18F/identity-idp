@@ -173,7 +173,7 @@ fr:
         intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong>
           pour continuer à vérifier votre identité.
       header: S’il vous plaît, appelez-nous
-      subject: Appelez %{app_name} pour poursuivre la vérification de votre identité
+      subject: Appeler %{app_name} afin de poursuivre la vérification de votre identité
     in_person_ready_to_verify:
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
     in_person_ready_to_verify_reminder:
