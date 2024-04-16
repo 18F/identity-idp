@@ -300,7 +300,7 @@ Rails.application.routes.draw do
         as: :sign_up_create_email_confirmation
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
-    get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
+    get '/sign_up/enter_email/resend' => redirect('/sign_up/enter_email')
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed

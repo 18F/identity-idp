@@ -13,10 +13,6 @@ class PhoneRecaptchaValidator
     @validator_args = validator_args
   end
 
-  def self.exempt_countries
-    country_score_overrides.select { |_key, value| !value.positive? }.keys
-  end
-
   def self.country_score_overrides
     IdentityConfig.store.phone_recaptcha_country_score_overrides
   end

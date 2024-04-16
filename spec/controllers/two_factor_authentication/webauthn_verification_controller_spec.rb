@@ -158,6 +158,9 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             :mfa_login_webauthn_roaming,
             success: true,
           )
+          expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+            with(auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN).
+            and_call_original
 
           freeze_time do
             patch :confirm, params: params

@@ -137,6 +137,7 @@ in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false
+in_person_state_id_controller_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_cron: '0/10 * * * *'
@@ -233,7 +234,6 @@ personal_key_retired: true
 phone_carrier_registration_blocklist_array: '[]'
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
-short_term_phone_otp_rate_limiter_enabled: true
 phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
@@ -489,7 +489,6 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
-  short_term_phone_otp_rate_limiter_enabled: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -585,7 +584,7 @@ test:
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
-  short_term_phone_otp_rate_limiter_enabled: false
+  short_term_phone_otp_max_attempts: 100
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'

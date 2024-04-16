@@ -11,7 +11,9 @@ RSpec.describe LoginButtonComponent, type: :component do
   end
 
   it 'renders button text' do
-    expect(rendered).to have_text('Sign in with Login.gov')
+    rendered
+    element = page.find_css('.login-button').first
+    expect(element.text.squish).to have_text('Sign in with Login.gov')
   end
 
   it 'renders with design system classes and default color' do

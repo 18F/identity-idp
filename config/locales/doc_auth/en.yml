@@ -41,6 +41,7 @@ en:
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
         selfie_not_live: Try taking a photo of yourself again. Make sure your whole face
           is clear and visible in the photo.
+        selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
         selfie_poor_quality: 'Try taking a photo of yourself again. Make sure your whole
           face is clear and visible in the photo.'
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
@@ -87,6 +88,7 @@ en:
         no_liveness: Try taking new pictures.
         selfie_failure: Try taking your photos again. Make sure all of your photos are
           clear and in focus.
+        selfie_failure_help_link_text: Review more tips for taking clear photos
       glare:
         failed_short: Image has glare, please try again.
         top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the
@@ -237,8 +239,7 @@ en:
         too_many_faces: Too many faces
       ssn: We need your Social Security number to verify your name, date of birth and
         address.
-      stepping_up_html: 'Verify your identity again and take a photo of yourself to
-        access this service. %{link_html}'
+      stepping_up_html: 'Verify your identity again to access this service. %{link_html}'
       tag: Recommended
       upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
       upload_from_phone: You won’t have to sign in again, and you’ll switch back to
@@ -257,8 +258,7 @@ en:
       verify_online_link_text: Learn more about verifying online
       you_entered: 'You entered:'
     instructions:
-      bullet1: Take photos of your ID
-      bullet1_with_selfie: Take photos of yourself and your ID
+      bullet1: Have a driver’s license or state ID
       bullet2: Enter your Social Security number
       bullet3: Match to your phone number
       bullet4: Re-enter your %{app_name} password
@@ -271,13 +271,11 @@ en:
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
-      text1: Use your driver’s license or state ID card. Other forms of ID are not
-        accepted.
-      text1_with_selfie: Take a photo of yourself and take photos of your driver’s
-        license or state ID card. Other forms of ID are not accepted.
+      text1: Other forms of ID are not accepted. We’ll check that you are the person
+        on your ID.
       text2: You will not need your physical SSN card.
-      text3: Your phone number matches you to your personal information. After you
-        match, we’ll send you a code.
+      text3: We match your phone number with your personal information and send a
+        one-time code to your phone.
       text4: Your password saves and encrypts your personal information.
     tips:
       document_capture_hint: Must be a JPG or PNG

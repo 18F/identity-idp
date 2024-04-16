@@ -48,6 +48,7 @@ module Idv
       {
         code_expired: user_phone_confirmation_session.expired?,
         code_matches: user_phone_confirmation_session.matches_code?(code),
+        otp_delivery_preference: user_phone_confirmation_session.delivery_method,
         second_factor_attempts_count: user.second_factor_attempts_count,
         second_factor_locked_at: user.second_factor_locked_at,
       }

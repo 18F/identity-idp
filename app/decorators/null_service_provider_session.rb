@@ -47,7 +47,7 @@ class NullServiceProviderSession
     {}
   end
 
-  def selfie_required?
+  def biometric_comparison_required?
     false
   end
 

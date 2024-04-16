@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  # To be dropped in: https://github.com/18F/identity-idp/pull/10429
+  self.ignored_columns = [:remember_created_at]
+
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
@@ -100,6 +103,10 @@ class User < ApplicationRecord
 
   def active_identities
     identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
+  end
+
+  def active_profile?
+    active_profile.present?
   end
 
   def active_profile
@@ -366,7 +373,7 @@ class User < ApplicationRecord
     active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
   end
 
-  def identity_verified_with_selfie?
+  def identity_verified_with_biometric_comparison?
     BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
   end
 

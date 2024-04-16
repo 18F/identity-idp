@@ -275,7 +275,6 @@ module Users
     end
 
     def exceeded_short_term_otp_rate_limit?
-      return false unless IdentityConfig.store.short_term_phone_otp_rate_limiter_enabled
       short_term_otp_rate_limiter.increment!
       short_term_otp_rate_limiter.limited?
     end

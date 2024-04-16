@@ -41,7 +41,6 @@ fr:
       disable: Effacer
       edit: Modifier
       manage: Administrer
-      resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_link: Envoyer le lien
       send_one_time_code: Envoyer le code
       submit:

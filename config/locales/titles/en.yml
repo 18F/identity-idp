@@ -8,7 +8,6 @@ en:
     backup_codes: Don’t lose your backup codes
     confirmations:
       delete: Please confirm
-      new: Resend confirmation instructions for your account
       show: Choose a password
     doc_auth:
       address: Update your mailing address

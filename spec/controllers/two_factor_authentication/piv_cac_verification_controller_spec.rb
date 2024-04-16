@@ -134,6 +134,10 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC).
+          and_call_original
+
         get :show, params: { token: 'good-token' }
       end
 
