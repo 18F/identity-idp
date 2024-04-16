@@ -24,7 +24,7 @@ function StatusMessage({ status, className, children }: StatusMessageProps) {
   const role = status === Status.ERROR ? 'alert' : 'status';
 
   return (
-    <span role={role} className={classes} aria-live="polite">
+    <span role="status" className={classes}>
       {children}
     </span>
   );
