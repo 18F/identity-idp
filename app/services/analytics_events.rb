@@ -764,6 +764,7 @@ module AnalyticsEvents
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
   # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [Number] captureAttempts count of image capturing attempts
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -772,6 +773,7 @@ module AnalyticsEvents
     source:,
     use_alternate_sdk:,
     liveness_checking_required:,
+    captureAttempts:,
     **extra
   )
     track_event(
@@ -783,6 +785,7 @@ module AnalyticsEvents
       source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
@@ -1529,6 +1532,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
+  # @param [Number] captureAttempts count of image capturing attempts
   # @param [Boolean] liveness_checking_required
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
@@ -1537,6 +1541,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    captureAttempts:,
     liveness_checking_required: nil,
     **extra
   )
@@ -1549,6 +1554,7 @@ module AnalyticsEvents
       source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
