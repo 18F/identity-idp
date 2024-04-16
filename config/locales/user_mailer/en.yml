@@ -71,22 +71,14 @@ en:
         email addresses. We recommend that you also change your password.
       subject: New email address added
     email_confirmation_instructions:
-      create_new_account: create a new account.
-      email_not_found: Email not found
       first_sentence:
         confirmed: Trying to change your email address?
-        forgot_password: You tried to reset your %{app_name} password but we don’t have
-          an account linked to this email address.
         unconfirmed: Thanks for submitting your email address.
       footer: This link will expire in %{confirmation_period}.
       header: '%{intro} Please click the link below or copy and paste the entire link
         into your browser.'
       link_text: Confirm email address
-      request_with_diff_email: You can request your password using a different email
-        address that is connected to your %{app_name} account.
       subject: Confirm your email
-      try_diff_email: Try a different email address
-      use_this_email: Or use this email address and
     email_deleted:
       header: An email address was deleted from your %{app_name} profile.
       help_html: If you did not want to delete this email address, please visit the

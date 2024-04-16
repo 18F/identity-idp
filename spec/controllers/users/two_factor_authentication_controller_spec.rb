@@ -609,8 +609,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
-        allow(IdentityConfig.store).to receive(:short_term_phone_otp_rate_limiter_enabled).
-          and_return(true)
         allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempts).and_return(2)
         allow(IdentityConfig.store).to receive(:short_term_phone_otp_max_attempt_window_in_seconds).
           and_return(5)

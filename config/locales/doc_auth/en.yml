@@ -41,6 +41,7 @@ en:
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
         selfie_not_live: Try taking a photo of yourself again. Make sure your whole face
           is clear and visible in the photo.
+        selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
         selfie_poor_quality: 'Try taking a photo of yourself again. Make sure your whole
           face is clear and visible in the photo.'
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
@@ -87,6 +88,7 @@ en:
         no_liveness: Try taking new pictures.
         selfie_failure: Try taking your photos again. Make sure all of your photos are
           clear and in focus.
+        selfie_failure_help_link_text: Review more tips for taking clear photos
       glare:
         failed_short: Image has glare, please try again.
         top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the
