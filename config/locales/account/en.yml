@@ -73,7 +73,7 @@ en:
       bullet2_html: You’ll still have a %{app_name} account which you can manage or
         delete on your %{link_html}.
       exit: Exit %{app_name}
-      header_html: <p>If you exit %{app_name} now:</p>
+      header: 'If you exit %{app_name} now:'
       keep_going: No, keep going
     navigation:
       add_authentication_apps: Add authentication apps
