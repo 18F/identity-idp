@@ -37,27 +37,8 @@ module SamlIdp
         expect(subject.fresh).not_to be_empty
       end
 
-      it "includes logout elements" do
-        subject.configurator.single_logout_service_post_location = 'https://example.com/saml/logout'
-        subject.configurator.remote_logout_service_post_location = 'https://example.com/saml/remote_logout'
-        expect(subject.fresh.scan(/SingleLogoutService/).count).to eq(3)
-        expect(subject.fresh).to match(slo_regex('HTTP-POST', 'https://example.com/saml/logout'))
-        expect(subject.fresh).to match(slo_regex('HTTP-Redirect', 'https://example.com/saml/logout'))
-        expect(subject.fresh).to match(slo_regex('HTTP-POST', 'https://example.com/saml/remote_logout'))
-      end
-
-      it "skips remote logout if not present" do
-        subject.configurator.single_logout_service_post_location = 'https://example.com/saml/logout'
-        subject.configurator.remote_logout_service_post_location = nil
-        expect(subject.fresh.scan(/SingleLogoutService/).count).to eq(2)
-      end
-
       it 'validates against the xsd schema' do
         expect(schema.valid?(doc)).to be true
-      end
-
-      def slo_regex(binding, location)
-        %r{<SingleLogoutService Binding=.+#{binding}.+ Location=.+#{location}.+/>}
       end
     end
   end
