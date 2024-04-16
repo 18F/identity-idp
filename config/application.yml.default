@@ -385,6 +385,8 @@ development:
   check_user_password_compromised_enabled: true
   component_previews_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
+  compromised_password_randomizer_value: 1
+  compromised_password_randomizer_threshold: 0
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''
