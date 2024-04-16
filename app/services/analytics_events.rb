@@ -5108,6 +5108,14 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the user is notified their password is compromised
+  def user_password_compromised_visited(**extra)
+    track_event(
+      :user_password_compromised_visited,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Integer] enabled_mfa_methods_count
@@ -5381,14 +5389,6 @@ module AnalyticsEvents
         error_message: error_message,
         **extra,
       }.compact,
-    )
-  end
-
-  # Tracks when the user is notified their password is compromised
-  def user_password_compromised_visited(**extra)
-    track_event(
-      :user_password_compromised_visited,
-      **extra,
     )
   end
 
