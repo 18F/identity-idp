@@ -25,7 +25,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
-    allow(subject.decorated_sp_session).to receive(:selfie_required?).
+    allow(subject.decorated_sp_session).to receive(:biometric_comparison_required?).
       and_return(sp_selfie_enabled && doc_auth_selfie_capture_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {

@@ -373,7 +373,7 @@ class User < ApplicationRecord
     active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
   end
 
-  def identity_verified_with_selfie?
+  def identity_verified_with_biometric_comparison?
     BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
   end
 
