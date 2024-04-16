@@ -91,6 +91,11 @@ export interface UploadErrorResponse {
   ocr_pii?: PII;
 
   /**
+   * Whether the unsuccessful result was any result other than passed or attention with barcode.
+   */
+  result_code_invalid: boolean;
+
+  /**
    * Whether the unsuccessful result was the failure type.
    */
   result_failed: boolean;
