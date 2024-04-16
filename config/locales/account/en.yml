@@ -66,7 +66,7 @@ en:
         enter your email and password again.
       piv_cac: Sign in with your government employee ID
       tab_navigation: Account creation tabs
-    login_exit:
+    login_cancel:
       account_page: account page
       bullet1: You won’t be able to use %{app_name} to access %{sp_name} until you
         share your information with them.

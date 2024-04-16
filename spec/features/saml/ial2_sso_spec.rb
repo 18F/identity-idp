@@ -30,7 +30,7 @@ RSpec.feature 'IAL2 Single Sign On', allowed_extra_analytics: [:*] do
     fill_in t('idv.form.password'), with: user.password
     click_continue
     click_link t('idv.cancel.actions.exit', app_name: APP_NAME)
-    click_link t('account.login_exit.exit', app_name: APP_NAME)
+    click_link t('account.login_cancel.exit', app_name: APP_NAME)
   end
 
   def expected_gpo_return_to_sp_url

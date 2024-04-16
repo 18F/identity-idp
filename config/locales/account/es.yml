@@ -67,7 +67,7 @@ es:
         vuelvas a ingresar tu correo electrónico y contraseña.
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
       tab_navigation: Pestañas de creación de cuenta
-    login_exit:
+    login_cancel:
       account_page: página de su cuenta
       bullet1: No podrá utilizar %{app_name} para acceder a %{sp_name} hasta que les
         comparta su información.
