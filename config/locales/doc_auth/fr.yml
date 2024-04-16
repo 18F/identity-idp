@@ -224,7 +224,7 @@ fr:
       verify_at_post_office: Vérifiez votre identité un bureau de poste
       verify_identity: Vérifier votre identité
       verify_online: Vérifiez votre identité en ligne
-      welcome: Vérifions votre identité pour %{sp_name}
+      welcome: Vérifions votre identité auprès de %{sp_name}
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
         identité et accéder à <strong>%{service_provider_name}</strong> et à ses
@@ -248,9 +248,9 @@ fr:
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
-      getting_started_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
-        quelqu’un qui se fait passer pour vous. %{link_html}'
-      getting_started_learn_more: Pour plus d’informations sur la vérification de votre identité
+      getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et
+        non de quelqu’un qui se fait passer pour vous. %{link_html}'
+      getting_started_learn_more: En savoir plus sur la vérification de votre identité
       how_to_verify: Vous avez la possibilité de vérifier votre identité en ligne ou
         en personne dans un bureau de poste participant.
       how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de vérifier votre identité?
@@ -292,8 +292,9 @@ fr:
         too_many_faces: Trop de visages
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
         nom, date de naissance et adresse.
-      stepping_up_html: 'Vérifiez à nouveau votre identité et prenez une photo de vous
-        pour accéder à ce service. %{link_html}'
+      stepping_up_html: Vérifiez à nouveau votre identité pour accéder à ce service.
+        Pour plus d’informations sur la vérification de votre identité
+        %{link_html}
       tag: Recommandation
       upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de
         votre carte d’identité depuis cet ordinateur.
@@ -317,30 +318,26 @@ fr:
       verify_online_link_text: En savoir plus sur la confirmation en ligne
       you_entered: 'Tu as soumis:'
     instructions:
-      bullet1: Prendre des photos de votre pièce d’identité
-      bullet1_with_selfie: Prenez des photos de vous et de vos pièces d’identité
-      bullet2: Saisissez votre numéro de sécurité sociale
-      bullet3: Faites correspondre votre numéro de téléphone
-      bullet4: Saisissez à nouveau votre mot de passe %{app_name}
+      bullet1: Présenter votre permis de conduire ou votre carte d’identité d’un État
+      bullet2: Saisir votre numéro de sécurité sociale
+      bullet3: Vérifier la correspondance avec votre numéro de téléphone
+      bullet4: Saisir à nouveau votre mot de passe %{app_name}
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les utilisons
         pour vérifier votre identité.
-      getting_started: 'Vous aurez besoin de :'
+      getting_started: 'Vous devrez :'
       learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
       switch_back_image: Flèche pointant du téléphone vers l’ordinateur
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1: Utilisez votre permis de conduire ou votre carte d’identité nationale.
-        Les autres pièces d’identité ne sont pas acceptées.
-      text1_with_selfie: Prenez une photo de vous et une de votre permis de conduire
-        ou carte d’identité nationale. Les autres pièces d’identité ne sont pas
-        acceptées.
-      text2: Vous n’aurez pas besoin de votre carte de sécurité sociale.
-      text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
-        fois la correspondance établie, nous vous enverrons un code.
-      text4: Votre mot de passe enregistre et crypte vos informations personnelles.
+      text1: Les autres pièces d’identité ne sont pas acceptées. Nous vérifierons que
+        vous êtes la personne figurant sur la pièce d’identité.
+      text2: Vous n’aurez pas besoin de votre carte de sécurité sociale papier.
+      text3: Nous comparons votre numéro de téléphone à vos informations personnelles
+        et vous envoyons un code à usage unique sur votre téléphone.
+      text4: Votre mot de passe s’enregistre et chiffre vos informations personnelles.
     tips:
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Placez votre pièce d’identité sur une surface plane et sombre.
