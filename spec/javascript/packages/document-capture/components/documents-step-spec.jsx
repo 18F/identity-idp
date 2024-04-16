@@ -18,15 +18,9 @@ describe('document-capture/components/documents-step', () => {
   it('renders with only front and back inputs by default', () => {
     const { getByLabelText, queryByLabelText } = render(<DocumentsStep />);
 
-    const front = getByLabelText('doc_auth.headings.document_capture_front', {
-      exact: false,
-    });
-    const back = getByLabelText('doc_auth.headings.document_capture_back', {
-      exact: false,
-    });
-    const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie', {
-      exact: false,
-    });
+    const front = getByLabelText('doc_auth.headings.document_capture_front');
+    const back = getByLabelText('doc_auth.headings.document_capture_back');
+    const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
 
     expect(front).to.be.ok();
     expect(back).to.be.ok();
@@ -47,12 +41,7 @@ describe('document-capture/components/documents-step', () => {
 
     await Promise.all([
       new Promise((resolve) => onChange.callsFake(resolve)),
-      userEvent.upload(
-        getByLabelText('doc_auth.headings.document_capture_front', {
-          exact: false,
-        }),
-        file,
-      ),
+      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file),
     ]);
     expect(onChange).to.have.been.calledWith({
       front: file,
@@ -117,9 +106,7 @@ describe('document-capture/components/documents-step', () => {
         <App />,
       );
 
-      const front = getByLabelText('doc_auth.headings.document_capture_front', {
-        exact: false,
-      });
+      const front = getByLabelText('doc_auth.headings.document_capture_front');
       const back = getByLabelText('doc_auth.headings.document_capture_back');
       const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
       const pageHeader = getByRole('heading', {
@@ -167,12 +154,8 @@ describe('document-capture/components/documents-step', () => {
     );
     const { queryByRole, getByRole, getByLabelText } = render(<App />);
 
-    const front = getByLabelText('doc_auth.headings.document_capture_front', {
-      exact: false,
-    });
-    const back = getByLabelText('doc_auth.headings.document_capture_back', {
-      exact: false,
-    });
+    const front = getByLabelText('doc_auth.headings.document_capture_front');
+    const back = getByLabelText('doc_auth.headings.document_capture_back');
     const pageHeader = getByRole('heading', {
       name: 'doc_auth.headings.document_capture',
       level: 1,
