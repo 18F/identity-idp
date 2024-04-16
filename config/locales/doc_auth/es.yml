@@ -275,7 +275,7 @@ es:
         too_many_faces: Demasiados rostros
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
-      stepping_up_html: 'Verifica tu identidad de nuevo para acceder a este servicio.
+      stepping_up_html: 'Verifica su identidad de nuevo para acceder a este servicio.
         %{link_html}'
       tag: Recomendado
       upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de
@@ -300,14 +300,14 @@ es:
       verify_online_link_text: Obtenga más información sobre la verificación en línea
       you_entered: 'Ud. entregó:'
     instructions:
-      bullet1: Necesita una licencia de conducir o una tarjeta de identificación estatal
-      bullet2: Ingrese su número de Seguro Social
-      bullet3: Coincidencia de su número de teléfono
-      bullet4: Vuelva a ingresar su contraseña de %{app_name}
+      bullet1: Tener una licencia de conducir o una tarjeta de identificación estatal
+      bullet2: Ingresar su número de Seguro Social
+      bullet3: Hacer coincidir su número de teléfono
+      bullet4: Volver a ingresar su contraseña de %{app_name}
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
         para verificar su identidad.
-      getting_started: 'Haga lo siguiente:'
+      getting_started: 'Necesitará:'
       learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
       switch_back: Regrese a su computadora para continuar con la verificación de su
         identidad.

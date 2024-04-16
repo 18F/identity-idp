@@ -313,7 +313,7 @@ fr:
       verify_online_link_text: En savoir plus sur la confirmation en ligne
       you_entered: 'Tu as soumis:'
     instructions:
-      bullet1: Présenter votre permis de conduire ou la carte d’identité d’un État
+      bullet1: Présenter votre permis de conduire ou votre carte d’identité d’un État
       bullet2: Saisir votre numéro de sécurité sociale
       bullet3: Vérifier la correspondance avec votre numéro de téléphone
       bullet4: Saisir à nouveau votre mot de passe %{app_name}
@@ -332,7 +332,7 @@ fr:
       text2: Vous n’aurez pas besoin de votre carte de sécurité sociale papier.
       text3: Nous comparons votre numéro de téléphone à vos informations personnelles
         et vous envoyons un code à usage unique sur votre téléphone.
-      text4: Votre mot de passe s’enregistre et chiffre vos renseignements personnels.
+      text4: Votre mot de passe s’enregistre et chiffre vos informations personnelles.
     tips:
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre
