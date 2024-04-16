@@ -986,6 +986,7 @@ describe('document-capture/components/acuant-capture', () => {
         sharpness: 49,
         width: 1748,
         captureAttempts: sinon.match.number,
+        selfieAttempts: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
         fingerprint: null,
