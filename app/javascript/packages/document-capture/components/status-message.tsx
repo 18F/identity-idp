@@ -24,7 +24,7 @@ function StatusMessage({ status, className, children }: StatusMessageProps) {
   const role = status === Status.ERROR ? 'alert' : 'status';
 
   return (
-    <span role="status" className={classes}>
+    <span role={role} className={classes}>
       {children}
     </span>
   );
