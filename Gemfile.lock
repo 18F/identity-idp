@@ -558,9 +558,9 @@ GEM
       psych (>= 4.0.0)
     redacted_struct (2.0.0)
     redcarpet (3.6.0)
-    redis (5.0.6)
-      redis-client (>= 0.9.0)
-    redis-client (0.14.1)
+    redis (5.1.0)
+      redis-client (>= 0.17.0)
+    redis-client (0.22.0)
       connection_pool
     regexp_parser (2.9.0)
     reline (0.5.1)

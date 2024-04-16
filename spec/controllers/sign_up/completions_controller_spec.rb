@@ -103,33 +103,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
             expect(response).to redirect_to(idv_url)
           end
         end
-
-        context 'sp requires selfie' do
-          let(:selfie_capture_enabled) { true }
-          before do
-            expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
-              and_return(selfie_capture_enabled)
-            subject.session[:sp][:biometric_comparison_required] = 'true'
-          end
-
-          context 'user does not have a selfie' do
-            it 'redirects to idv_url' do
-              get :show
-
-              expect(response).to redirect_to(idv_url)
-            end
-          end
-
-          context 'selfie capture not enabled' do
-            let(:selfie_capture_enabled) { false }
-
-            it 'does not redirect' do
-              get :show
-
-              expect(response).to render_template :show
-            end
-          end
-        end
       end
 
       context 'IALMax' do

@@ -79,24 +79,14 @@ fr:
         également votre mot de passe.
       subject: Nouvelle adresse email ajoutée
     email_confirmation_instructions:
-      create_new_account: créer un nouveau compte.
-      email_not_found: Email non trouvé
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
-        forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
-          compte %{app_name}, mais nous ne possédons pas de compte associé à
-          cette adresse courriel.
         unconfirmed: Merci d’avoir envoyé votre adresse email.
       footer: Ce lien expirera dans %{confirmation_period}.
       header: '%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller le
         lien complet dans votre navigateur.'
       link_text: Confirmez votre adresse email
-      request_with_diff_email: Vous pouvez demander votre mot de passe en utilisant
-        une adresse e-mail différente qui est connectée à votre compte
-        %{app_name}.
       subject: Confirmez votre adresse courriel
-      try_diff_email: Essayez une autre adresse e-mail
-      use_this_email: Ou utilisez cet e-mail et
     email_deleted:
       header: Une adresse email a été supprimée de votre profil %{app_name}.
       help_html: Si vous ne souhaitez pas supprimer cette adresse électronique
@@ -183,7 +173,7 @@ fr:
         intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong>
           pour continuer à vérifier votre identité.
       header: S’il vous plaît, appelez-nous
-      subject: Appelez %{app_name} pour poursuivre la vérification de votre identité
+      subject: Appeler %{app_name} afin de poursuivre la vérification de votre identité
     in_person_ready_to_verify:
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
     in_person_ready_to_verify_reminder:

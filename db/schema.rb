@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_11_163520) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_16_165602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -612,8 +612,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_11_163520) do
     t.string "encrypted_recovery_code_digest_multi_region"
     t.datetime "second_mfa_reminder_dismissed_at"
     t.datetime "piv_cac_recommended_dismissed_at"
-    t.datetime "password_compromised_checked_at"
     t.datetime "sign_in_new_device_at"
+    t.datetime "password_compromised_checked_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sign_in_new_device_at"], name: "index_users_on_sign_in_new_device_at"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
