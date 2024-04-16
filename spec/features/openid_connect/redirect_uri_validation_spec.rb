@@ -73,7 +73,7 @@ RSpec.describe 'redirect_uri validation', allowed_extra_analytics: [:*] do
       sp_redirect_uri = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
       click_on t('links.back_to_sp', sp: 'Test SP')
-      click_on t('account.login_cancel.exit', app_name: APP_NAME)
+      click_on t('sign_up.login_cancel.exit', app_name: APP_NAME)
       expect(current_url).to eq(sp_redirect_uri)
     end
   end

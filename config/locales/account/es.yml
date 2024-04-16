@@ -67,15 +67,6 @@ es:
         vuelvas a ingresar tu correo electrónico y contraseña.
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
       tab_navigation: Pestañas de creación de cuenta
-    login_cancel:
-      account_page: página de su cuenta
-      bullet1: No podrá utilizar %{app_name} para acceder a %{sp_name} hasta que les
-        comparta su información.
-      bullet2_html: Seguirá teniendo una cuenta de %{app_name} que podrá administrar o
-        eliminar en la %{link_html}.
-      exit: Salir de %{app_name}
-      header_html: <p>Si sale ahora de %{app_name}:</p>
-      keep_going: No, deseo continuar
     navigation:
       add_authentication_apps: Agregar aplicaciones de autenticación
       add_email: Agregar dirección de correo electrónico

@@ -7,4 +7,13 @@ en:
       warning_header: 'If you cancel now:'
     completed:
       smiling_image_alt: A smiling person with a green checkmark indicating success
+    login_cancel:
+      account_page: account page
+      bullet1: You won’t be able to use %{app_name} to access %{sp_name} until you
+        share your information with them.
+      bullet2_html: You’ll still have a %{app_name} account which you can manage or
+        delete on your %{link_html}.
+      exit: Exit %{app_name}
+      header: 'If you exit %{app_name} now:'
+      keep_going: No, keep going
     terms: I read and accept the %{app_name}

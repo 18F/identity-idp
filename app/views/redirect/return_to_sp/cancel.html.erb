@@ -4,16 +4,16 @@
   <% c.with_header { t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME) } %>
 
   <p>
-    <%= t('account.login_cancel.header', app_name: APP_NAME) %>
+    <%= t('sign_up.login_cancel.header', app_name: APP_NAME) %>
   </p>
 
   <ul class="usa-list">
-    <li><%= t('account.login_cancel.bullet1', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %></li>
+    <li><%= t('sign_up.login_cancel.bullet1', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %></li>
     <li>
       <%= t(
-            'account.login_cancel.bullet2_html', app_name: APP_NAME,
+            'sign_up.login_cancel.bullet2_html', app_name: APP_NAME,
                                                  link_html: link_to(
-                                                   t('account.login_cancel.account_page'),
+                                                   t('sign_up.login_cancel.account_page'),
                                                    account_path,
                                                  )
           ) %>
@@ -27,14 +27,14 @@
             method: :get,
             class: 'usa-button usa-button--wide usa-button--big margin-bottom-2 margin-top-3',
           ) do %>
-        <%= t('account.login_cancel.keep_going') %>
+        <%= t('sign_up.login_cancel.keep_going') %>
       <% end %>
 
       <%= link_to(
             @redirect_url,
             class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
           ) do %>
-        <%= t('account.login_cancel.exit', app_name: APP_NAME) %>
+        <%= t('sign_up.login_cancel.exit', app_name: APP_NAME) %>
       <% end %>
     </div>
   </div>
