@@ -317,23 +317,23 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
         className={['usa-label', shownErrorMessage && 'usa-label--error'].filter(Boolean).join(' ')}
       >
         {label}
+        <StatusMessage status={Status.ERROR}>{shownErrorMessage}</StatusMessage>
+        <StatusMessage
+          status={Status.SUCCESS}
+          className={
+            successMessage === fileLoadingText || successMessage === fileLoadedText
+              ? 'usa-sr-only'
+              : undefined
+          }
+        >
+          {!shownErrorMessage && successMessage}
+        </StatusMessage>
       </label>
       {hint && (
         <span className="usa-hint" id={hintId}>
           {hint}
         </span>
       )}
-      <StatusMessage status={Status.ERROR}>{shownErrorMessage}</StatusMessage>
-      <StatusMessage
-        status={Status.SUCCESS}
-        className={
-          successMessage === fileLoadingText || successMessage === fileLoadedText
-            ? 'usa-sr-only'
-            : undefined
-        }
-      >
-        {!shownErrorMessage && successMessage}
-      </StatusMessage>
       <div
         className={[
           'usa-file-input usa-file-input--single-value',
