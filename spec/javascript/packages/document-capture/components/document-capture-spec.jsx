@@ -55,7 +55,9 @@ describe('document-capture/components/document-capture', () => {
   it('renders the form steps', () => {
     const { getByText } = render(<DocumentCapture />);
 
-    const step = getByText('doc_auth.headings.document_capture_front');
+    const step = getByText('doc_auth.headings.document_capture_front', {
+      exact: false,
+    });
 
     expect(step).to.be.ok();
   });
@@ -77,7 +79,9 @@ describe('document-capture/components/document-capture', () => {
       onError(new Error()),
     );
 
-    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'), {
+      exact: false,
+    });
 
     await findByText('doc_auth.errors.camera.blocked_detail');
   });
@@ -112,21 +116,34 @@ describe('document-capture/components/document-capture', () => {
     const errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(2);
     expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.headings.document_capture_front'),
+      getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      }),
     );
 
     // Providing values should remove errors progressively.
-    fireEvent.change(getByLabelText('doc_auth.headings.document_capture_front'), {
-      target: {
-        files: [validUpload],
+    fireEvent.change(
+      getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      }),
+      {
+        target: {
+          files: [validUpload],
+        },
       },
-    });
+    );
     await waitFor(() => expect(getAllByText('simple_form.required.text')).to.have.lengthOf(1));
     expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.headings.document_capture_front'),
+      getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      }),
     );
 
-    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
+    await userEvent.click(
+      getByLabelText('doc_auth.headings.document_capture_back', {
+        exact: false,
+      }),
+    );
 
     // Ensure the selfie field does not appear
     const selfie = queryByText('doc_auth.headings.document_capture_selfie');
@@ -165,8 +182,18 @@ describe('document-capture/components/document-capture', () => {
     let submitButton = getByText('forms.buttons.submit.default');
     await userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      }),
+      validUpload,
+    );
+    await userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back', {
+        exact: false,
+      }),
+      validUpload,
+    );
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     await userEvent.click(submitButton);
 
@@ -179,7 +206,9 @@ describe('document-capture/components/document-capture', () => {
 
     // Make sure that the first element after a tab is what we expect it to be.
     await userEvent.tab();
-    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front', {
+      exact: false,
+    });
     expect(document.activeElement).to.equal(firstFocusable);
 
     const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 2;
@@ -219,8 +248,18 @@ describe('document-capture/components/document-capture', () => {
     let submitButton = getByText('forms.buttons.submit.default');
     await userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      }),
+      validUpload,
+    );
+    await userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back', {
+        exact: false,
+      }),
+      validUpload,
+    );
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     await userEvent.click(submitButton);
 
@@ -240,12 +279,24 @@ describe('document-capture/components/document-capture', () => {
     const firstFocusable = getByText('doc_auth.info.review_examples_of_photos');
     expect(document.activeElement).to.equal(firstFocusable);
 
-    const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
+    const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front', {
+      exact: false,
+    });
     expect(hasValueSelected).to.be.true();
 
     submitButton = getByText('forms.buttons.submit.default');
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      }),
+      validUpload,
+    );
+    await userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back', {
+        exact: false,
+      }),
+      validUpload,
+    );
 
     // Once fields are changed, their notices should be cleared. If all field-specific errors are
     // addressed, submit should be enabled once more.
@@ -281,8 +332,12 @@ describe('document-capture/components/document-capture', () => {
     sandbox.stub(response, 'url').get(() => endpoint);
     sandbox.stub(global, 'fetch').withArgs(endpoint).resolves(response);
 
-    const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
-    const backImage = getByLabelText('doc_auth.headings.document_capture_back');
+    const frontImage = getByLabelText('doc_auth.headings.document_capture_front', {
+      exact: false,
+    });
+    const backImage = getByLabelText('doc_auth.headings.document_capture_back', {
+      exact: false,
+    });
     await userEvent.upload(frontImage, validUpload);
     await userEvent.upload(backImage, validUpload);
     await waitFor(() => frontImage.src && backImage.src);
@@ -343,8 +398,12 @@ describe('document-capture/components/document-capture', () => {
         await userEvent.click(getByText('forms.buttons.submit.default'));
         expect(queryByText('idv.troubleshooting.options.verify_in_person')).not.to.exist();
 
-        const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
-        const backImage = getByLabelText('doc_auth.headings.document_capture_back');
+        const frontImage = getByLabelText('doc_auth.headings.document_capture_front', {
+          exact: false,
+        });
+        const backImage = getByLabelText('doc_auth.headings.document_capture_back', {
+          exact: false,
+        });
         await userEvent.upload(frontImage, validUpload);
         await userEvent.upload(backImage, validUpload);
         await waitFor(() => frontImage.src && backImage.src);

@@ -79,11 +79,15 @@ describe('DocumentCaptureReviewIssues', () => {
       });
 
       // front capture input
-      const frontCapture = getByLabelText('doc_auth.headings.document_capture_front');
+      const frontCapture = getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      });
       expect(frontCapture).to.be.ok();
       expect(getByText('front side error')).to.be.ok();
 
-      const backCapture = getByLabelText('doc_auth.headings.document_capture_back');
+      const backCapture = getByLabelText('doc_auth.headings.document_capture_back', {
+        exact: false,
+      });
       expect(backCapture).to.be.ok();
       expect(getByText('back side error')).to.be.ok();
       expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();
@@ -126,11 +130,15 @@ describe('DocumentCaptureReviewIssues', () => {
       expect(getByText('doc_auth.errors.doc.wrong_id_type_html')).to.be.ok();
 
       // front capture input
-      const frontCapture = getByLabelText('doc_auth.headings.document_capture_front');
+      const frontCapture = getByLabelText('doc_auth.headings.document_capture_front', {
+        exact: false,
+      });
       expect(frontCapture).to.be.ok();
       expect(getByText('front side doc type error')).to.be.ok();
 
-      const backCapture = getByLabelText('doc_auth.headings.document_capture_back');
+      const backCapture = getByLabelText('doc_auth.headings.document_capture_back', {
+        exact: false,
+      });
       expect(backCapture).to.be.ok();
       expect(getByText('back side doc type error')).to.be.ok();
       expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();

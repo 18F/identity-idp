@@ -122,7 +122,9 @@ describe('document-capture/components/file-input', () => {
   it('renders file input with label', () => {
     const { getByLabelText } = render(<FileInput label="File" />);
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
 
     expect(input.nodeName).to.equal('INPUT');
     expect(input.type).to.equal('file');
@@ -250,7 +252,9 @@ describe('document-capture/components/file-input', () => {
     const file2 = new window.File([file], fileName);
     const { getByLabelText } = render(<FileInput label="File" value={file2} />);
 
-    const queryByAriaLabel = getByLabelText(`File - ${fileName}`);
+    const queryByAriaLabel = getByLabelText(`File - ${fileName}`, {
+      exact: false,
+    });
 
     expect(queryByAriaLabel).to.exist();
   });
@@ -263,7 +267,9 @@ describe('document-capture/components/file-input', () => {
       />,
     );
 
-    const queryByAriaLabel = getByLabelText(`File - ${'doc_auth.forms.captured_image'}`);
+    const queryByAriaLabel = getByLabelText(`File - ${'doc_auth.forms.captured_image'}`, {
+      exact: false,
+    });
 
     expect(queryByAriaLabel).to.exist();
   });
@@ -272,7 +278,9 @@ describe('document-capture/components/file-input', () => {
     const onClick = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onClick={onClick} />);
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     await userEvent.click(input);
 
     expect(onClick).to.have.been.calledOnce();
@@ -282,7 +290,9 @@ describe('document-capture/components/file-input', () => {
     const onDrop = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onDrop={onDrop} />);
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     fireEvent.drop(input);
 
     expect(onDrop).to.have.been.calledOnce();
@@ -293,7 +303,9 @@ describe('document-capture/components/file-input', () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     await userEvent.upload(input, file);
     await userEvent.upload(input, file2);
 
@@ -305,7 +317,9 @@ describe('document-capture/components/file-input', () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     await userEvent.upload(input, file);
     await userEvent.upload(input, []);
     expect(onChange.getCall(1).args[0]).to.be.null();
@@ -347,7 +361,9 @@ describe('document-capture/components/file-input', () => {
   it('adds drag effects', () => {
     const { getByLabelText } = render(<FileInput label="File" />);
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     const container = input.closest('.usa-file-input');
 
     fireEvent.dragOver(input);
@@ -376,7 +392,9 @@ describe('document-capture/components/file-input', () => {
       />,
     );
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     await userEvent.upload(input, file, { applyAccept: false });
 
     expect(getByText('Invalid type')).to.be.ok();
@@ -396,7 +414,9 @@ describe('document-capture/components/file-input', () => {
       />,
     );
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     await userEvent.upload(input, file, { applyAccept: false });
 
     expect(getByText('Wrong type')).to.be.ok();
@@ -415,7 +435,9 @@ describe('document-capture/components/file-input', () => {
     };
     const { getByLabelText, getByText, rerender } = render(<FileInput {...props} />);
 
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
     await userEvent.upload(input, file, { applyAccept: false });
 
     expect(getByText('Invalid type')).to.be.ok();
@@ -471,7 +493,9 @@ describe('document-capture/components/file-input', () => {
         isValuePending
       />,
     );
-    const input = getByLabelText('File');
+    const input = getByLabelText('File', {
+      exact: false,
+    });
 
     expect(container.querySelector('.usa-file-input--value-pending')).to.exist();
     expect(container.querySelector('.usa-file-input--has-value')).not.to.exist();
