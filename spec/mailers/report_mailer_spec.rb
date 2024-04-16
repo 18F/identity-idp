@@ -15,7 +15,7 @@ RSpec.describe ReportMailer, type: :mailer do
       )
     end
 
-    it_behaves_like 'a system email'
+    it_behaves_like 'a system email', synchronous_only: true
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]

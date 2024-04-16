@@ -90,7 +90,12 @@ module Users
     end
 
     def handle_valid_email
-      create_account_if_email_not_found
+      RequestPasswordReset.new(
+        email: email,
+        request_id: request_id,
+        analytics: analytics,
+        irs_attempts_api_tracker: irs_attempts_api_tracker,
+      ).perform
 
       session[:email] = email
       resend_confirmation = email_params[:resend]
@@ -101,24 +106,6 @@ module Users
     def store_token_in_session
       return if session[:reset_password_token]
       session[:reset_password_token] = params[:reset_password_token]
-    end
-
-    def create_account_if_email_not_found
-      user, result = RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
-      ).perform
-
-      return unless result
-
-      analytics.user_registration_email(**result.to_h)
-      irs_attempts_api_tracker.user_registration_email_submitted(
-        email: email,
-        success: result.success?,
-      )
-      create_user_event(:account_created, user)
     end
 
     def handle_invalid_or_expired_token(result)
