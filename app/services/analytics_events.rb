@@ -763,8 +763,8 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
-  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Number] captureAttempts count of image capturing attempts
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -772,8 +772,8 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
-    liveness_checking_required:,
     captureAttempts:,
+    liveness_checking_required:,
     **extra
   )
     track_event(
