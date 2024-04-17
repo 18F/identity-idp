@@ -99,14 +99,21 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         context 'it lacks a session id' do
           let(:threatmetrix_session_id) { nil }
-          it 'returns a disabled result' do
+
+          it 'does not make a request to the ThreatMetrix proofer' do
+            expect(threatmetrix_proofer).not_to receive(:proof)
+
+            subject
+          end
+
+          it 'returns a failed result' do
             result = subject
 
             device_profiling_result = result.device_profiling_result
 
-            expect(device_profiling_result.success).to be(true)
-            expect(device_profiling_result.client).to eq('tmx_disabled')
-            expect(device_profiling_result.review_status).to eq('pass')
+            expect(device_profiling_result.success).to be(false)
+            expect(device_profiling_result.client).to eq('tmx_id_missing')
+            expect(device_profiling_result.review_status).to eq('fail')
           end
         end
       end
