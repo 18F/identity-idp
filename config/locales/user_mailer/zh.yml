@@ -44,19 +44,13 @@ zh:
       help: 如果你没有作此更改，请登录你的用户资料来管理电邮地址。我们推荐你也更改密码。
       subject: 新电邮地址已添加
     email_confirmation_instructions:
-      create_new_account: 设立新账户。
-      email_not_found: 电邮没找到
       first_sentence:
         confirmed: 试图更改你电邮地址？
-        forgot_password: 你试图重设 %{app_name} 密码，但我们没有与此电邮地址相连接的账户。
         unconfirmed: 感谢提交你的电邮地址。
       footer: 这一链接会在 %{confirmation_period}后作废。
       header: '%{intro}请点击下面的链接或把整个链接复制并黏贴进浏览器。'
       link_text: 确认电邮地址
-      request_with_diff_email: 你可以使用与你 %{app_name} 账户连接的一个不同电邮地址来要求重设密码。
       subject: 确认你的电邮
-      try_diff_email: 尝试用一个不同的电邮地址
-      use_this_email: 或者使用这一电邮地址，而且
     email_deleted:
       header: 一个电邮地址被从你的 %{app_name} 用户资料中删除。
       help_html: 如果你没有想删除这一电邮地址， 请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。

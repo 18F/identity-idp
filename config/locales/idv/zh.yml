@@ -110,8 +110,6 @@ zh:
         heading: 我们找不到与你个人信息匹配的记录
         warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
       setup:
-        exit: Exit %{app_name}
-        fail: 打电话给 %{contact_number} 并提供错误代码 %{support_code}。
         fail_html: Call <strong>%{contact_number}</strong> and provide them with the error <br/>code <strong>%{support_code}</strong>.
         fail_date_html: 请给我们的联系中心在%{date_html} 之前打电话以继续验证你的身份。
         heading: 请给我们打个电话
@@ -197,7 +195,6 @@ zh:
         start_over_link_text: 重新开始并用你新地址进行验证。
         timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码<strong> 的信。
       otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
-      personal_key: 这是你新的个人密钥。把它写下来并安全存放。万一丢失密码，你将需要这一密钥。
       phone:
         alert_html: '<Strong>输入一个这样的电话号码：</strong> '
         description: 我们会将该号码与记录核对并给你发个一次性代码。这是为了帮助你验证身份。
@@ -230,13 +227,11 @@ zh:
       unavailable: '我们正在争取解决错误。'
     troubleshooting:
       headings:
-        missing_required_items: 你是不是缺少这些东西中的一个？
         need_assistance: '需要立即帮助？以下是如何得到帮助的步骤：'
       options:
         contact_support: 联系 %{app_name} 支持
         doc_capture_tips: 拍出你身份证件清晰照片的提示。
         get_help_at_sp: 在 %{sp_name}得到帮助
-        learn_more_address_verification_options: 对通过电话或邮件验证获得更多了解
         learn_more_verify_by_mail: 对通过邮件验证你地址获得更多了解
         learn_more_verify_by_phone: 了解有关使用什么号码的更多信息
         learn_more_verify_by_phone_in_person: 对验证你的电话号码获得更多了解

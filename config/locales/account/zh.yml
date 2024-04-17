@@ -35,12 +35,10 @@ zh:
       phone: 电话号码
       phone_add: 添加电话
       piv_cac_add: 添加身份证件
-      piv_cac_confirm_delete: 是的，把卡拿掉
       reactivation:
         instructions: 你的用户资料因为重设密码最近被停用。
         link: 现在重新激活你的用户资料。
       sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
-      totp_confirm_delete: 是的，把身份证实应用程序去掉
       unknown_location: 未知地点
       verification:
         instructions: 你账户的验证需要一个验证码。
@@ -48,11 +46,8 @@ zh:
         success: 我们验证了你的信息
       webauthn: 安全密钥
       webauthn_add: 添加安全密钥
-      webauthn_confirm_delete: 是的，去掉密钥
-      webauthn_delete: 把密钥去掉
       webauthn_platform: 人脸或触摸解锁
       webauthn_platform_add: 添加人脸或触摸解锁
-      webauthn_platform_confirm_delete: 是的，把人脸或触摸解锁去掉
     items:
       delete_your_account: 删除你的账户
       personal_key: 个人密钥

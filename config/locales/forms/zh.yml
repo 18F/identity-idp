@@ -2,10 +2,6 @@
 zh:
   forms:
     backup_code:
-      are_you_sure_desc_html:
-        - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
-        - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
-      are_you_sure_title: 你确定要使用备用代码吗？
       caution_codes: 每个代码只能使用一次。你用完所有 10 个代码后我们会给你新代码。
       caution_delete: 如果你删除自己的备用代码，就无法用其来登录了。
       confirm_delete: 你确定要删除备用代码吗？
@@ -32,7 +28,6 @@ zh:
       disable: 删除
       edit: 编辑
       manage: 管理
-      resend_confirmation: 重新发送确认说明
       send_link: 发送链接
       send_one_time_code: 发送代码
       submit:
@@ -71,9 +66,6 @@ zh:
     phone:
       buttons:
         delete: 去掉电话
-    piv_cac_delete:
-      caution:  如果你去掉你的 PIV/CAC 卡，将无法用其访问你的 %{app_name}账户。 
-      confirm: 你确定要去掉你的 PIV/CAC 卡吗？
     piv_cac_login:
       submit: 插入 PIV/CAC 卡
     piv_cac_mfa:
@@ -91,9 +83,6 @@ zh:
       description: 我们使用 reCAPTCHA 来防止自动化垃圾邮件。  勾选以下方框来继续。
     ssn:
       show: 显示社会保障号码
-    totp_delete:
-      caution:  如果你去掉你的身份证实应用程序，将无法用其访问你的 %{app_name}账户。 
-      confirm: 你确定要去掉你的身份证实应用程序吗？
     totp_setup:
       totp_intro: 设立一个身份证实应用程序，以使用临时安全代码登录。
       totp_step_1: 给其一个昵称
@@ -107,12 +96,6 @@ zh:
       try_again: 使用另一个电话号码
     validation:
       required_checkbox: 请在这一框里打勾来继续。
-    webauthn_delete:
-      caution:  如果你去掉你的安全密钥，将无法用其访问你的 %{app_name}账户。 
-      confirm: 你确定要去掉你的安全密钥吗？
-    webauthn_platform_delete:
-      caution:  如果你去掉人脸或触摸解锁，将无法用其访问你的 %{app_name}账户。 
-      confirm: 你确定要去掉人脸或触摸解锁吗？
     webauthn_platform_setup:
       continue: 继续
       info_text: 你设置人脸或触摸解锁后需要再设置另一个身份证实方法。
@@ -121,7 +104,5 @@ zh:
       nickname: 设备昵称
       nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
     webauthn_setup:
-      continue: 继续
-      intro_html: '<p>添加一个满足 FIDO 标准的安全密钥作为你的身份证实方法。你想添加多少安全密钥都行。首先请给你的安全密钥一个昵称。</p>'
       nickname: 安全密钥昵称
       saving: 正在保存你的凭据...

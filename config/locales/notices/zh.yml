@@ -14,7 +14,6 @@ zh:
     password_changed: 你更改了密码。
     phone_confirmed: 你账户添加了一个电话。
     piv_cac_configured: 你账户添加了一个 PIV/CAC 卡。
-    piv_cac_disabled: PIV/CAC 已从你账户删除。
     privacy:
       privacy_act_statement: 隐私法声明
       security_and_privacy_practices: 安全实践和隐私法声明
@@ -29,7 +28,6 @@ zh:
     signed_up_but_unconfirmed:
       first_paragraph_end: 带有确认你电邮的链接。点击链接来继续设立你的账户。
       first_paragraph_start: 我们已发电邮到
-      no_email_sent_explanation_start: 没有收到电邮？
       resend_confirmation_email: Resend the confirmation email
     timeout_warning:
       partially_signed_in:
@@ -43,11 +41,8 @@ zh:
         message_html: 为了你的安全，我们会在 %{time_left_in_session_html} 后将你登出，除非你告诉我们不要这样做。
         sign_out: 把我登出
     totp_configured: 你账户添加了一个身份证实应用程序。
-    totp_disabled: 身份证实应用程序已从你账户删除。
     use_diff_email:
       link: 使用一个不同的电邮地址
       text_html: 或者，%{link_html}
     webauthn_configured: 你账户添加了一个安全密钥。
-    webauthn_deleted: 安全密钥已从你账户删除。
     webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
-    webauthn_platform_deleted: 人脸或触摸解锁已从你账户删除。

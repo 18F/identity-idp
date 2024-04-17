@@ -19,8 +19,6 @@ zh:
       phone: 添加一个电话号码
     cancellations:
       prompt: 你确定要取消吗？
-    confirmations:
-      new: 发送另外一个确认电邮
     create_account_new_users: 为新用户创建一个账户
     create_account_with_sp:
       sp_text: 正在使用 %{app_name} 使你能够安全可靠地登入账户。

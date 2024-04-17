@@ -28,7 +28,6 @@ zh:
         id_not_verified: 我们无法验证你的身份证件。可能因为你拍照时身份证件移动了。尝试重拍。
         issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
         ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
-        selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
         selfie_not_live: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
         selfie_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
         sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
@@ -116,7 +115,6 @@ zh:
       document_capture_subheader_selfie: 你本人照片
       document_capture_with_selfie: 添加你身份证件和本人的照片
       front: 驾照或州政府颁发身份证件的正面
-      getting_started:  现在我们来为 %{app_name} 验证你的身份 
       how_to_verify: 选择你想如何验证身份
       hybrid_handoff: 你想怎么添加身份证件？
       hybrid_handoff_selfie: Enter your phone number to switch devices
@@ -169,7 +167,6 @@ zh:
       link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
       link_sent_complete_polling: 下一步会自动加载。
       no_ssn: 你必须有社会保障号码才能完成身份验证。
-      privacy: '%{app_name}是一个安全的政府网站，遵守数据保护的最高标准。我们使用你的数据来验证你的身份。'
       review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
       secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
       selfie_capture_status:
@@ -189,36 +186,22 @@ zh:
       verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
       verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
       verify_online_link_text: 对网上验证获得更多了解
-      welcome: '%{sp_name}需要确保你是你，而不是别人冒充你。'
       you_entered: '你输入了：'
     instructions:
       bullet1: 州政府颁发的身份证件
       bullet2: 社会保障号码
       bullet3: 电话号码或家庭地址
       bullet4: Re-enter your %{app_name} password
-      bullet1_with_selfie: Take photos of yourself and your I
       consent:  在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。 
       getting_started: 'You’ll need to:'
       learn_more: 了解有关我们隐私和安全措施的更多信息。
-      privacy: 我们的隐私与安全标准
       switch_back: 然后再返回你的电脑完成验证身份。
       switch_back_image: 从手机指向电脑的箭头
       test_ssn:  在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。 
       text1: 你的身份证件不能是过期的。
-      text1_with_selfie: Take a photo of yourself and take photos of your driver’s license or state ID card. Other forms of ID are not accepted.
       text2: 你不需要有卡。
       text3: Your phone number matches you to your personal information. After you match, we’ll send you a code.
-      text3_html:
-        - '<strong>通过手机验证</strong>：我们会给你的号码打电话或发短信。这会化几分钟时间。'
-        - '<strong>通过普通邮件验证</strong>：我们会往你家庭地址寄信。这需要 <strong>5 到 10 天</strong>。'
       text4: Your password saves and encrypts your personal information.
-      welcome: '你将需要你的：'
-    not_ready:
-      button_nosp: 取消并返回你的用户资料
-      button_sp:  退出 %{app_name} 并返回 %{app_name} 
-      content_nosp:  如果你退出 %{app_name}，你尚未验证你的身份。你可以稍后回来完成这一过程。 
-      content_sp:  如果你退出 %{app_name} 并返回 %{sp_name}，你尚未验证你的身份。你可以稍后回来完成这一过程。 
-      header: 尚未做好添加照片的准备？
     tips:
       document_capture_hint: 必须是 JPG 或 PNG
       document_capture_id_text1: 使用暗色背景
@@ -230,7 +213,6 @@ zh:
       document_capture_selfie_text1: 把设备放在眼睛水平
       document_capture_selfie_text2: 确保你整个面孔都可以看到
       document_capture_selfie_text3: 在光线充沛的地方拍照
-      most_common: 最常见
       review_issues_id_header_text: '请仔细查看你州政府颁发身份证件的图像：'
       review_issues_id_text1: 你是否使用了暗色背景？
       review_issues_id_text2: 是否在平坦平面上拍的照？
