@@ -328,18 +328,7 @@ module DocAuth
       metrics_error = metrics_error_handler.handle(response_info)
       return metrics_error.to_h if metrics_error.present? && !metrics_error.empty?
 
-      doc_auth_result = response_info[:doc_auth_result]
-      processed_alerts = response_info[:processed_alerts]
-
-      doc_auth_result_passed = doc_auth_result == LexisNexis::ResultCodes::PASSED.name
-      doc_auth_passed_or_attn_with_barcode = doc_auth_result_passed ||
-                                             attention_with_barcode_result(
-                                               doc_auth_result,
-                                               processed_alerts,
-                                             )
-      doc_auth_error_count =
-        doc_auth_passed_or_attn_with_barcode ?
-                               0 : response_info[:alert_failure_count]
+      doc_auth_error_count = doc_auth_error_count(response_info)
       known_error_count = doc_auth_error_count - unknown_fail_count
 
       doc_auth_error_handler = DocAuthErrorHandler.new
@@ -350,7 +339,7 @@ module DocAuth
       end
 
       # check selfie error
-      if doc_auth_error_count < 1 && doc_auth_passed_or_attn_with_barcode
+      if doc_auth_error_count < 1 && doc_auth_passed_or_attn_with_barcode(response_info)
         selfie_error_handler = SelfieErrorHandler.new
         selfie_error = selfie_error_handler.handle(response_info)
         if selfie_error.present? && !selfie_error.empty?
@@ -407,6 +396,19 @@ module DocAuth
                        processed_alerts.dig(:failed, 0, :result) == 'Attention'
 
       attention_result && barcode_alerts ? true : false
+    end
+
+    def doc_auth_passed_or_attn_with_barcode(response_info)
+      doc_auth_result = response_info[:doc_auth_result]
+      processed_alerts = response_info[:processed_alerts]
+
+      doc_auth_result_passed = doc_auth_result == LexisNexis::ResultCodes::PASSED.name
+      doc_auth_result_passed || attention_with_barcode_result(doc_auth_result, processed_alerts)
+    end
+
+    def doc_auth_error_count(response_info)
+      doc_auth_passed_or_attn_with_barcode(response_info) ?
+        0 : response_info[:alert_failure_count]
     end
   end
 end
