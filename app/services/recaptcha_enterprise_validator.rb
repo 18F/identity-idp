@@ -52,8 +52,4 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
       conn.response :json
     end
   end
-
-  def recaptcha_score_meets_threshold?(score)
-    score >= score_threshold
-  end
 end
