@@ -53,7 +53,6 @@ en:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
       blank_cert_element_req: We cannot detect a certificate in your request.
-      blank_recaptcha_token: You must complete the spam prevention challenge.
       confirmation_code_incorrect: Incorrect verification code
       confirmation_invalid_token: Invalid confirmation link. Either the link expired
         or you already confirmed your account.

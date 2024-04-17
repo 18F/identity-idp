@@ -268,10 +268,8 @@ raise_on_missing_title: false
 reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
-recaptcha_site_key_v2: ''
-recaptcha_site_key_v3: ''
-recaptcha_secret_key_v2: ''
-recaptcha_secret_key_v3: ''
+recaptcha_site_key: ''
+recaptcha_secret_key: ''
 recovery_code_length: 4
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0

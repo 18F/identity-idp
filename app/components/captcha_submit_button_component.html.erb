@@ -1,7 +1,7 @@
 <%= content_tag(
       :'lg-captcha-submit-button',
       **tag_options,
-      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key_v3,
+      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key,
       'recaptcha-action': action,
       'recaptcha-enterprise': recaptcha_enterprise?,
     ) do %>

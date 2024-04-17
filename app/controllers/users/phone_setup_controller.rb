@@ -35,10 +35,11 @@ module Users
 
       if result.success?
         handle_create_success(@new_phone_form.phone)
-      elsif recoverable_recaptcha_error?(result) && !failed_spam_protection_challenge?
-        render :spam_protection
       else
-        flash.now[:error] = result.first_error_message
+        if result.errors.key?(:recaptcha_token)
+          flash.now[:error] = result.errors[:recaptcha_token].first
+        end
+
         render :index
       end
     end
@@ -47,10 +48,6 @@ module Users
 
     def recaptcha_enabled?
       FeatureManagement.phone_recaptcha_enabled?
-    end
-
-    def failed_spam_protection_challenge?
-      new_phone_form_params[:recaptcha_version].to_s == '2'
     end
 
     def track_phone_setup_visit
@@ -136,7 +133,6 @@ module Users
         :otp_delivery_preference,
         :otp_make_default_number,
         :recaptcha_token,
-        :recaptcha_version,
         :recaptcha_mock_score,
       )
     end

@@ -15,8 +15,7 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
   validate :validate_not_premium_rate
-  validate :validate_recaptcha_token_present
-  validate :validate_recaptcha_result_valid
+  validate :validate_recaptcha_token
   validate :validate_allowed_carrier
 
   attr_reader :phone,
@@ -25,7 +24,6 @@ class NewPhoneForm
               :otp_make_default_number,
               :setup_voice_preference,
               :recaptcha_token,
-              :recaptcha_version,
               :recaptcha_mock_score
 
   alias_method :setup_voice_preference?, :setup_voice_preference
@@ -36,7 +34,6 @@ class NewPhoneForm
     @otp_delivery_preference = user.otp_delivery_preference
     @otp_make_default_number = false
     @setup_voice_preference = setup_voice_preference
-    @recaptcha_version = 3
   end
 
   def submit(params)
@@ -132,16 +129,7 @@ class NewPhoneForm
     end
   end
 
-  def validate_recaptcha_token_present
-    return if !validate_recaptcha_token? || recaptcha_token.present?
-    errors.add(
-      :recaptcha_token,
-      I18n.t('errors.messages.blank_recaptcha_token'),
-      type: :blank_recaptcha_token,
-    )
-  end
-
-  def validate_recaptcha_result_valid
+  def validate_recaptcha_token
     return if !validate_recaptcha_token? || recaptcha_validator.valid?(recaptcha_token)
     errors.add(
       :recaptcha_token,
@@ -155,7 +143,7 @@ class NewPhoneForm
   end
 
   def recaptcha_validator_args
-    args = { recaptcha_version:, analytics: }
+    args = { analytics: }
     if IdentityConfig.store.phone_recaptcha_mock_validator
       args.merge(validator_class: RecaptchaMockValidator, score: recaptcha_mock_score)
     elsif FeatureManagement.recaptcha_enterprise?
@@ -183,7 +171,6 @@ class NewPhoneForm
     @otp_delivery_preference = delivery_prefs if delivery_prefs
     @otp_make_default_number = true if default_prefs
     @recaptcha_token = params[:recaptcha_token]
-    @recaptcha_version = 2 if params[:recaptcha_version].to_i == 2
     @recaptcha_mock_score = params[:recaptcha_mock_score].to_f if params.key?(:recaptcha_mock_score)
   end
 

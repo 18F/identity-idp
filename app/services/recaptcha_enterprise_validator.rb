@@ -22,7 +22,7 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
       {
         event: {
           token: recaptcha_token,
-          siteKey: recaptcha_site_key,
+          siteKey: IdentityConfig.store.recaptcha_site_key,
           expectedAction: recaptcha_action,
         },
       },
@@ -55,14 +55,5 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
 
   def recaptcha_score_meets_threshold?(score)
     score >= score_threshold
-  end
-
-  def recaptcha_site_key
-    case recaptcha_version
-    when 2
-      IdentityConfig.store.recaptcha_site_key_v2
-    when 3
-      IdentityConfig.store.recaptcha_site_key_v3
-    end
   end
 end

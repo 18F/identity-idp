@@ -77,7 +77,6 @@ fr:
       completion_new_sp: Vous vous connectez pour la première fois
       completion_reverified_consent: Partagez vos informations mises à jour avec %{sp}
       confirmation: Continuer à vous connecter
-    spam_protection: Protection contre les pourriels
     totp_setup:
       new: Ajouter une application d’authentification
     two_factor_setup: Configuration de l’authentification à deux facteurs

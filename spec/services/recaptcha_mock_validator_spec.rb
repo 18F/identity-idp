@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe RecaptchaMockValidator do
-  let(:recaptcha_version) { 3 }
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:score) { nil }
   subject(:validator) do
-    RecaptchaMockValidator.new(recaptcha_version:, score_threshold:, analytics:, score:)
+    RecaptchaMockValidator.new(score_threshold:, analytics:, score:)
   end
 
   around do |example|
@@ -35,15 +34,8 @@ RSpec.describe RecaptchaMockValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
         )
-      end
-
-      context 'with reCAPTCHA version 2' do
-        let(:recaptcha_version) { 2 }
-
-        it { expect(valid).to eq(false) }
       end
     end
 
@@ -66,7 +58,6 @@ RSpec.describe RecaptchaMockValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
         )
       end

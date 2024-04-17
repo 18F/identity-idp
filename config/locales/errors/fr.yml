@@ -63,7 +63,6 @@ fr:
       already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
       blank: Veuillez remplir ce champ.
       blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
-      blank_recaptcha_token: Vous devez relever le défi de la prévention du pourriel.
       confirmation_code_incorrect: Code de vérification incorrect
       confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré
         ou vous avez déjà confirmé votre compte.
