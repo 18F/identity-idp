@@ -4,6 +4,7 @@
 # Images are built via the identity-devops GitLab pipeline.
 
 variables:
+  CI: 'true'
   GITLAB_CI: 'true'
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
@@ -492,7 +493,6 @@ trigger_devops:
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
 
-
 review-app:
   stage: review
   allow_failure: true
@@ -543,7 +543,6 @@ deploy_production:
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
-
 
 include:
   - template: Jobs/SAST.gitlab-ci.yml
