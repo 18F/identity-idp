@@ -57,6 +57,10 @@ interface AcuantSelfieCameraContextProps {
    * React children node
    */
   children: ReactNode;
+  /**
+   * Face detection is initialized and ready.
+   */
+  onImageCaptureInitialized: () => void;
 }
 
 interface FaceCaptureCallback {
@@ -78,6 +82,7 @@ interface FaceDetectionStates {
 }
 
 function AcuantSelfieCamera({
+  onImageCaptureInitialized = () => {},
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
   onImageCaptureOpen = () => {},
@@ -94,6 +99,7 @@ function AcuantSelfieCamera({
         // This callback is triggered when the face detector is ready.
         // Until then, no actions are executed and the user sees only the camera stream.
         // You can opt to display an alert before the callback is triggered.
+        onImageCaptureInitialized();
       },
       onDetection: (text) => {
         onImageCaptureFeedback(text);

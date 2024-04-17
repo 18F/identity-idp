@@ -705,6 +705,13 @@ function AcuantCapture(
     selfieAttempts.current += 1;
   }
 
+  function onImageCaptureInitialized() {
+    trackEvent('idv_sdk_selfie_image_capture_initialized', {
+      captureAttempts,
+      selfie_attemps: selfieAttempts.current,
+    });
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -731,6 +738,7 @@ function AcuantCapture(
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
           onImageCaptureFeedback={onImageCaptureFeedback}
+          onImageCaptureInitialized={onImageCaptureInitialized}
           onSelfieTaken={onSelfieTaken}
         >
           <FullScreen
