@@ -53,6 +53,10 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
     end
   end
 
+  def recaptcha_score_meets_threshold?(score)
+    score >= score_threshold
+  end
+
   def recaptcha_site_key
     case recaptcha_version
     when 2

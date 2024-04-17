@@ -15,7 +15,8 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
   validate :validate_not_premium_rate
-  validate :validate_recaptcha_token
+  validate :validate_recaptcha_token_present
+  validate :validate_recaptcha_result_valid
   validate :validate_allowed_carrier
 
   attr_reader :phone,
@@ -131,7 +132,16 @@ class NewPhoneForm
     end
   end
 
-  def validate_recaptcha_token
+  def validate_recaptcha_token_present
+    return if !validate_recaptcha_token? || recaptcha_token.present?
+    errors.add(
+      :recaptcha_token,
+      I18n.t('errors.messages.blank_recaptcha_token'),
+      type: :blank_recaptcha_token,
+    )
+  end
+
+  def validate_recaptcha_result_valid
     return if !validate_recaptcha_token? || recaptcha_validator.valid?(recaptcha_token)
     errors.add(
       :recaptcha_token,

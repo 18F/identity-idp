@@ -31,7 +31,24 @@
       <script src="https://www.google.com/recaptcha/api.js" async></script>
     <% end %>
   <% elsif IdentityConfig.store.phone_recaptcha_mock_validator %>
-    <%= f.input :recaptcha_mock_score, as: :hidden, input_html: { value: 1.0 } %>
+    <%= f.input(:recaptcha_token, as: :hidden, input_html: { value: 'mock_token' }) %>
+    <%= render AlertComponent.new(text_tag: :div, class: 'margin-top-0 margin-bottom-2') do %>
+      <div class="display-flex flex-align-center">
+        <%= f.label(
+              :recaptcha_mock_score,
+              t('components.captcha_submit_button.mock_score_label'),
+              class: 'usa-label float-left margin-y-0 margin-right-1',
+            ) %>
+        <%= f.text_field(
+              :recaptcha_mock_score,
+              value: '1.0',
+              class: 'usa-input display-inline width-6 margin-0 padding-y-0 padding-x-05 height-auto',
+            ) %>
+        <div class="usa-tag usa-tag--informative margin-left-1">
+          <%= t('components.captcha_submit_button.mock_score_disclaimer') %>
+        </div>
+      </div>
+    <% end %>
     <%= render ButtonComponent.new(id: :submit_button, type: :button, big: true, wide: true, class: 'display-block margin-y-5') do %>
       <%= t('forms.buttons.continue') %>
     <% end %>

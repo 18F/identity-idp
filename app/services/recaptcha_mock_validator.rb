@@ -13,4 +13,8 @@ class RecaptchaMockValidator < RecaptchaValidator
   def recaptcha_result(_recaptcha_token)
     RecaptchaResult.new(success: true, score:)
   end
+
+  def recaptcha_score_meets_threshold?(score)
+    score >= score_threshold
+  end
 end

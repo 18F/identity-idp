@@ -53,6 +53,7 @@ en:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
       blank_cert_element_req: We cannot detect a certificate in your request.
+      blank_recaptcha_token: You must complete the spam prevention challenge.
       confirmation_code_incorrect: Incorrect verification code
       confirmation_invalid_token: Invalid confirmation link. Either the link expired
         or you already confirmed your account.
@@ -69,7 +70,9 @@ en:
       invalid_phone_number:
         international: Enter a phone number with the correct number of digits.
         us: Enter a 10 digit phone number.
-      invalid_recaptcha_token: You must complete the spam prevention challenge.
+      invalid_recaptcha_token: We’re sorry, but your computer or network may be
+        sending automated queries. To protect our users, we can’t process your
+        request right now.
       invalid_sms_number: The phone number entered doesn’t support text messaging. Try
         the Phone call option.
       invalid_voice_number: Invalid phone number. Check that you’ve entered the

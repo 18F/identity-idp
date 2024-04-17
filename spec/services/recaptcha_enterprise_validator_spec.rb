@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe RecaptchaEnterpriseValidator do
+  let(:recaptcha_version) { 3 }
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
   let(:action) { 'example_action' }
   let(:recaptcha_enterprise_api_key) { 'recaptcha_enterprise_api_key' }
   let(:recaptcha_enterprise_project_id) { 'project_id' }
+  let(:recaptcha_site_key_v2) { 'recaptcha_site_key_v2' }
   let(:recaptcha_site_key_v3) { 'recaptcha_site_key_v3' }
   let(:assessment_url) do
     format(
@@ -19,6 +21,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
 
   subject(:validator) do
     described_class.new(
+      recaptcha_version:,
       recaptcha_action: action,
       score_threshold:,
       analytics:,
@@ -31,6 +34,8 @@ RSpec.describe RecaptchaEnterpriseValidator do
       and_return(recaptcha_enterprise_project_id)
     allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
       and_return(recaptcha_enterprise_api_key)
+    allow(IdentityConfig.store).to receive(:recaptcha_site_key_v2).
+      and_return(recaptcha_site_key_v2)
     allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).
       and_return(recaptcha_site_key_v3)
   end
@@ -219,6 +224,25 @@ RSpec.describe RecaptchaEnterpriseValidator do
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
+      end
+
+      context 'with reCAPTCHA version 2' do
+        let(:recaptcha_version) { 2 }
+
+        before do
+          stub_recaptcha_response(
+            body: {
+              tokenProperties: { valid: true, action: },
+              riskAnalysis: { score:, reasons: ['AUTOMATION'] },
+              event: {},
+            },
+            site_key: recaptcha_site_key_v2,
+            action:,
+            token:,
+          )
+        end
+
+        it { expect(valid).to eq(false) }
       end
     end
 

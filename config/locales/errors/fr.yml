@@ -63,6 +63,7 @@ fr:
       already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
       blank: Veuillez remplir ce champ.
       blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
+      blank_recaptcha_token: Vous devez relever le défi de la prévention du pourriel.
       confirmation_code_incorrect: Code de vérification incorrect
       confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré
         ou vous avez déjà confirmé votre compte.
@@ -82,7 +83,9 @@ fr:
       invalid_phone_number:
         international: Saisissez un numéro de téléphone avec le nombre correct de chiffres.
         us: Entrez un numéro de téléphone à 10 chiffres.
-      invalid_recaptcha_token: Vous devez relever le défi de la prévention du pourriel.
+      invalid_recaptcha_token: Désolé, il est possible que votre ordinateur ou votre
+        réseau envoie des requêtes automatiques. Pour protéger nos utilisateurs,
+        nous ne pouvons pas traiter votre demande pour le moment.
       invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les
         messages textuels. Veuillez essayer l’option d’appel téléphonique.
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
