@@ -9,6 +9,10 @@ module DocAuth
       !error_is_not_live(portrait_error)
     end
 
+    def selfie_quality_good?
+      selfie_live? # can remove this method?
+    end
+
     def error_is_not_live(error_message)
       NOT_LIVE_TEXTS.include?(error_message)
     end
