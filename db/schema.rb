@@ -588,7 +588,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_16_165602) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "confirmed_at", precision: nil

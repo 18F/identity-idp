@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  # To be dropped in: https://github.com/18F/identity-idp/pull/10429
-  self.ignored_columns = [:remember_created_at]
-
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
