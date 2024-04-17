@@ -27,11 +27,27 @@ RSpec.describe Idv::InPerson::AddressController do
 
   describe 'before_actions' do
     context '#confirm_in_person_state_id_step_complete' do
-      it 'redirects to state id page if not complete' do
-        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
-        get :show
+      context 'in_person_state_id_controller_enabled is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
+            and_return(true)
+        end
 
-        expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+        it 'redirects to state id page if not complete' do
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
+          get :show
+
+          expect(response).to redirect_to idv_in_person_proofing_state_id_url
+        end
+      end
+
+      context 'in_person_state_id_controller_enabled is not enabled' do
+        it 'redirects to state id page if not complete' do
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
+          get :show
+
+          expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+        end
       end
     end
 
