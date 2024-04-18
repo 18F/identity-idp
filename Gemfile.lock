@@ -266,7 +266,7 @@ GEM
     crass (1.0.6)
     css_parser (1.14.0)
       addressable
-    cssbundling-rails (1.0.0)
+    cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
     csv (3.2.8)
     date (3.3.4)
@@ -764,7 +764,7 @@ DEPENDENCIES
   caxlsx
   concurrent-ruby
   connection_pool
-  cssbundling-rails (= 1.0.0)
+  cssbundling-rails
   csv
   derailed_benchmarks
   devise (~> 4.8)
