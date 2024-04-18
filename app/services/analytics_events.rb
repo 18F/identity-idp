@@ -3208,15 +3208,15 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
-  # @param [Integer] selfieAttempts number of times SDK captured selfie, user may decide to retake
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_closed_without_photo(acuant_version:, captureAttempts: nil,
-                                                        selfieAttempts: nil, **extra)
+                                                        selfie_attempts: nil, **extra)
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
-      selfieAttempts: selfieAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3230,14 +3230,14 @@ module AnalyticsEvents
   # @param [String] sdk_error_message SDK message for the error encountered
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
-  # @param [Integer] selfieAttempts number of times SDK captured selfie, user may decide to retake
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
     acuant_version:,
     sdk_error_code:,
     sdk_error_message:,
     captureAttempts: nil,
-    selfieAttempts: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
@@ -3246,7 +3246,7 @@ module AnalyticsEvents
       sdk_error_code: sdk_error_code,
       sdk_error_message: sdk_error_message,
       captureAttempts: captureAttempts,
-      selfieAttempts: selfieAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3255,19 +3255,19 @@ module AnalyticsEvents
   # User opened the SDK to take a selfie
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
-  # @param [Integer] selfieAttempts number of times SDK captured selfie, user may decide to retake
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_opened(
     acuant_version:,
     captureAttempts: nil,
-    selfieAttempts: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_opened,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
-      selfieAttempts: selfieAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3277,7 +3277,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
-  # @param [Integer] selfieAttempts number of times SDK captured selfie, user may decide to retake
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -3291,7 +3291,7 @@ module AnalyticsEvents
   def idv_selfie_image_added(
     acuant_version:,
     captureAttempts:,
-    selfieAttempts:,
+    selfie_attempts:,
     failedImageResubmission:,
     fingerprint:,
     flow_path:,
@@ -3307,7 +3307,7 @@ module AnalyticsEvents
       :idv_selfie_image_added,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
-      selfieAttempts: selfieAttempts,
+      selfie_attempts: selfie_attempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
       flow_path: flow_path,
