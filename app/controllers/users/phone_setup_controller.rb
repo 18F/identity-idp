@@ -15,6 +15,9 @@ module Users
     before_action :redirect_if_phone_vendor_outage
     before_action :confirm_recently_authenticated_2fa
     before_action :check_max_phone_numbers_per_account, only: %i[index create]
+    before_action only: [:create] do
+      check_phone_submission_limit(new_phone_form_params[:phone])
+    end
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -92,8 +95,6 @@ module Users
       user_session[:unconfirmed_phone] = phone
       user_session[:context] = 'confirmation'
       user_session[:phone_type] = phone_type.to_s
-
-      check_phone_submission_limit(phone)
 
       redirect_to otp_send_url(
         otp_delivery_selection_form: {
