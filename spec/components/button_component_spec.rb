@@ -145,10 +145,10 @@ RSpec.describe ButtonComponent, type: :component do
       let(:options) { super().merge(method:) }
 
       it 'renders button to url' do
-        expect(subject).to have_selector("form[action='#{url}']")
-        expect(subject).to have_selector("input[name='_method'][value='#{method}']", visible: :all)
-        expect(subject).to have_selector("button[type='submit']")
-        expect(subject).to have_text(content)
+        expect(rendered).to have_selector("form[action='#{url}']")
+        expect(rendered).to have_selector("input[name='_method'][value='#{method}']", visible: :all)
+        expect(rendered).to have_selector("button[type='submit']")
+        expect(rendered).to have_text(content)
       end
 
       context 'with get method' do
