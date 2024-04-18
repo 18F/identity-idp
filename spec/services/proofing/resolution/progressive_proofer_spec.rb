@@ -107,12 +107,28 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
 
           it 'returns a failed result' do
-            result = subject
-
-            device_profiling_result = result.device_profiling_result
+            device_profiling_result = subject.device_profiling_result
 
             expect(device_profiling_result.success).to be(false)
             expect(device_profiling_result.client).to eq('tmx_id_missing')
+            expect(device_profiling_result.review_status).to eq('fail')
+          end
+        end
+
+        context 'it lacks pii' do
+          let(:applicant_pii) { {} }
+
+          it 'does not make a request to the ThreatMetrix proofer' do
+            subject
+
+            expect(threatmetrix_proofer).not_to have_received(:proof)
+          end
+
+          it 'returns a failed result' do
+            device_profiling_result = subject.device_profiling_result
+
+            expect(device_profiling_result.success).to be(false)
+            expect(device_profiling_result.client).to eq('tmx_pii_missing')
             expect(device_profiling_result.review_status).to eq('fail')
           end
         end
