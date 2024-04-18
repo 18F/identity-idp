@@ -8,7 +8,17 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:timer) { JobHelpers::Timer.new }
   let(:user) { create(:user, :fully_registered) }
+
   let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
+
+  let(:instant_verify_proofer_result) { nil }
+
+  let(:aamva_proofer) do
+    aamva_proofer = instance_double(Proofing::Aamva::Proofer)
+    allow(aamva_proofer).to receive(:proof)
+    aamva_proofer
+  end
+
   let(:dcs_uuid) { SecureRandom.uuid }
   let(:instance) { described_class.new(instant_verify_ab_test_discriminator: dcs_uuid) }
   let(:state_id_address) do
@@ -47,11 +57,27 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     }
   end
 
+  def enable_threatmetrix
+    allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
+      and_return(true)
+  end
+
+  def disable_threatmetrix
+    allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
+      and_return(false)
+  end
+
+  before do
+    allow(instant_verify_proofer).to receive(:proof).
+      and_return(instant_verify_proofer_result)
+  end
+
   describe '#proof' do
     before do
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
       allow(Proofing::LexisNexis::InstantVerify::VerificationRequest).to receive(:new)
     end
+
     subject(:proof) do
       instance.proof(
         applicant_pii: applicant_pii,
@@ -66,21 +92,23 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     context 'remote proofing' do
       it 'returns a ResultAdjudicator' do
-        proofing_result = proof
-
-        expect(proofing_result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
-        expect(proofing_result.same_address_as_id).to eq(nil)
+        expect(proof).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+        expect(proof.same_address_as_id).to eq(nil)
       end
 
       let(:resolution_result) do
         instance_double(Proofing::Resolution::Result)
       end
+
       context 'ThreatMetrix is enabled' do
-        let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer) }
+        let(:threatmetrix_proofer) do
+          threatmetrix_proofer = instance_double(Proofing::LexisNexis::Ddp::Proofer)
+          allow(threatmetrix_proofer).to receive(:proof)
+          threatmetrix_proofer
+        end
 
         before do
-          allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-            and_return(true)
+          enable_threatmetrix
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
             and_return(false)
           allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
@@ -88,26 +116,23 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
             and_return(resolution_result)
           allow(resolution_result).to receive(:success?).and_return(true)
-          allow(instant_verify_proofer).to receive(:proof)
+
+          proof
         end
 
         it 'makes a request to the ThreatMetrix proofer' do
-          expect(threatmetrix_proofer).to receive(:proof)
-
-          subject
+          expect(threatmetrix_proofer).to have_received(:proof)
         end
 
         context 'session id is missing' do
           let(:threatmetrix_session_id) { nil }
 
           it 'does not make a request to the ThreatMetrix proofer' do
-            expect(threatmetrix_proofer).not_to receive(:proof)
-
-            subject
+            expect(threatmetrix_proofer).not_to have_received(:proof)
           end
 
           it 'returns a failed result' do
-            device_profiling_result = subject.device_profiling_result
+            device_profiling_result = proof.device_profiling_result
 
             expect(device_profiling_result.success).to be(false)
             expect(device_profiling_result.client).to eq('tmx_session_id_missing')
@@ -119,13 +144,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           let(:applicant_pii) { {} }
 
           it 'does not make a request to the ThreatMetrix proofer' do
-            expect(threatmetrix_proofer).not_to receive(:proof)
-
-            subject
+            expect(threatmetrix_proofer).not_to have_received(:proof)
           end
 
           it 'returns a failed result' do
-            device_profiling_result = subject.device_profiling_result
+            device_profiling_result = proof.device_profiling_result
 
             expect(device_profiling_result.success).to be(false)
             expect(device_profiling_result.client).to eq('tmx_pii_missing')
@@ -136,18 +159,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       context 'ThreatMetrix is disabled' do
         before do
-          allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
-            and_return(false)
+          disable_threatmetrix
 
           allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
             and_return(resolution_result)
           allow(resolution_result).to receive(:success?).and_return(true)
-          allow(instant_verify_proofer).to receive(:proof)
         end
-        it 'returns a disabled result' do
-          result = subject
 
-          device_profiling_result = result.device_profiling_result
+        it 'returns a disabled result' do
+          device_profiling_result = proof.device_profiling_result
 
           expect(device_profiling_result.success).to be(true)
           expect(device_profiling_result.client).to eq('tmx_disabled')
@@ -168,50 +188,54 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           }
         end
 
-        before do
-          allow(instant_verify_proofer).to receive(:proof).
-            and_return(residential_instant_verify_proof)
-          allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
-        end
+        let(:lniv) { Idv::LexisNexisInstantVerify.new(dcs_uuid) }
+        let(:instant_verify_proofer_result) { residential_instant_verify_proof }
 
-        it 'uses the selected workflow' do
-          lniv = Idv::LexisNexisInstantVerify.new(dcs_uuid)
-          expect(lniv).to receive(:workflow_ab_testing_variables).
+        before do
+          allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
+
+          allow(lniv).to receive(:workflow_ab_testing_variables).
             and_return(ab_test_variables)
-          expect(Idv::LexisNexisInstantVerify).to receive(:new).
+          allow(Idv::LexisNexisInstantVerify).to receive(:new).
             and_return(lniv)
-          expect(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:new).
-            with(hash_including(instant_verify_workflow: instant_verify_workflow)).
+          allow(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:new).
             and_return(instant_verify_proofer)
 
           proof
         end
+
+        it 'uses the selected workflow' do
+          expect(Proofing::LexisNexis::InstantVerify::Proofer).to(
+            have_received(:new).
+              with(
+                hash_including(
+                  instant_verify_workflow: instant_verify_workflow,
+                ),
+            ),
+          )
+        end
       end
 
       context 'remote flow does not augment pii' do
-        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
         let(:id_address_instant_verify_proof) do
           instance_double(Proofing::Resolution::Result)
         end
+        let(:instant_verify_proofer_result) { id_address_instant_verify_proof }
 
         before do
           allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
           allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-          allow(instant_verify_proofer).to receive(:proof).
-            and_return(id_address_instant_verify_proof)
           allow(id_address_instant_verify_proof).to receive(:success?).and_return(true)
+
+          proof
         end
 
         it 'proofs with untransformed pii' do
-          expect(aamva_proofer).to receive(:proof).with(applicant_pii)
-
-          result = subject
-
-          expect(result.same_address_as_id).to eq(nil)
-          expect(result.ipp_enrollment_in_progress).to eq(false)
-          # rubocop:disable Layout/LineLength
-          expect(result.residential_resolution_result.vendor_name).to eq('ResidentialAddressNotRequired')
-          # rubocop:enable Layout/LineLength
+          expect(aamva_proofer).to have_received(:proof).with(applicant_pii)
+          expect(proof.same_address_as_id).to eq(nil)
+          expect(proof.ipp_enrollment_in_progress).to eq(false)
+          expect(proof.residential_resolution_result.vendor_name).
+            to eq('ResidentialAddressNotRequired')
         end
       end
     end
@@ -221,101 +245,100 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
 
       it 'returns a ResultAdjudicator' do
-        proofing_result = proof
-
-        expect(proofing_result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
-        expect(proofing_result.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
+        expect(proof).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+        expect(proof.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
       end
 
       context 'residential address and id address are the same' do
-        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-        let(:residential_instant_verify_proof) do
+        let(:instant_verify_proofer_result) do
           instance_double(Proofing::Resolution::Result)
         end
+
         before do
           allow(instance).to receive(:with_state_id_address).and_return(transformed_pii)
           allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
           allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-          allow(instant_verify_proofer).to receive(:proof).
-            and_return(residential_instant_verify_proof)
-          allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
+          allow(instant_verify_proofer_result).to receive(:success?).and_return(true)
         end
 
         it 'only makes one request to LexisNexis InstantVerify' do
-          expect(instant_verify_proofer).to receive(:proof).exactly(:once)
-          expect(aamva_proofer).to receive(:proof)
+          proof
 
-          subject
+          expect(instant_verify_proofer).to have_received(:proof).exactly(:once)
+          expect(aamva_proofer).to have_received(:proof)
         end
 
         it 'produces a result adjudicator with correct information' do
-          expect(aamva_proofer).to receive(:proof)
-
-          result = subject
-          expect(result.same_address_as_id).to eq('true')
-          expect(result.ipp_enrollment_in_progress).to eq(true)
-          expect(result.resolution_result).to eq(result.residential_resolution_result)
+          expect(proof.same_address_as_id).to eq('true')
+          expect(proof.ipp_enrollment_in_progress).to eq(true)
+          expect(proof.resolution_result).to eq(proof.residential_resolution_result)
+          expect(aamva_proofer).to have_received(:proof)
         end
 
         it 'transforms PII correctly' do
-          expect(aamva_proofer).to receive(:proof).with(transformed_pii)
-
-          result = subject
-          expect(result.same_address_as_id).to eq('true')
-          expect(result.ipp_enrollment_in_progress).to eq(true)
-          expect(result.resolution_result).to eq(result.residential_resolution_result)
-          expect(result.resolution_result.success?).to eq(true)
+          expect(proof.same_address_as_id).to eq('true')
+          expect(proof.ipp_enrollment_in_progress).to eq(true)
+          expect(proof.resolution_result).to eq(proof.residential_resolution_result)
+          expect(proof.resolution_result.success?).to eq(true)
+          expect(aamva_proofer).to have_received(:proof).with(transformed_pii)
         end
 
         context 'LexisNexis InstantVerify fails' do
-          let(:result_that_failed_instant_verify) do
-            instance_double(Proofing::Resolution::Result)
-          end
           before do
             allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-              and_return(result_that_failed_instant_verify)
-            allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
-              and_return(result_that_failed_instant_verify)
+              and_return(instant_verify_proofer_result)
             allow(instance).to receive(:user_can_pass_after_state_id_check?).
-              with(result_that_failed_instant_verify).
+              with(instant_verify_proofer_result).
               and_return(true)
-            allow(result_that_failed_instant_verify).to receive(:success?).
+            allow(instant_verify_proofer_result).to receive(:success?).
               and_return(false)
+          end
+
+          it 'includes the state ID in the InstantVerify call' do
+            proof
+
+            expect(instant_verify_proofer).to have_received(:proof).with(hash_including(state_id_address))
           end
 
           context 'the failure can be covered by AAMVA' do
             before do
-              allow(result_that_failed_instant_verify).
+              allow(instant_verify_proofer_result).
                 to receive(:attributes_requiring_additional_verification).
                 and_return([:address])
             end
 
             context 'it is not covered by AAMVA' do
-              let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
-              before do
-                allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+              let(:failed_aamva_proof) do
+                failed_aamva_proof = instance_failed_aamva_proof(Proofing::StateIdResult)
                 allow(failed_aamva_proof).to receive(:verified_attributes).and_return([])
                 allow(failed_aamva_proof).to receive(:success?).and_return(false)
+                failed_aamva_proof
               end
-              it 'indicates the aamva check did not pass' do
-                result = subject
 
-                expect(result.state_id_result.success?).to eq(false)
+              before do
+                allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+              end
+
+              it 'indicates the aamva check did not pass' do
+                expect(proof.state_id_result.success?).to eq(false)
               end
             end
 
             context 'it is covered by AAMVA' do
-              let(:successful_aamva_proof) { instance_double(Proofing::StateIdResult) }
-              before do
-                allow(aamva_proofer).to receive(:proof).and_return(successful_aamva_proof)
+              let(:successful_aamva_proof) do
+                successful_aamva_proof = instance_double(Proofing::StateIdResult)
                 allow(successful_aamva_proof).to receive(:verified_attributes).
                   and_return([:address])
-                allow(successful_aamva_proof).to receive(:success?).and_return(true)
+                allow(successful_aamva_proof).to receive(:success?).and_return(true)                
+                successful_aamva_proof
               end
-              it 'indicates aamva did pass' do
-                result = subject
 
-                expect(result.state_id_result.success?).to eq(true)
+              before do
+                allow(aamva_proofer).to receive(:proof).and_return(successful_aamva_proof)
+              end
+
+              it 'indicates aamva did pass' do
+                expect(proof.state_id_result.success?).to eq(true)
               end
             end
           end
@@ -324,10 +347,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         context 'LexisNexis InstantVerify passes for residential address and id address' do
           context 'should proof with AAMVA' do
             let(:id_resolution_that_passed_instant_verify) do
-              instance_double(Proofing::Resolution::Result)
+              id_resolution_that_passed_instant_verify = instance_double(Proofing::Resolution::Result)
+              allow(id_resolution_that_passed_instant_verify).to receive(:success?).and_return(true)
+              id_resolution_that_passed_instant_verify
             end
+
             let(:residential_resolution_that_passed_instant_verify) do
-              instance_double(Proofing::Resolution::Result)
+              residential_resolution_that_passed_instant_verify = instance_double(Proofing::Resolution::Result)
+              allow(residential_resolution_that_passed_instant_verify).to receive(:success?).and_return(true)
+              residential_resolution_that_passed_instant_verify
             end
 
             before do
@@ -335,22 +363,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                 and_return(residential_resolution_that_passed_instant_verify)
               allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
                 and_return(id_resolution_that_passed_instant_verify)
-              allow(instant_verify_proofer).to receive(:proof).
-                with(hash_including(state_id_address)).
-                and_return(id_resolution_that_passed_instant_verify)
               allow(instance).to receive(:user_can_pass_after_state_id_check?).
                 with(id_resolution_that_passed_instant_verify).
-                and_return(true)
-              allow(id_resolution_that_passed_instant_verify).to receive(:success?).
-                and_return(true)
-              allow(residential_resolution_that_passed_instant_verify).to receive(:success?).
                 and_return(true)
             end
 
             it 'makes a request to the AAMVA proofer' do
-              expect(aamva_proofer).to receive(:proof)
+              proof
 
-              subject
+              expect(aamva_proofer).to have_received(:proof)
             end
 
             context 'AAMVA proofing fails' do
@@ -358,16 +379,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               let(:failed_aamva_proof) do
                 instance_double(Proofing::StateIdResult)
               end
+
               before do
                 allow(Proofing::Aamva::VerificationClient).to receive(:new).and_return(aamva_client)
                 allow(failed_aamva_proof).to receive(:success?).and_return(false)
-              end
-              it 'returns a result adjudicator that indicates the aamva proofing failed' do
                 allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+              end
 
-                result = subject
-
-                expect(result.state_id_result.success?).to eq(false)
+              it 'returns a result adjudicator that indicates the aamva proofing failed' do
+                expect(proof.state_id_result.success?).to eq(false)
               end
             end
           end
@@ -413,19 +433,19 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
           context 'LexisNexis InstantVerify passes for id address' do
             it 'makes two requests to the InstantVerify Proofer' do
-              expect(instant_verify_proofer).to receive(:proof).
+              proof
+
+              expect(instant_verify_proofer).to have_received(:proof).
                 with(hash_including(residential_address)).
                 ordered
-              expect(instant_verify_proofer).to receive(:proof).
+              expect(instant_verify_proofer).to have_received(:proof).
                 with(hash_including(state_id_address)).
                 ordered
-
-              subject
             end
 
             context 'AAMVA fails' do
               let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
-              let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+
               before do
                 allow(instance).to receive(:proof_id_with_aamva_if_needed).
                   and_return(failed_aamva_proof)
@@ -435,19 +455,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               end
 
               it 'returns the correct resolution results' do
-                result_adjudicator = subject
-
-                expect(result_adjudicator.residential_resolution_result.success?).to be(true)
-                expect(result_adjudicator.resolution_result.success?).to be(true)
-                expect(result_adjudicator.state_id_result.success?).to be(false)
+                expect(proof.residential_resolution_result.success?).to be(true)
+                expect(proof.resolution_result.success?).to be(true)
+                expect(proof.state_id_result.success?).to be(false)
               end
             end
           end
         end
 
         context 'LexisNexis InstantVerify fails for residential address' do
-          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-
           before do
             allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
             allow(instance).to receive(:proof_residential_address_if_needed).
@@ -463,16 +479,14 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
 
           it 'does not make unnecessary calls' do
-            expect(aamva_proofer).to_not receive(:proof)
-            expect(instant_verify_proofer).to_not receive(:proof).
-              with(hash_including(state_id_address))
+            proof
 
-            subject
+            expect(aamva_proofer).to_not have_received(:proof)
+            expect(instant_verify_proofer).to_not have_received(:proof)
           end
         end
 
         context 'LexisNexis InstantVerify fails for id address & passes for residential address' do
-          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
           let(:result_that_failed_instant_verify) do
             instance_double(Proofing::Resolution::Result)
           end
@@ -487,7 +501,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
           context 'the failure can be covered by AAMVA' do
             let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
-            let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+
             before do
               allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
               allow(instant_verify_proofer).to receive(:proof).and_return(residential_address_proof)
@@ -500,11 +514,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                 to receive(:attributes_requiring_additional_verification).
                 and_return([:address])
               allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
-            end
-            it 'calls AAMVA' do
-              expect(aamva_proofer).to receive(:proof)
+              allow(aamva_proofer).to receive(:proof)
 
-              subject
+              proof
+            end
+
+            it 'calls AAMVA' do
+              expect(aamva_proofer).to have_received(:proof)
             end
           end
         end
