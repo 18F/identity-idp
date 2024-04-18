@@ -93,6 +93,8 @@ module Users
       user_session[:context] = 'confirmation'
       user_session[:phone_type] = phone_type.to_s
 
+      check_phone_submission_limit(phone)
+
       redirect_to otp_send_url(
         otp_delivery_selection_form: {
           otp_delivery_preference: otp_delivery_method(id, phone, selected_delivery_method),
@@ -132,6 +134,22 @@ module Users
         :recaptcha_token,
         :recaptcha_mock_score,
       )
+    end
+
+    def check_phone_submission_limit(phone)
+      @phone = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164)
+      submission_rate_limiter ||= RateLimiter.new(
+        target: @phone,
+        rate_limit_type: :phone_submissions,
+      )
+      submission_rate_limiter.increment!
+
+      lock_out_user if submission_rate_limiter.maxed?
+    end
+
+    def lock_out_user(user: current_user)
+      UpdateUser.new(user: user, attributes: { second_factor_locked_at: Time.zone.now }).call
+      sign_out
     end
   end
 end
