@@ -186,10 +186,10 @@ function getAriaDescribedby({
   const optionalHintId = hint ? hintId : undefined;
 
   if (errorMessageShown) {
-    return `${errorId} ${optionalHintId}`;
+    return optionalHintId ? `${errorId} ${optionalHintId}` : errorId;
   }
   if (successMessageShown) {
-    return `${successId} ${optionalHintId}`;
+    return optionalHintId ? `${successId} ${optionalHintId}` : errorId;
   }
   // if (!errorMessageShown && !successMessageShown) is the intent,
   // leaving it like this so it's also the default.
