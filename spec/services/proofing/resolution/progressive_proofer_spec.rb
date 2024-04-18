@@ -64,6 +64,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     }
   end
 
+  let(:resolution_result) do
+    instance_double(Proofing::Resolution::Result, success?: true, errors: nil)
+  end
+
   def enable_threatmetrix
     allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
       and_return(true)
@@ -98,10 +102,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         expect(proof.same_address_as_id).to eq(nil)
       end
 
-      let(:resolution_result) do
-        instance_double(Proofing::Resolution::Result)
-      end
-
       context 'ThreatMetrix is enabled' do
         before do
           enable_threatmetrix
@@ -111,7 +111,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
           allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
             and_return(resolution_result)
-          allow(resolution_result).to receive(:success?).and_return(true)
 
           proof
         end
@@ -159,7 +158,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
           allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
             and_return(resolution_result)
-          allow(resolution_result).to receive(:success?).and_return(true)
         end
 
         it 'returns a disabled result' do
@@ -391,9 +389,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         let(:residential_address_proof) do
           instance_double(Proofing::Resolution::Result)
         end
-        let(:resolution_result) do
-          instance_double(Proofing::Resolution::Result)
-        end
+
         let(:ipp_enrollment_in_progress) { true }
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
         let(:residential_address) do
@@ -444,7 +440,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                   and_return(failed_aamva_proof)
                 allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
                 allow(failed_aamva_proof).to receive(:success?).and_return(false)
-                allow(resolution_result).to receive(:errors)
               end
 
               it 'returns the correct resolution results' do
