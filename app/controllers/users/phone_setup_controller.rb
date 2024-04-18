@@ -36,10 +36,7 @@ module Users
       if result.success?
         handle_create_success(@new_phone_form.phone)
       else
-        if result.errors.key?(:recaptcha_token)
-          flash.now[:error] = result.errors[:recaptcha_token].first
-        end
-
+        flash.now[:error] = result.first_error_message(:recaptcha_token)
         render :index
       end
     end
