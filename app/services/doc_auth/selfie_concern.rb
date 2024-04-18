@@ -5,18 +5,14 @@ module DocAuth
     extend ActiveSupport::Concern
     def selfie_live?
       portrait_error = get_portrait_error(portrait_match_results)
-      return true if portrait_error.nil? || portrait_error.blank?
+      return true if portrait_error.blank?
       !error_is_not_live(portrait_error)
     end
 
     def selfie_quality_good?
       portrait_error = get_portrait_error(portrait_match_results)
-      return true if portrait_error.nil? || portrait_error.blank?
+      return true if portrait_error.blank?
       !error_is_poor_quality(portrait_error)
-    end
-
-    def error_is_success(error_message)
-      error_message == ERROR_TEXTS[:success]
     end
 
     def error_is_not_live(error_message)
@@ -31,7 +27,7 @@ module DocAuth
       SELFIE_PERFORMED_STATUSES.include?(selfie_status)
     end
 
-  private
+    private
 
     SELFIE_PERFORMED_STATUSES = %i[success fail].freeze
 
@@ -45,5 +41,5 @@ module DocAuth
     def get_portrait_error(portrait_match_results)
       portrait_match_results&.with_indifferent_access&.dig(:FaceErrorMessage)
     end
-end
+  end
 end
