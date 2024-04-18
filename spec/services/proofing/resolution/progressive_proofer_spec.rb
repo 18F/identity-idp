@@ -97,7 +97,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           subject
         end
 
-        context 'it lacks a session id' do
+        context 'session id is missing' do
           let(:threatmetrix_session_id) { nil }
 
           it 'does not make a request to the ThreatMetrix proofer' do
@@ -115,13 +115,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
         end
 
-        context 'it lacks pii' do
+        context 'pii is missing' do
           let(:applicant_pii) { {} }
 
           it 'does not make a request to the ThreatMetrix proofer' do
-            subject
+            expect(threatmetrix_proofer).not_to receive(:proof)
 
-            expect(threatmetrix_proofer).not_to have_received(:proof)
+            subject
           end
 
           it 'returns a failed result' do
