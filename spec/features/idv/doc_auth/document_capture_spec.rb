@@ -12,6 +12,17 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
   end
 
+  # notes
+
+  # - remove the above 2 from all tests
+  # - possibly moving to before(:all) or before(:context) - or around
+  # - extract comment blocks to methods
+    # - error_reporter_spec.rb
+
+  # possible issues:
+  #   - could investigate browser sessions and how they continue through contexts / befores
+  #   - create a factory of some kind with a user already to that page
+
   before(:all) do
     @user = user_with_2fa
     @fake_analytics = FakeAnalytics.new
@@ -176,8 +187,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   context 'standard mobile flow' do
     it 'proceeds to the next page with valid info' do
       perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_document_capture_step
 
         expect(page).to have_current_path(idv_document_capture_url)
@@ -217,8 +226,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     context 'when a selfie is not requested by SP' do
       it 'proceeds to the next page with valid info, excluding a selfie image' do
         perform_in_browser(:mobile) do
-          visit_idp_from_oidc_sp_with_ial2
-          sign_in_and_2fa_user(@user)
           complete_doc_auth_steps_before_document_capture_step
 
           expect(page).to have_current_path(idv_document_capture_url)
@@ -253,12 +260,15 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
 
         context 'with a passing selfie' do
+          let (:biometric_comparison_required) { true }
+
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
               sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_document_capture_step
 
+              # binding.pry
               expect(page).to have_current_path(idv_document_capture_url)
               expect(max_capture_attempts_before_native_camera.to_i).
                 to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
@@ -1010,8 +1020,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           end
 
           it 'try again and page show no liveness inline error message' do
-            visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-            sign_in_and_2fa_user(@user)
             complete_doc_auth_steps_before_document_capture_step
             attach_images(
               Rails.root.join(
@@ -1048,8 +1056,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           end
 
           it 'try again and page show poor quality inline error message' do
-            visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-            sign_in_and_2fa_user(@user)
             complete_doc_auth_steps_before_document_capture_step
             attach_images(
               Rails.root.join(
@@ -1086,8 +1092,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           end
 
           it 'try again and page show selfie fail inline error message' do
-            visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-            sign_in_and_2fa_user(@user)
             complete_doc_auth_steps_before_document_capture_step
             attach_images(
               Rails.root.join(
@@ -1168,8 +1172,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           let(:selfie_check_enabled) { false }
           it 'proceeds to the next page with valid info, excluding a selfie image' do
             perform_in_browser(:mobile) do
-              visit_idp_from_oidc_sp_with_ial2
-              sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_document_capture_step
 
               expect(page).to have_current_path(idv_document_capture_url)
@@ -1206,8 +1208,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         describe 'when desktop selfie not allowed' do
           it 'can only proceed to link sent page' do
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-              sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
               expect(page).to have_current_path(idv_hybrid_handoff_path)
@@ -1223,8 +1223,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           let(:desktop_selfie_mode) { true }
           it 'proceed to the next page with valid info, including a selfie image' do
             perform_in_browser(:desktop) do
-              visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-              sign_in_and_2fa_user(@user)
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
               expect(page).to have_current_path(idv_hybrid_handoff_path)
@@ -1264,8 +1262,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             describe 'when ipp is selected' do
               it 'proceed to the next page and start ipp' do
                 perform_in_browser(:desktop) do
-                  visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-                  sign_in_and_2fa_user(@user)
                   complete_doc_auth_steps_before_hybrid_handoff_step
                   # we still have option to continue on handoff, since it's desktop no skip_hand_off
                   expect(page).to have_current_path(idv_hybrid_handoff_path)
