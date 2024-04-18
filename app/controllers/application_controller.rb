@@ -227,9 +227,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_user)
-    return user_password_compromised_url if session[:redirect_to_password_compromised].present?
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
+    return user_password_compromised_url if session[:redirect_to_password_compromised].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
