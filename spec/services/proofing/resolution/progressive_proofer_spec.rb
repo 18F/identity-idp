@@ -17,7 +17,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     )
   end
 
-
   let(:aamva_proofer_result) { nil }
   let(:aamva_proofer) do
     instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result)
@@ -35,6 +34,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       zipcode: applicant_pii[:identity_doc_zipcode],
     }
   end
+
   let(:residential_address) do
     {
       address1: applicant_pii[:address1],
@@ -45,6 +45,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       zipcode: applicant_pii[:zipcode],
     }
   end
+
   let(:transformed_pii) do
     {
       first_name: 'FAKEY',
@@ -69,9 +70,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   def disable_threatmetrix
     allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
       and_return(false)
-  end
-
-  before do
   end
 
   describe '#proof' do
