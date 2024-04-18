@@ -9,14 +9,18 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:timer) { JobHelpers::Timer.new }
   let(:user) { create(:user, :fully_registered) }
 
-  let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
+  let(:instant_verify_proofer_result) { instance_double(Proofing::Resolution::Result) }
+  let(:instant_verify_proofer) do
+    instance_double(
+      Proofing::LexisNexis::InstantVerify::Proofer,
+      proof: instant_verify_proofer_result,
+    )
+  end
 
-  let(:instant_verify_proofer_result) { nil }
 
+  let(:aamva_proofer_result) { nil }
   let(:aamva_proofer) do
-    aamva_proofer = instance_double(Proofing::Aamva::Proofer)
-    allow(aamva_proofer).to receive(:proof)
-    aamva_proofer
+    instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result)
   end
 
   let(:dcs_uuid) { SecureRandom.uuid }
@@ -68,8 +72,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   before do
-    allow(instant_verify_proofer).to receive(:proof).
-      and_return(instant_verify_proofer_result)
   end
 
   describe '#proof' do
@@ -101,11 +103,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'ThreatMetrix is enabled' do
-        let(:threatmetrix_proofer) do
-          threatmetrix_proofer = instance_double(Proofing::LexisNexis::Ddp::Proofer)
-          allow(threatmetrix_proofer).to receive(:proof)
-          threatmetrix_proofer
-        end
+        let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer, proof: nil) }
 
         before do
           enable_threatmetrix
@@ -250,10 +248,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'residential address and id address are the same' do
-        let(:instant_verify_proofer_result) do
-          instance_double(Proofing::Resolution::Result)
-        end
-
         before do
           allow(instance).to receive(:with_state_id_address).and_return(transformed_pii)
           allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
@@ -309,10 +303,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
             context 'it is not covered by AAMVA' do
               let(:failed_aamva_proof) do
-                failed_aamva_proof = instance_failed_aamva_proof(Proofing::StateIdResult)
-                allow(failed_aamva_proof).to receive(:verified_attributes).and_return([])
-                allow(failed_aamva_proof).to receive(:success?).and_return(false)
-                failed_aamva_proof
+                instance_double(
+                  Proofing::StateIdResult,
+                  verified_attributes: [],
+                  success?: false,
+                )
               end
 
               before do
@@ -326,11 +321,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
             context 'it is covered by AAMVA' do
               let(:successful_aamva_proof) do
-                successful_aamva_proof = instance_double(Proofing::StateIdResult)
-                allow(successful_aamva_proof).to receive(:verified_attributes).
-                  and_return([:address])
-                allow(successful_aamva_proof).to receive(:success?).and_return(true)                
-                successful_aamva_proof
+                instance_double(
+                  Proofing::StateIdResult,
+                  verified_attributes: [:address],
+                  success?: true,
+                )
               end
 
               before do
