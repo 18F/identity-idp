@@ -119,9 +119,7 @@ locals:
   </div>
   <div class="margin-top-5">
       <%= render SpinnerButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(idv_verify_info_path, **tag_options, &block)
-            end,
+            url: idv_verify_info_path,
             big: true,
             wide: true,
             action_message: t('idv.messages.verifying'),
