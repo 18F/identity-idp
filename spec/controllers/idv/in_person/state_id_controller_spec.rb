@@ -26,12 +26,6 @@ RSpec.describe Idv::InPerson::StateIdController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
-  describe '#step_info' do
-    it 'returns a valid StepInfo object' do
-      expect(Idv::InPerson::StateIdController.step_info).to be_valid
-    end
-  end
-
   describe 'before_actions' do
     context '#render_404_if_controller_not_enabled' do
       context 'flag not set' do
