@@ -265,7 +265,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
     end
 
-    context 'when doc auth is success and portait match fails', allow_browser_log: true do
+    context 'when doc auth is success and portrait match fails', allow_browser_log: true do
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)

@@ -763,6 +763,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
+  # @param [Number] captureAttempts count of image capturing attempts
   # @param [String] liveness_checking_required Whether or not the selfie is required
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
@@ -771,6 +772,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    captureAttempts:,
     liveness_checking_required:,
     **extra
   )
@@ -783,6 +785,7 @@ module AnalyticsEvents
       source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
@@ -1529,6 +1532,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
+  # @param [Number] captureAttempts count of image capturing attempts
   # @param [Boolean] liveness_checking_required
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
@@ -1537,6 +1541,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    captureAttempts:,
     liveness_checking_required: nil,
     **extra
   )
@@ -1549,6 +1554,7 @@ module AnalyticsEvents
       source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
@@ -2930,6 +2936,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
+  # @param [:sms,:voice] otp_delivery_preference
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
@@ -2941,6 +2948,7 @@ module AnalyticsEvents
     errors:,
     code_expired:,
     code_matches:,
+    otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
     proofing_components: nil,
@@ -2954,6 +2962,7 @@ module AnalyticsEvents
       errors: errors,
       code_expired: code_expired,
       code_matches: code_matches,
+      otp_delivery_preference: otp_delivery_preference,
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
       proofing_components: proofing_components,
@@ -3318,6 +3327,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
+  # @param [Number] captureAttempts
   # @param [Boolean] liveness_checking_required
   # @param [Hash,nil] proofing_components User's proofing components.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
@@ -3329,6 +3339,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    captureAttempts:,
     liveness_checking_required: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -3343,6 +3354,7 @@ module AnalyticsEvents
       isDrop: isDrop,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      captureAttempts: captureAttempts,
       liveness_checking_required: liveness_checking_required,
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,

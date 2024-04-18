@@ -37,7 +37,7 @@ RSpec.describe Idv::InPerson::SsnController do
         subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
         get :show
 
-        expect(response).to redirect_to idv_in_person_proofing_address_url
+        expect(response).to redirect_to idv_in_person_address_url
       end
     end
   end
@@ -88,7 +88,7 @@ RSpec.describe Idv::InPerson::SsnController do
     end
 
     context 'with an ssn in idv_session' do
-      let(:referer) { idv_in_person_proofing_address_url }
+      let(:referer) { idv_in_person_address_url }
       before do
         subject.idv_session.ssn = ssn
         request.env['HTTP_REFERER'] = referer

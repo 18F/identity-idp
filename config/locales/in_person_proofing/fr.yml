@@ -154,7 +154,7 @@ fr:
       id_address: Adresse sur votre pièce d’identité
       po_search:
         location: Trouver un bureau de poste participant
-      prepare: Vérifiez votre identité en personne
+      prepare: Confirmez votre identité en personne
       state_id_milestone_2: Saisissez les informations figurant sur votre carte
         d’identité délivrée par l’État
       switch_back: Retournez sur votre ordinateur pour vous préparer à vérifier votre

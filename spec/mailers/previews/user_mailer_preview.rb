@@ -4,22 +4,7 @@ class UserMailerPreview < ActionMailer::Preview
       email_confirmation_instructions(
         SecureRandom.hex,
         request_id: SecureRandom.uuid,
-        instructions: I18n.t(
-          'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
-          app_name: APP_NAME,
-        ),
       )
-  end
-
-  def unconfirmed_email_instructions
-    UserMailer.with(user: user, email_address: email_address_record).unconfirmed_email_instructions(
-      SecureRandom.hex,
-      request_id: SecureRandom.uuid,
-      instructions: I18n.t(
-        'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
-        app_name: APP_NAME,
-      ),
-    )
   end
 
   def signup_with_your_email
