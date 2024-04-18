@@ -8,10 +8,16 @@
   <%= t('forms.backup_code_regenerate.caution') %>
 </p>
 
-<%= form_tag(backup_code_setup_path, method: :get, class: 'margin-top-5') do %>
-  <%= button_tag t('account.index.backup_code_confirm_regenerate'), type: 'submit',
-                                                                    class: 'usa-button usa-button--big usa-button--wide margin-bottom-2' %>
-<% end %>
+<%= render ButtonComponent.new(
+      url: backup_code_setup_path,
+      big: true,
+      wide: true,
+      class: 'margin-top-3 margin-bottom-2',
+    ).with_content(t('account.index.backup_code_confirm_regenerate')) %>
 
-<%= link_to t('links.cancel'), account_path,
-            class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>
+<%= render ButtonComponent.new(
+      url: account_path,
+      big: true,
+      wide: true,
+      outline: true,
+    ).with_content(t('links.cancel')) %>
