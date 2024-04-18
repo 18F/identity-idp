@@ -437,11 +437,15 @@ function AcuantCapture(
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          trackEvent(`IdV: ${name} image clicked`, {
-            source,
-            ...metadata,
-            liveness_checking_required: isSelfieCaptureEnabled,
-          });
+          trackEvent(
+            name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`,
+            {
+              source,
+              ...metadata,
+              liveness_checking_required: isSelfieCaptureEnabled,
+              captureAttempts,
+            },
+          );
         }
 
         return fn(...args);
