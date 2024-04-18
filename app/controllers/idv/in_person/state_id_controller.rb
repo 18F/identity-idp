@@ -25,24 +25,6 @@ module Idv
         }
       end
 
-      # update Idv::DocumentCaptureController.step_info.next_steps to include
-      # :ipp_state_id instead of :ipp_ssn (or :ipp_address) in delete PR
-      def self.step_info
-        Idv::StepInfo.new(
-          key: :ipp_state_id,
-          controller: self,
-          next_steps: [:ipp_address, :ipp_ssn],
-          preconditions: ->(idv_session:, user:) { user.establishing_in_person_enrollment },
-          undo_step: ->(idv_session:, user:) do
-            flow_session[:pii_from_user][:identity_doc_address1] = nil
-            flow_session[:pii_from_user][:identity_doc_address2] = nil
-            flow_session[:pii_from_user][:identity_doc_city] = nil
-            flow_session[:pii_from_user][:identity_doc_zipcode] = nil
-            flow_session[:pii_from_user][:identity_doc_state] = nil
-          end,
-        )
-      end
-
       private
 
       def render_404_if_controller_not_enabled
@@ -66,22 +48,6 @@ module Idv
           irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
           merge(extra_analytics_properties)
-      end
-
-      def clear_residential_address(pii_from_user)
-        pii_from_user.delete(:address1)
-        pii_from_user.delete(:address2)
-        pii_from_user.delete(:city)
-        pii_from_user.delete(:state)
-        pii_from_user.delete(:zipcode)
-      end
-
-      def copy_state_id_address_to_residential_address(pii_from_user)
-        pii_from_user[:address1] = flow_params[:identity_doc_address1]
-        pii_from_user[:address2] = flow_params[:identity_doc_address2]
-        pii_from_user[:city] = flow_params[:identity_doc_city]
-        pii_from_user[:state] = flow_params[:identity_doc_address_state]
-        pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
       end
 
       def updating_state_id?
