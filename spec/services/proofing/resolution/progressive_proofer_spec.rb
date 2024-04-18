@@ -22,6 +22,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result)
   end
 
+  let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer, proof: nil) }
+
   let(:dcs_uuid) { SecureRandom.uuid }
   let(:instance) { described_class.new(instant_verify_ab_test_discriminator: dcs_uuid) }
   let(:state_id_address) do
@@ -101,8 +103,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'ThreatMetrix is enabled' do
-        let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer, proof: nil) }
-
         before do
           enable_threatmetrix
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
