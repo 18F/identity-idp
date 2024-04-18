@@ -205,15 +205,15 @@ module Proofing
         Proofing::DdpResult.new(
           success: false,
           client: 'tmx_pii_missing',
-          review_status: 'fail',
+          review_status: 'reject',
         )
       end
 
       def threatmetrix_id_missing_result
         Proofing::DdpResult.new(
           success: false,
-          client: 'tmx_id_missing',
-          review_status: 'fail',
+          client: 'tmx_session_id_missing',
+          review_status: 'reject',
         )
       end
 

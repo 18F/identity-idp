@@ -529,11 +529,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
-        expect(result[:threatmetrix_review_status]).to eq('fail')
+        expect(result[:threatmetrix_review_status]).to eq('reject')
 
         # result[:context][:stages][:threatmetrix]
         expect(result_context_stages_threatmetrix[:success]).to eq(false)
-        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_id_missing')
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_session_id_missing')
 
         expect(@threatmetrix_stub).to_not have_been_requested
       end
