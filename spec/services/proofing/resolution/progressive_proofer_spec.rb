@@ -25,7 +25,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer, proof: nil) }
 
   let(:dcs_uuid) { SecureRandom.uuid }
-  let(:instance) { described_class.new(instant_verify_ab_test_discriminator: dcs_uuid) }
+  let(:instance) do
+    instance = described_class.new(instant_verify_ab_test_discriminator: dcs_uuid)
+    allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
+    instance
+  end
+
   let(:state_id_address) do
     {
       address1: applicant_pii[:identity_doc_address1],
@@ -107,7 +112,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           enable_threatmetrix
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
             and_return(false)
-          allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
 
           allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
             and_return(resolution_result)
