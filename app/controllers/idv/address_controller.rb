@@ -59,13 +59,6 @@ module Idv
 
     def success
       idv_session.address_edited = address_edited?
-      idv_session.pii_from_doc = idv_session.pii_from_doc.merge(
-        address1: @address_form.address1,
-        address2: @address_form.address2,
-        city: @address_form.city,
-        state: @address_form.state,
-        zipcode: @address_form.zipcode,
-      )
       idv_session.updated_user_address = @address_form.updated_user_address
       redirect_to idv_verify_info_url
     end
