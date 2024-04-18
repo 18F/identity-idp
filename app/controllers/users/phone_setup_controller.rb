@@ -138,6 +138,7 @@ module Users
     end
 
     def check_phone_submission_limit(phone)
+      return false if phone.nil?
       @phone = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164)
       submission_rate_limiter ||= RateLimiter.new(
         target: @phone,
