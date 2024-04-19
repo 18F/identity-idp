@@ -5,7 +5,7 @@ module Redirect
     before_action :validate_help_center_article_params
 
     def show
-      redirect_to_and_log MarketingSite.help_center_article_url(**article_params)
+      redirect_to_and_log MarketingSite.help_center_article_url(**article_params_with_provider)
     end
 
     private
@@ -18,6 +18,12 @@ module Redirect
     def article_params
       category, article, article_anchor = params.values_at(:category, :article, :article_anchor)
       { category:, article:, article_anchor: }
+    end
+
+    def article_params_with_provider
+      params = article_params
+      params[:service_provider_issuer] = current_sp&.issuer
+      params
     end
   end
 end
