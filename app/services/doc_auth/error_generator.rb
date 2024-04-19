@@ -389,6 +389,7 @@ module DocAuth
       unknown_fail_count
     end
 
+    # This method replicates TrueIdResponse::attention_with_barcode? and should be removed/updated when that is.
     def attention_with_barcode_result(doc_auth_result, processed_alerts)
       attention_result = doc_auth_result == LexisNexis::ResultCodes::ATTENTION.name
       barcode_alerts = processed_alerts[:failed]&.count.to_i == 1 &&
