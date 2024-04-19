@@ -68,12 +68,19 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'accessibility/').to_s
   end
 
-  def self.help_center_article_url(category:, article:, article_anchor: '')
+  def self.help_center_article_url(
+    category:,
+    article:,
+    article_anchor: '',
+    service_provider_issuer: nil
+  )
     if !HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
       raise UnknownArticleException, "Unknown help center article category #{category}/#{article}"
     end
     anchor_text = article_anchor.present? ? "##{article_anchor}" : ''
-    URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/#{anchor_text}").to_s
+    uri = URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/#{anchor_text}")
+    uri.query = "sp=#{service_provider_issuer}" if service_provider_issuer.present?
+    uri.to_s
   end
 
   def self.valid_help_center_article?(category:, article:, article_anchor: '')
