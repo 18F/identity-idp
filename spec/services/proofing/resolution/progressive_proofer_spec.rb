@@ -9,7 +9,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:timer) { JobHelpers::Timer.new }
   let(:user) { create(:user, :fully_registered) }
 
-  let(:instant_verify_proofer_result) { instance_double(Proofing::Resolution::Result) }
+  let(:instant_verify_proofing_success) { true }
+  let(:instant_verify_proofer_result) do
+    instance_double(
+      Proofing::Resolution::Result,
+      success?: instant_verify_proofing_success,
+      attributes_requiring_additional_verification: [:address],
+    )
+  end
+
   let(:instant_verify_proofer) do
     instance_double(
       Proofing::LexisNexis::InstantVerify::Proofer,
@@ -28,6 +36,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:instance) do
     instance = described_class.new(instant_verify_ab_test_discriminator: dcs_uuid)
     allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
+    allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
     instance
   end
 
@@ -221,7 +230,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         let(:instant_verify_proofer_result) { id_address_instant_verify_proof }
 
         before do
-          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
           allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
           allow(id_address_instant_verify_proof).to receive(:success?).and_return(true)
 
@@ -250,9 +258,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       context 'residential address and id address are the same' do
         before do
           allow(instance).to receive(:with_state_id_address).and_return(transformed_pii)
-          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
           allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-          allow(instant_verify_proofer_result).to receive(:success?).and_return(true)
         end
 
         it 'only makes one request to LexisNexis InstantVerify' do
@@ -278,14 +284,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'LexisNexis InstantVerify fails' do
+          let(:instant_verify_proofing_success) { false }
+
           before do
-            allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-              and_return(instant_verify_proofer_result)
             allow(instance).to receive(:user_can_pass_after_state_id_check?).
               with(instant_verify_proofer_result).
               and_return(true)
-            allow(instant_verify_proofer_result).to receive(:success?).
-              and_return(false)
           end
 
           it 'includes the state ID in the InstantVerify call' do
@@ -295,12 +299,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
 
           context 'the failure can be covered by AAMVA' do
-            before do
-              allow(instant_verify_proofer_result).
-                to receive(:attributes_requiring_additional_verification).
-                and_return([:address])
-            end
-
             context 'it is not covered by AAMVA' do
               let(:failed_aamva_proof) do
                 instance_double(
@@ -457,7 +455,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         context 'LexisNexis InstantVerify fails for residential address' do
           before do
-            allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
             allow(instance).to receive(:proof_residential_address_if_needed).
               and_return(residential_address_proof)
             allow(instant_verify_proofer).to receive(:proof).
@@ -484,7 +481,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
 
           before do
-            allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
             allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
               and_return(result_that_failed_instant_verify)
             allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
@@ -505,7 +501,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               allow(result_that_failed_instant_verify).
                 to receive(:attributes_requiring_additional_verification).
                 and_return([:address])
-              allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
               allow(aamva_proofer).to receive(:proof)
 
               proof
