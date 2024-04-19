@@ -57,9 +57,7 @@
 
     <div class="margin-top-4">
       <%= render SpinnerButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(idv_cancel_path(step: params[:step], location: 'cancel'), **tag_options, &block)
-            end,
+            url: idv_cancel_path(step: params[:step], location: 'cancel'),
             method: :delete,
             big: true,
             wide: true,
