@@ -7,6 +7,7 @@ module Users
     include MfaSetupConcern
     include RecaptchaConcern
     include ReauthenticationRequiredConcern
+    include ActionView::Helpers::DateHelper
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -139,20 +140,28 @@ module Users
 
     def check_phone_submission_limit(phone)
       return false if phone.blank?
-
       fingerprint = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164.to_s)
-      submission_rate_limiter ||= RateLimiter.new(
+      @submission_rate_limiter ||= RateLimiter.new(
         target: fingerprint,
         rate_limit_type: :phone_submissions,
       )
-      submission_rate_limiter.increment!
-
-      lock_out_user if submission_rate_limiter.maxed?
+      @submission_rate_limiter.increment!
+      lock_out_user if @submission_rate_limiter.maxed?
     end
 
     def lock_out_user(user: current_user)
       UpdateUser.new(user: user, attributes: { second_factor_locked_at: Time.zone.now }).call
       sign_out
+      flash[:error] = t(
+        'errors.messages.phone_confirmation_limited',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [@submission_rate_limiter.expires_at, Time.zone.now].compact.max,
+          except: :seconds,
+        ),
+      )
+      redirect_to root_path
+      return
     end
   end
 end
