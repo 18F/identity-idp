@@ -32,6 +32,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
   let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer, proof: nil) }
 
+  let(:proof_id_address_with_lexis_nexis_if_needed_value) { nil }
+
   let(:dcs_uuid) { SecureRandom.uuid }
   let(:instance) do
     instance = described_class.new(instant_verify_ab_test_discriminator: dcs_uuid)
@@ -39,6 +41,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
     allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
     allow(instance).to receive(:user_can_pass_after_state_id_check?).and_return(true)
+
     instance
   end
 
@@ -119,13 +122,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'ThreatMetrix is enabled' do
+        let(:proof_id_address_with_lexis_nexis_if_needed_value) { resolution_result }
+
         before do
           enable_threatmetrix
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
             and_return(false)
-
-          allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-            and_return(resolution_result)
 
           proof
         end
@@ -170,9 +172,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       context 'ThreatMetrix is disabled' do
         before do
           disable_threatmetrix
-
-          allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-            and_return(resolution_result)
         end
 
         it 'returns a disabled result' do
@@ -349,8 +348,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             before do
               allow(instance).to receive(:proof_residential_address_if_needed).
                 and_return(residential_resolution_that_passed_instant_verify)
-              allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-                and_return(id_resolution_that_passed_instant_verify)
             end
 
             it 'makes a request to the AAMVA proofer' do
@@ -470,8 +467,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
 
           before do
-            allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-              and_return(result_that_failed_instant_verify)
             allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
               and_return(result_that_failed_instant_verify)
           end
