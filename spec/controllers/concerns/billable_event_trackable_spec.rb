@@ -21,6 +21,10 @@ RSpec.describe BillableEventTrackable do
   let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
   let(:request_id) { SecureRandom.hex }
   let(:session_started_at) { 5.minutes.ago }
+  let(:initiating_sp) { create(:service_provider) }
+  let(:active_profile) { create(:profile, :active, :verified, user: current_user, initiating_service_provider: initiating_sp) } 
+  # Do session_started_at and profile_verified_at need to be different, is there some relationship 
+  # to be account for in tests?
 
   around do |ex|
     freeze_time { ex.run }
@@ -45,6 +49,7 @@ RSpec.describe BillableEventTrackable do
 
   describe '#track_billing_events' do
     it 'does not fail if SpReturnLog row already exists' do
+      binding.pry
       SpReturnLog.create(
         request_id: request_id,
         user_id: current_user.id,

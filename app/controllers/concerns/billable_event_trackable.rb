@@ -23,8 +23,8 @@ module BillableEventTrackable
       ial: user_ial_context.bill_for_ial_1_or_2,
       issuer: current_sp.issuer,
       profile_id: current_user&.active_profile&.id,
-      profile_verified_at: current_user&.profile&.verified_at,
-      profile_requested_issuer: current_user&.profile&.requested_issuer,
+      profile_verified_at: current_user&.active_profile&.verified_at,
+      profile_requested_issuer: current_user&.active_profile&.initiating_service_provider,
       requested_at: session[:session_started_at],
       returned_at: Time.zone.now,
     )
