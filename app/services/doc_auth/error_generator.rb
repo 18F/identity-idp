@@ -176,27 +176,11 @@ module DocAuth
       liveness_enabled = response_info[:liveness_enabled]
       selfie_error = get_selfie_error(liveness_enabled, response_info)
 
-      if is_generic_selfie_error?(selfie_error)
-        return selfie_general_failure_error
-      else
-        error = selfie_error
-        side = ErrorGenerator::SELFIE
-        return ErrorResult.new(error, side)
-      end
+      ErrorResult.new(selfie_error, ErrorGenerator::SELFIE)
     end
 
     def is_generic_selfie_error?(error)
       error == Errors::SELFIE_FAILURE
-    end
-
-    def selfie_general_failure_error
-      {
-        general: [Errors::SELFIE_FAILURE],
-        front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
-        back: [Errors::MULTIPLE_BACK_ID_FAILURES],
-        selfie: [Errors::SELFIE_FAILURE],
-        hints: false,
-      }
     end
 
     private
