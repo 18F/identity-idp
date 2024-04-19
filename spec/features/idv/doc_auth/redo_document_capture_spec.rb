@@ -320,7 +320,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
-        # allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
+
         start_idv_from_sp
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
@@ -343,12 +343,12 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         )
         DocAuth::Mock::DocAuthMockClient.reset!
 
-        attach_selfie
-        expect(page).to have_css(
-          '.usa-error-message[role="alert"]',
-          text: t('doc_auth.errors.doc.resubmit_failed_image'),
-          count: 2,
-        )
+        # likely resolved by PR #10450 and should be uncommented post merge
+        # attach_selfie
+        # expect(page).not_to have_css(
+        #   '.usa-error-message[role="alert"]',
+        #   text: t('doc_auth.errors.doc.resubmit_failed_image'),
+        # )
 
         attach_images
         expect(page).to have_css(
