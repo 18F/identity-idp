@@ -10,7 +10,7 @@ module Rack
       '/verify/document_capture',
       '/verify/link_sent',
     ].flat_map do |path|
-      [path] + Idp::Constants::AVAILABLE_LOCALES.map { |locale| "/#{locale}#{path}" }
+      [path] + IdentityConfig.store.available_locales.map { |locale| "/#{locale}#{path}" }
     end + ['/api/verify/images']).freeze
 
     def call_with_excludes(env)
