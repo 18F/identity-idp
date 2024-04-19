@@ -219,16 +219,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'remote flow does not augment pii' do
-        let(:id_address_instant_verify_proof) do
-          instance_double(Proofing::Resolution::Result)
+        let(:instant_verify_proofer_result) do
+          instance_double(Proofing::Resolution::Result, success?: true)
         end
-        let(:instant_verify_proofer_result) { id_address_instant_verify_proof }
 
-        before do
-          allow(id_address_instant_verify_proof).to receive(:success?).and_return(true)
-
-          proof
-        end
+        before { proof }
 
         it 'proofs with untransformed pii' do
           expect(aamva_proofer).to have_received(:proof).with(applicant_pii)
