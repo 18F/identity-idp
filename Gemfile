@@ -23,7 +23,7 @@ gem 'caxlsx', require: false
 gem 'concurrent-ruby'
 gem 'connection_pool'
 gem 'csv'
-gem 'cssbundling-rails', '1.0.0'
+gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday', '~> 2'
