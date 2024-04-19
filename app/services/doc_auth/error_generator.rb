@@ -111,20 +111,17 @@ module DocAuth
     private
 
     def get_doc_auth_errors(response_info, known_error_count)
+      # don't worry about unknown alert errors here
+      return if known_error_count < 1
+
       doc_auth_error_messages = get_doc_auth_error_messages(response_info)
       liveness_enabled = response_info[:liveness_enabled]
 
-      # don't worry about unknown alert errors here
-      if known_error_count < 1
-        return nil
-      elsif known_error_count == 1
+      if known_error_count == 1
         process_single_doc_auth_error(doc_auth_error_messages)
-      elsif known_error_count > 1
+      else
         # Simplify multiple errors into a single error for the user
         consolidate_multiple_doc_auth_errors(doc_auth_error_messages, liveness_enabled)
-      else
-        # default fall back
-        ErrorResult.new(error, side)
       end
     end
 
