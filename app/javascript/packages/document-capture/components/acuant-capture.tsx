@@ -553,7 +553,6 @@ function AcuantCapture(
     trackEvent('idv_selfie_image_added', {
       captureAttempts,
       selfie_attempts: selfieAttempts.current,
-      extra: { here: true },
     });
 
     onChangeAndResetError(image, analyticsPayload);
