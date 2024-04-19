@@ -81,6 +81,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     }
   end
 
+  let(:ab_test_variables) { {} }
+
+  let(:lniv) do
+    instance_double(
+      Idv::LexisNexisInstantVerify,
+      dcs_uuid,
+      workflow_ab_testing_variables: ab_test_variables,
+    )
+  end
+
   let(:resolution_result) do
     instance_double(Proofing::Resolution::Result, success?: true, errors: nil)
   end
@@ -95,15 +105,21 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       and_return(false)
   end
 
+  def block_real_instant_verify_requests
+    allow(Proofing::LexisNexis::InstantVerify::VerificationRequest).to receive(:new)
+  end
+
   before do
     allow(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:new).
       and_return(instant_verify_proofer)
+    allow(Idv::LexisNexisInstantVerify).to receive(:new).and_return(lniv)
+
+    block_real_instant_verify_requests
   end
 
   describe '#proof' do
     before do
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
-      allow(Proofing::LexisNexis::InstantVerify::VerificationRequest).to receive(:new)
     end
 
     subject(:proof) do
@@ -187,45 +203,28 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'LexisNexis Instant Verify A/B test enabled' do
-        let(:residential_instant_verify_proof) do
-          instance_double(Proofing::Resolution::Result, success?: true)
-        end
-        let(:instant_verify_workflow) { 'equitable_workflow' }
         let(:ab_test_variables) do
           {
             ab_testing_enabled: true,
             use_alternate_workflow: true,
-            instant_verify_workflow: instant_verify_workflow,
+            instant_verify_workflow: 'equitable_workflow',
           }
         end
 
-        let(:lniv) { instance_double(Idv::LexisNexisInstantVerify, dcs_uuid, workflow_ab_testing_variables: ab_test_variables) }
-        let(:instant_verify_proofer_result) { residential_instant_verify_proof }
-
-        before do
-          allow(Idv::LexisNexisInstantVerify).to receive(:new).
-            and_return(lniv)
-
-          proof
-        end
+        before { proof }
 
         it 'uses the selected workflow' do
           expect(Proofing::LexisNexis::InstantVerify::Proofer).to(
-            have_received(:new).
-              with(
-                hash_including(
-                  instant_verify_workflow: instant_verify_workflow,
-                ),
+            have_received(:new).with(
+              hash_including(
+                instant_verify_workflow: 'equitable_workflow',
+              ),
             ),
           )
         end
       end
 
       context 'remote flow does not augment pii' do
-        let(:instant_verify_proofer_result) do
-          instance_double(Proofing::Resolution::Result, success?: true)
-        end
-
         before { proof }
 
         it 'proofs with untransformed pii' do
@@ -398,13 +397,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             end
 
             context 'AAMVA fails' do
-              let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult, success?: false) }
-              let(:aamva_proofer_result) { failed_aamva_proof }
-
-              before do
-                allow(instance).to receive(:proof_id_with_aamva_if_needed).
-                  and_return(failed_aamva_proof)
-              end
+              let(:aamva_proofer_result) { instance_double(Proofing::StateIdResult, success?: false) }
 
               it 'returns the correct resolution results' do
                 expect(proof.residential_resolution_result.success?).to be(true)
