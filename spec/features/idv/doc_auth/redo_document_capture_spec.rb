@@ -240,7 +240,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
   end
 
   context 'when selfie is enabled' do
-    context 'error due to data issue with 2xx status code', allow_browser_log: true do
+    context 'when doc auth is success and portrait match fails - 2xx status code', allow_browser_log: true do
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
@@ -262,55 +262,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
       it 'shows current existing header' do
         expect_doc_capture_page_header(t('doc_auth.headings.review_issues'))
-      end
-    end
-
-    context 'when doc auth is success and portrait match fails', allow_browser_log: true do
-      before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
-
-        start_idv_from_sp
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_document_capture_step
-        mock_doc_auth_success_face_match_fail
-        attach_images
-        attach_selfie
-        submit_images
-        click_try_again
-        sleep(10)
-      end
-
-      it 'stops user submitting the same images again' do
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(redo_document_capture: nil),
-        )
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth image upload form submitted',
-          hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
-        )
-        DocAuth::Mock::DocAuthMockClient.reset!
-        expect(page).not_to have_css(
-          '.usa-error-message[role="alert"]',
-          text: t('doc_auth.errors.doc.resubmit_failed_image'),
-        )
-
-        attach_selfie
-        expect(page).to have_css(
-          '.usa-error-message[role="alert"]',
-          text: t('doc_auth.errors.doc.resubmit_failed_image'),
-          count: 1,
-        )
-
-        attach_images
-        expect(page).to have_css(
-          '.usa-error-message[role="alert"]',
-          text: t('doc_auth.errors.doc.resubmit_failed_image'),
-          count: 1,
-        )
       end
     end
 
