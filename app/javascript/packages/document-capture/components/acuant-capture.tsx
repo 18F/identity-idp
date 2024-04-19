@@ -553,7 +553,6 @@ function AcuantCapture(
     trackEvent('idv_selfie_image_added', {
       captureAttempts,
       selfie_attempts: selfieAttempts.current,
-      extra: { here: true },
     });
 
     onChangeAndResetError(image, analyticsPayload);
@@ -584,6 +583,13 @@ function AcuantCapture(
       window.location.reload();
     }
     setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieRetaken() {
+    trackEvent('idv_sdk_selfie_image_re_taken', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
   }
 
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
@@ -732,6 +738,7 @@ function AcuantCapture(
           onImageCaptureClose={onSelfieCaptureClosed}
           onImageCaptureFeedback={onImageCaptureFeedback}
           onSelfieTaken={onSelfieTaken}
+          onSelfieRetaken={onSelfieRetaken}
         >
           <FullScreen
             ref={fullScreenRef}
