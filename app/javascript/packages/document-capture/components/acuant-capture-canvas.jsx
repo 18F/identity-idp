@@ -32,8 +32,9 @@ function AcuantCaptureCanvas() {
   const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
 
   useEffect(() => {
+    const canvas = document.getElementById('acuant-ui-canvas');
+    const originalCallback = Object.getOwnPropertyDescriptor(canvas, 'callback');
     function onAcuantCameraCreated() {
-      const canvas = document.getElementById('acuant-ui-canvas');
       // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
       // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
       defineObservableProperty(canvas, 'callback', (callback) => {
@@ -44,6 +45,13 @@ function AcuantCaptureCanvas() {
     cameraRef.current?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
     return () => {
       cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
+      // Revert the effects of defineObservableProperty by resettig the callback
+      if (canvas?.callback) {
+        delete canvas.callback;
+        if (originalCallback !== undefined) {
+          Object.defineProperty(canvas, 'callback', originalCallback);
+        }
+      }
     };
   }, []);
 
