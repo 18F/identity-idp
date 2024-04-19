@@ -330,7 +330,6 @@ module DocAuth
 
       doc_auth_error_count = doc_auth_error_count(response_info)
       known_error_count = doc_auth_error_count - unknown_fail_count
-
       doc_auth_error_handler = DocAuthErrorHandler.new
       doc_auth_error = doc_auth_error_handler.handle(response_info, known_error_count)
 

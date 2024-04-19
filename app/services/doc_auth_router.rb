@@ -38,9 +38,9 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.general.no_liveness')
     DocAuth::Errors::GENERAL_ERROR =>
       'doc_auth.errors.general.no_liveness',
-    # i18n-tasks-use t('doc_auth.errors.dpi.top_msg')
+    # i18n-tasks-use t('doc_auth.errors.dpi.top_msg_plural')
     DocAuth::Errors::GENERAL_ERROR_LIVENESS =>
-      'doc_auth.errors.dpi.top_msg',
+      'doc_auth.errors.dpi.top_msg_plural',
     # i18n-tasks-use t('doc_auth.errors.alerts.id_not_recognized')
     DocAuth::Errors::ID_NOT_RECOGNIZED =>
       'doc_auth.errors.alerts.id_not_recognized',

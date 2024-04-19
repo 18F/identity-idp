@@ -551,7 +551,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               h1_error_message = strip_tags(t('errors.doc_auth.rate_limited_heading'))
               expect(page).to have_content(h1_error_message)
 
-              body_error_message = strip_tags(t('doc_auth.errors.dpi.top_msg'))
+              body_error_message = strip_tags(t('doc_auth.errors.dpi.top_msg_plural'))
               expect(page).to have_content(body_error_message)
 
               click_try_again
