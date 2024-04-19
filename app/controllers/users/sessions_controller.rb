@@ -117,6 +117,7 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
+      check_password_compromised
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       redirect_to next_url_after_valid_authentication
@@ -203,6 +204,32 @@ module Users
 
     def sign_in_params
       params[resource_name]&.permit(:email) if request.post?
+    end
+
+    def check_password_compromised
+      return if current_user.password_compromised_checked_at.present? ||
+                !eligible_for_password_lookup?
+
+      session[:redirect_to_password_compromised] =
+        PwnedPasswords::LookupPassword.call(auth_params[:password])
+      update_user_password_compromised_checked_at
+    end
+
+    def eligible_for_password_lookup?
+      FeatureManagement.check_password_enabled? &&
+        randomize_check_password?
+    end
+
+    def update_user_password_compromised_checked_at
+      UpdateUser.new(
+        user: current_user,
+        attributes: { password_compromised_checked_at: Time.zone.now },
+      ).call
+    end
+
+    def randomize_check_password?
+      SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) >=
+        IdentityConfig.store.compromised_password_randomizer_threshold
     end
   end
 
