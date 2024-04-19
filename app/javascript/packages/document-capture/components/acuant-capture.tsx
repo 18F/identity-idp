@@ -586,6 +586,13 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
+  function onSelfieRetaken() {
+    trackEvent('idv_sdk_selfie_image_re_taken', {
+      captureAttempts,
+      //   selfie_attempts: selfie_attempts.current,
+    });
+  }
+
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
     const { image, dpi, moire, glare, sharpness, cardType } = nextCapture;
 
@@ -732,6 +739,7 @@ function AcuantCapture(
           onImageCaptureClose={onSelfieCaptureClosed}
           onImageCaptureFeedback={onImageCaptureFeedback}
           onSelfieTaken={onSelfieTaken}
+          onSelfieRetaken={onSelfieRetaken}
         >
           <FullScreen
             ref={fullScreenRef}

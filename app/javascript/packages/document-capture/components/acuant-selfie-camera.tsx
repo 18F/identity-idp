@@ -54,6 +54,10 @@ interface AcuantSelfieCameraContextProps {
    */
   onSelfieTaken: () => void;
   /**
+   * Selfie captured by user initiated retake
+   */
+  onSelfieRetaken: () => void;
+  /**
    * React children node
    */
   children: ReactNode;
@@ -84,6 +88,7 @@ function AcuantSelfieCamera({
   onImageCaptureClose = () => {},
   onImageCaptureFeedback = () => {},
   onSelfieTaken = () => {},
+  onSelfieRetaken = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -119,6 +124,7 @@ function AcuantSelfieCamera({
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped
+        onSelfieRetaken();
       },
       onCaptured: (base64Image) => {
         // Triggered when accept button is tapped
