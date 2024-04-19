@@ -1,7 +1,5 @@
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(backup_code_regenerate_path, **tag_options, &block)
-      end,
+      url: backup_code_regenerate_path,
       icon: :add,
       outline: true,
       class: 'margin-top-2',

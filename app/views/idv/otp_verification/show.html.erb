@@ -29,9 +29,8 @@
 <% end %>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(idv_resend_otp_path, method: :post, **tag_options, &block)
-      end,
+      url: idv_resend_otp_path,
+      method: :post,
       outline: true,
       icon: :loop,
       class: 'margin-bottom-4',
