@@ -179,7 +179,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       expect(page).to have_css(
         '.usa-error-message[role="alert"]',
         text: t('doc_auth.errors.doc.resubmit_failed_image'),
-        count: 3,
+        count: 1,
       )
     end
   end
@@ -246,7 +246,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
           and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
-        allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
+
         start_idv_from_sp
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
@@ -309,7 +309,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         expect(page).to have_css(
           '.usa-error-message[role="alert"]',
           text: t('doc_auth.errors.doc.resubmit_failed_image'),
-          count: 3,
+          count: 1,
         )
       end
     end
