@@ -333,16 +333,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         context 'LexisNexis InstantVerify passes for residential address and id address' do
           context 'should proof with AAMVA' do
-            let(:id_resolution_that_passed_instant_verify) do
-              id_resolution_that_passed_instant_verify = instance_double(Proofing::Resolution::Result)
-              allow(id_resolution_that_passed_instant_verify).to receive(:success?).and_return(true)
-              id_resolution_that_passed_instant_verify
-            end
-
             let(:residential_resolution_that_passed_instant_verify) do
-              residential_resolution_that_passed_instant_verify = instance_double(Proofing::Resolution::Result)
-              allow(residential_resolution_that_passed_instant_verify).to receive(:success?).and_return(true)
-              residential_resolution_that_passed_instant_verify
+              instance_double(Proofing::Resolution::Result, success?: true)
             end
 
             before do
