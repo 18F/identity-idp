@@ -339,6 +339,7 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
+  const selfieAttempts = useRef(0);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
   const [imageCaptureText, setImageCaptureText] = useState('');
@@ -393,6 +394,7 @@ function AcuantCapture(
     const enhancedPayload = {
       ...payload,
       captureAttempts,
+      selfie_attempts: selfieAttempts.current,
       acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
       liveness_checking_required: isSelfieCaptureEnabled,
     };
@@ -437,11 +439,15 @@ function AcuantCapture(
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          trackEvent(`IdV: ${name} image clicked`, {
-            source,
-            ...metadata,
-            liveness_checking_required: isSelfieCaptureEnabled,
-          });
+          trackEvent(
+            name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`,
+            {
+              source,
+              ...metadata,
+              liveness_checking_required: isSelfieCaptureEnabled,
+              captureAttempts,
+            },
+          );
         }
 
         return fn(...args);
@@ -517,14 +523,20 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureOpen() {
-    trackEvent('idv_sdk_selfie_image_capture_opened', { captureAttempts });
+    trackEvent('idv_sdk_selfie_image_capture_opened', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
 
     setImageCaptureText('');
     setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {
-    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', { captureAttempts });
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
 
     setImageCaptureText('');
     setIsCapturingEnvironment(false);
@@ -538,7 +550,11 @@ function AcuantCapture(
       failedImageResubmission: false,
     });
 
-    trackEvent('idv_selfie_image_added', { captureAttempts });
+    trackEvent('idv_selfie_image_added', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+      extra: { here: true },
+    });
 
     onChangeAndResetError(image, analyticsPayload);
     onResetFailedCaptureAttempts();
@@ -550,6 +566,7 @@ function AcuantCapture(
       sdk_error_code: error.code,
       sdk_error_message: error.message,
       captureAttempts,
+      selfie_attempts: selfieAttempts.current,
     });
 
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
@@ -611,6 +628,7 @@ function AcuantCapture(
       fingerprint: null,
       failedImageResubmission: false,
       liveness_checking_required: false,
+      selfie_attempts: selfieAttempts.current,
     });
 
     trackEvent(
@@ -683,6 +701,10 @@ function AcuantCapture(
     setImageCaptureText(text);
   }
 
+  function onSelfieTaken() {
+    selfieAttempts.current += 1;
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -709,6 +731,7 @@ function AcuantCapture(
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
           onImageCaptureFeedback={onImageCaptureFeedback}
+          onSelfieTaken={onSelfieTaken}
         >
           <FullScreen
             ref={fullScreenRef}

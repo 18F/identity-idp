@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::SelfieConcern do
   let(:face_error_message) { '' }
-  let(:portait_info) do
+  let(:portrait_info) do
     {
       FaceErrorMessage: face_error_message,
     }
@@ -15,7 +15,7 @@ RSpec.describe DocAuth::SelfieConcern do
       def initialize(portrait_match_results)
         @portrait_match_results = portrait_match_results
       end
-    end.new(portait_info)
+    end.new(portrait_info)
   end
 
   describe '#selfie_live?' do

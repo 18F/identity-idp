@@ -31,12 +31,12 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     return this.getAttribute('recaptcha-enterprise') === 'true';
   }
 
-  get recaptchaClient(): ReCaptchaV2.ReCaptcha {
+  get recaptchaClient(): ReCaptchaV2.ReCaptcha | undefined {
     if (this.isRecaptchaEnterprise) {
-      return grecaptcha.enterprise;
+      return globalThis.grecaptcha?.enterprise;
     }
 
-    return grecaptcha;
+    return globalThis.grecaptcha;
   }
 
   submit() {
@@ -44,16 +44,16 @@ class CaptchaSubmitButtonElement extends HTMLElement {
   }
 
   invokeChallenge() {
-    this.recaptchaClient.ready(async () => {
+    this.recaptchaClient!.ready(async () => {
       const { recaptchaSiteKey: siteKey, recaptchaAction: action } = this;
-      const token = await this.recaptchaClient.execute(siteKey!, { action });
+      const token = await this.recaptchaClient!.execute(siteKey!, { action });
       this.tokenInput.value = token;
       this.submit();
     });
   }
 
   shouldInvokeChallenge(): boolean {
-    return !!this.recaptchaSiteKey;
+    return !!(this.recaptchaSiteKey && this.recaptchaClient);
   }
 
   handleFormSubmit = (event: SubmitEvent) => {

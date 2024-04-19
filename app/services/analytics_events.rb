@@ -763,6 +763,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
+  # @param [Number] captureAttempts count of image capturing attempts
   # @param [String] liveness_checking_required Whether or not the selfie is required
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
@@ -771,6 +772,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    captureAttempts:,
     liveness_checking_required:,
     **extra
   )
@@ -783,6 +785,7 @@ module AnalyticsEvents
       source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
@@ -1529,6 +1532,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
+  # @param [Number] captureAttempts count of image capturing attempts
   # @param [Boolean] liveness_checking_required
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
@@ -1537,6 +1541,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    captureAttempts:,
     liveness_checking_required: nil,
     **extra
   )
@@ -1549,6 +1554,7 @@ module AnalyticsEvents
       source: source,
       use_alternate_sdk: use_alternate_sdk,
       liveness_checking_required: liveness_checking_required,
+      captureAttempts: captureAttempts,
       **extra,
     )
   end
@@ -3211,13 +3217,15 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_closed_without_photo(acuant_version:, captureAttempts: nil,
-                                                        **extra)
+                                                        selfie_attempts: nil, **extra)
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3231,12 +3239,14 @@ module AnalyticsEvents
   # @param [String] sdk_error_message SDK message for the error encountered
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
     acuant_version:,
     sdk_error_code:,
     sdk_error_message:,
     captureAttempts: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
@@ -3245,6 +3255,7 @@ module AnalyticsEvents
       sdk_error_code: sdk_error_code,
       sdk_error_message: sdk_error_message,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3253,16 +3264,19 @@ module AnalyticsEvents
   # User opened the SDK to take a selfie
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_opened(
     acuant_version:,
     captureAttempts: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_opened,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3272,6 +3286,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -3285,6 +3300,7 @@ module AnalyticsEvents
   def idv_selfie_image_added(
     acuant_version:,
     captureAttempts:,
+    selfie_attempts:,
     failedImageResubmission:,
     fingerprint:,
     flow_path:,
@@ -3300,6 +3316,7 @@ module AnalyticsEvents
       :idv_selfie_image_added,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
       flow_path: flow_path,
@@ -3321,6 +3338,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
+  # @param [Number] captureAttempts
   # @param [Boolean] liveness_checking_required
   # @param [Hash,nil] proofing_components User's proofing components.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
@@ -3332,6 +3350,7 @@ module AnalyticsEvents
     isDrop:,
     source:,
     use_alternate_sdk:,
+    captureAttempts:,
     liveness_checking_required: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -3346,6 +3365,7 @@ module AnalyticsEvents
       isDrop: isDrop,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
+      captureAttempts: captureAttempts,
       liveness_checking_required: liveness_checking_required,
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,
@@ -5121,6 +5141,14 @@ module AnalyticsEvents
     track_event(
       'User marked authenticated',
       authentication_type: authentication_type,
+      **extra,
+    )
+  end
+
+  # Tracks when the user is notified their password is compromised
+  def user_password_compromised_visited(**extra)
+    track_event(
+      :user_password_compromised_visited,
       **extra,
     )
   end

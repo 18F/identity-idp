@@ -294,13 +294,13 @@ Rails.application.routes.draw do
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
     get '/user_please_call' => 'users/please_call#show'
+    get '/user_password_compromised' => 'users/password_compromised#show'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
         as: :sign_up_create_email_confirmation
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
-    get '/sign_up/enter_email/resend' => redirect('/sign_up/enter_email')
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
@@ -389,14 +389,22 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      get '/in_person_proofing/address' => 'in_person/address#show'
-      put '/in_person_proofing/address' => 'in_person/address#update'
+      # DEPRECATION NOTICE
+      # Usage of the /in_person_proofing/address routes is deprecated.
+      # Use the /in_person/address routes instead.
+      #
+      # These have been left in temporarily to prevent any impact to users
+      # during the deprecation process.
+      get '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
+      put '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/address' => 'in_person/address#show'
+      put '/in_person/address' => 'in_person/address#update'
       get '/in_person/ssn' => 'in_person/ssn#show'
       put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
