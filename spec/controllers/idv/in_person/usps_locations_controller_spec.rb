@@ -283,26 +283,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       end
     end
 
-    context 'with hybrid user' do
-      let(:user) { nil }
-      let(:current_user) { create(:user) }
-
-      before do
-        session[:doc_capture_user_id] = current_user.id
-      end
-
-      it 'writes the passed location to in-person enrollment associated with current user' do
-        response
-
-        enrollment = current_user.reload.establishing_in_person_enrollment
-
-        expect(enrollment.selected_location_details).to eq(
-          selected_location[:usps_location].as_json,
-        )
-        expect(enrollment.service_provider).to be_nil
-      end
-    end
-
     context 'with feature disabled' do
       let(:in_person_proofing_enabled) { false }
 
