@@ -317,7 +317,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             submit_images
             message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
-            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
               t(
                 'idv.warning.attempts_html',
@@ -354,7 +354,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             submit_images
             message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
-            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_poor_quality'))
+            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
               t(
                 'idv.warning.attempts_html',
@@ -431,7 +431,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             submit_images
             message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
-            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
               t(
                 'idv.warning.attempts_html',
