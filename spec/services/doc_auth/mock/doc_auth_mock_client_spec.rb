@@ -418,7 +418,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           )
 
           errors = post_images_response.errors
-          expect(errors.keys).to contain_exactly(:general, :back, :front, :hints, :selfie)
+          expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
           expect(errors[:selfie]).to contain_exactly(
             DocAuth::Errors::SELFIE_FAILURE,
           )
