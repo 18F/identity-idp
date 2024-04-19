@@ -13,7 +13,6 @@ class ButtonComponent < BaseComponent
               :tag_options
 
   def initialize(
-    action: nil,
     url: nil,
     method: nil,
     icon: nil,
@@ -25,7 +24,6 @@ class ButtonComponent < BaseComponent
     danger: false,
     **tag_options
   )
-    @action = action
     @url = url
     @method = method
     @icon = icon
@@ -66,6 +64,8 @@ class ButtonComponent < BaseComponent
       original_content
     end
   end
+
+  private
 
   def action
     @action ||= begin
