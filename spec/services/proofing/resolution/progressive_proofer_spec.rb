@@ -2,11 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
-  let(:should_proof_state_id) { true }
   let(:ipp_enrollment_in_progress) { false }
-  let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
-  let(:timer) { JobHelpers::Timer.new }
   let(:user) { create(:user, :fully_registered) }
 
   let(:instant_verify_proofing_success) { true }
@@ -107,10 +104,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       instance.proof(
         applicant_pii: applicant_pii,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-        request_ip: request_ip,
-        should_proof_state_id: should_proof_state_id,
+        request_ip: Faker::Internet.ip_v4_address,
+        should_proof_state_id: true,
         threatmetrix_session_id: threatmetrix_session_id,
-        timer: timer,
+        timer: JobHelpers::Timer.new,
         user_email: user.confirmed_email_addresses.first.email,
       )
     end
