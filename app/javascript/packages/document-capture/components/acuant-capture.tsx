@@ -708,7 +708,7 @@ function AcuantCapture(
   function onImageCaptureInitialized() {
     trackEvent('idv_sdk_selfie_image_capture_initialized', {
       captureAttempts,
-      selfie_attemps: selfieAttempts.current,
+      selfie_attempts: selfieAttempts.current,
     });
   }
 
