@@ -398,8 +398,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'LexisNexis InstantVerify passes for residential address' do
+          let(:instant_verify_proofer_result) { residential_address_proof }
+
           before do
-            allow(instant_verify_proofer).to receive(:proof).and_return(residential_address_proof)
             allow(residential_address_proof).to receive(:success?).and_return(true)
           end
 
@@ -435,11 +436,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'LexisNexis InstantVerify fails for residential address' do
+          let(:instant_verify_proofer_result) { residential_address_proof }
+
           before do
             allow(instance).to receive(:proof_residential_address_if_needed).
-              and_return(residential_address_proof)
-            allow(instant_verify_proofer).to receive(:proof).
-              with(hash_including(residential_address)).
               and_return(residential_address_proof)
             allow(residential_address_proof).to receive(:success?).
               and_return(false)
