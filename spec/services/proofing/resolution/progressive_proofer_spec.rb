@@ -4,7 +4,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
   let(:ipp_enrollment_in_progress) { false }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
-  let(:user) { create(:user, :fully_registered) }
 
   let(:instant_verify_proofing_success) { true }
   let(:instant_verify_proofer_result) do
@@ -108,7 +107,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         should_proof_state_id: true,
         threatmetrix_session_id: threatmetrix_session_id,
         timer: JobHelpers::Timer.new,
-        user_email: user.confirmed_email_addresses.first.email,
+        user_email: Faker::Internet.email,
       )
     end
 
