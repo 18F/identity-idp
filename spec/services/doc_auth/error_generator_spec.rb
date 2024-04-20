@@ -93,10 +93,8 @@ RSpec.describe DocAuth::ErrorGenerator do
           FaceErrorMessage: 'Successful. Liveness: Live',
         }
         output = described_class.new(config).generate_doc_auth_errors(error_info)
-        expect(output.keys).to contain_exactly(:general, :back, :front, :selfie, :hints)
+        expect(output.keys).to contain_exactly(:general, :selfie, :hints)
         expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
-        expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
-        expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
         expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
         expect(output[:hints]).to eq(false)
       end
@@ -448,10 +446,8 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general, :front, :back, :hints, :selfie)
+      expect(output.keys).to contain_exactly(:general, :hints, :selfie)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
-      expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
       expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
       expect(output[:hints]).to eq(false)
     end
@@ -508,10 +504,8 @@ RSpec.describe DocAuth::ErrorGenerator do
       }
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
-      expect(output.keys).to contain_exactly(:general, :front, :back, :hints, :selfie)
+      expect(output.keys).to contain_exactly(:general, :hints, :selfie)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
-      expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
       expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
       expect(output[:hints]).to eq(false)
     end
@@ -530,10 +524,8 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(warn_notifier).to receive(:call).
         with(hash_including(:response_info, :message)).once
       output = described_class.new(config).generate_doc_auth_errors(error_info)
-      expect(output.keys).to contain_exactly(:general, :front, :back, :hints, :selfie)
+      expect(output.keys).to contain_exactly(:general, :hints, :selfie)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
-      expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
       expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
       expect(output[:hints]).to eq(false)
     end
