@@ -49,7 +49,7 @@ module RememberDeviceConcern
 
   def revoke_remember_device(user)
     user.update!(
-      remember_device_revoked_at: Time.zone.now
+      remember_device_revoked_at: Time.zone.now,
     )
   end
 
