@@ -3264,7 +3264,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
-  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_initialized(
     acuant_version:,
     captureAttempts: nil,
