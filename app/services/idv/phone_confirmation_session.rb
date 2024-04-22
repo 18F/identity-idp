@@ -18,7 +18,7 @@ module Idv
       end
     end
 
-    def initialize(code:, phone:, sent_at:, delivery_method:, user:)
+    def initialize(code:, phone:, sent_at:, delivery_method:, user: nil)
       @code = code
       @phone = phone
       @sent_at = sent_at
@@ -73,7 +73,7 @@ module Idv
         phone: phone,
         sent_at: sent_at.to_i,
         delivery_method: delivery_method,
-        user: user.id,
+        user: user&.id,
       }
     end
 
@@ -83,7 +83,7 @@ module Idv
         phone: hash[:phone],
         sent_at: Time.zone.at(hash[:sent_at]),
         delivery_method: hash[:delivery_method].to_sym,
-        user: User.find(hash[:user]),
+        user: hash[:user].nil? ? nil : User.find(hash[:user]),
       )
     end
   end

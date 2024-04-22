@@ -10,6 +10,7 @@ RSpec.describe Idv::ResendOtpController do
     Idv::PhoneConfirmationSession.start(
       phone: phone,
       delivery_method: delivery_method,
+      user: user,
     )
   end
 

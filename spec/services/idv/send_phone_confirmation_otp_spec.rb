@@ -11,6 +11,7 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
       phone: phone,
       sent_at: Time.zone.now,
       delivery_method: delivery_preference,
+      user: user,
     )
   end
   let(:idv_session) do
