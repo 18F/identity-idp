@@ -271,6 +271,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
   describe 'check_phone_submission_limit' do
     before do
       @user = create(:user)
+      @user2 = create(:user)
       @unconfirmed_phone = '+1 (202) 555-1213'
     end
     it 'rate limits use of phone by fingerprint' do
@@ -281,6 +282,8 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
         IdentityConfig.store.phone_submissions_per_fingerprint_limit.times do
           post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
         end
+
+        expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
 
         timeout = distance_of_time_in_words(
           RateLimiter.attempt_window_in_minutes(:phone_submissions).minutes,
@@ -293,7 +296,25 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
           ),
         )
         expect(response).to redirect_to root_path
-        expect(@user.second_factor_locked_at).to be_nil
+      end
+
+      sign_in_before_2fa(@user2)
+      freeze_time do
+        post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
+
+        expect(@user2.reload.second_factor_locked_at).to eq Time.zone.now
+
+        timeout = distance_of_time_in_words(
+          RateLimiter.attempt_window_in_minutes(:phone_submissions).minutes,
+        )
+
+        expect(flash[:error]).to eq(
+          I18n.t(
+            'errors.messages.phone_confirmation_limited',
+            timeout: timeout,
+          ),
+        )
+        expect(response).to redirect_to root_path
       end
     end
   end
