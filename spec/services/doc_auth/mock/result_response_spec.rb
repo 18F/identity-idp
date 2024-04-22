@@ -43,6 +43,9 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           state_id_number: '111111111'
           state_id_jurisdiction: ND
           state_id_type: drivers_license
+          state_id_expiration: '2089-12-31'
+          state_id_issued: '2009-12-31'
+          issuing_country_code: 'CA'
       YAML
     end
 
@@ -63,6 +66,9 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         state_id_number: '111111111',
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
+        state_id_expiration: '2089-12-31',
+        state_id_issued: '2009-12-31',
+        issuing_country_code: 'CA',
       )
       expect(response.attention_with_barcode?).to eq(false)
     end
@@ -125,6 +131,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       <<~YAML
         document:
           first_name: Susan
+          last_name: null
         failed_alerts:
           - name: 2D Barcode Read
             result: Attention
@@ -135,7 +142,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({ first_name: 'Susan' })
+      expect(response.pii_from_doc).to include(first_name: 'Susan', last_name: nil)
       expect(response.attention_with_barcode?).to eq(true)
     end
   end
@@ -261,7 +268,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     let(:input) do
       <<~YAML
         document:
-          type: license
           first_name: Susan
           last_name: Smith
           middle_name: Q
@@ -275,6 +281,9 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           state_id_number: '123456789'
           state_id_type: drivers_license
           state_id_jurisdiction: 'NY'
+          state_id_expiration: '2089-12-31'
+          state_id_issued: '2009-12-31'
+          issuing_country_code: 'CA'
       YAML
     end
 
@@ -297,6 +306,9 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         dob: '1938-10-06',
         state_id_type: 'drivers_license',
         type: 'license',
+        state_id_expiration: '2089-12-31',
+        state_id_issued: '2009-12-31',
+        issuing_country_code: 'CA',
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
@@ -308,6 +320,47 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.doc_auth_success?).to eq(true)
       expect(response.selfie_status).to eq(:not_processed)
+    end
+  end
+
+  context 'with a yaml file that does not contain all PII fields' do
+    subject(:response) do
+      config = DocAuth::Mock::Config.new(
+        {
+          dpi_threshold: 290,
+          sharpness_threshold: 40,
+          glare_threshold: 40,
+        },
+      )
+      described_class.new(input, config)
+    end
+
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Susan
+      YAML
+    end
+
+    it 'returns default values for the missing fields' do
+      expect(response.success?).to eq(true)
+      expect(response.pii_from_doc).to eq(
+        first_name: 'Susan',
+        middle_name: nil,
+        last_name: 'MCFAKERSON',
+        address1: '1 FAKE RD',
+        address2: nil,
+        city: 'GREAT FALLS',
+        state: 'MT',
+        zipcode: '59010',
+        dob: '1938-10-06',
+        state_id_number: '1111111111111',
+        state_id_jurisdiction: 'ND',
+        state_id_type: 'drivers_license',
+        state_id_expiration: '2099-12-31',
+        state_id_issued: '2019-12-31',
+        issuing_country_code: 'US',
+      )
     end
   end
 
@@ -383,6 +436,9 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           state_id_number: '111111111'
           state_id_jurisdiction: ND
           state_id_type: drivers_license
+          state_id_expiration: '2089-12-31'
+          state_id_issued: '2009-12-31'
+          issuing_country_code: 'CA'
       YAML
     end
 
@@ -403,6 +459,9 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         state_id_number: '111111111',
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
+        state_id_expiration: '2089-12-31',
+        state_id_issued: '2009-12-31',
+        issuing_country_code: 'CA',
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
@@ -557,7 +616,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
             HorizontalResolution: 300
             VerticalResolution: 300,
             SharpnessMetric: 50,
-            GlareMetric: 50   
+            GlareMetric: 50
       YAML
     end
     it 'returns doc type as not supported and generate errors for doc type' do
