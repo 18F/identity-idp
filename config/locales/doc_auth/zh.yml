@@ -134,7 +134,7 @@ zh:
       verify_at_post_office: 去邮局验证身份
       verify_identity: 验证你的身份
       verify_online: 在网上验证你的身份
-      welcome: 开始验证你的身份
+      welcome: 现在我们来为 %{app_name} 验证你的身份
     hybrid_flow_warning:
       explanation_html:  你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。 
       explanation_non_sp_html:  你在使用 <strong>%{app_name}</strong> 验证身份。 
@@ -152,7 +152,7 @@ zh:
       exit:
         with_sp:  退出 %{app_name} 并返回 %{app_name} 
         without_sp: 退出身份验证并到你的账户页面
-      getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
+      getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。  了解更多有关验证你身份的信息 %{link_html}'
       getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
       how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
@@ -191,20 +191,20 @@ zh:
       verify_online_link_text: 对网上验证获得更多了解
       you_entered: '你输入了：'
     instructions:
-      bullet1: 州政府颁发的身份证件
-      bullet2: 社会保障号码
-      bullet3: 电话号码或家庭地址
-      bullet4: Re-enter your %{app_name} password
+      bullet1: 拍你身份证件的照片
+      bullet2: 输入你的社会保障号码
+      bullet3: 与你电话号码匹配
+      bullet4: 重新输入你 %{app_name} 密码
       consent:  在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。 
-      getting_started: 'You’ll need to:'
+      getting_started: '你需要:'
       learn_more: 了解有关我们隐私和安全措施的更多信息。
       switch_back: 然后再返回你的电脑完成验证身份。
       switch_back_image: 从手机指向电脑的箭头
       test_ssn:  在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。 
-      text1: 你的身份证件不能是过期的。
-      text2: 你不需要有卡。
-      text3: Your phone number matches you to your personal information. After you match, we’ll send you a code.
-      text4: Your password saves and encrypts your personal information.
+      text1: 使用你的驾照或州政府颁发的身份证件卡。我们不接受其他形式的身份证件。
+      text2: 不需要你社会保障卡实体。
+      text3: 你的电话号码将你与你个人信息匹配匹配后我们会给你发个密码。
+      text4: 你的密码对你个人信息进行存储并加密。
     tips:
       document_capture_hint: 必须是 JPG 或 PNG
       document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
