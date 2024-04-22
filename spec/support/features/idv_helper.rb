@@ -144,18 +144,24 @@ module IdvHelper
     verified_within: nil,
     biometric_comparison_required: nil
   )
-    visit openid_connect_authorize_path(
-      client_id: client_id,
+    params = {
+      client_id:,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
       redirect_uri: sp_oidc_redirect_uri,
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
-      verified_within: verified_within,
-      biometric_comparison_required: biometric_comparison_required,
-    )
+      nonce:,
+      verified_within:,
+    }
+
+    if biometric_comparison_required
+      params[:vtr] = ['C1.P1.Pb'].to_json
+    else
+      params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+    end
+
+    visit openid_connect_authorize_path(params)
   end
 
   def visit_idp_from_oidc_sp_with_loa3

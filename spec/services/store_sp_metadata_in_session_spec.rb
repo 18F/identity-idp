@@ -22,13 +22,11 @@ RSpec.describe StoreSpMetadataInSession do
       let(:requested_attributes) { %w[email] }
       let(:request_acr) { nil }
       let(:request_vtr) { nil }
-      let(:biometric_comparison_required) { false }
       let(:sp_request) do
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = issuer
           sp_request.url = request_url
           sp_request.requested_attributes = requested_attributes
-          sp_request.biometric_comparison_required = biometric_comparison_required
           sp_request.acr_values = request_acr
           sp_request.vtr = request_vtr
         end
@@ -113,7 +111,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_url: request_url,
               request_id: request_id,
               requested_attributes: requested_attributes,
-              biometric_comparison_required: true,
+              biometric_comparison_required: false,
               vtr: request_vtr,
             },
           )

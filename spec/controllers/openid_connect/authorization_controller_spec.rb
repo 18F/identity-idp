@@ -417,18 +417,18 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               context 'selfie check was not performed' do
-                it 'redirects to have the user verify their account' do
+                it 'does not redirect to have the user verify their account' do
                   action
-                  expect(controller).to redirect_to(idv_url)
+                  expect(controller).not_to redirect_to(idv_url)
                 end
               end
 
               context 'selfie capture not enabled, biometric_comparison_required requested by sp' do
                 let(:selfie_capture_enabled) { false }
-                it 'returns status not_acceptable' do
+                it 'does not returnstatus not_acceptable' do
                   action
 
-                  expect(response.status).to eq(406)
+                  expect(response.status).not_to eq(406)
                 end
               end
 
@@ -551,12 +551,12 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   params[:biometric_comparison_required] = 'true'
                 end
 
-                it 'redirects to gpo enter code page' do
+                it 'does not redirect to gpo enter code page' do
                   create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
 
                   action
 
-                  expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
+                  expect(controller).not_to redirect_to(idv_verify_by_mail_enter_code_url)
                 end
               end
 
@@ -1325,8 +1325,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             context 'because the environment is not set to "prod"' do
               let(:env) { 'test' }
 
-              it 'sets the session :biometric_comparison_required value to true' do
-                expect(session[:sp][:biometric_comparison_required]).to eq(true)
+              it 'does not set the session :biometric_comparison_required value to true' do
+                expect(session[:sp][:biometric_comparison_required]).not_to be_truthy
               end
             end
           end
@@ -1337,12 +1337,12 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           context 'in production' do
             let(:env) { 'prod' }
 
-            it 'does not set the :sp value' do
-              expect(session).not_to include(:sp)
+            it 'sets the :sp value' do
+              expect(session).to include(:sp)
             end
 
-            it 'renders the unacceptable page' do
-              expect(controller).to render_template('pages/not_acceptable')
+            it 'does not render the unacceptable page' do
+              expect(controller).not_to render_template('pages/not_acceptable')
             end
           end
         end
