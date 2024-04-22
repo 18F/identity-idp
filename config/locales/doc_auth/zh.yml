@@ -83,7 +83,7 @@ zh:
       upload_error: 抱歉，我们这边出错了。
     exit_survey:
       content_html:  <Strong>如果你没有驾照或州政府颁发的身份证件，则不能继续使用 %{app_name}。</strong>请 <a>退出 %{app_name} 并联系 %{sp_name}</a> 来了解你该怎么办。 
-      content_nosp_html:  <Strong>如果你没有驾照或州政府颁发的身份证件，则不能继续使用 %{app_name}。</strong><a>取消在 %{app_name} 验证身份</a> ，等你准备好后再重新开始验证过程。 
+      content_nosp_html: <strong>如果你没有有效的驾照或州颁发的身份证件卡，就不能使用 %{app_name}</strong> 进行身份验证。请联系我们合作伙伴机构的帮助中心来了解你该怎么办。
       header: 没有驾照或州政府颁发的身份证件？
       optional:
         button:  提交并退出 %{app_name} 
@@ -181,7 +181,7 @@ zh:
       stepping_up_html: Verify your identity again and take a photo of yourself to access this service. %{link_html}
       tag: 建议
       upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
-      upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
+      upload_from_phone: 如果你没有有效的驾照或州颁发的身份证件卡，就不能使用 Login.gov 进行身份验证。请联系我们合作伙伴机构的帮助中心来了解你该怎么办。
       verify_at_post_office_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
       verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与邮件去亲身验证身份。
       verify_at_post_office_link_text: 对亲身验证获得更多了解
