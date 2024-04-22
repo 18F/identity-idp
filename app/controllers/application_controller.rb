@@ -72,17 +72,7 @@ class ApplicationController < ActionController::Base
   end
 
   def analytics_user
-    hybrid_user || AnonymousUser.new
-  end
-
-  def hybrid_user
-    return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_user?
-
-    current_user
-  end
-
-  def hybrid_user?
-    session[:doc_capture_user_id].present?
+    current_user || AnonymousUser.new
   end
 
   def irs_attempts_api_tracker
