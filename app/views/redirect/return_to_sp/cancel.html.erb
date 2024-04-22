@@ -22,20 +22,19 @@
 
   <div class="grid-row">
     <div class="grid-col-6">
-      <%= link_to(
-            sign_up_completed_path,
-            method: :get,
-            class: 'usa-button usa-button--wide usa-button--big margin-bottom-2 margin-top-3',
-          ) do %>
-        <%= t('sign_up.login_cancel.keep_going') %>
-      <% end %>
+      <%= render ButtonComponent.new(
+            url: sign_up_completed_path,
+            big: true,
+            wide: true,
+            class: 'margin-bottom-2 margin-top-3',
+          ).with_content(t('sign_up.login_cancel.keep_going')) %>
 
-      <%= link_to(
-            @redirect_url,
-            class: 'usa-button usa-button--wide usa-button--outline usa-button--big',
-          ) do %>
-        <%= t('sign_up.login_cancel.exit', app_name: APP_NAME) %>
-      <% end %>
+      <%= render ButtonComponent.new(
+            url: @redirect_url,
+            big: true,
+            wide: true,
+            outline: true,
+          ).with_content(t('sign_up.login_cancel.exit', app_name: APP_NAME)) %>
     </div>
   </div>
  
