@@ -568,6 +568,10 @@ function AcuantCapture(
       selfie_attempts: selfieAttempts.current,
     });
 
+    if (fullScreenRef.current?.focusTrap) {
+      suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+    }
+
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
     // previously failed for any reason, including declined permission. Since the cookie
     // never expires, and since we want to re-prompt even if the user had previously
