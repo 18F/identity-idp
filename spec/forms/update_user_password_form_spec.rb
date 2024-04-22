@@ -33,9 +33,15 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           )],
         }
 
-        expect(UpdateUserPhoneConfiguration).not_to receive(:update!)
         expect(UserProfilesEncryptor).not_to receive(:new)
-        expect(subject.submit(params).to_h).to include(
+        user.save!
+
+        result = nil
+        expect do
+          result = subject.submit(params).to_h
+        end.to_not(change { user.reload.encrypted_password_digest })
+
+        expect(result).to include(
           success: false,
           errors: errors,
           error_details: hash_including(:password, :password_confirmation),
