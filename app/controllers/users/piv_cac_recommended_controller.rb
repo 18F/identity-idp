@@ -16,7 +16,7 @@ module Users
     end
 
     def confirm
-      curret_user.update!(piv_cac_recommended_dismissed_at: Time.zone.now)
+      current_user.update!(piv_cac_recommended_dismissed_at: Time.zone.now)
       analytics.piv_cac_recommended(action: :accepted)
       set_mfa_selections(['piv_cac'])
       redirect_to first_mfa_selection_path
