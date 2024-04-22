@@ -17,6 +17,7 @@ RSpec.describe Idv::PersonalKeyController do
       state_id_issued
       state_id_number
       state_id_type
+      issuing_country_code
     ]
 
     profile_pii_pairs.each do |profile, pii|
