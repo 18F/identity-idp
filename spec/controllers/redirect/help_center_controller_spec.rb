@@ -71,6 +71,33 @@ RSpec.describe Redirect::HelpCenterController do
           )
         end
       end
+
+      context 'with service partner' do
+        let(:category) { 'verify-your-identity' }
+        let(:article) { 'accepted-state-issued-identification' }
+        let(:service_provider) do
+          create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_sp')
+        end
+        let(:params) { super().merge(category:, article:) }
+        let(:redirect_url) do
+          MarketingSite.help_center_article_url(
+            category:, article:,
+            service_provider_issuer: service_provider.issuer
+          )
+        end
+
+        before do
+          allow(controller).to receive(:current_sp).and_return(service_provider)
+        end
+
+        it 'redirects to the help center article and logs' do
+          expect(response).to redirect_to(redirect_url)
+          expect(@analytics).to have_logged_event(
+            'External Redirect',
+            hash_including(redirect_url: redirect_url),
+          )
+        end
+      end
     end
   end
 end
