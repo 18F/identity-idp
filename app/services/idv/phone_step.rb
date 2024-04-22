@@ -143,6 +143,7 @@ module Idv
       idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.start(
         phone: PhoneFormatter.format(applicant[:phone]),
         delivery_method: otp_delivery_preference,
+        user: idv_session.current_user, # needed for 10-digit A/B test
       )
     end
 

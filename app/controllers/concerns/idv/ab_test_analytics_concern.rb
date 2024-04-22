@@ -18,6 +18,11 @@ module Idv
         buckets = buckets.merge(lniv_args)
       end
 
+      buckets.merge(
+        ab_testing_idv_ten_digit_otp_bucket:
+                               AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid),
+      )
+
       buckets.merge(acuant_sdk_ab_test_analytics_args)
     end
   end
