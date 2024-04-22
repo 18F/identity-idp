@@ -191,9 +191,9 @@ zh:
       verify_online_link_text: 对网上验证获得更多了解
       you_entered: '你输入了：'
     instructions:
-      bullet1: 拍张自己的照片和您ID的照片
+      bullet1: 带上驾照或州身份证件
       bullet2: 输入您的社会安全号码
-      bullet3: 与您的电话号码匹配
+      bullet3: 与你电话号码匹配
       bullet4: 重新输入您的 %{app_name} 密码
       consent:  在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。 
       getting_started: '您需要:'
@@ -201,9 +201,9 @@ zh:
       switch_back: 然后再返回你的电脑完成验证身份。
       switch_back_image: 从手机指向电脑的箭头
       test_ssn:  在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。 
-      text1: 使用你的驾照或州政府颁发的身份证件卡。我们不接受其他形式的身份证件。
+      text1: 其他形式的身份证件不被接受。我们要查看你是身份证件上的人。
       text2: 不需要你社会保障卡实体。
-      text3: 你的电话号码将你与你个人信息匹配匹配后我们会给你发个密码。
+      text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
       text4: 你的密码对你个人信息进行存储并加密。
     tips:
       document_capture_hint: 必须是 JPG 或 PNG
