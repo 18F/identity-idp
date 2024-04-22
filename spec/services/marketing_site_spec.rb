@@ -157,7 +157,13 @@ RSpec.describe MarketingSite do
     let(:category) {}
     let(:article) {}
     let(:article_anchor) {}
-    let(:url) { MarketingSite.help_center_article_url(category: category, article: article) }
+    let(:service_provider_issuer) { nil }
+    let(:url) do
+      MarketingSite.help_center_article_url(
+        category: category, article: article,
+        service_provider_issuer: service_provider_issuer
+      )
+    end
 
     context 'with invalid article' do
       let(:category) { 'foo' }
@@ -194,6 +200,18 @@ RSpec.describe MarketingSite do
       it 'returns article URL' do
         expect(url).to eq(
           'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/#test-anchor-url',
+        )
+      end
+    end
+
+    context 'with service provider issuer' do
+      let(:category) { 'verify-your-identity' }
+      let(:article) { 'accepted-state-issued-identification' }
+      let(:service_provider_issuer) { 'urn:gov:gsa:openidconnect:sp:test_sp' }
+
+      it 'appends the service provider issuer as a query parameter' do
+        expect(url).to eq(
+          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/?sp=urn:gov:gsa:openidconnect:sp:test_sp',
         )
       end
     end
