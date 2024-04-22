@@ -9,11 +9,6 @@ class ForgetAllBrowsers
   end
 
   def call
-    UpdateUser.new(
-      user: user,
-      attributes: {
-        remember_device_revoked_at: remember_device_revoked_at,
-      },
-    ).call
+    user.update!(remember_device_revoked_at: remember_device_revoked_at)
   end
 end

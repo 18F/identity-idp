@@ -10,11 +10,8 @@ RSpec.shared_examples 'an otp delivery preference form' do
 
   context 'voice' do
     it 'is valid when supported for the phone' do
-      update_user = instance_double(UpdateUser)
-      attributes = { otp_delivery_preference: 'voice' }
-      allow(UpdateUser).to receive(:new).with(user: user, attributes: attributes).
-        and_return(update_user)
-      expect(update_user).to receive(:call)
+      expect(UpdateUserPhoneConfiguration).to receive(:update!)
+        .with(user: user, attributes: { otp_delivery_preference: 'voice' })
 
       capabilities = spy(PhoneNumberCapabilities)
       allow(PhoneNumberCapabilities).to receive(:new).with(phone).and_return(capabilities)
@@ -26,11 +23,7 @@ RSpec.shared_examples 'an otp delivery preference form' do
     end
 
     it 'is invalid when unsupported for the phone' do
-      update_user = instance_double(UpdateUser)
-      attributes = { otp_delivery_preference: 'voice' }
-      allow(UpdateUser).to receive(:new).with(user: user, attributes: attributes).
-        and_return(update_user)
-      expect(update_user).to_not receive(:call)
+      expect(UpdateUserPhoneConfiguration).to_not receive(:update!)
 
       capabilities = spy(PhoneNumberCapabilities)
       allow(PhoneNumberCapabilities).to receive(:new).with(phone).and_return(capabilities)

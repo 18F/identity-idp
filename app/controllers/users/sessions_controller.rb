@@ -221,10 +221,7 @@ module Users
     end
 
     def update_user_password_compromised_checked_at
-      UpdateUser.new(
-        user: current_user,
-        attributes: { password_compromised_checked_at: Time.zone.now },
-      ).call
+      current_user.update!(password_compromised_checked_at: Time.zone.now)
     end
 
     def randomize_check_password?

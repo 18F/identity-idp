@@ -48,10 +48,9 @@ module RememberDeviceConcern
   end
 
   def revoke_remember_device(user)
-    UpdateUser.new(
-      user: user,
-      attributes: { remember_device_revoked_at: Time.zone.now },
-    ).call
+    user.update!(
+      remember_device_revoked_at: Time.zone.now
+    )
   end
 
   private

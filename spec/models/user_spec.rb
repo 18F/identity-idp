@@ -963,7 +963,7 @@ RSpec.describe User do
       context 'user is not already suspended' do
         let(:mock_session_id) { SecureRandom.uuid }
         before do
-          UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
+          user.update!(unique_session_id: mock_session_id)
         end
 
         it 'creates SuspendedEmail records for each email address' do

@@ -16,20 +16,14 @@ module Users
     end
 
     def confirm
-      UpdateUser.new(
-        user: current_user,
-        attributes: { piv_cac_recommended_dismissed_at: Time.zone.now },
-      ).call
+      curret_user.update!(piv_cac_recommended_dismissed_at: Time.zone.now)
       analytics.piv_cac_recommended(action: :accepted)
       set_mfa_selections(['piv_cac'])
       redirect_to first_mfa_selection_path
     end
 
     def skip
-      UpdateUser.new(
-        user: current_user,
-        attributes: { piv_cac_recommended_dismissed_at: Time.zone.now },
-      ).call
+      current_user.update!(piv_cac_recommended_dismissed_at: Time.zone.now)
       analytics.piv_cac_recommended(action: :skipped)
       redirect_to after_sign_in_path_for(current_user)
     end

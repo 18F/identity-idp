@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
-class UpdateUser
+# Updates user phone attributes and creates associated events
+class UpdateUserPhoneConfiguration
+  # Shorthand for .new.call, easier to stub in tests
+  def self.update!(user:, attributes:)
+    new(user:, attributes:).call
+  end
+
   def initialize(user:, attributes:)
     @user = user
     @attributes = attributes
