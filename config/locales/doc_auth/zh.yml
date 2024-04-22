@@ -134,7 +134,7 @@ zh:
       verify_at_post_office: 去邮局验证身份
       verify_identity: 验证你的身份
       verify_online: 在网上验证你的身份
-      welcome: 现在我们来为 %{app_name} 验证你的身份
+      welcome: 让我们来为 %{app_name} 验证您的身份
     hybrid_flow_warning:
       explanation_html:  你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。 
       explanation_non_sp_html:  你在使用 <strong>%{app_name}</strong> 验证身份。 
@@ -178,7 +178,7 @@ zh:
         face_too_small: Face too small
         too_many_faces: Too many faces
       ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
-      stepping_up_html: Verify your identity again and take a photo of yourself to access this service. %{link_html}
+      stepping_up_html: 再次验证您的身份并拍张自己的照片以访问该服务。了解有关验证您身份的更多信息 [[[link]]]
       tag: 建议
       upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
       upload_from_phone: 如果你没有有效的驾照或州颁发的身份证件卡，就不能使用 Login.gov 进行身份验证。请联系我们合作伙伴机构的帮助中心来了解你该怎么办。
@@ -191,12 +191,12 @@ zh:
       verify_online_link_text: 对网上验证获得更多了解
       you_entered: '你输入了：'
     instructions:
-      bullet1: 拍你身份证件的照片
-      bullet2: 输入你的社会保障号码
-      bullet3: 与你电话号码匹配
-      bullet4: 重新输入你 %{app_name} 密码
+      bullet1: 拍张自己的照片和您ID的照片
+      bullet2: 输入您的社会安全号码
+      bullet3: 与您的电话号码匹配
+      bullet4: 重新输入您的 %{app_name} 密码
       consent:  在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。 
-      getting_started: '你需要:'
+      getting_started: '您需要:'
       learn_more: 了解有关我们隐私和安全措施的更多信息。
       switch_back: 然后再返回你的电脑完成验证身份。
       switch_back_image: 从手机指向电脑的箭头
