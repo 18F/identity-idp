@@ -131,4 +131,33 @@ RSpec.describe ButtonComponent, type: :component do
       )
     end
   end
+
+  context 'with url' do
+    let(:url) { '/' }
+    let(:options) { { url: } }
+
+    it 'renders link to url' do
+      expect(rendered).to have_link(content, href: url)
+    end
+
+    context 'with method' do
+      let(:method) { :put }
+      let(:options) { super().merge(method:) }
+
+      it 'renders button to url' do
+        expect(rendered).to have_selector("form[action='#{url}']")
+        expect(rendered).to have_selector("input[name='_method'][value='#{method}']", visible: :all)
+        expect(rendered).to have_selector("button[type='submit']")
+        expect(rendered).to have_text(content)
+      end
+
+      context 'with get method' do
+        let(:method) { :get }
+
+        it 'renders link to url' do
+          expect(rendered).to have_link(content, href: url)
+        end
+      end
+    end
+  end
 end
