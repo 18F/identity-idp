@@ -4,18 +4,15 @@ RSpec.describe RecaptchaValidator do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
-  let(:recaptcha_secret_key_v2) { 'recaptcha_secret_key_v2' }
-  let(:recaptcha_secret_key_v3) { 'recaptcha_secret_key_v3' }
+  let(:recaptcha_secret_key) { 'recaptcha_secret_key' }
 
   subject(:validator) do
     RecaptchaValidator.new(score_threshold:, analytics:, extra_analytics_properties:)
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v2).
-      and_return(recaptcha_secret_key_v2)
-    allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v3).
-      and_return(recaptcha_secret_key_v3)
+    allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
+      and_return(recaptcha_secret_key)
   end
 
   describe '#exempt?' do
@@ -101,7 +98,6 @@ RSpec.describe RecaptchaValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
         )
       end
@@ -130,7 +126,6 @@ RSpec.describe RecaptchaValidator do
               },
               evaluated_as_valid: true,
               score_threshold: score_threshold,
-              recaptcha_version: 3,
               validator_class: 'RecaptchaValidator',
             )
           end
@@ -159,7 +154,6 @@ RSpec.describe RecaptchaValidator do
               },
               evaluated_as_valid: true,
               score_threshold: score_threshold,
-              recaptcha_version: 3,
               validator_class: 'RecaptchaValidator',
             )
           end
@@ -183,7 +177,6 @@ RSpec.describe RecaptchaValidator do
           'reCAPTCHA verify result received',
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
           exception_class: 'Faraday::ConnectionFailed',
         )
@@ -213,7 +206,6 @@ RSpec.describe RecaptchaValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
         )
       end
@@ -242,7 +234,6 @@ RSpec.describe RecaptchaValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
         )
       end
@@ -263,7 +254,6 @@ RSpec.describe RecaptchaValidator do
             },
             evaluated_as_valid: true,
             score_threshold: score_threshold,
-            recaptcha_version: 3,
             validator_class: 'RecaptchaValidator',
             extra: true,
           )
@@ -277,54 +267,10 @@ RSpec.describe RecaptchaValidator do
           valid
         end
       end
-
-      context 'with recaptcha v2' do
-        before do
-          stub_recaptcha_response(
-            body: { success: true, score: },
-            secret: recaptcha_secret_key_v2,
-            token:,
-          )
-        end
-
-        subject(:validator) do
-          RecaptchaValidator.new(recaptcha_version: 2, score_threshold:, analytics:)
-        end
-
-        it { expect(valid).to eq(true) }
-
-        it 'logs analytics of the body' do
-          valid
-
-          expect(analytics).to have_logged_event(
-            'reCAPTCHA verify result received',
-            recaptcha_result: {
-              success: true,
-              score:,
-              errors: [],
-              reasons: [],
-            },
-            evaluated_as_valid: true,
-            score_threshold: score_threshold,
-            recaptcha_version: 2,
-            validator_class: 'RecaptchaValidator',
-          )
-        end
-      end
     end
   end
 
-  context 'with invalid recaptcha_version' do
-    subject(:validator) do
-      RecaptchaValidator.new(recaptcha_version: 4, score_threshold:, analytics:)
-    end
-
-    it 'raises an error during initialization' do
-      expect { validator }.to raise_error(ArgumentError)
-    end
-  end
-
-  def stub_recaptcha_response(body:, secret: recaptcha_secret_key_v3, token: nil)
+  def stub_recaptcha_response(body:, secret: recaptcha_secret_key, token: nil)
     stub_request(:post, RecaptchaValidator::VERIFICATION_ENDPOINT).
       with { |req| req.body == URI.encode_www_form(secret:, response: token) }.
       to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)

@@ -4,7 +4,9 @@ RSpec.describe RecaptchaMockValidator do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:score) { nil }
-  subject(:validator) { RecaptchaMockValidator.new(score_threshold:, analytics:, score:) }
+  subject(:validator) do
+    RecaptchaMockValidator.new(score_threshold:, analytics:, score:)
+  end
 
   around do |example|
     freeze_time { example.run }
@@ -32,7 +34,6 @@ RSpec.describe RecaptchaMockValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
         )
       end
@@ -57,7 +58,6 @@ RSpec.describe RecaptchaMockValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
         )
       end

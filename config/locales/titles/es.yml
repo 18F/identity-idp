@@ -78,7 +78,6 @@ es:
       completion_new_sp: Acabas de iniciar sesión por primera vez
       completion_reverified_consent: Proporciónale tu información actualizada a %{sp}
       confirmation: Continuar para iniciar sesión
-    spam_protection: Protección contra el correo no deseado
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores

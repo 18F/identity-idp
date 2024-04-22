@@ -4639,7 +4639,6 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
-  # @param [String] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -4647,7 +4646,6 @@ module AnalyticsEvents
     validator_class:,
     exception_class:,
     phone_country_code: nil,
-    recaptcha_version: nil,
     **extra
   )
     track_event(
@@ -4659,7 +4657,6 @@ module AnalyticsEvents
         validator_class:,
         exception_class:,
         phone_country_code:,
-        recaptcha_version:,
         **extra,
       }.compact,
     )
