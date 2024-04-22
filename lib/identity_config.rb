@@ -136,6 +136,7 @@ class IdentityConfig
     config.add(:async_wait_timeout_seconds, type: :integer)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
+    config.add(:available_locales, type: :comma_separated_string_list)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)
     config.add(:aws_http_timeout, type: :integer)
