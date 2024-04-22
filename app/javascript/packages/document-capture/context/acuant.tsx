@@ -100,6 +100,22 @@ interface AcuantContextProviderProps {
    */
   passiveLivenessSrc: string | undefined;
   /**
+   * Loaded by AcuantPassiveLivness directly. We load it for caching purposes to speed up the AcuantSelfieCamera startup
+   */
+  faceLandmarkWeightsSrc: string | undefined;
+  /**
+   * Loaded by AcuantPassiveLivness directly. We load it for caching purposes to speed up the AcuantSelfieCamera startup
+   */
+  tinyFaceLandmarkWeightsSrc: string | undefined;
+  /**
+   * Loaded by AcuantPassiveLivness directly. We load it for caching purposes to speed up the AcuantSelfieCamera startup
+   */
+  faceLandmarkModelSrc: string | undefined;
+  /**
+   * Loaded by AcuantPassiveLivness directly. We load it for caching purposes to speed up the AcuantSelfieCamera startup
+   */
+  faceLandmarkShardSrc: string | undefined;
+  /**
    * SDK credentials.
    */
   credentials: string | null;
@@ -214,6 +230,10 @@ function AcuantContextProvider({
   cameraSrc,
   passiveLivenessOpenCVSrc,
   passiveLivenessSrc,
+  faceLandmarkWeightsSrc,
+  tinyFaceLandmarkWeightsSrc,
+  faceLandmarkModelSrc,
+  faceLandmarkShardSrc,
   credentials = null,
   endpoint = null,
   glareThreshold,
@@ -330,6 +350,13 @@ function AcuantContextProvider({
     const passiveLivenessScript = document.createElement('script');
     // Open CV script load. Open CV is required only for passive liveness
     const passiveLivenessOpenCVScript = document.createElement('script');
+    // The following four scripts are used interally by the AcuantPassiveLiveness script
+    // Load them here so they are cached, which greatly reduces the apparent
+    // startup time for the AcuantSelfieCamera on slow networks.
+    const tinyFaceLandmarkWeights = document.createElement('script');
+    const faceLandmarkWeights = document.createElement('script');
+    const faceLandmarkModel = document.createElement('script');
+    const faceLandmarkShard = document.createElement('script');
     if (passiveLivenessSrc) {
       passiveLivenessScript.async = true;
       passiveLivenessScript.src = passiveLivenessSrc;
@@ -337,9 +364,33 @@ function AcuantContextProvider({
       passiveLivenessOpenCVScript.async = true;
       passiveLivenessOpenCVScript.src = passiveLivenessOpenCVSrc;
       passiveLivenessOpenCVScript.onerror = () => setIsError(true);
+      if (tinyFaceLandmarkWeightsSrc) {
+        tinyFaceLandmarkWeights.async = true;
+        tinyFaceLandmarkWeights.src = tinyFaceLandmarkWeightsSrc;
+        tinyFaceLandmarkWeights.onerror = () => setIsError(true);
+      }
+      if (faceLandmarkWeightsSrc) {
+        faceLandmarkWeights.async = true;
+        faceLandmarkWeights.src = faceLandmarkWeightsSrc;
+        faceLandmarkWeights.onerror = () => setIsError(true);
+      }
+      if (faceLandmarkModelSrc) {
+        faceLandmarkModel.async = true;
+        faceLandmarkModel.src = faceLandmarkModelSrc;
+        faceLandmarkModel.onerror = () => setIsError(true);
+      }
+      if (faceLandmarkShardSrc) {
+        faceLandmarkShard.async = true;
+        faceLandmarkShard.src = faceLandmarkShardSrc;
+        faceLandmarkShard.onerror = () => setIsError(true);
+      }
     }
     document.body.appendChild(passiveLivenessScript);
     document.body.appendChild(passiveLivenessOpenCVScript);
+    document.body.appendChild(faceLandmarkWeights);
+    document.body.appendChild(tinyFaceLandmarkWeights);
+    document.body.appendChild(faceLandmarkModel);
+    document.body.appendChild(faceLandmarkShard);
 
     return () => {
       window.acuantConfig = originalAcuantConfig;
@@ -348,6 +399,10 @@ function AcuantContextProvider({
       document.body.removeChild(cameraScript);
       document.body.removeChild(passiveLivenessScript);
       document.body.removeChild(passiveLivenessOpenCVScript);
+      document.body.removeChild(faceLandmarkWeights);
+      document.body.removeChild(tinyFaceLandmarkWeights);
+      document.body.removeChild(faceLandmarkModel);
+      document.body.removeChild(faceLandmarkShard);
     };
   }, []);
 
