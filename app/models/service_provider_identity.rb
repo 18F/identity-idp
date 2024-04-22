@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Joins Users to ServiceProviders
 class ServiceProviderIdentity < ApplicationRecord
   self.table_name = :identities
@@ -16,7 +18,7 @@ class ServiceProviderIdentity < ApplicationRecord
 
   scope :not_deleted, -> { where(deleted_at: nil) }
 
-  CONSENT_EXPIRATION = 1.year
+  CONSENT_EXPIRATION = 1.year.freeze
 
   def deactivate
     update!(session_uuid: nil)

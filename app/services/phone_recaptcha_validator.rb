@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class PhoneRecaptchaValidator
-  RECAPTCHA_ACTION = 'phone_setup'.freeze
+  RECAPTCHA_ACTION = 'phone_setup'
 
   attr_reader :parsed_phone, :validator_class, :validator_args
 
@@ -9,10 +11,6 @@ class PhoneRecaptchaValidator
     @parsed_phone = parsed_phone
     @validator_class = validator_class
     @validator_args = validator_args
-  end
-
-  def self.exempt_countries
-    country_score_overrides.select { |_key, value| !value.positive? }.keys
   end
 
   def self.country_score_overrides

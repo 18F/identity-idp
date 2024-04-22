@@ -34,11 +34,12 @@ es:
       cancel: Sí, cancelar
       confirm: Confirmar
       continue: Continuar
+      continue_ipp: Continúe en persona
+      continue_remote: Continúe en línea
       delete: Borrar
       disable: Borrar
       edit: Editar
       manage: Administrar
-      resend_confirmation: Reenviar instrucciones de confirmación
       send_link: Enviar enlace
       send_one_time_code: Enviar código
       submit:
@@ -131,10 +132,18 @@ es:
       nickname_hint: Si agrega más dispositivos para desbloquear con la cara o con la
         huella digital, podrá distinguirlos.
     webauthn_setup:
-      continue: Continuar
-      intro_html: '<p>Añada una clave de seguridad que cumpla el estándar FIDO como
-        método de autenticación. Puede añadir tantas claves de seguridad como
-        desee. Para empezar, primero asigne un apodo a su clave de
-        seguridad.</p>'
+      intro: Utilice su clave de seguridad física para añadir un nivel adicional de
+        protección a su cuenta de %{app_name} y evitar accesos no autorizados.
+      learn_more: Obtenga información sobre claves de seguridad
       nickname: Apodo clave de seguridad
       saving: Guardando sus credenciales …
+      set_up: Configure su clave de seguridad
+      step_1: Darle un apodo
+      step_1a: Si añade más de una llave de seguridad, sabrá cuál es cuál.
+      step_2: Inserte una clave de seguridad en su dispositivo
+      step_2_image_alt: Una llave de seguridad insertada en el lado derecho de una
+        computadora portátil
+      step_2_image_mobile_alt: Una llave de seguridad insertada en la parte inferior de un celular
+      step_3: Configure su clave de seguridad
+      step_3a: Haga clic en “configurar clave de seguridad” (set up security key) más
+        abajo y siga las instrucciones de su navegador.

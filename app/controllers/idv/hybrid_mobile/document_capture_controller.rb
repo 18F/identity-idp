@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module HybridMobile
     class DocumentCaptureController < ApplicationController
@@ -41,7 +43,7 @@ module Idv
           flow_path: 'hybrid',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-          doc_auth_selfie_capture: decorated_sp_session.selfie_required?,
+          doc_auth_selfie_capture: decorated_sp_session.biometric_comparison_required?,
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
         )
@@ -55,8 +57,8 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-          liveness_checking_required: decorated_sp_session.selfie_required?,
-          selfie_check_required: decorated_sp_session.selfie_required?,
+          liveness_checking_required: decorated_sp_session.biometric_comparison_required?,
+          selfie_check_required: decorated_sp_session.biometric_comparison_required?,
         }.merge(
           ab_test_analytics_buckets,
         )

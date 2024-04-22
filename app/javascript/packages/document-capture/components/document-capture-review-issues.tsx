@@ -52,7 +52,9 @@ function DocumentCaptureReviewIssues({
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
+      {isSelfieCaptureEnabled && (
+        <DocumentCaptureSubheaderOne isSelfieCaptureEnabled={isSelfieCaptureEnabled} />
+      )}
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
         remainingSubmitAttempts={remainingSubmitAttempts}

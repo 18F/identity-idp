@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PushNotification
   # Delivers SETs (Security Event Tokens) via the HTTP Push protocol
   # https://tools.ietf.org/html/draft-ietf-secevent-http-push-00

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 # UserMailer handles all email sending to the User class. It expects to be called using `with`
 # that receives a `user` and `email_address`. This pattern is preferred as the User and
 # EmailAddress database records are needed across any email being sent.
 #
 # Arguments sent to UserMailer must not include personally-identifiable information (PII).
 # This includes email addresses. All arguments to UserMailer are stored in the database when the
-# email is being sent asynchronusly by ActiveJob and we must not put PII in the database in
+# email is being sent asynchronously by ActiveJob and we must not put PII in the database in
 # plaintext.
 #
 # Example:
@@ -15,6 +17,7 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
+  include AccountResetConcern
   include ActionView::Helpers::DateHelper
 
   class UserEmailAddressMismatchError < StandardError; end
@@ -35,6 +38,8 @@ class UserMailer < ActionMailer::Base
     ),
   )
 
+  layout 'mailer'
+
   def validate_user_and_email_address
     @user = params.fetch(:user)
     @email_address = params.fetch(:email_address)
@@ -53,10 +58,10 @@ class UserMailer < ActionMailer::Base
     )
   end
 
-  def email_confirmation_instructions(token, request_id:, instructions:)
+  def email_confirmation_instructions(token, request_id:)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
+      @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
@@ -64,21 +69,6 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.email_confirmation_instructions.subject'),
-      )
-    end
-  end
-
-  def unconfirmed_email_instructions(token, request_id:, instructions:)
-    with_user_locale(user) do
-      presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
-      @confirmation_period = presenter.confirmation_period
-      @request_id = request_id
-      @locale = locale_url_param
-      @token = token
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
       )
     end
   end
@@ -135,6 +125,37 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_after_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_before_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+      @failed_times = events.count { |event| event.event_type == 'sign_in_unsuccessful_2fa' }
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   def personal_key_regenerated
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.personal_key_regenerated.subject'))
@@ -144,10 +165,10 @@ class UserMailer < ActionMailer::Base
   def account_reset_request(account_reset)
     with_user_locale(user) do
       @token = account_reset&.request_token
-      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
       @header = t(
         'user_mailer.account_reset_request.header',
-        interval: account_reset_deletion_period_interval,
+        interval: @account_reset_deletion_period_interval,
       )
       mail(
         to: email_address.email,
@@ -160,7 +181,7 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
-      @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
       @account_reset_token_valid_period = account_reset_token_valid_period
       mail(
         to: email_address.email,
@@ -430,21 +451,6 @@ class UserMailer < ActionMailer::Base
   end
 
   private
-
-  def account_reset_deletion_period_interval
-    current_time = Time.zone.now
-
-    distance_of_time_in_words(
-      current_time,
-      current_time + IdentityConfig.store.account_reset_wait_period_days.days,
-      true,
-      accumulate_on: :hours,
-    )
-  end
-
-  def account_reset_deletion_period_hours
-    IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
-  end
 
   def account_reset_token_valid_period
     current_time = Time.zone.now

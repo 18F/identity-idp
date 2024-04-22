@@ -34,10 +34,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 4c858dab80cfe32081a7e6bd7cd76c43cc3ec778
-  tag: 0.19.2-18f
+  revision: f86b4c5ef4281a53b3f13a1db2c2e5839fdf077d
+  tag: 0.20.0-18f
   specs:
-    saml_idp (0.19.2.pre.18f)
+    saml_idp (0.19.3.pre.18f)
       activesupport
       builder
       faraday
@@ -136,9 +136,6 @@ GEM
       activemodel (= 7.1.3.2)
       activesupport (= 7.1.3.2)
       timeout (>= 0.4.0)
-    activerecord-postgis-adapter (9.0.1)
-      activerecord (~> 7.1.0)
-      rgeo-activerecord (~> 7.0.0)
     activestorage (7.1.3.2)
       actionpack (= 7.1.3.2)
       activejob (= 7.1.3.2)
@@ -199,10 +196,10 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.8.0)
       aws-eventstream (~> 1, >= 1.0.2)
-    axe-core-api (4.7.0)
+    axe-core-api (4.9.0)
       dumb_delegator
       virtus
-    axe-core-rspec (4.7.0)
+    axe-core-rspec (4.9.0)
       axe-core-api
       dumb_delegator
       virtus
@@ -226,7 +223,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (3.1.6)
+    bigdecimal (3.1.7)
     bindata (2.4.15)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
@@ -269,7 +266,7 @@ GEM
     crass (1.0.6)
     css_parser (1.14.0)
       addressable
-    cssbundling-rails (1.0.0)
+    cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
     csv (3.2.8)
     date (3.3.4)
@@ -300,8 +297,7 @@ GEM
     dotiw (5.3.2)
       activesupport
       i18n
-    drb (2.2.0)
-      ruby2_keywords
+    drb (2.2.1)
     dumb_delegator (1.0.0)
     email_spec (2.2.2)
       htmlentities (~> 4.3.3)
@@ -360,7 +356,7 @@ GEM
     htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
-    i18n (1.14.1)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     i18n-tasks (1.0.12)
       activesupport (>= 4.0.2)
@@ -374,10 +370,10 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
-    io-console (0.7.1)
-    irb (1.11.0)
+    io-console (0.7.2)
+    irb (1.12.0)
       rdoc
-      reline (>= 0.3.8)
+      reline (>= 0.4.2)
     jmespath (1.6.2)
     jsbundling-rails (1.1.2)
       railties (>= 6.0.0)
@@ -428,7 +424,7 @@ GEM
     mini_histogram (0.3.1)
     mini_mime (1.1.5)
     mini_portile2 (2.8.5)
-    minitest (5.22.2)
+    minitest (5.22.3)
     msgpack (1.7.2)
     multiset (0.5.3)
     mutex_m (0.2.0)
@@ -448,7 +444,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.0)
-    nokogiri (1.16.2)
+    nokogiri (1.16.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     openssl (3.0.2)
@@ -456,7 +452,7 @@ GEM
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
     parallel (1.24.0)
-    parser (3.3.0.0)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
@@ -498,7 +494,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.7.3)
-    rack (3.0.9.1)
+    rack (3.0.10)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
@@ -554,20 +550,20 @@ GEM
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.1.0)
+    rake (13.2.1)
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rdoc (6.6.2)
+    rdoc (6.6.3.1)
       psych (>= 4.0.0)
-    redacted_struct (1.1.0)
+    redacted_struct (2.0.0)
     redcarpet (3.6.0)
-    redis (5.0.6)
-      redis-client (>= 0.9.0)
-    redis-client (0.14.1)
+    redis (5.1.0)
+      redis-client (>= 0.17.0)
+    redis-client (0.22.0)
       connection_pool
     regexp_parser (2.9.0)
-    reline (0.4.1)
+    reline (0.5.1)
       io-console (~> 0.5)
     request_store (1.5.1)
       rack (>= 1.4)
@@ -576,11 +572,7 @@ GEM
       railties (>= 5.0)
     retries (0.0.5)
     rexml (3.2.6)
-    rgeo (3.0.0)
-    rgeo-activerecord (7.0.1)
-      activerecord (>= 5.0)
-      rgeo (>= 1.0.0)
-    rotp (6.2.0)
+    rotp (6.3.0)
     rouge (4.2.0)
     rqrcode (2.1.0)
       chunky_png (~> 1.0)
@@ -611,19 +603,19 @@ GEM
     rspec-support (3.12.1)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.59.0)
+    rubocop (1.62.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.4)
+      parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.30.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.2)
+      parser (>= 3.3.0.4)
     rubocop-capybara (2.19.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.24.0)
@@ -686,7 +678,7 @@ GEM
     tableparser (1.0.1)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
-    thor (1.3.0)
+    thor (1.3.1)
     thread_safe (0.3.6)
     timeout (0.4.1)
     tpm-key_attestation (0.11.0)
@@ -740,7 +732,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.36)
-    zeitwerk (2.6.12)
+    zeitwerk (2.6.13)
     zlib (3.0.0)
     zonebie (0.6.1)
     zxcvbn (0.1.9)
@@ -749,7 +741,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord-postgis-adapter (~> 9.0)
   ahoy_matey (~> 3.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
@@ -836,13 +827,13 @@ DEPENDENCIES
   redis (>= 3.2.0)
   redis-session-store!
   retries
-  rotp (~> 6.1)
+  rotp (~> 6.3, >= 6.3.0)
   rqrcode
   rspec (~> 3.12.0)
   rspec-rails (~> 6.0)
   rspec-retry
   rspec_junit_formatter
-  rubocop (~> 1.59.0)
+  rubocop (~> 1.62.0)
   rubocop-performance (~> 1.20.2)
   rubocop-rails (>= 2.5.2)
   rubocop-rspec

@@ -75,9 +75,13 @@ RSpec.configure do |config|
       # rubocop:enable Style/GlobalVars
       # rubocop:disable Rails/Output
       print '                       Bundling JavaScript and stylesheets... '
-      system 'WEBPACK_PORT= yarn concurrently "yarn:build:*" > /dev/null 2>&1'
+      system 'yarn concurrently "yarn:build:*" > /dev/null 2>&1'
       puts '✨ Done!'
       # rubocop:enable Rails/Output
+
+      # The JavaScript assets manifest is cached by the application. Since the preceding build will
+      # write a new manifest, instruct the application to refresh the cache from disk.
+      Rails.application.config.asset_sources.load_manifest
     end
   end
 

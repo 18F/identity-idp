@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'open3'
 require 'optparse'
 
@@ -9,7 +11,7 @@ CATEGORIES = [
   'Bug Fixes',
   'Internal',
   'Upcoming Features',
-]
+].freeze
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
 DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'
@@ -169,7 +171,7 @@ def format_changelog(changelog_entries)
     sort_by(&:subcategory).
     group_by { |entry| [entry.category, entry.change] }
 
-  changelog = ''
+  changelog = +''
   CATEGORIES.each do |category|
     category_changes = changelog_entries.
       filter { |(changelog_category, _change), _changes| changelog_category == category }

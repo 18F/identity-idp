@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NullServiceProviderSession
   def initialize(view_context: nil)
     @view_context = view_context
@@ -45,7 +47,7 @@ class NullServiceProviderSession
     {}
   end
 
-  def selfie_required?
+  def biometric_comparison_required?
     false
   end
 

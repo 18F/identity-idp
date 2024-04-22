@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
@@ -9,6 +11,7 @@ class TwoFactorOptionsPresenter
               :user_agent
 
   delegate :two_factor_enabled?, to: :mfa_policy
+  delegate :has_gov_or_mil_email?, to: :user, prefix: :user
 
   def initialize(
     user_agent:,

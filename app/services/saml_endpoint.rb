@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SamlEndpoint
   attr_reader :year
 
@@ -10,7 +12,7 @@ class SamlEndpoint
   end
 
   def self.endpoint_configs
-    @endpoint_configs ||= IdentityConfig.store.saml_endpoint_configs
+    IdentityConfig.store.saml_endpoint_configs
   end
 
   def secret_key

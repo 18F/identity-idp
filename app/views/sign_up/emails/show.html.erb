@@ -26,9 +26,10 @@
                         url: sign_up_register_path do |f| %>
       <%= f.input :email, as: :hidden %>
       <%= f.input :resend, as: :hidden %>
+      <%= f.input :terms_accepted, as: :hidden %>
       <%= f.button :button, t('notices.signed_up_but_unconfirmed.resend_confirmation_email') %>
     <% end %>
-  <% end %> 
+  <% end %>
   <% c.with_option(
        url: sign_up_email_path,
      ).with_content(t('notices.use_diff_email.link').upcase_first) %>

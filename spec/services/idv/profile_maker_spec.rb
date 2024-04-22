@@ -6,6 +6,7 @@ RSpec.describe Idv::ProfileMaker do
     let(:user) { create(:user, :fully_registered) }
     let(:user_password) { user.password }
     let(:initiating_service_provider) { nil }
+    let(:in_person_proofing_enforce_tmx_mock) { false }
 
     subject do
       described_class.new(
@@ -135,28 +136,78 @@ RSpec.describe Idv::ProfileMaker do
     end
 
     context 'with in_person_verification_needed' do
-      let(:profile) do
-        subject.save_profile(
-          fraud_pending_reason: nil,
-          gpo_verification_needed: false,
-          deactivation_reason: nil,
-          in_person_verification_needed: true,
-          selfie_check_performed: false,
-        )
+      context 'when threatmetrix decisioning is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+            and_return(in_person_proofing_enforce_tmx_mock)
+          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+            and_return(:disabled)
+        end
+
+        let(:profile) do
+          subject.save_profile(
+            fraud_pending_reason: nil,
+            gpo_verification_needed: false,
+            deactivation_reason: nil,
+            in_person_verification_needed: true,
+            selfie_check_performed: false,
+          )
+        end
+
+        it 'creates a pending profile for in person verification' do
+          expect(profile.activated_at).to be_nil
+          expect(profile.active).to eq(false)
+          expect(profile.deactivation_reason).to be_nil
+          expect(profile.fraud_pending_reason).to be_nil
+          expect(profile.in_person_verification_pending?).to eq(true)
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq(false)
+          expect(profile.initiating_service_provider).to eq(nil)
+          expect(profile.verified_at).to be_nil
+        end
+
+        it 'marks the profile as legacy_in_person' do
+          expect(profile.idv_level).to eql('legacy_in_person')
+        end
       end
-      it 'creates a pending profile for in person verification' do
-        expect(profile.activated_at).to be_nil
-        expect(profile.active).to eq(false)
-        expect(profile.deactivation_reason).to be_nil
-        expect(profile.fraud_pending_reason).to be_nil
-        expect(profile.in_person_verification_pending?).to eq(true)
-        expect(profile.fraud_review_pending?).to eq(false)
-        expect(profile.gpo_verification_pending_at.present?).to eq(false)
-        expect(profile.initiating_service_provider).to eq(nil)
-        expect(profile.verified_at).to be_nil
-      end
-      it 'marks the profile as legacy_in_person' do
-        expect(profile.idv_level).to eql('legacy_in_person')
+    end
+
+    context 'with in_person_verification_needed' do
+      context 'when threatmetrix decisioning is enabled' do
+        let(:in_person_proofing_enforce_tmx_mock) { true }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
+            and_return(in_person_proofing_enforce_tmx_mock)
+          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+            and_return(:enabled)
+        end
+
+        let(:profile) do
+          subject.save_profile(
+            fraud_pending_reason: nil,
+            gpo_verification_needed: false,
+            deactivation_reason: nil,
+            in_person_verification_needed: true,
+            selfie_check_performed: false,
+          )
+        end
+
+        it 'creates a pending profile for in person verification' do
+          expect(profile.activated_at).to be_nil
+          expect(profile.active).to eq(false)
+          expect(profile.deactivation_reason).to be_nil
+          expect(profile.fraud_pending_reason).to be_nil
+          expect(profile.in_person_verification_pending?).to eq(true)
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq(false)
+          expect(profile.initiating_service_provider).to eq(nil)
+          expect(profile.verified_at).to be_nil
+        end
+
+        it 'marks the profile as in_person' do
+          expect(profile.idv_level).to eql('in_person')
+        end
       end
     end
 

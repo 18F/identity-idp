@@ -45,4 +45,4 @@ DocumentCaptureSessionResult = RedactedStruct.new(
       return self[member_name]&.include?(fingerprint)
     end
   end
-end
+end.freeze

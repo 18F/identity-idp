@@ -1415,7 +1415,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#identity_verified_with_selfie?' do
+  describe '#identity_verified_with_biometric_comparison?' do
     let(:user) { create(:user) }
     let(:active_profile) do
       create(
@@ -1428,17 +1428,23 @@ RSpec.describe User do
     it 'returns true if user has an active profile with selfie' do
       active_profile.idv_level = :unsupervised_with_selfie
       active_profile.save
-      expect(user.identity_verified_with_selfie?).to eq true
+      expect(user.identity_verified_with_biometric_comparison?).to eq true
     end
 
     it 'returns false if user has an active profile without selfie' do
-      expect(user.identity_verified_with_selfie?).to eq false
+      expect(user.identity_verified_with_biometric_comparison?).to eq false
+    end
+
+    it 'return true if user has an active in-person profile' do
+      active_profile.idv_level = :in_person
+      active_profile.save
+      expect(user.identity_verified_with_biometric_comparison?).to eq true
     end
 
     context 'user does not have active profile' do
       let(:active_profile) { nil }
       it 'returns false' do
-        expect(user.identity_verified_with_selfie?).to eq false
+        expect(user.identity_verified_with_biometric_comparison?).to eq false
       end
     end
   end

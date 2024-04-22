@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneNumberOptOutSyncJob < ApplicationJob
   queue_as :long_running
 

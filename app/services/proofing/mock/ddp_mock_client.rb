@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Mock
     class DdpMockClient
@@ -35,7 +37,7 @@ module Proofing
         'proofing',
         'lexis_nexis',
         'ddp',
-      )
+      ).freeze
       TRANSACTION_ID = 'ddp-mock-transaction-id-123'
 
       def initialize(response_fixture_file: 'successful_response.json')

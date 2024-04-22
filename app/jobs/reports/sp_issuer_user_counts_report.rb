@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Reports
   class SpIssuerUserCountsReport < BaseReport
-    REPORT_NAME = 'sp-issuer-user-counts-report'.freeze
+    REPORT_NAME = 'sp-issuer-user-counts-report'
 
     def perform(_date)
       configs = IdentityConfig.store.sp_issuer_user_counts_report_configs

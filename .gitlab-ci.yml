@@ -187,7 +187,7 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgis/postgis:13-3.3
+    - name: postgres:13.9
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
     - name: redis:7.0

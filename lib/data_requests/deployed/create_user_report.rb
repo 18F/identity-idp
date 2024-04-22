@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DataRequests
   module Deployed
     class CreateUserReport

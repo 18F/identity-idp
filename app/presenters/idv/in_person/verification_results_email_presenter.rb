@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module InPerson
     class VerificationResultsEmailPresenter
@@ -6,7 +8,7 @@ module Idv
       attr_reader :enrollment, :url_options
 
       # update to user's time zone when out of pilot
-      USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York']
+      USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York'].dup.freeze
 
       def initialize(enrollment:, url_options:)
         @enrollment = enrollment

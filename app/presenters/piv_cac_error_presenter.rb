@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PivCacErrorPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper

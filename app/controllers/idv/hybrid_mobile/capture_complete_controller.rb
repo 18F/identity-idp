@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module HybridMobile
     class CaptureCompleteController < ApplicationController
@@ -23,7 +25,7 @@ module Idv
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-          liveness_checking_required: decorated_sp_session.selfie_required?,
+          liveness_checking_required: decorated_sp_session.biometric_comparison_required?,
         }.merge(ab_test_analytics_buckets)
       end
     end

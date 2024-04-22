@@ -229,11 +229,13 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
+    return user_password_compromised_url if session[:redirect_to_password_compromised].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
     return reactivate_account_url if user_needs_to_reactivate_account?
+    return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
@@ -259,6 +261,15 @@ class ApplicationController < ActionController::Base
     return false if current_user.password_reset_profile.blank?
     return false if pending_profile_newer_than_password_reset_profile?
     resolved_authn_context_result.identity_proofing?
+  end
+
+  def user_recommended_for_piv_cac?
+    current_user.piv_cac_recommended_dismissed_at.nil? && current_user.has_gov_or_mil_email? &&
+      !user_already_has_piv?
+  end
+
+  def user_already_has_piv?
+    MfaContext.new(current_user).piv_cac_configurations.present?
   end
 
   def pending_profile_newer_than_password_reset_profile?

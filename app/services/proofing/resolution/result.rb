@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Resolution
     class Result
@@ -64,5 +66,5 @@ module Proofing
         failed_result_can_pass_with_additional_verification
       end
     end
-end
+  end
 end

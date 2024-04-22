@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'identity/hostdata'
 
 module Reports
   class SpActiveUsersReport < BaseReport
-    REPORT_NAME = 'sp-active-users-report'.freeze
+    REPORT_NAME = 'sp-active-users-report'
 
     # This daily job captures the total number of active users per SP from the beginning of the the
     # current fiscal year until now.

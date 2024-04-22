@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SignUp
   class CancellationsController < ApplicationController
     before_action :find_user
@@ -53,7 +55,7 @@ module SignUp
     def ensure_valid_confirmation_token
       return if @user
       flash[:error] = error_message(@token_validator)
-      redirect_to sign_up_email_resend_url(request_id: params[:_request_id])
+      redirect_to sign_up_register_url(request_id: params[:_request_id])
     end
 
     def error_message(token_validator)

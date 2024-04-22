@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FeatureManagement
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'
@@ -85,6 +87,10 @@ class FeatureManagement
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
     Rails.env.development? && IdentityConfig.store.identity_pki_local_dev
+  end
+
+  def self.check_password_enabled?
+    IdentityConfig.store.check_user_password_compromised_enabled
   end
 
   def self.doc_capture_polling_enabled?

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module PushNotification
   class PasswordResetEvent
     include IssSubEvent
 
-    EVENT_TYPE = 'https://schemas.login.gov/secevent/risc/event-type/password-reset'.freeze
+    EVENT_TYPE = 'https://schemas.login.gov/secevent/risc/event-type/password-reset'
 
     attr_reader :user
 

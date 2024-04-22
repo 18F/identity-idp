@@ -3,6 +3,68 @@ require 'rails_helper'
 RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
+  context 'with aggregated sign-in notifications enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:feature_new_device_alert_aggregation_enabled).
+        and_return(true)
+      user.devices << create(:device)
+    end
+
+    scenario 'disavowing a sign-in after 2fa' do
+      sign_in_live_with_2fa(user)
+      Capybara.reset_session!
+
+      disavow_last_action_and_reset_password
+    end
+
+    scenario 'disavowing a sign-in before 2fa' do
+      travel_to (IdentityConfig.store.new_device_alert_delay_in_minutes + 1).minutes.ago do
+        sign_in_user(user)
+      end
+
+      Capybara.reset_session!
+      CreateNewDeviceAlert.new.perform(Time.zone.now)
+
+      disavow_last_action_and_reset_password
+    end
+
+    scenario 'disavowing a sign-in after 2fa after new device timeframe expired' do
+      travel_to (IdentityConfig.store.new_device_alert_delay_in_minutes + 1).minutes.ago do
+        sign_in_user(user)
+      end
+
+      CreateNewDeviceAlert.new.perform(Time.zone.now)
+
+      expect_delivered_email_count(1)
+      expect_delivered_email(
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
+      )
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+      )
+
+      disavow_last_action_and_reset_password
+    end
+
+    context 'user with piv or cac' do
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+      scenario 'disavowing a sign-in after 2fa using piv or cac' do
+        signin_with_piv(user)
+        Capybara.reset_session!
+
+        disavow_last_action_and_reset_password
+      end
+    end
+  end
+
   scenario 'disavowing a password reset' do
     perform_disavowable_password_reset
     disavow_last_action_and_reset_password
@@ -22,14 +84,20 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
     disavow_last_action_and_reset_password
   end
 
-  scenario 'disavowing a new device sign in' do
-    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
-    signin(user.email, user.password)
-    Capybara.reset_session!
-    visit root_path
-    signin(user.email, user.password)
-
-    disavow_last_action_and_reset_password
+  context 'when aggregated new device alerts is disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(
+        :feature_new_device_alert_aggregation_enabled,
+      ).and_return(false)
+    end
+    scenario 'disavowing a new device sign in' do
+      allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
+      signin(user.email, user.password)
+      Capybara.reset_session!
+      visit root_path
+      signin(user.email, user.password)
+      disavow_last_action_and_reset_password
+    end
   end
 
   scenario 'disavowing a personal key sign in' do
@@ -184,7 +252,11 @@ RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
     signin(user.email, 'NewVal!dPassw0rd')
 
     # We should be on the MFA screen because we logged in with the new password
-    expect(page).to have_content(t('two_factor_authentication.header_text'))
-    expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    if user.piv_cac_configurations.any?
+      expect(page).to have_current_path(login_two_factor_piv_cac_path)
+    else
+      expect(page).to have_content(t('two_factor_authentication.header_text'))
+      expect(page.current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+    end
   end
 end

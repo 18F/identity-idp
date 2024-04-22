@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PendingProfilePolicy
   def initialize(user:, resolved_authn_context_result:, biometric_comparison_requested:)
     @user = user

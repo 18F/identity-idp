@@ -813,6 +813,7 @@ describe('document-capture/components/acuant-capture', () => {
         sharpness: 100,
         width: 1748,
         captureAttempts: sinon.match.number,
+        selfie_attempts: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: 'AUTO',
         fingerprint: null,
@@ -873,6 +874,7 @@ describe('document-capture/components/acuant-capture', () => {
         sharpness: 49,
         width: 1748,
         captureAttempts: sinon.match.number,
+        selfie_attempts: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
         fingerprint: null,
@@ -986,6 +988,7 @@ describe('document-capture/components/acuant-capture', () => {
         sharpness: 49,
         width: 1748,
         captureAttempts: sinon.match.number,
+        selfie_attempts: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
         fingerprint: null,
@@ -1176,7 +1179,7 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith('idv_sdk_selfie_image_capture_opened');
@@ -1193,7 +1196,7 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
@@ -1212,13 +1215,37 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
         'idv_selfie_image_added',
         sinon.match({
           captureAttempts: sinon.match.number,
+          selfie_attempts: sinon.match.number,
+        }),
+      );
+    });
+
+    it('calls trackEvent from onSelfieRetake', () => {
+      // In real use the `start` method opens the Acuant SDK full screen selfie capture window.
+      // Because we can't do that in test (AcuantSDK does not allow), this doesn't attempt to load
+      // the SDK. Instead, it simply calls the callback that happens when a photo is captured.
+      // This allows us to test everything about that callback -except- the Acuant SDK parts.
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onPhotoTaken();
+          callbacks.onPhotoRetake();
+        }),
+      });
+
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
+      expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
+      expect(trackEvent).to.be.calledWith(
+        'idv_sdk_selfie_image_re_taken',
+        sinon.match({
+          captureAttempts: sinon.match.number,
+          selfie_attempts: sinon.match.number,
         }),
       );
     });
@@ -1236,7 +1263,7 @@ describe('document-capture/components/acuant-capture', () => {
         }),
       });
 
-      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('idv_selfie_image_clicked');
       expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
 
       expect(trackEvent).to.have.been.calledWith(
@@ -1402,16 +1429,19 @@ describe('document-capture/components/acuant-capture', () => {
       source: 'placeholder',
       isDrop: false,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'button',
       isDrop: false,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
       source: 'upload',
       isDrop: false,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
   });
 
@@ -1432,6 +1462,7 @@ describe('document-capture/components/acuant-capture', () => {
       source: 'placeholder',
       isDrop: true,
       liveness_checking_required: false,
+      captureAttempts: 1,
     });
   });
 

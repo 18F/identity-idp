@@ -207,7 +207,7 @@ RSpec.describe Idv::LinkSentController do
 
       context 'document capture session canceled' do
         let(:session_canceled_at) { Time.zone.now }
-        let(:error_message) { t('errors.doc_auth.document_capture_cancelled') }
+        let(:error_message) { t('errors.doc_auth.document_capture_canceled') }
 
         before do
           expect(FormResponse).to receive(:new).with(

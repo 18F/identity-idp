@@ -41,6 +41,10 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           expect(@irs_attempts_api_tracker).to receive(:track_event).
             with(:mfa_login_backup_code, success: true)
 
+          expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+            with(auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE).
+            and_call_original
+
           post :create, params: payload
 
           expect(subject.user_session[:auth_events]).to eq(
@@ -210,6 +214,12 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+        post :create, params: payload
+      end
+
+      it 'records unsuccessful 2fa event' do
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
 
         post :create, params: payload
       end

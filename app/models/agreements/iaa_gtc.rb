@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Agreements::IaaGtc < ApplicationRecord
   self.table_name = 'iaa_gtcs'
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 class UserSeeder
@@ -57,7 +59,7 @@ class UserSeeder
 
   private
 
-  PASSWORD = 'S00per Seekr3t'.freeze
+  PASSWORD = 'S00per Seekr3t'
 
   PII_ATTRS = %w[
     first_name

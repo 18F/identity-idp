@@ -8,7 +8,6 @@ RSpec.feature 'Password Recovery', allowed_extra_analytics: [:*] do
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
       user = create(:user, :fully_registered)
 
       visit root_path
@@ -34,32 +33,25 @@ RSpec.feature 'Password Recovery', allowed_extra_analytics: [:*] do
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
-      expect(page.html).not_to include(t('notices.dap_participation'))
       expect(current_path).to eq edit_user_password_path
     end
   end
 
   context 'user has confirmed email, but not set a password yet', email: true do
-    it 'shows the reset password form and confirms user after setting a password' do
+    it 'sends the missing user email' do
       user = create(:user, :unconfirmed)
       confirm_last_user
       reset_email
 
-      trigger_reset_password_and_click_email_link(user.email)
+      visit new_user_password_path
+      fill_in t('account.index.email'), with: user.email
+      click_button t('forms.buttons.continue')
 
-      expect(current_path).to eq edit_user_password_path
-
-      password = 'NewVal!dPassw0rd'
-      fill_in t('forms.passwords.edit.labels.password'), with: password
-      fill_in t('components.password_confirmation.confirm_label'),
-              with: password
-      click_button t('forms.passwords.edit.buttons.submit')
-
-      expect(current_path).to eq new_user_session_path
-
-      fill_in_credentials_and_submit(user.email, 'NewVal!dPassw0rd')
-
-      expect(current_path).to eq authentication_methods_setup_path
+      expect_delivered_email_count(1)
+      expect_delivered_email(
+        to: [user.email],
+        subject: t('anonymous_mailer.password_reset_missing_user.subject'),
+      )
     end
   end
 
@@ -68,9 +60,10 @@ RSpec.feature 'Password Recovery', allowed_extra_analytics: [:*] do
       user = create(:user, :unconfirmed)
       confirm_last_user
       reset_email
-      visit sign_up_email_resend_path
+      visit sign_up_email_path
       fill_in t('forms.registration.labels.email'), with: user.email
-      click_button t('forms.buttons.resend_confirmation')
+      check t('sign_up.terms', app_name: APP_NAME)
+      click_submit_default
       open_last_email
       click_email_link_matching(/confirmation_token/)
     end

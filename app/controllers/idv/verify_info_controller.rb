@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class VerifyInfoController < ApplicationController
     include Idv::AvailabilityConcern
@@ -77,7 +79,7 @@ module Idv
     end
 
     def pii
-      idv_session.pii_from_doc
+      idv_session.pii_from_doc.merge(idv_session.updated_user_address.to_h)
     end
   end
 end

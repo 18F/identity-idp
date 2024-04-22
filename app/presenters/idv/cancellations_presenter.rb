@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class CancellationsPresenter
     include Rails.application.routes.url_helpers

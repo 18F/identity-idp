@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class ImageUploadsController < ApplicationController
     respond_to :json
@@ -23,7 +25,7 @@ module Idv
         uuid_prefix: current_sp&.app_id,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
         store_encrypted_images: store_encrypted_images?,
-        liveness_checking_required: decorated_sp_session.selfie_required?,
+        liveness_checking_required: decorated_sp_session.biometric_comparison_required?,
       )
     end
 

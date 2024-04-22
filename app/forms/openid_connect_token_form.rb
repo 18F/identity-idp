@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class OpenidConnectTokenForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  ISSUED_AT_LEEWAY_SECONDS = 10.seconds.to_i
+  ISSUED_AT_LEEWAY_SECONDS = 10.seconds.to_i.freeze
 
   ATTRS = %i[
     client_assertion
@@ -15,7 +17,7 @@ class OpenidConnectTokenForm
 
   attr_reader(*ATTRS)
 
-  CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'.freeze
+  CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
   validates_inclusion_of :grant_type, in: %w[authorization_code]
   validates_inclusion_of :client_assertion_type,

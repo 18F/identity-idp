@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ReauthenticationRequiredConcern
   include MfaSetupConcern
   include TwoFactorAuthenticatableMethods

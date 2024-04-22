@@ -6,7 +6,7 @@ require 'i18n/tasks'
 # List of keys allowed to contain different interpolation arguments across locales
 ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
-]
+].freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
 # solution based on current content, intended to help prevent accidents when adding new translated
@@ -15,6 +15,14 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
 LOCALE_SPECIFIC_CONTENT = {
   fr: / [nd]’|à/i,
   es: /¿|ó/,
+}.freeze
+
+# Regex patterns for commonly misspelled words by locale. Match on word boundaries ignoring case.
+# The current design should be adequate for a small number of words in each language.
+# If we encounter false positives we should come up with a scheme to ignore those cases.
+# Add additional words using the regex union operator '|'.
+COMMONLY_MISSPELLED_WORDS = {
+  en: /\b(cancelled|occured|seperated?)\b/i,
 }.freeze
 
 module I18n
@@ -162,6 +170,7 @@ RSpec.describe 'I18n' do
 
     Dir["#{group_path}/*.yml"].each do |full_path|
       i18n_file = full_path.sub("#{root_dir}/", '')
+      locale = File.basename(full_path, '.yml').to_sym
 
       describe i18n_file do
         let(:flattened_yaml_data) { flatten_hash(YAML.load_file(full_path)) }
@@ -206,11 +215,16 @@ RSpec.describe 'I18n' do
 
         it 'does not contain content from another language' do
           flattened_yaml_data.each do |key, value|
-            locale = key.split('.', 2).first.to_sym
             other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
             expect(value).not_to match(
               Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
             )
+          end
+        end
+
+        it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
+          flattened_yaml_data.each do |key, value|
+            expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
           end
         end
       end

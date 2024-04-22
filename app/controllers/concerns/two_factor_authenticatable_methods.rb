@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthenticatableMethods
   extend ActiveSupport::Concern
   include RememberDeviceConcern
@@ -6,6 +8,26 @@ module TwoFactorAuthenticatableMethods
 
   def auth_methods_session
     @auth_methods_session ||= AuthMethodsSession.new(user_session:)
+  end
+
+  def handle_valid_verification_for_authentication_context(auth_method:)
+    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
+    disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
+
+    if IdentityConfig.store.feature_new_device_alert_aggregation_enabled &&
+       user_session[:new_device] != false
+      if current_user.sign_in_new_device_at.blank?
+        current_user.update(sign_in_new_device_at: disavowal_event.created_at)
+      end
+
+      UserAlerts::AlertUserAboutNewDevice.send_alert(
+        user: current_user,
+        disavowal_event:,
+        disavowal_token:,
+      )
+    end
+
+    reset_second_factor_attempts_count
   end
 
   private
@@ -98,6 +120,10 @@ module TwoFactorAuthenticatableMethods
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
   def handle_invalid_otp(type:, context: nil)
+    if context == UserSessionContext::AUTHENTICATION_CONTEXT
+      handle_invalid_verification_for_authentication_context
+    end
+
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
@@ -148,15 +174,12 @@ module TwoFactorAuthenticatableMethods
     current_user.increment_second_factor_attempts_count!
   end
 
-  def handle_valid_verification_for_confirmation_context(auth_method:)
-    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
-    reset_second_factor_attempts_count
+  def handle_invalid_verification_for_authentication_context
+    create_user_event(:sign_in_unsuccessful_2fa)
   end
 
-  def handle_valid_verification_for_authentication_context(auth_method:)
-    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
-    create_user_event(:sign_in_after_2fa)
-
+  def handle_valid_verification_for_confirmation_context(auth_method:)
+    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end
 

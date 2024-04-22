@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Initialize the prometheus exporter
 
 if IdentityConfig.store.prometheus_exporter

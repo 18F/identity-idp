@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
@@ -54,17 +56,6 @@ module Idv
 
       def user_id
         current_user ? current_user.id : user_id_from_token
-      end
-
-      def add_cost(token, transaction_id: nil)
-        Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
-      end
-
-      def add_costs(result)
-        Db::AddDocumentVerificationAndSelfieCosts.
-          new(user_id: user_id,
-              service_provider: current_sp).
-          call(result)
       end
 
       def sp_session

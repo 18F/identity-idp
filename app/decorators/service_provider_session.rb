@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class ServiceProviderSession
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  DEFAULT_LOGO = 'generic.svg'.freeze
+  DEFAULT_LOGO = 'generic.svg'
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
@@ -70,7 +72,7 @@ class ServiceProviderSession
     sp.issuer
   end
 
-  def selfie_required?
+  def biometric_comparison_required?
     !!(FeatureManagement.idv_allow_selfie_check? &&
       sp_session[:biometric_comparison_required])
   end

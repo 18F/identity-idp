@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class WebauthnSetupController < ApplicationController
     include TwoFactorAuthenticatableMethods
@@ -13,6 +15,7 @@ module Users
     before_action :validate_existing_platform_authenticator
 
     helper_method :in_multi_mfa_selection_flow?
+    helper_method :mobile?
 
     def new
       form = WebauthnVisitForm.new(

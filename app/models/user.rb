@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   include NonNullUuid
 
@@ -22,6 +24,8 @@ class User < ApplicationRecord
 
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
+
+  BIOMETRIC_COMPARISON_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
@@ -74,6 +78,10 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).any?
   end
 
+  def has_gov_or_mil_email?
+    confirmed_email_addresses.any?(&:gov_or_mil?)
+  end
+
   def accepted_rules_of_use_still_valid?
     if self.accepted_terms_at.present?
       self.accepted_terms_at > IdentityConfig.store.rules_of_use_updated_at &&
@@ -92,6 +100,10 @@ class User < ApplicationRecord
 
   def active_identities
     identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
+  end
+
+  def active_profile?
+    active_profile.present?
   end
 
   def active_profile
@@ -211,6 +223,11 @@ class User < ApplicationRecord
   # @return [String] enrollment status
   def in_person_enrollment_status
     pending_profile&.in_person_enrollment&.status
+  end
+
+  def ipp_enrollment_status_not_passed?
+    !in_person_enrollment_status.blank? &&
+      in_person_enrollment_status != 'passed'
   end
 
   def has_in_person_enrollment?
@@ -353,8 +370,8 @@ class User < ApplicationRecord
     active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
   end
 
-  def identity_verified_with_selfie?
-    active_profile&.idv_level == 'unsupervised_with_selfie'
+  def identity_verified_with_biometric_comparison?
+    BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
   end
 
   def reproof_for_irs?(service_provider:)

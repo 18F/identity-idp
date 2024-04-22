@@ -22,8 +22,8 @@ es:
       button: Sí, continúa eliminando
       cancel_link_text: por favor cancele
       help_html: Si no desea eliminar su cuenta, %{cancel_account_reset_html}.
-      intro_html: Su período de espera de %{hours} horas ha finalizado. Complete el
-        paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de
+      intro_html: Su período de espera de %{waiting_period} finalizó. Complete el paso
+        2 del proceso.<br><br>Si no ha podido localizar sus métodos de
         autenticación, seleccione “confirmar eliminación” para eliminar su
         cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los
         sitios web gubernamentales participantes que utilizan %{app_name}, puede
@@ -35,14 +35,14 @@ es:
         para cancelar.'
       header: Su cuenta será eliminada en %{interval}
       intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos
-        pasos para eliminar su cuenta:<br><br> Paso uno: hay un período de
-        espera de %{hours} horas si ha perdido el acceso a sus métodos de
+        pasos para eliminar su cuenta:<br><br> Paso uno: Hay un período de
+        espera de %{waiting_period} si perdió el acceso a sus métodos de
         autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de
         autenticación, puede iniciar sesión en su cuenta %{app_name} para
-        cancelar esta solicitud.<br><br> Paso dos: Después de su período de
-        espera de %{hours} horas, recibirá un correo electrónico que le pedirá
-        que confirme la eliminación de su cuenta %{app_name}. Su cuenta no se
-        eliminará hasta que confirme.'
+        cancelar esta solicitud.<br><br> Paso dos: Tras el período de espera de
+        %{waiting_period}, recibirás un correo electrónico en el que te
+        pediremos que confirmes la eliminación de tu cuenta %{app_name}. Tu
+        cuenta no se eliminará hasta que lo confirmes.'
       subject: Cómo eliminar su cuenta de %{app_name}
     account_verified:
       change_password_link: cambiar tu contraseña
@@ -76,22 +76,14 @@ es:
         contraseña.
       subject: Nueva dirección de correo electrónico añadida
     email_confirmation_instructions:
-      create_new_account: crea una cuenta nueva.
-      email_not_found: El correo electrónico no encontrado
       first_sentence:
         confirmed: '¿Desea cambiar su email?'
-        forgot_password: Intentó restablecer su contraseña de %{app_name} pero no
-          tenemos una cuenta vinculada a esta dirección de correo electrónico.
         unconfirmed: Gracias por enviar su dirección de correo electrónico.
       footer: Este enlace expira en %{confirmation_period}.
       header: '%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
         completo en su navegador.'
       link_text: Confirmar el correo
-      request_with_diff_email: Puedes solicitar tu contraseña usando una dirección de
-        correo electrónico diferente que está conectada a su cuenta %{app_name}.
       subject: Confirme su email
-      try_diff_email: Pruebe con una dirección de correo electrónico diferente
-      use_this_email: O use este correo electrónico y
     email_deleted:
       header: Se eliminó una dirección de correo electrónico de su perfil de
         %{app_name}.
@@ -175,12 +167,12 @@ es:
         retrasado
     in_person_please_call:
       body:
-        contact_message_html: Llame al <strong>%{contact_number}</strong> y facilíteles
+        contact_message_html: Llame al <strong>%{contact_number}</strong> y proporcione
           el código de error <strong>%{support_code}</strong>.
-        intro_html: Llame a nuestro centro de atención antes del
+        intro_html: Llame a nuestro centro de contacto antes del
           <strong>%{date}</strong> para seguir verificando su identidad.
       header: Llámenos
-      subject: Llame a %{app_name} para proseguir con la verificación de su identidad
+      subject: Llame a %{app_name} para continuar con la verificación de identidad
     in_person_ready_to_verify:
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_ready_to_verify_reminder:
@@ -232,6 +224,38 @@ es:
         visite el %{app_name_html} %{help_link_html} o el %{contact_link_html}.
       info: 'Su cuenta %{app_name} acaba de iniciar sesión en un nuevo dispositivo.'
       subject: Nuevo initio de sesion con su %{app_name} cuenta
+    new_device_sign_in_after_2fa:
+      authentication_methods: métodos de autenticación
+      info_p1: Su correo electrónico y su contraseña de %{app_name} se usaron para
+        iniciar sesión y para la autenticación desde un nuevo dispositivo.
+      info_p2: Si reconoce esta actividad, no tiene que hacer nada.
+      info_p3_html: Si no fue usted, %{reset_password_link_html} y cambie sus
+        %{authentication_methods_link_html} inmediatamente.
+      reset_password: restablezca la contraseña
+      subject: Nuevo inicio de sesión y autenticación con su cuenta de %{app_name}
+    new_device_sign_in_attempts:
+      events:
+        sign_in_after_2fa: Autenticado
+        sign_in_before_2fa: Inicia sesión con contraseña
+        sign_in_unsuccessful_2fa: Error al autenticar
+      new_sign_in_from: Nuevo inicio de sesión potencialmente ubicado en %{location}
+    new_device_sign_in_before_2fa:
+      info_p1_html:
+        one: Su correo electrónico y su contraseña de %{app_name} se usaron para
+          ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio
+          error</strong>.
+        other: Su correo electrónico y su contraseña de %{app_name} se usaron para
+          ingresar desde un nuevo dispositivo, pero <strong>error al autenticar
+          %{count} veces</strong>.
+        zero: Su correo electrónico y su contraseña de %{app_name} se usaron para
+          ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio
+          error</strong>.
+      info_p2: Si reconoce esta actividad, no tiene que hacer nada.
+      info_p3_html: La autenticación de dos factores protege su cuenta de accesos no
+        autorizados. Si no fue usted, %{reset_password_link_html}
+        inmediatamente.
+      reset_password: restablezca la contraseña
+      subject: Nuevo inicio de sesión con su cuenta de %{app_name}
     password_changed:
       disavowal_link: restablecer su contraseña
       help_html: Si no realizó este cambio, %{disavowal_link_html}. Para más ayuda,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SessionTimeoutWarningHelper
   def session_timeout_frequency
     IdentityConfig.store.session_check_frequency

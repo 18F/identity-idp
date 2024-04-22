@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Test
   # Controller that echoes back session info, only for testing
   class SessionDataController < ApplicationController
