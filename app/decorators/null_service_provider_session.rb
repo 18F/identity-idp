@@ -55,6 +55,22 @@ class NullServiceProviderSession
     view_context&.current_user
   end
 
+  def sp_aal
+    1
+  end
+
+  def sp_ial
+    1
+  end
+
+  def resolved_authn_context_result
+    AuthnContextResolver.new(
+      service_provider: 'null sp',
+      vtr: ['C1'],
+      acr_values: Vot::LegacyComponentValues::LOA1,
+    ).resolve
+  end
+
   private
 
   attr_reader :view_context
