@@ -111,7 +111,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       and_return(instant_verify_proofer)
     allow(Idv::LexisNexisInstantVerify).to receive(:new).and_return(lniv)
     allow(Proofing::LexisNexis::Ddp::Proofer).to receive(:new).and_return(threatmetrix_proofer)
-    allow(Proofing::Aamva::Proover).to receive(:new).and_return(aamva_proofer)
+    allow(Proofing::Aamva::Proofer).to receive(:new).and_return(aamva_proofer)
 
     block_real_instant_verify_requests
   end
