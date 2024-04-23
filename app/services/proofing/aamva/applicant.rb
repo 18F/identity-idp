@@ -1,11 +1,30 @@
 # frozen_string_literal: true
 
 require 'date'
-require 'hashie/mash'
 
 module Proofing
   module Aamva
-    class Applicant < Hashie::Mash
+    Applicant = Struct.new(
+      :uuid,
+      :first_name,
+      :last_name,
+      :dob,
+      :state_id_data,
+      :address1,
+      :address2,
+      :city,
+      :state,
+      :zipcode,
+      keyword_init: true,
+    ) do
+      self::StateIdData = Struct.new(
+        :state_id_number,
+        :state_id_jurisdiction,
+        :state_id_type,
+        keyword_init: true,
+      ).freeze
+
+      # @return [Applicant]
       def self.from_proofer_applicant(applicant)
         new(
           uuid: applicant[:uuid],
@@ -39,13 +58,14 @@ module Proofing
         end
       end
 
+      # @return [StateIdData]
       private_class_method def self.format_state_id_data(applicant)
-        {
+        self::StateIdData.new(
           state_id_number: applicant.dig(:state_id_number)&.gsub(/[^\w\d]/, ''),
           state_id_jurisdiction: applicant[:state_id_jurisdiction],
           state_id_type: applicant[:state_id_type],
-        }
+        )
       end
-    end
+    end.freeze
   end
 end

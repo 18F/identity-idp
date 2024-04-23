@@ -349,7 +349,6 @@ GEM
       thor (>= 0.14.1)
     google-protobuf (3.24.4)
     hashdiff (1.0.1)
-    hashie (4.1.0)
     heapy (0.2.0)
       thor
     highline (2.1.0)
@@ -777,7 +776,6 @@ DEPENDENCIES
   faraday-retry
   foundation_emails
   good_job (~> 3.0)
-  hashie (~> 4.1)
   http_accept_language
   i18n-tasks (~> 1.0)
   identity-hostdata!
