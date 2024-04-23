@@ -12,26 +12,21 @@ class AccessTokenVerifier
   end
 
   def submit
-    FormResponse.new(
-      success: valid?, errors: errors, extra: {
-        client_id: identity&.service_provider,
-        ial: identity&.ial,
-      }
+    response = FormResponse.new(
+      success: valid?,
+      errors: errors,
+      extra: {
+        client_id: @identity&.service_provider,
+        ial: @identity&.ial,
+      },
     )
-  end
 
-  def identity
-    valid? ? @identity : nil
+    [response, @identity]
   end
 
   private
 
   attr_reader :http_authorization_header
-
-  def valid?
-    return @valid if defined?(@valid)
-    @valid = super
-  end
 
   def validate_access_token
     access_token = extract_access_token(http_authorization_header)
