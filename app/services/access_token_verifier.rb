@@ -11,6 +11,7 @@ class AccessTokenVerifier
     @identity = nil
   end
 
+  # @return [Array(FormResponse, ServiceProviderIdentity), Array(FormResponse, nil)]
   def submit
     response = FormResponse.new(
       success: valid?,
