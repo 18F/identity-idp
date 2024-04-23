@@ -388,6 +388,11 @@ module Reporting
             name
           , properties.user_id AS user_id
           , coalesce(properties.event_properties.success, 0) AS success
+          , coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
+          , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
+          , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
+          , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
+          , !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
         #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
         | limit 10000
@@ -403,9 +408,10 @@ module Reporting
         end
 
         fetch_results.each do |row|
-          event_users[row['name']] << row['user_id']
-
           event = row['name']
+          user_id = row['user_id']
+          event_users[event] << user_id
+
           case event
           when Events::IDV_FINAL_RESOLUTION
             if row['identity_verified'] == '1'
