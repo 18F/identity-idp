@@ -4,7 +4,7 @@ require 'date'
 
 module Proofing
   module Aamva
-    Applicant = Struct.new(
+    Applicant = RedactedStruct.new(
       :uuid,
       :first_name,
       :last_name,
@@ -17,7 +17,7 @@ module Proofing
       :zipcode,
       keyword_init: true,
     ) do
-      self::StateIdData = Struct.new(
+      self::StateIdData = RedactedStruct.new(
         :state_id_number,
         :state_id_jurisdiction,
         :state_id_type,
