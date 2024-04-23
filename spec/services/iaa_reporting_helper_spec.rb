@@ -3,6 +3,9 @@ require 'rails_helper'
 RSpec.describe IaaReportingHelper do
   let(:partner_account1) { create(:partner_account) }
   let(:partner_account2) { create(:partner_account) }
+  let(:service_provider1) { create(:service_provider) }
+  let(:service_provider2) { create(:service_provider) }
+
   let(:gtc1) do
     create(
       :iaa_gtc,
@@ -35,6 +38,13 @@ RSpec.describe IaaReportingHelper do
   end
   let(:integration2) do
     build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
+  end
+
+  let(:integration3) do
+    build_integration(partner_account: partner_account1, service_provider: service_provider1)
+  end
+  let(:integration4) do
+    build_integration(partner_account: partner_account2, service_provider: service_provider2)
   end
 
   # Have to do this because of invalid check when building integration usages
@@ -85,6 +95,14 @@ RSpec.describe IaaReportingHelper do
     create(
       :integration,
       issuer: issuer,
+      partner_account: partner_account,
+    )
+  end
+
+  def build_integration_sp(service_provider:, partner_account:)
+    create(
+      :integration,
+      service_provider: service_provider,
       partner_account: partner_account,
     )
   end
@@ -142,6 +160,38 @@ RSpec.describe IaaReportingHelper do
         gtc2_orders = iaas.select { |obj| obj.gtc_number == gtc2.gtc_number }
         expect(gtc1_orders.count).to eq(1)
         expect(gtc2_orders.count).to eq(1)
+      end
+    end
+  end
+
+  describe '#partneraccounts' do
+    before do
+      partner_account1.integrations << integration3
+      partner_account2.integrations << integration4
+    end
+
+    context 'SPS on different Partners' do
+      let(:integration3) do
+        build_integration_sp(service_provider: service_provider1, partner_account: partner_account1)
+      end
+      let(:integration4) do
+        build_integration_sp(service_provider: service_provider2, partner_account: partner_account2)
+      end
+
+      it 'returns partner requesting_agency for the given partneraccountid for serviceproviders' do
+        partner_accounts = IaaReportingHelper.partner_accounts
+        partner1 = partner_accounts.select { |obj| obj.partner_account_id == partner_account1.id }
+        partner2 = partner_accounts.select { |obj| obj.partner_account_id == partner_account2.id }
+        sp1 = partner_accounts.select { |obj| obj.issuer == service_provider1.issuer }
+        sp2 = partner_accounts.select { |obj| obj.issuer == service_provider2.issuer }
+        partner_name1 = partner_accounts.select { |obj| obj.partner_agency == partner_account1.requesting_agency }
+        partner_name2 = partner_accounts.select { |obj| obj.partner_agency == partner_account2.requesting_agency }
+        expect(partner1.count).to eq(1)
+        expect(partner2.count).to eq(1)
+        expect(partner_name1.count).to eq(1)
+        expect(partner_name2.count).to eq(1)
+        expect(sp1.count).to eq(1)
+        expect(sp2.count).to eq(1)
       end
     end
   end

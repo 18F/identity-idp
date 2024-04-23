@@ -17,6 +17,15 @@ module IaaReportingHelper
     end
   end
 
+  PartnerConfig = Struct.new(
+    :partner_account_id,
+    :partner_agency,
+    :issuer,
+    :start_date,
+    :end_date,
+    keyword_init: true,
+  )
+
   # @return [Array<IaaConfig>]
   def iaas
     Agreements::IaaGtc.
@@ -36,5 +45,28 @@ module IaaReportingHelper
           end
         end.compact
       end.sort_by(&:key)
+  end
+
+  def partner_accounts
+    Agreements::PartnerAccount.
+      includes(integrations: :service_provider).
+      flat_map do |partner_account|
+        puts"partner_account: #{partner_account.inspect}"
+        puts"partner_account.integrations: #{partner_account.integrations.inspect}"
+        partner_account.integrations.map do |integration|
+          puts"integration: #{integration.service_provider.inspect}"
+          sp_issuer = integration.service_provider.issuer
+          puts"sp_issuer: #{sp_issuer}"
+          if sp_issuer.present?
+            PartnerConfig.new(
+              partner_account_id: partner_account.id,
+              partner_agency: partner_account.requesting_agency,
+              issuer: sp_issuer,
+              start_date: integration.service_provider.iaa_start_date,
+              end_date: integration.service_provider.iaa_end_date,
+            )
+          end
+        end.compact
+      end.sort_by(&:partner_account_id)
   end
 end
