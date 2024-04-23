@@ -30,11 +30,11 @@
           ).with_content(t('sign_up.login_cancel.keep_going')) %>
 
       <%= render ButtonComponent.new(
-        url: return_to_sp_cancel_path(step: :sign_up),
-        big: true,
-        wide: true,
-        outline: true,
-      ).with_content(t('sign_up.login_cancel.exit', app_name: APP_NAME)) %>
+            url: return_to_sp_cancel_path(step: :sign_up),
+            big: true,
+            wide: true,
+            outline: true,
+          ).with_content(t('sign_up.login_cancel.exit', app_name: APP_NAME)) %>
     </div>
   </div>
  
