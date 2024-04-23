@@ -107,10 +107,12 @@ function AcuantSelfieCamera({
       },
       onOpened: () => {
         // Camera has opened
+        onImageCaptureFeedback('');
         onImageCaptureOpen();
       },
       onClosed: () => {
         // Camera has closed
+        onImageCaptureFeedback('');
         onImageCaptureClose();
       },
       onError: (error) => {
