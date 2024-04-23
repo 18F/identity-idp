@@ -335,7 +335,7 @@ module DocAuth
       end
 
       # check selfie error
-      if doc_auth_error_count < 1 && doc_auth_passed_or_attn_with_barcode(response_info)
+      if doc_auth_error_count < 1
         selfie_error_handler = SelfieErrorHandler.new
         selfie_error = selfie_error_handler.handle(response_info)
         if selfie_error.present? && !selfie_error.empty?
