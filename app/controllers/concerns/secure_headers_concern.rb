@@ -5,10 +5,15 @@ module SecureHeadersConcern
 
   def apply_secure_headers_override
     return if stored_url_for_user.blank?
-    return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
 
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
     return unless authorize_form.valid?
+
+    return if !IdentityConfig.store.openid_connect_content_security_form_action_enabled &&
+              oidc_redirect_method(
+                issuer: authorize_form.service_provider.issuer,
+                user_uuid: current_user&.uuid,
+              ) != 'server_side'
 
     override_form_action_csp(csp_uris)
   end

@@ -45,17 +45,7 @@ module OpenidConnect
     end
 
     def redirect_user(redirect_uri, issuer, user_uuid)
-      user_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_uuid_override_map[user_uuid]
-
-      sp_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_issuer_override_map[issuer]
-
-      redirect_method =
-        user_redirect_method_override || sp_redirect_method_override ||
-        IdentityConfig.store.openid_connect_redirect
-
-      case redirect_method
+      case oidc_redirect_method(issuer: issuer, user_uuid: user_uuid)
       when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(
@@ -78,7 +68,13 @@ module OpenidConnect
 
     def apply_logout_secure_headers_override(redirect_uri, service_provider)
       return if service_provider.nil? || redirect_uri.nil?
-      return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
+      if !IdentityConfig.store.openid_connect_content_security_form_action_enabled &&
+         oidc_redirect_method(
+           issuer: service_provider.issuer,
+           user_uuid: current_user&.id,
+         ) != 'server_side'
+        return
+      end
 
       uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         redirect_uri,
