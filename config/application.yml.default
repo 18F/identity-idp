@@ -246,7 +246,7 @@ phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
 phone_submissions_per_fingerprint_limit: 20
-phone_submissions_per_fingerprint_max_attempts_window_in_minutes: 1_440
+phone_submissions_per_fingerprint_max_attempts_window_in_minutes: 10
 pii_lock_timeout_in_minutes: 30
 pinpoint_sms_sender_id: 'aaa'
 pinpoint_sms_configs: '[]'

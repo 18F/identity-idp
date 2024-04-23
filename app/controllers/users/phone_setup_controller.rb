@@ -151,7 +151,6 @@ module Users
 
     def lock_out_user(user: current_user)
       UpdateUser.new(user: user, attributes: { second_factor_locked_at: Time.zone.now }).call
-      sign_out
       flash[:error] = t(
         'errors.messages.phone_confirmation_limited',
         timeout: distance_of_time_in_words(
@@ -160,7 +159,7 @@ module Users
           except: :seconds,
         ),
       )
-      redirect_to root_path
+
       return
     end
   end
