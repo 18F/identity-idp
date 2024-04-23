@@ -543,6 +543,10 @@ module AnalyticsEvents
     track_event('Events Page Visited')
   end
 
+  def exit_to_sp_confirmation_page_visited
+    track_event(:exit_to_sp_confirmation_page_visited)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable

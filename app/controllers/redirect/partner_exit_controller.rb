@@ -5,7 +5,7 @@ module Redirect
     before_action :validate_sp_exists
 
     def show
-      @redirect_url = sp_return_url_resolver.return_to_sp_url
+      analytics.exit_to_sp_confirmation_page_visited
     end
   end
 end
