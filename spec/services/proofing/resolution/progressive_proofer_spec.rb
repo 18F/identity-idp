@@ -244,7 +244,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'residential address and id address are the same' do
-
         it 'only makes one request to LexisNexis InstantVerify' do
           proof
 
@@ -331,7 +330,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
             context 'AAMVA proofing fails' do
               let(:aamva_client) { instance_double(Proofing::Aamva::VerificationClient) }
-              let(:aamva_proofer_result) { instance_double(Proofing::StateIdResult, success?: false) }
+              let(:aamva_proofer_result) do
+                instance_double(Proofing::StateIdResult, success?: false)
+              end
 
               before do
                 allow(Proofing::Aamva::VerificationClient).to receive(:new).and_return(aamva_client)
@@ -393,7 +394,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             end
 
             context 'AAMVA fails' do
-              let(:aamva_proofer_result) { instance_double(Proofing::StateIdResult, success?: false) }
+              let(:aamva_proofer_result) do
+                instance_double(Proofing::StateIdResult, success?: false)
+              end
 
               it 'returns the correct resolution results' do
                 expect(proof.residential_resolution_result.success?).to be(true)
