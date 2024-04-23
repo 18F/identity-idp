@@ -51,12 +51,8 @@ module IaaReportingHelper
     Agreements::PartnerAccount.
       includes(integrations: :service_provider).
       flat_map do |partner_account|
-        puts"partner_account: #{partner_account.inspect}"
-        puts"partner_account.integrations: #{partner_account.integrations.inspect}"
         partner_account.integrations.map do |integration|
-          puts"integration: #{integration.service_provider.inspect}"
           sp_issuer = integration.service_provider.issuer
-          puts"sp_issuer: #{sp_issuer}"
           if sp_issuer.present?
             PartnerConfig.new(
               partner_account_id: partner_account.id,
