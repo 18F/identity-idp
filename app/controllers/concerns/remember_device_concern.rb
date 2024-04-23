@@ -55,12 +55,24 @@ module RememberDeviceConcern
 
   private
 
+  def sp_aal
+    decorated_sp_session.sp_aal
+  end
+
+  def sp_ial
+    decorated_sp_session.sp_ial
+  end
+
+  def resolved_authn_context_result
+    decorated_sp_session.resolved_authn_context_result
+  end
+
   def mfa_expiration_interval
     aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
     aal_2_expiration = IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
-    return aal_2_expiration if decorated_sp_session.sp_aal > 1
-    return aal_2_expiration if decorated_sp_session.sp_ial > 1
-    return aal_2_expiration if decorated_sp_session.resolved_authn_context_result.aal2?
+    return aal_2_expiration if sp_aal > 1
+    return aal_2_expiration if sp_ial > 1
+    return aal_2_expiration if resolved_authn_context_result.aal2?
 
     aal_1_expiration
   end
