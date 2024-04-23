@@ -57,7 +57,7 @@ class ResetPasswordForm
       end
     end
 
-    UpdateUser.new(user: user, attributes: attributes).call
+    user.update!(attributes)
   end
 
   def mark_profile_inactive
