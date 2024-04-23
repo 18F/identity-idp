@@ -174,11 +174,11 @@ module DocAuth
       selfie_error = get_selfie_error(liveness_enabled, response_info)
 
       if is_generic_selfie_error?(selfie_error)
-        return selfie_general_failure_error
+        selfie_general_failure_error
       else
         error = selfie_error
         side = ErrorGenerator::SELFIE
-        return ErrorResult.new(error, side)
+        ErrorResult.new(error, side)
       end
     end
 
