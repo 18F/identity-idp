@@ -66,7 +66,7 @@ RSpec.describe Reporting::DropOffReport do
         { 'user_id' => 'user6', 'name' => 'IdV: personal key submitted' },
         { 'user_id' => 'user6', 'identity_verified'=>'0', 'name' => 'IdV: final resolution'},
 
-        # # finishes funnel but has to wait for IPP
+        # finishes funnel but has to wait for IPP
         { 'user_id' => 'user7', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user7', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user7', 'name' => 'IdV: doc auth image upload vendor submitted' },
