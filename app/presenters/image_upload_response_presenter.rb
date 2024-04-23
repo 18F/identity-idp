@@ -82,7 +82,7 @@ class ImageUploadResponsePresenter
   def ocr_pii
     return unless success?
     return unless attention_with_barcode? && @form_response.respond_to?(:pii_from_doc)
-    @form_response.pii_from_doc&.slice(:first_name, :last_name, :dob)
+    @form_response.pii_from_doc.to_h.slice(:first_name, :last_name, :dob)
   end
 
   def doc_type_supported?
