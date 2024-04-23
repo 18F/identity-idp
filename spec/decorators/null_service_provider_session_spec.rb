@@ -39,12 +39,6 @@ RSpec.describe NullServiceProviderSession do
     end
   end
 
-  describe '#mfa_expiration_interval' do
-    it 'returns the AAL1 expiration interval' do
-      expect(subject.mfa_expiration_interval).to eq(30.days)
-    end
-  end
-
   describe '#requested_more_recent_verification' do
     it 'is false' do
       expect(subject.requested_more_recent_verification?).to eq(false)

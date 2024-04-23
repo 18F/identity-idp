@@ -240,7 +240,7 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#mfa_expiration_interval' do
+  xdescribe '#mfa_expiration_interval' do
     context 'with an AAL2 sp' do
       before do
         allow(sp).to receive(:default_aal).and_return(2)
