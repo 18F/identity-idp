@@ -305,7 +305,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         zipcode: '11364',
         dob: '1938-10-06',
         state_id_type: 'drivers_license',
-        type: 'license',
         state_id_expiration: '2089-12-31',
         state_id_issued: '2009-12-31',
         issuing_country_code: 'CA',
