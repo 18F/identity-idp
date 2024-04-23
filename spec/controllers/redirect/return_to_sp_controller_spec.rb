@@ -13,7 +13,7 @@ RSpec.describe Redirect::ReturnToSpController do
     context 'when there is no SP' do
       let(:current_sp) { nil }
 
-      it 'redirects to the account page' do
+      it 'redirects to the account' do
         get 'cancel'
 
         expect(response).to redirect_to account_url
@@ -21,7 +21,7 @@ RSpec.describe Redirect::ReturnToSpController do
     end
 
     context 'when there is an SP request in the session' do
-      it 'tracks analytics with the redirect URI and the request url' do
+      it 'redirects to the redirect URI in the request url' do
         redirect_uri = 'https://sp.gov/result'
         state = '123abc'
         sp_request_url = UriService.add_params(
@@ -34,7 +34,30 @@ RSpec.describe Redirect::ReturnToSpController do
         expected_redirect_uri = SpReturnUrlResolver.new(
           service_provider: current_sp, oidc_state: state, oidc_redirect_uri: redirect_uri,
         ).return_to_sp_url
+        expect(response).to redirect_to(expected_redirect_uri)
+        expect(@analytics).to have_received(:track_event).with(
+          'Return to SP: Cancelled',
+          hash_including(redirect_url: expected_redirect_uri),
+        )
+      end
+    end
 
+    context 'when there is a SP request url for the request id param' do
+      it 'redirects to the redirect URI in the request url' do
+        redirect_uri = 'https://sp.gov/result'
+        state = '123abc'
+        sp_request_url = UriService.add_params(
+          'https://example.gov/authorize', state: state, redirect_uri: redirect_uri
+        )
+        sp_request = ServiceProviderRequest.new(url: sp_request_url)
+        allow(subject).to receive(:service_provider_request).and_return(sp_request)
+
+        get 'cancel'
+
+        expected_redirect_uri = SpReturnUrlResolver.new(
+          service_provider: current_sp, oidc_state: state, oidc_redirect_uri: redirect_uri,
+        ).return_to_sp_url
+        expect(response).to redirect_to(expected_redirect_uri)
         expect(@analytics).to have_received(:track_event).with(
           'Return to SP: Cancelled',
           hash_including(redirect_url: expected_redirect_uri),
@@ -43,11 +66,12 @@ RSpec.describe Redirect::ReturnToSpController do
     end
 
     context 'when there is an SP in the session without a request url' do
-      it 'tracks analytics with the correct url' do
+      it 'redirects to the configured request url' do
         current_sp.return_to_sp_url = 'https://sp.gov/return_to_sp'
 
         get 'cancel'
 
+        expect(response).to redirect_to('https://sp.gov/return_to_sp')
         expect(@analytics).to have_received(:track_event).with(
           'Return to SP: Cancelled',
           hash_including(redirect_url: 'https://sp.gov/return_to_sp'),

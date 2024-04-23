@@ -5,12 +5,9 @@ module Redirect
     before_action :validate_sp_exists
 
     def cancel
-      @redirect_url = sp_return_url_resolver.return_to_sp_url
-      analytics.return_to_sp_cancelled(redirect_url: @redirect_url, **location_params)
-
-      if params[:show_redirect_confirmation].nil?
-        redirect_to sp_return_url_resolver.return_to_sp_url
-      end
+      redirect_url = sp_return_url_resolver.return_to_sp_url
+      analytics.return_to_sp_cancelled(redirect_url: redirect_url, **location_params)
+      redirect_to(redirect_url, allow_other_host: true)
     end
 
     def failure_to_proof

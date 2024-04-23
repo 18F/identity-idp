@@ -57,5 +57,5 @@
 <% end %>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('links.cancel'), return_to_sp_cancel_path(step: :sign_up, show_redirect_confirmation: true) %>
+  <%= link_to t('links.cancel'), redirect_partner_exit_path %>
 <% end %>
