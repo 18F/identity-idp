@@ -78,6 +78,34 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
       end
     end
 
+    context 'with a bearer token for an expired session' do
+      let(:access_token) { SecureRandom.urlsafe_base64 }
+      let(:rails_session_id) { 'missing-session-id' } # Emulate expired by missing, which has no TTL
+      let!(:identity) { create(:service_provider_identity, access_token:, rails_session_id:) }
+      let(:authorization_header) { "Bearer #{access_token}" }
+
+      it '401s' do
+        action
+        expect(response).to be_unauthorized
+        expect(json_response[:error]).to eq(t('openid_connect.user_info.errors.not_found'))
+      end
+
+      it 'tracks analytics' do
+        stub_analytics
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: bearer token authentication',
+          success: false,
+          errors: { access_token: [t('openid_connect.user_info.errors.not_found')] },
+          client_id: nil,
+          ial: nil,
+          error_details: { access_token: { not_found: true } },
+        )
+      end
+    end
+
     context 'with a valid bearer token' do
       let(:authorization_header) { "Bearer #{access_token}" }
       let(:access_token) { SecureRandom.hex }
@@ -117,6 +145,22 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
           'first_event' => true,
         }
         expect(request.session.to_h).to eq(session_hash)
+      end
+
+      context 'with session expiring after validation and before render' do
+        before do
+          allow_any_instance_of(AccessTokenVerifier).to receive(:submit).and_wrap_original do |impl|
+            result = impl.call
+            OutOfBandSessionAccessor.new(identity.rails_session_id).destroy
+            result
+          end
+        end
+
+        it 'renders user info' do
+          action
+          expect(response).to be_ok
+          expect(json_response[:sub]).to eq(identity.uuid)
+        end
       end
     end
   end
