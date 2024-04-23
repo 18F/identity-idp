@@ -4,9 +4,8 @@ RSpec.describe PhoneRecaptchaValidator do
   let(:country_score_overrides_config) { {} }
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
-  let(:recaptcha_version) { 3 }
   let(:analytics) { FakeAnalytics.new }
-  subject(:validator) { described_class.new(parsed_phone:, recaptcha_version:, analytics:) }
+  subject(:validator) { described_class.new(parsed_phone:, analytics:) }
   before do
     allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
       and_return(country_score_overrides_config)
@@ -20,7 +19,6 @@ RSpec.describe PhoneRecaptchaValidator do
       with(
         score_threshold: score_threshold_config,
         analytics:,
-        recaptcha_version:,
         recaptcha_action: described_class::RECAPTCHA_ACTION,
         extra_analytics_properties: {
           phone_country_code: parsed_phone.country,
@@ -35,7 +33,6 @@ RSpec.describe PhoneRecaptchaValidator do
     subject(:validator) do
       described_class.new(
         parsed_phone:,
-        recaptcha_version:,
         analytics:,
         validator_class: RecaptchaMockValidator,
       )

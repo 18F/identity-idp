@@ -51,9 +51,9 @@ class TwoFactorOptionsForm
   end
 
   def update_otp_delivery_preference_for_user
-    user_attributes = { otp_delivery_preference:
-      selection.find { |element| %w[voice sms].include?(element) } }
-    UpdateUser.new(user: user, attributes: user_attributes).call
+    user.update!(
+      otp_delivery_preference: selection.find { |element| %w[voice sms].include?(element) },
+    )
   end
 
   def phone_selected?

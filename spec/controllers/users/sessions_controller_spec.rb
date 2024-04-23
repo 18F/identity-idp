@@ -192,6 +192,102 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'Password Compromised toggle is set to true' do
+      before do
+        allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
+      end
+
+      context 'User has a compromised password' do
+        let(:user) { create(:user, :fully_registered) }
+        before do
+          allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
+        end
+
+        context 'user randomly chosen to be tested' do
+          before do
+            allow(SecureRandom).to receive(:random_number).and_return(5)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+              and_return(2)
+          end
+
+          it 'updates user attribute password_compromised_checked_at' do
+            expect(user.password_compromised_checked_at).to be_falsey
+            post :create, params: { user: { email: user.email, password: user.password } }
+            user.reload
+            expect(user.password_compromised_checked_at).to be_truthy
+          end
+
+          it 'stores in session redirect to check compromise' do
+            post :create, params: { user: { email: user.email, password: user.password } }
+            expect(controller.session[:redirect_to_password_compromised]).to be_truthy
+          end
+        end
+
+        context 'user not chosen to be tested' do
+          before do
+            allow(SecureRandom).to receive(:random_number).and_return(1)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+              and_return(5)
+          end
+
+          it 'does not store anything in user_session' do
+            post :create, params: { user: { email: user.email, password: user.password } }
+            expect(user.password_compromised_checked_at).to be_falsey
+          end
+
+          it 'does not update the user ' do
+            post :create, params: { user: { email: user.email, password: user.password } }
+            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+          end
+        end
+      end
+
+      context 'user does not have a compromised password' do
+        let(:user) { create(:user, :fully_registered) }
+        before do
+          allow(PwnedPasswords::LookupPassword).to receive(:call).and_return false
+        end
+
+        context 'user randomly chosen to be tested' do
+          before do
+            allow(SecureRandom).to receive(:random_number).and_return(5)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+              and_return(2)
+          end
+
+          it 'updates user attribute password_compromised_checked_at' do
+            expect(user.password_compromised_checked_at).to be_falsey
+            post :create, params: { user: { email: user.email, password: user.password } }
+            user.reload
+            expect(user.password_compromised_checked_at).to be_truthy
+          end
+
+          it 'stores in session false to attempt to redirect password compromised' do
+            post :create, params: { user: { email: user.email, password: user.password } }
+            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+          end
+        end
+
+        context 'user not chosen to be tested' do
+          before do
+            allow(SecureRandom).to receive(:random_number).and_return(1)
+            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+              and_return(5)
+          end
+
+          it 'does not store anything in user_session' do
+            post :create, params: { user: { email: user.email, password: user.password } }
+            expect(user.password_compromised_checked_at).to be_falsey
+          end
+
+          it 'does not update the user ' do
+            post :create, params: { user: { email: user.email, password: user.password } }
+            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+          end
+        end
+      end
+    end
+
     context 'IAL2 user' do
       before do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)

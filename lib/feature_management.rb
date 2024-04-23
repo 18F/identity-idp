@@ -89,6 +89,10 @@ class FeatureManagement
     Rails.env.development? && IdentityConfig.store.identity_pki_local_dev
   end
 
+  def self.check_password_enabled?
+    IdentityConfig.store.check_user_password_compromised_enabled
+  end
+
   def self.doc_capture_polling_enabled?
     IdentityConfig.store.doc_capture_polling_enabled
   end
@@ -102,14 +106,10 @@ class FeatureManagement
   end
 
   def self.phone_recaptcha_enabled?
-    return false if IdentityConfig.store.recaptcha_site_key_v2.blank? ||
-                    IdentityConfig.store.recaptcha_site_key_v3.blank? ||
+    return false if IdentityConfig.store.recaptcha_site_key.blank? ||
                     !IdentityConfig.store.phone_recaptcha_score_threshold.positive?
 
-    recaptcha_enterprise? || (
-      IdentityConfig.store.recaptcha_secret_key_v2.present? &&
-      IdentityConfig.store.recaptcha_secret_key_v3.present?
-    )
+    recaptcha_enterprise? || IdentityConfig.store.recaptcha_secret_key.present?
   end
 
   def self.recaptcha_enterprise?

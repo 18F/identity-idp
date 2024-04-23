@@ -3217,13 +3217,15 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_closed_without_photo(acuant_version:, captureAttempts: nil,
-                                                        **extra)
+                                                        selfie_attempts: nil, **extra)
     track_event(
       :idv_sdk_selfie_image_capture_closed_without_photo,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3237,12 +3239,14 @@ module AnalyticsEvents
   # @param [String] sdk_error_message SDK message for the error encountered
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_failed(
     acuant_version:,
     sdk_error_code:,
     sdk_error_message:,
     captureAttempts: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
@@ -3251,6 +3255,7 @@ module AnalyticsEvents
       sdk_error_code: sdk_error_code,
       sdk_error_message: sdk_error_message,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3259,16 +3264,38 @@ module AnalyticsEvents
   # User opened the SDK to take a selfie
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_capture_opened(
     acuant_version:,
     captureAttempts: nil,
+    selfie_attempts: nil,
     **extra
   )
     track_event(
       :idv_sdk_selfie_image_capture_opened,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
+
+  # User opened the SDK to take a selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] selfie_attempts number of selfie captured by SDK
+  def idv_sdk_selfie_image_re_taken(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_re_taken,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       **extra,
     )
   end
@@ -3278,6 +3305,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [Integer] captureAttempts number of attempts to capture / upload an image
   #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -3291,6 +3319,7 @@ module AnalyticsEvents
   def idv_selfie_image_added(
     acuant_version:,
     captureAttempts:,
+    selfie_attempts:,
     failedImageResubmission:,
     fingerprint:,
     flow_path:,
@@ -3306,6 +3335,7 @@ module AnalyticsEvents
       :idv_selfie_image_added,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
       flow_path: flow_path,
@@ -4609,7 +4639,6 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
-  # @param [String] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -4617,7 +4646,6 @@ module AnalyticsEvents
     validator_class:,
     exception_class:,
     phone_country_code: nil,
-    recaptcha_version: nil,
     **extra
   )
     track_event(
@@ -4629,7 +4657,6 @@ module AnalyticsEvents
         validator_class:,
         exception_class:,
         phone_country_code:,
-        recaptcha_version:,
         **extra,
       }.compact,
     )
@@ -5130,6 +5157,14 @@ module AnalyticsEvents
     track_event(
       'User marked authenticated',
       authentication_type: authentication_type,
+      **extra,
+    )
+  end
+
+  # Tracks when the user is notified their password is compromised
+  def user_password_compromised_visited(**extra)
+    track_event(
+      :user_password_compromised_visited,
       **extra,
     )
   end

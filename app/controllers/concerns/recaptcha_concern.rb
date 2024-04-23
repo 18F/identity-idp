@@ -11,10 +11,6 @@ module RecaptchaConcern
     'https://recaptcha.google.com/recaptcha/',
   ].freeze
 
-  def recoverable_recaptcha_error?(result)
-    result.errors.keys == [:recaptcha_token]
-  end
-
   def allow_csp_recaptcha_src
     policy = current_content_security_policy
     policy.script_src(*policy.script_src, *RECAPTCHA_SCRIPT_SRC)

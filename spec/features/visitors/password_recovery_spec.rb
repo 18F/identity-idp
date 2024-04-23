@@ -270,7 +270,7 @@ RSpec.feature 'Password Recovery', allowed_extra_analytics: [:*] do
     raw_reset_token, db_confirmation_token =
       Devise.token_generator.generate(User, :reset_password_token)
 
-    UpdateUser.new(user: user, attributes: { reset_password_token: db_confirmation_token }).call
+    user.update!(reset_password_token: db_confirmation_token)
 
     visit edit_user_password_path(reset_password_token: raw_reset_token)
 

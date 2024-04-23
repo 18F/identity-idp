@@ -179,9 +179,8 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
-    expect(page).to have_content(t('titles.spam_protection'), wait: 5)
-    expect(page).to have_link(t('two_factor_authentication.login_options_link_text'))
-    expect(page).not_to have_link(t('links.cancel'))
+    expect(page).to have_current_path(phone_setup_path, wait: 5)
+    expect(page).to have_content(t('errors.messages.invalid_recaptcha_token'))
   end
 
   context 'with js', js: true do
