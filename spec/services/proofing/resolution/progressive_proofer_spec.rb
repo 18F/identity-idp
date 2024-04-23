@@ -13,7 +13,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       attributes_requiring_additional_verification: [:address],
     )
   end
-
   let(:instant_verify_proofer) do
     instance_double(
       Proofing::LexisNexis::InstantVerify::Proofer,
@@ -22,9 +21,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   let(:aamva_proofer_result) { nil }
-  let(:aamva_proofer) do
-    instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result)
-  end
+  let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result) }
 
   let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer, proof: nil) }
 
@@ -35,7 +32,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     instance = described_class.new(instant_verify_ab_test_discriminator: dcs_uuid)
 
     allow(instance).to receive(:resolution_proofer).and_call_original
-    allow(instance).to receive(:user_can_pass_after_state_id_check?).and_return(true)
+    # allow(instance).to receive(:user_can_pass_after_state_id_check?).and_return(true)
+    allow(instance).to receive(:user_can_pass_after_state_id_check?).and_call_original
 
     instance
   end
@@ -246,9 +244,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'residential address and id address are the same' do
-        before do
-          allow(instance).to receive(:with_state_id_address).and_return(transformed_pii)
-        end
 
         it 'only makes one request to LexisNexis InstantVerify' do
           proof
@@ -264,7 +259,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(aamva_proofer).to have_received(:proof)
         end
 
-        it 'transforms PII correctly' do
+        it 'uses the transformed PII' do
+          allow(instance).to receive(:with_state_id_address).and_return(transformed_pii)
+
           expect(proof.same_address_as_id).to eq('true')
           expect(proof.ipp_enrollment_in_progress).to eq(true)
           expect(proof.resolution_result).to eq(proof.residential_resolution_result)
