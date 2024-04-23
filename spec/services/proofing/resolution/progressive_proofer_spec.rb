@@ -271,6 +271,14 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         context 'LexisNexis InstantVerify fails' do
           let(:instant_verify_proofing_success) { false }
 
+          before do
+            allow(instant_verify_proofer_result).to(
+              receive(
+                :failed_result_can_pass_with_additional_verification?,
+              ).and_return(true),
+            )
+          end
+
           it 'includes the state ID in the InstantVerify call' do
             proof
 
