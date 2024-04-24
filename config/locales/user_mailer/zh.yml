@@ -145,6 +145,12 @@ zh:
       subject: %{app_name}账户有新的登录和身份验证
       info_p1: 你的%{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。
       info_p2: 如果你知道该活动，则无需做任何事情。
+    new_device_sign_in_attempts:
+      events:
+        sign_in_after_2fa: Authenticated
+        sign_in_before_2fa: Signed in with password
+        sign_in_unsuccessful_2fa: Failed to authenticate
+      new_sign_in_from: 新登录可能是在%{location}
     new_device_sign_in_before_2fa:
       subject: 你%{app_name}账户有新的登录
       info_p1_html: 你的%{app_name} 电邮和密码在一个新设备上被用来登录，但未能通过身份验证。
