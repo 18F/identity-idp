@@ -8,14 +8,8 @@ module Idv
       include AcuantConcern
       include Idv::AbTestAnalyticsConcern
 
-      def analytics
-        @analytics ||=
-          Analytics.new(
-            user: hybrid_user,
-            request: request,
-            sp: current_sp&.issuer,
-            session: session,
-          )
+      def analytics_user
+        hybrid_user || AnonymousUser.new
       end
 
       def hybrid_user
