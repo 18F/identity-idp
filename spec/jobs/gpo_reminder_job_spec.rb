@@ -62,5 +62,15 @@ RSpec.describe GpoReminderJob do
         user_id: due_for_reminder_user.uuid,
       )
     end
+
+    context 'when the user has another active profile' do
+      let!(:active_profile) do
+        create(:profile, :active, user: due_for_reminder_user)
+      end
+
+      it 'does not send an email' do
+        expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
+      end
+    end
   end
 end
