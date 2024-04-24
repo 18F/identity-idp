@@ -57,7 +57,7 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.continue')
   end
 
-  def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_agreement_step(expect_accessible: false, remote: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
     complete_welcome_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
@@ -86,17 +86,18 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
-    complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
+    complete_up_to_how_to_verify_step_for_opt_in_ipp(expect_accessible: false)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_document_capture_path
     complete_hybrid_handoff_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
+  def complete_up_to_how_to_verify_step_for_opt_in_ipp(expect_accessible: false, remote: true)
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
     if remote
       click_on t('forms.buttons.continue_remote')
     else
