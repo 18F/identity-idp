@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require 'json'
+
+combined = {}
+
+# @yieldparam keypath [Array<String>]
+# @yieldparam value
+def each_full_key(obj, keypath: [], &block)
+  if obj.kind_of?(Hash)
+    obj.each do |key, value|
+      each_full_key(value, keypath: keypath + [key], &block)
+    end
+  elsif obj.kind_of?(Array)
+    obj.each_with_index do |item, idx|
+      each_full_key(item, keypath: keypath + [idx], &block)
+    end
+  else
+    yield keypath, obj
+  end
+end
+
+ARGV.each do |filename|
+  each_full_key(YAML.load_file(filename)) do |(_locale, *keypath), value|
+    combined[keypath.map(&:to_s).join('.')] = value
+  end
+end
+
+combined.sort_by { |k, _v| k }.each do |flat_key, value|
+  STDOUT.puts "#{flat_key}: #{value.to_json}"
+end
