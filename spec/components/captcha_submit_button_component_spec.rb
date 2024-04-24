@@ -20,20 +20,9 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
     expect(rendered).to have_content(content)
   end
 
-  context 'with recaptcha token input errors' do
-    let(:error_message) { 'Invalid token' }
-    before do
-      form_object.errors.add(:recaptcha_token, error_message)
-    end
-
-    it 'renders recaptcha token errors' do
-      expect(rendered).to have_content(error_message)
-    end
-  end
-
   context 'without configured recaptcha site key' do
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).and_return(nil)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(nil)
     end
 
     it 'renders without recaptcha site key attribute' do
@@ -48,7 +37,7 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
   context 'with configured recaptcha site key' do
     let(:recaptcha_site_key) { 'site_key' }
     before do
-      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).and_return(recaptcha_site_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(recaptcha_site_key)
     end
 
     it 'renders with recaptcha site key attribute' do

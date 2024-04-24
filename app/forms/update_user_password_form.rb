@@ -25,13 +25,8 @@ class UpdateUserPasswordForm
   attr_reader :user, :user_session
 
   def process_valid_submission
-    update_user_password
+    user.update!(password: password)
     encrypt_user_profiles
-  end
-
-  def update_user_password
-    attributes = { password: password }
-    UpdateUser.new(user: user, attributes: attributes).call
   end
 
   def encrypt_user_profiles

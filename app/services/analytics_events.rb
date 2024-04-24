@@ -1334,31 +1334,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
-  # @param [String] acuant_version
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
-  # @param [Array] ids ID Types the user has checked whether they have
-  # @param [String] use_alternate_sdk
-  # Exit survey of optional questions when the user leaves document capture
-  def idv_exit_optional_questions(
-    acuant_sdk_upgrade_a_b_testing_enabled:,
-    acuant_version:,
-    flow_path:,
-    ids:,
-    use_alternate_sdk:,
-    **extra
-  )
-    track_event(
-      'Frontend: IdV: exit optional questions',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      ids: ids,
-      use_alternate_sdk: use_alternate_sdk,
-      **extra,
-    )
-  end
-
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
@@ -3259,6 +3234,27 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # Camera is ready to detect face for capturing selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  def idv_sdk_selfie_image_capture_initialized(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_capture_initialized,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
+
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User opened the SDK to take a selfie
@@ -3274,6 +3270,25 @@ module AnalyticsEvents
   )
     track_event(
       :idv_sdk_selfie_image_capture_opened,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
+
+  # User opened the SDK to take a selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] selfie_attempts number of selfie captured by SDK
+  def idv_sdk_selfie_image_re_taken(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_re_taken,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
       selfie_attempts: selfie_attempts,
@@ -4620,7 +4635,6 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
-  # @param [String] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -4628,7 +4642,6 @@ module AnalyticsEvents
     validator_class:,
     exception_class:,
     phone_country_code: nil,
-    recaptcha_version: nil,
     **extra
   )
     track_event(
@@ -4640,7 +4653,6 @@ module AnalyticsEvents
         validator_class:,
         exception_class:,
         phone_country_code:,
-        recaptcha_version:,
         **extra,
       }.compact,
     )

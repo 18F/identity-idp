@@ -89,10 +89,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
       end
 
       it 'resets the second_factor_attempts_count' do
-        UpdateUser.new(
-          user: subject.current_user,
-          attributes: { second_factor_attempts_count: 1 },
-        ).call
+        subject.current_user.update!(second_factor_attempts_count: 1)
 
         get :show, params: { token: 'good-token' }
 

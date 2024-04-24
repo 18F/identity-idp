@@ -553,7 +553,6 @@ function AcuantCapture(
     trackEvent('idv_selfie_image_added', {
       captureAttempts,
       selfie_attempts: selfieAttempts.current,
-      extra: { here: true },
     });
 
     onChangeAndResetError(image, analyticsPayload);
@@ -568,6 +567,10 @@ function AcuantCapture(
       captureAttempts,
       selfie_attempts: selfieAttempts.current,
     });
+
+    if (fullScreenRef.current?.focusTrap) {
+      suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+    }
 
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
     // previously failed for any reason, including declined permission. Since the cookie
@@ -584,6 +587,13 @@ function AcuantCapture(
       window.location.reload();
     }
     setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieRetaken() {
+    trackEvent('idv_sdk_selfie_image_re_taken', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
   }
 
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
@@ -705,6 +715,13 @@ function AcuantCapture(
     selfieAttempts.current += 1;
   }
 
+  function onImageCaptureInitialized() {
+    trackEvent('idv_sdk_selfie_image_capture_initialized', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -731,7 +748,9 @@ function AcuantCapture(
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
           onImageCaptureFeedback={onImageCaptureFeedback}
+          onImageCaptureInitialized={onImageCaptureInitialized}
           onSelfieTaken={onSelfieTaken}
+          onSelfieRetaken={onSelfieRetaken}
         >
           <FullScreen
             ref={fullScreenRef}

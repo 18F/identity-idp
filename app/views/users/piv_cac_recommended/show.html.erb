@@ -9,25 +9,15 @@
 </p>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(
-          login_piv_cac_recommended_add_path,
-          **tag_options,
-          &block
-        )
-      end,
+      url: login_piv_cac_recommended_add_path,
+      method: :post,
       big: true,
       class: 'margin-top-5 margin-bottom-2',
     ).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(
-          login_piv_cac_recommended_skip_path,
-          **tag_options,
-          &block
-        )
-      end,
+      url: login_piv_cac_recommended_skip_path,
+      method: :post,
       unstyled: true,
     ).with_content(@recommended_presenter.skip_text) %>
 

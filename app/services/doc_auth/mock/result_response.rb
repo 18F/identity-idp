@@ -80,8 +80,7 @@ module DocAuth
 
       def pii_from_doc
         if parsed_data_from_uploaded_file.present?
-          raw_pii = parsed_data_from_uploaded_file['document']
-          raw_pii&.symbolize_keys || {}
+          parsed_pii_from_doc
         else
           Idp::Constants::MOCK_IDV_APPLICANT
         end
@@ -129,6 +128,16 @@ module DocAuth
 
       def parsed_alerts
         parsed_data_from_uploaded_file&.dig('failed_alerts')
+      end
+
+      def parsed_pii_from_doc
+        if parsed_data_from_uploaded_file.has_key?('document')
+          Idp::Constants::MOCK_IDV_APPLICANT.merge(
+            parsed_data_from_uploaded_file['document'].symbolize_keys,
+          )
+        else
+          {}
+        end
       end
 
       def parsed_data_from_uploaded_file

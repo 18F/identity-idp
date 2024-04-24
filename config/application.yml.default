@@ -23,6 +23,7 @@ aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
+available_locales: 'en,es,fr'
 account_reset_token_valid_for_days: 1
 account_reset_fraud_user_wait_period_days:
 account_reset_wait_period_days: 1
@@ -86,7 +87,6 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_exit_question_section_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
@@ -159,7 +159,6 @@ in_person_outage_expected_update_date: 'October 31, 2024'
 in_person_outage_emailed_by_date: 'November 1, 2024'
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
-include_slo_in_saml_metadata: false
 invalid_gpo_confirmation_zipcode: '00001'
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -271,10 +270,8 @@ raise_on_missing_title: false
 reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
-recaptcha_site_key_v2: ''
-recaptcha_site_key_v3: ''
-recaptcha_secret_key_v2: ''
-recaptcha_secret_key_v3: ''
+recaptcha_site_key: ''
+recaptcha_secret_key: ''
 recovery_code_length: 4
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
@@ -399,7 +396,6 @@ development:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  doc_auth_exit_question_section_enabled: false
   doc_auth_selfie_capture_enabled: false
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'

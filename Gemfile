@@ -31,7 +31,6 @@ gem 'faker'
 gem 'faraday-retry'
 gem 'foundation_emails'
 gem 'good_job', '~> 3.0'
-gem 'hashie', '~> 4.1'
 gem 'http_accept_language'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.3'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
@@ -69,12 +68,11 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.20.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.20.2-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
-gem 'subprocess', require: false
 gem 'terminal-table', require: false
 # until a release includes https://github.com/hallelujah/valid_email/pull/126
 gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'

@@ -7,12 +7,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
-  let(:enable_exit_question) { true }
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(@fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
-    allow(IdentityConfig.store).to receive(:doc_auth_exit_question_section_enabled).
-      and_return(enable_exit_question)
 
     visit_idp_from_oidc_sp_with_ial2
     sign_in_and_2fa_user(@user)
@@ -173,20 +170,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
       attach_and_submit_images
 
       expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
-    end
-
-    it 'return to sp when click on exit link', :js do
-      click_sp_exit_link(sp_name: @sp_name)
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
-    end
-
-    it 'logs event and return to sp when click on submit and exit button', :js do
-      click_submit_exit_button
-      expect(@fake_analytics).to have_logged_event(
-        'Frontend: IdV: exit optional questions',
-        hash_including(:ids),
-      )
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
     end
   end
 

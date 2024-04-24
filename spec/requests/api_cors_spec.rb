@@ -57,6 +57,17 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
       end
     end
 
+    context 'origin is gitlab pages' do
+      let(:http_origin) { 'https://lg-public.pages.production.gitlab.login.gov' }
+
+      it 'allows origin' do
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to eq(http_origin)
+          expect(response['Access-Control-Allow-Methods']).to eq('GET')
+        end
+      end
+    end
+
     context 'origin is local in development' do
       let(:http_origin) { 'http://127.0.0.1:4000' }
 

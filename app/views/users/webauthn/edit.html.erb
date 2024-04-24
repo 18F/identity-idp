@@ -19,15 +19,9 @@
 <% end %>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(
-          webauthn_path(id: @form.configuration.id),
-          form: { aria: { label: @presenter.delete_button_label } },
-          **tag_options,
-          &block
-        )
-      end,
+      url: webauthn_path(id: @form.configuration.id),
       method: :delete,
+      form: { aria: { label: @presenter.delete_button_label } },
       big: true,
       wide: true,
       danger: true,

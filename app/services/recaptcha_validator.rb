@@ -3,10 +3,8 @@
 class RecaptchaValidator
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'
   RESULT_ERRORS = ['missing-input-secret', 'invalid-input-secret'].freeze
-  VALID_RECAPTCHA_VERSIONS = [2, 3].freeze
 
-  attr_reader :recaptcha_version,
-              :recaptcha_action,
+  attr_reader :recaptcha_action,
               :score_threshold,
               :analytics,
               :extra_analytics_properties
@@ -20,20 +18,13 @@ class RecaptchaValidator
   end
 
   def initialize(
-    recaptcha_version: 3,
     recaptcha_action: nil,
     score_threshold: 0.0,
     analytics: nil,
     extra_analytics_properties: {}
   )
-    if !VALID_RECAPTCHA_VERSIONS.include?(recaptcha_version)
-      raise ArgumentError, "Invalid reCAPTCHA version #{recaptcha_version}, expected one of " \
-                           "#{VALID_RECAPTCHA_VERSIONS}"
-    end
-
     @score_threshold = score_threshold
     @analytics = analytics
-    @recaptcha_version = recaptcha_version
     @recaptcha_action = recaptcha_action
     @extra_analytics_properties = extra_analytics_properties
   end
@@ -79,18 +70,9 @@ class RecaptchaValidator
     return true if result.blank?
 
     if result.success?
-      recaptcha_score_meets_threshold?(result.score)
+      result.score >= score_threshold
     else
       result.errors.present?
-    end
-  end
-
-  def recaptcha_score_meets_threshold?(score)
-    case recaptcha_version
-    when 2
-      true
-    when 3
-      score >= score_threshold
     end
   end
 
@@ -102,7 +84,6 @@ class RecaptchaValidator
     analytics&.recaptcha_verify_result_received(
       recaptcha_result: result.to_h.presence,
       score_threshold:,
-      recaptcha_version:,
       evaluated_as_valid: recaptcha_result_valid?(result),
       exception_class: error&.class&.name,
       validator_class: self.class.name,
@@ -111,11 +92,6 @@ class RecaptchaValidator
   end
 
   def recaptcha_secret_key
-    case recaptcha_version
-    when 2
-      IdentityConfig.store.recaptcha_secret_key_v2
-    when 3
-      IdentityConfig.store.recaptcha_secret_key_v3
-    end
+    IdentityConfig.store.recaptcha_secret_key
   end
 end

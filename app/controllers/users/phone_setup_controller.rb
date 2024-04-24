@@ -35,9 +35,8 @@ module Users
 
       if result.success?
         handle_create_success(@new_phone_form.phone)
-      elsif recoverable_recaptcha_error?(result)
-        render :spam_protection
       else
+        flash.now[:error] = result.first_error_message(:recaptcha_token)
         render :index
       end
     end
@@ -131,7 +130,6 @@ module Users
         :otp_delivery_preference,
         :otp_make_default_number,
         :recaptcha_token,
-        :recaptcha_version,
         :recaptcha_mock_score,
       )
     end

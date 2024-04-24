@@ -397,6 +397,7 @@ Rails.application.routes.draw do
       # during the deprecation process.
       get '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
       put '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
+      get '/in_person_proofing/state_id' => 'in_person/state_id#show'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
@@ -424,10 +425,6 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
         put '/by_mail/request_letter' => 'by_mail/request_letter#create'
-
-        # Temporary routes + redirects supporting GPO route renaming
-        get '/usps' => redirect('/verify/by_mail/request_letter')
-        put '/usps' => 'by_mail/request_letter#create'
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued

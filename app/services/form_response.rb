@@ -39,10 +39,10 @@ class FormResponse
     end
   end
 
-  def first_error_message
+  def first_error_message(key = nil)
     return if errors.blank?
-    _key, message_or_messages = errors.first
-    Array(message_or_messages).first
+    key ||= errors.keys.first
+    errors[key].first
   end
 
   def ==(other)

@@ -5,9 +5,7 @@
         <div class="usa-alert__text">
           <%= t('account.re_verify.banner') %>
           <%= render ButtonComponent.new(
-                action: ->(**tag_options, &block) do
-                  button_to(account_reauthentication_path, **tag_options, &block)
-                end,
+                url: account_reauthentication_path,
                 method: :post,
                 class: 'usa-button usa-button--unstyled',
               ).with_content(t('account.re_verify.footer')) %>
