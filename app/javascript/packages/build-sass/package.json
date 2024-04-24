@@ -21,6 +21,9 @@
     "get-default-load-paths.js",
     "get-error-sass-stack-paths.js"
   ],
+  "exports": {
+    ".": "./index.js"
+  },
   "license": "CC0-1.0",
   "bugs": {
     "url": "https://github.com/18f/identity-idp/issues"

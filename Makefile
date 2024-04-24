@@ -27,6 +27,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_country_dialing_codes \
 	lint_erb \
 	lint_lockfiles \
+	lint_new_typescript_files \
 	lint_optimized_assets \
 	lint_tracker_events \
 	lint_yaml \
@@ -88,6 +89,8 @@ endif
 	make lint_yaml
 	@echo "--- lint Yarn workspaces ---"
 	make lint_yarn_workspaces
+	@echo "--- lint new TypeScript files ---"
+	make lint_new_typescript_files
 	@echo "--- lint lockfiles ---"
 	make lint_lockfiles
 	@echo "--- check assets are optimized ---"
@@ -132,6 +135,9 @@ lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfil
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
+
+lint_new_typescript_files:
+	scripts/enforce-typescript-files.mjs
 
 lint_readme: README.md ## Lints README.md
 	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
