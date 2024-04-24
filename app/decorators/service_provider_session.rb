@@ -134,9 +134,11 @@ class ServiceProviderSession
     ).resolve
   end
 
+  attr_reader :sp, :sp_session
+
   private
 
-  attr_reader :sp, :view_context, :sp_session, :service_provider_request
+  attr_reader :view_context, :service_provider_request
 
   def request_url
     sp_session[:request_url] || service_provider_request.url

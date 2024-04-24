@@ -75,7 +75,11 @@ module RememberDeviceConcern
   end
 
   def resolved_authn_context_result
-    decorated_sp_session.resolved_authn_context_result
+    @resolved_authn_context_result ||= AuthnContextResolver.new(
+      service_provider: decorated_sp_session.sp,
+      vtr: decorated_sp_session.sp_session[:vtr],
+      acr_values: decorated_sp_session.sp_session[:acr_values],
+    ).resolve
   end
 
   def expired_for_interval?(user, interval)
