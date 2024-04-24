@@ -167,9 +167,6 @@ zh:
       wrong_address: 地址不对？
     images:
       come_back_later: 带有打勾符的信件
-    legal_statement:
-      information_collection: >-
-        这次信息收集满足通过 1995 年《减少文书法》（Paperwork Reduction Act）第2节修订后的44 U.S.C. § 3507的要求。除非我们显示管理和预算办公室（OMB）的有效控制号码，你无需回答这些问题。本次信息收集的 OMB 控制号码是 3090-0325。我们预计你阅读说明、收集事实并回答问题需要 1 分钟。请只把与我们时间预估相关的评论（包括减少这一负担或有关本次信息收集任何方面的建议）发到： General Services Administration, Regulatory Secretariat Division (MVCB), ATTN: Lois Mandell/IC 3090-0325, 1800 F Street, NW, Washington, DC 20405.
     messages:
       activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
       activated_link: 联系我们
@@ -194,7 +191,6 @@ zh:
         start_over_link_text: 重新开始并用你新地址进行验证。
         timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong> 的信。
       otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
-      personal_key: 这是你新的个人密钥。把它写下来并安全存放。万一丢失密码，你将需要这一密钥。
       phone:
         alert_html: '<strong>输入一个这样的电话号码：</strong> '
         description: 我们会将该号码与记录核对并给你发个一次性代码。这是为了帮助你验证身份。
@@ -227,13 +223,11 @@ zh:
       unavailable: '我们正在争取解决错误。'
     troubleshooting:
       headings:
-        missing_required_items: 你是不是缺少这些东西中的一个？
         need_assistance: '需要立即帮助？以下是如何得到帮助的步骤：'
       options:
         contact_support: 联系 %{app_name} 支持
         doc_capture_tips: 拍出你身份证件清晰照片的提示。
         get_help_at_sp: 在 %{sp_name}得到帮助
-        learn_more_address_verification_options: 对通过电话或邮件验证获得更多了解
         learn_more_verify_by_mail: 对通过邮件验证你地址获得更多了解
         learn_more_verify_by_phone: 了解有关使用什么号码的更多信息
         learn_more_verify_by_phone_in_person: 对验证你的电话号码获得更多了解

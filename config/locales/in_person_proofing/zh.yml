@@ -103,7 +103,6 @@ zh:
         state_id_jurisdiction_hint: 这是颁发你身份证件的州
         state_id_jurisdiction_prompt: '- 选择 -'
         state_id_number: 身份证件号
-        state_id_number_florida_hint: 这是你身份证件上的号码，以1个字母打头，然后是12个数字。无需横杠。
         state_id_number_hint: '可以包含字母、数字以及以下符号：'
         state_id_number_hint_asterisks: 星号
         state_id_number_hint_dashes: 横杠

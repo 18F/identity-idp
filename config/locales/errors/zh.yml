@@ -19,7 +19,6 @@ zh:
     doc_auth:
       consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
       doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。 
-      document_capture_cancelled: 你已取消了用手机上传身份证件照片。
       how_to_verify_form: 选择一个验证身份的方法。
       phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
       rate_limited_heading: 我们无法验证你的身份证件。
@@ -98,7 +97,6 @@ zh:
     webauthn_platform_setup:
       account_setup_error: 我们无法添加人脸或触摸解锁。请再试一次或者 %{link}。
       already_registered: 人脸或触摸解锁已在该设备上注册。请尝试添加另外一种身份证实方法。
-      attestation_error: 抱歉，但你的平台身份证实器好像不是一个FIDO身份证实器。请确保你的设备列在 https://fidoalliance.org/certification/fido-certified-products/ ，如果你认为这是我们的过错，请联系 %{link}。
       choose_another_method: 选择另一个身份证实方法
       general_error: 我们无法添加人脸或触摸解锁。再试一次或选择另一个身份证实方法。
       not_supported: 你的浏览器不支持人脸或触摸解锁。请使用最新版本的 Google Chrome、Microsoft Edge 或 Safari 来使用人脸或触摸解锁。
@@ -106,7 +104,6 @@ zh:
     webauthn_setup:
       additional_methods_link: 选择另一个身份证实方法
       already_registered: 安全密钥已注册。请尝试一个不同的安全密钥。
-      attestation_error: 抱歉，但你的安全密钥好像不是一个 FIDO 安全密钥。请确保你的设备列在 https://fidoalliance.org/certification/fido-certified-products/ ，如果你认为这是我们的过错，请联系 %{link}。
       general_error_html: 我们无法添加安全密钥，请再试一次或者 %{link_html}。
       not_supported: 你的浏览器不支持安全密钥。请使用最新版本的 Google Chrome、Microsoft Edge 或 Safari 来使用安全密钥。
       unique_name: 这个名字已被使用。请选择一个不同的名字。

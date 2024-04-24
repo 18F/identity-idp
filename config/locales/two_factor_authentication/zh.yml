@@ -16,10 +16,7 @@ zh:
     backup_code_header_text: 输入你的备用代码。
     backup_code_prompt: 该安全代码可使用一次。提交后，你下次就需要使用一个新备用代码。
     backup_codes:
-      add_another_authentication_option: '‹添加另一个身份证实方法。'
       instructions: 如果你无法使用另一个设备，请将安全代码存放好。万一丢失备用代码，你就无法登录%{app_name}。
-      new_backup_codes_html: 我需要新备用&nbsp；代码
-      saved_backup_codes: 我已保存了我的备用代码
       warning_html: <strong>你只在自己账户上设置了备用代码。</strong>如果你可以使用另一个设备，比如手机，请用另一种身份证实方法来保护你的账户。
     choose_another_option: '‹ 选择另一个身份证实方法'
     form_legend: 选择你的身份证实方法

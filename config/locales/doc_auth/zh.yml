@@ -76,22 +76,6 @@ zh:
         top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
         top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
       upload_error: 抱歉，我们这边出错了。
-    exit_survey:
-      content_html:  <Strong>如果你没有驾照或州政府颁发的身份证件，则不能继续使用 %{app_name}。</strong>请 <a>退出 %{app_name} 并联系 %{sp_name}</a> 来了解你该怎么办。 
-      content_nosp_html:  <Strong>如果你没有驾照或州政府颁发的身份证件，则不能继续使用 %{app_name}。</strong><a>取消在 %{app_name} 验证身份</a> ，等你准备好后再重新开始验证过程。 
-      header: 没有驾照或州政府颁发的身份证件？
-      optional:
-        button:  提交并退出 %{app_name} 
-        content:  帮助我们向 %{app_name} 添加更多身份证件。你有哪些类型的身份证件？ 
-        id_types:
-          military_id: 军队身份卡（这包括国防部身份卡、退伍军人医疗卡，或者退伍军人 ID 卡）。
-          other: 未列出的其他证件
-          resident_card: 美国绿卡（也叫永久居民卡）
-          tribal_id: 部落 ID 卡
-          us_passport: 美国护照
-          voter_registration_card: 选民登记卡
-        legend: 可选选择你有的任何证件
-        tag: 可选项
     forms:
       captured_image: 扫描到的图像
       change_file: 更改文件
@@ -112,7 +96,6 @@ zh:
       document_capture_subheader_selfie: 你本人照片
       document_capture_with_selfie: 添加你身份证件和本人的照片
       front: 驾照或州政府颁发身份证件的正面
-      getting_started:  现在我们来为 %{app_name} 验证你的身份 
       how_to_verify: 选择你想如何验证身份
       hybrid_handoff: 你想怎么添加身份证件？
       interstitial: 我们正在处理你的图像
@@ -162,7 +145,6 @@ zh:
       link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
       link_sent_complete_polling: 下一步会自动加载。
       no_ssn: 你必须有社会保障号码才能完成身份验证。
-      privacy: '%{app_name}是一个安全的政府网站，遵守数据保护的最高标准。我们使用你的数据来验证你的身份。'
       review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
       secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
       ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
@@ -176,7 +158,6 @@ zh:
       verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
       verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
       verify_online_link_text: 对网上验证获得更多了解
-      welcome: '%{sp_name}需要确保你是你，而不是别人冒充你。'
       you_entered: '你输入了：'
     instructions:
       bullet1: 州政府颁发的身份证件
@@ -184,22 +165,11 @@ zh:
       bullet3: 电话号码或家庭地址
       consent:  在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。 
       learn_more: 了解有关我们隐私和安全措施的更多信息。
-      privacy: 我们的隐私与安全标准
       switch_back: 然后再返回你的电脑完成验证身份。
       switch_back_image: 从手机指向电脑的箭头
       test_ssn:  在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。 
       text1: 你的身份证件不能是过期的。
       text2: 你不需要有卡。
-      text3_html:
-        - '<strong>通过手机验证</strong>：我们会给你的号码打电话或发短信。这会化几分钟时间。'
-        - '<strong>通过普通邮件验证</strong>：我们会往你家庭地址寄信。这需要 <strong>5 到 10 天</strong>。'
-      welcome: '你将需要你的：'
-    not_ready:
-      button_nosp: 取消并返回你的用户资料
-      button_sp:  退出 %{app_name} 并返回 %{app_name} 
-      content_nosp:  如果你退出 %{app_name}，你尚未验证你的身份。你可以稍后回来完成这一过程。 
-      content_sp:  如果你退出 %{app_name} 并返回 %{sp_name}，你尚未验证你的身份。你可以稍后回来完成这一过程。 
-      header: 尚未做好添加照片的准备？
     tips:
       document_capture_hint: 必须是 JPG 或 PNG
       document_capture_id_text1: 使用暗色背景
@@ -211,7 +181,6 @@ zh:
       document_capture_selfie_text1: 把设备放在眼睛水平
       document_capture_selfie_text2: 确保你整个面孔都可以看到
       document_capture_selfie_text3: 在光线充沛的地方拍照
-      most_common: 最常见
       review_issues_id_header_text: '请仔细查看你州政府颁发身份证件的图像：'
       review_issues_id_text1: 你是否使用了暗色背景？
       review_issues_id_text2: 是否在平坦平面上拍的照？

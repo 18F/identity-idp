@@ -5,6 +5,3 @@ zh:
       issuers: 发放方
       name: 姓名
       subject: 已删除账户报告
-    system_demand_report:
-      name: 姓名
-      subject: 系统要求报告
