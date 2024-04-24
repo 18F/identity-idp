@@ -141,7 +141,7 @@ zh:
       piv_cac: 政府雇员身份证件
       piv_cac_info: 政府和军队雇员的 PIV/CAC 卡仅限桌面电脑。
       webauthn: 安全密钥
-      webauthn_info: 一个实体设备，通常形状像一个U盘，可以插入你的设备。
+      webauthn_info: 将您的实体安全密钥连接到您的设备。您无需输入代码。
       webauthn_platform: 人脸或触摸解锁
       webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
     two_factor_hspd12_choice: 要求额外的身份证实
