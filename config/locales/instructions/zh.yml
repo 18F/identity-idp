@@ -53,11 +53,11 @@ zh:
         lead_html: 你的密码必须至少有 <strong> %{min_length} 个字符 </strong>。请勿使用常见短语或重复性字符，比如 abc 或 111。
       password_key: 你在这个账户验证了身份后，需要一个 16 字符的个人密钥来重设密码。如果你没有，仍然可以重设密码然后再验证身份。
       strength:
-        i: 太弱
-        ii: 弱
-        iii: 一般
+        0: 太弱
+        1: 弱
+        2: 一般
+        3: 好
+        4: 棒！
         intro: '密码强度： '
-        iv: 好
-        v: 棒！
     sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
     sp_handoff_bounced_with_no_sp: 你的服务提供商
