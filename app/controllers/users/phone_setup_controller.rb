@@ -159,7 +159,7 @@ module Users
           except: :seconds,
         ),
       )
-
+      redirect_to account_path
       return
     end
   end
