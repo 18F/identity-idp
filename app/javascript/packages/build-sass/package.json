@@ -8,11 +8,11 @@
     "node": ">= 18"
   },
   "bin": {
-    "build-sass": "./cli.js"
+    "build-sass": "cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/18f/identity-idp.git",
+    "url": "git+https://github.com/18f/identity-idp.git",
     "directory": "app/javascript/packages/build-sass"
   },
   "files": [
