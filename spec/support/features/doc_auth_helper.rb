@@ -98,11 +98,7 @@ module DocAuthHelper
     complete_welcome_step
     complete_agreement_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
-    if remote
-      click_on t('forms.buttons.continue_remote')
-    else
-      click_on t('forms.buttons.continue_ipp')
-    end
+    complete_how_to_verify_step(remote: remote)
   end
 
   def complete_document_capture_step(with_selfie: false)
@@ -141,6 +137,14 @@ module DocAuthHelper
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
     complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+  end
+
+  def complete_how_to_verify_step(remote: true)
+    if remote
+      click_on t('forms.buttons.continue_remote')
+    else
+      click_on t('forms.buttons.continue_ipp')
+    end
   end
 
   def complete_ssn_step
