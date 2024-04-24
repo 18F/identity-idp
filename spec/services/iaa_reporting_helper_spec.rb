@@ -1,5 +1,9 @@
 require 'rails_helper'
-
+RSpec.configure do |rspec|
+  rspec.expect_with :rspec do |c|
+    c.max_formatted_output_length = nil
+  end
+end
 RSpec.describe IaaReportingHelper do
   let(:partner_account1) { create(:partner_account) }
   let(:partner_account2) { create(:partner_account) }
@@ -168,6 +172,10 @@ RSpec.describe IaaReportingHelper do
     before do
       partner_account1.integrations << integration3
       partner_account2.integrations << integration4
+      iaa_order1.integrations << integration3
+      iaa_order2.integrations << integration4
+      iaa_order1.save
+      iaa_order2.save
     end
 
     context 'SPS on different Partners' do
@@ -179,19 +187,22 @@ RSpec.describe IaaReportingHelper do
       end
 
       it 'returns partner requesting_agency for the given partneraccountid for serviceproviders' do
-        partner_accounts = IaaReportingHelper.partner_accounts
-        partner1 = partner_accounts.select { |obj| obj.partner_account_id == partner_account1.id }
-        partner2 = partner_accounts.select { |obj| obj.partner_account_id == partner_account2.id }
-        sp1 = partner_accounts.select { |obj| obj.issuer == service_provider1.issuer }
-        sp2 = partner_accounts.select { |obj| obj.issuer == service_provider2.issuer }
-        partner_name1 = partner_accounts.select { |obj| obj.partner_agency == partner_account1.requesting_agency }
-        partner_name2 = partner_accounts.select { |obj| obj.partner_agency == partner_account2.requesting_agency }
-        expect(partner1.count).to eq(1)
-        expect(partner2.count).to eq(1)
-        expect(partner_name1.count).to eq(1)
-        expect(partner_name2.count).to eq(1)
-        expect(sp1.count).to eq(1)
-        expect(sp2.count).to eq(1)
+        expect(IaaReportingHelper.partner_accounts).to include(
+          IaaReportingHelper::PartnerConfig.new(
+            partner_account_id: partner_account1.id,
+            partner: partner_account1.requesting_agency,
+            issuers: [service_provider1.issuer],
+            start_date: iaa1_range.begin,
+            end_date: iaa1_range.end,
+          ),
+          IaaReportingHelper::PartnerConfig.new(
+            partner_account_id: partner_account2.id,
+            partner: partner_account2.requesting_agency,
+            issuers: [service_provider2.issuer],
+            start_date: iaa2_range.begin,
+            end_date: iaa2_range.end,
+          ),
+        )
       end
     end
   end

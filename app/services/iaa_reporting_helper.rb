@@ -19,8 +19,8 @@ module IaaReportingHelper
 
   PartnerConfig = Struct.new(
     :partner_account_id,
-    :partner_agency,
-    :issuer,
+    :partner,
+    :issuers,
     :start_date,
     :end_date,
     keyword_init: true,
@@ -49,20 +49,30 @@ module IaaReportingHelper
 
   def partner_accounts
     Agreements::PartnerAccount.
-      includes(integrations: :service_provider).
+      includes(integrations: { service_provider: {}, integration_usages: :iaa_order }).
       flat_map do |partner_account|
-        partner_account.integrations.map do |integration|
-          sp_issuer = integration.service_provider.issuer
-          if sp_issuer.present?
-            PartnerConfig.new(
-              partner_account_id: partner_account.id,
-              partner_agency: partner_account.requesting_agency,
-              issuer: sp_issuer,
-              start_date: integration.service_provider.iaa_start_date,
-              end_date: integration.service_provider.iaa_end_date,
-            )
+        issuers = partner_account.integrations.map do |integration|
+          integration.service_provider.issuer
+        end
+        iaa_start_dates = partner_account.integrations.flat_map do |integration|
+          integration.integration_usages.flat_map do |usage|
+            usage.iaa_order.start_date
           end
-        end.compact
-      end.sort_by(&:partner_account_id)
+        end
+        iaa_end_dates = partner_account.integrations.flat_map do |integration|
+          integration.integration_usages.flat_map do |usage|
+            usage.iaa_order.end_date
+          end
+        end
+        if issuers.present?
+          PartnerConfig.new(
+            partner_account_id: partner_account.id,
+            partner: partner_account.requesting_agency,
+            issuers: issuers.sort,
+            start_date: iaa_start_dates.min,
+            end_date: iaa_end_dates.max,
+          )
+        end
+      end.compact
   end
 end
