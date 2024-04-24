@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Redirect
-  class PartnerExitController < Redirect::ReturnToSpController
+  class PartnerExitController < ApplicationController
     before_action :validate_sp_exists
 
     def show
