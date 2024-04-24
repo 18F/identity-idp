@@ -12,12 +12,9 @@ RSpec.describe PwnedPasswordDownloader do
   end
 
   around do |example|
-    original_retries_sleep_enabled = Retries.sleep_enabled
-    Retries.sleep_enabled = false
     Dir.mktmpdir('pwned_passwords') do |destination|
       @destination = destination
       example.run
-      Retries.sleep_enabled = original_retries_sleep_enabled
     end
   end
 
