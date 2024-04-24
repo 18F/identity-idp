@@ -3,7 +3,14 @@ require 'rails_helper'
 RSpec.describe RememberDeviceConcern do
   let(:sp) { build(:service_provider) }
   let(:raw_session) { {} }
-  let(:request) { double('request', session: raw_session) }
+  let(:request) do
+    double(
+      'request',
+      session: raw_session,
+      parameters: {},
+      filtered_parameters: {},
+    )
+  end
 
   let(:test_class) do
     Class.new(ApplicationController) do
@@ -24,10 +31,6 @@ RSpec.describe RememberDeviceConcern do
           sp_session: @raw_session,
           service_provider_request: {},
         )
-      end
-
-      def current_sp
-        @sp
       end
 
       def sp_from_sp_session

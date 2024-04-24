@@ -67,7 +67,7 @@ module RememberDeviceConcern
   private
 
   def sp_aal
-    decorated_sp_session&.sp_aal || 1
+    current_sp&.default_aal || 1
   end
 
   def sp_ial
