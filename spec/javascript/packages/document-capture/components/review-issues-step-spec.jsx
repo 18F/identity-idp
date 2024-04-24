@@ -5,7 +5,6 @@ import {
   AnalyticsContext,
   InPersonContext,
   FailedCaptureAttemptsContextProvider,
-  FeatureFlagContext,
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { I18n } from '@18f/identity-i18n';
@@ -369,24 +368,6 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-  });
-
-  it('renders optional questions', async () => {
-    const App = composeComponents(
-      [
-        FeatureFlagContext.Provider,
-        {
-          value: {
-            exitQuestionSectionEnabled: true,
-          },
-        },
-      ],
-      [ReviewIssuesStep, DEFAULT_PROPS],
-    );
-    const { getByText, getByRole } = render(<App />);
-    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
-    expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
   });
 
   context('service provider context', () => {
