@@ -3234,6 +3234,27 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # Camera is ready to detect face for capturing selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  def idv_sdk_selfie_image_capture_initialized(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_capture_initialized,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
+
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User opened the SDK to take a selfie

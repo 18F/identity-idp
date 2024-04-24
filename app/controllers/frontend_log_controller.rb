@@ -51,6 +51,7 @@ class FrontendLogController < ApplicationController
     idv_sdk_error_before_init
     idv_sdk_selfie_image_capture_closed_without_photo
     idv_sdk_selfie_image_capture_failed
+    idv_sdk_selfie_image_capture_initialized
     idv_sdk_selfie_image_capture_opened
     idv_sdk_selfie_image_re_taken
     idv_selfie_image_added
