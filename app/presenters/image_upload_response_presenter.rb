@@ -52,6 +52,7 @@ class ImageUploadResponsePresenter
       json[:hints] = true if show_hints?
       json[:ocr_pii] = ocr_pii
       json[:result_failed] = doc_auth_result_failed?
+      json[:result_code_invalid] = result_code_invalid?
       json[:doc_type_supported] = doc_type_supported?
       json[:selfie_status] = selfie_status if show_selfie_failures?
       json[:selfie_live] = selfie_live? if show_selfie_failures?
@@ -66,6 +67,11 @@ class ImageUploadResponsePresenter
   end
 
   private
+
+  def result_code_invalid?
+    @form_response.to_h[:doc_auth_result] != DocAuth::LexisNexis::ResultCodes::PASSED.name &&
+      !attention_with_barcode?
+  end
 
   def doc_auth_result_failed?
     @form_response.to_h[:doc_auth_result] == DocAuth::LexisNexis::ResultCodes::FAILED.name

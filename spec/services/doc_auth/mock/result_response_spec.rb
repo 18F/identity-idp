@@ -140,7 +140,10 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
     it 'returns a successful result' do
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq({})
+      expect(response.errors).to eq(
+        back: ['fallback_field_level'],
+        general: ['barcode_read_check'], hints: true
+      )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to include(first_name: 'Susan', last_name: nil)
       expect(response.attention_with_barcode?).to eq(true)

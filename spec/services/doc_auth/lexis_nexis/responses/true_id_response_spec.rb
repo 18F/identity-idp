@@ -400,10 +400,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           success: false,
           exception: nil,
           errors: {
-            general: [DocAuth::Errors::GENERAL_ERROR],
+            general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
             front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
             back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
-            hints: true,
+            hints: false,
           },
           attention_with_barcode: false,
           doc_type_supported: true,

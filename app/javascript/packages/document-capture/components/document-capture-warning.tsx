@@ -11,6 +11,7 @@ import AnalyticsContext from '../context/analytics';
 import SelfieCaptureContext from '../context/selfie-capture';
 
 interface DocumentCaptureWarningProps {
+  isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
   isFailedResult: boolean;
   isFailedSelfie: boolean;
@@ -24,12 +25,14 @@ interface DocumentCaptureWarningProps {
 const DISPLAY_ATTEMPTS = 3;
 
 type GetHeadingArguments = {
+  isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   t: typeof I18n.prototype.t;
 };
 function getHeading({
+  isResultCodeInvalid,
   isFailedDocType,
   isFailedSelfie,
   isFailedSelfieLivenessOrQuality,
@@ -37,6 +40,9 @@ function getHeading({
 }: GetHeadingArguments) {
   if (isFailedDocType) {
     return t('errors.doc_auth.doc_type_not_supported_heading');
+  }
+  if (isResultCodeInvalid) {
+    return t('errors.doc_auth.rate_limited_heading');
   }
   if (isFailedSelfieLivenessOrQuality) {
     return t('errors.doc_auth.selfie_not_live_or_poor_quality_heading');
@@ -67,6 +73,7 @@ function getSubheading({
 }
 
 function DocumentCaptureWarning({
+  isResultCodeInvalid,
   isFailedDocType,
   isFailedResult,
   isFailedSelfie,
@@ -83,6 +90,7 @@ function DocumentCaptureWarning({
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
   const heading = getHeading({
+    isResultCodeInvalid,
     isFailedDocType,
     isFailedSelfie,
     isFailedSelfieLivenessOrQuality,
