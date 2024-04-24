@@ -74,7 +74,6 @@ gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
-gem 'subprocess', require: false
 gem 'terminal-table', require: false
 # until a release includes https://github.com/hallelujah/valid_email/pull/126
 gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
