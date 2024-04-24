@@ -110,12 +110,14 @@ zh:
         heading: 我们找不到与你个人信息匹配的记录
         warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
       setup:
+        fail_html: Call <strong>%{contact_number}</strong> and provide them with the error <br/>code <strong>%{support_code}</strong>.
         fail_date_html: 请给我们的联系中心在<strong>%{date_html}</strong> 之前打电话以继续验证你的身份。
         heading: 请给我们打个电话
       timeout: 目前处理你请求的时间超出正常等待时间。请再试一次。
       verify:
         fail_link_html: 在<strong>%{sp_name}</strong> 得到
         fail_text: 帮助以获得服务。
+        exit: Exit %{app_name}
         heading: 我们无法验证你的身份证件。
     forgot_password:
       link_text: 忘了密码?

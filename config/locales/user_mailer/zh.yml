@@ -68,6 +68,12 @@ zh:
         thanks: 感谢使用 %{app_name}。
       header: 花点时间告诉我们，我们表现如何
       subject: 讲讲你最近在 %{app_name} 的经历
+    in_person_please_call:
+      body:
+        contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
+        intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
+      header: Please give us a call
+      subject: Call %{app_name} to continue with your identity verification
     in_person_deadline_passed:
       body:
         canceled: 亲身验证身份的截止日期已过，为了保护你的个人数据，我们自动取消了你的请求。
@@ -128,6 +134,31 @@ zh:
       finish: 完成验证你的身份
       sign_in_and_request_another_letter: 登录要求再发一封信
       subject: 完成验证你的身份
+    new_device_sign_in_before_2fa:
+      info_p1_html:
+        one: Your %{app_name} email and password were used to sign in from a new device
+          but <strong>failed to authenticate</strong>.
+        other: Your %{app_name} email and password were used to sign in from a new
+          device but <strong>failed to authenticate %{count} times</strong>.
+        zero: Your %{app_name} email and password were used to sign in from a new device
+          but <strong>failed to authenticate</strong>.
+      info_p2: If you recognize this activity, you don’t need to do anything.
+      info_p3_html: Two-factor authentication protects your account from unauthorized access. If this wasn’t you, %{reset_password_link_html} immediately.
+      reset_password: reset your password
+      subject: New sign-in with your %{app_name} account
+    new_device_sign_in_attempts:
+      new_sign_in_from: New sign-in potentially located in %{location}
+      events:
+        sign_in_after_2fa: Authenticated
+        sign_in_before_2fa: Signed in with password
+        sign_in_unsuccessful_2fa: Failed to authenticate
+    new_device_sign_in_after_2fa:
+      authentication_methods: authentication methods
+      info_p1: Your %{app_name} email and password were used to sign-in and authenticate on a new device.
+      info_p2: If you recognize this activity, you don’t need to do anything.
+      info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
+      reset_password: reset your password
+      subject: New sign-in and authentication with your %{app_name} account
     new_device_sign_in:
       disavowal_link: 重设你的密码
       help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。

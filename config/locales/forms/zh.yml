@@ -20,6 +20,8 @@ zh:
       heading: 你的备用代码还有吗？
       need_new_codes: 我需要新的一套备用代码。
     buttons:
+      continue_ipp: Continue in person
+      continue_remote: Continue online
       back: 返回
       cancel: 是的，取消
       confirm: 确认
@@ -102,5 +104,15 @@ zh:
       nickname: 设备昵称
       nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
     webauthn_setup:
+      intro: Use your physical security key to add an additional layer of protection to your %{app_name} account to prevent unauthorized access.
+      learn_more: Learn more about security keys
+      set_up: Set up security key
+      step_1: Give it a nickname
+      step_1a: If you add more than one security key, you’ll know which one is which.
+      step_2: Insert a security key into your device
+      step_2_image_alt: A security key being inserted into the right side of a laptop
+      step_2_image_mobile_alt: A security key being inserted into the bottom of a smart phone
+      step_3: Set up your security key
+      step_3a: Click “set up security key” below and follow your browser’s instructions.
       nickname: 安全密钥昵称
       saving: 正在保存你的凭据...

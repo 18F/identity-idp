@@ -31,6 +31,7 @@ zh:
     forget_all_browsers: 忘掉所有浏览器
     idv:
       cancellation_prompt: 取消身份验证
+      canceled: Identity verification is canceled
       come_back_soon: 稍后再回来
       enter_one_time_code: 输入一次性代码
       enter_password: 重新输入你的密码
@@ -56,6 +57,7 @@ zh:
       new: 用 PIV/CAC 登入你的账户
     piv_cac_setup:
       new: 用 PIV/CAC 卡来保护你账户安全
+      upsell: Enhance your account security with a government employee ID
     present_piv_cac: 提供你的 PIV/CAC
     present_webauthn: 连接你的硬件安全密钥
     reactivate_account: 重新激活你账户

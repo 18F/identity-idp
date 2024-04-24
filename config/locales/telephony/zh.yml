@@ -1,6 +1,7 @@
 ---
 zh:
   telephony:
+    account_deleted_notice: This text message confirms you have deleted your %{app_name} account.
     account_reset_cancellation_notice: 删除你 %{app_name} 账户的请求已被取消。
     account_reset_notice: 按照你的请求，你的 %{app_name} 账户会在 24 小时后删除。不想删除你的账户？登入你的 %{app_name} 账户去取消。
     authentication_otp:

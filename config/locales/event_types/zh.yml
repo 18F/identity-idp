@@ -9,6 +9,8 @@ zh:
     authenticator_enabled: 身份证实器应用程序已添加
     backup_codes_added: 备用代码已添加
     eastern_timestamp: '%{timestamp} （东部）'
+    sign_in_notification_timeframe_expired: Expired notification timeframe for sign-in from new device
+    sign_in_unsuccessful_2fa: Failed to authenticate
     email_changed: 电邮地址已更改
     email_deleted: 电邮地址已删除
     gpo_mail_sent: 信已发送

@@ -17,6 +17,9 @@ zh:
       invalid_link: 链接已过期或有误。  请要求另外一个在手机上验证身份的链接。
     confirm_password_incorrect: 密码不对。
     doc_auth:
+      document_capture_canceled: You have canceled uploading photos of your ID on your phone.
+      selfie_fail_heading: We couldn’t match the photo of yourself to your ID
+      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
       consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
       doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。 
       how_to_verify_form: 选择一个验证身份的方法。
@@ -37,6 +40,7 @@ zh:
     messages:
       already_confirmed: 已确认，请尝试登录
       blank: 请填写这一字段。
+      blank_cert_element_req: We cannot detect a certificate in your request.
       confirmation_code_incorrect: 验证码不对。你打字打对了吗？
       confirmation_invalid_token: 确认链接有误。链接已过期，或者你已确认了你的账户。
       confirmation_period_expired: 过期的确认链接。你可以点击“重新发送确认说明”来得到另一个。
