@@ -16,11 +16,11 @@ zh:
     auth_app:
       change_nickname: Change nickname
       delete: Delete this device
-      deleted: Successfully deleted an authentication app method
-      edit_heading: Manage your authentication app settings
-      manage_accessible_label: Manage authentication app
+      deleted: 成功删除了一个身份验证应用程序方法
+      edit_heading: 管理你的身份验证应用程序设置
+      manage_accessible_label: 管理身份验证应用程序
       nickname: Nickname
-      renamed: Successfully renamed your authentication app method
+      renamed: 成功重新命名了一个身份验证应用程序
     backup_code_header_text: 输入你的备用代码。
     backup_code_prompt: 该安全代码可使用一次。提交后，你下次就需要使用一个新备用代码。
     backup_codes:
@@ -103,11 +103,11 @@ zh:
     piv_cac:
       change_nickname: Change nickname
       delete: Delete this method
-      deleted: Successfully deleted a PIV/CAC method
-      edit_heading: Manage your PIV/CAC settings
-      manage_accessible_label: PIV/CAC
+      deleted: 成功删除了一个 PIV/CAC 方法
+      edit_heading: 管理你的 PIV/CAC 设置
+      manage_accessible_label: 管理 PIV/CAC
       nickname: Nickname
-      renamed: Successfully renamed your PIV/CAC method
+      renamed: 成功重新命名了一个 PIV/CAC 方法
     piv_cac_header_text: 提供你的 PIV/CAC
     please_try_again_html: 请在 <strong>%{countdown}</strong> 后再试一次。
     read_about_two_factor_authentication: 阅读有关双因素身份证实的内容
@@ -162,9 +162,9 @@ zh:
     webauthn_roaming:
       change_nickname: Change nickname
       delete: Delete this device
-      deleted: Successfully deleted a security key method
-      edit_heading: Manage your security key settings
-      manage_accessible_label: Manage security key
+      deleted: 成功删除了一个安全密钥方法
+      edit_heading: 管理你的安全密钥设置
+      manage_accessible_label: 管理安全密钥
       nickname: Nickname
-      renamed: Successfully renamed your security key method
+      renamed: 成功重新命名了一个安全密钥方法
     webauthn_use_key: 使用安全密钥
