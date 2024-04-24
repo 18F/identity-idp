@@ -55,10 +55,6 @@ class NullServiceProviderSession
     1
   end
 
-  def sp_ial
-    1
-  end
-
   def resolved_authn_context_result
     AuthnContextResolver.new(
       service_provider: 'null sp',

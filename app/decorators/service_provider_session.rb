@@ -123,11 +123,7 @@ class ServiceProviderSession
   end
 
   def sp_aal
-    sp.default_aal || 1
-  end
-
-  def sp_ial
-    sp.ial || 1
+    sp&.default_aal || 1
   end
 
   def resolved_authn_context_result

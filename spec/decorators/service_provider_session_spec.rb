@@ -240,33 +240,6 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  xdescribe '#mfa_expiration_interval' do
-    context 'with an AAL2 sp' do
-      before do
-        allow(sp).to receive(:default_aal).and_return(2)
-      end
-
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
-    end
-
-    context 'with an IAL2 sp' do
-      before do
-        allow(sp).to receive(:ial).and_return(2)
-      end
-
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
-    end
-
-    context 'with an sp that is not AAL2 or IAL2 and AAL1 requested' do
-      it { expect(subject.mfa_expiration_interval).to eq(30.days) }
-    end
-
-    context 'with an sp that is not AAL2 or IAL2 and AAL2 requested' do
-      let(:sp_session) { { acr_values: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF } }
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
-    end
-  end
-
   describe '#requested_more_recent_verification?' do
     let(:verified_within) { nil }
     let(:user) { create(:user) }
