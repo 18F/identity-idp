@@ -109,6 +109,12 @@ zh:
       nickname: Nickname
       renamed: 成功重新命名了一个 PIV/CAC 方法
     piv_cac_header_text: 提供你的 PIV/CAC
+    piv_cac_upsell:
+      add_piv: Add PIV/CAC card
+      choose_other_method: 选择其他方法
+      existing_user_info: 由于您使用的是 %{email_type} 电邮，我们建议您添加政府雇员ID作为身份证实方法之一。这将大大提高您帐户的安全性。
+      new_user_info: 由于您使用的是 %{email_type} 电邮，我们建议您添加政府雇员ID作为身份证实方法之一。这为您的帐户增加了另一层安全保障。
+      skip: 跳过
     please_try_again_html: 请在 <strong>%{countdown}</strong> 后再试一次。
     read_about_two_factor_authentication: 阅读有关双因素身份证实的内容
     recaptcha:
