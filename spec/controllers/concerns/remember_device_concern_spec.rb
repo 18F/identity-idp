@@ -9,21 +9,12 @@ RSpec.describe RememberDeviceConcern do
     Class.new(ApplicationController) do
       include(RememberDeviceConcern)
 
-      attr_reader :raw_session
+      attr_reader :raw_session, :request
 
-      def initialize(sp, raw_session)
+      def initialize(sp, raw_session, request)
         @sp = sp
         @raw_session = raw_session
-      end
-
-      def resolved_authn_context_result
-        return nil unless raw_session[:vtr] || raw_session[:acr_values]
-
-        AuthnContextResolver.new(
-          service_provider: @sp,
-          vtr: @raw_session[:vtr],
-          acr_values: @raw_session[:acr_values],
-        ).resolve
+        @request = request
       end
 
       def decorated_sp_session
@@ -38,10 +29,18 @@ RSpec.describe RememberDeviceConcern do
       def current_sp
         @sp
       end
+
+      def sp_from_sp_session
+        @sp
+      end
+
+      def sp_session
+        @raw_session
+      end
     end
   end
 
-  subject(:test_instance) { test_class.new(sp, raw_session) }
+  subject(:test_instance) { test_class.new(sp, raw_session, request) }
 
   describe '#mfa_expiration_interval' do
     let(:expected_aal_1_expiration) { 720.hours }

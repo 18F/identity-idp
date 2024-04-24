@@ -74,14 +74,6 @@ module RememberDeviceConcern
     current_sp&.ial || 1
   end
 
-  # def resolved_authn_context_result
-  #   @resolved_authn_context_result ||= AuthnContextResolver.new(
-  #     service_provider: current_sp,
-  #     vtr: decorated_sp_session.sp_session[:vtr],
-  #     acr_values: decorated_sp_session.sp_session[:acr_values],
-  #   ).resolve
-  # end
-
   def expired_for_interval?(user, interval)
     return false unless has_remember_device_auth_event?
     remember_cookie = remember_device_cookie
