@@ -18,7 +18,7 @@ zh:
         confirm_code_html: 输入来自你身份证实应用程序的代码。如果你在应用程序中设了几个账户，请输入与在 %{app_name_html}对应的代码。
         manual_entry: 或者动手将这个密码输入你的身份证实应用程序。
       piv_cac:
-        account_not_found_html: '用你的电邮地址和密码 <p><strong>%{sing in}</strong>。然后把你的 PIV/CAC 添加到账户。</p> <p><strong>没有%{app_name} 账户？</strong> %{create_account}</p>'
+        account_not_found_html: '用你的电邮地址和密码 <p><strong>%{sign_in}</strong>。然后把你的 PIV/CAC 添加到账户。</p> <p><strong>没有%{app_name} 账户？</strong> %{create_account}</p>'
         add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong> (恰当的证书可能会有你的名字）而且<strong>输入你的个人识别号码（PIN）</strong> (你的个人识别号码（PIN）是在设置 PIV/CAC 时设立的)。'
         already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
         back_to_sign_in: 返回去登录

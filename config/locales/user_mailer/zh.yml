@@ -69,7 +69,7 @@ zh:
           label: 填写我们的意见调查
         greeting: 你好，
         intent: 我们想听听你在邮局亲身验证身份的经历。
-        privacy_html: 你对这份意见调查的回复将会依照下面的 <a href=\"%{url}\">隐私和安全标准</a> 得到保护。
+        privacy_html: 你对这份意见调查的回复将会依照下面的 <a href="%{url}">隐私和安全标准</a> 得到保护。
         request_description: 填写一个简短、匿名的调查问卷，你的意见会帮助我们更好满足你的需求。
         thanks: 感谢使用 %{app_name}。
       header: 花点时间告诉我们，我们表现如何
@@ -92,16 +92,16 @@ zh:
       verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
     in_person_failed_suspected_fraud:
       body:
-        help_center_html: 如需要更多帮助，可以<a href=\"%{help_center_url}\">访问我们的帮助中心</a> 或寻求你试图访问的机构的帮助。
+        help_center_html: 如需要更多帮助，可以<a href="%{help_center_url}">访问我们的帮助中心</a> 或寻求你试图访问的机构的帮助。
         intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
       greeting: 你好，
       subject: 你的身份未能亲身被验证。
     in_person_outage_notification:
       body:
-        closing_html: 对于服务的延迟，我们诚恳道歉。如果你 6 月 1 日之前有问题或没有收到结果，请 <a href=\"%{contact_us_url}\">联系 %{app_name} 客户支持</a>。
+        closing_html: 对于服务的延迟，我们诚恳道歉。如果你 6 月 1 日之前有问题或没有收到结果，请 <a href="%{contact_us_url}">联系 %{app_name} 客户支持</a>。
         heading: 亲身验证身份的结果从 5 月 20 日延到了 5 月 30 日。
         instructions: 如果你已尝试过在邮局完成验证身份的过程，现在则没必要再去试。请放心，你的验证结果没有丢失，而是已被安全保存，而且等我们解决技术问题后就会通过电邮发给你。
-        intro_html: 我们正在解决导致亲身验证身份结果延迟的一个技术问题。<Strong>如果你 5 月 20 日到 29 日之间已经尝试过在邮局完成验证身份的过程，结果可能直到 5 月 30 日（礼拜二）才能通过电邮发给你 </strong>。
+        intro_html: 我们正在解决导致亲身验证身份结果延迟的一个技术问题。<strong>如果你 5 月 20 日到 29 日之间已经尝试过在邮局完成验证身份的过程，结果可能直到 5 月 30 日（礼拜二）才能通过电邮发给你 </strong>。
       subject: '%{app_name} 亲身验证身份的结果延迟了'
     in_person_ready_to_verify:
       subject: 你可以在 %{app_name} 亲身验证身份了
@@ -124,12 +124,12 @@ zh:
         without_sp: 接下来请点击按钮或复制下面的连接来登录 %{sp_name}。
       sign_in: 登录
       subject: 你在 %{sp_name} 成功地验证了身份
-      warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href=\"%{reset_password_url}\"> 重设密码</a>。要报告这件事，<a href=\"%{contact_us_url}\">联系 %{app_name} 支持 %{app_name}</a>。
+      warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href="%{reset_password_url}"> 重设密码</a>。要报告这件事，<a href="%{contact_us_url}">联系 %{app_name} 支持 %{app_name}</a>。
     letter_reminder:
       info_html: 你将收到的信件会含有帮助我们验证你地址的一次性代码。你可以登入 %{link_html} 并输入该一次性代码来完成身份验证流i程。
       subject: 我们已向你存档地址发送了一封信。
     letter_reminder_14_days:
-      body_html: <P><strong>%{date_letter_was_sent} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>
+      body_html: <p><strong>%{date_letter_was_sent} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>
       did_not_get_a_letter_html: 如果你没有收到这封信， %{another_letter_link_html}。
       finish: 完成验证你的身份
       sign_in_and_request_another_letter: 登录要求再发一封信
@@ -144,11 +144,11 @@ zh:
       help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
       intro_html: 你的 %{app_name_html} 账户有了新密码。
     personal_key_regenerated:
-      help_html: <p>你的 %{app_name} 账户刚得到了一个新的 16 字符的个人密钥。你收到这一电邮是为了确保就是你。</p><p>如果你刚刚登入并重设了个人密钥，没问题！你无需做任何事情。</p><p>如果你刚才没有重设个人密钥，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href=\"%{reset_password_url}\">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href=\"%{account_url}\">登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或安全密钥。</li><li><strong>在你的<a href=\"%{account_url}\">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用该密钥登录一个使用 %{app_name} 的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br> %{app_name} 团队
+      help_html: <p>你的 %{app_name} 账户刚得到了一个新的 16 字符的个人密钥。你收到这一电邮是为了确保就是你。</p><p>如果你刚刚登入并重设了个人密钥，没问题！你无需做任何事情。</p><p>如果你刚才没有重设个人密钥，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}">登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用该密钥登录一个使用 %{app_name} 的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br> %{app_name} 团队
       intro: 新个人密钥已发放
       subject: 账户安全警告
     personal_key_sign_in:
-      help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href=\"%{reset_password_url}\">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href=\"%{account_url}\"> 登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href=\"%{account_url}\">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
+      help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong> 选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}"> 登录你的 %{app_name} 账户</a></strong> 并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>， 请求新个人密钥。</strong> 请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
       intro: 个人密钥被用来登录
       subject: 账户安全警告
     phone_added:

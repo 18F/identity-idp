@@ -5,7 +5,7 @@ zh:
       last_word_connector: ' 和 '
       minutes:
         one: 1 分钟
-        other: '%{Count} 分钟'
+        other: '%{count} 分钟'
       seconds:
         one: 1 秒种
         other: '%{count} 秒'

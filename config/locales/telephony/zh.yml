@@ -19,7 +19,7 @@ zh:
         @%{domain} #%{code}
       voice: 你好! 你的 6-%{format_type} %{app_name} 一次性代码是 %{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
     doc_auth_link: |-
-      %{app_name}: %{Link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
+      %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
     error:
       friendly_message:
         daily_voice_limit_reached: 你的一次性代码未能发出，因为已超出 24 小时内拨打这个电话号码的最多次数。你可以请求通过短信发送代码，或使用另外一个号码来接听电话。

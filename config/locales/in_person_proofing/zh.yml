@@ -40,8 +40,8 @@ zh:
           none_found_tip: 你可以换个地址搜索，或添加你身份证件照片，再次尝试在网上验证你的身份。
           po_search_about: 你能在当地任何一个参与的美国邮局亲身去验证身份。
           results_description:
-            one: %{address}方圆 50 英里有一个参与本项目的邮局。
-            other: %{address}方圆 50 英里有 %{count} 个参与本项目邮局。
+            one: '%{address}方圆 50 英里有一个参与本项目的邮局。'
+            other: '%{address}方圆 50 英里有 %{count} 个参与本项目邮局。'
           results_instructions: 选择下面一个邮局，或者换个地址做搜索。
           search_button: 搜索
           state_label: 州
