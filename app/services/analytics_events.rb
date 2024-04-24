@@ -3316,7 +3316,7 @@ module AnalyticsEvents
       captureAttempts: captureAttempts,
       selfie_attempts: selfie_attempts,
       **extra,
-      )
+    )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
