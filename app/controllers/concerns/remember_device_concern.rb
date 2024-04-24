@@ -59,7 +59,7 @@ module RememberDeviceConcern
 
     return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1
-    return aal_2_expiration if resolved_authn_context_result.aal2?
+    return aal_2_expiration if resolved_authn_context_result&.aal2?
 
     aal_1_expiration
   end
@@ -74,13 +74,13 @@ module RememberDeviceConcern
     current_sp&.ial || 1
   end
 
-  def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
-      service_provider: decorated_sp_session.sp,
-      vtr: decorated_sp_session.sp_session[:vtr],
-      acr_values: decorated_sp_session.sp_session[:acr_values],
-    ).resolve
-  end
+  # def resolved_authn_context_result
+  #   @resolved_authn_context_result ||= AuthnContextResolver.new(
+  #     service_provider: current_sp,
+  #     vtr: decorated_sp_session.sp_session[:vtr],
+  #     acr_values: decorated_sp_session.sp_session[:acr_values],
+  #   ).resolve
+  # end
 
   def expired_for_interval?(user, interval)
     return false unless has_remember_device_auth_event?
