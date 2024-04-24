@@ -3,37 +3,45 @@ require 'rails_helper'
 RSpec.describe RememberDeviceConcern do
   let(:sp) { build(:service_provider) }
   let(:raw_session) { {} }
+  let(:request) { double('request', session: raw_session) }
 
   let(:test_class) do
-    Class.new(self.class) do
+    Class.new(ApplicationController) do
       include(RememberDeviceConcern)
+
+      attr_reader :raw_session
+
+      def initialize(sp, raw_session)
+        @sp = sp
+        @raw_session = raw_session
+      end
 
       def resolved_authn_context_result
         return nil unless raw_session[:vtr] || raw_session[:acr_values]
 
         AuthnContextResolver.new(
-          service_provider: sp,
-          vtr: raw_session[:vtr],
-          acr_values: raw_session[:acr_values],
+          service_provider: @sp,
+          vtr: @raw_session[:vtr],
+          acr_values: @raw_session[:acr_values],
         ).resolve
       end
 
       def decorated_sp_session
         ServiceProviderSession.new(
-          sp: sp,
+          sp: @sp,
           view_context: {},
-          sp_session: raw_session,
+          sp_session: @raw_session,
           service_provider_request: {},
         )
       end
 
       def current_sp
-        sp
+        @sp
       end
     end
   end
 
-  subject(:test_instance) { test_class.new }
+  subject(:test_instance) { test_class.new(sp, raw_session) }
 
   describe '#mfa_expiration_interval' do
     let(:expected_aal_1_expiration) { 720.hours }
