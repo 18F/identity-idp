@@ -8,13 +8,12 @@ module Idv
       include AcuantConcern
       include Idv::AbTestAnalyticsConcern
 
-      def analytics
-        @analytics ||= Analytics.new(
-          user: hybrid_user,
-          request: request,
-          sp: current_sp&.issuer,
-          session: session,
-        )
+      included do
+        before_action :change_analytics_user_to_hybrid_user
+      end
+
+      def change_analytics_user_to_hybrid_user
+        analytics.user = hybrid_user
       end
 
       def hybrid_user
