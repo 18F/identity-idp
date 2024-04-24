@@ -7,6 +7,7 @@ class GpoReminderSender
     reminder_eligible_range =
       IdentityConfig.store.usps_confirmation_max_days.days.ago..for_letters_sent_before
     profiles_due_for_reminder(for_letters_sent_before).each do |profile|
+      next if profile.user.active_profile
       profile.gpo_confirmation_codes.all.each do |gpo_code|
         next if gpo_code.reminder_sent_at
         next unless reminder_eligible_range.cover?(gpo_code.created_at)
