@@ -28,7 +28,7 @@ zh:
     signed_up_but_unconfirmed:
       first_paragraph_end: 带有确认你电邮的链接。点击链接来继续设立你的账户。
       first_paragraph_start: 我们已发电邮到
-      resend_confirmation_email: Resend the confirmation email
+      resend_confirmation_email: 重新发送确认电邮
     timeout_warning:
       partially_signed_in:
         continue: 继续登录
