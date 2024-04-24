@@ -3,19 +3,13 @@ require 'rails_helper'
 RSpec.describe 'GPO verification routes' do
   let(:get_routes) do
     %w[
-      verify/usps
-    ]
-  end
-
-  let(:create_routes) do
-    %w[
-      verify/usps
+      verify/by_mail/request_letter
     ]
   end
 
   let(:put_routes) do
     %w[
-      verify/usps
+      verify/by_mail/request_letter
     ]
   end
 
@@ -38,11 +32,6 @@ RSpec.describe 'GPO verification routes' do
           to route_to(controller: 'pages', action: 'page_not_found', path: route)
       end
 
-      create_routes.each do |route|
-        expect(post: route).
-          to route_to(controller: 'pages', action: 'page_not_found', path: route)
-      end
-
       put_routes.each do |route|
         expect(put: route).
           to route_to(controller: 'pages', action: 'page_not_found', path: route)
@@ -59,15 +48,11 @@ RSpec.describe 'GPO verification routes' do
 
     it 'routes to endpoints controlled by feature flag' do
       get_routes.each do |route|
-        expect(get: route).to be_routable
-      end
-
-      create_routes.each do |route|
-        expect(post: route).to be_routable
+        expect(get: route).to route_to(controller: 'idv/by_mail/request_letter', action: 'index')
       end
 
       put_routes.each do |route|
-        expect(put: route).to be_routable
+        expect(put: route).to route_to(controller: 'idv/by_mail/request_letter', action: 'create')
       end
     end
   end

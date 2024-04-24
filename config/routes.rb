@@ -425,10 +425,6 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
         put '/by_mail/request_letter' => 'by_mail/request_letter#create'
-
-        # Temporary routes + redirects supporting GPO route renaming
-        get '/usps' => redirect('/verify/by_mail/request_letter')
-        put '/usps' => 'by_mail/request_letter#create'
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
