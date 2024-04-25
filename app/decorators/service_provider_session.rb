@@ -122,10 +122,6 @@ class ServiceProviderSession
     view_context&.current_user
   end
 
-  def sp_aal
-    sp&.default_aal || 1
-  end
-
   def resolved_authn_context_result
     @resolved_authn_context_result ||= AuthnContextResolver.new(
       service_provider: sp,
@@ -139,6 +135,10 @@ class ServiceProviderSession
   private
 
   attr_reader :view_context, :service_provider_request
+
+  def sp_aal
+    sp&.default_aal || 1
+  end
 
   def request_url
     sp_session[:request_url] || service_provider_request.url
