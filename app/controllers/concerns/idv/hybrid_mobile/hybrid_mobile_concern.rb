@@ -9,10 +9,10 @@ module Idv
       include Idv::AbTestAnalyticsConcern
 
       def analytics_user
-        hybrid_user || AnonymousUser.new
+        current_or_hybrid_user || AnonymousUser.new
       end
 
-      def hybrid_user
+      def current_or_hybrid_user
         return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_user?
 
         current_user

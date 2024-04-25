@@ -6,6 +6,7 @@ module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
       include Idv::AvailabilityConcern
+      include Idv::HybridMobile::HybridMobileConcern
       include RenderConditionConcern
       include UspsInPersonProofing
 
@@ -92,16 +93,6 @@ module Idv
           status: :establishing,
           profile: nil,
         )
-      end
-
-      def current_or_hybrid_user
-        return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_user?
-
-        current_user
-      end
-
-      def hybrid_user?
-        session[:doc_capture_user_id].present?
       end
 
       def search_params
