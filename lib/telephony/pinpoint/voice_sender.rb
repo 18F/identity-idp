@@ -10,6 +10,7 @@ module Telephony
         en: DEFAULT_VOICE_ID,
         fr: ['fr-FR', 'Mathieu'],
         es: ['es-US', 'Miguel'],
+        zh: ['cmn-CN', 'Zhiyu'],
       }.freeze
       # One connection pool per config (aka per-region)
       # rubocop:disable Style/MutableConstant
