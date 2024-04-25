@@ -24,15 +24,6 @@ RSpec.describe RememberDeviceConcern do
         @request = request
       end
 
-      def decorated_sp_session
-        ServiceProviderSession.new(
-          sp: @sp,
-          view_context: {},
-          sp_session: @raw_session,
-          service_provider_request: {},
-        )
-      end
-
       def sp_from_sp_session
         @sp
       end
