@@ -1464,40 +1464,6 @@ step_indicator.flows.idv.verify_phone_or_address: "Verify your phone number"
 step_indicator.status.complete: "Completed"
 step_indicator.status.current: "Current step"
 step_indicator.status.not_complete: "Not completed"
-telephony.account_deleted_notice: "This text message confirms you have deleted your %{app_name} account."
-telephony.account_reset_cancellation_notice: "Your request to delete your %{app_name} account has been canceled."
-telephony.account_reset_notice: "As requested, your %{app_name} account will be deleted in %{interval}. Don’t want to delete your account? Sign in to your %{app_name} account to cancel."
-telephony.authentication_otp.sms:
-  "%{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don’t share this code with anyone.
-
-
-  @%{domain} #%{code}"
-telephony.authentication_otp.voice: "Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes."
-telephony.confirmation_ipp_enrollment_result.sms: "%{app_name}: You visited the Post Office on %{proof_date}. Check email for your result. Not you? Report this right away: %{contact_number}. Ref: %{reference_string}"
-telephony.confirmation_otp.sms:
-  "%{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don’t share this code with anyone.
-
-
-  @%{domain} #%{code}"
-telephony.confirmation_otp.voice: "Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes."
-telephony.doc_auth_link: "%{app_name}: %{link} You’re verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue."
-telephony.error.friendly_message.daily_voice_limit_reached: "Your one-time code failed to send because you exceeded the maximum number of phone calls in 24 hours to this phone number. You can either request a code by text message or use a different number to receive a phone call."
-telephony.error.friendly_message.duplicate_endpoint: "The phone number entered is not valid."
-telephony.error.friendly_message.generic: "Your one-time code failed to send."
-telephony.error.friendly_message.invalid_calling_area: "Calls to that phone number are not supported. Please try SMS if you have an SMS-capable phone."
-telephony.error.friendly_message.invalid_phone_number: "The phone number entered is not valid."
-telephony.error.friendly_message.opt_out: "The phone number entered has opted out of text messages."
-telephony.error.friendly_message.permanent_failure: "The phone number entered is not valid."
-telephony.error.friendly_message.rate_limited: "That number is experiencing high message volume. Please try again later."
-telephony.error.friendly_message.sms_unsupported: "The phone number entered doesn’t support text messaging. Try the Phone call option."
-telephony.error.friendly_message.temporary_failure: "We are experiencing technical difficulties. Please try again later."
-telephony.error.friendly_message.timeout: "The server took too long to respond. Please try again."
-telephony.error.friendly_message.unknown_failure: "We are experiencing technical difficulties. Please try again later."
-telephony.error.friendly_message.voice_unsupported: "Invalid phone number. Check that you’ve entered the correct country code or area code."
-telephony.format_type.character: "character"
-telephony.format_type.digit: "digit"
-telephony.personal_key_regeneration_notice: "A new personal key has been issued for your %{app_name} account. If this wasn’t you, reset your password."
-telephony.personal_key_sign_in_notice: "Your personal key was just used to sign into your %{app_name} account. If this wasn’t you, reset your password."
 time.am: "AM"
 time.formats.event_date: "%B %-d, %Y"
 time.formats.event_time: "%-l:%M %p"

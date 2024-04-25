@@ -1463,40 +1463,6 @@ step_indicator.flows.idv.verify_phone_or_address: "Vérifier votre numéro de t�
 step_indicator.status.complete: "Terminé"
 step_indicator.status.current: "Étape en cours"
 step_indicator.status.not_complete: "Non terminé"
-telephony.account_deleted_notice: "Cet SMS confirme que vous avez supprimé votre compte %{app_name}."
-telephony.account_reset_cancellation_notice: "Votre demande de suppression de votre compte %{app_name} a été annulée."
-telephony.account_reset_notice: "Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler."
-telephony.authentication_otp.sms:
-  "%{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
-
-
-  @%{domain} #%{code}"
-telephony.authentication_otp.voice: "Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. Une fois de plus, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes."
-telephony.confirmation_ipp_enrollment_result.sms: "%{app_name}: Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail. Ce n’est pas vous? Signalez-le: %{contact_number}. Réf: %{reference_string}"
-telephony.confirmation_otp.sms:
-  "%{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
-
-
-  @%{domain} #%{code}"
-telephony.confirmation_otp.voice: "Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. Une fois de plus, votre code à usage unique est %{code}. Ce code expire dans %{expiration}"
-telephony.doc_auth_link: "%{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d’identité pour continuer."
-telephony.error.friendly_message.daily_voice_limit_reached: "L’envoi de votre code à usage unique a échoué car vous avez dépassé le nombre maximal d’appels vers ce numéro de téléphone en 24 heures. Vous pouvez demander un code par SMS ou utiliser un autre numéro pour recevoir un appel téléphonique."
-telephony.error.friendly_message.duplicate_endpoint: "Le numéro de téléphone entré n’est pas valide."
-telephony.error.friendly_message.generic: "Votre code à usage unique n’a pas été envoyé."
-telephony.error.friendly_message.invalid_calling_area: "Les appels vers ce numéro de téléphone ne sont pas pris en charge. Veuillez essayer par SMS si vous possédez un téléphone disposant de cette fonction."
-telephony.error.friendly_message.invalid_phone_number: "Le numéro de téléphone saisi n’est pas valide."
-telephony.error.friendly_message.opt_out: "Le numéro de téléphone entré a désactivé les messages texte."
-telephony.error.friendly_message.permanent_failure: "Le numéro de téléphone entré n’est pas valide."
-telephony.error.friendly_message.rate_limited: "Ce nombre connaît un volume de messages élevé. Veuillez réessayer plus tard."
-telephony.error.friendly_message.sms_unsupported: "Le numéro de téléphone saisi ne prend pas en charge les messages textuels. Veuillez essayer l’option d’appel téléphonique."
-telephony.error.friendly_message.temporary_failure: "Nous rencontrons des difficultés techniques. Veuillez réessayer plus tard."
-telephony.error.friendly_message.timeout: "Le serveur a pris trop de temps pour répondre. Veuillez réessayer."
-telephony.error.friendly_message.unknown_failure: "Nous rencontrons des difficultés techniques. Veuillez réessayer plus tard."
-telephony.error.friendly_message.voice_unsupported: "Numéro de téléphone invalide. Vérifiez que vous avez entré le bon indicatif international ou régional."
-telephony.format_type.character: "caractère"
-telephony.format_type.digit: "chiffres"
-telephony.personal_key_regeneration_notice: "Une nouvelle clé personnelle a été émise pour votre compte %{app_name}. Si vous ne l’avez pas demandée, réinitialisez votre mot de passe."
-telephony.personal_key_sign_in_notice: "Votre clé personnelle a été utilisée pour vous connecter à votre compte %{app_name}. Si ce n’était pas vous, changez votre mot de passe."
 time.am: "A.M."
 time.formats.event_date: "%-d %B %Y"
 time.formats.event_time: "%H:%M"

@@ -1462,40 +1462,6 @@ step_indicator.flows.idv.verify_phone_or_address: "Verifique su número de telé
 step_indicator.status.complete: "Completo"
 step_indicator.status.current: "Siguiente paso"
 step_indicator.status.not_complete: "No se ha completado"
-telephony.account_deleted_notice: "Este SMS confirma que ha eliminado su cuenta de %{app_name}."
-telephony.account_reset_cancellation_notice: "Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada."
-telephony.account_reset_notice: "Según lo solicitado, su cuenta %{app_name} se eliminará en %{interval}. ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name} para cancelar."
-telephony.authentication_otp.sms:
-  "%{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
-
-
-  @%{domain} #%{code}"
-telephony.authentication_otp.voice: "¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code}, Su código único es %{code}, De nuevo, Su código único de es %{code}, Este código expira en %{expiration} minutos."
-telephony.confirmation_ipp_enrollment_result.sms: "%{app_name}: Visitó la oficina de correos el %{proof_date}. Revise su correo electrónico. ¿No fue usted? Llame: %{contact_number}. Ref: %{reference_string}"
-telephony.confirmation_otp.sms:
-  "%{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
-
-
-  @%{domain} #%{code}"
-telephony.confirmation_otp.voice: "¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code}, Su código único es %{code}, De nuevo, Su código único de es %{code}, Este código expira en %{expiration} minutos."
-telephony.doc_auth_link: "%{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar."
-telephony.error.friendly_message.daily_voice_limit_reached: "Su código de un solo uso no se ha podido enviar, ya que ha superado el número máximo de llamadas en 24 horas a este número de teléfono. Puedes solicitar un código por mensaje de texto o utilizar un número diferente para recibir una llamada telefónica."
-telephony.error.friendly_message.duplicate_endpoint: "El número de teléfono ingresado no es válido."
-telephony.error.friendly_message.generic: "No se pudo enviar su código de verificación."
-telephony.error.friendly_message.invalid_calling_area: "No se admiten llamadas a ese número de teléfono. Intenta enviar un SMS si tienes un teléfono que permita enviar SMS."
-telephony.error.friendly_message.invalid_phone_number: "El número de teléfono ingresado no está en el formato correcto."
-telephony.error.friendly_message.opt_out: "El número de teléfono ingresado ha sido excluido de los mensajes de texto."
-telephony.error.friendly_message.permanent_failure: "El número de teléfono ingresado no es válido."
-telephony.error.friendly_message.rate_limited: "Ese número está experimentando un alto volumen de mensajes. Por favor, inténtelo de nuevo más tarde."
-telephony.error.friendly_message.sms_unsupported: "El número de teléfono ingresado no admite mensajes de texto. Pruebe la opción de llamada telefónica."
-telephony.error.friendly_message.temporary_failure: "Estamos experimentando dificultades técnicas. Por favor, inténtelo de nuevo más tarde."
-telephony.error.friendly_message.timeout: "El servidor tardó demasiado en responder. Inténtalo de nuevo."
-telephony.error.friendly_message.unknown_failure: "Estamos experimentando dificultades técnicas. Por favor, inténtelo de nuevo más tarde."
-telephony.error.friendly_message.voice_unsupported: "Numero de telefono invalido. Verifique que haya ingresado el código de país o de área correcto."
-telephony.format_type.character: "carácter"
-telephony.format_type.digit: "dígitos"
-telephony.personal_key_regeneration_notice: "Se ha emitido una nueva clave personal para tu cuenta %{app_name}. Si no eres tú, restablece tu contraseña."
-telephony.personal_key_sign_in_notice: "Su clave personal solo se utilizó para iniciar sesión en su cuenta %{app_name}. Si no fue así, reinicie su contraseña."
 time.am: "AM"
 time.formats.event_date: "%-d de %B %Y"
 time.formats.event_time: "%H:%M"
