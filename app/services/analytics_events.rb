@@ -2070,7 +2070,7 @@ module AnalyticsEvents
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
-  # @param [Boolean,nil] opted_in_to_in_person_proofing whether the User opted into In Person Proofing.
+  # @param [Boolean,nil] opted_in_to_in_person_proofing whether the User opted into IPP.
   # The user visited the "ready to verify" page for the in person proofing flow
   def idv_in_person_ready_to_verify_visit(proofing_components: nil,
                                           active_profile_idv_level: nil,
@@ -2739,6 +2739,7 @@ module AnalyticsEvents
   # @param [Boolean] encrypted_profiles_missing True if user's session had no encrypted pii
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean,nil] opted_in_to_in_person_proofing whether the User opted into IPP.
   # User visited IDV personal key page
   def idv_personal_key_visited(
     proofing_components: nil,
@@ -2747,6 +2748,7 @@ module AnalyticsEvents
     encrypted_profiles_missing: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -2757,6 +2759,7 @@ module AnalyticsEvents
       encrypted_profiles_missing: encrypted_profiles_missing,
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
