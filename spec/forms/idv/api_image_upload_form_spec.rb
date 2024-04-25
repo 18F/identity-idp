@@ -502,7 +502,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.doc_auth_success?).to eq(false)
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
-        expect(response.pii_from_doc).to eq({})
+        expect(response.pii_from_doc).to eq(nil)
         expect(response.doc_auth_success?).to eq(false)
       end
 

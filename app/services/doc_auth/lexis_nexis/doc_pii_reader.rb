@@ -19,8 +19,9 @@ module DocAuth
 
       private
 
+      # @return [Pii::StateId, nil]
       def read_pii(true_id_product)
-        return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
+        return nil unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
         pii = {}
         PII_INCLUDES.each do |true_id_key, idp_key|
           pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
@@ -32,23 +33,23 @@ module DocAuth
           month: pii.delete(:dob_month),
           day: pii.delete(:dob_day),
         )
-        pii[:dob] = dob if dob
+        pii[:dob] = dob
 
         exp_date = parse_date(
           year: pii.delete(:state_id_expiration_year),
           month: pii.delete(:state_id_expiration_month),
           day: pii.delete(:state_id_expiration_day),
         )
-        pii[:state_id_expiration] = exp_date if exp_date
+        pii[:state_id_expiration] = exp_date
 
         issued_date = parse_date(
           year: pii.delete(:state_id_issued_year),
           month: pii.delete(:state_id_issued_month),
           day: pii.delete(:state_id_issued_day),
         )
-        pii[:state_id_issued] = issued_date if issued_date
+        pii[:state_id_issued] = issued_date
 
-        pii
+        Pii::StateId.new(**pii)
       end
 
       PII_INCLUDES = {
