@@ -12,10 +12,16 @@ class CreateNewDeviceAlert < ApplicationJob
       emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
     end
 
+    analytics.create_new_device_alert_job_emails_sent(count: emails_sent)
+
     emails_sent
   end
 
   private
+
+  def analytics
+    @analytics ||= Analytics.new(user: AnonymousUser.new, request: nil, sp: nil, session: {})
+  end
 
   def sql_query_for_users_with_new_device
     <<~SQL

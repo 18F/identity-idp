@@ -334,6 +334,12 @@ module AnalyticsEvents
     )
   end
 
+  # New device sign-in alerts sent after expired notification timeframe
+  # @param [Integer] Number of emails sent
+  def create_new_device_alert_job_emails_sent(count:, **extra)
+    track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
+  end
+
   # @param [String] message the warning
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
