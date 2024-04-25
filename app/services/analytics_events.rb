@@ -335,7 +335,7 @@ module AnalyticsEvents
   end
 
   # New device sign-in alerts sent after expired notification timeframe
-  # @param [Integer] Number of emails sent
+  # @param [Integer] count Number of emails sent
   def create_new_device_alert_job_emails_sent(count:, **extra)
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
