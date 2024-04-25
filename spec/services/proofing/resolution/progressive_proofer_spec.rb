@@ -30,11 +30,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:dcs_uuid) { SecureRandom.uuid }
   let(:instance) do
     instance = described_class.new(instant_verify_ab_test_discriminator: dcs_uuid)
-
-    allow(instance).to receive(:resolution_proofer).and_call_original
-    # allow(instance).to receive(:user_can_pass_after_state_id_check?).and_return(true)
     allow(instance).to receive(:user_can_pass_after_state_id_check?).and_call_original
-
     instance
   end
 
