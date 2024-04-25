@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 43183812652cb7a75bf2f21f8c667fd082204d86
-  branch: margolis-config-builder
+  revision: 9574e05398833c531f450c3da99a6afde4ce68fc
+  tag: v4.0.0
   specs:
     identity-hostdata (4.0.0)
       activesupport (>= 6.1, < 8)
