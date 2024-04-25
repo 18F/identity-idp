@@ -21,9 +21,13 @@ RSpec.describe BillableEventTrackable do
   let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
   let(:request_id) { SecureRandom.hex }
   let(:session_started_at) { 5.minutes.ago }
-  let(:initiating_sp) { create(:service_provider) }
-  let(:active_profile) { create(:profile, :active, :verified, user: current_user, initiating_service_provider: initiating_sp) } 
-  # Do session_started_at and profile_verified_at need to be different, is there some relationship 
+  let(:active_profile) do
+    create(
+      :profile, :active, :verified, user: current_user,
+                                    initiating_service_provider: current_sp
+    )
+  end
+  # Do session_started_at and profile_verified_at need to be different, is there some relationship
   # to be account for in tests?
 
   around do |ex|
@@ -49,7 +53,7 @@ RSpec.describe BillableEventTrackable do
 
   describe '#track_billing_events' do
     it 'does not fail if SpReturnLog row already exists' do
-      binding.pry
+      # binding.pry
       SpReturnLog.create(
         request_id: request_id,
         user_id: current_user.id,
@@ -58,11 +62,19 @@ RSpec.describe BillableEventTrackable do
         issuer: current_sp.issuer,
         requested_at: session_started_at,
         returned_at: Time.zone.now,
+        profile_id: active_profile.id,
+        profile_verified_at: active_profile.verified_at,
+        profile_requested_issuer: active_profile.initiating_service_provider.issuer,
       )
 
       expect do
         instance.track_billing_events
       end.to_not(change { SpReturnLog.count }.from(1))
+      sp_return_log = SpReturnLog.last
+      expect(sp_return_log.profile_id).to eq active_profile.id
+      expect(sp_return_log.profile_verified_at).to eq active_profile.verified_at
+      expect(sp_return_log.profile_requested_issuer).
+        to eq active_profile.initiating_service_provider.issuer
     end
   end
 end
