@@ -119,30 +119,24 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
   /**
    * Given a translation domain and locale, returns the file path corresponding to locale data.
    *
-   * @param {string} domain
    * @param {string} locale
    *
    * @return {string}
    */
-  getLocaleFilePath(domain, locale) {
+  getLocaleFilePath(locale) {
     return path.resolve(this.options.configPath, `${locale}.yml`);
   }
 
   /**
    * Returns a promise resolving to parsed YAML data for the given domain and locale.
    *
-   * @param {string} domain
    * @param {string} locale
    *
    * @return {Promise<undefined|Record<string, string>>}
    */
-  getLocaleData(domain, locale) {
-    // if (!(domain in this.localeData)) {
-    //   this.localeData[domain] = Object.create(null);
-    // }
-
+  getLocaleData(locale) {
     if (!(locale in this.localeData)) {
-      const localePath = this.getLocaleFilePath(domain, locale);
+      const localePath = this.getLocaleFilePath(locale);
 
       this.localeData[locale] = fs
         .readFile(localePath, 'utf-8')
@@ -163,11 +157,9 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    * @return {Promise<string>}
    */
   async resolveTranslation(key, locale, onMissingString = this.options.onMissingString) {
-    const keyPath = getKeyPath(key);
-    const domain = getKeyDomain(keyPath);
-    const localeData = await this.getLocaleData(domain, locale);
+    const localeData = await this.getLocaleData(locale);
 
-    let translation = dig(localeData, [locale, ...keyPath]);
+    let translation = localeData?.[key];
     if (translation === undefined) {
       translation = onMissingString(key, locale);
     }
@@ -182,28 +174,14 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
   /**
    * Returns a promise resolving to unique locales for the given domain.
    *
-   * @param {string} domain
-   *
    * @return {Promise<string[]>}
    */
-  async getDomainLocales(domain) {
-    const localeFiles = await fs.readdir(path.resolve(this.options.configPath, domain));
+  async getLocales() {
+    const localeFiles = await fs.readdir(this.options.configPath);
 
     return localeFiles
       .filter((file) => file.endsWith('.yml'))
       .map((file) => path.basename(file, '.yml'));
-  }
-
-  /**
-   * Returns a promise resolving to the unique set of locales for the set of keys.
-   *
-   * @param {string[]} keys
-   *
-   * @return {Promise<string[]>}
-   */
-  async getLocales(keys) {
-    const domains = getKeyDomains(keys);
-    return uniq((await Promise.all(domains.map((domain) => this.getDomainLocales(domain)))).flat());
   }
 
   /**
@@ -228,7 +206,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
   }
 
   async getAdditionalAssets(keys) {
-    const locales = await this.getLocales(keys);
+    const locales = await this.getLocales();
 
     /**
      * @param {string} locale
