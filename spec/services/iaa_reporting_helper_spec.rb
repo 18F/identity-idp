@@ -150,12 +150,14 @@ RSpec.describe IaaReportingHelper do
   describe '#partner_accounts' do
     let(:service_provider1) { create(:service_provider) }
     let(:service_provider2) { create(:service_provider) }
+    let(:service_provider3) { create(:service_provider) }
 
     before do
       partner_account1.integrations << integration3
       partner_account2.integrations << integration4
       iaa_order1.integrations << integration3
       iaa_order2.integrations << integration4
+      iaa_order2.integrations << integration5
       iaa_order1.save
       iaa_order2.save
     end
@@ -166,6 +168,9 @@ RSpec.describe IaaReportingHelper do
       end
       let(:integration4) do
         build_integration(service_provider: service_provider2, partner_account: partner_account2)
+      end
+      let(:integration5) do
+        build_integration(service_provider: service_provider3, partner_account: partner_account2)
       end
 
       it 'returns partner requesting_agency for the given partneraccountid for serviceproviders' do
@@ -178,7 +183,7 @@ RSpec.describe IaaReportingHelper do
           ),
           IaaReportingHelper::PartnerConfig.new(
             partner: partner_account2.requesting_agency,
-            issuers: [service_provider2.issuer],
+            issuers: [service_provider2.issuer, service_provider3.issuer].sort,
             start_date: iaa2_range.begin,
             end_date: iaa2_range.end,
           ),
