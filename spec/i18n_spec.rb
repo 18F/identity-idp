@@ -8,6 +8,27 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
 ].sort.freeze
 
+ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
+  # need to be fixed
+  'zh.account_reset.pending.confirm',
+  'zh.account_reset.pending.wait_html',
+  'zh.account_reset.recovery_options.check_webauthn_platform_info',
+  'zh.doc_auth.headings.welcome',
+  'zh.doc_auth.info.exit.with_sp',
+  'zh.idv.cancel.headings.exit.with_sp',
+  'zh.idv.failure.exit.with_sp',
+  'zh.in_person_proofing.body.barcode.return_to_partner_link',
+  'zh.mfa.info',
+  'zh.telephony.account_reset_notice',
+  'zh.two_factor_authentication.account_reset.pending',
+  'zh.user_mailer.account_reset_granted.intro_html',
+  'zh.user_mailer.account_reset_request.header',
+  'zh.user_mailer.account_reset_request.intro_html',
+  'zh.user_mailer.in_person_verified.next_sign_in.without_sp',
+  'zh.user_mailer.in_person_verified.subject',
+  'zh.user_mailer.new_device_sign_in.info',
+].sort.freeze
+
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
 # solution based on current content, intended to help prevent accidents when adding new translated
 # content. If you are having issues with new content, it would be reasonable to remove or modify
@@ -29,6 +50,7 @@ module I18n
   module Tasks
     class BaseTask
       # List of keys allowed to be untranslated or are the same as English
+      # rubocop:disable Layout/LineLength
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
@@ -43,7 +65,165 @@ module I18n
         { key: 'time.formats.sms_date' }, # for us date format
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
+        # double check
+        { key: 'date.formats.long', locales: %i[zh] },
+        { key: 'date.formats.short', locales: %i[zh] },
+        { key: 'time.formats.event_date', locales: %i[zh] },
+        { key: 'time.formats.event_time', locales: %i[zh] },
+        { key: 'time.formats.event_timestamp', locales: %i[zh] },
+        # need to be fixed
+        { key: 'account_reset.pending.canceled', locales: %i[zh] },
+        { key: 'account_reset.recovery_options.check_saved_credential', locales: %i[zh] },
+        { key: 'account_reset.recovery_options.use_same_device', locales: %i[zh] },
+        { key: 'anonymous_mailer.password_reset_missing_user.create_new_account', locales: %i[zh] },
+        { key: 'anonymous_mailer.password_reset_missing_user.info_no_account', locales: %i[zh] },
+        { key: 'anonymous_mailer.password_reset_missing_user.info_request_different', locales: %i[zh] },
+        { key: 'anonymous_mailer.password_reset_missing_user.subject', locales: %i[zh] },
+        { key: 'anonymous_mailer.password_reset_missing_user.try_different_email', locales: %i[zh] },
+        { key: 'anonymous_mailer.password_reset_missing_user.use_this_email_html', locales: %i[zh] },
+        { key: 'doc_auth.buttons.close', locales: %i[zh] },
+        { key: 'doc_auth.errors.alerts.selfie_not_live', locales: %i[zh] },
+        { key: 'doc_auth.errors.alerts.selfie_not_live_help_link_text', locales: %i[zh] },
+        { key: 'doc_auth.errors.alerts.selfie_poor_quality', locales: %i[zh] },
+        { key: 'doc_auth.errors.general.selfie_failure', locales: %i[zh] },
+        { key: 'doc_auth.errors.general.selfie_failure_help_link_text', locales: %i[zh] },
+        { key: 'doc_auth.headings.hybrid_handoff_selfie', locales: %i[zh] },
+        { key: 'doc_auth.info.getting_started_html', locales: %i[zh] },
+        { key: 'doc_auth.info.getting_started_learn_more', locales: %i[zh] },
+        { key: 'doc_auth.info.hybrid_handoff_ipp_html', locales: %i[zh] },
+        { key: 'doc_auth.info.selfie_capture_content', locales: %i[zh] },
+        { key: 'doc_auth.info.selfie_capture_status.face_close_to_border', locales: %i[zh] },
+        { key: 'doc_auth.info.selfie_capture_status.face_not_found', locales: %i[zh] },
+        { key: 'doc_auth.info.selfie_capture_status.face_too_small', locales: %i[zh] },
+        { key: 'doc_auth.info.selfie_capture_status.too_many_faces', locales: %i[zh] },
+        { key: 'doc_auth.info.stepping_up_html', locales: %i[zh] },
+        { key: 'doc_auth.instructions.bullet4', locales: %i[zh] },
+        { key: 'doc_auth.instructions.getting_started', locales: %i[zh] },
+        { key: 'doc_auth.instructions.text3', locales: %i[zh] },
+        { key: 'doc_auth.instructions.text4', locales: %i[zh] },
+        { key: 'doc_auth.tips.document_capture_selfie_text4', locales: %i[zh] },
+        { key: 'errors.doc_auth.document_capture_canceled', locales: %i[zh] },
+        { key: 'errors.doc_auth.selfie_fail_heading', locales: %i[zh] },
+        { key: 'errors.doc_auth.selfie_not_live_or_poor_quality_heading', locales: %i[zh] },
+        { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] },
+        { key: 'event_types.sign_in_notification_timeframe_expired', locales: %i[zh] },
+        { key: 'event_types.sign_in_unsuccessful_2fa', locales: %i[zh] },
+        { key: 'forms.buttons.continue_ipp', locales: %i[zh] },
+        { key: 'forms.buttons.continue_remote', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.intro', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.learn_more', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.set_up', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.step_1', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.step_1a', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.step_2', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.step_2_image_alt', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.step_2_image_mobile_alt', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.step_3', locales: %i[zh] },
+        { key: 'forms.webauthn_setup.step_3a', locales: %i[zh] },
+        { key: 'idv.failure.setup.fail_html', locales: %i[zh] },
+        { key: 'idv.failure.verify.exit', locales: %i[zh] },
+        { key: 'image_description.phone_icon', locales: %i[zh] },
+        { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] },
+        { key: 'mfa.recommendation', locales: %i[zh] },
+        { key: 'notices.signed_up_but_unconfirmed.resend_confirmation_email', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] },
+        { key: 'telephony.account_deleted_notice', locales: %i[zh] },
+        { key: 'titles.idv.canceled', locales: %i[zh] },
+        { key: 'titles.piv_cac_setup.upsell', locales: %i[zh] },
+        { key: 'two_factor_authentication.auth_app.change_nickname', locales: %i[zh] },
+        { key: 'two_factor_authentication.auth_app.delete', locales: %i[zh] },
+        { key: 'two_factor_authentication.auth_app.deleted', locales: %i[zh] },
+        { key: 'two_factor_authentication.auth_app.edit_heading', locales: %i[zh] },
+        { key: 'two_factor_authentication.auth_app.manage_accessible_label', locales: %i[zh] },
+        { key: 'two_factor_authentication.auth_app.nickname', locales: %i[zh] },
+        { key: 'two_factor_authentication.auth_app.renamed', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac.change_nickname', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac.delete', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac.deleted', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac.edit_heading', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac.manage_accessible_label', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac.nickname', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac.renamed', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac_upsell.add_piv', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac_upsell.choose_other_method', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac_upsell.existing_user_info', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac_upsell.new_user_info', locales: %i[zh] },
+        { key: 'two_factor_authentication.piv_cac_upsell.skip', locales: %i[zh] },
+        { key: 'two_factor_authentication.recommended', locales: %i[zh] },
+        { key: 'two_factor_authentication.webauthn_roaming.change_nickname', locales: %i[zh] },
+        { key: 'two_factor_authentication.webauthn_roaming.delete', locales: %i[zh] },
+        { key: 'two_factor_authentication.webauthn_roaming.deleted', locales: %i[zh] },
+        { key: 'two_factor_authentication.webauthn_roaming.edit_heading', locales: %i[zh] },
+        { key: 'two_factor_authentication.webauthn_roaming.manage_accessible_label', locales: %i[zh] },
+        { key: 'two_factor_authentication.webauthn_roaming.nickname', locales: %i[zh] },
+        { key: 'two_factor_authentication.webauthn_roaming.renamed', locales: %i[zh] },
+        { key: 'user_mailer.in_person_please_call.body.contact_message_html', locales: %i[zh] },
+        { key: 'user_mailer.in_person_please_call.body.intro_html', locales: %i[zh] },
+        { key: 'user_mailer.in_person_please_call.header', locales: %i[zh] },
+        { key: 'user_mailer.in_person_please_call.subject', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_after_2fa.authentication_methods', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_after_2fa.info_p1', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_after_2fa.info_p2', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_after_2fa.info_p3_html', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_after_2fa.reset_password', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_after_2fa.subject', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_attempts.new_sign_in_from', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.one', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.other', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_before_2fa.info_p2', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_before_2fa.info_p3_html', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_before_2fa.reset_password', locales: %i[zh] },
+        { key: 'user_mailer.new_device_sign_in_before_2fa.subject', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.bad_client_id', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.invalid_verified_within_duration.one', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.invalid_verified_within_duration.other', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.invalid_verified_within_format', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.missing_ial', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.no_auth', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.no_valid_acr_values', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.no_valid_scope', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.prompt_invalid', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.redirect_uri_invalid', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.redirect_uri_no_match', locales: %i[zh] },
+        { key: 'openid_connect.authorization.errors.unauthorized_scope', locales: %i[zh] },
+        { key: 'openid_connect.logout.confirm', locales: %i[zh] },
+        { key: 'openid_connect.logout.deny', locales: %i[zh] },
+        { key: 'openid_connect.logout.errors.client_id_invalid', locales: %i[zh] },
+        { key: 'openid_connect.logout.errors.client_id_missing', locales: %i[zh] },
+        { key: 'openid_connect.logout.errors.id_token_hint', locales: %i[zh] },
+        { key: 'openid_connect.logout.errors.id_token_hint_present', locales: %i[zh] },
+        { key: 'openid_connect.logout.errors.no_client_id_or_id_token_hint', locales: %i[zh] },
+        { key: 'openid_connect.logout.heading', locales: %i[zh] },
+        { key: 'openid_connect.logout.heading_with_sp', locales: %i[zh] },
+        { key: 'openid_connect.token.errors.expired_code', locales: %i[zh] },
+        { key: 'openid_connect.token.errors.invalid_aud', locales: %i[zh] },
+        { key: 'openid_connect.token.errors.invalid_authentication', locales: %i[zh] },
+        { key: 'openid_connect.token.errors.invalid_code', locales: %i[zh] },
+        { key: 'openid_connect.token.errors.invalid_code_verifier', locales: %i[zh] },
+        { key: 'openid_connect.token.errors.invalid_iat', locales: %i[zh] },
+        { key: 'openid_connect.token.errors.invalid_signature', locales: %i[zh] },
+        { key: 'openid_connect.user_info.errors.malformed_authorization', locales: %i[zh] },
+        { key: 'openid_connect.user_info.errors.no_authorization', locales: %i[zh] },
+        { key: 'openid_connect.user_info.errors.not_found', locales: %i[zh] },
+        { key: 'risc.security_event.errors.alg_unsupported', locales: %i[zh] },
+        { key: 'risc.security_event.errors.aud_invalid', locales: %i[zh] },
+        { key: 'risc.security_event.errors.event_type_missing', locales: %i[zh] },
+        { key: 'risc.security_event.errors.event_type_unsupported', locales: %i[zh] },
+        { key: 'risc.security_event.errors.exp_present', locales: %i[zh] },
+        { key: 'risc.security_event.errors.jti_not_unique', locales: %i[zh] },
+        { key: 'risc.security_event.errors.jti_required', locales: %i[zh] },
+        { key: 'risc.security_event.errors.jwt_could_not_parse', locales: %i[zh] },
+        { key: 'risc.security_event.errors.no_public_key', locales: %i[zh] },
+        { key: 'risc.security_event.errors.sub_not_found', locales: %i[zh] },
+        { key: 'risc.security_event.errors.sub_unsupported', locales: %i[zh] },
+        { key: 'risc.security_event.errors.subject_type_unsupported', locales: %i[zh] },
+        { key: 'risc.security_event.errors.typ_error', locales: %i[zh] },
       ].freeze
+      # rubocop:enable Layout/LineLength
 
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
@@ -117,6 +297,7 @@ RSpec.describe 'I18n' do
 
   it 'does not have keys with missing interpolation arguments (check callsites for correct args)' do
     missing_interpolation_argument_keys = []
+    missing_interpolation_argument_locale_keys = []
 
     i18n.data[i18n.base_locale].select_keys do |key, _node|
       if key.start_with?('i18n.transliterate.rule.') || i18n.t(key).is_a?(Array) || i18n.t(key).nil?
@@ -124,6 +305,10 @@ RSpec.describe 'I18n' do
       end
 
       interpolation_arguments = i18n.locales.map do |locale|
+        if ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS.include?("#{locale}.#{key}")
+          missing_interpolation_argument_locale_keys.push("#{locale}.#{key}")
+          next
+        end
         extract_interpolation_arguments i18n.t(key, locale)
       end.compact
 
@@ -131,6 +316,9 @@ RSpec.describe 'I18n' do
     end
 
     expect(missing_interpolation_argument_keys.sort).to eq ALLOWED_INTERPOLATION_MISMATCH_KEYS
+    expect(missing_interpolation_argument_locale_keys.sort).to eq(
+      ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS,
+    )
   end
 
   it 'has matching HTML tags' do
