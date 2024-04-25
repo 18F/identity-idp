@@ -19,44 +19,6 @@ const ExtractKeysWebpackPlugin = require('./extract-keys-webpack-plugin.js');
  */
 
 /**
- * Returns the value in the object at the given key path.
- *
- * @example
- * ```js
- * const value = dig({ a: { b: { c: 'foo' } } }, ['a', 'b', 'c']);
- * // 'foo'
- * ```
- *
- * @param {undefined|Record<string, any>} object
- * @param {string[]} keyPath
- *
- * @return {any}
- */
-function dig(object, keyPath) {
-  let result = object;
-  for (const segment of keyPath) {
-    if (result == null) {
-      return;
-    }
-
-    result = result[segment];
-  }
-
-  return result;
-}
-
-/**
- * Returns unique values from the given array.
- *
- * @template V
- *
- * @param {V[]} values
- *
- * @returns {V[]}
- */
-const uniq = (values) => [...new Set(values)];
-
-/**
  * Returns truthy values from the given array.
  *
  * @template V
@@ -66,34 +28,6 @@ const uniq = (values) => [...new Set(values)];
  * @returns {V[]}
  */
 const compact = (values) => /** @type {V[]} */ (values.filter(Boolean));
-
-/**
- * Returns the given key as a path of parts.
- *
- * @param {string} key
- *
- * @return {string[]}
- */
-const getKeyPath = (key) => key.split('.');
-
-/**
- * Returns domain for a key string, or split key path.
- *
- * @param {string|string[]} keyOrKeyPath
- *
- * @return {string} The domain.
- */
-const getKeyDomain = (keyOrKeyPath) =>
-  (Array.isArray(keyOrKeyPath) ? keyOrKeyPath : getKeyPath(keyOrKeyPath))[0];
-
-/**
- * Returns unique domains for the given set of keys.
- *
- * @param {string[]} keys
- *
- * @return {string[]}
- */
-const getKeyDomains = (keys) => uniq(keys.map(getKeyDomain));
 
 /**
  * @extends {ExtractKeysWebpackPlugin<RailsI18nWebpackPluginOptions>}
@@ -225,9 +159,4 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
 }
 
 module.exports = RailsI18nWebpackPlugin;
-module.exports.dig = dig;
-module.exports.uniq = uniq;
 module.exports.compact = compact;
-module.exports.getKeyPath = getKeyPath;
-module.exports.getKeyDomain = getKeyDomain;
-module.exports.getKeyDomains = getKeyDomains;
