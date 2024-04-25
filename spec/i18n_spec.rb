@@ -6,7 +6,7 @@ require 'i18n/tasks'
 # List of keys allowed to contain different interpolation arguments across locales
 ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
-].freeze
+].sort.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
 # solution based on current content, intended to help prevent accidents when adding new translated
@@ -75,8 +75,14 @@ module I18n
 
       def allowed_untranslated_key?(locale, key)
         ALLOWED_UNTRANSLATED_KEYS.any? do |entry|
-          next unless key&.match?(Regexp.new(entry[:key]))
-          !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
+          next unless key.match?(Regexp.new(entry[:key]))
+          result = !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
+
+          if result
+            entry[:used] = true
+          end
+
+          result
         end
       end
     end
@@ -108,6 +114,12 @@ RSpec.describe 'I18n' do
       be_empty,
       "untranslated i18n keys: #{untranslated_keys}",
     )
+
+    unused_allowed_untranslated_keys = I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.filter { |x| !x[:used] }
+    expect(unused_allowed_untranslated_keys).to(
+      be_empty,
+      "unused allowed untranslated i18n keys: #{unused_allowed_untranslated_keys}",
+    )
   end
 
   it 'does not have keys with missing interpolation arguments (check callsites for correct args)' do
@@ -125,9 +137,7 @@ RSpec.describe 'I18n' do
       missing_interpolation_argument_keys.push(key) if interpolation_arguments.uniq.length > 1
     end
 
-    missing_interpolation_argument_keys -= ALLOWED_INTERPOLATION_MISMATCH_KEYS
-
-    expect(missing_interpolation_argument_keys).to be_empty
+    expect(missing_interpolation_argument_keys.sort).to eq ALLOWED_INTERPOLATION_MISMATCH_KEYS
   end
 
   it 'has matching HTML tags' do
