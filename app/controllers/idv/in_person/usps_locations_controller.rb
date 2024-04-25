@@ -58,7 +58,7 @@ module Idv
 
       def add_proofing_component
         ProofingComponent.
-          create_or_find_by(user: current_user).
+          create_or_find_by(user: current_or_hybrid_user).
           update(document_check: Idp::Constants::Vendors::USPS)
       end
 
@@ -83,15 +83,25 @@ module Idv
       end
 
       def confirm_authenticated_for_api
-        render json: { success: false }, status: :unauthorized if !current_user
+        render json: { success: false }, status: :unauthorized if !current_or_hybrid_user
       end
 
       def enrollment
         InPersonEnrollment.find_or_initialize_by(
-          user: current_user,
+          user: current_or_hybrid_user,
           status: :establishing,
           profile: nil,
         )
+      end
+
+      def current_or_hybrid_user
+        return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_user?
+
+        current_user
+      end
+
+      def hybrid_user?
+        session[:doc_capture_user_id].present?
       end
 
       def search_params
