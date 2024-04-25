@@ -22,6 +22,7 @@ module DocAuth
     EXPIRATION_CHECKS = 'expiration_checks' # expiration date valid, expiration crosscheck
     FULL_NAME_CHECK = 'full_name_check'
     GENERAL_ERROR = 'general_error'
+    GENERAL_ERROR_LIVENESS = 'general_error_liveness'
     ID_NOT_RECOGNIZED = 'id_not_recognized'
     ID_NOT_VERIFIED = 'id_not_verified'
     ISSUE_DATE_CHECKS = 'issue_date_checks'
@@ -65,6 +66,7 @@ module DocAuth
       EXPIRATION_CHECKS,
       FULL_NAME_CHECK,
       GENERAL_ERROR,
+      GENERAL_ERROR_LIVENESS,
       ID_NOT_RECOGNIZED,
       ID_NOT_VERIFIED,
       ISSUE_DATE_CHECKS,
@@ -120,6 +122,7 @@ module DocAuth
       MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       # Selfie errors
+      GENERAL_ERROR_LIVENESS => { long_msg: GENERAL_ERROR_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
       SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_FAILURE, hints: false },
       SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_FAILURE, hints: false },
       SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },

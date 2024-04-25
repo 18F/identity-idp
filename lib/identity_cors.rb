@@ -6,6 +6,7 @@ class IdentityCors
     'https://www.login.gov',
     'https://login.gov',
     'https://handbook.login.gov',
+    'https://lg-public.pages.production.gitlab.login.gov',
     FEDERALIST_REGEX,
   ].freeze
 

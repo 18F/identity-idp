@@ -3,7 +3,6 @@
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
 require 'identity/hostdata'
-require 'subprocess'
 require 'yaml'
 
 module Deploy
@@ -106,7 +105,8 @@ module Deploy
 
       cmd = ['git', 'clone', '--depth', '1', '--branch', 'main', private_git_repo_url, checkout_dir]
       logger.info('+ ' + cmd.join(' '))
-      Subprocess.check_call(cmd)
+      result = system(*cmd)
+      raise "failed to execute command #{cmd.join(' ')}" if !result
     end
 
     def idp_config_checkout_name

@@ -1334,31 +1334,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
-  # @param [String] acuant_version
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
-  # @param [Array] ids ID Types the user has checked whether they have
-  # @param [String] use_alternate_sdk
-  # Exit survey of optional questions when the user leaves document capture
-  def idv_exit_optional_questions(
-    acuant_sdk_upgrade_a_b_testing_enabled:,
-    acuant_version:,
-    flow_path:,
-    ids:,
-    use_alternate_sdk:,
-    **extra
-  )
-    track_event(
-      'Frontend: IdV: exit optional questions',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      ids: ids,
-      use_alternate_sdk: use_alternate_sdk,
-      **extra,
-    )
-  end
-
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
@@ -3259,6 +3234,27 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # Camera is ready to detect face for capturing selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
+  def idv_sdk_selfie_image_capture_initialized(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_capture_initialized,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
+
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User opened the SDK to take a selfie

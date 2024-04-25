@@ -4,7 +4,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   let(:state_id_jurisdiction) { 'CA' }
   let(:state_id_number) { '123456789' }
   let(:applicant) do
-    applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
+    Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-abcd-efgh',
       first_name: 'Testy',
       last_name: 'McTesterson',
@@ -13,13 +13,10 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       city: 'Sterling',
       state: 'VA',
       zipcode: '20176-1234',
-    )
-    applicant.state_id_data.merge!(
       state_id_number: state_id_number,
       state_id_jurisdiction: state_id_jurisdiction,
       state_id_type: 'drivers_license',
     )
-    applicant
   end
   let(:auth_token) { 'KEYKEYKEY' }
   let(:transaction_id) { '1234-abcd-efgh' }
