@@ -122,14 +122,6 @@ class ServiceProviderSession
     view_context&.current_user
   end
 
-  def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
-      service_provider: sp,
-      vtr: sp_session[:vtr],
-      acr_values: sp_session[:acr_values],
-    ).resolve
-  end
-
   attr_reader :sp, :sp_session
 
   private
