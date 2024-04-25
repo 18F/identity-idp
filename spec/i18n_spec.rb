@@ -68,21 +68,21 @@ module I18n
           node = data[current_locale].first.children[key]
           next unless node&.value&.is_a?(String)
           next if node.value.empty?
-          next if allowed_untranslated_key?(current_locale, key)
-          node.value == base_locale_value
+          next unless node.value == base_locale_value
+          true unless allowed_untranslated_key?(current_locale, key)
         end
       end
 
       def allowed_untranslated_key?(locale, key)
         ALLOWED_UNTRANSLATED_KEYS.any? do |entry|
-          next unless key.match?(Regexp.new(entry[:key]))
-          result = !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
+          next if entry[:key].is_a?(Regexp) && !key.match?(entry[:key])
+          next if entry[:key].is_a?(String) && key != entry[:key]
 
-          if result
+          if !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
             entry[:used] = true
-          end
 
-          result
+            true
+          end
         end
       end
     end
@@ -115,7 +115,9 @@ RSpec.describe 'I18n' do
       "untranslated i18n keys: #{untranslated_keys}",
     )
 
-    unused_allowed_untranslated_keys = I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.filter { |x| !x[:used] }
+    unused_allowed_untranslated_keys = I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.filter do |x|
+      !x[:used]
+    end
     expect(unused_allowed_untranslated_keys).to(
       be_empty,
       "unused allowed untranslated i18n keys: #{unused_allowed_untranslated_keys}",
