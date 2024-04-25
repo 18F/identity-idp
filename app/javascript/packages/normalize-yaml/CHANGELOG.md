@@ -7,6 +7,7 @@
 ### New Features
 
 - Added new punctuation formatter to collapse multiple spaces to a single space.
+- Added `--double-quote` command line arg that overrides Prettier's `singleQuote` option with `false`
 
 ## v2.0.0
 
