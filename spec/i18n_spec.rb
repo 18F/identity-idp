@@ -107,9 +107,8 @@ RSpec.describe 'I18n' do
       "untranslated i18n keys: #{untranslated_keys}",
     )
 
-    unused_allowed_untranslated_keys = I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.filter do |x|
-      !x[:used]
-    end
+    unused_allowed_untranslated_keys =
+      I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.reject { |key| key[:used] }
     expect(unused_allowed_untranslated_keys).to(
       be_empty,
       "unused allowed untranslated i18n keys: #{unused_allowed_untranslated_keys}",
