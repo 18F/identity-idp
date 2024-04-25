@@ -3301,6 +3301,25 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # User opened the SDK to take a selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] selfie_attempts number of selfie captured by SDK
+  def idv_sdk_selfie_image_taken(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_taken,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User took a selfie image with the SDK, or uploaded a selfie using the file picker
