@@ -16,20 +16,14 @@ RSpec.describe RememberDeviceConcern do
     Class.new(ApplicationController) do
       include(RememberDeviceConcern)
 
-      attr_reader :raw_session, :request
+      attr_reader :sp, :raw_session, :request
+      alias :sp_from_sp_session :sp
+      alias :sp_session :raw_session
 
       def initialize(sp, raw_session, request)
         @sp = sp
         @raw_session = raw_session
         @request = request
-      end
-
-      def sp_from_sp_session
-        @sp
-      end
-
-      def sp_session
-        @raw_session
       end
     end
   end
