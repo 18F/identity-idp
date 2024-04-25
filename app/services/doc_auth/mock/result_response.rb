@@ -82,7 +82,7 @@ module DocAuth
         if parsed_data_from_uploaded_file.present?
           parsed_pii_from_doc
         else
-          Idp::Constants::MOCK_IDV_APPLICANT
+          Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
         end
       end
 
@@ -132,11 +132,11 @@ module DocAuth
 
       def parsed_pii_from_doc
         if parsed_data_from_uploaded_file.has_key?('document')
-          Idp::Constants::MOCK_IDV_APPLICANT.merge(
-            parsed_data_from_uploaded_file['document'].symbolize_keys,
+          Pii::StateId.new(
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
+              parsed_data_from_uploaded_file['document'].symbolize_keys,
+            ).slice(*Pii::StateId.members),
           )
-        else
-          {}
         end
       end
 

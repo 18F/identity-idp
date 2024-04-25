@@ -95,8 +95,8 @@ module Idv
       end
 
       response.extra.merge!(extra_attributes)
-      response.extra[:state] = response.pii_from_doc[:state]
-      response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
+      response.extra[:state] = response.pii_from_doc.to_h[:state]
+      response.extra[:state_id_type] = response.pii_from_doc.to_h[:state_id_type]
 
       update_analytics(
         client_response: response,
@@ -119,7 +119,7 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(
-        pii: client_response.pii_from_doc,
+        pii: client_response.pii_from_doc.to_h,
         attention_with_barcode: client_response.attention_with_barcode?,
       ).submit
       response.extra.merge!(extra_attributes)
@@ -452,7 +452,7 @@ module Idv
     end
 
     def track_event(response)
-      pii_from_doc = response.pii_from_doc || {}
+      pii_from_doc = response.pii_from_doc.to_h || {}
       stored_image_result = store_encrypted_images_if_required
 
       irs_attempts_api_tracker.idv_document_upload_submitted(
