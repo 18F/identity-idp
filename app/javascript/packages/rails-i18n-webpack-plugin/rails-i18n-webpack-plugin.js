@@ -111,9 +111,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    * Cached locale data.
    *
    * @type {{
-   *   [domain: string]: {
-   *     [locale: string]: Promise<{ [key: string]: string }>
-   *   }
+   *   [locale: string]: Promise<{ [key: string]: string }>
    * }}
    */
   localeData = Object.create(null);
@@ -127,7 +125,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    * @return {string}
    */
   getLocaleFilePath(domain, locale) {
-    return path.resolve(this.options.configPath, domain, `${locale}.yml`);
+    return path.resolve(this.options.configPath, `${locale}.yml`);
   }
 
   /**
@@ -139,20 +137,20 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    * @return {Promise<undefined|Record<string, string>>}
    */
   getLocaleData(domain, locale) {
-    if (!(domain in this.localeData)) {
-      this.localeData[domain] = Object.create(null);
-    }
+    // if (!(domain in this.localeData)) {
+    //   this.localeData[domain] = Object.create(null);
+    // }
 
-    if (!(locale in this.localeData[domain])) {
+    if (!(locale in this.localeData)) {
       const localePath = this.getLocaleFilePath(domain, locale);
 
-      this.localeData[domain][locale] = fs
+      this.localeData[locale] = fs
         .readFile(localePath, 'utf-8')
         .then(YAML.parse)
         .catch(() => {});
     }
 
-    return this.localeData[domain][locale];
+    return this.localeData[locale];
   }
 
   /**
