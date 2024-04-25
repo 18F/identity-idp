@@ -7,38 +7,35 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
   # @param filename [String] filename, assumed to have the locale slug in the filename such as "en.txt"
   # @return [Array(Hash, Boolean)] tuple of a hash and keys_symbolized
   def load_yml(filename)
-    locale = File.basename(filename, '.yml')
-    content = YAML.load_file(filename)
+    content, keys_symbolized = super
 
-    if content.kind_of?(Hash) && content.keys == [locale]
+    if content.is_a?(Hash) && content.keys.size == 1 && content[content.keys.first].is_a?(Hash)
       # Nested .yml
-      [content, false]
+      [content, keys_symbolized]
     else
       # Flattened .yml
+      locale = File.basename(filename, '.yml')
+
       [
         {
-          locale => unflatten(File.readlines(filename, chomp: true))
+          locale => unflatten(content)
         },
         false,
-      ]  
+      ]
     end
   end
 
-  # @param [Array<String>] lines
-  # @return [Array(Hash, Boolean)] tuple of a hash and keys_symbolized
+  # @param [Hash<String, String>] key_values
+  # @return [Hash<String, Hash<String, String>>]
   def unflatten(key_values)
     result = {}
 
     key_values.each do |full_key, value|
-      # full_key, value_str = line.split(':', 2)
-      # value = JSON.parse(value_str)
-
-      key_parts = full_key.split('.')
-      last = key_parts.last
+      *key_parts, last = full_key.to_s.split('.')
 
       to_insert = result
 
-      key_parts.each_cons(2) do |key_part, next_part|
+      key_parts.each do |key_part|
         to_insert = (to_insert[key_part] ||= {})
       end
 
