@@ -34,7 +34,6 @@ module Identity
 
     Identity::Hostdata.load_config!(
       app_root: Rails.root,
-      logger: Identity::Hostdata.logger,
       rails_env: Rails.env,
       write_copy_to: Rails.root.join('tmp', 'application.yml'),
       &IdentityConfig::BUILDER
