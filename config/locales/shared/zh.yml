@@ -9,7 +9,8 @@ zh:
       landmark_label: 官方政府网站
       lock_description: 锁上的锁头
       official_site: 美国政府的一个官方网站
-      secure_description_html: 一把 <strong>锁</strong> ( %{lock_icon} )或者 <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
+      secure_description_html: 一把 <strong>锁</strong> ( %{lock_icon} )或者
+        <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
       secure_heading: 安全的 .gov 网站使用 HTTPS
     footer_lite:
       gsa: 美国联邦总务管理局

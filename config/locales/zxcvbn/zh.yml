@@ -13,8 +13,7 @@ zh:
       capitalization_doesnt_help_very_much: 把字母大写并无多大帮助
       common_names_and_surnames_are_easy_to_guess: 常见姓名容易被猜出
       dates_are_often_easy_to_guess: 日期常常容易被猜出
-      for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases:
-        强密码请使用被空格分开的几个字，但避免常见短语
+      for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases: 强密码请使用被空格分开的几个字，但避免常见短语
       names_and_surnames_by_themselves_are_easy_to_guess: 名字和姓氏本身容易被猜出
       no_need_for_symbols_digits_or_uppercase_letters: 不需要符号、数字或大写字母
       predictable_substitutions_like__instead_of_a_dont_help_very_much: 用‘@’ 代替‘a’这样的可预测替换，并无多大帮助

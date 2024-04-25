@@ -16,7 +16,9 @@ zh:
       sentence_connector: 或者
       updated: 你的电邮语言选择已更新。
     forget_all_browsers:
-      longer_description: 你选择“忘掉所有浏览器“后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
+      longer_description:
+        你选择“忘掉所有浏览器“后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS
+        代码或安全密钥）
     index:
       auth_app_add: 添加应用程序
       auth_app_disabled: 未启用
@@ -92,7 +94,9 @@ zh:
       footer: 验证身份来查看你的信息。
     revoke_consent:
       link_title: 切断连接
-      longer_description_html: 你的信息将不再与 %{service_provider_html} 分享。以后要访问 %{service_provider_html}，你必须授权同意分享你的信息。授权同意请到 %{service_provider_html} 网站并登录。
+      longer_description_html: 你的信息将不再与 %{service_provider_html} 分享。以后要访问
+        %{service_provider_html}，你必须授权同意分享你的信息。授权同意请到 %{service_provider_html}
+        网站并登录。
     security:
       link: 请到帮助中心了解更多信息
       text: 为了你的安全，你的用户资料已被锁住。

@@ -66,7 +66,9 @@ zh:
             title: 我们正在解决一个技术问题。你身份验证结果可能要到 %{date} 才能寄到。
           ready_to_verify:
             body: 你仍然可以到邮局去完成验证你的身份。如果你迫切需要得到服务，请直接联系该政府机构。
-            contact_html: 如果你到 %{date}仍然没有收到有关验证结果的电邮 <a href="%{help_url}" target="_blank"> 请联系 %{app_name}支持 %</a> 。
+            contact_html:
+              如果你到 %{date}仍然没有收到有关验证结果的电邮 <a href="%{help_url}" target="_blank">
+              请联系 %{app_name}支持 %</a> 。
             title: 我们正在解决一个技术问题。你身份验证结果可能要到 %{date} 才能通过电邮发给你。
         internal_error: 处理你的请求时内部出错。请再试一次。
         link: 请联系我们。
@@ -101,7 +103,7 @@ zh:
             how_long_it_takes_html: 这需要<strong>5 到 10 天</strong>。
           heading: 我们无法将你与该号码匹配。
           learn_more_link: '了解有关使用什么号码的更多信息。'
-          next_steps_html: '尝试 <strong>a另一个</strong> 你经常使用并用了很久的号码。  工作或住宅号码都行。'
+          next_steps_html: '尝试 <strong>a另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。'
           try_again_button: '尝试另一个号码'
           you_entered: '你输入了：'
       sessions:
@@ -110,14 +112,15 @@ zh:
         heading: 我们找不到与你个人信息匹配的记录
         warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
       setup:
-        fail_html: Call <strong>%{contact_number}</strong> and provide them with the error <br/>code <strong>%{support_code}</strong>.
         fail_date_html: 请给我们的联系中心在<strong>%{date_html}</strong> 之前打电话以继续验证你的身份。
+        fail_html: Call <strong>%{contact_number}</strong> and provide them with the
+          error <br/>code <strong>%{support_code}</strong>.
         heading: 请给我们打个电话
       timeout: 目前处理你请求的时间超出正常等待时间。请再试一次。
       verify:
+        exit: Exit %{app_name}
         fail_link_html: 在<strong>%{sp_name}</strong> 得到
         fail_text: 帮助以获得服务。
-        exit: Exit %{app_name}
         heading: 我们无法验证你的身份证件。
     forgot_password:
       link_text: 忘了密码?
@@ -158,7 +161,9 @@ zh:
         otp_label: 验证码
         submit: 确认账户
         title: 确认你的账户
-      intro_html: '<p>如果你收到了信件，请在下面输入你的一次性代码 。</p><p>如果你的信件还没到，请耐心等待，因为信件最多需要 <strong>10 天</strong>才能送到。感谢你的耐心。</p>'
+      intro_html:
+        '<p>如果你收到了信件，请在下面输入你的一次性代码 。</p><p>如果你的信件还没到，请耐心等待，因为信件最多需要
+        <strong>10 天</strong>才能送到。感谢你的耐心。</p>'
       request_another_letter:
         button: 要求再发一封信
         instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>5 到 10 天</strong>到达。
@@ -173,7 +178,8 @@ zh:
       activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
       activated_link: 联系我们
       clear_and_start_over: 清除我的信息并重新开始。
-      come_back_later_html: <p> 美国邮局平信一般需要 <strong> 5 到 10 天</strong> 送达。</p> <p> 你的信件到达后，请登录 %{app_name}，并按照提示输入你的验证码 </p>。
+      come_back_later_html: <p> 美国邮局平信一般需要 <strong> 5 到 10 天</strong> 送达。</p> <p>
+        你的信件到达后，请登录 %{app_name}，并按照提示输入你的验证码 </p>。
       come_back_later_no_sp_html: 你目前可以返回你的<strong>%{app_name} 账户</strong> 了。
       come_back_later_password_html: <strong>请勿忘记密码。</strong><br /> 如果你重设密码，信件中的一次性代码就会失效，你就需要再次验证身份。
       come_back_later_sp_html: 你目前可以返回 <strong>%{sp}</strong> 了。
@@ -234,7 +240,7 @@ zh:
         learn_more_verify_by_phone: 了解有关使用什么号码的更多信息
         learn_more_verify_by_phone_in_person: 对验证你的电话号码获得更多了解
         learn_more_verify_in_person: 对亲身验证获得更多了解
-        supported_documents: 了解有关哪些身份证件可被接受的更多信息 
+        supported_documents: 了解有关哪些身份证件可被接受的更多信息
         verify_by_mail: 使用邮件来验证地址
     unavailable:
       exit_button: '退出 %{app_name}'

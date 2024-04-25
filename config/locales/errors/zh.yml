@@ -14,19 +14,19 @@ zh:
           one: 密码必须至少有一个字符
           other: 密码必须至少有%{count}个字符
     capture_doc:
-      invalid_link: 链接已过期或有误。  请要求另外一个在手机上验证身份的链接。
+      invalid_link: 链接已过期或有误。 请要求另外一个在手机上验证身份的链接。
     confirm_password_incorrect: 密码不对。
     doc_auth:
-      document_capture_canceled: You have canceled uploading photos of your ID on your phone.
-      selfie_fail_heading: We couldn’t match the photo of yourself to your ID
-      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
       consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-      doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。 
+      doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
+      document_capture_canceled: You have canceled uploading photos of your ID on your phone.
       how_to_verify_form: 选择一个验证身份的方法。
       phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
       rate_limited_heading: 我们无法验证你的身份证件。
       rate_limited_subheading: 尝试再拍照片
       rate_limited_text_html: '为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>'
+      selfie_fail_heading: We couldn’t match the photo of yourself to your ID
+      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
       send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
     enter_code:
       rate_limited_html: 你输入错误验证码太多次。<strong> %{timeout} 后再试。</strong>
@@ -103,7 +103,9 @@ zh:
       already_registered: 人脸或触摸解锁已在该设备上注册。请尝试添加另外一种身份证实方法。
       choose_another_method: 选择另一个身份证实方法
       general_error: 我们无法添加人脸或触摸解锁。再试一次或选择另一个身份证实方法。
-      not_supported: 你的浏览器不支持人脸或触摸解锁。请使用最新版本的 Google Chrome、Microsoft Edge 或 Safari 来使用人脸或触摸解锁。
+      not_supported:
+        你的浏览器不支持人脸或触摸解锁。请使用最新版本的 Google Chrome、Microsoft Edge 或 Safari
+        来使用人脸或触摸解锁。
       unique_name: 这个名字已被使用。请选择一个不同的名字。
     webauthn_setup:
       additional_methods_link: 选择另一个身份证实方法

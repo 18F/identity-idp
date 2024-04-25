@@ -20,11 +20,11 @@ zh:
       next_step: 你在浏览器中启用了 JavaScript后，请刷新本页面。
     manageable_authenticator:
       cancel: 取消
-      created_on:  在 %{date}创建 
+      created_on: 在 %{date}创建
       delete: 删除
       delete_confirm: 你确定要删除该身份证实方法吗？
       deleted: 成功地删除了一个身份证实方法
-      deleting: 删除中...
+      deleting: 删除中…
       done: 做完了
       manage: 管理
       manage_accessible_label: 管理身份证实方法
@@ -32,7 +32,7 @@ zh:
       rename: 重新命名
       renamed: 成功地重新命名了你的身份证实方法
       save: 保存
-      saving: 保存中...
+      saving: 保存中…
     memorable_date:
       day: 日
       errors:
@@ -44,12 +44,12 @@ zh:
         missing_day_year: 输入日和年
         missing_month: 输入月
         missing_month_day: 输入月和日
-        missing_month_day_year:  输入 %{label} 
+        missing_month_day_year: 输入 %{label}
         missing_month_year: 输入月和年
         missing_year: 输入年
-        outside_date_range:  输入 %{label}（%{min} 到 %{max}） 
-        range_overflow:  输入 %{date}或之前日期 
-        range_underflow:  输入 %{date}或之后日期 
+        outside_date_range: 输入 %{label}（%{min} 到 %{max}）
+        range_overflow: 输入 %{date}或之前日期
+        range_underflow: 输入 %{date}或之后日期
       month: 月
       year: 年
     one_time_code_input:

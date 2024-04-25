@@ -64,7 +64,8 @@ zh:
         id_types:
           - 州驾照
           - 州非驾照身份卡
-        info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong> 我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
+        info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>
+          我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
         learn_more_link: 了解更多有关哪些身份证件可被接受的信息。
         questions: 有问题吗？
     form:
@@ -102,8 +103,9 @@ zh:
         state_id_jurisdiction: 颁发州
         state_id_jurisdiction_hint: 这是颁发你身份证件的州
         state_id_jurisdiction_prompt: '- 选择 -'
-        state_id_number_florida_hint_html: This is the number on your ID with one letter and 12 numbers. Example:&nbsp;D123-456-78-901-2
         state_id_number: 身份证件号
+        state_id_number_florida_hint_html: This is the number on your ID with one letter
+          and 12 numbers. Example:&nbsp;D123-456-78-901-2
         state_id_number_hint: '可以包含字母、数字以及以下符号：'
         state_id_number_hint_asterisks: 星号
         state_id_number_hint_dashes: 横杠

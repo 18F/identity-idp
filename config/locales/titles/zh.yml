@@ -30,8 +30,8 @@ zh:
       phone_verification: 电话号码未验证
     forget_all_browsers: 忘掉所有浏览器
     idv:
-      cancellation_prompt: 取消身份验证
       canceled: Identity verification is canceled
+      cancellation_prompt: 取消身份验证
       come_back_soon: 稍后再回来
       enter_one_time_code: 输入一次性代码
       enter_password: 重新输入你的密码
