@@ -18,7 +18,6 @@ module IaaReportingHelper
   end
 
   PartnerConfig = Struct.new(
-    :partner_account_id,
     :partner,
     :issuers,
     :start_date,
@@ -64,9 +63,9 @@ module IaaReportingHelper
             usage.iaa_order.end_date
           end
         end
+
         if issuers.present?
           PartnerConfig.new(
-            partner_account_id: partner_account.id,
             partner: partner_account.requesting_agency,
             issuers: issuers.sort,
             start_date: iaa_start_dates.min,

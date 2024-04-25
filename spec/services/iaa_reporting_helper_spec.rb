@@ -1,14 +1,15 @@
 require 'rails_helper'
-RSpec.configure do |rspec|
-  rspec.expect_with :rspec do |c|
-    c.max_formatted_output_length = nil
-  end
-end
+
 RSpec.describe IaaReportingHelper do
   let(:partner_account1) { create(:partner_account) }
   let(:partner_account2) { create(:partner_account) }
   let(:service_provider1) { create(:service_provider) }
-  let(:service_provider2) { create(:service_provider) }
+  let(:service_provider2) do
+    create(
+      :service_provider,
+      issuer: '[\"https://rp1.serviceprovider.com/auth/l/metadata\"][\"https://rp1.serviceprovider.com/auth/l/metadata\"]',
+    )
+  end
 
   let(:gtc1) do
     create(
@@ -42,13 +43,6 @@ RSpec.describe IaaReportingHelper do
   end
   let(:integration2) do
     build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
-  end
-
-  let(:integration3) do
-    build_integration(partner_account: partner_account1, service_provider: service_provider1)
-  end
-  let(:integration4) do
-    build_integration(partner_account: partner_account2, service_provider: service_provider2)
   end
 
   # Have to do this because of invalid check when building integration usages
@@ -168,7 +162,7 @@ RSpec.describe IaaReportingHelper do
     end
   end
 
-  describe '#partneraccounts' do
+  describe '#partner_accounts' do
     before do
       partner_account1.integrations << integration3
       partner_account2.integrations << integration4
@@ -189,14 +183,12 @@ RSpec.describe IaaReportingHelper do
       it 'returns partner requesting_agency for the given partneraccountid for serviceproviders' do
         expect(IaaReportingHelper.partner_accounts).to include(
           IaaReportingHelper::PartnerConfig.new(
-            partner_account_id: partner_account1.id,
             partner: partner_account1.requesting_agency,
             issuers: [service_provider1.issuer],
             start_date: iaa1_range.begin,
             end_date: iaa1_range.end,
           ),
           IaaReportingHelper::PartnerConfig.new(
-            partner_account_id: partner_account2.id,
             partner: partner_account2.requesting_agency,
             issuers: [service_provider2.issuer],
             start_date: iaa2_range.begin,
