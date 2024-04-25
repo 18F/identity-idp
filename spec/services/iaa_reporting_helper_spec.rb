@@ -3,13 +3,6 @@ require 'rails_helper'
 RSpec.describe IaaReportingHelper do
   let(:partner_account1) { create(:partner_account) }
   let(:partner_account2) { create(:partner_account) }
-  let(:service_provider1) { create(:service_provider) }
-  let(:service_provider2) do
-    create(
-      :service_provider,
-      issuer: '[\"https://rp1.serviceprovider.com/auth/l/metadata\"][\"https://rp1.serviceprovider.com/auth/l/metadata\"]',
-    )
-  end
 
   let(:gtc1) do
     create(
@@ -39,10 +32,10 @@ RSpec.describe IaaReportingHelper do
   end
 
   let(:integration1) do
-    build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+    build_integration(service_provider: iaa1_sp, partner_account: partner_account1)
   end
   let(:integration2) do
-    build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
+    build_integration(service_provider: iaa2_sp, partner_account: partner_account2)
   end
 
   # Have to do this because of invalid check when building integration usages
@@ -89,15 +82,7 @@ RSpec.describe IaaReportingHelper do
     )
   end
 
-  def build_integration(issuer:, partner_account:)
-    create(
-      :integration,
-      issuer: issuer,
-      partner_account: partner_account,
-    )
-  end
-
-  def build_integration_sp(service_provider:, partner_account:)
+  def build_integration(service_provider:, partner_account:)
     create(
       :integration,
       service_provider: service_provider,
@@ -122,7 +107,7 @@ RSpec.describe IaaReportingHelper do
       end
 
       let(:integration2) do
-        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account1)
+        build_integration(service_provider: iaa2_sp, partner_account: partner_account1)
       end
 
       let(:iaa2_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
@@ -140,10 +125,10 @@ RSpec.describe IaaReportingHelper do
 
     context 'IAAS on different GTCs' do
       let(:integration1) do
-        build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+        build_integration(service_provider: iaa1_sp, partner_account: partner_account1)
       end
       let(:integration2) do
-        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
+        build_integration(service_provider: iaa2_sp, partner_account: partner_account2)
       end
       let(:iaa_order1) do
         build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
@@ -163,6 +148,9 @@ RSpec.describe IaaReportingHelper do
   end
 
   describe '#partner_accounts' do
+    let(:service_provider1) { create(:service_provider) }
+    let(:service_provider2) { create(:service_provider) }
+
     before do
       partner_account1.integrations << integration3
       partner_account2.integrations << integration4
@@ -174,10 +162,10 @@ RSpec.describe IaaReportingHelper do
 
     context 'SPS on different Partners' do
       let(:integration3) do
-        build_integration_sp(service_provider: service_provider1, partner_account: partner_account1)
+        build_integration(service_provider: service_provider1, partner_account: partner_account1)
       end
       let(:integration4) do
-        build_integration_sp(service_provider: service_provider2, partner_account: partner_account2)
+        build_integration(service_provider: service_provider2, partner_account: partner_account2)
       end
 
       it 'returns partner requesting_agency for the given partneraccountid for serviceproviders' do
