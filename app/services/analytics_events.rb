@@ -2070,16 +2070,19 @@ module AnalyticsEvents
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Boolean,nil] opted_in_to_in_person_proofing whether the User opted into In Person Proofing.
   # The user visited the "ready to verify" page for the in person proofing flow
   def idv_in_person_ready_to_verify_visit(proofing_components: nil,
                                           active_profile_idv_level: nil,
                                           pending_profile_idv_level: nil,
+                                          opted_in_to_in_person_proofing: nil,
                                           **extra)
     track_event(
       'IdV: in person ready to verify visited',
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
