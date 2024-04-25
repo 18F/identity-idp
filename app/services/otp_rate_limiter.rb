@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class OtpRateLimiter
-  def initialize(phone:, user:, phone_confirmed:)
+  def initialize(phone:, user:, phone_confirmed:, limit_type:)
     @phone = phone
     @user = user
     @phone_confirmed = phone_confirmed
+    @limit_type = limit_type
   end
 
   def exceeded_otp_send_limit?
@@ -41,7 +42,7 @@ class OtpRateLimiter
   end
 
   def rate_limiter
-    @rate_limiter ||= RateLimiter.new(rate_limit_type: :phone_otp, target: rate_limit_key)
+    @rate_limiter ||= RateLimiter.new(rate_limit_type: @limit_type, target: rate_limit_key)
   end
 
   private

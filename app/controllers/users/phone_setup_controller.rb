@@ -16,9 +16,7 @@ module Users
     before_action :redirect_if_phone_vendor_outage
     before_action :confirm_recently_authenticated_2fa
     before_action :check_max_phone_numbers_per_account, only: %i[index create]
-    before_action only: [:create] do
-      check_phone_submission_limit(new_phone_form_params[:phone])
-    end
+    before_action :check_phone_submission_limit, only: [:create]
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -138,29 +136,38 @@ module Users
       )
     end
 
-    def check_phone_submission_limit(phone)
-      return false if phone.blank?
-      fingerprint = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164.to_s)
-      @submission_rate_limiter ||= RateLimiter.new(
-        target: fingerprint,
-        rate_limit_type: :phone_submissions,
-      )
-      @submission_rate_limiter.increment!
-      lock_out_user if @submission_rate_limiter.maxed?
+    def check_phone_submission_limit
+      if exceeded_phone_submission_limit?
+        return handle_too_many_phone_submissions
+      end
+      phone_submission_rate_limiter.increment
+      if exceeded_phone_submission_limit?
+        return handle_too_many_phone_submissions
+      end
     end
 
-    def lock_out_user(user: current_user)
-      UpdateUser.new(user: user, attributes: { second_factor_locked_at: Time.zone.now }).call
-      flash[:error] = t(
-        'errors.messages.phone_confirmation_limited',
-        timeout: distance_of_time_in_words(
-          Time.zone.now,
-          [@submission_rate_limiter.expires_at, Time.zone.now].compact.max,
-          except: :seconds,
-        ),
+    def exceeded_phone_submission_limit?
+      if phone_submission_rate_limiter.exceeded_otp_send_limit?
+        return phone_submission_rate_limiter.lock_out_user
+      end
+    end
+
+    def phone_submission_rate_limiter
+      @phone_submission_rate_limiter ||= OtpRateLimiter.new(
+        phone: new_phone_form_params[:phone],
+        user: current_user,
+        phone_confirmed: UserSessionContext.authentication_or_reauthentication_context?(context),
+        limit_type: :phone_submissions,
       )
-      redirect_to account_path
-      return
+    end
+
+    def handle_too_many_phone_submissions
+      presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
+        'otp_requests',
+        current_user,
+      )
+      sign_out
+      render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
     end
   end
 end
