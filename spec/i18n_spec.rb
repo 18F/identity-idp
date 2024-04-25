@@ -57,7 +57,9 @@ module I18n
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
-        { key: /^i18n\.locale\./ }, # Show locale options translated as that language
+        { key: 'i18n.locale.en', locales: %i[es fr zh] },
+        { key: 'i18n.locale.es', locales: %i[es fr zh] },
+        { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
@@ -72,6 +74,8 @@ module I18n
         { key: 'time.formats.event_time', locales: %i[zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         # need to be fixed
+        { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account_reset.pending.canceled', locales: %i[zh] },
         { key: 'account_reset.recovery_options.check_saved_credential', locales: %i[zh] },
         { key: 'account_reset.recovery_options.use_same_device', locales: %i[zh] },
