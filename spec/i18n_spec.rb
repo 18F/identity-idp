@@ -8,6 +8,7 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
 ].sort.freeze
 
+# These are keys with mismatch interpolation for specific locales
 ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   # need to be fixed
   'zh.account_reset.pending.confirm',
@@ -65,7 +66,6 @@ module I18n
         { key: 'time.formats.sms_date' }, # for us date format
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
-        # double check
         { key: 'date.formats.long', locales: %i[zh] },
         { key: 'date.formats.short', locales: %i[zh] },
         { key: 'time.formats.event_date', locales: %i[zh] },
