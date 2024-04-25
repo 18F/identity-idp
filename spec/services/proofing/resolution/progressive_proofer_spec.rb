@@ -200,7 +200,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
-      # Remove the mock of `Proofing::LexisNexis::InstantVerify::Proofer#new`
+      # Remove the mocks:
+      #   `Proofing::LexisNexis::InstantVerify::Proofer#new`
+      #   `Proofing::LexisNexis::InstantVerify#new`
       # in the outermost `before` block after removing this context.
       context 'LexisNexis Instant Verify A/B test enabled' do
         let(:ab_test_variables) do
