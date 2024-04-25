@@ -6,7 +6,7 @@ require 'i18n/tasks'
 # List of keys allowed to contain different interpolation arguments across locales
 ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
-].freeze
+].sort.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
 # solution based on current content, intended to help prevent accidents when adding new translated
@@ -34,22 +34,14 @@ module I18n
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
-        { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
-        { key: 'doc_auth.headings.selfie', locales: %i[fr] }, # "Photo" is "Photo" in French
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
-        { key: /^i18n\.transliterate\./ }, # Approximate non-ASCII characters in ASCII
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
-        { key: 'simple_form.required.html' }, # No text content
-        { key: 'simple_form.required.mark' }, # No text content
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.formats.sms_date' }, # for us date format
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
-        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
-        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
-        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
       ].freeze
 
@@ -68,15 +60,21 @@ module I18n
           node = data[current_locale].first.children[key]
           next unless node&.value&.is_a?(String)
           next if node.value.empty?
-          next if allowed_untranslated_key?(current_locale, key)
-          node.value == base_locale_value
+          next unless node.value == base_locale_value
+          true unless allowed_untranslated_key?(current_locale, key)
         end
       end
 
       def allowed_untranslated_key?(locale, key)
         ALLOWED_UNTRANSLATED_KEYS.any? do |entry|
-          next unless key&.match?(Regexp.new(entry[:key]))
-          !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
+          next if entry[:key].is_a?(Regexp) && !key.match?(entry[:key])
+          next if entry[:key].is_a?(String) && key != entry[:key]
+
+          if !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
+            entry[:used] = true
+
+            true
+          end
         end
       end
     end
@@ -108,6 +106,13 @@ RSpec.describe 'I18n' do
       be_empty,
       "untranslated i18n keys: #{untranslated_keys}",
     )
+
+    unused_allowed_untranslated_keys =
+      I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.reject { |key| key[:used] }
+    expect(unused_allowed_untranslated_keys).to(
+      be_empty,
+      "unused allowed untranslated i18n keys: #{unused_allowed_untranslated_keys}",
+    )
   end
 
   it 'does not have keys with missing interpolation arguments (check callsites for correct args)' do
@@ -125,9 +130,7 @@ RSpec.describe 'I18n' do
       missing_interpolation_argument_keys.push(key) if interpolation_arguments.uniq.length > 1
     end
 
-    missing_interpolation_argument_keys -= ALLOWED_INTERPOLATION_MISMATCH_KEYS
-
-    expect(missing_interpolation_argument_keys).to be_empty
+    expect(missing_interpolation_argument_keys.sort).to eq ALLOWED_INTERPOLATION_MISMATCH_KEYS
   end
 
   it 'has matching HTML tags' do
