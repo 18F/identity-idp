@@ -449,6 +449,7 @@ production:
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
+  available_locales: 'en,es,fr'
   aws_logo_bucket: ''
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
