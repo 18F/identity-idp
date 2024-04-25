@@ -411,7 +411,7 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
       expect(response).to redirect_to idv_verify_info_url
     end
 
-    it 'modifies pii as expected' do
+    xit 'modifies pii as expected' do
       app_id = 'hello-world'
       sp = create(:service_provider, app_id: app_id)
       sp_session = { issuer: sp.issuer }

@@ -25,7 +25,9 @@ module Idv
         uuid_prefix: current_sp&.app_id,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
         store_encrypted_images: store_encrypted_images?,
-        liveness_checking_required: decorated_sp_session.biometric_comparison_required?,
+        liveness_checking_required: decorated_sp_session.biometric_comparison_required?(
+          resolved_authn_context_result,
+        ),
       )
     end
 

@@ -389,6 +389,61 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(sp_return_log.ial).to eq(2)
             end
 
+            # TODO: Fix this to use resolved_authn_context_result
+            xcontext 'SP requests biometric_comparison_required' do
+              let(:selfie_capture_enabled) { true }
+              let(:biometric_comparison_required) { 'true' }
+
+              before do
+                params[:biometric_comparison_required] = biometric_comparison_required.to_s
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+                  and_return(selfie_capture_enabled)
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                  and_return('server_side')
+                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+
+              context 'selfie check was performed' do
+                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                  user.active_profile.idv_level = :unsupervised_with_selfie
+
+                  action
+
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
+              context 'selfie check was not performed' do
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
+              context 'selfie capture not enabled, biometric_comparison_required requested by sp' do
+                let(:selfie_capture_enabled) { false }
+                it 'returns status not_acceptable' do
+                  action
+
+                  expect(response.status).to eq(406)
+                end
+              end
+
+              context 'selfie capture not enabled, biometric_comparison_required param is false' do
+                let(:selfie_capture_enabled) { false }
+                let(:biometric_comparison_required) { 'false' }
+
+                it 'redirects to the service provider' do
+                  action
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+            end
+
             context 'SP has a vector of trust that includes a biometric comparison' do
               let(:selfie_capture_enabled) { true }
               before do

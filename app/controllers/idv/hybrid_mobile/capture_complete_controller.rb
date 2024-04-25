@@ -25,7 +25,9 @@ module Idv
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-          liveness_checking_required: decorated_sp_session.biometric_comparison_required?,
+          liveness_checking_required: decorated_sp_session.biometric_comparison_required?(
+            resolved_authn_context_result,
+          ),
         }.merge(ab_test_analytics_buckets)
       end
     end

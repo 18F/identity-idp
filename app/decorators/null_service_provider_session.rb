@@ -43,7 +43,7 @@ class NullServiceProviderSession
     {}
   end
 
-  def biometric_comparison_required?
+  def biometric_comparison_required?(_resolved_authn_context_result)
     false
   end
 

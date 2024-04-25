@@ -32,7 +32,7 @@ class IdvController < ApplicationController
   private
 
   def already_verified?
-    if decorated_sp_session.biometric_comparison_required?
+    if decorated_sp_session.biometric_comparison_required?(resolved_authn_context_result)
       return current_user.identity_verified_with_biometric_comparison?
     end
 

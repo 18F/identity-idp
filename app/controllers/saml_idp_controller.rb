@@ -113,7 +113,7 @@ class SamlIdpController < ApplicationController
   end
 
   def biometric_comparison_needed?
-    decorated_sp_session.biometric_comparison_required? &&
+    decorated_sp_session.biometric_comparison_required?(resolved_authn_context_result) &&
       !current_user.identity_verified_with_biometric_comparison?
   end
 
