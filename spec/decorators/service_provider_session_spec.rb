@@ -179,34 +179,37 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  # TODO: use resolved_authn_context_result instead of sp_session
-  xdescribe '#selfie_required' do
+  describe '#selfie_required' do
     before do
       expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
         and_return(selfie_capture_enabled)
     end
 
+    let(:resolution_with_biometric_required) do
+      Vot::Parser.new(vector_of_trust: 'Pb').parse
+    end
+
+    let(:resolution_with_no_biometric_required) do
+      Vot::Parser.new(vector_of_trust: 'P1').parse
+    end
+
     context 'doc_auth_selfie_capture_enabled is true' do
       let(:selfie_capture_enabled) { true }
 
-      it 'returns true when sp biometric_comparison_required is true' do
-        sp_session[:biometric_comparison_required] = true
-        expect(subject.biometric_comparison_required?).to eq(true)
-      end
-
-      it 'returns true when sp biometric_comparison_required is truthy' do
-        sp_session[:biometric_comparison_required] = 1
-        expect(subject.biometric_comparison_required?).to eq(true)
+      it 'returns true when a biometric comparison is required' do
+        expect(
+          subject.biometric_comparison_required?(
+            resolution_with_biometric_required,
+          ),
+        ).to eq(true)
       end
 
       it 'returns false when sp biometric_comparison_required is false' do
-        sp_session[:biometric_comparison_required] = false
-        expect(subject.biometric_comparison_required?).to eq(false)
-      end
-
-      it 'returns false when sp biometric_comparison_required is nil' do
-        sp_session[:biometric_comparison_required] = nil
-        expect(subject.biometric_comparison_required?).to eq(false)
+        expect(
+          subject.biometric_comparison_required?(
+            resolution_with_no_biometric_required,
+          ),
+        ).to eq(false)
       end
     end
 
@@ -214,8 +217,11 @@ RSpec.describe ServiceProviderSession do
       let(:selfie_capture_enabled) { false }
 
       it 'returns false' do
-        sp_session[:biometric_comparison_required] = true
-        expect(subject.biometric_comparison_required?).to eq(false)
+        expect(
+          subject.biometric_comparison_required?(
+            resolution_with_biometric_required,
+          ),
+        ).to eq(false)
       end
     end
   end
