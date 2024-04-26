@@ -345,7 +345,6 @@ module Users
         phone: phone_to_deliver_to,
         user: current_user,
         phone_confirmed: UserSessionContext.authentication_or_reauthentication_context?(context),
-        limit_type: :phone_otp,
       )
     end
 
