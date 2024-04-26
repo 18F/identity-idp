@@ -55,7 +55,6 @@ RSpec.describe BillableEventTrackable do
   describe '#track_billing_events' do
     let(:ial_context) { IalContext.new(ial: 2, service_provider: current_sp) }
     it 'does not fail if SpReturnLog row already exists and ial 2' do
-      # binding.pry
       SpReturnLog.create(
         request_id: request_id,
         user_id: current_user.id,

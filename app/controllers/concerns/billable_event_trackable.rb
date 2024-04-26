@@ -36,7 +36,7 @@ module BillableEventTrackable
   end
 
   def current_session_has_been_billed?
-    user_session[session_has_been_billed_flag_key]
+    user_session[session_has_been_billed_flag_key] == true
   end
 
   def mark_current_session_billed
