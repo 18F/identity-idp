@@ -19,7 +19,7 @@ module RememberDeviceConcern
     return unless UserSessionContext.authentication_context?(context)
     return if remember_device_cookie.nil?
 
-    expiration_time = decorated_sp_session.mfa_expiration_interval
+    expiration_time = mfa_expiration_interval
     return unless remember_device_cookie.valid_for_user?(
       user: current_user,
       expiration_interval: expiration_time,
@@ -39,7 +39,7 @@ module RememberDeviceConcern
   def remember_device_expired_for_sp?
     expired_for_interval?(
       current_user,
-      decorated_sp_session.mfa_expiration_interval,
+      mfa_expiration_interval,
     )
   end
 
@@ -53,7 +53,26 @@ module RememberDeviceConcern
     )
   end
 
+  def mfa_expiration_interval
+    aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
+    aal_2_expiration = IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
+
+    return aal_2_expiration if sp_aal > 1
+    return aal_2_expiration if sp_ial > 1
+    return aal_2_expiration if resolved_authn_context_result&.aal2?
+
+    aal_1_expiration
+  end
+
   private
+
+  def sp_aal
+    current_sp&.default_aal || 1
+  end
+
+  def sp_ial
+    current_sp&.ial || 1
+  end
 
   def expired_for_interval?(user, interval)
     return false unless has_remember_device_auth_event?
