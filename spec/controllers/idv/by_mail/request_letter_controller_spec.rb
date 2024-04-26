@@ -208,17 +208,16 @@ RSpec.describe Idv::ByMail::RequestLetterController,
         subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
       end
 
-      xit 'calls the GpoConfirmationMaker to send another letter and redirects' do
+      it 'calls the GpoConfirmationMaker to send another letter and redirects' do
         expect_resend_letter_to_send_letter_and_redirect(otp: false)
       end
 
-      xit 'calls GpoConfirmationMaker to send another letter with reveal_gpo_code on' do
+      it 'calls GpoConfirmationMaker to send another letter with reveal_gpo_code on' do
         allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
         expect_resend_letter_to_send_letter_and_redirect(otp: true)
       end
 
-      # TODO: Make this use resolved_authn_context
-      xit 'logs USPS address letter analytics events with phone step attempts', :freeze_time do
+      it 'logs USPS address letter analytics events with phone step attempts', :freeze_time do
         RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
         expect_resend_letter_to_send_letter_and_redirect(otp: false)
 
@@ -275,7 +274,7 @@ RSpec.describe Idv::ByMail::RequestLetterController,
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 
     service_provider = create(:service_provider, issuer: '123abc')
-    session[:sp] = { issuer: service_provider.issuer }
+    session[:sp] = { issuer: service_provider.issuer, vtr: ['C1'] }
 
     gpo_confirmation_maker = instance_double(GpoConfirmationMaker)
     allow(GpoConfirmationMaker).to receive(:new).
