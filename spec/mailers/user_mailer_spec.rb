@@ -538,8 +538,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#letter_reminder' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).letter_reminder }
+  describe '#verify_by_mail_letter_requested' do
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).verify_by_mail_letter_requested }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -877,7 +877,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#gpo_reminder' do
+  describe '#verify_by_mail_reminder' do
     let(:date_letter_was_sent) { Date.new(1969, 7, 20) }
 
     let(:user) do
@@ -887,7 +887,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).gpo_reminder
+      UserMailer.with(user: user, email_address: email_address).verify_by_mail_reminder
     end
 
     it_behaves_like 'a system email'
