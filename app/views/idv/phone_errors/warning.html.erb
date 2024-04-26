@@ -33,7 +33,7 @@
 
       <div class="margin-y-5">
         <%= render ButtonComponent.new(
-              action: ->(**tag_options, &block) { link_to idv_phone_path, **tag_options, &block },
+              url: idv_phone_path,
               big: true,
               wide: true,
             ).with_content(t('idv.failure.phone.warning.try_again_button')) %>
@@ -51,7 +51,7 @@
 
         <div class="margin-y-5">
           <%= render ButtonComponent.new(
-                action: ->(**tag_options, &block) { link_to idv_request_letter_path, **tag_options, &block },
+                url: idv_request_letter_path,
                 big: true,
                 wide: true,
                 outline: true,

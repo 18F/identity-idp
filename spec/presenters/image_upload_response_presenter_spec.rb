@@ -124,6 +124,7 @@ RSpec.describe ImageUploadResponsePresenter do
       it 'returns hash of properties' do
         expected = {
           success: false,
+          result_code_invalid: true,
           result_failed: false,
           errors: [{ field: :limit, message: t('errors.doc_auth.rate_limited_heading') }],
           redirect: idv_session_errors_rate_limited_url,
@@ -146,6 +147,7 @@ RSpec.describe ImageUploadResponsePresenter do
         it 'returns hash of properties redirecting to capture_complete' do
           expected = {
             success: false,
+            result_code_invalid: true,
             result_failed: false,
             errors: [{ field: :limit, message: t('errors.doc_auth.rate_limited_heading') }],
             redirect: idv_hybrid_mobile_capture_complete_url,
@@ -175,6 +177,7 @@ RSpec.describe ImageUploadResponsePresenter do
       it 'returns hash of properties' do
         expected = {
           success: false,
+          result_code_invalid: true,
           result_failed: false,
           errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
           hints: true,
@@ -202,6 +205,7 @@ RSpec.describe ImageUploadResponsePresenter do
         it 'returns hash of properties' do
           expected = {
             success: false,
+            result_code_invalid: true,
             result_failed: true,
             errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
             hints: true,
@@ -238,6 +242,7 @@ RSpec.describe ImageUploadResponsePresenter do
           it 'returns hash of properties' do
             expected = {
               success: false,
+              result_code_invalid: true,
               result_failed: false,
               errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
               hints: true,
@@ -255,6 +260,7 @@ RSpec.describe ImageUploadResponsePresenter do
         it 'returns hash of properties' do
           expected = {
             success: false,
+            result_code_invalid: true,
             result_failed: false,
             errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
             hints: true,
@@ -334,6 +340,7 @@ RSpec.describe ImageUploadResponsePresenter do
           hints: true,
           remaining_submit_attempts: 3,
           ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
+          result_code_invalid: false,
           doc_type_supported: true,
           failed_image_fingerprints: { back: [], front: [], selfie: [] },
         }
@@ -356,6 +363,7 @@ RSpec.describe ImageUploadResponsePresenter do
           expected = {
             success: false,
             result_failed: false,
+            result_code_invalid: false,
             errors: [],
             hints: true,
             remaining_submit_attempts: 3,

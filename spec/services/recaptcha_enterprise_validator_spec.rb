@@ -7,7 +7,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
   let(:action) { 'example_action' }
   let(:recaptcha_enterprise_api_key) { 'recaptcha_enterprise_api_key' }
   let(:recaptcha_enterprise_project_id) { 'project_id' }
-  let(:recaptcha_site_key_v3) { 'recaptcha_site_key_v3' }
+  let(:recaptcha_site_key) { 'recaptcha_site_key' }
   let(:assessment_url) do
     format(
       '%{base_endpoint}/%{project_id}/assessments?key=%{api_key}',
@@ -31,8 +31,8 @@ RSpec.describe RecaptchaEnterpriseValidator do
       and_return(recaptcha_enterprise_project_id)
     allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
       and_return(recaptcha_enterprise_api_key)
-    allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).
-      and_return(recaptcha_site_key_v3)
+    allow(IdentityConfig.store).to receive(:recaptcha_site_key).
+      and_return(recaptcha_site_key)
   end
 
   describe '#exempt?' do
@@ -122,7 +122,6 @@ RSpec.describe RecaptchaEnterpriseValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
       end
@@ -156,7 +155,6 @@ RSpec.describe RecaptchaEnterpriseValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
       end
@@ -178,7 +176,6 @@ RSpec.describe RecaptchaEnterpriseValidator do
           'reCAPTCHA verify result received',
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
           exception_class: 'Faraday::ConnectionFailed',
         )
@@ -216,7 +213,6 @@ RSpec.describe RecaptchaEnterpriseValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
       end
@@ -253,7 +249,6 @@ RSpec.describe RecaptchaEnterpriseValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
       end
@@ -290,7 +285,6 @@ RSpec.describe RecaptchaEnterpriseValidator do
             },
             evaluated_as_valid: true,
             score_threshold: score_threshold,
-            recaptcha_version: 3,
             validator_class: 'RecaptchaEnterpriseValidator',
             extra: true,
           )
@@ -307,7 +301,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
     end
   end
 
-  def stub_recaptcha_response(body:, action:, site_key: recaptcha_site_key_v3, token: nil)
+  def stub_recaptcha_response(body:, action:, site_key: recaptcha_site_key, token: nil)
     stub_request(:post, assessment_url).
       with do |req|
         req.body == { event: { token:, siteKey: site_key, expectedAction: action } }.to_json

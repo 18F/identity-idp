@@ -24,22 +24,23 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
     expect(get_results_response.success?).to eq(true)
     expect(get_results_response.pii_from_doc).to eq(
-      first_name: 'FAKEY',
-      middle_name: nil,
-      last_name: 'MCFAKERSON',
-      address1: '1 FAKE RD',
-      address2: nil,
-      city: 'GREAT FALLS',
-      state: 'MT',
-      zipcode: '59010',
-      dob: '1938-10-06',
-      state_id_number: '1111111111111',
-      state_id_jurisdiction: 'ND',
-      state_id_type: 'drivers_license',
-      state_id_expiration: '2099-12-31',
-      state_id_issued: '2019-12-31',
-      phone: nil,
-      same_address_as_id: nil,
+      Pii::StateId.new(
+        first_name: 'FAKEY',
+        middle_name: nil,
+        last_name: 'MCFAKERSON',
+        address1: '1 FAKE RD',
+        address2: nil,
+        city: 'GREAT FALLS',
+        state: 'MT',
+        zipcode: '59010',
+        dob: '1938-10-06',
+        state_id_number: '1111111111111',
+        state_id_jurisdiction: 'ND',
+        state_id_type: 'drivers_license',
+        state_id_expiration: '2099-12-31',
+        state_id_issued: '2019-12-31',
+        issuing_country_code: 'US',
+      ),
     )
   end
 
@@ -58,6 +59,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         state_id_number: '111111111'
         state_id_jurisdiction: ND
         state_id_type: drivers_license
+        state_id_expiration: '2089-12-31'
+        state_id_issued: '2009-12-31'
+        issuing_country_code: 'CA'
       classification_info:
           Front:
             ClassName: Tribal Identification
@@ -76,18 +80,66 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
 
     expect(get_results_response.pii_from_doc).to eq(
-      first_name: 'Susan',
-      middle_name: 'Q',
-      last_name: 'Smith',
-      address1: '1 Microsoft Way',
-      address2: 'Apt 3',
-      city: 'Bayside',
-      state: 'NY',
-      zipcode: '11364',
-      dob: '1938-10-06',
-      state_id_number: '111111111',
-      state_id_jurisdiction: 'ND',
-      state_id_type: 'drivers_license',
+      Pii::StateId.new(
+        first_name: 'Susan',
+        middle_name: 'Q',
+        last_name: 'Smith',
+        address1: '1 Microsoft Way',
+        address2: 'Apt 3',
+        city: 'Bayside',
+        state: 'NY',
+        zipcode: '11364',
+        dob: '1938-10-06',
+        state_id_number: '111111111',
+        state_id_jurisdiction: 'ND',
+        state_id_type: 'drivers_license',
+        state_id_expiration: '2089-12-31',
+        state_id_issued: '2009-12-31',
+        issuing_country_code: 'CA',
+      ),
+    )
+    expect(get_results_response.attention_with_barcode?).to eq(false)
+  end
+
+  it 'if the document is a YAML file that does not include all PII attributes returns defaults' do
+    yaml = <<~YAML
+      document:
+        first_name: Susan
+      classification_info:
+          Front:
+            ClassName: Tribal Identification
+    YAML
+
+    client.post_front_image(
+      instance_id: instance_id,
+      image: yaml,
+    )
+    client.post_back_image(
+      instance_id: instance_id,
+      image: yaml,
+    )
+    get_results_response = client.get_results(
+      instance_id: instance_id,
+    )
+
+    expect(get_results_response.pii_from_doc).to eq(
+      Pii::StateId.new(
+        first_name: 'Susan',
+        middle_name: nil,
+        last_name: 'MCFAKERSON',
+        address1: '1 FAKE RD',
+        address2: nil,
+        city: 'GREAT FALLS',
+        state: 'MT',
+        zipcode: '59010',
+        dob: '1938-10-06',
+        state_id_number: '1111111111111',
+        state_id_jurisdiction: 'ND',
+        state_id_type: 'drivers_license',
+        state_id_expiration: '2099-12-31',
+        state_id_issued: '2019-12-31',
+        issuing_country_code: 'US',
+      ),
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
   end

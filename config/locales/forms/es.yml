@@ -98,9 +98,6 @@ es:
       labels:
         email: Ingrese su dirección de correo electrónico
         email_language: Seleccione su preferencia de idioma de correo electrónico
-    spam_protection:
-      description: Utilizamos reCAPTCHA como protección contra el correo no deseado
-        automatizado. Marque la casilla de abajo para continuar.
     ssn:
       show: Mostrar Número de Seguro Social
     totp_setup:

@@ -6,8 +6,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
-import { FeatureFlagContext, SelfieCaptureContext } from '../context';
-import DocumentCaptureAbandon from './document-capture-abandon';
+import { SelfieCaptureContext } from '../context';
 import {
   DocumentCaptureSubheaderOne,
   SelfieCaptureWithHeader,
@@ -39,7 +38,6 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
-  const { exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
 
   const defaultSideProps = {
@@ -82,7 +80,6 @@ function DocumentCaptureReviewIssues({
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />
-      {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );

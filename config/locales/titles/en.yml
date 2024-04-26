@@ -76,7 +76,6 @@ en:
       completion_new_sp: You are now signing in for the first time
       completion_reverified_consent: Share your updated information with %{sp}
       confirmation: Continue to sign in
-    spam_protection: Protecting against spam
     totp_setup:
       new: Add authentication app
     two_factor_setup: Two-factor authentication setup

@@ -11,15 +11,15 @@ module Idv
     def new
       analytics.idv_address_visit
 
-      @address_form = Idv::AddressForm.new(idv_session.pii_from_doc)
+      @address_form = build_address_form
       @presenter = AddressPresenter.new
     end
 
     def update
       clear_future_steps!
-      @address_form = Idv::AddressForm.new(idv_session.pii_from_doc)
+      @address_form = build_address_form
       form_result = @address_form.submit(profile_params)
-      analytics.idv_address_submitted(**form_result.to_h)
+      track_submit_event(form_result)
       capture_address_edited(form_result)
       if form_result.success?
         success
@@ -41,19 +41,25 @@ module Idv
 
     private
 
-    def idv_form
-      Idv::AddressForm.new(idv_session.pii_from_doc)
+    def build_address_form
+      Idv::AddressForm.new(
+        idv_session.updated_user_address || address_from_document,
+      )
+    end
+
+    def address_from_document
+      Pii::Address.new(
+        address1: idv_session.pii_from_doc[:address1],
+        address2: idv_session.pii_from_doc[:address2],
+        city: idv_session.pii_from_doc[:city],
+        state: idv_session.pii_from_doc[:state],
+        zipcode: idv_session.pii_from_doc[:zipcode],
+      )
     end
 
     def success
-      idv_session.pii_from_doc = idv_session.pii_from_doc.merge(
-        address1: @address_form.address1,
-        address2: @address_form.address2,
-        city: @address_form.city,
-        state: @address_form.state,
-        zipcode: @address_form.zipcode,
-      )
-      idv_session.updated_user_address = address_from_form
+      idv_session.address_edited = address_edited?
+      idv_session.updated_user_address = @address_form.updated_user_address
       redirect_to idv_verify_info_url
     end
 
@@ -62,14 +68,13 @@ module Idv
       render :new
     end
 
-    def address_from_form
-      Pii::Address.new(
-        address1: @address_form.address1,
-        address2: @address_form.address2,
-        city: @address_form.city,
-        state: @address_form.state,
-        zipcode: @address_form.zipcode,
-      )
+    def track_submit_event(form_result)
+      address_edited = form_result.success? && address_edited?
+      analytics.idv_address_submitted(**form_result.to_h.merge(address_edited:))
+    end
+
+    def address_edited?
+      address_from_document != @address_form.updated_user_address
     end
 
     def profile_params

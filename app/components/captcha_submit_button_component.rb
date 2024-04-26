@@ -18,16 +18,15 @@ class CaptchaSubmitButtonComponent < BaseComponent
 
   def recaptcha_script_src
     return @recaptcha_script_src if defined?(@recaptcha_script_src)
-    @recaptcha_script_src = begin
-      if IdentityConfig.store.recaptcha_site_key_v3.present?
+    @recaptcha_script_src =
+      if IdentityConfig.store.recaptcha_site_key.present?
         UriService.add_params(
           recaptcha_enterprise? ?
             'https://www.google.com/recaptcha/enterprise.js' :
             'https://www.google.com/recaptcha/api.js',
-          render: IdentityConfig.store.recaptcha_site_key_v3,
+          render: IdentityConfig.store.recaptcha_site_key,
         )
       end
-    end
   end
 
   def recaptcha_enterprise?

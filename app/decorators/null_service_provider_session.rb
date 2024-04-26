@@ -17,10 +17,6 @@ class NullServiceProviderSession
     view_context.root_url
   end
 
-  def mfa_expiration_interval
-    IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
-  end
-
   def remember_device_default
     true
   end
@@ -47,7 +43,7 @@ class NullServiceProviderSession
     {}
   end
 
-  def selfie_required?
+  def biometric_comparison_required?
     false
   end
 

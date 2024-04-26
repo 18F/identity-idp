@@ -11,7 +11,7 @@
 </p>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) { link_to(authentication_methods_setup_path, **tag_options, &block) },
+      url: authentication_methods_setup_path,
       big: true,
       full_width: false,
       class: 'margin-top-3 margin-bottom-1',
@@ -24,5 +24,5 @@
         class: 'usa-button usa-button--unstyled',
       ) do %>
     <%= t('forms.buttons.continue') %>
-  <% end %> 
+  <% end %>
 <% end %>

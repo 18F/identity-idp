@@ -91,7 +91,7 @@
     <div class="manageable-authenticator__name manageable-authenticator__summary-name"><%= configuration.name %></div>
     <div class="manageable-authenticator__actions">
       <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) { link_to(manage_url, **tag_options, &block) },
+            url: manage_url,
             type: :button,
             unstyled: true,
             class: 'no-js',

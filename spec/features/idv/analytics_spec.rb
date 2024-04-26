@@ -124,7 +124,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
@@ -250,7 +250,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
@@ -486,7 +486,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'aamva' }
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
@@ -581,7 +581,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: true
       },
       :idv_selfie_image_added => {
-        acuant_version: kind_of(String), captureAttempts: 1, failedImageResubmission: nil, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284, liveness_checking_required: boolean
+        acuant_version: kind_of(String), captureAttempts: 1, failedImageResubmission: nil, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284, liveness_checking_required: boolean, selfie_attempts: 0
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth', irs_reproofing: false
@@ -624,7 +624,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: anything, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {},
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: anything, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {},
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },

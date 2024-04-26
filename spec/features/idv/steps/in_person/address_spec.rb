@@ -14,7 +14,7 @@ RSpec.describe 'doc auth In person proofing residential address step',
     it 'displays correct heading and button text', allow_browser_log: true do
       complete_idv_steps_before_address
       # residential address page
-      expect(page).to have_current_path(idv_in_person_proofing_address_url)
+      expect(page).to have_current_path(idv_in_person_address_url)
 
       expect(page).to have_content(t('forms.buttons.continue'))
       expect(page).to have_content(t('in_person_proofing.headings.address'))
@@ -23,7 +23,7 @@ RSpec.describe 'doc auth In person proofing residential address step',
     it 'allows the user to cancel and start over', allow_browser_log: true do
       complete_idv_steps_before_address
 
-      expect(page).to have_current_path(idv_in_person_proofing_address_url, wait: 10)
+      expect(page).to have_current_path(idv_in_person_address_url, wait: 10)
       expect(page).not_to have_content('forms.buttons.back')
 
       click_link t('links.cancel')
@@ -38,7 +38,7 @@ RSpec.describe 'doc auth In person proofing residential address step',
 
       click_link t('links.cancel')
       click_on t('idv.cancel.actions.keep_going')
-      expect(page).to have_current_path(idv_in_person_proofing_address_url)
+      expect(page).to have_current_path(idv_in_person_address_url)
     end
 
     it 'allows user to submit valid inputs on form', allow_browser_log: true do

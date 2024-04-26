@@ -21,9 +21,8 @@
 
 <%= t('forms.personal_key.alternative') %>
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(reactivate_account_path, method: :put, **tag_options, &block)
-      end,
+      url: reactivate_account_path,
+      method: :put,
       unstyled: true,
     ).with_content(t('links.reverify')) %>
 

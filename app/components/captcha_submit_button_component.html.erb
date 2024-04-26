@@ -1,11 +1,10 @@
 <%= content_tag(
       :'lg-captcha-submit-button',
       **tag_options,
-      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key_v3,
+      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key,
       'recaptcha-action': action,
       'recaptcha-enterprise': recaptcha_enterprise?,
     ) do %>
-  <%= f.error(:recaptcha_token) %>
   <% if show_mock_score_field? %>
     <%= f.input(:recaptcha_token, as: :hidden, input_html: { value: 'mock_token' }) %>
     <%= render AlertComponent.new(text_tag: :div, class: 'margin-top-0 margin-bottom-2') do %>

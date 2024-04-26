@@ -13,7 +13,7 @@ RSpec.describe FakeAnalytics do
           to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
           assert_error_messages_equal(err, <<~MESSAGE)
             Expected that FakeAnalytics would have received event nil
-  
+
             Events received:
             {}
           MESSAGE
@@ -87,7 +87,7 @@ RSpec.describe FakeAnalytics do
             to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
               assert_error_messages_equal(err, <<~MESSAGE)
                 Expected that FakeAnalytics would have received event :my_event once but it was received 0 times
-  
+
                 Events received:
                 {}
               MESSAGE
@@ -169,7 +169,7 @@ RSpec.describe FakeAnalytics do
               Diff:
               @@ -1 +1 @@
               -:arg1 => 42,
-              +:arg1 => 43,              
+              +:arg1 => 43,
             MESSAGE
           end
       end
@@ -560,6 +560,7 @@ RSpec.describe FakeAnalytics do
           errors: true,
           code_expired: true,
           code_matches: true,
+          otp_delivery_preference: :sms,
           second_factor_attempts_count: true,
           second_factor_locked_at: true,
           proofing_components: true,
@@ -575,6 +576,7 @@ RSpec.describe FakeAnalytics do
         errors: true,
         code_expired: true,
         code_matches: true,
+        otp_delivery_preference: :sms,
         second_factor_attempts_count: true,
         second_factor_locked_at: true,
         proofing_components: true,
@@ -593,6 +595,7 @@ RSpec.describe FakeAnalytics do
         errors: true,
         code_expired: true,
         code_matches: true,
+        otp_delivery_preference: :sms,
         second_factor_attempts_count: true,
         second_factor_locked_at: true,
         proofing_components: true,

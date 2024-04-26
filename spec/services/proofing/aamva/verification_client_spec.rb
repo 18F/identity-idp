@@ -2,18 +2,15 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Aamva::VerificationClient do
   let(:applicant) do
-    applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
+    Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-4567-abcd-efgh',
       first_name: 'Testy',
       last_name: 'McTesterson',
       dob: '10/29/1942',
-    )
-    applicant.state_id_data.merge!(
       state_id_number: '123456789',
       state_id_jurisdiction: 'CA',
       state_id_type: 'drivers_license',
     )
-    applicant
   end
 
   subject(:verification_client) { described_class.new(AamvaFixtures.example_config) }

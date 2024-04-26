@@ -64,33 +64,31 @@ RSpec.describe TwoFactorOptionsForm do
 
     context "when the selection is different from the user's otp_delivery_preference" do
       it "updates the user's otp_delivery_preference if they have an alternate method selected" do
-        user_updater = instance_double(UpdateUser)
-        allow(UpdateUser).
-          to receive(:new).
-          with(
-            user: user,
-            attributes: { otp_delivery_preference: 'voice' },
-          ).
-          and_return(user_updater)
-        expect(user_updater).to receive(:call)
+        user.save!
 
-        subject.submit(selection: ['voice', 'backup_code'])
+        expect do
+          subject.submit(selection: ['voice', 'backup_code'])
+        end.to(change { user.reload.otp_delivery_preference }.to('voice'))
       end
     end
 
     context "when the selection is the same as the user's otp_delivery_preference" do
       it "does not update the user's otp_delivery_preference" do
-        expect(UpdateUser).to_not receive(:new)
+        user.save!
 
-        subject.submit(selection: ['sms'])
+        expect do
+          subject.submit(selection: ['sms'])
+        end.to_not(change { user.reload.otp_delivery_preference })
       end
     end
 
     context 'when the selection is not voice or sms' do
       it "does not update the user's otp_delivery_preference" do
-        expect(UpdateUser).to_not receive(:new)
+        user.save!
 
-        subject.submit(selection: ['auth_app'])
+        expect do
+          subject.submit(selection: ['auth_app'])
+        end.to_not(change { user.reload.otp_delivery_preference })
       end
     end
 

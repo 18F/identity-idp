@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import DocumentCaptureReviewIssues from '@18f/identity-document-capture/components/document-capture-review-issues';
-import { FeatureFlagContext, InPersonContext } from '@18f/identity-document-capture/context';
+import { InPersonContext } from '@18f/identity-document-capture/context';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { expect } from 'chai';
 import { composeComponents } from '@18f/identity-compose-components';
@@ -37,14 +37,6 @@ describe('DocumentCaptureReviewIssues', () => {
       };
       const App = composeComponents(
         [
-          FeatureFlagContext.Provider,
-          {
-            value: {
-              exitQuestionSectionEnabled: true,
-            },
-          },
-        ],
-        [
           InPersonContext.Provider,
           {
             value: {
@@ -55,10 +47,8 @@ describe('DocumentCaptureReviewIssues', () => {
         [
           DocumentCaptureReviewIssues,
           {
-            ...{
-              ...DEFAULT_OPTIONS,
-              ...props,
-            },
+            ...DEFAULT_OPTIONS,
+            ...props,
           },
         ],
       );
@@ -87,7 +77,6 @@ describe('DocumentCaptureReviewIssues', () => {
       expect(backCapture).to.be.ok();
       expect(getByText('back side error')).to.be.ok();
       expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();
-      expect(getByRole('button', { name: 'doc_auth.exit_survey.optional.button' })).to.be.ok();
     });
 
     it('renders for a doc type failure', () => {

@@ -265,7 +265,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
     end
 
-    context 'when doc auth is success and portait match fails', allow_browser_log: true do
+    context 'when doc auth is success and portrait match fails', allow_browser_log: true do
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
@@ -390,9 +390,9 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
         pii = Idp::Constants::MOCK_IDV_APPLICANT.dup
-        pii.delete(:address1)
+        pii[:address1] = nil
         allow_any_instance_of(DocAuth::LexisNexis::Responses::TrueIdResponse).
-          to receive(:pii_from_doc).and_return(pii)
+          to receive(:pii_from_doc).and_return(Pii::StateId.new(**pii))
         start_idv_from_sp
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step

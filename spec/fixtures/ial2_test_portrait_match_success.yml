@@ -12,6 +12,6 @@ document:
   state_id_type: 'drivers_license'
   zipcode: '59010'
 doc_auth_result: Passed
-failed_alert: []
+failed_alerts: []
 portrait_match_results:
   FaceMatchResult: Pass

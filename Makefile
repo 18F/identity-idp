@@ -19,10 +19,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	clobber_assets \
 	clobber_logs \
 	watch_events \
-	docker_setup \
 	download_acuant_sdk \
-	fast_setup \
-	fast_test \
 	help \
 	lint \
 	lint_analytics_events \
@@ -30,6 +27,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_country_dialing_codes \
 	lint_erb \
 	lint_lockfiles \
+	lint_new_typescript_files \
 	lint_optimized_assets \
 	lint_tracker_events \
 	lint_yaml \
@@ -58,12 +56,6 @@ all: check
 
 setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
-
-fast_setup: ## Abbreviated setup script that skips linking some files
-	bin/fast_setup
-
-docker_setup: ## Setup script for Docker development
-	bin/docker_setup
 
 check: lint test ## Runs lint tests and spec tests
 
@@ -97,6 +89,8 @@ endif
 	make lint_yaml
 	@echo "--- lint Yarn workspaces ---"
 	make lint_yarn_workspaces
+	@echo "--- lint new TypeScript files ---"
+	make lint_new_typescript_files
 	@echo "--- lint lockfiles ---"
 	make lint_lockfiles
 	@echo "--- check assets are optimized ---"
@@ -141,6 +135,9 @@ lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfil
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
+
+lint_new_typescript_files:
+	scripts/enforce-typescript-files.mjs
 
 lint_readme: README.md ## Lints README.md
 	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
@@ -189,10 +186,6 @@ test: $(CONFIG) ## Runs RSpec and yarn tests
 test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
 	bundle exec rake spec && yarn test
-
-fast_test: export RAILS_ENV := test
-fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
-	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp

@@ -97,7 +97,7 @@ describe('DocumentCaptureWarning', () => {
       });
     });
 
-    context('not failed result', () => {
+    context('not failed result from vendor', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
         const { getByRole, getByText, queryByText } = renderContent({
@@ -139,7 +139,7 @@ describe('DocumentCaptureWarning', () => {
       });
     });
 
-    context('failed result', () => {
+    context('failed result from vendor', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
@@ -182,52 +182,54 @@ describe('DocumentCaptureWarning', () => {
         // troubleshooting section
         validateTroubleShootingSection();
       });
+    });
 
-      it('renders with failed facematch for selfie', () => {
-        const isFailedDocType = false;
-        const isFailedSelfieFaceMatch = true;
-        const { getByRole, getByText, queryByText } = renderContent({
-          isFailedDocType,
-          isFailedSelfieFaceMatch,
-          isFailedResult,
-          inPersonUrl,
-        });
-
-        // error message section
-        validateHeader('errors.doc_auth.selfie_fail_heading', 1, true);
-        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
-        expect(getByText('general error')).to.be.ok();
-        expect(getByText('idv.warning.attempts_html')).to.be.ok();
-        expect(queryByText('idv.failure.attempts_html')).to.null();
-        expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
-        // ipp section not existing
-        validateIppSection(false);
-        // troubleshooting section
-        validateTroubleShootingSection();
+    it('renders with failed facematch for selfie', () => {
+      const isFailedDocType = false;
+      const isFailedResult = false;
+      const isFailedSelfieFaceMatch = true;
+      const { getByRole, getByText, queryByText } = renderContent({
+        isFailedDocType,
+        isFailedSelfieFaceMatch,
+        isFailedResult,
+        inPersonUrl,
       });
 
-      it('renders with failed quality/liveness selfie', () => {
-        const isFailedDocType = false;
-        const isFailedSelfieLivenessOrQuality = true;
-        const { getByRole, getByText, queryByText } = renderContent({
-          isFailedDocType,
-          isFailedSelfieLivenessOrQuality,
-          isFailedResult,
-          inPersonUrl,
-        });
+      // error message section
+      validateHeader('errors.doc_auth.selfie_fail_heading', 1, true);
+      validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+      expect(getByText('general error')).to.be.ok();
+      expect(getByText('idv.warning.attempts_html')).to.be.ok();
+      expect(queryByText('idv.failure.attempts_html')).to.null();
+      expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
+      // ipp section should exist
+      validateIppSection(true);
+      // troubleshooting section
+      validateTroubleShootingSection();
+    });
 
-        // error message section
-        validateHeader('errors.doc_auth.selfie_not_live_or_poor_quality_heading', 1, true);
-        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
-        expect(getByText('general error')).to.be.ok();
-        expect(getByText('idv.warning.attempts_html')).to.be.ok();
-        expect(queryByText('idv.failure.attempts_html')).to.null();
-        expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
-        // ipp section not existing
-        validateIppSection(false);
-        // troubleshooting section
-        validateTroubleShootingSection();
+    it('renders with failed quality/liveness selfie', () => {
+      const isFailedDocType = false;
+      const isFailedResult = false;
+      const isFailedSelfieLivenessOrQuality = true;
+      const { getByRole, getByText, queryByText } = renderContent({
+        isFailedDocType,
+        isFailedSelfieLivenessOrQuality,
+        isFailedResult,
+        inPersonUrl,
       });
+
+      // error message section
+      validateHeader('errors.doc_auth.selfie_not_live_or_poor_quality_heading', 1, true);
+      validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+      expect(getByText('general error')).to.be.ok();
+      expect(getByText('idv.warning.attempts_html')).to.be.ok();
+      expect(queryByText('idv.failure.attempts_html')).to.null();
+      expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
+      // ipp section exists
+      validateIppSection(true);
+      // troubleshooting section
+      validateTroubleShootingSection();
     });
   });
 

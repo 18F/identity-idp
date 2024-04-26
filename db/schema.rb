@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_12_175415) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_16_165602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -591,7 +591,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_175415) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "confirmed_at", precision: nil
@@ -616,6 +615,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_175415) do
     t.datetime "second_mfa_reminder_dismissed_at"
     t.datetime "piv_cac_recommended_dismissed_at"
     t.datetime "sign_in_new_device_at"
+    t.datetime "password_compromised_checked_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sign_in_new_device_at"], name: "index_users_on_sign_in_new_device_at"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
