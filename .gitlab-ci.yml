@@ -768,10 +768,10 @@ ecr-scan-ci:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
-    - yqFilter=".idp.image.repository=\"${rcRepoName}\""
-    - yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-    - yqFilter=".idp.image.tag=\"${rcTag}\""
-    - yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".idp.image.repository=\"${rcRepoName}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".idp.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".worker.image.repository=\"${rcRepoName}\"";  yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
+    - yqFilter=".worker.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
     - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy IDP ${rcTag} image to ${testEnvironment}"
     - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
     - kubectl config get-contexts
