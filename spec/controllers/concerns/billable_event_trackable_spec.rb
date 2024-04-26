@@ -23,12 +23,13 @@ RSpec.describe BillableEventTrackable do
   let(:session_started_at) { 5.minutes.ago }
   let(:active_profile) do
     create(
-      :profile, :active, :verified, user: current_user,
-                                    initiating_service_provider: current_sp
+      :profile,
+      :active,
+      :verified,
+      user: current_user,
+      initiating_service_provider: current_sp,
     )
   end
-  # Do session_started_at and profile_verified_at need to be different, is there some relationship
-  # to be account for in tests?
 
   around do |ex|
     freeze_time { ex.run }
@@ -52,7 +53,8 @@ RSpec.describe BillableEventTrackable do
   end
 
   describe '#track_billing_events' do
-    it 'does not fail if SpReturnLog row already exists' do
+    let(:ial_context) { IalContext.new(ial: 2, service_provider: current_sp) }
+    it 'does not fail if SpReturnLog row already exists and ial 2' do
       # binding.pry
       SpReturnLog.create(
         request_id: request_id,
@@ -75,6 +77,30 @@ RSpec.describe BillableEventTrackable do
       expect(sp_return_log.profile_verified_at).to eq active_profile.verified_at
       expect(sp_return_log.profile_requested_issuer).
         to eq active_profile.initiating_service_provider.issuer
+    end
+
+    let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
+    it 'does not fail if SpReturnLog row already exists and ial 1' do
+      SpReturnLog.create(
+        request_id: request_id,
+        user_id: current_user.id,
+        billable: true,
+        ial: ial_context.ial,
+        issuer: current_sp.issuer,
+        requested_at: session_started_at,
+        returned_at: Time.zone.now,
+        profile_id: nil,
+        profile_verified_at: nil,
+        profile_requested_issuer: nil,
+      )
+
+      expect do
+        instance.track_billing_events
+      end.to_not(change { SpReturnLog.count }.from(1))
+      sp_return_log = SpReturnLog.last
+      expect(sp_return_log.profile_id).to be_nil
+      expect(sp_return_log.profile_verified_at).to be_nil
+      expect(sp_return_log.profile_requested_issuer).to be_nil
     end
   end
 end

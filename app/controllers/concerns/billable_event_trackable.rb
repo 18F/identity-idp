@@ -16,15 +16,18 @@ module BillableEventTrackable
     user_ial_context = IalContext.new(
       ial: ial_context.ial, service_provider: current_sp, user: current_user,
     )
+
     SpReturnLog.create(
       request_id: request_id,
       user: current_user,
       billable: billable,
       ial: user_ial_context.bill_for_ial_1_or_2,
       issuer: current_sp.issuer,
-      profile_id: current_user&.active_profile&.id,
-      profile_verified_at: current_user&.active_profile&.verified_at,
-      profile_requested_issuer: current_user&.active_profile&.initiating_service_provider,
+      profile_id: user_ial_context.bill_for_ial_1_or_2 > 1 ? current_user.active_profile&.id : nil,
+      profile_verified_at: user_ial_context.bill_for_ial_1_or_2 > 1 ?
+        current_user.active_profile&.verified_at : nil,
+      profile_requested_issuer: user_ial_context.bill_for_ial_1_or_2 > 1 ?
+        current_user.active_profile&.initiating_service_provider : nil,
       requested_at: session[:session_started_at],
       returned_at: Time.zone.now,
     )
@@ -33,7 +36,7 @@ module BillableEventTrackable
   end
 
   def current_session_has_been_billed?
-    user_session[session_has_been_billed_flag_key] == true
+    user_session[session_has_been_billed_flag_key]
   end
 
   def mark_current_session_billed
@@ -55,7 +58,6 @@ module BillableEventTrackable
 
   def first_visit_for_sp?
     issuer = sp_session[:issuer]
-
     # check if the user has visited this SP at either IAL1 or IAL2 in this session
     !user_session["auth_counted_#{issuer}ial1"] && !user_session["auth_counted_#{issuer}"]
   end
