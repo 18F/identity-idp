@@ -118,15 +118,26 @@ RSpec.describe Idv::InPerson::StateIdController do
       let(:first_name) { 'Natalya' }
       let(:last_name) { 'Rostova' }
       let(:dob) { '1980-01-01' }
-      let(:identity_doc_address_state) { 'Nevada' }
       let(:state_id_number) { 'ABC123234' }
+      let(:state_id_jurisdiction) { 'AL' }
+      let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
+      let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
+      let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
+      let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
+      let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
       let(:params) do
         { state_id: {
-          first_name: first_name,
-          last_name: last_name,
-          dob: dob,
-          identity_doc_address_state: identity_doc_address_state,
-          state_id_number: state_id_number,
+          first_name:,
+          last_name:,
+          same_address_as_id: 'true', # value on submission
+          identity_doc_address1:,
+          identity_doc_address2:,
+          identity_doc_city:,
+          state_id_jurisdiction:,
+          state_id_number:,
+          identity_doc_address_state:,
+          identity_doc_zipcode:,
+          dob:,
         } }
       end
       let(:analytics_name) { 'IdV: in person proofing state_id submitted' }
@@ -138,10 +149,11 @@ RSpec.describe Idv::InPerson::StateIdController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'state_id',
+          opted_in_to_in_person_proofing: nil,
           pii_like_keypaths: [[:same_address_as_id],
                               [:proofing_results, :context, :stages, :state_id,
                                :state_id_jurisdiction]],
-          same_address_as_id: false,
+          same_address_as_id: true,
         }.merge(ab_test_args)
       end
 
