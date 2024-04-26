@@ -207,6 +207,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
       # identity_doc_
       let(:state_id_number) { 'ABC123234' }
+      let(:state_id_jurisdiction) { 'AL' }
       let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
       let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
       let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
@@ -223,7 +224,7 @@ RSpec.describe Idv::InPerson::StateIdController do
               identity_doc_address1:,
               identity_doc_address2:,
               identity_doc_city:,
-              state_id_jurisdiction: 'AL',
+              state_id_jurisdiction:,
               state_id_number:,
               identity_doc_address_state:,
               identity_doc_zipcode:,
@@ -275,18 +276,17 @@ RSpec.describe Idv::InPerson::StateIdController do
       context 'changed from "false" to "true"' do
         let(:params) do
           { state_id: {
-            dob:,
+            first_name:,
+            last_name:,
             same_address_as_id: 'true', # value on submission
-            address1:, # address1 and identity_doc_address1 is innitially different
-            address2:,
-            city:,
-            state:,
-            zipcode:,
             identity_doc_address1:,
             identity_doc_address2:,
             identity_doc_city:,
+            state_id_jurisdiction:,
+            state_id_number:,
             identity_doc_address_state:,
             identity_doc_zipcode:,
+            dob:,
           } }
         end
 
