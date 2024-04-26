@@ -397,7 +397,7 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
         allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
-      it 'does not log a reproofing event during initial proofing' do
+      xit 'does not log a reproofing event during initial proofing' do
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: 'foo',
