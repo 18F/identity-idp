@@ -768,11 +768,11 @@ ecr-scan-ci:
     - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
     - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
-    - yqFilter=".dashboard.image.repository=\"${rcRepoName}\""
+    - yqFilter=".idp.image.repository=\"${rcRepoName}\""
     - yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-    - yqFilter=".dashboard.image.tag=\"${rcTag}\""
+    - yqFilter=".idp.image.tag=\"${rcTag}\""
     - yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy Dashboard ${rcTag} image to ${testEnvironment}"
+    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy IDP ${rcTag} image to ${testEnvironment}"
     - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep "${eksClusterName}" | awk '{print $1}' | head -1)
@@ -785,8 +785,9 @@ ecr-scan-ci:
       timeoutCounter=0
       while [ "$updateComplete" -lt 1 ] && [ "$timeoutCounter" -lt 60 ]; do
         sleep 10
-        imageArray=$(argocd app manifests "${testEnvironment}"-logingov | yq -NM '.spec.template.spec.containers.[].image' | grep identity-dashboard)
-        if [ "${imageArray}" == "${rcRepoName}:${rcTag}" ]; then
+        imageArray=($(argocd app manifests "${testEnvironment}"-logingov | yq -NM '.spec.template.spec.containers.[].image' | grep identity-idp))
+        #Checks for two items in the array because IDP and Worker images are the same. Ensure both are updated.
+        if [ "${imageArray[0]}" == "${rcRepoName}:${rcTag}" ] && [ "${imageArray[1]}" == "${rcRepoName}:${rcTag}" ]; then
           updateComplete=1
           echo "Image updated in manifest"
         else
