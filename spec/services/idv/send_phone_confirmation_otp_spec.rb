@@ -20,7 +20,14 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
   let(:user) { create(:user, :fully_registered) }
 
   let(:exceeded_otp_send_limit) { false }
-  let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: phone, phone_confirmed: true) }
+  let(:otp_rate_limiter) do
+    OtpRateLimiter.new(
+      user: user,
+      phone: phone,
+      phone_confirmed: true,
+      limit_type: :phone_otp,
+    )
+  end
 
   before do
     # Setup Idv::Session
@@ -29,7 +36,12 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
     allow(Idv::PhoneConfirmationSession).to receive(:generate_code).and_return(otp_code)
 
     # Mock OtpRateLimiter
-    allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true).
+    allow(OtpRateLimiter).to receive(:new).with(
+      user: user,
+      phone: phone,
+      phone_confirmed: true,
+      limit_type: :phone_otp,
+    ).
       and_return(otp_rate_limiter)
     allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
       and_return(exceeded_otp_send_limit)

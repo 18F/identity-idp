@@ -448,7 +448,12 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
         )
       end
       let(:otp_rate_limiter) do
-        OtpRateLimiter.new(user: user, phone_confirmed: true, phone: '+12255551000')
+        OtpRateLimiter.new(
+          user: user,
+          phone_confirmed: true,
+          phone: '+12255551000',
+          limit_type: :phone_otp,
+        )
       end
 
       it 'does not change their OTP delivery preference' do
