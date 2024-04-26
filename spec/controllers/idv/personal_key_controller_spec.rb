@@ -419,8 +419,11 @@ RSpec.describe Idv::PersonalKeyController do
 
   describe '#update' do
     context 'user selected phone verification' do
-      xit 'redirects to sign up completed for an sp' do
-        subject.session[:sp] = { issuer: create(:service_provider).issuer }
+      it 'redirects to sign up completed for an sp' do
+        subject.session[:sp] = {
+          issuer: create(:service_provider).issuer,
+          vtr: ['C1'],
+        }
         patch :update
 
         expect(response).to redirect_to sign_up_completed_url
