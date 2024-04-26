@@ -114,17 +114,24 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe '#update' do
+    let(:first_name) { 'Natalya' }
+    let(:last_name) { 'Rostova' }
+    let(:dob) { InPersonHelper::GOOD_DOB }
+    # residential
+    let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
+    let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
+    let(:city) { InPersonHelper::GOOD_CITY }
+    let(:state) { InPersonHelper::GOOD_STATE }
+    let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
+    # identity_doc_
+    let(:state_id_number) { 'ABC123234' }
+    let(:state_id_jurisdiction) { 'AL' }
+    let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
+    let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
+    let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
+    let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
+    let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
     context 'with values submitted' do
-      let(:first_name) { 'Natalya' }
-      let(:last_name) { 'Rostova' }
-      let(:dob) { '1980-01-01' }
-      let(:state_id_number) { 'ABC123234' }
-      let(:state_id_jurisdiction) { 'AL' }
-      let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
-      let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
-      let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
-      let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
-      let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
       let(:params) do
         { state_id: {
           first_name:,
@@ -208,23 +215,6 @@ RSpec.describe Idv::InPerson::StateIdController do
 
     context 'when same_address_as_id is...' do
       let(:pii_from_user) { subject.user_session['idv/in_person'][:pii_from_user] }
-      let(:first_name) { 'Natalya' }
-      let(:last_name) { 'Rostova' }
-      let(:dob) { InPersonHelper::GOOD_DOB }
-      # residential
-      let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
-      let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
-      let(:city) { InPersonHelper::GOOD_CITY }
-      let(:state) { InPersonHelper::GOOD_STATE }
-      let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
-      # identity_doc_
-      let(:state_id_number) { 'ABC123234' }
-      let(:state_id_jurisdiction) { 'AL' }
-      let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
-      let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
-      let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
-      let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
-      let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
 
       context 'changed from "true" to "false"' do
         let(:params) do
