@@ -286,7 +286,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
         expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
 
         timeout = distance_of_time_in_words(
-          RateLimiter.attempt_window_in_minutes(:phone_submissions).minutes,
+          RateLimiter.attempt_window_in_minutes(:phone_fingerprint_confirmations).minutes,
         )
 
         expect(flash[:error]).to eq(
@@ -305,7 +305,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
         expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
 
         timeout = distance_of_time_in_words(
-          RateLimiter.attempt_window_in_minutes(:phone_submissions).minutes,
+          RateLimiter.attempt_window_in_minutes(:phone_fingerprint_confirmations).minutes,
         )
 
         expect(flash[:error]).to eq(

@@ -143,7 +143,7 @@ module Users
       fingerprint = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164.to_s)
       @submission_rate_limiter ||= RateLimiter.new(
         target: fingerprint,
-        rate_limit_type: :phone_submissions,
+        rate_limit_type: :phone_fingerprint_confirmations,
       )
       @submission_rate_limiter.increment!
       lock_out_user if @submission_rate_limiter.maxed?
