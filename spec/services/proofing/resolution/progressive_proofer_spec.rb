@@ -227,9 +227,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'remote flow does not augment pii' do
-        before { proof }
-
         it 'proofs with untransformed pii' do
+          proof
+
           expect(aamva_proofer).to have_received(:proof).with(applicant_pii)
           expect(proof.same_address_as_id).to eq(nil)
           expect(proof.ipp_enrollment_in_progress).to eq(false)
