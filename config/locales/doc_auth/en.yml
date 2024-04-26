@@ -86,8 +86,7 @@ en:
         network_error: We are having technical difficulties on our end. Please try to
           submit your images again later.
         no_liveness: Try taking new pictures.
-        selfie_failure: Try taking your photos again. Make sure all of your photos are
-          clear and in focus.
+        selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
         selfie_failure_help_link_text: Review more tips for taking clear photos
       glare:
         failed_short: Image has glare, please try again.
