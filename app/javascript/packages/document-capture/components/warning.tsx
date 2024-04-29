@@ -68,6 +68,7 @@ function Warning({
   if (actionText && actionOnClick) {
     actionButtons = [
       <Button
+        key="actionButton"
         isBig
         isWide
         onClick={() => {
@@ -81,6 +82,7 @@ function Warning({
     if (altActionText && altActionOnClick) {
       actionButtons.push(
         <Button
+          key="altActionButton"
           isBig
           isOutline
           isWide

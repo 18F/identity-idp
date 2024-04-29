@@ -105,15 +105,6 @@
       }
     },
     {
-      "files": [
-        "app/javascript/packages/components/status-page.spec.tsx",
-        "app/javascript/packages/document-capture/components/warning.tsx"
-      ],
-      "rules": {
-        "react/jsx-key": "off"
-      }
-    },
-    {
       "files": ["app/javascript/packages/document-capture/higher-order/with-props.jsx"],
       "rules": {
         "react/display-name": "off"
