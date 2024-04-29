@@ -342,7 +342,7 @@ module Idv
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
-      birth_year = birth_year(client_response)
+      birth_year = client_response.pii_from_doc&.dob&.to_date&.year
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
@@ -353,19 +353,6 @@ module Idv
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )
-    end
-
-    def birth_year(client_response)
-      dob = client_response.pii_from_doc&.dob
-      if dob.respond_to?(:year)
-        dob.year
-      else
-        begin
-          dob&.to_date&.year
-        rescue
-          nil
-        end
-      end
     end
 
     def store_encrypted_images_if_required
