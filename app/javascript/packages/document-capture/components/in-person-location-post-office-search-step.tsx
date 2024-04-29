@@ -3,12 +3,23 @@ import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
 import AddressSearch, { transformKeys, snakeCase } from '@18f/identity-address-search';
 import type { FormattedLocation } from '@18f/identity-address-search/types';
+import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 
-function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
+interface InPersonLocationPostOfficeSearchStepProps {
+  onChange: ({ selectedLocationAddress }: { selectedLocationAddress: string }) => void;
+  toPreviousStep: () => void;
+  registerField: RegisterFieldCallback;
+}
+
+function InPersonLocationPostOfficeSearchStep({
+  onChange,
+  toPreviousStep,
+  registerField,
+}: InPersonLocationPostOfficeSearchStepProps) {
   const { inPersonURL, locationsURL, addressSearchURL } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);

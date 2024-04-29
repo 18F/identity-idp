@@ -11,7 +11,7 @@ import InPersonTroubleshootingOptions from './in-person-troubleshooting-options'
 import { InPersonContext } from '../context';
 import InPersonOutageAlert from './in-person-outage-alert';
 
-function InPersonPrepareStep({ toPreviousStep }) {
+function InPersonPrepareStep({ toPreviousStep }: { toPreviousStep: () => void }) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
