@@ -58,7 +58,7 @@ class UserPivCacVerificationForm
       multi_factor_auth_method: 'piv_cac',
       piv_cac_configuration_id: piv_cac_configuration&.id,
       piv_cac_configuration_dn_uuid: x509_dn_uuid,
-      cert_key_id: key_id,
+      key_id: key_id,
       multi_factor_auth_method_created_at: piv_cac_configuration&.created_at&.strftime('%s%L'),
     }
   end

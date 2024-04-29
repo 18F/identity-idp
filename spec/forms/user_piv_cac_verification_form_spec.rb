@@ -34,7 +34,8 @@ RSpec.describe UserPivCacVerificationForm do
             multi_factor_auth_method: 'piv_cac',
             piv_cac_configuration_id: nil,
             multi_factor_auth_method_created_at: nil,
-            key_id: 'foo',
+            piv_cac_configuration_dn_uuid: nil,
+            key_id: nil,
           )
 
           expect(form.error_type).to eq 'user.no_piv_cac_associated'
@@ -53,6 +54,7 @@ RSpec.describe UserPivCacVerificationForm do
             multi_factor_auth_method: 'piv_cac',
             multi_factor_auth_method_created_at: nil,
             piv_cac_configuration_id: nil,
+            piv_cac_configuration_dn_uuid: 'some-random-uuid',
             key_id: 'foo',
           )
           expect(form.error_type).to eq 'user.piv_cac_mismatch'
@@ -74,6 +76,7 @@ RSpec.describe UserPivCacVerificationForm do
             piv_cac_configuration_id: piv_cac_configuration.id,
             multi_factor_auth_method_created_at: piv_cac_configuration.created_at.strftime('%s%L'),
             key_id: 'foo',
+            piv_cac_configuration_dn_uuid: x509_dn_uuid,
           )
         end
 
@@ -90,6 +93,7 @@ RSpec.describe UserPivCacVerificationForm do
               multi_factor_auth_method: 'piv_cac',
               piv_cac_configuration_id: nil,
               multi_factor_auth_method_created_at: nil,
+              piv_cac_configuration_dn_uuid: nil,
               key_id: nil,
             )
 
@@ -115,8 +119,9 @@ RSpec.describe UserPivCacVerificationForm do
           errors: { type: 'token.bad' },
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
+          piv_cac_configuration_dn_uuid: nil,
           piv_cac_configuration_id: nil,
-          key_id: 'foo',
+          key_id: nil,
         )
       end
     end
@@ -134,6 +139,7 @@ RSpec.describe UserPivCacVerificationForm do
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
           piv_cac_configuration_id: nil,
+          piv_cac_configuration_dn_uuid: nil,
           key_id: nil,
         )
       end

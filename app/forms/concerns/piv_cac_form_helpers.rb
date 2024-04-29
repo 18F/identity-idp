@@ -35,6 +35,7 @@ module PivCacFormHelpers
       true
     else
       self.error_type = 'token.invalid'
+      self.key_id = @data['key_id']
       false
     end
   end
