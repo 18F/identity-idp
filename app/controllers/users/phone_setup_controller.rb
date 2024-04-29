@@ -139,18 +139,16 @@ module Users
     end
 
     def check_phone_submission_limit(phone)
-      return false if phone.blank?
       fingerprint = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164.to_s)
       @submission_rate_limiter ||= RateLimiter.new(
         target: fingerprint,
-        rate_limit_type: :phone_fingerprint_confirmations,
+        rate_limit_type: :phone_fingerprint_confirmation,
       )
       @submission_rate_limiter.increment!
-      lock_out_user if @submission_rate_limiter.maxed?
+      lock_out_phone_fingerprint if @submission_rate_limiter.maxed?
     end
 
-    def lock_out_user(user: current_user)
-      UpdateUser.new(user: user, attributes: { second_factor_locked_at: Time.zone.now }).call
+    def lock_out_phone_fingerprint
       flash[:error] = t(
         'errors.messages.phone_confirmation_limited',
         timeout: distance_of_time_in_words(
@@ -159,8 +157,7 @@ module Users
           except: :seconds,
         ),
       )
-      redirect_to account_path
-      return
+      redirect_to phone_setup_path
     end
   end
 end

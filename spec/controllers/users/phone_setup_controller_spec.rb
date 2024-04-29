@@ -283,10 +283,8 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
           post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
         end
 
-        expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
-
         timeout = distance_of_time_in_words(
-          RateLimiter.attempt_window_in_minutes(:phone_fingerprint_confirmations).minutes,
+          RateLimiter.attempt_window_in_minutes(:phone_fingerprint_confirmation).minutes,
         )
 
         expect(flash[:error]).to eq(
@@ -295,12 +293,11 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
             timeout: timeout,
           ),
         )
-        expect(response).to redirect_to account_path
+        expect(response).to redirect_to phone_setup_path
 
         sign_out(@user)
         sign_in_before_2fa(@user2)
         post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
-        expect(@user2.reload.second_factor_locked_at).to eq Time.zone.now
 
         expect(flash[:error]).to eq(
           I18n.t(
@@ -308,7 +305,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
             timeout: timeout,
           ),
         )
-        expect(response).to redirect_to account_path
+        expect(response).to redirect_to phone_setup_path
       end
     end
   end
