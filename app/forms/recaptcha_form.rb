@@ -16,10 +16,17 @@ class RecaptchaForm
   validate :validate_token_exists
   validate :validate_recaptcha_result
 
-  RecaptchaResult = Struct.new(:success, :score, :errors, :reasons, keyword_init: true) do
+  RecaptchaResult = Struct.new(
+    :success,
+    :assessment_id,
+    :score,
+    :errors,
+    :reasons,
+    keyword_init: true,
+  ) do
     alias_method :success?, :success
 
-    def initialize(success:, score: nil, errors: [], reasons: [])
+    def initialize(success:, assessment_id: nil, score: nil, errors: [], reasons: [])
       super
     end
   end
@@ -40,12 +47,14 @@ class RecaptchaForm
     !score_threshold.positive?
   end
 
+  # @return [Array(Boolean, String), Array(Boolean, nil)]
   def submit(recaptcha_token)
     @recaptcha_token = recaptcha_token
     @recaptcha_result = recaptcha_result if !exempt? && recaptcha_token.present?
 
     log_analytics(result: @recaptcha_result) if @recaptcha_result
-    FormResponse.new(success: valid?, errors:, serialize_error_details_only: true)
+    response = FormResponse.new(success: valid?, errors:, serialize_error_details_only: true)
+    [response, @recaptcha_result&.assessment_id]
   rescue Faraday::Error => error
     log_analytics(error:)
     FormResponse.new(success: true, serialize_error_details_only: true)
