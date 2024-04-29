@@ -7,7 +7,6 @@ module Users
     include MfaSetupConcern
     include RecaptchaConcern
     include ReauthenticationRequiredConcern
-    include ActionView::Helpers::DateHelper
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -16,9 +15,6 @@ module Users
     before_action :redirect_if_phone_vendor_outage
     before_action :confirm_recently_authenticated_2fa
     before_action :check_max_phone_numbers_per_account, only: %i[index create]
-    before_action only: [:create] do
-      check_phone_submission_limit(new_phone_form_params[:phone])
-    end
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -136,28 +132,6 @@ module Users
         :recaptcha_token,
         :recaptcha_mock_score,
       )
-    end
-
-    def check_phone_submission_limit(phone)
-      fingerprint = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164.to_s)
-      @submission_rate_limiter ||= RateLimiter.new(
-        target: fingerprint,
-        rate_limit_type: :phone_fingerprint_confirmation,
-      )
-      @submission_rate_limiter.increment!
-      lock_out_phone_fingerprint if @submission_rate_limiter.maxed?
-    end
-
-    def lock_out_phone_fingerprint
-      flash[:error] = t(
-        'errors.messages.phone_confirmation_limited',
-        timeout: distance_of_time_in_words(
-          Time.zone.now,
-          [@submission_rate_limiter.expires_at, Time.zone.now].compact.max,
-          except: :seconds,
-        ),
-      )
-      redirect_to phone_setup_path
     end
   end
 end

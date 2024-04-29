@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe NewPhoneForm do
   include Shoulda::Matchers::ActiveModel
+  include ActionView::Helpers::DateHelper
 
   let(:user) { build(:user, :fully_registered) }
   let(:phone) { '703-555-5000' }
@@ -162,6 +163,38 @@ RSpec.describe NewPhoneForm do
 
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
+    end
+
+    context 'validating phone fingerprint submission rate limit' do
+      let(:params) do
+        {
+          phone: '703-555-1212',
+          international_code: 'US',
+        }
+      end
+      it 'enforces phone fingerprint rate limit' do
+        allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+
+        freeze_time do
+          IdentityConfig.store.phone_submissions_per_fingerprint_limit.times do
+            subject.submit(params)
+          end
+
+          result = subject.submit(params)
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.errors[:phone]).to eq(
+            [
+              I18n.t(
+                'errors.messages.phone_confirmation_limited',
+                timeout: distance_of_time_in_words(
+                  RateLimiter.attempt_window_in_minutes(:phone_fingerprint_confirmation).minutes,
+                ),
+              ),
+            ],
+          )
+        end
+      end
     end
 
     context 'when the user has already added the number' do

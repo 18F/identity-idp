@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
-  include ActionView::Helpers::DateHelper
-
   let(:mfa_selections) { ['voice'] }
   before do
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
@@ -265,47 +263,6 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
 
           get :index
         end
-      end
-    end
-  end
-  describe 'check_phone_submission_limit' do
-    before do
-      @user = create(:user)
-      @user2 = create(:user)
-      @unconfirmed_phone = '+1 (202) 555-1213'
-    end
-    it 'rate limits use of phone by fingerprint' do
-      sign_in_before_2fa(@user)
-      allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
-
-      freeze_time do
-        IdentityConfig.store.phone_submissions_per_fingerprint_limit.times do
-          post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
-        end
-
-        timeout = distance_of_time_in_words(
-          RateLimiter.attempt_window_in_minutes(:phone_fingerprint_confirmation).minutes,
-        )
-
-        expect(flash[:error]).to eq(
-          I18n.t(
-            'errors.messages.phone_confirmation_limited',
-            timeout: timeout,
-          ),
-        )
-        expect(response).to redirect_to phone_setup_path
-
-        sign_out(@user)
-        sign_in_before_2fa(@user2)
-        post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
-
-        expect(flash[:error]).to eq(
-          I18n.t(
-            'errors.messages.phone_confirmation_limited',
-            timeout: timeout,
-          ),
-        )
-        expect(response).to redirect_to phone_setup_path
       end
     end
   end
