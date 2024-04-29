@@ -186,7 +186,8 @@ en:
       getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: You have the option to verify your identity online, or in person
         at a participating Post Office.
-      how_to_verify_selfie: You have the option to verify your identity online with your phone, or in person at a participating Post Office.
+      how_to_verify_selfie: You have the option to verify your identity online with
+        your phone, or in person at a participating Post Office.
       how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
       hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can
@@ -225,10 +226,12 @@ en:
         camera and a web browser.
       verify_at_post_office_description: This option is better if you don’t have a
         phone to take photos of your ID.
-      verify_at_post_office_description_selfie: Choose this option if you don't have a phone to take pictures.
+      verify_at_post_office_description_selfie: Choose this option if you don’t have a phone to take pictures.
       verify_at_post_office_instruction: You’ll enter your ID information online, and
         verify your identity in person at a participating Post Office.
-      verify_at_post_office_instruction_selfie: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
+      verify_at_post_office_instruction_selfie: You’ll enter your ID information
+        online, and verify your identity in person at a participating Post
+        Office.
       verify_at_post_office_link_text: Learn more about verifying in person
       verify_identity: We’ll ask for your ID, phone number, and other personal
         information to verify your identity against public records.
@@ -236,7 +239,8 @@ en:
       verify_online_description_selfie: Choose this option if you have a phone to take pictures.
       verify_online_instruction: You’ll take photos of your ID to verify your identity
         fully online. Most users finish this process in one sitting.
-      verify_online_instruction_selfie: You’ll take photos of your ID and a photo of yourself using a phone. Most users finish this process in one sitting.
+      verify_online_instruction_selfie: You’ll take photos of your ID and a photo of
+        yourself using a phone. Most users finish this process in one sitting.
       verify_online_link_text: Learn more about verifying online
       you_entered: 'You entered:'
     instructions:
