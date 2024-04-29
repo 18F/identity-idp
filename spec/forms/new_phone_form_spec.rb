@@ -183,7 +183,7 @@ RSpec.describe NewPhoneForm do
           result = subject.submit(params)
           expect(result).to be_kind_of(FormResponse)
           expect(result.success?).to eq(false)
-          expect(result.errors[:phone]).to eq(
+          expect(result.errors[:phone_fingerprint]).to eq(
             [
               I18n.t(
                 'errors.messages.phone_confirmation_limited',
