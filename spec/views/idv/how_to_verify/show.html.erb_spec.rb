@@ -8,36 +8,94 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
 
   before do
     allow(view).to receive(:user_signing_up?).and_return(false)
-
     assign :idv_how_to_verify_form, idv_how_to_verify_form
-    render
+  end
+  context 'when selfie is not required' do
+    before do
+      @selfie_required = false
+      render
+    end
+  
+    context 'renders the show template with' do
+      it 'a title' do
+        expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
+      end
+
+      it 'two options for verifying your identity' do
+        expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
+        expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
+      end
+
+      it 'a button for remote and ipp' do
+        expect(rendered).to have_button(t('forms.buttons.continue_remote'))
+        expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
+      end
+
+      it 'a troubleshooting section' do
+        expect(rendered).to have_content(
+          t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+        )
+        expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
+        expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
+      end
+
+      it 'a cancel link' do
+        expect(rendered).to have_link(t('links.cancel'))
+      end
+
+      it 'non-selfie specific content' do
+        expect(rendered).to have_content(t('doc_auth.info.how_to_verify'))
+        expect(rendered).not_to have_content(t('doc_auth.tips.mobile_phone_required'))
+        expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_description'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_description'))
+      end
+    end
   end
 
-  context 'renders the show template with' do
-    it 'a title and info text' do
-      expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
-      expect(rendered).to have_content(t('doc_auth.info.how_to_verify'))
+  context 'when selfie is required' do
+    before do
+      @selfie_required = true
+      render
     end
 
-    it 'two options for verifying your identity' do
-      expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
-      expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
-    end
+    context 'renders the show template with' do
+      it 'a title' do
+        expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
+      end
 
-    it 'a continue button' do
-      expect(rendered).to have_button(t('forms.buttons.continue'))
-    end
+      it 'two options for verifying your identity' do
+        expect(rendered).to have_content(t('doc_auth.headings.verify_online_selfie'))
+        expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
+      end
 
-    it 'a troubleshooting section' do
-      expect(rendered).to have_content(
-        t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
-      )
-      expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
-      expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
-    end
+      it 'a button for remote and ipp' do
+        expect(rendered).to have_button(t('forms.buttons.continue_remote_selfie'))
+        expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
+      end
 
-    it 'a cancel link' do
-      expect(rendered).to have_link(t('links.cancel'))
+      it 'a troubleshooting section' do
+        expect(rendered).to have_content(
+          t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+        )
+        expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
+        expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
+      end
+
+      it 'a cancel link' do
+        expect(rendered).to have_link(t('links.cancel'))
+      end
+
+      it 'selfie specific content' do
+        expect(rendered).to have_content(t('doc_auth.info.how_to_verify_selfie'))
+        expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_selfie'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction_selfie'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_description_selfie'))
+      end
     end
   end
 end
