@@ -18,9 +18,9 @@ module PivCacFormHelpers
 
   def not_error_token
     possible_error = @data['error']
+    self.key_id = @data['key_id']
     if possible_error
       self.error_type = possible_error
-      self.key_id = @data['key_id']
       false
     else
       self.x509_dn_uuid = @data['uuid']
@@ -35,7 +35,6 @@ module PivCacFormHelpers
       true
     else
       self.error_type = 'token.invalid'
-      self.key_id = @data['key_id']
       false
     end
   end
