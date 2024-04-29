@@ -1,5 +1,5 @@
 import { Button, FullScreen } from '@18f/identity-components';
-import type { ComponentClass, FunctionComponent, MouseEvent, ReactNode, Ref } from 'react';
+import type { MouseEvent, ReactNode, Ref } from 'react';
 import {
   forwardRef,
   useContext,
@@ -133,8 +133,6 @@ interface AcuantCaptureProps {
    */
   name: string;
 }
-
-type FormatHtmlHandlerType = Record<string, ComponentClass | FunctionComponent | string>;
 
 /**
  * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
@@ -809,10 +807,10 @@ function AcuantCapture(
           allowUpload &&
           formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
-            'lg-or': ({ children }: FormatHtmlHandlerType) => (
+            'lg-or': ({ children }) => (
               <span className="padding-left-1 padding-right-1">{children}</span>
             ),
-            'lg-upload': ({ children }: FormatHtmlHandlerType) => (
+            'lg-upload': ({ children }) => (
               <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
                 {children}
               </Button>
