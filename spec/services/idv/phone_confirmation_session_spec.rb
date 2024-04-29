@@ -151,7 +151,11 @@ RSpec.describe Idv::PhoneConfirmationSession do
 
   describe '#expired?' do
     it 'returns false if the OTP is not expired' do
-      otp_object = described_class.start(phone: '+1 (225) 123-4567', delivery_method: :sms)
+      otp_object = described_class.start(
+        phone: '+1 (225) 123-4567',
+        delivery_method: :sms,
+        user: user,
+      )
 
       expect(otp_object.expired?).to eq(false)
 
@@ -161,7 +165,11 @@ RSpec.describe Idv::PhoneConfirmationSession do
     end
 
     it 'returns true if the OTP is expired' do
-      otp_object = described_class.start(phone: '+1 (225) 123-4567', delivery_method: :sms)
+      otp_object = described_class.start(
+        phone: '+1 (225) 123-4567',
+        delivery_method: :sms,
+        user: user,
+      )
 
       travel_to 11.minutes.from_now do
         expect(otp_object.expired?).to eq(true)

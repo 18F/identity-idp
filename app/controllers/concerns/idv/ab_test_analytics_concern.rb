@@ -33,7 +33,9 @@ module Idv
         )
       end
 
-      buckets.merge(acuant_sdk_ab_test_analytics_args)
+      buckets.merge!(acuant_sdk_ab_test_analytics_args)
+      buckets.delete(:ab_tests) if buckets[:ab_tests].blank?
+      buckets
     end
   end
 end
