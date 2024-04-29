@@ -47,7 +47,8 @@ module Idv
             clear_residential_address(pii_from_user)
           end
 
-          if (idv_session.ssn && pii_from_user[:same_address_as_id] == 'true') || initial_state_of_same_address_as_id == 'false'
+          if (idv_session.ssn && pii_from_user[:same_address_as_id] == 'true') ||
+             initial_state_of_same_address_as_id == 'false'
             redirect_url = idv_in_person_verify_info_url
           elsif pii_from_user[:same_address_as_id] == 'false'
             redirect_url = idv_in_person_address_url
