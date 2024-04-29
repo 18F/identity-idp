@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import type { FormattedLocation } from './in-person-locations';
 import InPersonLocations from './in-person-locations';
 
-function NoLocationsViewMock({ address }) {
+function NoLocationsViewMock({ address }: { address: string }) {
   return (
     <div data-testid="no-results-found">
       <p>No PO found</p>
