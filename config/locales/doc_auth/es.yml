@@ -188,7 +188,7 @@ es:
       verify_at_post_office: Verifique su identidad en una oficina de correos
       verify_identity: Verifique su identidad
       verify_online: Verifique su identidad en línea
-      welcome: 'Verifiquemos su identidad para %{sp_name}'
+      welcome: 'Verifiquemos su identidad para%{sp_name}'
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
         verificar su identidad y acceder a
