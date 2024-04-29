@@ -17,6 +17,7 @@ module Idv
         Idv::HowToVerifyForm::IPP
       end
 
+      @selfie_required = idv_session.selfie_check_required
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
       @idv_how_to_verify_form = Idv::HowToVerifyForm.new(selection: @selection)
     end
