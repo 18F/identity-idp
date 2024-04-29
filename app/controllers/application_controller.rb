@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   include BackupCodeReminderConcern
   include LocaleHelper
   include VerifySpAttributesConcern
-  include EffectiveUser
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
 
@@ -73,7 +72,7 @@ class ApplicationController < ActionController::Base
   end
 
   def analytics_user
-    effective_user || AnonymousUser.new
+    current_user || AnonymousUser.new
   end
 
   def irs_attempts_api_tracker
