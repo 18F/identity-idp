@@ -32,7 +32,7 @@ module AbTests
   ).freeze
 
   IDV_TEN_DIGIT_OTP = AbTestBucket.new(
-    experiment_name: '10-digit OTP for IdV',
+    experiment_name: 'idv_ten_digit_otp',
     default_bucket: :six_alphanumeric_otp,
     buckets: {
       ten_digit_otp:

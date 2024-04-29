@@ -4,7 +4,7 @@ module Idv
   class PhoneConfirmationSession
     attr_reader :code, :phone, :sent_at, :delivery_method, :user
 
-    def self.generate_code(user: nil)
+    def self.generate_code(user:)
       bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(user&.uuid)
       case bucket
       when :ten_digit_otp
@@ -18,7 +18,7 @@ module Idv
       end
     end
 
-    def initialize(code:, phone:, sent_at:, delivery_method:, user: nil)
+    def initialize(code:, phone:, sent_at:, delivery_method:, user:)
       @code = code
       @phone = phone
       @sent_at = sent_at
@@ -26,7 +26,7 @@ module Idv
       @user = user
     end
 
-    def self.start(phone:, delivery_method:, user: nil)
+    def self.start(phone:, delivery_method:, user:)
       new(
         code: generate_code(user: user),
         phone: phone,
@@ -34,6 +34,16 @@ module Idv
         delivery_method: delivery_method,
         user: user,
       )
+    end
+
+    def ab_test_analytics_args
+      return {} unless IdentityConfig.store.ab_testing_idv_ten_digit_otp_enabled
+
+      {
+        AbTests::IDV_TEN_DIGIT_OTP.experiment_name => {
+          bucket: AbTests::IDV_TEN_DIGIT_OTP.bucket(user.uuid),
+        },
+      }
     end
 
     def regenerate_otp
