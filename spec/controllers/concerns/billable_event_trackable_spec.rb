@@ -16,18 +16,18 @@ RSpec.describe BillableEventTrackable do
     end
   end
 
-  let(:current_user) { create(:user) }
+  let(:current_user) { create(:user, profiles: [active_profile]) }
   let(:current_sp) { create(:service_provider) }
   let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
   let(:request_id) { SecureRandom.hex }
   let(:session_started_at) { 5.minutes.ago }
+  let(:profile_sp) { create(:service_provider) }
   let(:active_profile) do
     create(
       :profile,
       :active,
       :verified,
-      user: current_user,
-      initiating_service_provider: current_sp,
+      initiating_service_provider: profile_sp,
     )
   end
 
@@ -53,13 +53,23 @@ RSpec.describe BillableEventTrackable do
   end
 
   describe '#track_billing_events' do
-    let(:ial_context) { IalContext.new(ial: 2, service_provider: current_sp) }
+    it 'run track_billing_events and verify attributes' do
+      expect do
+        instance.track_billing_events
+      end.to change { SpReturnLog.count }.from(0).to(1)
+      sp_return_log = SpReturnLog.last
+      expect(sp_return_log.respond_to?(:profile_id)).to be true
+      expect(sp_return_log.respond_to?(:profile_verified_at)).to be true
+      expect(sp_return_log.respond_to?(:profile_requested_issuer)).to be true
+    end
+
+    let(:ial_context2) { IalContext.new(ial: 2, service_provider: profile_sp) }
     it 'does not fail if SpReturnLog row already exists and ial 2' do
-      SpReturnLog.create(
+      expected_sp_return_log = SpReturnLog.create(
         request_id: request_id,
         user_id: current_user.id,
         billable: true,
-        ial: ial_context.ial,
+        ial: ial_context2.ial,
         issuer: current_sp.issuer,
         requested_at: session_started_at,
         returned_at: Time.zone.now,
@@ -72,19 +82,20 @@ RSpec.describe BillableEventTrackable do
         instance.track_billing_events
       end.to_not(change { SpReturnLog.count }.from(1))
       sp_return_log = SpReturnLog.last
-      expect(sp_return_log.profile_id).to eq active_profile.id
-      expect(sp_return_log.profile_verified_at).to eq active_profile.verified_at
+      sp_return_log.reload
+      expect(sp_return_log.profile_id).to eq expected_sp_return_log.profile_id
+      expect(sp_return_log.profile_verified_at).to eq expected_sp_return_log.profile_verified_at
       expect(sp_return_log.profile_requested_issuer).
-        to eq active_profile.initiating_service_provider.issuer
+        to eq expected_sp_return_log.profile_requested_issuer
     end
 
-    let(:ial_context) { IalContext.new(ial: 1, service_provider: current_sp) }
+    let(:ial_context1) { IalContext.new(ial: 1, service_provider: profile_sp) }
     it 'does not fail if SpReturnLog row already exists and ial 1' do
-      SpReturnLog.create(
+      expected_sp_return_log = SpReturnLog.create(
         request_id: request_id,
         user_id: current_user.id,
         billable: true,
-        ial: ial_context.ial,
+        ial: ial_context1.ial,
         issuer: current_sp.issuer,
         requested_at: session_started_at,
         returned_at: Time.zone.now,
@@ -97,9 +108,11 @@ RSpec.describe BillableEventTrackable do
         instance.track_billing_events
       end.to_not(change { SpReturnLog.count }.from(1))
       sp_return_log = SpReturnLog.last
-      expect(sp_return_log.profile_id).to be_nil
-      expect(sp_return_log.profile_verified_at).to be_nil
-      expect(sp_return_log.profile_requested_issuer).to be_nil
+      sp_return_log.reload
+      expect(sp_return_log.profile_id).to eq expected_sp_return_log.profile_id
+      expect(sp_return_log.profile_verified_at).to eq expected_sp_return_log.profile_verified_at
+      expect(sp_return_log.profile_requested_issuer).
+        to eq expected_sp_return_log.profile_requested_issuer
     end
   end
 end
