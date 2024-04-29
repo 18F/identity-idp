@@ -1,15 +1,14 @@
-/**
- * @typedef SpinnerDotsProps
- *
- * @prop {boolean=} isCentered Whether to absolutely-position the element at its container's center.
- * Defaults to false.
- * @prop {string=} className Optional class name.
- */
+interface SpinnerDotsProps {
+  // Whether to absolutely-position the element at its container's center. Defaults to false.
+  isCentered: boolean;
+  // Optional class name.
+  className?: string;
+}
 
 /**
  * @param {SpinnerDotsProps} props
  */
-function SpinnerDots({ isCentered, className }) {
+function SpinnerDots({ isCentered, className }: SpinnerDotsProps) {
   const classes = ['spinner-dots', isCentered && 'spinner-dots--centered', className]
     .filter(Boolean)
     .join(' ');
