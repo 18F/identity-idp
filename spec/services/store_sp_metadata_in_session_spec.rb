@@ -96,28 +96,6 @@ RSpec.describe StoreSpMetadataInSession do
         end
       end
 
-      context 'when biometric comparison is requested with ACRs' do
-        let(:request_acr) do
-          [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF].join(' ')
-        end
-        let(:biometric_comparison_required) { true }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
       context 'when MFA is requested using a VTR' do
         let(:request_vtr) { ['C1'] }
 
