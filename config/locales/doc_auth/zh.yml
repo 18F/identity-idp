@@ -127,6 +127,7 @@ zh:
       verify_at_post_office: 去邮局验证身份
       verify_identity: 验证你的身份
       verify_online: 在网上验证你的身份
+      verify_online_selfie: 使用手机在网上验证你的身份
       welcome: 开始验证你的身份
     hybrid_flow_warning:
       explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问
@@ -150,6 +151,7 @@ zh:
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
+      how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份
       how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
       hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
       hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can
@@ -180,11 +182,15 @@ zh:
       upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
       upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
       verify_at_post_office_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
+      verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
       verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与邮件去亲身验证身份。
+      verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
       verify_at_post_office_link_text: 对亲身验证获得更多了解
       verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
       verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
-      verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
+      verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
+      verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。
+      verify_online_instruction_selfie: 你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
       verify_online_link_text: 对网上验证获得更多了解
       you_entered: '你输入了：'
     instructions:
@@ -215,6 +221,7 @@ zh:
       document_capture_selfie_text2: 确保你整个面孔都可以看到
       document_capture_selfie_text3: 在光线充沛的地方拍照
       document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+      mobile_phone_required: 要求有手机
       review_issues_id_header_text: '请仔细查看你州政府颁发身份证件的图像：'
       review_issues_id_text1: 你是否使用了暗色背景？
       review_issues_id_text2: 是否在平坦平面上拍的照？
