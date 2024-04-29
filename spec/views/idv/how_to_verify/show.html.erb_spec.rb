@@ -93,8 +93,12 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
         expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
         expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
         expect(rendered).to have_content(t('doc_auth.info.verify_online_description_selfie'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction_selfie'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_description_selfie'))
+        expect(rendered).to have_content(
+          t('doc_auth.info.verify_at_post_office_instruction_selfie'),
+        )
+        expect(rendered).to have_content(
+          t('doc_auth.info.verify_at_post_office_description_selfie'),
+        )
       end
     end
   end
