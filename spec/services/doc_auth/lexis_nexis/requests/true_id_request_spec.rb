@@ -108,8 +108,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     end
 
     def include_liveness_expected
-      FeatureManagement.idv_allow_selfie_check? &&
-        liveness_checking_required
+      liveness_checking_required
     end
   end
 
@@ -166,10 +165,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
   context 'with liveness_checking_enabled as true' do
     let(:selfie_check_allowed) { true }
-    before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-        and_return(selfie_check_allowed)
-    end
 
     context 'when liveness checking is NOT required' do
       let(:liveness_checking_required) { false }

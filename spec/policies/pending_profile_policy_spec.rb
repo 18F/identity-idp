@@ -27,7 +27,6 @@ RSpec.describe PendingProfilePolicy do
       before do
         create(:profile, :active, :verified, idv_level: :legacy_unsupervised, user: user)
         create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
-        allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
       end
 
       context 'with resolved authn context result' do

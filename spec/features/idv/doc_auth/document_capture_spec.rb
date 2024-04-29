@@ -209,8 +209,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   context 'selfie check' do
     let(:selfie_check_enabled) { true }
     before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-        and_return(selfie_check_enabled)
       complete_doc_auth_steps_before_document_capture_step
     end
 

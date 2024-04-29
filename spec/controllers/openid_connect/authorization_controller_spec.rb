@@ -395,8 +395,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
               before do
                 params[:biometric_comparison_required] = biometric_comparison_required.to_s
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
@@ -448,8 +446,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               before do
                 params[:acr_values] = nil
                 params[:vtr] = ['C1.C2.P1.Pb'].to_json
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -513,11 +509,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
 
-              before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
-              end
-
               it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                 create(:profile, :verify_by_mail_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
                 user.active_profile.idv_level = :legacy_unsupervised
@@ -540,11 +531,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             context 'sp requests biometrics' do
               let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
-
-              before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
-              end
 
               context 'with biometric_comparison_required param' do
                 before do

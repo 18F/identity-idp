@@ -242,8 +242,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
   context 'when selfie is enabled' do
     context 'error due to data issue with 2xx status code', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
@@ -267,8 +265,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
     context 'when doc auth is success and portrait match fails', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
 
@@ -316,8 +312,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
     context 'when doc auth fails and portrait match pass', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
 
@@ -364,8 +358,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
     context 'when doc auth and portrait match fail', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
@@ -385,8 +377,6 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
     context 'when pii validation fails', allow_browser_log: true do
       before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
         pii = Idp::Constants::MOCK_IDV_APPLICANT.dup

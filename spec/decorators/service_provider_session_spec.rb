@@ -180,11 +180,6 @@ RSpec.describe ServiceProviderSession do
   end
 
   describe '#selfie_required' do
-    before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
-        and_return(selfie_capture_enabled)
-    end
-
     context 'doc_auth_selfie_capture_enabled is true' do
       let(:selfie_capture_enabled) { true }
 

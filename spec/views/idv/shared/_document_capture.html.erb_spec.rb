@@ -115,10 +115,6 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     end
 
     context 'when selfie FF enabled' do
-      before do
-        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-          and_return(selfie_capture_enabled)
-      end
       it 'does send doc_auth_selfie_capture to the FE' do
         render_partial
         expect(rendered).to have_css(
