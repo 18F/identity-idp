@@ -216,6 +216,54 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     end
   end
 
+  context 'with hybrid document capture' do
+    before do
+      allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
+      allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        @sms_link = config[:link]
+        impl.call(**config)
+      end
+    end
+
+    it 'resumes desktop session with in-person proofing when same_address_as_id is true',
+       allow_browser_log: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, '415-555-0199')
+        click_send_link
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_mobile_hybrid_steps
+      perform_desktop_hybrid_steps(user)
+    end
+
+    it 'resumes desktop session with in-person proofing when same_address_as_id is false',
+       allow_browser_log: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, '415-555-0199')
+        click_send_link
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_mobile_hybrid_steps
+      perform_desktop_hybrid_steps(user, same_address_as_id: false)
+    end
+  end
+
   context 'verify address by mail (GPO letter)' do
     before do
       allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
