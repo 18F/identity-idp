@@ -33,6 +33,7 @@ en:
       continue: Continue
       continue_ipp: Continue in person
       continue_remote: Continue online
+      continue_remote_selfie: Continue on your phone
       delete: Delete
       disable: Delete
       edit: Edit
