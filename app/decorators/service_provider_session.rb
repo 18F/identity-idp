@@ -73,8 +73,7 @@ class ServiceProviderSession
   end
 
   def biometric_comparison_required?
-    !!(FeatureManagement.idv_allow_selfie_check? &&
-      sp_session[:biometric_comparison_required])
+    sp_session[:biometric_comparison_required]
   end
 
   def cancel_link_url

@@ -23,8 +23,7 @@ module SamlIdpAuthConcern
   private
 
   def block_biometric_requests_in_production
-    if @saml_request_validator.parsed_vector_of_trust&.biometric_comparison? &&
-       !FeatureManagement.idv_allow_selfie_check?
+    if @saml_request_validator.parsed_vector_of_trust&.biometric_comparison?
       render_not_acceptable
     end
   end

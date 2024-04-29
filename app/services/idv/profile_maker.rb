@@ -54,7 +54,7 @@ module Idv
         else
           :legacy_in_person
         end
-      elsif FeatureManagement.idv_allow_selfie_check? && selfie_check_performed
+      elsif selfie_check_performed
         :unsupervised_with_selfie
       else
         :legacy_unsupervised
