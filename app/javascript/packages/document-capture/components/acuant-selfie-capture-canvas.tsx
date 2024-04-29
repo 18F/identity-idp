@@ -15,7 +15,15 @@ function LoadingSpinner() {
   );
 }
 
-function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) {
+interface AcuantSelfieCaptureCanvasProps {
+  imageCaptureText: string;
+  onSelfieCaptureClosed: () => void;
+}
+
+function AcuantSelfieCaptureCanvas({
+  imageCaptureText,
+  onSelfieCaptureClosed,
+}: AcuantSelfieCaptureCanvasProps) {
   const { isReady } = useContext(AcuantContext);
   const { t } = useI18n();
   // The Acuant SDK script AcuantPassiveLiveness attaches to whatever element has
