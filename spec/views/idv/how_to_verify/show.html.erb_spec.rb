@@ -15,7 +15,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       @selfie_required = false
       render
     end
-  
+
     context 'renders the show template with' do
       it 'a title' do
         expect(rendered).to have_content(t('doc_auth.headings.how_to_verify'))
