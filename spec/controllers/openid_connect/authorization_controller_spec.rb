@@ -1321,29 +1321,10 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             action
           end
 
-          context 'and we are not in production' do
-            context 'because the environment is not set to "prod"' do
-              let(:env) { 'test' }
+          let(:env) { 'test' }
 
-              it 'sets the session :biometric_comparison_required value to true' do
-                expect(session[:sp][:biometric_comparison_required]).to eq(true)
-              end
-            end
-          end
-
-          # Temporary barrier to public presentation. Update or remove
-          # when we are ready to accept :biometric_comparison_required
-          # in production. See LG-11962.
-          context 'in production' do
-            let(:env) { 'prod' }
-
-            it 'does not set the :sp value' do
-              expect(session).not_to include(:sp)
-            end
-
-            it 'renders the unacceptable page' do
-              expect(controller).to render_template('pages/not_acceptable')
-            end
+          it 'sets the session :biometric_comparison_required value to true' do
+            expect(session[:sp][:biometric_comparison_required]).to eq(true)
           end
         end
 
