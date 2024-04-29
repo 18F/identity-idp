@@ -92,7 +92,7 @@ export function createDOM() {
  *
  * @param {JSDOM} dom instance.
  */
-export function useCleanDOM(dom) {
+export function cleanDOM(dom) {
   beforeEach(() => {
     for (const element of [document.head, document.body]) {
       while (element.firstChild) {

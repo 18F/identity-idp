@@ -5,7 +5,7 @@ import { format } from 'util';
 
 /**
  * Chai plugin which adds chainable `logged` method, to be used in combination with
- * `useConsoleLogSpy` test helper to validate expected console logging.
+ * `consoleLogSpy` test helper to validate expected console logging.
  *
  * @see https://www.chaijs.com/guide/plugins/
  * @see https://www.chaijs.com/api/plugins/
@@ -43,7 +43,7 @@ export function chaiConsoleSpy(chai, utils) {
  * this method is validated using the `logged` chainable assertion implemented by the
  * `chaiConsoleSpy` Chai plugin.
  */
-export function useConsoleLogSpy() {
+export function consoleLogSpy() {
   let originalConsoleError;
   beforeEach(() => {
     console.unverifiedCalls = [];

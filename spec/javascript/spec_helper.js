@@ -3,8 +3,8 @@ import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
-import { createDOM, useCleanDOM } from './support/dom';
-import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
+import { createDOM, cleanDOM } from './support/dom';
+import { chaiConsoleSpy, consoleLogSpy } from './support/console';
 import { sinonChaiAsPromised } from './support/sinon';
 import { createObjectURLAsDataURL } from './support/file';
 
@@ -40,8 +40,8 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
 });
 global.navigator.sendBeacon = () => true;
 
-useCleanDOM(dom);
-useConsoleLogSpy();
+cleanDOM(dom);
+consoleLogSpy();
 
 // Remove after upgrading to React 18
 // See: https://github.com/facebook/react/issues/20756#issuecomment-780945678
