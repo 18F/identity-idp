@@ -190,7 +190,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                 receive(:send_notification).
                   with(
                     to: phone_number,
-                    message: "Login.gov : Vous avez visité le bureau de poste le" \
+                    message: "Login.gov : Vous avez visité le bureau de poste le " \
                     "#{formatted_date}. Vérifiez votre e-mail pour obtenir votre résultat. Ce" \
                     " n'est pas vous ? Signalez-le immédiatement : #{contact_number}. Réf. : " \
                     "#{formatted_string}",
