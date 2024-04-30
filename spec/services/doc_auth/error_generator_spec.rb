@@ -490,7 +490,7 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
       expect(output.keys).to contain_exactly(:general, :hints, :selfie)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_POOR_QUALITY)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_NOT_LIVE_OR_POOR_QUALITY)
       expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
       expect(output[:hints]).to eq(false)
     end
@@ -571,7 +571,7 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
       expect(output.keys).to contain_exactly(:general, :hints, :selfie)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_POOR_QUALITY)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_NOT_LIVE_OR_POOR_QUALITY)
       expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
       expect(output[:hints]).to eq(false)
     end

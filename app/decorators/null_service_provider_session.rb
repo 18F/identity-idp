@@ -44,7 +44,7 @@ class NullServiceProviderSession
   end
 
   def biometric_comparison_required?
-    false
+    true # false
   end
 
   def current_user
