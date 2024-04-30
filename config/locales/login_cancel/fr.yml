@@ -2,8 +2,9 @@
 fr:
   login_cancel:
     account_page: page de compte
-    bullet1: Vous ne pourrez pas utiliser %{app_name} pour accéder à %{sp_name} tant
-      que vous n’aurez pas partagé vos informations avec elle.
+    bullet1_html: Vous ne pourrez pas utiliser %{app_name} pour accéder à
+      <strong>%{sp_name}</strong> tant que vous n’aurez pas partagé vos
+      informations avec elle.
     bullet2_html: Vous aurez toujours un compte %{app_name} que vous pourrez gérer
       ou supprimer sur votre %{link_html}.
     exit: Quitter %{app_name}
