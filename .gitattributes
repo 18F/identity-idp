@@ -120,7 +120,6 @@ tsconfig.json       jsonc
 *.map               autogen
 *.min.js            autogen
 
-
 # --------------------------------------------------------------------
 # PROJECT-SPEFICIC RULES
 # --------------------------------------------------------------------# 
@@ -129,6 +128,9 @@ tsconfig.json       jsonc
 knapsack_rspec_report.json      lockfile
 package-lock.json               lockfile
 pnpm-lock.yaml                  lockfile
+
+### Force text diff for Gemfile.lock
+Gemfile.lock                    diff
 
 ## Executables and runtimes
 *.wasm                          binary
