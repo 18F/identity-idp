@@ -72,10 +72,10 @@ class ServiceProviderSession
     sp.issuer
   end
 
-  def biometric_comparison_required?(resolved_authn_context_result)
-    !!(FeatureManagement.idv_allow_selfie_check? &&
-      resolved_authn_context_result.biometric_comparison?)
-  end
+  # def biometric_comparison_required?(resolved_authn_context_result)
+  #   !!(FeatureManagement.idv_allow_selfie_check? &&
+  #     resolved_authn_context_result.biometric_comparison?)
+  # end
 
   def cancel_link_url
     view_context.new_user_session_url(request_id: sp_session[:request_id])

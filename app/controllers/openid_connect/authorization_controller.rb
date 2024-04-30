@@ -127,7 +127,8 @@ module OpenidConnect
     end
 
     def biometric_comparison_needed?
-      decorated_sp_session.biometric_comparison_required?(resolved_authn_context_result) &&
+      FeatureManagement.idv_allow_selfie_check? &&
+        resolved_authn_context_result.biometric_comparison? &&
         !current_user.identity_verified_with_biometric_comparison?
     end
 

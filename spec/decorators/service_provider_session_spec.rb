@@ -179,53 +179,6 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#selfie_required' do
-    before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
-        and_return(selfie_capture_enabled)
-    end
-
-    let(:resolution_with_biometric_required) do
-      Vot::Parser.new(vector_of_trust: 'Pb').parse
-    end
-
-    let(:resolution_with_no_biometric_required) do
-      Vot::Parser.new(vector_of_trust: 'P1').parse
-    end
-
-    context 'doc_auth_selfie_capture_enabled is true' do
-      let(:selfie_capture_enabled) { true }
-
-      it 'returns true when a biometric comparison is required' do
-        expect(
-          subject.biometric_comparison_required?(
-            resolution_with_biometric_required,
-          ),
-        ).to eq(true)
-      end
-
-      it 'returns false when sp biometric_comparison_required is false' do
-        expect(
-          subject.biometric_comparison_required?(
-            resolution_with_no_biometric_required,
-          ),
-        ).to eq(false)
-      end
-    end
-
-    context 'doc_auth_selfie_capture_enabled is false' do
-      let(:selfie_capture_enabled) { false }
-
-      it 'returns false' do
-        expect(
-          subject.biometric_comparison_required?(
-            resolution_with_biometric_required,
-          ),
-        ).to eq(false)
-      end
-    end
-  end
-
   describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSession.new(

@@ -25,8 +25,13 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
-    allow(subject.decorated_sp_session).to receive(:biometric_comparison_required?).
-      and_return(sp_selfie_enabled && doc_auth_selfie_capture_enabled)
+
+    resolved_authn_context_result = sp_selfie_enabled && doc_auth_selfie_capture_enabled ?
+                                      Vot::Parser.new(vector_of_trust: 'Pb').parse :
+                                      Vot::Parser.new(vector_of_trust: 'P1').parse
+
+    allow(subject).to receive(:resolved_authn_context_result).and_return resolved_authn_context_result
+
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                      ipp_opt_in_enabled
@@ -261,8 +266,10 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
 
     context 'with selfie enabled system wide' do
       let(:doc_auth_selfie_capture_enabled) { true }
+
       describe 'when selfie is enabled for sp' do
         let(:sp_selfie_enabled) { true }
+
         it 'pass on correct flags and states and logs correct info' do
           get :show
           expect(response).to render_template :show
@@ -270,8 +277,10 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           expect(subject.idv_session.selfie_check_required).to eq(true)
         end
       end
+
       describe 'when selfie is disabled for sp' do
         let(:sp_selfie_enabled) { false }
+
         it 'pass on correct flags and states and logs correct info' do
           get :show
           expect(response).to render_template :show
