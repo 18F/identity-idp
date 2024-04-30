@@ -36,7 +36,6 @@ module IdentityConfig
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
     config.add(:ab_testing_idv_ten_digit_otp_enabled, type: :boolean)
-    config.add(:ab_testing_idv_ten_digit_otp_length, type: :integer)
     config.add(:ab_testing_idv_ten_digit_otp_percent, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)

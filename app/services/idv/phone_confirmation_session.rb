@@ -8,9 +8,7 @@ module Idv
       bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(user&.uuid)
       case bucket
       when :ten_digit_otp
-        OtpCodeGenerator.generate_digits(
-          IdentityConfig.store.ab_testing_idv_ten_digit_otp_length,
-        )
+        OtpCodeGenerator.generate_digits(10)
       else # original, bucket defaults to :six_alphanumeric_otp
         OtpCodeGenerator.generate_alphanumeric_digits(
           TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,

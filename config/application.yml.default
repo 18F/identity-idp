@@ -22,7 +22,6 @@ aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 ab_testing_idv_ten_digit_otp_enabled: false
 ab_testing_idv_ten_digit_otp_percent: 0
-ab_testing_idv_ten_digit_otp_length: 10
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
