@@ -3,9 +3,8 @@ import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
-// React linting requires functions starting with 'use' to be hooks. These are not hooks, aliasing fixes lint issues.
-import { createDOM, useCleanDOM as utilizeCleanDom } from './support/dom';
-import { chaiConsoleSpy, useConsoleLogSpy as utilizeConsoleLogSpy } from './support/console';
+import { createDOM, useCleanDOM } from './support/dom';
+import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
 import { sinonChaiAsPromised } from './support/sinon';
 import { createObjectURLAsDataURL } from './support/file';
 
@@ -41,8 +40,8 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
 });
 global.navigator.sendBeacon = () => true;
 
-utilizeCleanDom(dom);
-utilizeConsoleLogSpy();
+useCleanDOM(dom);
+useConsoleLogSpy();
 
 // Remove after upgrading to React 18
 // See: https://github.com/facebook/react/issues/20756#issuecomment-780945678
