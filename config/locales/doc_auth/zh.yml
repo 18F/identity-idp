@@ -65,8 +65,7 @@ zh:
         multiple_front_id_failures: 我们无法验证你身份证件的正面。尝试重拍一张。
         network_error: 我们这边有技术困难。请稍后再提交你的图像。
         no_liveness: 尝试重拍。
-        selfie_failure: Try taking your photos again. Make sure all of your photos are
-          clear and in focus.
+        selfie_failure: 我们无法验证你自己的照片。请重拍一张。
         selfie_failure_help_link_text: Review more tips for taking clear photos
       glare:
         failed_short: 图像有炫光，请再试一次。
