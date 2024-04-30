@@ -94,7 +94,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
       }
 
       expect(response).to render_template(:index)
-      expect(flash[:error]).to be_blank
+      expect(flash[:error]).not_to be_blank
     end
 
     context 'with recaptcha error' do
