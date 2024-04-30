@@ -93,7 +93,7 @@ module Idv
         phone: hash[:phone],
         sent_at: Time.zone.at(hash[:sent_at]),
         delivery_method: hash[:delivery_method].to_sym,
-        user: hash[:user].nil? ? nil : User.find(hash[:user_id]),
+        user: hash[:user_id].nil? ? nil : User.find(hash[:user_id]),
       )
     end
   end
