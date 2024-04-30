@@ -12,5 +12,13 @@ describe('document-capture/higher-order/with-props', () => {
 
       expect(getByText('test2')).to.be.ok();
     });
+    it('has a WithProps(Component) displayName', () => {
+      const TestComponent = ({ test = 'test' }) => test;
+      const displayName = `WithProps(TestComponentName)`;
+      TestComponent.displayName = displayName;
+      const WithPropComponent = withProps({ test: 'testProp' })(TestComponent);
+
+      expect(WithPropComponent.displayName).to.equal(displayName);
+    });
   });
 });
