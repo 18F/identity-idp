@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneConfirmationSession do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:six_char_alphanumeric) { /[a-z0-9]{6}/i }
   let(:ten_digit_numeric) { /[0-9]{10}/i }
 
@@ -174,6 +174,27 @@ RSpec.describe Idv::PhoneConfirmationSession do
       travel_to 11.minutes.from_now do
         expect(otp_object.expired?).to eq(true)
       end
+    end
+  end
+
+  describe '#to_h and .from_h' do
+    let(:test_session) do
+      described_class.new(
+        code: 'ABC',
+        phone: '4105551212',
+        sent_at: Time.zone.now,
+        delivery_method: :sms,
+        user: user,
+      )
+    end
+
+    it 'correctly restores the phone confirmation session from hash' do
+      deserialized_session = described_class.from_h(test_session.to_h)
+      expect(deserialized_session.code).to eq(test_session.code)
+      expect(deserialized_session.phone).to eq(test_session.phone)
+      expect(deserialized_session.sent_at).to be_within(1).of(test_session.sent_at)
+      expect(deserialized_session.delivery_method).to eq(test_session.delivery_method)
+      expect(deserialized_session.user.id).to eq(user.id)
     end
   end
 end
