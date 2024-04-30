@@ -396,8 +396,8 @@ trigger_devops:
         "loginEnv": "$CI_ENVIRONMENT_SLUG",
         "loginHostRole": "idp",
         "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/",
+        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.review-app.pivcac.identitysandbox.gov/",
+        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.review-app.pivcac.identitysandbox.gov/",
         "dashboardUrl": "https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"
       }
       EOF
@@ -433,8 +433,8 @@ trigger_devops:
         "loginEnv": "$CI_ENVIRONMENT_SLUG",
         "loginHostRole": "worker",
         "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"
+        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.review-app.pivcac.identitysandbox.gov/",
+        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.review-app.pivcac.identitysandbox.gov/"
       }
       EOF
       )
@@ -451,7 +451,7 @@ trigger_devops:
           "password": "pivcac"
         },
         "idpHost": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov"
+        "domainName": "$CI_ENVIRONMENT_SLUG.review-app.pivcac.identitysandbox.gov"
       }
       EOF
       )
@@ -497,7 +497,7 @@ trigger_devops:
       --set-json worker.config="$WORKER_CONFIG"
       --set-json pivcac.config="$PIVCAC_CONFIG"
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
+      --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.pivcac.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       $CI_ENVIRONMENT_SLUG ./identity-idp-helm-chart
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
