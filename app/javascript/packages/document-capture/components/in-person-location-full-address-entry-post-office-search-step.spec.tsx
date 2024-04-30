@@ -36,10 +36,12 @@ const USPS_RESPONSE = [
   },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const defaultRegisterField = (string) => undefined;
 const DEFAULT_PROPS = {
   toPreviousStep() {},
   onChange() {},
-  registerField() {},
+  registerField: defaultRegisterField,
 };
 
 describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {

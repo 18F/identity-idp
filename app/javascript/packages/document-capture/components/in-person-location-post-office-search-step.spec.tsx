@@ -50,11 +50,13 @@ const MULTI_LOCATION_RESPONSE = [
   },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const defaultRegisterField = (string) => undefined;
 const DEFAULT_PROPS = {
   toPreviousStep() {},
   onChange() {},
   value: {},
-  registerField() {},
+  registerField: defaultRegisterField,
 };
 
 describe('InPersonLocationPostOfficeSearchStep', () => {

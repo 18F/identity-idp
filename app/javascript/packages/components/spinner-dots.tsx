@@ -1,6 +1,6 @@
 interface SpinnerDotsProps {
-  // Whether to absolutely-position the element at its container's center. Defaults to false.
-  isCentered: boolean;
+  // Optional whether to absolutely-position the element at its container's center. Defaults to false.
+  isCentered?: boolean;
   // Optional class name.
   className?: string;
 }
