@@ -334,6 +334,12 @@ module AnalyticsEvents
     )
   end
 
+  # New device sign-in alerts sent after expired notification timeframe
+  # @param [Integer] count Number of emails sent
+  def create_new_device_alert_job_emails_sent(count:, **extra)
+    track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
+  end
+
   # @param [String] message the warning
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
@@ -3289,6 +3295,25 @@ module AnalyticsEvents
   )
     track_event(
       :idv_sdk_selfie_image_re_taken,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
+
+  # User opened the SDK to take a selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] selfie_attempts number of selfie captured by SDK
+  def idv_sdk_selfie_image_taken(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_taken,
       acuant_version: acuant_version,
       captureAttempts: captureAttempts,
       selfie_attempts: selfie_attempts,

@@ -1,0 +1,12 @@
+---
+zh:
+  anonymous_mailer:
+    password_reset_missing_user:
+      create_new_account: create a new account
+      info_no_account: You tried to reset your %{app_name} password but we don’t have
+        an account linked to this email address.
+      info_request_different: You can request your password using a different email
+        address that is connected to your %{app_name} account.
+      subject: Email not found
+      try_different_email: Try a different email address
+      use_this_email_html: Or use this email address and %{create_account_link_html}.

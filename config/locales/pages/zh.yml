@@ -1,0 +1,6 @@
+---
+zh:
+  pages:
+    page_took_too_long:
+      body: 你也许想等几分钟后再试。（503）
+      header: 服务器处理你请求的时间过长。
