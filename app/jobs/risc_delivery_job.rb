@@ -6,6 +6,7 @@ class RiscDeliveryJob < ApplicationJob
   NETWORK_ERRORS = [
     Faraday::TimeoutError,
     Faraday::ConnectionFailed,
+    Faraday::ServerError,
     Faraday::SSLError,
     Errno::ECONNREFUSED,
   ].freeze
