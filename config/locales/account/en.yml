@@ -14,6 +14,7 @@ en:
         en: English
         es: Spanish
         fr: French
+        zh: Chinese
       sentence_connector: or
       updated: Your email language preference has been updated.
     forget_all_browsers:

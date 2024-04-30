@@ -17,7 +17,7 @@ module DocAuth
       errors: {},
       exception: nil,
       extra: {},
-      pii_from_doc: {},
+      pii_from_doc: nil,
       attention_with_barcode: false,
       doc_type_supported: true,
       selfie_status: :not_processed,
