@@ -61,17 +61,14 @@ module I18n
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
-        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
-        { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.formats.sms_date' }, # for us date format
-        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
-        { key: 'date.formats.long', locales: %i[zh] },
-        { key: 'date.formats.short', locales: %i[zh] },
-        { key: 'time.formats.event_date', locales: %i[zh] },
-        { key: 'time.formats.event_time', locales: %i[zh] },
+        { key: 'date.formats.long', locales: %i[es zh] },
+        { key: 'date.formats.short', locales: %i[es zh] },
+        { key: 'time.formats.event_date', locales: %i[es zh] },
+        { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         # need to be fixed
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },

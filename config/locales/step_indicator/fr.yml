@@ -10,9 +10,9 @@ fr:
         go_to_the_post_office: Se rendre au bureau de poste
         secure_account: Saisir à nouveau votre mot de passe
         verify_id: Vérifier votre identité
-        verify_info: Vérifier votre informations
+        verify_info: Vérifier vos informations
         verify_phone_or_address: Vérifier votre numéro de téléphone
     status:
-      complete: Terminé
+      complete: Étape effectuée
       current: Étape en cours
-      not_complete: Non terminé
+      not_complete: Étape non effectuée
