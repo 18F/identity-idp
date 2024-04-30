@@ -442,7 +442,7 @@ trigger_devops:
       export PIVCAC_CONFIG=$(cat <<EOF
       {
         "kubernetesReviewApp": "true",
-        "clientCertS3Bucket": "login-gov-pivcac-public-cert-reviewapp.894947205914-us-west-2",
+        "clientCertS3Bucket": "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2",
         "postgres": {
           "sslmode": "prefer",
           "name": "idp",
