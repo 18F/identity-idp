@@ -74,6 +74,11 @@ RSpec.describe 'redirect_uri validation', allowed_extra_analytics: [:*] do
 
       click_on t('links.back_to_sp', sp: 'Test SP')
       expect(current_url).to eq(sp_redirect_uri)
+
+      visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
+
+      click_on t('links.back_to_sp', sp: 'Test SP')
+      expect(current_url).to eq(sp_redirect_uri)
     end
   end
 

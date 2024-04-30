@@ -544,8 +544,8 @@ module AnalyticsEvents
   end
 
   # User visits the "Are you sure you want to cancel and exit" page
-  def exit_to_sp_confirmation_page_visited
-    track_event(:exit_to_sp_confirmation_page_visited)
+  def completions_cancellation_visited
+    track_event(:completions_cancellation_visited)
   end
 
   # @param [String] redirect_url URL user was directed to
