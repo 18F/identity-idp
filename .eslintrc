@@ -114,12 +114,6 @@
       }
     },
     {
-      "files": ["app/javascript/packages/document-capture/higher-order/with-props.jsx"],
-      "rules": {
-        "react/display-name": "off"
-      }
-    },
-    {
       "files": [
         "app/javascript/packages/form-steps/form-steps.spec.tsx",
         "spec/javascript/spec_helper.js"
