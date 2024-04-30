@@ -89,7 +89,6 @@ module I18n
         { key: 'doc_auth.errors.alerts.selfie_not_live', locales: %i[zh] },
         { key: 'doc_auth.errors.alerts.selfie_not_live_help_link_text', locales: %i[zh] },
         { key: 'doc_auth.errors.alerts.selfie_poor_quality', locales: %i[zh] },
-        { key: 'doc_auth.errors.general.selfie_failure', locales: %i[zh] },
         { key: 'doc_auth.errors.general.selfie_failure_help_link_text', locales: %i[zh] },
         { key: 'doc_auth.headings.hybrid_handoff_selfie', locales: %i[zh] },
         { key: 'doc_auth.info.getting_started_html', locales: %i[zh] },
