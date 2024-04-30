@@ -2,7 +2,7 @@
 fr:
   date:
     day_names:
-      -  # empty item to have correct weekday offset for %A
+      -
       - lundi
       - mardi
       - mercredi
@@ -27,15 +27,15 @@ fr:
       - octobre
       - novembre
       - décembre
-    range: Du %{from} au %{to}
+    range: du %{from} au %{to}
   time:
     am: A.M.
     formats:
       event_date: '%-d %B %Y'
-      event_time: '%H:%M'
-      event_timestamp: '%e %B %Y à %H:%M'
-      event_timestamp_js: '%{day} %{month} %{year} à %{hour}:%{minute}'
-      event_timestamp_utc: '%e %B %Y à %H:%M UTC'
-      event_timestamp_with_zone: '%e %B %Y à %H:%M %Z'
-      sms_date: '%m/%d/%Y'
+      event_time: '%-l h %M %p'
+      event_timestamp: '%-d %B %Y à %-l h %M %p'
+      event_timestamp_js: '%{day} %{month} %{year} à %{hour} h %{minute}'
+      event_timestamp_utc: '%-d %B %Y à %-l h %M %p UTC'
+      event_timestamp_with_zone: '%-d %B %Y à %-l h %M %p %Z'
+      sms_date: '%d/%m/%Y'
     pm: P.M.
