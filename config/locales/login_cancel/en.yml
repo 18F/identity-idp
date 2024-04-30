@@ -2,7 +2,7 @@
 en:
   login_cancel:
     account_page: account page
-    bullet1: You won’t be able to use %{app_name} to access %{sp_name} until you
+    bullet1_html: You won’t be able to use %{app_name} to access <strong>%{sp_name}</strong> until you
       share your information with them.
     bullet2_html: You’ll still have a %{app_name} account which you can manage or
       delete on your %{link_html}.
