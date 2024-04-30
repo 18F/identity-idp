@@ -16,6 +16,12 @@ module Idv
       # memoize the form so the ivar is available to the view
       phone_confirmation_otp_verification_form
       analytics.idv_phone_confirmation_otp_visit
+      @otp_code_length = case AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
+                         when :ten_digit_otp
+                           10
+                         else
+                           TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
+                         end
     end
 
     def update
