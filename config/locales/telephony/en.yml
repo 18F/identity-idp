@@ -50,8 +50,8 @@ en:
         voice_unsupported: Invalid phone number. Check that you’ve entered the correct
           country code or area code.
     format_length:
-      six: 6
-      ten: 10
+      six: '6'
+      ten: '10'
     format_type:
       character: character
       digit: digit

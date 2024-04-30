@@ -5,8 +5,9 @@ module Telephony
     attr_reader :recipient_phone, :otp, :expiration, :otp_format, :otp_length, :channel,
                 :domain, :country_code, :extra_metadata
 
-    def initialize(to:, otp:, expiration:, otp_format:, otp_length:,
-                   channel:, domain:, country_code:, extra_metadata:)
+    def initialize(to:, otp:, expiration:, otp_format:,
+                   channel:, domain:, country_code:, extra_metadata:,
+                   otp_length: I18n.t('telephony.format_length.six'))
       @recipient_phone = to
       @otp = otp
       @otp_format = otp_format

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ResendOtpController do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   let(:phone) { '+1 (225) 555-5000' }
   let(:user_phone_confirmation) { false }
