@@ -17,6 +17,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
     end
 
     it 'is empty with no data' do
+      binding.pry
       expect(results).to eq([])
     end
 
@@ -120,6 +121,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
       end
 
       it 'adds up auth_counts and sp_return_log instances' do
+        binding.pry
         rows = [
           {
             ial: 1,
@@ -173,6 +175,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
       let(:rows) { [] }
 
       it 'adds up auth_counts and sp_return_log instances' do
+        binding.pry
         expect(results).to match_array(rows)
       end
     end
