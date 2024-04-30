@@ -147,7 +147,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         end
 
         context 'sends a message that respects the user email locale preference' do
-          let(:proofed_date) { I18n.l(Time.zone.now, format: :sms_date) }
+          let(:proofed_date) { Time.zone.now }
           let(:phone_number) { passed_enrollment.notification_phone_configuration.formatted_phone }
           let(:contact_number) { '(844) 555-5555' }
           let(:reference_string) { passed_enrollment.enrollment_code }
@@ -162,13 +162,14 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           it 'handles English language preference' do
             passed_enrollment.user.update!(email_language: 'en')
             passed_enrollment.update!(proofed_at: Time.zone.now)
+            formatted_date = I18n.l(proofed_date, format: :sms_date, locale: 'en')
 
             expect(Telephony).
               to(
                 receive(:send_notification).
                   with(
                     to: phone_number,
-                    message: "Login.gov: You visited the Post Office on #{proofed_date}." \
+                    message: "Login.gov: You visited the Post Office on #{formatted_date}." \
                       " Check email for your result." \
                       " Not you? Report this right away: #{contact_number}." \
                       " Ref: #{formatted_string}",
@@ -182,15 +183,17 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           it 'handles French language preference' do
             passed_enrollment.user.update!(email_language: 'fr')
             passed_enrollment.update!(proofed_at: Time.zone.now)
+            formatted_date = I18n.l(proofed_date, format: :sms_date, locale: 'fr')
 
             expect(Telephony).
               to(
                 receive(:send_notification).
                   with(
                     to: phone_number,
-                    message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
-                      " Vérifiez votre e-mail. Ce n'est pas vous? Signalez-le: #{contact_number}." \
-                      " Réf: #{formatted_string}",
+                    message: "Login.gov : Vous avez visité le bureau de poste le" \
+                    "#{formatted_date}. Vérifiez votre e-mail pour obtenir votre résultat. Ce" \
+                    " n'est pas vous ? Signalez-le immédiatement : #{contact_number}. Réf. : " \
+                    "#{formatted_string}",
                     country_code: Phonelib.parse(phone_number).country,
                   ),
               )
@@ -201,14 +204,16 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           it 'handles Spanish language preference' do
             passed_enrollment.user.update!(email_language: 'es')
             passed_enrollment.update!(proofed_at: Time.zone.now)
+            formatted_date = I18n.l(proofed_date, format: :sms_date, locale: 'es')
 
             expect(Telephony).
               to(
                 receive(:send_notification).
                   with(
                     to: phone_number,
-                    message: "Login.gov: Visitó la oficina de correos el #{proofed_date}." \
-                      " Revise su correo electrónico. ¿No fue usted? Llame: #{contact_number}." \
+                    message: "Login.gov: Usted acudió a la oficina de correos el " \
+                      "#{formatted_date}. Revise el resultado en su correo electrónico. " \
+                      "¿No fue usted? Informe inmediatamente de esto: #{contact_number}." \
                       " Ref: #{formatted_string}",
                     country_code: Phonelib.parse(phone_number).country,
                   ),
