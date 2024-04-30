@@ -864,4 +864,28 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
   end
+
+  describe '#biometric_comparison_required?' do
+    it 'returns false by default' do
+      expect(subject.biometric_comparison_required?).to eql(false)
+    end
+
+    context 'biometric requested via VTR' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C1.P1.Pb'].to_json }
+
+      it 'returns true' do
+        expect(subject.biometric_comparison_required?).to eql(true)
+      end
+    end
+
+    context 'VTR used but biometric not requested' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C1.P1'].to_json }
+
+      it 'returns false' do
+        expect(subject.biometric_comparison_required?).to eql(false)
+      end
+    end
+  end
 end
