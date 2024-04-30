@@ -211,15 +211,10 @@ module DocAuth
         return nil
       end
 
-      # Error when the image on the id is poor quality
-      if error_is_poor_quality(face_match_error)
-        return Errors::SELFIE_POOR_QUALITY
+      if error_is_poor_quality(face_match_error) || error_is_not_live(face_match_error)
+        return Errors::SELFIE_NOT_LIVE_OR_POOR_QUALITY
       end
-      # Error when the image on the id is not live
-      if error_is_not_live(face_match_error)
-        return Errors::SELFIE_NOT_LIVE
-      end
-      # Fallback, we don't expect this to happen
+
       Errors::SELFIE_FAILURE
     end
   end
