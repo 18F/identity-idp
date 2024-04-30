@@ -14,7 +14,6 @@ const LEGACY_FILE_EXCEPTIONS = [
   'app/javascript/packages/device/index.js',
   'app/javascript/packages/document-capture/index.js',
   'app/javascript/packages/document-capture/components/acuant-capture-canvas.jsx',
-  'app/javascript/packages/document-capture/components/acuant-selfie-capture-canvas.jsx',
   'app/javascript/packages/document-capture/components/callback-on-mount.jsx',
   'app/javascript/packages/document-capture/components/file-image.jsx',
   'app/javascript/packages/document-capture/components/submission-interstitial.jsx',
