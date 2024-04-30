@@ -539,7 +539,9 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#verify_by_mail_letter_requested' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).verify_by_mail_letter_requested }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).verify_by_mail_letter_requested
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
