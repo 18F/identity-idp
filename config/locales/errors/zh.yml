@@ -47,6 +47,7 @@ zh:
       expired: 已过期，请要求一个新的。
       format_mismatch: 请使用与要求一致的格式。
       gpo_otp_expired: 你的验证码已过期。请要求另外一封信来得到新代码。
+      gpo_otp_expired_and_cannot_request_another: 你的验证码已过期。
       improbable_phone: 电话号码有误。请保证你输入的电话号码无误。
       inclusion: 没有在清单中
       invalid_calling_area: 不支持给那个号码打的电话。如果你有一个可接受短信（SMS）的电话，请尝试用短信。
