@@ -6,9 +6,9 @@ module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
       include Idv::AvailabilityConcern
+      include Idv::HybridMobile::HybridMobileConcern
       include RenderConditionConcern
       include UspsInPersonProofing
-      include EffectiveUser
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
@@ -59,7 +59,7 @@ module Idv
 
       def add_proofing_component
         ProofingComponent.
-          create_or_find_by(user: effective_user).
+          create_or_find_by(user: current_or_hybrid_user).
           update(document_check: Idp::Constants::Vendors::USPS)
       end
 
@@ -84,12 +84,12 @@ module Idv
       end
 
       def confirm_authenticated_for_api
-        render json: { success: false }, status: :unauthorized if !effective_user
+        render json: { success: false }, status: :unauthorized if !current_or_hybrid_user
       end
 
       def enrollment
         InPersonEnrollment.find_or_initialize_by(
-          user: effective_user,
+          user: current_or_hybrid_user,
           status: :establishing,
           profile: nil,
         )

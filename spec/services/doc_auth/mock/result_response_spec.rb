@@ -20,7 +20,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).
+      expect(response.pii_from_doc.to_h).
         to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.selfie_status).to eq(:success)
@@ -54,21 +54,23 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(
-        first_name: 'Susan',
-        middle_name: 'Q',
-        last_name: 'Smith',
-        address1: '1 Microsoft Way',
-        address2: 'Apt 3',
-        city: 'Bayside',
-        state: 'NY',
-        zipcode: '11364',
-        dob: '1938-10-06',
-        state_id_number: '111111111',
-        state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
-        state_id_expiration: '2089-12-31',
-        state_id_issued: '2009-12-31',
-        issuing_country_code: 'CA',
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: 'Q',
+          last_name: 'Smith',
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          state_id_number: '111111111',
+          state_id_jurisdiction: 'ND',
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2089-12-31',
+          state_id_issued: '2009-12-31',
+          issuing_country_code: 'CA',
+        ),
       )
       expect(response.attention_with_barcode?).to eq(false)
     end
@@ -97,7 +99,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to include(dob: '1938-10-06')
+      expect(response.pii_from_doc.dob).to eq('1938-10-06')
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -121,7 +123,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: true,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -140,9 +142,13 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
     it 'returns a successful result' do
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq({})
+      expect(response.errors).to eq(
+        back: ['fallback_field_level'],
+        general: ['barcode_read_check'], hints: true
+      )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to include(first_name: 'Susan', last_name: nil)
+      expect(response.pii_from_doc.first_name).to eq('Susan')
+      expect(response.pii_from_doc.last_name).to eq(nil)
       expect(response.attention_with_barcode?).to eq(true)
     end
   end
@@ -180,7 +186,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: false,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -196,7 +202,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).
+      expect(response.pii_from_doc.to_h).
         to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
     end
@@ -213,7 +219,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['parsed URI, but scheme was https (expected data)'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -229,7 +235,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['YAML data should have been a hash, got String'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -248,7 +254,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['invalid YAML file'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -292,22 +298,23 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(
-        first_name: 'Susan',
-        middle_name: 'Q',
-        last_name: 'Smith',
-        phone: '+1 314-555-1212',
-        address1: '1 Microsoft Way',
-        address2: 'Apt 3',
-        city: 'Bayside',
-        state: 'NY',
-        state_id_jurisdiction: 'NY',
-        state_id_number: '123456789',
-        zipcode: '11364',
-        dob: '1938-10-06',
-        state_id_type: 'drivers_license',
-        state_id_expiration: '2089-12-31',
-        state_id_issued: '2009-12-31',
-        issuing_country_code: 'CA',
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: 'Q',
+          last_name: 'Smith',
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          state_id_jurisdiction: 'NY',
+          state_id_number: '123456789',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2089-12-31',
+          state_id_issued: '2009-12-31',
+          issuing_country_code: 'CA',
+        ),
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
@@ -344,21 +351,23 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     it 'returns default values for the missing fields' do
       expect(response.success?).to eq(true)
       expect(response.pii_from_doc).to eq(
-        first_name: 'Susan',
-        middle_name: nil,
-        last_name: 'MCFAKERSON',
-        address1: '1 FAKE RD',
-        address2: nil,
-        city: 'GREAT FALLS',
-        state: 'MT',
-        zipcode: '59010',
-        dob: '1938-10-06',
-        state_id_number: '1111111111111',
-        state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
-        state_id_expiration: '2099-12-31',
-        state_id_issued: '2019-12-31',
-        issuing_country_code: 'US',
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: nil,
+          last_name: 'MCFAKERSON',
+          address1: '1 FAKE RD',
+          address2: nil,
+          city: 'GREAT FALLS',
+          state: 'MT',
+          zipcode: '59010',
+          dob: '1938-10-06',
+          state_id_number: '1111111111111',
+          state_id_jurisdiction: 'ND',
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2099-12-31',
+          state_id_issued: '2019-12-31',
+          issuing_country_code: 'US',
+        ),
       )
     end
   end
@@ -380,7 +389,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: false,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::CAUTION.name,
@@ -407,7 +416,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: true,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
@@ -446,21 +455,23 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(
-        first_name: 'Susan',
-        middle_name: 'Q',
-        last_name: 'Smith',
-        address1: '1 Microsoft Way',
-        address2: 'Apt 3',
-        city: 'Bayside',
-        state: 'NY',
-        zipcode: '11364',
-        dob: '1938-10-06',
-        state_id_number: '111111111',
-        state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
-        state_id_expiration: '2089-12-31',
-        state_id_issued: '2009-12-31',
-        issuing_country_code: 'CA',
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: 'Q',
+          last_name: 'Smith',
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          state_id_number: '111111111',
+          state_id_jurisdiction: 'ND',
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2089-12-31',
+          state_id_issued: '2009-12-31',
+          issuing_country_code: 'CA',
+        ),
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
@@ -646,7 +657,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       YAML
     end
     it 'successfully extracts PII' do
-      expect(response.pii_from_doc.empty?).to eq(false)
+      expect(response.pii_from_doc).to_not be_blank
     end
   end
   context 'with a yaml file that includes classification info' do

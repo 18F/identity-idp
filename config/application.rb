@@ -32,24 +32,23 @@ module Identity
       Identity::Hostdata.logger.level = log_level
     end
 
-    configuration = Identity::Hostdata::ConfigReader.new(
+    Identity::Hostdata.load_config!(
       app_root: Rails.root,
-      logger: Identity::Hostdata.logger,
-    ).read_configuration(
-      Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
+      rails_env: Rails.env,
+      write_copy_to: Rails.root.join('tmp', 'application.yml'),
+      &IdentityConfig::BUILDER
     )
-    IdentityConfig.build_store(configuration)
 
     config.asset_sources = AssetSources.new(
       manifest_path: Rails.public_path.join('packs', 'manifest.json'),
       cache_manifest: Rails.env.production? || Rails.env.test?,
-      i18n_locales: IdentityConfig.store.available_locales,
+      i18n_locales: Identity::Hostdata.config.available_locales,
     )
 
     console do
       if ENV['ALLOW_CONSOLE_DB_WRITE_ACCESS'] != 'true' &&
-         IdentityConfig.store.database_readonly_username.present? &&
-         IdentityConfig.store.database_readonly_password.present?
+         Identity::Hostdata.config.database_readonly_username.present? &&
+         Identity::Hostdata.config.database_readonly_password.present?
         warn <<-EOS.squish
           WARNING: Loading database a configuration with the readonly database user.
           If you wish to make changes to records in the database set
@@ -93,11 +92,11 @@ module Identity
     config.good_job.execution_mode = :external
     config.good_job.poll_interval = 5
     config.good_job.enable_cron = true
-    config.good_job.max_threads = IdentityConfig.store.good_job_max_threads
-    config.good_job.queues = IdentityConfig.store.good_job_queues
+    config.good_job.max_threads = Identity::Hostdata.config.good_job_max_threads
+    config.good_job.queues = Identity::Hostdata.config.good_job_queues
     config.good_job.preserve_job_records = false
     config.good_job.enable_listen_notify = false
-    config.good_job.queue_select_limit = IdentityConfig.store.good_job_queue_select_limit
+    config.good_job.queue_select_limit = Identity::Hostdata.config.good_job_queue_select_limit
     # see config/initializers/job_configurations.rb for cron schedule
 
     includes_star_queue = config.good_job.queues.split(';').any? do |name_threads|
@@ -115,18 +114,18 @@ module Identity
     require 'i18n_flat_yml_backend'
     config.i18n.backend = I18nFlatYmlBackend.new
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
-    config.i18n.available_locales = IdentityConfig.store.available_locales
+    config.i18n.available_locales = Identity::Hostdata.config.available_locales
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 
     config.action_view.frozen_string_literal = true
 
-    routes.default_url_options[:host] = IdentityConfig.store.domain_name
+    routes.default_url_options[:host] = Identity::Hostdata.config.domain_name
 
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
-        mail.address = IdentityConfig.store.email_from
-        mail.display_name = IdentityConfig.store.email_from_display_name
+        mail.address = Identity::Hostdata.config.email_from
+        mail.display_name = Identity::Hostdata.config.email_from_display_name
       end.to_s,
     }
     config.action_mailer.observers = %w[EmailDeliveryObserver]
@@ -139,7 +138,7 @@ module Identity
     config.middleware.use Utf8Sanitizer
     require 'secure_cookies'
     config.middleware.insert_after ActionDispatch::Static, SecureCookies
-    config.middleware.use VersionHeaders if IdentityConfig.store.version_headers_enabled
+    config.middleware.use VersionHeaders if Identity::Hostdata.config.version_headers_enabled
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
@@ -159,20 +158,20 @@ module Identity
         origins IdentityCors.allowed_origins_static_sites
         resource '/api/analytics-events', headers: :any, methods: [:get]
         resource '/api/country-support', headers: :any, methods: [:get]
-        if IdentityConfig.store.in_person_public_address_search_enabled
+        if Identity::Hostdata.config.in_person_public_address_search_enabled
           resource '/api/usps_locations', headers: :any, methods: %i[post options]
         end
       end
     end
 
-    if !IdentityConfig.store.enable_rate_limiting
+    if !Identity::Hostdata.config.enable_rate_limiting
       # Rack::Attack auto-includes itself as a Railtie, so we need to
       # explicitly remove it when we want to disable it
       config.middleware.delete Rack::Attack
     end
 
-    config.view_component.show_previews = IdentityConfig.store.component_previews_enabled
-    if IdentityConfig.store.component_previews_enabled
+    config.view_component.show_previews = Identity::Hostdata.config.component_previews_enabled
+    if Identity::Hostdata.config.component_previews_enabled
       require 'lookbook'
 
       config.view_component.preview_controller = 'ComponentPreviewController'
@@ -181,7 +180,7 @@ module Identity
       config.lookbook.auto_refresh = false
       config.lookbook.project_name = "#{APP_NAME} Component Previews"
       config.lookbook.ui_theme = 'blue'
-      if IdentityConfig.store.component_previews_embed_frame_ancestors.present?
+      if Identity::Hostdata.config.component_previews_embed_frame_ancestors.present?
         # so we can embed a lookbook component into the dev docs
         config.lookbook.preview_embeds.policy = 'ALLOWALL'
         # lookbook strips out CSP, this brings it back so we aren't so permissive

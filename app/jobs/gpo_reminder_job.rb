@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GpoReminderJob < ApplicationJob
-  queue_as :low
+  queue_as :long_running
 
   # Send email reminders to people with USPS proofing letters whose
   # letters were sent a while ago, and haven't yet entered their code

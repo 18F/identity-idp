@@ -44,6 +44,8 @@ RSpec.describe DocAuth::ErrorGenerator do
     }
   end
 
+  let(:result_code_invalid) { false }
+
   def build_error_info(
     doc_result: nil,
     passed: [],
@@ -66,20 +68,72 @@ RSpec.describe DocAuth::ErrorGenerator do
       portrait_match_results: portrait_match_results,
       image_metrics: image_metrics,
       classification_info: classification_info,
+      result_code_invalid: result_code_invalid,
     }
   end
 
   context 'The correct errors are delivered when' do
-    it 'DocAuthResult is Attention' do
+    let(:result_code_invalid) { true }
+    context 'when is attention' do
+      let(:result_code_invalid) { false }
+      it 'DocAuthResult is Attention with barcode' do
+        # noop - because we check for success or attn with barcode
+        # before entering the error generator, this case should never happen.
+      end
+
+      it 'DocAuthResult is Attention of Barcode Read and general selfie error' do
+        error_info = build_error_info(
+          doc_result: 'Attention',
+          failed: [{ name: '2D Barcode Read', result: 'Attention' }],
+        )
+        error_info[:liveness_enabled] = true
+        # Selfie not match ID
+        error_info[:portrait_match_results] = {
+          FaceMatchResult: 'Fail',
+          FaceErrorMessage: 'Successful. Liveness: Live',
+        }
+        output = described_class.new(config).generate_doc_auth_errors(error_info)
+        expect(output.keys).to contain_exactly(:general, :back, :front, :selfie, :hints)
+        expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+        expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
+        expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
+        expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+        expect(output[:hints]).to eq(false)
+      end
+
+      it 'DocAuthResult is Attention with unknown alert' do
+        error_info = build_error_info(
+          doc_result: 'Attention',
+          failed: [{ name: 'Unknown Alert', result: 'Attention' }],
+        )
+
+        expect(warn_notifier).to receive(:call).
+          with(hash_including(:response_info, :message)).twice
+
+        output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+        expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+        expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+        expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(output[:hints]).to eq(true)
+      end
+    end
+    it 'DocAuthResult is Unknown and general selfie error' do
       error_info = build_error_info(
-        doc_result: 'Attention',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
+        doc_result: 'Unknown',
+        failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
-
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Successful. Liveness: Live',
+      }
       output = described_class.new(config).generate_doc_auth_errors(error_info)
-
-      expect(output.keys).to contain_exactly(:general, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::ID_NOT_VERIFIED)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
     end
@@ -261,6 +315,46 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
+    it 'DocAuthResult is Failed with unknown alert and general selfie error' do
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        failed: [{ name: 'Unknown alert', result: 'Failed' }],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Successful. Liveness: Live',
+      }
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message)).twice
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'DocAuthResult is Failed with known alert and specific selfie no liveness error' do
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        failed: [{ name: 'Visible Pattern', result: 'Failed' }],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Liveness: NotLive',
+      }
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::ID_NOT_VERIFIED)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
+    end
+
     it 'DocAuthResult is success with unsupported doc type' do
       error_info = build_error_info(
         doc_result: 'Passed',
@@ -321,6 +415,165 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
+    end
+
+    it 'DocAuthResult is success with an unknown alert' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [{ name: 'Not a known alert', result: 'Failed' }],
+      )
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message)).twice
+
+      # this is a fall back result, we cannot generate error but the generator is called
+      # which should not happen
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
+    end
+    it 'DocAuthResult is success with general selfie error' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Successful. Liveness: Live',
+      }
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints, :selfie)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'DocAuthResult is success with specific selfie no liveness error' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Liveness: NotLive',
+      }
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :hints, :selfie)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_NOT_LIVE)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'DocAuthResult is success with specific selfie liveness quality error' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Liveness: PoorQuality',
+      }
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :hints, :selfie)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_POOR_QUALITY)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'DocAuthResult is success with alert and general selfie error' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [{ name: 'Visible Pattern', result: 'Failed' }],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Successful. Liveness: Live',
+      }
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints, :selfie)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'DocAuthResult is success with unknown alert and general selfie error' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [{ name: 'Unknown alert', result: 'Failed' }],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Successful. Liveness: Live',
+      }
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message)).once
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints, :selfie)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'DocAuthResult is success with alert and specific no liveness error' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [{ name: 'Visible Pattern', result: 'Failed' }],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Liveness: NotLive',
+      }
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :hints, :selfie)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_NOT_LIVE)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'DocAuthResult is success with alert and specific liveness quality error' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        failed: [{ name: 'Visible Pattern', result: 'Failed' }],
+      )
+      error_info[:liveness_enabled] = true
+      # Selfie not match ID
+      error_info[:portrait_match_results] = {
+        FaceMatchResult: 'Fail',
+        FaceErrorMessage: 'Liveness: PoorQuality',
+      }
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :hints, :selfie)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_POOR_QUALITY)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:hints]).to eq(false)
     end
   end
 
@@ -514,38 +767,36 @@ RSpec.describe DocAuth::ErrorGenerator do
         front: {
           'HorizontalResolution' => 300,
           'VerticalResolution' => 300,
-          'SharpnessMetric' => 50,
-          'GlareMetric' => 50,
+          'SharpnessMetric' => 25,
+          'GlareMetric' => 25,
         },
         back: {
           'HorizontalResolution' => 300,
           'VerticalResolution' => 300,
-          'SharpnessMetric' => 50,
-          'GlareMetric' => 50,
+          'SharpnessMetric' => 25,
+          'GlareMetric' => 25,
         },
       }
     end
 
     context 'when liveness is enabled' do
       let(:liveness_enabled) { true }
+
       context 'when liveness check passed' do
         let(:face_match_result) { 'Pass' }
-        it 'DocAuthResult is Passed with no other error' do
+        it 'returns a metric error with no other error' do
           error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
-          # this is an edge case, the generate_doc_auth_errors function should no be
-          # called when everything is successful
-          expect(warn_notifier).to receive(:call).
-            with(hash_including(:response_info, :message)).once
-          described_class.new(config).generate_doc_auth_errors(error_info)
+          errors = described_class.new(config).generate_doc_auth_errors(error_info)
+          expect(errors.keys).to contain_exactly(:front, :back, :general, :hints)
         end
       end
 
       context 'when liveness check failed' do
         let(:face_match_result) { 'Fail' }
-        it 'DocAuthResult is failed with selfie error' do
+        it 'returns a metric error without a selfie error' do
           error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
           errors = described_class.new(config).generate_doc_auth_errors(error_info)
-          expect(errors.keys).to contain_exactly(:front, :back, :general, :selfie, :hints)
+          expect(errors.keys).to contain_exactly(:front, :back, :general, :hints)
         end
       end
     end

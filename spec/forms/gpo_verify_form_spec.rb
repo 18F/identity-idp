@@ -88,16 +88,32 @@ RSpec.describe GpoVerifyForm, allowed_extra_analytics: [:*] do
     context 'when OTP is expired' do
       let(:expiration_days) { 10 }
       let(:code_sent_at) { (expiration_days + 1).days.ago }
+      let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
 
       before do
         allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
           and_return(expiration_days)
+        allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
+          and_return(minimum_wait_before_another_usps_letter_in_hours)
       end
 
       it 'is invalid' do
         result = subject.submit
         expect(result.success?).to eq(false)
         expect(subject.errors[:otp]).to eq [t('errors.messages.gpo_otp_expired')]
+      end
+
+      context 'and the user cannot request another letter' do
+        before do
+          allow(subject).to receive(:user_can_request_another_letter?).and_return(false)
+        end
+        it 'is invalid and uses different messaging' do
+          result = subject.submit
+          expect(result.success?).to eq(false)
+          expect(subject.errors[:otp]).to eq [
+            t('errors.messages.gpo_otp_expired_and_cannot_request_another'),
+          ]
+        end
       end
     end
   end

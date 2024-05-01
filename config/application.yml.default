@@ -23,7 +23,7 @@ aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
-available_locales: 'en,es,fr'
+available_locales: 'en,es,fr,zh'
 account_reset_token_valid_for_days: 1
 account_reset_fraud_user_wait_period_days:
 account_reset_wait_period_days: 1
@@ -409,6 +409,7 @@ development:
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
   in_person_proofing_enforce_tmx: true
+  in_person_proofing_opt_in_enabled: true
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
@@ -449,6 +450,7 @@ production:
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
+  available_locales: 'en,es,fr'
   aws_logo_bucket: ''
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
