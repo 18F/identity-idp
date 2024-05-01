@@ -9,5 +9,8 @@ zh:
       seconds:
         one: 1 秒种
         other: '%{count} 秒'
+      hours:
+        one: singular
+        other: multiple
       two_words_connector: ' 和 '
       words_connector: ', '
