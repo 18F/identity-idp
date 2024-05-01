@@ -394,7 +394,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                params[:vtr] = vtr
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
@@ -447,9 +446,10 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
             context 'SP has a vector of trust that includes a biometric comparison' do
               let(:selfie_capture_enabled) { true }
+              let(:acr_values) { nil }
+              let(:vtr) { ['Pb'].to_json }
+
               before do
-                params[:acr_values] = nil
-                params[:vtr] = ['C1.C2.P1.Pb'].to_json
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
@@ -542,11 +542,11 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             context 'sp requests biometrics' do
               let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
+              let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
 
               before do
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
-                params[:vtr] = ['C1.C2.P1.Pb'].to_json
               end
 
               it 'redirects to gpo enter code page' do
