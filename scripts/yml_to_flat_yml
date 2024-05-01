@@ -27,5 +27,5 @@ ARGV.each do |filename|
 end
 
 combined.sort_by { |k, _v| k }.each do |flat_key, value|
-  STDOUT.puts "#{flat_key}: #{value.to_json}"
+  STDOUT.puts "#{flat_key}: #{value.to_json}" if !flat_key.empty?
 end
