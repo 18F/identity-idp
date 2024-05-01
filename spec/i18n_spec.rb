@@ -74,6 +74,12 @@ module I18n
         { key: 'time.formats.event_time', locales: %i[zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         # need to be fixed
+        # { key: 'datetime.dotiw.days', locales: %i[zh] },
+        # { key: 'datetime.dotiw.hours', locales: %i[zh] },
+        # { key: 'datetime.dotiw.less_than_x', locales: %i[zh] },
+        # { key: 'datetime.dotiw.months', locales: %i[zh] },
+        # { key: 'datetime.dotiw.weeks', locales: %i[zh] },
+        # { key: 'datetime.dotiw.years', locales: %i[zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
         { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account_reset.pending.canceled', locales: %i[zh] },

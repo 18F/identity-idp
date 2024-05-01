@@ -102,6 +102,12 @@ ignore_unused:
   - 'time.*'
   - 'datetime.dotiw.words_connector'
   - 'datetime.dotiw.last_word_connector'
+  - 'datetime.dotiw.less_than_x'
+  - 'datetime.dotiw.days.*'
+  - 'datetime.dotiw.hours.*'
+  - 'datetime.dotiw.months.*'
+  - 'datetime.dotiw.weeks.*'
+  - 'datetime.dotiw.years.*'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:
