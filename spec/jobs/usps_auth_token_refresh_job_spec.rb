@@ -5,19 +5,13 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
 
   let(:subject) { described_class.new }
   let(:root_url) { 'http://my.root.url' }
-  let(:analytics) { instance_double(Analytics) }
+  let(:analytics) { FakeAnalytics.new }
   let(:usps_auth_token_cache_key) { UspsInPersonProofing::Proofer::AUTH_TOKEN_CACHE_KEY }
 
   before do
     allow(IdentityConfig.store).to receive(:usps_ipp_root_url).and_return(root_url)
 
-    allow(Analytics).to receive(:new).
-      with(
-        user: an_instance_of(AnonymousUser),
-        request: nil,
-        session: {},
-        sp: nil,
-      ).and_return(analytics)
+    allow(subject).to receive(:analytics).and_return(analytics)
   end
 
   describe 'usps auth token refresh job' do
@@ -69,19 +63,13 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
     end
 
     context 'auth request throws error' do
-      it 'still logs analytics' do
+      it 'catches server errors and logs them as network errors' do
         stub_error_request_token
 
-        expect(analytics).to receive(
-          :idv_usps_auth_token_refresh_job_started,
-        ).once
-        expect(analytics).to receive(
-          :idv_usps_auth_token_refresh_job_completed,
-        ).once
+        subject.perform
 
-        expect do
-          subject.perform
-        end.to raise_error
+        expect(analytics).to have_logged_event('UspsAuthTokenRefreshJob: Started')
+        expect(analytics).to have_logged_event('UspsAuthTokenRefreshJob: Network error')
       end
     end
 
