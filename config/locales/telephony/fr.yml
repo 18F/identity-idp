@@ -11,10 +11,10 @@ fr:
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code à usage unique de %{format_length} %{format_type}
-        pour %{app_name} est %{code}. Votre code à usage unique est %{code}. Une
-        fois de plus, votre code à usage unique est %{code}. Ce code expire dans
-        %{expiration} minutes.
+      voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
+        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
+        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
+        minutes.
     confirmation_ipp_enrollment_result:
       sms: |-
         %{app_name}: Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail. Ce n'est pas vous? Signalez-le: %{contact_number}. Réf: %{reference_string}
@@ -23,9 +23,10 @@ fr:
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
-        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
-        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
+      voice: Bonjour! Votre code à usage unique de %{format_length} %{format_type}
+        pour %{app_name} est %{code}. Votre code à usage unique est %{code}. Une
+        fois de plus, votre code à usage unique est %{code}. Ce code expire dans
+        %{expiration}
     doc_auth_link: |-
       %{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer.
     error:
