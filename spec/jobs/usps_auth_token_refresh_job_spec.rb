@@ -70,6 +70,7 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
 
         expect(analytics).to have_logged_event('UspsAuthTokenRefreshJob: Started')
         expect(analytics).to have_logged_event('UspsAuthTokenRefreshJob: Network error')
+        expect(analytics).to have_logged_event('UspsAuthTokenRefreshJob: Completed')
       end
     end
 
