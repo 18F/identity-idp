@@ -9,7 +9,7 @@ RSpec.feature 'asks users if they want to exit to partner agency', allowed_extra
     select_2fa_option('backup_code')
     click_continue
 
-    expect(current_path).to eq('/sign_up/completed')
+    expect(current_path).to eq(sign_up_completed_path)
 
     click_cancel
   end
