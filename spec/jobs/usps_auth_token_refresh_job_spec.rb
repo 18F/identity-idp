@@ -86,7 +86,7 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
     end
 
     context 'auth request throws network error' do
-      [Faraday::TimeoutError, Faraday::ConnectionFailed].each do |err_class|
+      [Faraday::TimeoutError, Faraday::ServerError, Faraday::ConnectionFailed].each do |err_class|
         it "logs analytics without raising the #{err_class.name}" do
           stub_network_error_request_token(
             err_class.new('test error'),
