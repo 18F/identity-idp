@@ -16,7 +16,7 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
     )
   end
 
-  def recaptcha_result(recaptcha_token)
+  def recaptcha_result
     response = faraday.post(
       assessment_url,
       {

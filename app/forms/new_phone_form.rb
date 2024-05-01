@@ -130,12 +130,9 @@ class NewPhoneForm
   end
 
   def validate_recaptcha_token
-    return if !validate_recaptcha_token? || recaptcha_validator.valid?(recaptcha_token)
-    errors.add(
-      :recaptcha_token,
-      I18n.t('errors.messages.invalid_recaptcha_token'),
-      type: :invalid_recaptcha_token,
-    )
+    return if !validate_recaptcha_token?
+    recaptcha_validator.submit(recaptcha_token)
+    errors.merge!(recaptcha_validator)
   end
 
   def recaptcha_validator
