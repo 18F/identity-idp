@@ -20,6 +20,40 @@ module Db
         # Query a month at a time, to keep query time/result size fairly reasonable
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
+        puts("queries: #{queries}")
+        # ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
+        #   ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
+        # end
+        ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
+          ial_h[ial_k] = Hash.new do |year_h, year_k|
+            year_h[year_k] = Hash.new { |month_h, month_k| month_h[month_k] = Multiset.new }
+          end
+        end
+        puts("ial_to_year_month_to_users: #{ial_to_year_month_to_users.inspect}")
+        queries.each do |query|
+          temp_copy = ial_to_year_month_to_users.deep_dup
+          puts("temp_copy: #{temp_copy.inspect}")  
+          with_retries(
+            max_tries: 3,
+            rescue: [
+              ActiveRecord::SerializationFailure,
+              PG::ConnectionBad,
+              PG::TRSerializationFailure,
+              PG::UnableToSend,
+            ],
+            handler: proc do
+              ial_to_year_month_to_users = temp_copy
+              ActiveRecord::Base.connection.reconnect!
+            end,
+          ) do
+            Reports::BaseReport.transaction_with_timeout do
+              ActiveRecord::Base.connection.execute(query).each do |row|
+                user_id = row['user_id']
+                verified_year = row['verified_year']
+                verified_month = row['verified_month']
+                # year_month = row['year_month']
+                auth_count = row['auth_count']
+                ial = row['ial']
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
           ym_h[ym_k] = {}
