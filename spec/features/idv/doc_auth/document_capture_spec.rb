@@ -349,7 +349,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               )
               expect(page).to have_content(h1_error_message)
 
-              body_error_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
+              body_error_message = strip_tags(
+                t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
+              )
               expect(page).to have_content(body_error_message)
 
               click_try_again
@@ -571,7 +573,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               )
               expect(page).to have_content(h1_error_message)
 
-              body_error_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
+              body_error_message = strip_tags(
+                t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
+              )
               expect(page).to have_content(body_error_message)
 
               click_try_again
