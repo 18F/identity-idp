@@ -50,12 +50,11 @@ const MULTI_LOCATION_RESPONSE = [
   },
 ];
 
-const defaultRegisterField = (_string) => undefined;
 const DEFAULT_PROPS = {
   toPreviousStep() {},
   onChange() {},
   value: {},
-  registerField: defaultRegisterField,
+  registerField: (_string) => undefined,
 };
 
 describe('InPersonLocationPostOfficeSearchStep', () => {

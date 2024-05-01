@@ -36,11 +36,10 @@ const USPS_RESPONSE = [
   },
 ];
 
-const defaultRegisterField = (_string) => undefined;
 const DEFAULT_PROPS = {
   toPreviousStep() {},
   onChange() {},
-  registerField: defaultRegisterField,
+  registerField: (_string) => undefined,
 };
 
 describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
