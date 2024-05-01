@@ -36,7 +36,7 @@ RSpec.shared_examples 'verification code entry' do
     click_button t('idv.gpo.form.submit')
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
-    expect(page).to have_content t('errors.messages.gpo_otp_expired')
+    expect(page).to have_content t('errors.messages.gpo_otp_expired_and_cannot_request_another')
 
     user.reload
 
