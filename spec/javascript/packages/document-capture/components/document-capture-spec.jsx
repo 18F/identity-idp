@@ -79,7 +79,7 @@ describe('document-capture/components/document-capture', () => {
 
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
-    await findByText('doc_auth.errors.camera.blocked_detail');
+    await findByText('doc_auth.errors.camera.blocked_detail_html');
   });
 
   it('progresses through steps to completion', async () => {

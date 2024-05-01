@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { FormEventHandler, RefCallback, FC } from 'react';
+import type { FC, FormEventHandler, RefCallback } from 'react';
 import { Alert } from '@18f/identity-components';
 import { replaceVariables } from '@18f/identity-i18n';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
@@ -8,6 +8,7 @@ import FormStepsContext from './form-steps-context';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from './use-history-param';
 import useForceRender from './use-force-render';
+import FormError from './form-error';
 
 export interface FormStepError<V> {
   /**
@@ -216,6 +217,17 @@ function getFieldActiveErrorFieldElement(
   if (error) {
     return fields[error.field!].element || undefined;
   }
+}
+
+export function StepErrorAlert({ error }: { error: Error }) {
+  const { message } = error;
+  const messageProcessor = error instanceof FormError ? error.messageProcessor : null;
+  const transformedMessage = messageProcessor ? messageProcessor(message) : message;
+  return (
+    <Alert key={message} type="error" className="margin-bottom-4">
+      {transformedMessage}
+    </Alert>
+  );
 }
 
 function FormSteps({
@@ -430,9 +442,7 @@ function FormSteps({
     <form ref={formRef} onSubmit={toNextStep} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
-        <Alert key={error.message} type="error" className="margin-bottom-4">
-          {error.message}
-        </Alert>
+        <StepErrorAlert key={error.message} error={error} />
       ))}
       <FormStepsContext.Provider
         value={{ isLastStep, changeStepCanComplete, isSubmitting, onPageTransition }}
