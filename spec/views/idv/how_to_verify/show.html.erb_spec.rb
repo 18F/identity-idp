@@ -58,7 +58,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
 
   context 'when selfie is required' do
     let(:selfie_check_required) { true }
-    
+
     before do
       @selfie_required = true
       render
