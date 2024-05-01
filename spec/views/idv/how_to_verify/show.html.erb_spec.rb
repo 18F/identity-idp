@@ -2,12 +2,13 @@ require 'rails_helper'
 
 RSpec.describe 'idv/how_to_verify/show.html.erb' do
   selection = Idv::HowToVerifyForm::IPP
-  let(:idv_how_to_verify_form) do
-    Idv::HowToVerifyForm.new(selection: selection)
-  end
+  let(:selfie_check_required) { false }
+  let(:presenter) { Idv::HowToVerifyPresenter.new(selfie_check_required: selfie_check_required) }
+  let(:idv_how_to_verify_form) { Idv::HowToVerifyForm.new(selection: selection) }
 
   before do
     allow(view).to receive(:user_signing_up?).and_return(false)
+    assign(:presenter, presenter)
     assign :idv_how_to_verify_form, idv_how_to_verify_form
   end
   context 'when selfie is not required' do
@@ -56,6 +57,8 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
   end
 
   context 'when selfie is required' do
+    let(:selfie_check_required) { true }
+    
     before do
       @selfie_required = true
       render
