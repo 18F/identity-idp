@@ -36,12 +36,12 @@ for locale in $locales; do
   git add "config/locales/${locale}.yml"
 done
 
-git status --porcelain | grep "DU " | cut -d' ' -f 2 | xargs git rm
+# git status --porcelain | grep "DU " | cut -d' ' -f 2 | xargs git rm
 
-for locale in $locales; do
-  find_locale_files "$locale" | \
-    grep -v "config/locales/${locale}.yml" | \
-    xargs git rm -f
-done
+# for locale in $locales; do
+#   find_locale_files "$locale" | \
+#     grep -v "config/locales/${locale}.yml" | \
+#     xargs git rm -f
+# done
 
 make normalize_yaml
