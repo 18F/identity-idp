@@ -244,10 +244,9 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_success_face_match_fail
@@ -269,10 +268,9 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_success_face_match_fail
@@ -318,10 +316,9 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_failure_face_match_pass
@@ -366,10 +363,9 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_success_face_match_fail
@@ -387,13 +383,12 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         pii = Idp::Constants::MOCK_IDV_APPLICANT.dup
         pii[:address1] = nil
         allow_any_instance_of(DocAuth::LexisNexis::Responses::TrueIdResponse).
           to receive(:pii_from_doc).and_return(Pii::StateId.new(**pii))
-        start_idv_from_sp
+        start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_pass_face_match_pass_no_address1

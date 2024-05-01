@@ -22,13 +22,11 @@ RSpec.describe StoreSpMetadataInSession do
       let(:requested_attributes) { %w[email] }
       let(:request_acr) { nil }
       let(:request_vtr) { nil }
-      let(:biometric_comparison_required) { false }
       let(:sp_request) do
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = issuer
           sp_request.url = request_url
           sp_request.requested_attributes = requested_attributes
-          sp_request.biometric_comparison_required = biometric_comparison_required
           sp_request.acr_values = request_acr
           sp_request.vtr = request_vtr
         end
@@ -92,28 +90,6 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when biometric comparison is requested with ACRs' do
-        let(:request_acr) do
-          [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF].join(' ')
-        end
-        let(:biometric_comparison_required) { true }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: true,
               vtr: request_vtr,
             },
           )
