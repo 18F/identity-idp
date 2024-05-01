@@ -1134,9 +1134,7 @@ idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation:
-  "遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
-
-  "
+  "遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。\n"
 idv.warning.state_id.heading: 我们正在争取解决错误。
 idv.warning.state_id.next_steps.items_html.0: S现在再试一次<strong>或者</strong>
 idv.warning.state_id.next_steps.items_html.1: 退出 %{app_name}，稍后再试
