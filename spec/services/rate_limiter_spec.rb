@@ -106,7 +106,7 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.limited?).to eq(true)
     end
 
-    it 'returns false if the attempts < max_attempts' do
+    it 'returns false if the attempts <= max_attempts' do
       (max_attempts - 1).times do
         expect(rate_limiter.limited?).to eq(false)
         rate_limiter.increment!
@@ -123,6 +123,30 @@ RSpec.describe RateLimiter do
       travel(attempt_window_in_minutes.minutes + 1) do
         expect(rate_limiter.limited?).to eq(false)
       end
+    end
+  end
+
+  describe '#exceed_max?' do
+    let(:max_attempts) { 3 }
+
+    subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
+
+    it 'returns true when the amount of attempts is more than the max attempts' do
+      allow(subject).to receive(:attempts).and_return(4)
+
+      expect(subject.exceed_max?).to eq(true)
+    end
+
+    it 'returns false when the amount of attempts is equal to the max attempts' do
+      allow(subject).to receive(:attempts).and_return(3)
+
+      expect(subject.exceed_max?).to eq(false)
+    end
+
+    it 'returns false when the amount of attempts is less than the max attempts' do
+      allow(subject).to receive(:attempts).and_return(2)
+
+      expect(subject.exceed_max?).to eq(false)
     end
   end
 
