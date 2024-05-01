@@ -28,8 +28,6 @@ module Idv
           :unauthorized
         elsif document_capture_session.cancelled_at
           :gone
-        elsif rate_limiter.exceed_max?
-          :too_many_requests
         elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
         elsif session_result.blank? || pending_barcode_attention_confirmation? ||

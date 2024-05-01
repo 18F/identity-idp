@@ -74,37 +74,6 @@ RSpec.describe Idv::CaptureDocStatusController do
       end
     end
 
-    context 'when the user is rate limited' do
-      before do
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
-      end
-
-      it 'returns rate_limited with redirect' do
-        get :show
-
-        expect(response.status).to eq(429)
-        expect(JSON.parse(response.body)).to include('redirect')
-      end
-    end
-
-    context 'when the user is on their last try' do
-      let(:max_attempts) { 1 }
-
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-        @rate_limiter = RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user)
-        @rate_limiter.increment!
-      end
-
-      it 'does not rate limit the request' do
-        expect(@rate_limiter.attempts).to eq(max_attempts)
-
-        get :show
-
-        expect(response.status).to eq(202)
-      end
-    end
-
     context 'when result is pending' do
       it 'returns pending result' do
         get :show
