@@ -16,12 +16,7 @@ module Idv
       # memoize the form so the ivar is available to the view
       phone_confirmation_otp_verification_form
       analytics.idv_phone_confirmation_otp_visit
-      @otp_code_length = case AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
-                         when :ten_digit_otp
-                           10
-                         else
-                           TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
-                         end
+      @otp_code_length = code_length
     end
 
     def update
@@ -40,6 +35,7 @@ module Idv
         flash[:success] = t('idv.messages.enter_password.phone_verified')
         redirect_to idv_enter_password_url
       else
+        @otp_code_length = code_length
         handle_otp_confirmation_failure
       end
     end
@@ -55,6 +51,15 @@ module Idv
     end
 
     private
+
+    def code_length
+      case AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
+      when :ten_digit_otp
+        10
+      else
+        TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
+      end
+    end
 
     def set_code
       return unless FeatureManagement.prefill_otp_codes?
