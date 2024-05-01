@@ -11,6 +11,17 @@ RSpec.feature 'asks users if they want to exit to partner agency', allowed_extra
 
     expect(current_path).to eq(sign_up_completed_path)
 
-    click_cancel
+    click_on t('links.cancel')
+
+    expect(current_path).to eq(sign_up_completed_cancel_path)
+    click_on t('login_cancel.keep_going')
+
+    expect(current_path).to eq(sign_up_completed_path)
+    click_on t('links.cancel')
+
+    expect(current_path).to eq(sign_up_completed_cancel_path)
+    click_on t('login_cancel.exit', app_name: APP_NAME)
+
+    expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
   end
 end
