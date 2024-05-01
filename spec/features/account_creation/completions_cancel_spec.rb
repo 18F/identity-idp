@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'asks users if they want to exit to partner agency', allowed_extra_analytics: [:*] do
+RSpec.feature 'canceling at the completions screen' do
   include SamlAuthHelper
 
   it 'redirects accordingly' do
