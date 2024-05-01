@@ -94,7 +94,7 @@ module Idv
     end
 
     def analytics_arguments
-      liveness_checking_required  =
+      liveness_checking_required =
         FeatureManagement.idv_allow_selfie_check? &&
         resolved_authn_context_result.biometric_comparison?
 
@@ -106,7 +106,7 @@ module Idv
         redo_document_capture: idv_session.redo_document_capture,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         liveness_checking_required:,
-        selfie_check_required: idv_session.selfie_check_required,
+        selfie_check_required: liveness_checking_required,
       }.merge(ab_test_analytics_buckets)
     end
 

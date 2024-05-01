@@ -30,7 +30,8 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
                                       Vot::Parser.new(vector_of_trust: 'Pb').parse :
                                       Vot::Parser.new(vector_of_trust: 'P1').parse
 
-    allow(subject).to receive(:resolved_authn_context_result).and_return resolved_authn_context_result
+    allow(subject).to receive(:resolved_authn_context_result).
+      and_return(resolved_authn_context_result)
 
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
