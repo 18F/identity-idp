@@ -44,7 +44,8 @@ zh:
         heading: 我们读取不到你身份证件上的条形码。
       camera:
         blocked: 你的镜头被遮住了。
-        blocked_detail: 我们没有使用相机的许可。请检查一下你的浏览器或系统设置，重新加载该页面，或者上传照片。
+        blocked_detail_html: <strong>允许 %{app_name}
+          进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>
         failed: 相机未开启，请再试一次。
       card_type: 再用你的驾照或州政府颁发的身份证件试一次。
       doc:
