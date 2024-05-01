@@ -77,7 +77,7 @@ RSpec.describe Idv::WelcomeController, allowed_extra_analytics: [:*] do
       context 'and verify info already completed' do
         before do
           subject.idv_session.flow_path = 'standard'
-          subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+          subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
           subject.idv_session.ssn = '123-45-6789'
           subject.idv_session.resolution_successful = true
         end
