@@ -69,10 +69,6 @@ class RateLimiter
     attempts && attempts >= RateLimiter.max_attempts(rate_limit_type)
   end
 
-  def exceed_max?
-    !expired? && attempts && attempts > RateLimiter.max_attempts(rate_limit_type)
-  end
-
   def increment!
     return if limited?
     value = nil

@@ -126,30 +126,6 @@ RSpec.describe RateLimiter do
     end
   end
 
-  describe '#exceed_max?' do
-    let(:max_attempts) { 3 }
-
-    subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
-
-    it 'returns true when the amount of attempts is more than the max attempts' do
-      allow(subject).to receive(:attempts).and_return(4)
-
-      expect(subject.exceed_max?).to eq(true)
-    end
-
-    it 'returns false when the amount of attempts is equal to the max attempts' do
-      allow(subject).to receive(:attempts).and_return(3)
-
-      expect(subject.exceed_max?).to eq(false)
-    end
-
-    it 'returns false when the amount of attempts is less than the max attempts' do
-      allow(subject).to receive(:attempts).and_return(2)
-
-      expect(subject.exceed_max?).to eq(false)
-    end
-  end
-
   describe '#expires_at' do
     let(:attempted_at) { nil }
     let(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
