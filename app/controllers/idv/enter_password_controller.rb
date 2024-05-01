@@ -129,7 +129,7 @@ module Idv
       idv_session.create_profile_from_applicant_with_password(password)
 
       if idv_session.verify_by_mail?
-        current_user.send_email_to_all_addresses(:letter_reminder)
+        current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
           resend: false,
