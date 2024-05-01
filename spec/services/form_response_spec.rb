@@ -112,10 +112,8 @@ RSpec.describe FormResponse do
   end
 
   describe '#first_error_message' do
-    let(:key) { nil }
-    subject(:first_error_message) { form_response.first_error_message(*[key].compact) }
-
     context 'with no errors' do
+      subject(:first_error_message) { form_response.first_error_message }
       let(:errors) { {} }
 
       it { expect(first_error_message).to be_nil }
@@ -125,7 +123,7 @@ RSpec.describe FormResponse do
       let(:errors) { { email: ['invalid', 'too_short'], language: ['blank'] } }
 
       context 'without specified key' do
-        let(:key) { nil }
+        subject(:first_error_message) { form_response.first_error_message }
 
         it 'returns the first error of the first field' do
           expect(first_error_message).to eq('invalid')
@@ -133,9 +131,25 @@ RSpec.describe FormResponse do
       end
 
       context 'with specified key' do
-        let(:key) { :language }
+        subject(:first_error_message) { form_response.first_error_message(:language) }
 
         it 'returns the first error of the specified field' do
+          expect(first_error_message).to eq('blank')
+        end
+
+        context 'with key that does not exist in set of errors' do
+          subject(:first_error_message) { form_response.first_error_message(:foo) }
+
+          it 'returns nil' do
+            expect(first_error_message).to be_nil
+          end
+        end
+      end
+
+      context 'with multiple specified keys' do
+        subject(:first_error_message) { form_response.first_error_message(:foo, :language, :email) }
+
+        it 'returns the first error of the key which exists as an error' do
           expect(first_error_message).to eq('blank')
         end
       end

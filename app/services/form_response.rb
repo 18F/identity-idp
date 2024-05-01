@@ -41,8 +41,13 @@ class FormResponse
 
   def first_error_message(*keys)
     return if errors.blank?
-    [*keys, errors.keys.first].each do |key|
-      return errors[key].first if errors.key?(key)
+    if keys.blank?
+      errors.values.first.first
+    else
+      keys.each do |key|
+        return errors[key].first if errors.key?(key)
+      end
+      nil
     end
   end
 
