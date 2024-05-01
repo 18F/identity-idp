@@ -1,7 +1,0 @@
----
-en:
-  user_authorization_confirmation:
-    continue: Continuar
-    currently_logged_in: 'Ya inició sesión con el siguiente correo electrónico:'
-    or: O
-    sign_in: Cambiar de correo electrónico
