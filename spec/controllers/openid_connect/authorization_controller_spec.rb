@@ -1160,136 +1160,272 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
     end
 
     context 'user is not signed in' do
-      context 'without valid acr_values' do
-        before { params.delete(:acr_values) }
+      context 'using acr_values' do
+        let(:vtr) { nil } # purely for emphasis
 
-        it 'handles the error and does not blow up when server-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
+        context 'without valid acr_values' do
+          let(:acr_values) { nil }
+
+          it 'handles the error and does not blow up when server-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('server_side')
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
+
+          it 'handles the error and does not blow up when client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          end
+
+          it 'handles the error and does not blow up when client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side_js')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          end
+        end
+
+        context 'with a bad redirect_uri' do
+          before { params[:redirect_uri] = '!!!' }
+
+          it 'renders the error page' do
+            action
+            expect(controller).to render_template('openid_connect/authorization/error')
+          end
+        end
+
+        context 'ialmax requested when service provider is not in allowlist' do
+          before do
+            params[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+          end
+
+          it 'redirects the user if server-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('server_side')
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+            redirect_params = UriService.params(response.location)
+
+            expect(redirect_params[:error]).to eq('invalid_request')
+            expect(redirect_params[:error_description]).to be_present
+            expect(redirect_params[:state]).to eq(params[:state])
+          end
+
+          it 'renders a client-side redirect if client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+
+            redirect_params = UriService.params(assigns(:oidc_redirect_uri))
+
+            expect(redirect_params[:error]).to eq('invalid_request')
+            expect(redirect_params[:error_description]).to be_present
+            expect(redirect_params[:state]).to eq(params[:state])
+          end
+
+          it 'renders a JS client-side redirect if JS client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side_js')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+
+            redirect_params = UriService.params(assigns(:oidc_redirect_uri))
+
+            expect(redirect_params[:error]).to eq('invalid_request')
+            expect(redirect_params[:error_description]).to be_present
+            expect(redirect_params[:state]).to eq(params[:state])
+          end
+        end
+
+        it 'redirects to SP landing page with the request_id in the params' do
+          stub_analytics
+          expect(@analytics).to receive(:track_event).
+            with(
+              'OpenID Connect: authorization request',
+              success: true,
+              client_id: client_id,
+              prompt: 'select_account',
+              referer: nil,
+              allow_prompt_login: true,
+              errors: {},
+              unauthorized_scope: true,
+              user_fully_authenticated: false,
+              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+              code_challenge_present: false,
+              service_provider_pkce: nil,
+              scope: 'openid',
+              vtr: nil,
+              vtr_param: nil,
+            )
+
           action
+          sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          expect(response).to redirect_to new_user_session_url
+          expect(controller.session[:sp][:request_id]).to eq(sp_request_id)
         end
 
-        it 'handles the error and does not blow up when client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
+        it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
           action
+          sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-          expect(controller).to render_template('openid_connect/shared/redirect')
-          expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
-        end
-
-        it 'handles the error and does not blow up when client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side_js')
-          action
-
-          expect(controller).to render_template('openid_connect/shared/redirect_js')
-          expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
-        end
-      end
-
-      context 'with a bad redirect_uri' do
-        before { params[:redirect_uri] = '!!!' }
-
-        it 'renders the error page' do
-          action
-          expect(controller).to render_template('openid_connect/authorization/error')
-        end
-      end
-
-      context 'ialmax requested when service provider is not in allowlist' do
-        before do
-          params[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-        end
-
-        it 'redirects the user if server-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('server_side')
-          action
-
-          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
-
-          redirect_params = UriService.params(response.location)
-
-          expect(redirect_params[:error]).to eq('invalid_request')
-          expect(redirect_params[:error_description]).to be_present
-          expect(redirect_params[:state]).to eq(params[:state])
-        end
-
-        it 'renders a client-side redirect if client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side')
-          action
-
-          expect(controller).to render_template('openid_connect/shared/redirect')
-          expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
-
-          redirect_params = UriService.params(assigns(:oidc_redirect_uri))
-
-          expect(redirect_params[:error]).to eq('invalid_request')
-          expect(redirect_params[:error_description]).to be_present
-          expect(redirect_params[:state]).to eq(params[:state])
-        end
-
-        it 'renders a JS client-side redirect if JS client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-            and_return('client_side_js')
-          action
-
-          expect(controller).to render_template('openid_connect/shared/redirect_js')
-          expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
-
-          redirect_params = UriService.params(assigns(:oidc_redirect_uri))
-
-          expect(redirect_params[:error]).to eq('invalid_request')
-          expect(redirect_params[:error_description]).to be_present
-          expect(redirect_params[:state]).to eq(params[:state])
-        end
-      end
-
-      it 'redirects to SP landing page with the request_id in the params' do
-        stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with(
-            'OpenID Connect: authorization request',
-            success: true,
-            client_id: client_id,
-            prompt: 'select_account',
-            referer: nil,
-            allow_prompt_login: true,
-            errors: {},
-            unauthorized_scope: true,
-            user_fully_authenticated: false,
-            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-            code_challenge_present: false,
-            service_provider_pkce: nil,
-            scope: 'openid',
+          expect(session[:sp]).to eq(
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            issuer: 'urn:gov:gsa:openidconnect:test',
+            request_id: sp_request_id,
+            request_url: request.original_url,
+            requested_attributes: %w[],
+            biometric_comparison_required: false,
             vtr: nil,
-            vtr_param: nil,
           )
-
-        action
-        sp_request_id = ServiceProviderRequestProxy.last.uuid
-
-        expect(response).to redirect_to new_user_session_url
-        expect(controller.session[:sp][:request_id]).to eq(sp_request_id)
+        end
       end
 
-      it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
-        action
-        sp_request_id = ServiceProviderRequestProxy.last.uuid
+      context 'using vot' do
+        let(:acr_values) { nil } # for emphasis
 
-        expect(session[:sp]).to eq(
-          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          issuer: 'urn:gov:gsa:openidconnect:test',
-          request_id: sp_request_id,
-          request_url: request.original_url,
-          requested_attributes: %w[],
-          biometric_comparison_required: false,
-          vtr: nil,
-        )
+        context 'without a valid vtr' do
+          it 'handles the error and does not blow up when server-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('server_side')
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
+
+          it 'handles the error and does not blow up when client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          end
+
+          it 'handles the error and does not blow up when client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side_js')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          end
+        end
+
+        context 'with a bad redirect_uri' do
+          before { params[:redirect_uri] = '!!!' }
+
+          it 'renders the error page' do
+            action
+            expect(controller).to render_template('openid_connect/authorization/error')
+          end
+        end
+
+        xcontext 'ialmax requested when service provider is not in allowlist' do
+          let(:vtr) { ['Pb'].to_json }
+
+          it 'redirects the user if server-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('server_side')
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+            redirect_params = UriService.params(response.location)
+
+            expect(redirect_params[:error]).to eq('invalid_request')
+            expect(redirect_params[:error_description]).to be_present
+            expect(redirect_params[:state]).to eq(params[:state])
+          end
+
+          it 'renders a client-side redirect if client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+
+            redirect_params = UriService.params(assigns(:oidc_redirect_uri))
+
+            expect(redirect_params[:error]).to eq('invalid_request')
+            expect(redirect_params[:error_description]).to be_present
+            expect(redirect_params[:state]).to eq(params[:state])
+          end
+
+          it 'renders a JS client-side redirect if JS client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return('client_side_js')
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+
+            redirect_params = UriService.params(assigns(:oidc_redirect_uri))
+
+            expect(redirect_params[:error]).to eq('invalid_request')
+            expect(redirect_params[:error_description]).to be_present
+            expect(redirect_params[:state]).to eq(params[:state])
+          end
+        end
+
+        xit 'redirects to SP landing page with the request_id in the params' do
+          stub_analytics
+          expect(@analytics).to receive(:track_event).
+            with(
+              'OpenID Connect: authorization request',
+              success: true,
+              client_id: client_id,
+              prompt: 'select_account',
+              referer: nil,
+              allow_prompt_login: true,
+              errors: {},
+              unauthorized_scope: true,
+              user_fully_authenticated: false,
+              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+              code_challenge_present: false,
+              service_provider_pkce: nil,
+              scope: 'openid',
+              vtr: nil,
+              vtr_param: nil,
+            )
+
+          action
+          sp_request_id = ServiceProviderRequestProxy.last.uuid
+
+          expect(response).to redirect_to new_user_session_url
+          expect(controller.session[:sp][:request_id]).to eq(sp_request_id)
+        end
+
+        xit 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
+          action
+          sp_request_id = ServiceProviderRequestProxy.last.uuid
+
+          expect(session[:sp]).to eq(
+            acr_values: nil,
+            issuer: 'urn:gov:gsa:openidconnect:test',
+            request_id: sp_request_id,
+            request_url: request.original_url,
+            requested_attributes: %w[],
+            biometric_comparison_required: false,
+            vtr: nil,
+          )
+        end
       end
     end
   end
