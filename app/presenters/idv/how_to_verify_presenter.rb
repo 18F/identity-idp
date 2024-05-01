@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper

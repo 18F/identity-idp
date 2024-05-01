@@ -4,12 +4,12 @@
   <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
     <div class="grid-col-12 tablet:grid-col-auto">
       <%= image_tag(
-              asset_url(@presenter.asset_url),
-              width: 88,
-              height: 88,
-              class: 'margin-right-1 margin-top-4',
-              alt: @presenter.alt_text,
-      ) %>
+            asset_url(@presenter.asset_url),
+            width: 88,
+            height: 88,
+            class: 'margin-right-1 margin-top-4',
+            alt: @presenter.alt_text,
+          ) %>
     </div>
     <div class="grid-col-12 tablet:grid-col-fill">
     <%= simple_form_for(
