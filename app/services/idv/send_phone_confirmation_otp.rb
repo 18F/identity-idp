@@ -87,13 +87,13 @@ module Idv
     end
 
     def format
-      return 'digit' if bucket == :ten_digit_otp
+      return 'digit' if delivery_method == :voice && bucket == :ten_digit_otp
 
       'character'
     end
 
     def length
-      return 'ten' if bucket == :ten_digit_otp
+      return 'ten' if delivery_method == :voice && bucket == :ten_digit_otp
 
       'six'
     end

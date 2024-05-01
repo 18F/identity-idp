@@ -4,10 +4,9 @@ module Idv
   class PhoneConfirmationSession
     attr_reader :code, :phone, :sent_at, :delivery_method, :user
 
-    def self.generate_code(user:)
+    def self.generate_code(user:, delivery_method:)
       bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(user&.uuid)
-      case bucket
-      when :ten_digit_otp
+      if delivery_method == :voice && bucket == :ten_digit_otp
         OtpCodeGenerator.generate_digits(10)
       else # original, bucket defaults to :six_alphanumeric_otp
         OtpCodeGenerator.generate_alphanumeric_digits(
@@ -26,7 +25,7 @@ module Idv
 
     def self.start(phone:, delivery_method:, user:)
       new(
-        code: generate_code(user: user),
+        code: generate_code(user: user, delivery_method: delivery_method),
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
@@ -46,7 +45,7 @@ module Idv
 
     def regenerate_otp
       self.class.new(
-        code: self.class.generate_code(user: user),
+        code: self.class.generate_code(user: user, delivery_method: delivery_method),
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,

@@ -15,7 +15,7 @@ module Idv
     def show
       # memoize the form so the ivar is available to the view
       phone_confirmation_otp_verification_form
-      analytics.idv_phone_confirmation_otp_visit
+      analytics.idv_phone_confirmation_otp_visit(**ab_test_analytics_buckets)
       @otp_code_length = code_length
     end
 
@@ -51,15 +51,6 @@ module Idv
     end
 
     private
-
-    def code_length
-      case AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
-      when :ten_digit_otp
-        10
-      else
-        TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
-      end
-    end
 
     def set_code
       return unless FeatureManagement.prefill_otp_codes?
@@ -106,6 +97,19 @@ module Idv
         user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
       )
+    end
+
+    def code_length
+      if ten_digit_otp?
+        10
+      else
+        TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
+      end
+    end
+
+    def ten_digit_otp?
+      AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid) == :ten_digit_otp &&
+        idv_session.user_phone_confirmation_session.delivery_method == :voice
     end
   end
 end

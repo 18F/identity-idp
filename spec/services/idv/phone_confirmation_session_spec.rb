@@ -46,7 +46,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
 
     context 'A/B test not enabled' do
       it 'generates a six-character alphanumeric code' do
-        code = described_class.generate_code(user: user)
+        code = described_class.generate_code(user: user, delivery_method: :voice)
 
         expect(code).to match(six_char_alphanumeric)
       end
@@ -62,8 +62,14 @@ RSpec.describe Idv::PhoneConfirmationSession do
           )
         end
 
-        it 'generates a six-character alphanumeric code' do
-          code = described_class.generate_code(user: user)
+        it 'generates a six-character alphanumeric code for sms' do
+          code = described_class.generate_code(user: user, delivery_method: :sms)
+
+          expect(code).to match(six_char_alphanumeric)
+        end
+
+        it 'generates a six-character alphanumeric code for voice' do
+          code = described_class.generate_code(user: user, delivery_method: :voice)
 
           expect(code).to match(six_char_alphanumeric)
         end
@@ -77,8 +83,14 @@ RSpec.describe Idv::PhoneConfirmationSession do
           )
         end
 
-        it 'generates a ten-digit numeric code' do
-          code = described_class.generate_code(user: user)
+        it 'generates a six-character alphanumeric code for sms' do
+          code = described_class.generate_code(user: user, delivery_method: :sms)
+
+          expect(code).to match(six_char_alphanumeric)
+        end
+
+        it 'generates a ten-digit numeric code for voice' do
+          code = described_class.generate_code(user: user, delivery_method: :voice)
 
           expect(code).to match(ten_digit_numeric)
         end
