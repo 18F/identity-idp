@@ -9,25 +9,34 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
   def load_yml(filename)
     content, keys_symbolized = super
 
-    if content.is_a?(Hash) && content.keys.size == 1 && content[content.keys.first].is_a?(Hash)
-      # Nested .yml
+    if self.class.nested_hashes?(content)
       [content, keys_symbolized]
     else
-      # Flattened .yml
-      locale = File.basename(filename, '.yml')
-
       [
         {
-          locale => unflatten(content)
+          locale(filename) => self.class.unflatten(content)
         },
         false,
       ]
     end
   end
 
+  # @example
+  #   locale("config/locales/fr.yml")
+  #   # => "fr"
+  def self.locale(filename)
+    File.basename(filename, '.yml')
+  end
+
+  # @return [Boolean] true if +content+ appears to be a legacy "nested" yml file
+  #   instead of a flat yml file
+  def self.nested_hashes?(content)
+    content.is_a?(Hash) && content.keys.size == 1 && content[content.keys.first].is_a?(Hash)
+  end
+
   # @param [Hash<String, String>] key_values
   # @return [Hash<String, Hash<String, String>>]
-  def unflatten(key_values)
+  def self.unflatten(key_values)
     result = {}
 
     key_values.each do |full_key, value|
@@ -46,7 +55,7 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
   end
 
   # If all keys of a hash are numeric, converts the hash to an array
-  def convert_arrays(outer)
+  def self.convert_arrays(outer)
     outer.transform_values do |inner|
       if inner.is_a?(Hash)
         if inner.keys.all? { |key| numeric_key?(key) }
@@ -60,7 +69,7 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
     end
   end
 
-  def numeric_key?(str)
+  def self.numeric_key?(str)
     /\A\d+\Z/.match?(str)
   end
 end
