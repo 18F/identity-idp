@@ -334,6 +334,12 @@ module AnalyticsEvents
     )
   end
 
+  # New device sign-in alerts sent after expired notification timeframe
+  # @param [Integer] count Number of emails sent
+  def create_new_device_alert_job_emails_sent(count:, **extra)
+    track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
+  end
+
   # @param [String] message the warning
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
@@ -3295,6 +3301,25 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # User opened the SDK to take a selfie
+  # @param [String] acuant_version
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] selfie_attempts number of selfie captured by SDK
+  def idv_sdk_selfie_image_taken(
+    acuant_version:,
+    captureAttempts: nil,
+    selfie_attempts: nil,
+    **extra
+  )
+    track_event(
+      :idv_sdk_selfie_image_taken,
+      acuant_version: acuant_version,
+      captureAttempts: captureAttempts,
+      selfie_attempts: selfie_attempts,
+      **extra,
+    )
+  end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User took a selfie image with the SDK, or uploaded a selfie using the file picker
@@ -3793,24 +3818,6 @@ module AnalyticsEvents
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
     track_event('Multi-Factor Authentication: download backup code')
-  end
-
-  # Tracks when the user visits the backup code confirmation setup page
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_enter_backup_code_confirmation_visit(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: enter backup code confirmation visited',
-      {
-        enabled_mfa_methods_count:,
-        in_account_creation_flow:,
-        **extra,
-      }.compact,
-    )
   end
 
   # @param ["authentication","reauthentication","confirmation"] context user session context

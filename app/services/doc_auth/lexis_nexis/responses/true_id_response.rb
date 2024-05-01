@@ -189,7 +189,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: portrait_match_results,
             image_metrics: read_image_metrics(true_id_product),
-            address_line2_present: !pii_from_doc[:address2].blank?,
+            address_line2_present: !pii_from_doc&.address2.blank?,
             classification_info: classification_info,
             liveness_enabled: @liveness_checking_enabled,
           }
@@ -233,7 +233,7 @@ module DocAuth
         def classification_info
           # Acuant response has both sides info, here simulate that
           doc_class = doc_class_name
-          issuing_country = pii_from_doc[:issuing_country_code]
+          issuing_country = pii_from_doc&.issuing_country_code
           {
             Front: {
               ClassName: doc_class,

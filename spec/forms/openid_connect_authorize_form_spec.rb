@@ -15,7 +15,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
       verified_within: verified_within,
-      biometric_comparison_required: biometric_comparison_required,
     )
   end
 
@@ -31,7 +30,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
   let(:verified_within) { nil }
-  let(:biometric_comparison_required) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -863,6 +861,30 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when the identity has not been linked' do
       it 'returns nil' do
         expect(form.success_redirect_uri).to be_nil
+      end
+    end
+  end
+
+  describe '#biometric_comparison_required?' do
+    it 'returns false by default' do
+      expect(subject.biometric_comparison_required?).to eql(false)
+    end
+
+    context 'biometric requested via VTR' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C1.P1.Pb'].to_json }
+
+      it 'returns true' do
+        expect(subject.biometric_comparison_required?).to eql(true)
+      end
+    end
+
+    context 'VTR used but biometric not requested' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C1.P1'].to_json }
+
+      it 'returns false' do
+        expect(subject.biometric_comparison_required?).to eql(false)
       end
     end
   end

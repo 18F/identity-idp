@@ -258,6 +258,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           transaction_status: nil,
           transaction_reason_code: nil,
           workflow: 'test_non_liveness_workflow',
+          birth_year: 1938,
         )
       end
 
@@ -270,7 +271,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.errors).to eq({})
         expect(response.attention_with_barcode?).to eq(false)
-        expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+        expect(response.pii_from_doc).to eq(Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT))
       end
 
       context 'when liveness check is required' do
@@ -377,6 +378,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             transaction_status: nil,
             transaction_reason_code: nil,
             workflow: 'test_liveness_workflow',
+            birth_year: 1938,
           )
         end
 
@@ -422,7 +424,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           },
         )
         expect(response.attention_with_barcode?).to eq(false)
-        expect(response.pii_from_doc).to eq({})
+        expect(response.pii_from_doc.to_h).to eq({})
       end
     end
 
@@ -453,7 +455,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.success?).to eq(true)
         expect(response.errors).to eq({})
         expect(response.attention_with_barcode?).to eq(false)
-        expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+        expect(response.pii_from_doc).to eq(Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT))
       end
     end
 
@@ -502,7 +504,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.doc_auth_success?).to eq(false)
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
-        expect(response.pii_from_doc).to eq({})
+        expect(response.pii_from_doc).to eq(nil)
         expect(response.doc_auth_success?).to eq(false)
       end
 

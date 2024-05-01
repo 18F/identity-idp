@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class FrontendLogController < ApplicationController
+  include Idv::HybridMobile::HybridMobileConcern
   respond_to :json
 
   skip_before_action :verify_authenticity_token
@@ -54,6 +55,7 @@ class FrontendLogController < ApplicationController
     idv_sdk_selfie_image_capture_initialized
     idv_sdk_selfie_image_capture_opened
     idv_sdk_selfie_image_re_taken
+    idv_sdk_selfie_image_taken
     idv_selfie_image_added
     idv_selfie_image_clicked
     phone_input_country_changed

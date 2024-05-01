@@ -1,11 +1,12 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 42027a05a3827177d473a0f2d998771011fc4fd6
-  tag: v3.4.3
+  revision: 9574e05398833c531f450c3da99a6afde4ce68fc
+  tag: v4.0.0
   specs:
-    identity-hostdata (3.4.3)
+    identity-hostdata (4.0.0)
       activesupport (>= 6.1, < 8)
       aws-sdk-s3 (~> 1.8)
+      redacted_struct (>= 2.0)
 
 GIT
   remote: https://github.com/18F/identity-logging.git
@@ -181,7 +182,7 @@ GEM
     aws-sdk-pinpointsmsvoice (1.29.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.132.0)
+    aws-sdk-s3 (1.132.1)
       aws-sdk-core (~> 3, >= 3.179.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.6)
@@ -228,7 +229,7 @@ GEM
     bootsnap (1.17.0)
       msgpack (~> 1.2)
     brakeman (6.1.0)
-    browser (5.3.1)
+    browser (6.0.0)
     builder (3.2.4)
     bullet (7.1.4)
       activesupport (>= 3.0.0)

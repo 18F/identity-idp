@@ -92,16 +92,19 @@ module OidcAuthHelper
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
-      acr_values: acr_values,
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
       nonce: nonce,
     }
     ial2_params[:prompt] = prompt if prompt
+
     if biometric_comparison_required
-      ial2_params[:biometric_comparison_required] = 'true'
+      ial2_params[:vtr] = ['C1.P1.Pb'].to_json
+    else
+      ial2_params[:acr_values] = acr_values
     end
+
     ial2_params
   end
 

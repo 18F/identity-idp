@@ -10,6 +10,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
+    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
   end
 
   before do
@@ -336,12 +337,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
   it 'prefills the phone number used on the phone step if the user has no MFA phone', :js do
     expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).and_return(true)
-    allow_any_instance_of(FederatedProtocols::Oidc).
-      to receive(:biometric_comparison_required?).and_return(true)
+
     user = create(:user, :with_authentication_app)
 
     perform_in_browser(:desktop) do
-      start_idv_from_sp
+      start_idv_from_sp(biometric_comparison_required: true)
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step

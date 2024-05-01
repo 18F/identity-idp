@@ -4,10 +4,23 @@ RSpec.describe DocumentCaptureSession do
   let(:doc_auth_response) do
     DocAuth::Response.new(
       success: true,
-      pii_from_doc: {
+      pii_from_doc: Pii::StateId.new(
         first_name: 'Testy',
-        last_name: 'Testerson',
-      },
+        last_name: 'Testy',
+        middle_name: nil,
+        address1: '123 ABC AVE',
+        address2: nil,
+        city: 'ANYTOWN',
+        state: 'MD',
+        dob: '1986-07-01',
+        state_id_expiration: '2099-10-15',
+        state_id_issued: '2016-10-15',
+        state_id_jurisdiction: 'MD',
+        state_id_number: 'M555555555555',
+        state_id_type: 'drivers_license',
+        zipcode: '12345',
+        issuing_country_code: 'USA',
+      ),
     )
   end
 
@@ -55,7 +68,7 @@ RSpec.describe DocumentCaptureSession do
       result = record.load_result
 
       expect(result.success?).to eq(doc_auth_response.success?)
-      expect(result.pii).to eq(doc_auth_response.pii_from_doc.deep_symbolize_keys)
+      expect(result.pii).to eq(doc_auth_response.pii_from_doc.to_h.deep_symbolize_keys)
     end
 
     it 'returns nil if the previously stored result does not exist or expired' do

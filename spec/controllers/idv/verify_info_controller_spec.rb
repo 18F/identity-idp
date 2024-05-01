@@ -82,14 +82,14 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
       render_views
 
       it 'With address2 in PII, shows address line 2 input' do
-        subject.idv_session.pii_from_doc[:address2] = 'APT 3E'
+        subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(address2: 'APT 3E')
         get :show
 
         expect(response.body).to have_content(t('idv.form.address2'))
       end
 
       it 'No address2 in PII, still shows address line 2 input' do
-        subject.idv_session.pii_from_doc[:address2] = nil
+        subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(address2: nil)
 
         get :show
 
@@ -162,6 +162,8 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
     end
 
     context 'when proofing_device_profiling is enabled' do
+      let(:threatmetrix_client_id) { 'threatmetrix_client' }
+
       let(:idv_result) do
         {
           context: {
@@ -170,6 +172,7 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
                 transaction_id: 1,
                 review_status: review_status,
                 response_body: {
+                  client: threatmetrix_client_id,
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },
               },
@@ -208,6 +211,29 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
             success: true,
           )
           get :show
+        end
+
+        # we use the client name for some error tracking, so make sure
+        # it gets through to the analytics event log.
+        it 'logs the analytics event, including the client' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    threatmetrix: hash_including(
+                      response_body: hash_including(
+                        client: threatmetrix_client_id,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
         end
       end
 
