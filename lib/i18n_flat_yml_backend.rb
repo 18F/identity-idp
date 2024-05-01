@@ -14,7 +14,7 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
     else
       [
         {
-          locale(filename) => self.class.unflatten(content)
+          self.class.locale(filename) => self.class.unflatten(content)
         },
         false,
       ]
