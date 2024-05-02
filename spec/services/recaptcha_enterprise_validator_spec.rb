@@ -51,19 +51,21 @@ RSpec.describe RecaptchaEnterpriseValidator do
     end
   end
 
-  describe '#valid?' do
+  describe '#submit' do
     let(:token) { nil }
-    subject(:valid) { validator.valid?(token) }
+    subject(:response) { validator.submit(token) }
 
     context 'with exemption' do
       before do
         allow(validator).to receive(:exempt?).and_return(true)
       end
 
-      it { expect(valid).to eq(true) }
+      it 'is successful' do
+        expect(response.to_h).to eq(success: true)
+      end
 
       it 'does not log analytics' do
-        valid
+        response
 
         expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
       end
@@ -72,10 +74,15 @@ RSpec.describe RecaptchaEnterpriseValidator do
     context 'with missing token' do
       let(:token) { nil }
 
-      it { expect(valid).to eq(false) }
+      it 'is unsuccessful with error for blank token' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { recaptcha_token: { blank: true } },
+        )
+      end
 
       it 'does not log analytics' do
-        valid
+        response
 
         expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
       end
@@ -84,10 +91,15 @@ RSpec.describe RecaptchaEnterpriseValidator do
     context 'with blank token' do
       let(:token) { '' }
 
-      it { expect(valid).to eq(false) }
+      it 'is unsuccessful with error for blank token' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { recaptcha_token: { blank: true } },
+        )
+      end
 
       it 'does not log analytics' do
-        valid
+        response
 
         expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
       end
@@ -107,10 +119,15 @@ RSpec.describe RecaptchaEnterpriseValidator do
         )
       end
 
-      it { expect(valid).to eq(false) }
+      it 'is unsuccessful with error for invalid token' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { recaptcha_token: { invalid: true } },
+        )
+      end
 
       it 'logs analytics of the body' do
-        valid
+        response
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
@@ -140,10 +157,12 @@ RSpec.describe RecaptchaEnterpriseValidator do
         )
       end
 
-      it { expect(valid).to eq(true) }
+      it 'is successful' do
+        expect(response.to_h).to eq(success: true)
+      end
 
       it 'logs analytics of the body' do
-        valid
+        response
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
@@ -167,10 +186,12 @@ RSpec.describe RecaptchaEnterpriseValidator do
         stub_request(:post, assessment_url).to_timeout
       end
 
-      it { expect(valid).to eq(true) }
+      it 'is successful' do
+        expect(response.to_h).to eq(success: true)
+      end
 
       it 'logs analytics of the body' do
-        valid
+        response
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
@@ -198,10 +219,15 @@ RSpec.describe RecaptchaEnterpriseValidator do
         )
       end
 
-      it { expect(valid).to eq(false) }
+      it 'is unsuccessful with error for invalid token' do
+        expect(response.to_h).to eq(
+          success: false,
+          error_details: { recaptcha_token: { invalid: true } },
+        )
+      end
 
       it 'logs analytics of the body' do
-        valid
+        response
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
@@ -222,8 +248,8 @@ RSpec.describe RecaptchaEnterpriseValidator do
       let(:token) { 'token' }
       let(:score) { score_threshold + 0.1 }
 
-      before do
-        stub_recaptcha_response(
+      around do |example|
+        stubbed_request = stub_recaptcha_response(
           body: {
             tokenProperties: { valid: true, action: },
             riskAnalysis: { score:, reasons: ['LOW_CONFIDENCE'] },
@@ -232,12 +258,16 @@ RSpec.describe RecaptchaEnterpriseValidator do
           action:,
           token:,
         )
+        example.run
+        expect(stubbed_request).to have_been_made.once
       end
 
-      it { expect(valid).to eq(true) }
+      it 'is successful' do
+        expect(response.to_h).to eq(success: true)
+      end
 
       it 'logs analytics of the body' do
-        valid
+        response
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
@@ -266,14 +296,19 @@ RSpec.describe RecaptchaEnterpriseValidator do
           )
         end
 
-        it { expect(valid).to eq(false) }
+        it 'is unsuccessful with error for invalid token' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { recaptcha_token: { invalid: true } },
+          )
+        end
       end
 
       context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
         let(:extra_analytics_properties) { { extra: true } }
 
         it 'logs analytics of the body' do
-          valid
+          response
 
           expect(analytics).to have_logged_event(
             'reCAPTCHA verify result received',
@@ -295,7 +330,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
         let(:analytics) { nil }
 
         it 'validates gracefully without analytics logging' do
-          valid
+          response
         end
       end
     end
