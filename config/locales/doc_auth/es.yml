@@ -49,11 +49,9 @@ es:
           identidad. Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
-        selfie_not_live: Intente tomar de nuevo una foto de usted. Asegúrese de que su
-          rostro se vea claramente en la foto.
         selfie_not_live_help_link_text: Consulte más consejos para tomar una foto clara de usted mismo
-        selfie_poor_quality: 'Intente tomar de nuevo una foto de usted. Asegúrese de que
-          su rostro se vea claramente en la foto.'
+        selfie_not_live_or_poor_quality: Intente tomar de nuevo una foto de usted.
+          Asegúrese de que su rostro se vea claramente en la foto.
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
           nuevas fotos.
         visible_color_check: No pudimos verificar su documento de identidad. Puede que

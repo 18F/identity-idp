@@ -30,8 +30,7 @@ module DocAuth
     MULTIPLE_FRONT_ID_FAILURES = 'multiple_front_id_failures'
     REF_CONTROL_NUMBER_CHECK = 'ref_control_number_check'
     SELFIE_FAILURE = 'selfie_failure'
-    SELFIE_NOT_LIVE = 'selfie_not_live'
-    SELFIE_POOR_QUALITY = 'selfie_poor_quality'
+    SELFIE_NOT_LIVE_OR_POOR_QUALITY = 'selfie_not_live_or_poor_quality'
     SEX_CHECK = 'sex_check'
     VISIBLE_COLOR_CHECK = 'visible_color_check'
     VISIBLE_PHOTO_CHECK = 'visible_photo_check'
@@ -124,8 +123,7 @@ module DocAuth
       # Selfie errors
       GENERAL_ERROR_LIVENESS => { long_msg: GENERAL_ERROR_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
       SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_FAILURE, hints: false },
-      SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_FAILURE, hints: false },
-      SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },
+      SELFIE_NOT_LIVE_OR_POOR_QUALITY => { long_msg: SELFIE_NOT_LIVE_OR_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },
     }.transform_values(&:freeze).freeze
     # rubocop:enable Layout/LineLength
   end
