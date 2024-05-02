@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
+RSpec.feature 'User profile' do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper

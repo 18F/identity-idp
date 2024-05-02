@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.describe 'doc auth IPP VerifyInfo', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'doc auth IPP VerifyInfo', js: true do
   include IdvStepHelper
   include InPersonHelper
 

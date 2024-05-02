@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'mfa cta banner', allowed_extra_analytics: [:*] do
+RSpec.feature 'mfa cta banner' do
   include DocAuthHelper
   include SamlAuthHelper
 

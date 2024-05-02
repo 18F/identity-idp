@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Users pending ThreatMetrix review', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'Users pending ThreatMetrix review', :js do
   include IdvStepHelper
   include OidcAuthHelper
   include IrsAttemptsApiTrackingHelper

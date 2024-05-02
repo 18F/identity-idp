@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytics: [:*] do
+RSpec.feature 'hybrid_handoff step send link and errors' do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper

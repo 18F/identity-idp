@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'saml api', allowed_extra_analytics: [:*] do
+RSpec.feature 'saml api' do
   include SamlAuthHelper
   include IdvHelper
 

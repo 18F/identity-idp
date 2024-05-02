@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'IAL2 Single Sign On', allowed_extra_analytics: [:*] do
+RSpec.feature 'IAL2 Single Sign On' do
   include SamlAuthHelper
   include IdvStepHelper
   include DocAuthHelper

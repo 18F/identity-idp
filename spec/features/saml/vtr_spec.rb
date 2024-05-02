@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
+RSpec.feature 'SAML requests using VTR' do
   include SamlAuthHelper
   include IdvHelper
   include DocAuthHelper

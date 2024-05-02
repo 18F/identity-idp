@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'webauthn hide', allowed_extra_analytics: [:*] do
+RSpec.describe 'webauthn hide' do
   include JavascriptDriverHelper
   include WebAuthnHelper
 

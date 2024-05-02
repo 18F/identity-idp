@@ -33,7 +33,7 @@ def visit_idp_from_ial2_saml_sp(issuer:)
   )
 end
 
-RSpec.describe 'authorization count', allowed_extra_analytics: [:*] do
+RSpec.describe 'authorization count' do
   include IdvFromSpHelper
   include OidcAuthHelper
   include DocAuthHelper

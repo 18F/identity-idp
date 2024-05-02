@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -941,7 +941,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   end
 end
 
-RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'direct access to IPP on desktop', :js do
   include IdvStepHelper
   include DocAuthHelper
   context 'direct access to IPP before handoff page' do

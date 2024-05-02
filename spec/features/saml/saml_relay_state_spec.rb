@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SAML RelayState', allowed_extra_analytics: [:*] do
+RSpec.feature 'SAML RelayState' do
   include SamlAuthHelper
 
   context 'when RelayState is passed in authn request' do

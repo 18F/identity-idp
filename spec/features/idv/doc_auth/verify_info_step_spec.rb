@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'verify_info step and verify_info_concern', :js do
   include IdvStepHelper
   include DocAuthHelper
 

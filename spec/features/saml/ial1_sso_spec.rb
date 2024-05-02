@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'IAL1 Single Sign On', allowed_extra_analytics: [:*] do
+RSpec.feature 'IAL1 Single Sign On' do
   include SamlAuthHelper
 
   context 'First time registration', email: true do

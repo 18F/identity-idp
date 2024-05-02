@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*] do
+RSpec.feature 'Email confirmation during sign up' do
   it 'requires user to accept rules of use when registering email' do
     visit sign_up_email_path
     fill_in t('forms.registration.labels.email'), with: 'test@example.com'

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Second MFA Reminder', allowed_extra_analytics: [:*] do
+RSpec.feature 'Second MFA Reminder' do
   include OidcAuthHelper
 
   let(:service_provider) { ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER) }

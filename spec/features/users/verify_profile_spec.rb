@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'verify profile with OTP', allowed_extra_analytics: [:*] do
+RSpec.feature 'verify profile with OTP' do
   include IdvStepHelper
 
   let(:user) { create(:user, :fully_registered) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
+RSpec.feature 'how to verify step', js: true do
   include IdvHelper
   include DocAuthHelper
 

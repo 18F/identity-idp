@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
+RSpec.describe 'New device tracking' do
   include SamlAuthHelper
 
   let(:user) { create(:user, :fully_registered) }
