@@ -151,7 +151,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
       )
     end
 
-    it 'shows capture complete on mobile and error page on desktop', js: true do
+    it 'does not rate limit on last attempt if successful', js: true do
       user = nil
 
       perform_in_browser(:desktop) do
@@ -182,7 +182,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_session_errors_rate_limited_path, wait: 10)
+        expect(page).to_not have_current_path(idv_session_errors_rate_limited_path, wait: 10)
+        # expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+        expect(page).to have_current_path(idv_ssn_path)
       end
     end
   end
