@@ -572,6 +572,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_16_165602) do
     t.integer "user_id"
     t.datetime "returned_at", precision: nil
     t.boolean "billable"
+    t.bigint "profile_id"
+    t.datetime "profile_verified_at"
+    t.string "profile_requested_issuer"
     t.index "((returned_at)::date), issuer", name: "index_sp_return_logs_on_returned_at_date_issuer", where: "((billable = true) AND (returned_at IS NOT NULL))"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
   end

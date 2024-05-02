@@ -342,8 +342,10 @@ module Idv
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
+      birth_year = client_response.pii_from_doc&.dob&.to_date&.year
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
+          birth_year: birth_year,
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],

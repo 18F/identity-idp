@@ -217,7 +217,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def letter_reminder
+  def verify_by_mail_letter_requested
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
     end
@@ -426,7 +426,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def gpo_reminder
+  def verify_by_mail_reminder
     with_user_locale(user) do
       @gpo_verification_pending_at = I18n.l(
         user.gpo_verification_pending_profile.gpo_verification_pending_at,

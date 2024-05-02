@@ -63,8 +63,7 @@ module OpenidConnect
     end
 
     def biometric_comparison_requested?
-      @authorize_form.parsed_vector_of_trust&.biometric_comparison? ||
-        params['biometric_comparison_required'] == 'true'
+      @authorize_form.parsed_vector_of_trust&.biometric_comparison?
     end
 
     def check_sp_active
