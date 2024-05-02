@@ -38,7 +38,6 @@ module Users
       else
         flash.now[:error] = result.first_error_message(
           :recaptcha_token,
-          :rate_limited,
           :phone_fingerprint,
         )
         render :index
