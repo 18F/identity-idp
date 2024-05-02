@@ -38,6 +38,19 @@ module OpenidConnect
       end
     end
 
+    def create
+      @logout_form = build_logout_form
+      result = @logout_form.submit
+
+      analytics.oidc_logout_requested(**result.to_h.except(:redirect_uri))
+
+      if result.success? && result.extra[:redirect_uri]
+        handle_successful_logout_request(result, result.extra[:redirect_uri])
+      else
+        render :error
+      end
+    end
+
     private
 
     def set_devise_failure_redirect_for_concurrent_session_logout
