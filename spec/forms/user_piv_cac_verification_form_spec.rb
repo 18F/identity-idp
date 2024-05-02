@@ -94,7 +94,7 @@ RSpec.describe UserPivCacVerificationForm do
               piv_cac_configuration_id: nil,
               multi_factor_auth_method_created_at: nil,
               piv_cac_configuration_dn_uuid: nil,
-              key_id: nil,
+              key_id: 'foo',
             )
 
             expect(Event).to_not receive(:create)
