@@ -10,7 +10,7 @@ class RecaptchaMockValidator < RecaptchaValidator
 
   private
 
-  def recaptcha_result(_recaptcha_token)
+  def recaptcha_result
     RecaptchaResult.new(success: true, score:)
   end
 end

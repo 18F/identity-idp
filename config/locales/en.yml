@@ -1,2 +1,334 @@
 ---
-{}
+doc_auth.accessible_labels.camera_video_capture_instructions: We will automatically take the picture
+doc_auth.accessible_labels.camera_video_capture_label: Viewfinder with frame to center your ID
+doc_auth.accessible_labels.document_capture_dialog: Document capture
+doc_auth.buttons.add_new_photos: Add new photos
+doc_auth.buttons.close: Close
+doc_auth.buttons.continue: Continue
+doc_auth.buttons.take_or_upload_picture_html: "<lg-take-photo>Take photo</lg-take-photo><lg-or> or </lg-or> <lg-upload>Upload photo</lg-upload>"
+doc_auth.buttons.take_picture: Take photo
+doc_auth.buttons.take_picture_retry: Retake photo
+doc_auth.buttons.upload_picture: Upload photo
+doc_auth.errors.alerts.address_check: We couldn’t read the address on your ID. Try taking new pictures.
+doc_auth.errors.alerts.barcode_content_check: We couldn’t read the barcode on the back of your ID. It could be because of a problem with the barcode, or the barcode is a new type that we don’t recognize yet. Use another state‑issued ID if you have one.
+doc_auth.errors.alerts.barcode_read_check: We couldn’t read the barcode on the back of your ID. Try taking a new picture.
+doc_auth.errors.alerts.birth_date_checks: We couldn’t read the birth date on your ID. Try taking new pictures.
+doc_auth.errors.alerts.control_number_check: We couldn’t read the reference number on the back of your ID. Try taking a new picture.
+doc_auth.errors.alerts.doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged, or the front and the back of the ID don’t match. Try taking new pictures.
+doc_auth.errors.alerts.doc_number_checks: We couldn’t read the document number on your ID. Try taking new pictures.
+doc_auth.errors.alerts.expiration_checks: The document has expired, or we couldn’t read the expiration date on your ID. If your ID is not expired, try taking new pictures.
+doc_auth.errors.alerts.full_name_check: We couldn’t read the full name on your ID. Try taking new pictures.
+doc_auth.errors.alerts.id_not_recognized: We couldn’t recognize your ID. It may be worn, damaged, or a type of ID that we don’t recognize. Try taking new pictures.
+doc_auth.errors.alerts.id_not_verified: We couldn’t verify your ID. It might have moved when you took the picture. Try taking new pictures.
+doc_auth.errors.alerts.issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
+doc_auth.errors.alerts.ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
+doc_auth.errors.alerts.sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
+doc_auth.errors.alerts.visible_color_check: We couldn’t verify your ID. It might have moved when you took the picture, or the picture is too dark. Try taking new pictures in brighter lighting.
+doc_auth.errors.alerts.visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
+doc_auth.errors.barcode_attention.confirm_info: If the information below is incorrect, please upload new photos of your state‑issued ID.
+doc_auth.errors.barcode_attention.heading: We couldn’t read the barcode on your ID.
+doc_auth.errors.camera.blocked: Your camera is blocked
+doc_auth.errors.camera.blocked_detail_html: "<strong>Allow access to your camera to take photos for %{app_name}.</strong><span>Try taking photos again and allowing permission. If that doesn’t work, you may need to check your device settings to allow access.</span>"
+doc_auth.errors.camera.failed: Camera failed to start, please try again.
+doc_auth.errors.card_type: Try again with your driver’s license or state ID card.
+doc_auth.errors.doc.doc_type_check: Your driver’s license or state ID must be issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs.
+doc_auth.errors.doc.resubmit_failed_image: You already tried this image, and it failed. Please try adding a different image.
+doc_auth.errors.doc.wrong_id_type_html: We only accept a driver’s license or a state ID issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs. <a>Learn more about accepted IDs</a>
+doc_auth.errors.dpi.failed_short: Image is too small or blurry, please try again.
+doc_auth.errors.dpi.top_msg: We couldn’t read your ID. Your image size may be too small, or your ID is too small or blurry in the photo. Make sure your ID is large within the image frame and try taking a new picture.
+doc_auth.errors.dpi.top_msg_plural: We couldn’t read your ID. Your image sizes may be too small, or your ID is too small or blurry in the photos. Make sure your ID is large within the image frame and try taking new pictures.
+doc_auth.errors.file_type.invalid: This file type is not accepted, please choose a JPG or PNG file.
+doc_auth.errors.general.fallback_field_level: Please add a new image
+doc_auth.errors.general.multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
+doc_auth.errors.general.multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
+doc_auth.errors.general.network_error: We are having technical difficulties on our end. Please try to submit your images again later.
+doc_auth.errors.general.no_liveness: Try taking new pictures.
+doc_auth.errors.general.selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
+doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
+doc_auth.errors.glare.failed_short: Image has glare, please try again.
+doc_auth.errors.glare.top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
+doc_auth.errors.glare.top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
+doc_auth.errors.http.image_load.failed_short: Image file is not supported, please try again.
+doc_auth.errors.http.image_load.top_msg: The image file that you added is not supported. Please take new photos of your ID and try again.
+doc_auth.errors.http.image_size.failed_short: Image file is not supported, please try again.
+doc_auth.errors.http.image_size.top_msg: Your image size is too large or too small. Please add images of your ID that are about 2025 x 1275 pixels.
+doc_auth.errors.http.pixel_depth.failed_short: Image file is not supported, please try again.
+doc_auth.errors.http.pixel_depth.top_msg: The pixel depth of your image file is not supported. Please take new photos of your ID and try again. Supported image pixel depth is 24-bit RGB.
+doc_auth.errors.not_a_file: The selection was not a valid file.
+doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum age requirement.
+doc_auth.errors.sharpness.failed_short: Image is blurry, please try again.
+doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
+doc_auth.errors.sharpness.top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
+doc_auth.errors.upload_error: Sorry, something went wrong on our end.
+doc_auth.forms.captured_image: Captured Image
+doc_auth.forms.change_file: Change file
+doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
+doc_auth.forms.doc_success: We verified your information
+doc_auth.forms.selected_file: Selected file
+doc_auth.headings.address: Update your mailing address
+doc_auth.headings.back: Back of your driver’s license or state ID
+doc_auth.headings.capture_complete: We verified your ID
+doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your state‑issued ID.
+doc_auth.headings.capture_scan_warning_link: upload new photos
+doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
+doc_auth.headings.document_capture_back: Back of your ID
+doc_auth.headings.document_capture_front: Front of your ID
+doc_auth.headings.document_capture_selfie: Photo of your face
+doc_auth.headings.document_capture_subheader_id: Driver’s license or state ID card
+doc_auth.headings.document_capture_subheader_selfie: Photo of your face
+doc_auth.headings.document_capture_with_selfie: Add photos of your ID and a photo of yourself
+doc_auth.headings.front: Front of your driver’s license or state ID
+doc_auth.headings.how_to_verify: Choose how you want to verify your identity
+doc_auth.headings.hybrid_handoff: How would you like to add your ID?
+doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
+doc_auth.headings.interstitial: We are processing your images
+doc_auth.headings.lets_go: How verifying your identity works
+doc_auth.headings.no_ssn: Don’t have a Social Security number?
+doc_auth.headings.review_issues: Check your images and try again
+doc_auth.headings.secure_account: Secure your account
+doc_auth.headings.selfie: Photo of your face
+doc_auth.headings.ssn: Enter your Social Security number
+doc_auth.headings.ssn_update: Update your Social Security number
+doc_auth.headings.text_message: We sent a message to your phone
+doc_auth.headings.upload_from_computer: Continue on this computer
+doc_auth.headings.upload_from_phone: Use your phone to take photos
+doc_auth.headings.verify_at_post_office: Verify your identity at a Post Office
+doc_auth.headings.verify_identity: Verify your identity
+doc_auth.headings.verify_online: Verify your identity online
+doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
+doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
+doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
+doc_auth.hybrid_flow_warning.only_add_if_text: "ONLY ADD YOUR ID IF:"
+doc_auth.hybrid_flow_warning.only_add_own_account: You are using your own %{app_name} account
+doc_auth.hybrid_flow_warning.only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
+doc_auth.hybrid_flow_warning.only_add_sp_services_html: You are trying to access <strong>%{service_provider_name}</strong> services
+doc_auth.info.address_guidance_puerto_rico_html: Puerto Rico residents:<br><br>Edit your address to list your urbanization or condominium on address line 2.
+doc_auth.info.capture_status_big_document: Too Close
+doc_auth.info.capture_status_capturing: Capturing
+doc_auth.info.capture_status_none: Align
+doc_auth.info.capture_status_small_document: Move Closer
+doc_auth.info.capture_status_tap_to_capture: Tap to Capture
+doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
+doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
+doc_auth.info.getting_started_html: "%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}"
+doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
+doc_auth.info.how_to_verify: You have the option to verify your identity online, or in person at a participating Post Office.
+doc_auth.info.how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
+doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
+doc_auth.info.hybrid_handoff_ipp_html: "<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead."
+doc_auth.info.image_loaded: Image loaded
+doc_auth.info.image_loading: Image loading
+doc_auth.info.image_updated: Image updated
+doc_auth.info.interstitial_eta: This might take up to a minute. We’ll load the next step automatically when it’s done.
+doc_auth.info.interstitial_thanks: Thanks for your patience!
+doc_auth.info.keep_window_open: Do not close this window.
+doc_auth.info.learn_more: Learn more about how we protect your sensitive information
+doc_auth.info.lets_go: "Identity verification happens in two parts:"
+doc_auth.info.link_sent: Please check your phone and follow instructions to take a photo of your state‑issued ID.
+doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
+doc_auth.info.link_sent_complete_polling: The next step will load automatically.
+doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
+doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
+doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.
+doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
+doc_auth.info.selfie_capture_status.face_close_to_border: Too close to the frame
+doc_auth.info.selfie_capture_status.face_not_found: Face not found
+doc_auth.info.selfie_capture_status.face_too_small: Face too small
+doc_auth.info.selfie_capture_status.too_many_faces: Too many faces
+doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
+doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
+doc_auth.info.tag: Recommended
+doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
+doc_auth.info.upload_from_phone: You won’t have to sign in again, and you’ll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
+doc_auth.info.verify_at_post_office_description: This option is better if you don’t have a phone to take photos of your ID.
+doc_auth.info.verify_at_post_office_instruction: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
+doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
+doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
+doc_auth.info.verify_online_description: This option is better if you have a phone to take photos of your ID.
+doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online. Most users finish this process in one sitting.
+doc_auth.info.verify_online_link_text: Learn more about verifying online
+doc_auth.info.you_entered: "You entered:"
+doc_auth.instructions.bullet1: Have a driver’s license or state ID
+doc_auth.instructions.bullet2: Enter your Social Security number
+doc_auth.instructions.bullet3: Match to your phone number
+doc_auth.instructions.bullet4: Re-enter your %{app_name} password
+doc_auth.instructions.consent: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information. We will use it to verify your identity.
+doc_auth.instructions.getting_started: "You’ll need to:"
+doc_auth.instructions.learn_more: Learn more about our privacy and security measures
+doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity.
+doc_auth.instructions.switch_back_image: Arrow pointing from phone to computer
+doc_auth.instructions.test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are considered valid. Do not enter real PII in this field.
+doc_auth.instructions.text1: Other forms of ID are not accepted. We’ll check that you are the person on your ID.
+doc_auth.instructions.text2: You will not need your physical SSN card.
+doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
+doc_auth.instructions.text4: Your password saves and encrypts your personal information.
+doc_auth.tips.document_capture_hint: Must be a JPG or PNG
+doc_auth.tips.document_capture_id_text1: Place your ID on a flat and dark surface.
+doc_auth.tips.document_capture_id_text2: Take your photo in a well-lit place.
+doc_auth.tips.document_capture_id_text3: Avoid glare or shadows on your ID.
+doc_auth.tips.document_capture_id_text4: File size should be at least 2 MB.
+doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos of your ID
+doc_auth.tips.document_capture_selfie_selfie_text: How to prepare for your photo
+doc_auth.tips.document_capture_selfie_text1: Remove any clothing items or accessories that might cover your face. We suggest removing your glasses or hat.
+doc_auth.tips.document_capture_selfie_text2: Take your photo in a well-lit place.
+doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral.
+doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.review_issues_id_header_text: "Review the images of your state‑issued ID:"
+doc_auth.tips.review_issues_id_text1: Did you use a dark background?
+doc_auth.tips.review_issues_id_text2: Did you take the photo on a flat surface?
+doc_auth.tips.review_issues_id_text3: Is the flash on your camera off?
+doc_auth.tips.review_issues_id_text4: Are all details sharp and clearly visible?
+user_mailer.account_reinstated.subject: Your account is unlocked
+user_mailer.account_reinstated.we_have_finished_reviewing: We have finished reviewing your %{app_name} account and you can now log back in with your account information.
+user_mailer.account_rejected.intro: We couldn’t verify your identity with %{app_name}. Please contact the agency whose service you are trying to access.
+user_mailer.account_rejected.subject: We couldn’t verify your identity
+user_mailer.account_reset_cancel.intro_html: This email confirms you have canceled your request to delete your %{app_name_html} account.
+user_mailer.account_reset_cancel.subject: Request canceled
+user_mailer.account_reset_complete.intro_html: This email confirms you have deleted your %{app_name_html} account.
+user_mailer.account_reset_complete.subject: Account deleted
+user_mailer.account_reset_granted.button: Yes, continue deleting
+user_mailer.account_reset_granted.cancel_link_text: please cancel
+user_mailer.account_reset_granted.help_html: If you don’t want to delete your account, %{cancel_account_reset_html}.
+user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
+user_mailer.account_reset_granted.subject: Delete your %{app_name} account
+user_mailer.account_reset_request.cancel: Don’t want to delete your account? Sign in to your %{app_name} account to cancel.
+user_mailer.account_reset_request.header: Your account will be deleted in %{interval}
+user_mailer.account_reset_request.intro_html: "As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> Step One: There is a waiting period of %{waiting_period} if you have lost access to your authentication methods and need to delete your account. If you locate your authentication methods, you can sign in to your %{app_name} account to cancel this request.<br><br> Step Two: After the waiting period of %{waiting_period}, you will receive an email that will ask you to confirm the deletion of your %{app_name} account. Your account will not be deleted until you confirm."
+user_mailer.account_reset_request.subject: How to delete your %{app_name} account
+user_mailer.account_verified.change_password_link: change your password
+user_mailer.account_verified.contact_link: contact us
+user_mailer.account_verified.intro_html: You successfully verified your identity with %{sp_name} on %{date} using %{app_name}. If you did not perform this action, please %{contact_link_html} and sign in to %{change_password_link_html}.
+user_mailer.account_verified.subject: You verified your identity with %{sp_name}.
+user_mailer.add_email_associated_with_another_account.help_html: If you did not request a new email or suspect an error, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
+user_mailer.add_email_associated_with_another_account.intro_html: This email address is already associated with a %{app_name_html} account, so we can’t add it to another account. You must first delete or remove it from the account it is associated with. To do this, follow the link below and sign in with this email address. If you are not trying to add this email address to an account, you can ignore this message.
+user_mailer.add_email_associated_with_another_account.link_text: Go to %{app_name}
+user_mailer.add_email_associated_with_another_account.reset_password_html: If you can’t remember your password, go to %{app_name_html} to reset it.
+user_mailer.add_email.footer: This link will expire in %{confirmation_period}.
+user_mailer.add_email.header: Thanks for adding an email. Please click the link below or copy and paste the entire link into your browser.
+user_mailer.add_email.subject: Confirm your email
+user_mailer.contact_link_text: contact us
+user_mailer.email_added.header: A new email address was added to your %{app_name} profile.
+user_mailer.email_added.help: If you did not make this change, sign in to your profile and manage your email addresses. We recommend that you also change your password.
+user_mailer.email_added.subject: New email address added
+user_mailer.email_confirmation_instructions.first_sentence.confirmed: Trying to change your email address?
+user_mailer.email_confirmation_instructions.first_sentence.unconfirmed: Thanks for submitting your email address.
+user_mailer.email_confirmation_instructions.footer: This link will expire in %{confirmation_period}.
+user_mailer.email_confirmation_instructions.header: "%{intro} Please click the link below or copy and paste the entire link into your browser."
+user_mailer.email_confirmation_instructions.link_text: Confirm email address
+user_mailer.email_confirmation_instructions.subject: Confirm your email
+user_mailer.email_deleted.header: An email address was deleted from your %{app_name} profile.
+user_mailer.email_deleted.help_html: If you did not want to delete this email address, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
+user_mailer.email_deleted.subject: Email address deleted
+user_mailer.help_link_text: Help Center
+user_mailer.in_person_completion_survey.body.cta.callout: Click the button below to get started.
+user_mailer.in_person_completion_survey.body.cta.label: Take our survey
+user_mailer.in_person_completion_survey.body.greeting: Hello,
+user_mailer.in_person_completion_survey.body.intent: We want to hear about your experience verifying your identity in person at the Post Office.
+user_mailer.in_person_completion_survey.body.privacy_html: Your answers to this survey will be protected according to the following <a href="%{url}">privacy and security standards</a>.
+user_mailer.in_person_completion_survey.body.request_description: Fill out a short, anonymous survey and we’ll use your input to help us get better at serving your needs.
+user_mailer.in_person_completion_survey.body.thanks: Thanks for using %{app_name}.
+user_mailer.in_person_completion_survey.header: Take a minute to tell us how we did
+user_mailer.in_person_completion_survey.subject: Tell us about your recent experience with %{app_name}
+user_mailer.in_person_deadline_passed.body.canceled: The deadline to verify your identity in person has passed and we automatically canceled your request in order to protect your personal data.
+user_mailer.in_person_deadline_passed.body.cta: Start over
+user_mailer.in_person_deadline_passed.body.greeting: Hello,
+user_mailer.in_person_deadline_passed.body.restart: You can start a new request to verify your identity with %{partner_agency}.
+user_mailer.in_person_deadline_passed.header: The deadline to verify your identity in person has passed
+user_mailer.in_person_deadline_passed.subject: Your request to verify your identity in person has expired
+user_mailer.in_person_failed_suspected_fraud.body.help_center_html: If you need further help, you can <a href="%{help_center_url}">visit our Help Center</a> or reach out to the agency you are trying to access.
+user_mailer.in_person_failed_suspected_fraud.body.intro: We understand that you were attempting to verify your identity through %{app_name}, however your identity could not be verified at the %{location} Post Office on %{date}.
+user_mailer.in_person_failed_suspected_fraud.greeting: Hello,
+user_mailer.in_person_failed_suspected_fraud.subject: Your identity could not be verified in person
+user_mailer.in_person_failed.body.with_cta: Click the button or copy the link below to try verifying your identity online again through %{sp_or_app_name}. If you are still experiencing issues, please contact the agency you are trying to access.
+user_mailer.in_person_failed.body.without_cta: Please try verifying your identity again from %{sp_name}’s website. If you are still experiencing issues, please contact the agency you are trying to access.
+user_mailer.in_person_failed.intro: Your identity could not be verified at the %{location} Post Office on %{date}.
+user_mailer.in_person_failed.subject: Your identity could not be verified in person
+user_mailer.in_person_failed.verifying_identity: "When verifying your identity:"
+user_mailer.in_person_failed.verifying_step_not_expired: Your state‑issued ID or driver’s license must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
+user_mailer.in_person_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
+user_mailer.in_person_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
+user_mailer.in_person_please_call.header: Please give us a call
+user_mailer.in_person_please_call.subject: Call %{app_name} to continue with your identity verification
+user_mailer.in_person_ready_to_verify_reminder.greeting: Hello,
+user_mailer.in_person_ready_to_verify_reminder.heading.one: You have %{count} day left to verify your identity in person
+user_mailer.in_person_ready_to_verify_reminder.heading.other: You have %{count} days left to verify your identity in person
+user_mailer.in_person_ready_to_verify_reminder.intro: Don’t miss the chance to verify your identity at your local Post Office. Complete this step to access %{sp_name}.
+user_mailer.in_person_ready_to_verify_reminder.subject.one: Verify your identity at a Post Office in the next day
+user_mailer.in_person_ready_to_verify_reminder.subject.other: Verify your identity at a Post Office in the next %{count} days
+user_mailer.in_person_ready_to_verify.subject: You’re ready to verify your identity with %{app_name} in person
+user_mailer.in_person_verified.greeting: Hello,
+user_mailer.in_person_verified.intro: You successfully verified your identity at the %{location} Post Office on %{date}.
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Next, click the button or copy the link below to access %{sp_name} and sign in.
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: You can now sign in from %{sp_name}’s website.
+user_mailer.in_person_verified.next_sign_in.without_sp: Next, click the button or copy the link below to sign in to %{app_name}.
+user_mailer.in_person_verified.sign_in: Sign in
+user_mailer.in_person_verified.subject: You successfully verified your identity with %{app_name}
+user_mailer.in_person_verified.warning_contact_us_html: If you did not attempt to verify your identity in person, please sign in to <a href="%{reset_password_url}">reset your password</a>. To report this, <a href="%{contact_us_url}">contact %{app_name} support</a>.
+user_mailer.letter_reminder_14_days.body_html: "<p>You requested a letter with a verification code on <strong>%{date_letter_was_sent}</strong>.</p><p>Sign back in to %{app_name} and enter the verification code to finish verifying your identity. %{help_link}.</p>"
+user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
+user_mailer.letter_reminder_14_days.finish: Finish verifying your identity
+user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: sign in to request another letter
+user_mailer.letter_reminder_14_days.subject: Finish verifying your identity
+user_mailer.letter_reminder.info_html: The letter you are about to receive will contain a verification code that helps us verify your address. You can complete the identity verification process by signing into %{link_html} and entering the verification code.
+user_mailer.letter_reminder.subject: We mailed a letter to the address you have on file
+user_mailer.new_device_sign_in_after_2fa.authentication_methods: authentication methods
+user_mailer.new_device_sign_in_after_2fa.info_p1: Your %{app_name} email and password were used to sign-in and authenticate on a new device.
+user_mailer.new_device_sign_in_after_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
+user_mailer.new_device_sign_in_after_2fa.info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
+user_mailer.new_device_sign_in_after_2fa.reset_password: reset your password
+user_mailer.new_device_sign_in_after_2fa.subject: New sign-in and authentication with your %{app_name} account
+user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authenticated
+user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Signed in with password
+user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Failed to authenticate
+user_mailer.new_device_sign_in_attempts.new_sign_in_from: New sign-in potentially located in %{location}
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate %{count} times</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
+user_mailer.new_device_sign_in_before_2fa.info_p3_html: Two-factor authentication protects your account from unauthorized access. If this wasn’t you, %{reset_password_link_html} immediately.
+user_mailer.new_device_sign_in_before_2fa.reset_password: reset your password
+user_mailer.new_device_sign_in_before_2fa.subject: New sign-in with your %{app_name} account
+user_mailer.new_device_sign_in.disavowal_link: reset your password
+user_mailer.new_device_sign_in.help_html: If you did not make this change, %{disavowal_link_html}. For more help, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
+user_mailer.new_device_sign_in.info: Your %{app_name} account was just used to sign in on a new device.
+user_mailer.new_device_sign_in.subject: New sign-in with your %{app_name} account
+user_mailer.password_changed.disavowal_link: reset your password
+user_mailer.password_changed.help_html: If you did not make this change, %{disavowal_link_html}. For more help, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
+user_mailer.password_changed.intro_html: You have a new password for your %{app_name_html} account.
+user_mailer.personal_key_regenerated.help_html: <p>Your %{app_name} account was just issued a new 16-character personal key. You’re getting this email to make sure it was you.</p><p>If you just signed in and reset your personal key, great! There’s nothing you need to do.</p><p>If you did not just reset your personal key, or if you’re not sure, please immediately take these steps to secure your account:<ol><li><strong><a href="%{reset_password_url}">Change your password</a>.</strong> Choose a password that you haven’t already used with this account.</li><li><strong><a href="%{account_url}">Sign in to your %{app_name} account</a></strong> and make sure you recognize all of the information on your account page, including the methods you use for two-factor authentication, such as phone number, authentication app, or security key.</li><li><strong>On your <a href="%{account_url}">%{app_name} account page</a>, request a new personal key.</strong> Remember, never share it unless you are using it to sign into a trusted website that uses %{app_name}.</li></ol></p><br>Thanks,<br>The %{app_name} team
+user_mailer.personal_key_regenerated.intro: New personal key issued
+user_mailer.personal_key_regenerated.subject: Account Security Alert
+user_mailer.personal_key_sign_in.help_html: <p>Your %{app_name} account was just signed into using your 16-character personal key. You’re getting this email to make sure it was you.</p> <p>If you just signed in using your personal key, great! There’s nothing you need to do.</p><p>If you did not sign in with a personal key, or if you’re not sure, please immediately take these steps to secure your account:<ol><li><strong><a href="%{reset_password_url}">Change your password</a>.</strong> Choose a password that you haven’t already used with this account.</li><li><strong><a href="%{account_url}">Sign in to your %{app_name} account</a></strong> and make sure you recognize all of the information on your account page, including the methods you use for two-factor authentication, such as phone number, authentication app, or security key.</li><li><strong>On your <a href="%{account_url}">%{app_name} account page</a>, request a new personal key.</strong> Remember, never share it unless you are using it to sign into a trusted website that uses %{app_name}.</li></ol></p> <br>Thanks,<br>The %{app_name} team
+user_mailer.personal_key_sign_in.intro: Personal key used to sign in
+user_mailer.personal_key_sign_in.subject: Account Security Alert
+user_mailer.phone_added.disavowal_link: reset your password
+user_mailer.phone_added.help_html: If you did not make this change, sign in to your profile and manage your phone numbers. We also recommend that you %{disavowal_link_html}.
+user_mailer.phone_added.intro: A new phone number was added to your %{app_name} profile.
+user_mailer.phone_added.subject: New phone number added
+user_mailer.please_reset_password.call_to_action: "As a precaution, we’ve disabled your password to keep your information safe. Please follow the steps below to reset your password and secure your account:"
+user_mailer.please_reset_password.intro: We’ve detected unusual activity on your %{app_name} account. We are concerned someone other than you may be trying to access your information.
+user_mailer.please_reset_password.learn_more_link_text: Learn more about your options
+user_mailer.please_reset_password.reminder_html: As a reminder, <strong>%{app_name} will never ask for your login credentials by phone or email</strong>. You can take additional steps to secure your account by enabling two-factor authentication.
+user_mailer.please_reset_password.step_1: Visit the %{app_name} website and select sign in
+user_mailer.please_reset_password.step_2: Select “forgot your password?” at the bottom of the page
+user_mailer.please_reset_password.step_3: Follow the instructions to reset your password
+user_mailer.please_reset_password.subject: Unusual activity — reset your %{app_name} password
+user_mailer.reset_password_instructions.footer: This link expires in %{expires} hours.
+user_mailer.reset_password_instructions.gpo_letter_description: If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.
+user_mailer.reset_password_instructions.gpo_letter_header: Your letter is on the way
+user_mailer.reset_password_instructions.header: To finish resetting your password, please click the link below or copy and paste the entire link into your browser.
+user_mailer.reset_password_instructions.link_text: Reset your password
+user_mailer.reset_password_instructions.subject: Reset your password
+user_mailer.signup_with_your_email.help_html: If you did not request a new account or suspect an error, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
+user_mailer.signup_with_your_email.intro_html: This email address is already associated with a %{app_name_html} account, so we can’t use it to create a new account. To sign in with your existing account, follow the link below. If you are not trying to sign in with this email address, you can ignore this message.
+user_mailer.signup_with_your_email.link_text: Go to %{app_name}
+user_mailer.signup_with_your_email.reset_password_html: If you can’t remember your password, go to %{app_name_html} to reset it.
+user_mailer.suspended_create_account.message: There was an issue creating your %{app_name} account with this email address. Please give our contact center a call at %{contact_number} and provide this code - %{support_code}.
+user_mailer.suspended_create_account.subject: We can’t create your account
+user_mailer.suspended_reset_password.message: There was an issue resetting your password. Please give our contact center a call at %{contact_number} and provide this code - %{support_code}.
+user_mailer.suspended_reset_password.subject: We couldn’t reset your password
+user_mailer.suspension_confirmed.contact_agency: Please contact the agency whose service you are trying to access.
+user_mailer.suspension_confirmed.remain_locked: We have completed our review of your %{app_name} account and your account will remain locked.
+user_mailer.suspension_confirmed.subject: Your account is locked

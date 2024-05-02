@@ -153,7 +153,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
     end
   end
 
-  shared_examples_for 'selfie image re-upload not allowed' do
+  shared_examples_for 'document and selfie images re-upload not allowed' do
     it 'stops user submitting the same images again' do
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth document_capture visited',
@@ -240,7 +240,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
   end
 
   context 'when selfie is enabled' do
-    context 'error due to data issue with 2xx status code', allow_browser_log: true do
+    context 'when doc auth is success and face match fails (2xx)', allow_browser_log: true do
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
@@ -257,14 +257,14 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         sleep(10)
       end
 
-      it_behaves_like 'selfie image re-upload not allowed'
+      it_behaves_like 'document and selfie images re-upload not allowed'
 
       it 'shows current existing header' do
         expect_doc_capture_page_header(t('doc_auth.headings.review_issues'))
       end
     end
 
-    context 'when doc auth is success and portrait match fails', allow_browser_log: true do
+    context 'when doc auth passes and portrait match is not live', allow_browser_log: true do
       before do
         expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
           and_return(true)
@@ -273,7 +273,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
-        mock_doc_auth_success_face_match_fail
+        mock_doc_auth_pass_and_portrait_match_not_live
         attach_images
         attach_selfie
         submit_images
@@ -307,7 +307,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         expect(page).to have_css(
           '.usa-error-message[role="alert"]',
           text: t('doc_auth.errors.doc.resubmit_failed_image'),
-          count: 3,
+          count: 1,
         )
       end
     end
@@ -368,7 +368,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         start_idv_from_sp(biometric_comparison_required: true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
-        mock_doc_auth_success_face_match_fail
+        mock_doc_auth_fail_face_match_fail
         attach_images
         attach_selfie
         submit_images
@@ -376,7 +376,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         sleep(10)
       end
 
-      it_behaves_like 'selfie image re-upload not allowed'
+      it_behaves_like 'document and selfie images re-upload not allowed'
     end
 
     context 'when pii validation fails', allow_browser_log: true do

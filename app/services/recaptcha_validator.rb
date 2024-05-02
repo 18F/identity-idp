@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 class RecaptchaValidator
+  include ActiveModel::Model
+  include ActionView::Helpers::TranslationHelper
+
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'
   RESULT_ERRORS = ['missing-input-secret', 'invalid-input-secret'].freeze
 
   attr_reader :recaptcha_action,
+              :recaptcha_token,
               :score_threshold,
               :analytics,
               :extra_analytics_properties
+
+  validate :validate_token_exists
+  validate :validate_recaptcha_result
 
   RecaptchaResult = Struct.new(:success, :score, :errors, :reasons, keyword_init: true) do
     alias_method :success?, :success
@@ -33,20 +40,30 @@ class RecaptchaValidator
     !score_threshold.positive?
   end
 
-  def valid?(recaptcha_token)
-    return true if exempt?
-    return false if recaptcha_token.blank?
-    result = recaptcha_result(recaptcha_token)
-    log_analytics(result:)
-    recaptcha_result_valid?(result)
+  def submit(recaptcha_token)
+    @recaptcha_token = recaptcha_token
+    @recaptcha_result = recaptcha_result if !exempt? && recaptcha_token.present?
+
+    log_analytics(result: @recaptcha_result) if @recaptcha_result
+    FormResponse.new(success: valid?, errors:, serialize_error_details_only: true)
   rescue Faraday::Error => error
     log_analytics(error:)
-    true
+    FormResponse.new(success: true, serialize_error_details_only: true)
   end
 
   private
 
-  def recaptcha_result(recaptcha_token)
+  def validate_token_exists
+    return if exempt? || recaptcha_token.present?
+    errors.add(:recaptcha_token, :blank, message: t('errors.messages.invalid_recaptcha_token'))
+  end
+
+  def validate_recaptcha_result
+    return if @recaptcha_result.blank? || recaptcha_result_valid?(@recaptcha_result)
+    errors.add(:recaptcha_token, :invalid, message: t('errors.messages.invalid_recaptcha_token'))
+  end
+
+  def recaptcha_result
     response = faraday.post(
       VERIFICATION_ENDPOINT,
       URI.encode_www_form(secret: recaptcha_secret_key, response: recaptcha_token),

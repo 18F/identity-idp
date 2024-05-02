@@ -5,7 +5,7 @@ class PhoneRecaptchaValidator
 
   attr_reader :parsed_phone, :validator_class, :validator_args
 
-  delegate :valid?, :exempt?, to: :validator
+  delegate :submit, :errors, to: :validator
 
   def initialize(parsed_phone:, validator_class: RecaptchaValidator, **validator_args)
     @parsed_phone = parsed_phone
