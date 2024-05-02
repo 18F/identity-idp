@@ -1,5 +1,4 @@
 require 'rails_helper'
-
 RSpec.configure do |rspec|
   rspec.expect_with :rspec do |c|
     c.max_formatted_output_length = nil
@@ -9,7 +8,7 @@ end
 RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
   describe '.call' do
     let(:key) { 'DHS' }
-    let(:iaa) do
+    let(:partner_account) do
       {
         key: key,
         start_date: 1.year.ago,
@@ -17,9 +16,10 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
         issuers: [],
       }
     end
+    let(:service_provider) { create(:service_provider) }
 
     subject(:results) do
-      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner.call(**iaa)
+      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner.call(**partner_account)
     end
 
     it 'is empty with no data' do
@@ -27,7 +27,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
     end
 
     context 'with data' do
-      let(:iaa) do
+      let(:partner_account) do
         {
           key: key,
           start_date: iaa_range.begin,
@@ -50,7 +50,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
         [issuer1, issuer2, issuer3].map do |issuer|
           create(
             :service_provider,
-            iaa: iaa,
+            iaa: partner_account,
             issuer: issuer,
             iaa_start_date: iaa_range.begin,
             iaa_end_date: iaa_range.end,
@@ -66,7 +66,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
           issuer: issuer1,
           ial: 1,
           requested_at: inside_partial_month,
-          profile_verified_at: inside_partial_month,
+          profile_verified_at: nil,
           billable: true,
         )
 
@@ -77,7 +77,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
           issuer: issuer1,
           ial: 1,
           requested_at: inside_partial_month,
-          profile_verified_at: inside_partial_month,
+          profile_verified_at: nil,
           billable: false,
         )
 
@@ -89,7 +89,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
             issuer: issuer2,
             ial: 2,
             requested_at: inside_partial_month,
-            returned_at: inside_partial_month,
+            profile_verified_at: inside_partial_month,
             billable: true,
           )
         end
@@ -103,7 +103,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
               ial: 1,
               issuer: issuer1,
               requested_at: inside_whole_month,
-              returned_at: inside_whole_month,
+              profile_verified_at: nil,
               billable: true,
             )
           end
@@ -118,7 +118,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
               ial: 2,
               issuer: issuer2,
               requested_at: inside_whole_month,
-              returned_at: inside_whole_month,
+              profile_verified_at: inside_whole_month,
               billable: true,
             )
           end
@@ -128,23 +128,9 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       it 'adds up auth_counts and sp_return_log instances' do
         rows = [
           {
-            ial: 1,
-            key: key,
-            year: 2020,
-            month: 9,
-            # year_month: '202009',
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-            total_auth_count: 1,
-            unique_users: 1,
-            new_unique_users: 1,
-          },
-          {
             ial: 2,
             key: key,
-            year: 2020,
-            month: 9,
-            # year_month: '202009',
+            year_month: '202009',
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,
             total_auth_count: 2,
@@ -152,43 +138,17 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
             new_unique_users: 2,
           },
           {
-            ial: 1,
-            key: key,
-            year: 2020,
-            month: 10,
-            # year_month: '202010',
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-            total_auth_count: 20,
-            unique_users: 2,
-            new_unique_users: 1,
-          },
-          {
             ial: 2,
             key: key,
-            year: 2020,
-            month: 10,
-            # year_month: '202010',
+            year_month: '202010',
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,
             total_auth_count: 21,
             unique_users: 3,
             new_unique_users: 1,
           },
-          {
-            ial: 2,
-            key: key,
-            year: 2021,
-            month: 1,
-            # year_month: '202010',
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-            total_auth_count: 67,
-            unique_users: 5,
-            new_unique_users: 1,
-          },
         ]
-        # byebug
+
         expect(results).to match_array(rows)
       end
     end
@@ -199,20 +159,8 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       let(:rows) { [] }
 
       it 'adds up auth_counts and sp_return_log instances' do
-        # byebug
         expect(results).to match_array(rows)
       end
     end
   end
-  # byebug
 end
-
-
-# empty with no data
-
-# with data
-    # known years 1-5
-        # full month
-        # partial month
-        # users counted once in a month
-    # unknown years "year 6 and/or null values"
