@@ -182,19 +182,19 @@ class NewPhoneForm
 
   def validate_phone_submission_limit
     fingerprint = Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164.to_s)
-    @submission_rate_limiter ||= RateLimiter.new(
+    submission_rate_limiter ||= RateLimiter.new(
       target: fingerprint,
       rate_limit_type: :phone_fingerprint_confirmation,
     )
-    @submission_rate_limiter.increment!
-    if @submission_rate_limiter.maxed?
+    submission_rate_limiter.increment!
+    if submission_rate_limiter.maxed?
       errors.add(
         :phone_fingerprint,
         I18n.t(
           'errors.messages.phone_confirmation_limited',
           timeout: distance_of_time_in_words(
             Time.zone.now,
-            [@submission_rate_limiter.expires_at, Time.zone.now].compact.max,
+            [submission_rate_limiter.expires_at, Time.zone.now].compact.max,
             except: :seconds,
           ),
         ),

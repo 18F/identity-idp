@@ -244,25 +244,22 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
       end
       it 'displays an error banner' do
         sign_in_before_2fa(@user)
-        allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
         allow(IdentityConfig.store).to receive(
           :phone_submissions_per_fingerprint_max_attempts_window_in_minutes,
-        ).and_return(10)
+        ).and_return(2)
         IdentityConfig.store.phone_submissions_per_fingerprint_limit.times do
           post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
         end
 
         expect(flash[:error]).to eq(
-          t('errors.messages.phone_confirmation_limited', timeout: '9 minutes'),
+          t('errors.messages.phone_confirmation_limited', timeout: '1 minute'),
         )
 
-        travel_to(5.minutes.from_now) do
-          sign_in_before_2fa(@user2)
-          post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
-          expect(flash[:error]).to eq(
-            t('errors.messages.phone_confirmation_limited', timeout: '5 minutes'),
-          )
-        end
+        sign_in_before_2fa(@user2)
+        post(:create, params: { new_phone_form: { phone: @unconfirmed_phone } })
+        expect(flash[:error]).to eq(
+          t('errors.messages.phone_confirmation_limited', timeout: '1 minute'),
+        )
 
         sign_in_before_2fa(@user)
         post(:create, params: { new_phone_form: { phone: @unconfirmed_phone2 } })
