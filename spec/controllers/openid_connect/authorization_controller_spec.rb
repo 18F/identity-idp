@@ -1339,8 +1339,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           end
         end
 
-        xcontext 'ialmax requested when service provider is not in allowlist' do
-          let(:vtr) { ['Pb'].to_json }
+        context 'ialmax requested when service provider is not in allowlist' do
+          let(:vtr) { ['CaPb'].to_json }
 
           it 'redirects the user if server-side redirect is enabled' do
             allow(IdentityConfig.store).to receive(:openid_connect_redirect).
@@ -1415,18 +1415,18 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           expect(controller.session[:sp][:request_id]).to eq(sp_request_id)
         end
 
-        xit 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
+        it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do
           action
           sp_request_id = ServiceProviderRequestProxy.last.uuid
 
           expect(session[:sp]).to eq(
-            acr_values: nil,
+            acr_values: '',
             issuer: 'urn:gov:gsa:openidconnect:test',
             request_id: sp_request_id,
             request_url: request.original_url,
             requested_attributes: %w[],
             biometric_comparison_required: false,
-            vtr: nil,
+            vtr: ['C1'],
           )
         end
       end
