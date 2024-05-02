@@ -87,7 +87,6 @@ module I18n
         { key: 'anonymous_mailer.password_reset_missing_user.use_this_email_html', locales: %i[zh] },
         { key: 'doc_auth.buttons.close', locales: %i[zh] },
         { key: 'doc_auth.errors.alerts.selfie_not_live_help_link_text', locales: %i[zh] },
-        { key: 'doc_auth.errors.alerts.selfie_poor_quality', locales: %i[zh] },
         { key: 'doc_auth.errors.alerts.selfie_not_live_or_poor_quality', locales: %i[zh] },
         { key: 'doc_auth.errors.general.selfie_failure_help_link_text', locales: %i[zh] },
         { key: 'doc_auth.headings.hybrid_handoff_selfie', locales: %i[zh] },
