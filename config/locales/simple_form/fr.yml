@@ -7,5 +7,5 @@ fr:
     required:
       html: ''
       mark: ''
-      text: Ce champ est requis
+      text: Ce champ est obligatoire
     'yes': Oui
