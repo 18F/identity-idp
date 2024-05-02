@@ -12,18 +12,17 @@ fr:
         informations avec <strong>%{sp}</strong> pour connecter votre compte.
       ial1_intro_html: Nous partagerons vos informations avec <strong>%{sp}</strong>
         pour connecter votre compte.
-      ial2_consent_reminder_html: '<strong>%{sp}</strong> doit savoir qui vous êtes
-        pour se connecter à votre compte. Vous devez consentir chaque année à
-        partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous
+      ial2_consent_reminder_html: '<strong>%{sp}</strong> a besoin de savoir qui vous
+        êtes pour se connecter à votre compte. Vous devez consentir chaque année
+        à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous
         partagerons ces informations :'
       ial2_intro_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour
-        connecter votre compte. Nous partagerons ces informations avec l’agence
-        partenaire:'
-      ial2_reverified_consent_info: 'Puisque vous avez à nouveau vérifié votre
+        connecter votre compte. Nous partagerons ces informations avec %{sp} :'
+      ial2_reverified_consent_info: 'Étant donné que vous avez revérifié votre
         identité, nous avons besoin de votre autorisation pour partager ces
-        informations avec %{sp}:'
+        informations avec %{sp} :'
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
       verified_at: Mis à jour le
       x509_issuer: Émetteur PIV/CAC
-      x509_subject: Identité associée à la carte PIV/CAC
+      x509_subject: Identité PIV/CAC

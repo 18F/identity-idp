@@ -3,14 +3,15 @@ fr:
   email_addresses:
     add:
       duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
-      limit: Vous avez ajouté le nombre maximum d’adresses électroniques.
+      limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
     delete:
       bullet1: Vous ne pourrez pas vous connecter à %{app_name} (ni à aucune des
-        applications gouvernementales associées à votre compte) en utilisant
-        cette adresse électronique
-      bullet2: Vous ne recevrez pas de notifications de compte à cette adresse email
-      confirm: Etes-vous sûr que vous voulez supprimer %{email}?
-      failure: Impossible de supprimer cette adresse email.
-      success: L’adresse email a été supprimée.
+        applications de l’administration associées à votre compte) à l’aide de
+        cette adresse e-mail
+      bullet2: Vous ne recevrez pas de notifications concernant votre compte à cette
+        adresse e-mail
+      confirm: Êtes-vous sûr de vouloir supprimer %{email} ?
+      failure: Nous n’avons pas pu supprimer cette adresse e-mail.
+      success: L’adresse e-mail a été supprimée.
       warning: Si vous supprimez votre adresse e-mail
     unconfirmed: '(non confirmé)'

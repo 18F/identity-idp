@@ -11,51 +11,53 @@ es:
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
-      voice: ¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
-        Su código único es %{code}, De nuevo, Su código único de es %{code},
-        Este código expira en %{expiration} minutos.
+      voice: 'Hola: Su código de un solo uso de seis %{format_type} de %{app_name} es
+        %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un
+        solo uso es %{code}. Este código vence en %{expiration} minutos.'
     confirmation_ipp_enrollment_result:
-      sms: |-
-        %{app_name}: Visitó la oficina de correos el %{proof_date}. Revise su correo electrónico. ¿No fue usted? Llame: %{contact_number}. Ref: %{reference_string}
+      sms: '%{app_name}: Usted acudió a la oficina de correos el %{proof_date}. Revise
+        el resultado en su correo electrónico. ¿No fue usted? Informe
+        inmediatamente de esto: %{contact_number}. Ref: %{reference_string}'
     confirmation_otp:
       sms: |-
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
-      voice: ¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
-        Su código único es %{code}, De nuevo, Su código único de es %{code},
-        Este código expira en %{expiration} minutos.
-    doc_auth_link: |-
-      %{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.
+      voice: 'Hola: Su código de un solo uso de seis %{format_type} de %{app_name} es
+        %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un
+        solo uso es %{code}. Este código vence en %{expiration} minutos.'
+    doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder
+      a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
     error:
       friendly_message:
-        daily_voice_limit_reached: Su código de un solo uso no se ha podido enviar, ya
-          que ha superado el número máximo de llamadas en 24 horas a este número
-          de teléfono. Puedes solicitar un código por mensaje de texto o
-          utilizar un número diferente para recibir una llamada telefónica.
+        daily_voice_limit_reached: No se pudo enviar su código de un solo uso porque
+          superó el número máximo de llamadas en 24 horas a este número de
+          teléfono. Puede solicitar un código por mensaje de texto o usar un
+          número diferente para recibir una llamada telefónica.
         duplicate_endpoint: El número de teléfono ingresado no es válido.
-        generic: No se pudo enviar su código de verificación.
-        invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
-          enviar un SMS si tienes un teléfono que permita enviar SMS.
-        invalid_phone_number: El número de teléfono ingresado no está en el formato correcto.
-        opt_out: El número de teléfono ingresado ha sido excluido de los mensajes de
-          texto.
+        generic: No se pudo enviar su código de un solo uso.
+        invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intente
+          enviar un SMS si tiene un teléfono compatible con SMS.
+        invalid_phone_number: El número de teléfono ingresado no es válido.
+        opt_out: Se optó por no recibir mensajes de texto en el número de teléfono
+          ingresado.
         permanent_failure: El número de teléfono ingresado no es válido.
         rate_limited: Ese número está experimentando un alto volumen de mensajes. Por
           favor, inténtelo de nuevo más tarde.
         sms_unsupported: El número de teléfono ingresado no admite mensajes de texto.
-          Pruebe la opción de llamada telefónica.
+          Intente la opción de llamada telefónica.
         temporary_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.
-        timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
+        timeout: El servidor tardó demasiado en responder. Vuelva a intentarlo.
         unknown_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.
-        voice_unsupported: Numero de telefono invalido. Verifique que haya ingresado el
+        voice_unsupported: Número de teléfono no válido. Verifique haber ingresado el
           código de país o de área correcto.
     format_type:
       character: carácter
-      digit: dígitos
-    personal_key_regeneration_notice: Se ha emitido una nueva clave personal para tu
-      cuenta %{app_name}. Si no eres tú, restablece tu contraseña.
-    personal_key_sign_in_notice: Su clave personal solo se utilizó para iniciar
-      sesión en su cuenta %{app_name}. Si no fue así, reinicie su contraseña.
+      digit: dígito
+    personal_key_regeneration_notice: Se emitió una nueva clave personal para su
+      cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
+    personal_key_sign_in_notice: Su clave personal acaba de se usada para iniciar
+      sesión en su cuenta de %{app_name}. Si no fue usted, restablezca su
+      contraseña.
