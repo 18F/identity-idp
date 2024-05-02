@@ -2,10 +2,10 @@
 es:
   zxcvbn:
     feedback:
-      a_word_by_itself_is_easy_to_guess: Una sola palabra es fácil de adivinar.
-      add_another_word_or_two_uncommon_words_are_better: Añada otra palabra o dos. Las palabras poco comunes son mejor opción.
+      a_word_by_itself_is_easy_to_guess: Una sola palabra es fácil de adivinar
+      add_another_word_or_two_uncommon_words_are_better: Añada otra palabra o dos. Las palabras poco comunes son mejor opción
       all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Todo en mayúsculas es
-        casi igual de fácil de adivinar como todo en minúsculas.
+        casi igual de fácil de adivinar como todo en minúsculas
       avoid_dates_and_years_that_are_associated_with_you: Evite las fechas y los años que están asociados con usted
       avoid_recent_years: Evite los años recientes
       avoid_repeated_words_and_characters: Evite palabras y caracteres repetidos
@@ -29,8 +29,8 @@ es:
       short_keyboard_patterns_are_easy_to_guess: Las secuencias como abc o 6543 son fáciles de adivinar
       straight_rows_of_keys_are_easy_to_guess: Las combinaciones cortas de teclas son fáciles de adivinar
       there_is_no_need_for_symbols_digits_or_uppercase_letters: Las líneas seguidas de letras son fáciles de adivinar
-      this_is_a_top_10_common_password: Esta es una de las 100 contraseñas más comunes.
-      this_is_a_top_100_common_password: Esta es una de las 10 contraseñas más comunes.
+      this_is_a_top_10_common_password: Esta es una de las 100 contraseñas más comunes
+      this_is_a_top_100_common_password: Esta es una de las 10 contraseñas más comunes
       this_is_a_very_common_password: Esta es una contraseña muy común
       this_is_similar_to_a_commonly_used_password: Esto es similar a una contraseña comúnmente utilizada
       use_a_few_words_avoid_common_phrases: Use pocas palabras, evite las frases comunes

@@ -18,7 +18,7 @@ zh:
         code_example: 有 16 个字符的个人密钥示例
         preview: 个人密钥预览
       confirmation_error: 你输入的个人密钥不对
-      generated_on_html: 你的个人密钥在 %{date_html} 生成。
+      generated_on_html: 你的个人密钥在 %{date_html} 生成
     phones:
       error_message: 你添加的电话号码已达数量上限。
     rules_of_use:
