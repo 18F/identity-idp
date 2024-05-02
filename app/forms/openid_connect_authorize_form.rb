@@ -23,7 +23,6 @@ class OpenidConnectAuthorizeForm
     :vtr,
     :scope,
     :verified_within,
-    :biometric_comparison_required,
     *SIMPLE_ATTRS,
   ].freeze
 
@@ -66,7 +65,6 @@ class OpenidConnectAuthorizeForm
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
-    @biometric_comparison_required = params[:biometric_comparison_required].to_s == 'true'
 
     if verified_within_allowed?
       @duration_parser = DurationParser.new(params[:verified_within])
@@ -157,7 +155,7 @@ class OpenidConnectAuthorizeForm
                  :ial2_requested?
 
   def biometric_comparison_required?
-    @biometric_comparison_required
+    parsed_vector_of_trust&.biometric_comparison?
   end
 
   def parsed_vector_of_trust
