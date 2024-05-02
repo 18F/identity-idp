@@ -39,11 +39,9 @@ en:
           the picture. Try taking new pictures.
         issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-        selfie_not_live: Try taking a photo of yourself again. Make sure your whole face
-          is clear and visible in the photo.
         selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-        selfie_poor_quality: 'Try taking a photo of yourself again. Make sure your whole
-          face is clear and visible in the photo.'
+        selfie_not_live_or_poor_quality: 'Try taking a photo of yourself again. Make
+          sure your whole face is clear and visible in the photo.'
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
         visible_color_check: We couldn’t verify your ID. It might have moved when you
           took the picture, or the picture is too dark. Try taking new pictures
