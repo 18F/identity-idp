@@ -226,6 +226,36 @@ module I18n
       ].freeze
       # rubocop:enable Layout/LineLength
 
+      def inconsistent_leading_or_ending_whitespace_keys
+        data[base_locale].key_values.each_with_object([]) do |key_value, result|
+          key, _value = key_value
+
+          result << key if inconsistent_leading_or_ending_whitespace?(key)
+          result
+        end
+      end
+
+      def inconsistent_leading_or_ending_whitespace?(key)
+        values = self.locales.map do |current_locale|
+          value = data[current_locale].first.children[key]&.value
+          if value.is_a?(String)
+            value
+          end
+        end.compact
+
+        return false if values.empty?
+
+        consistent_leading_whitespace = values.map do |value|
+          value.match?(/^\s/) && value[0]
+        end.compact.uniq.count == 1
+
+        consistent_ending_whitespace = values.map do |value|
+          value.match?(/\s$/) && value[-1]
+        end.compact.uniq.count == 1
+
+        !consistent_leading_whitespace || !consistent_ending_whitespace
+      end
+
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
           key, value = key_value
@@ -267,11 +297,21 @@ RSpec.describe 'I18n' do
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
   let(:untranslated_keys) { i18n.untranslated_keys }
+  let(:inconsistent_leading_or_ending_whitespace_keys) do
+    i18n.inconsistent_leading_or_ending_whitespace_keys
+  end
 
   it 'does not have missing keys' do
     expect(missing_keys).to(
       be_empty,
       "Missing #{missing_keys.leaves.count} i18n keys, run `i18n-tasks missing' to show them",
+    )
+  end
+
+  it 'does not have inconsistent leading or ending whitespace' do
+    expect(inconsistent_leading_or_ending_whitespace_keys).to(
+      be_empty,
+      "inconsistent leading or ending whitespace: #{inconsistent_leading_or_ending_whitespace_keys}",
     )
   end
 
