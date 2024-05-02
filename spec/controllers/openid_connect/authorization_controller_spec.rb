@@ -1298,8 +1298,11 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
       context 'using vot' do
         let(:acr_values) { nil } # for emphasis
+        let(:vtr) { ['C1'].to_json }
 
         context 'without a valid vtr' do
+          let(:vtr) { nil }
+
           it 'handles the error and does not blow up when server-side redirect is enabled' do
             allow(IdentityConfig.store).to receive(:openid_connect_redirect).
               and_return('server_side')
@@ -1384,7 +1387,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           end
         end
 
-        xit 'redirects to SP landing page with the request_id in the params' do
+        it 'redirects to SP landing page with the request_id in the params' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
             with(
@@ -1397,12 +1400,12 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               errors: {},
               unauthorized_scope: true,
               user_fully_authenticated: false,
-              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+              acr_values: '',
               code_challenge_present: false,
               service_provider_pkce: nil,
               scope: 'openid',
-              vtr: nil,
-              vtr_param: nil,
+              vtr: ['C1'],
+              vtr_param: ['C1'].to_json,
             )
 
           action
