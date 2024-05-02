@@ -55,7 +55,7 @@ es:
       year: Año
     one_time_code_input:
       hint:
-        alphanumeric: 'Ejemplo: 123ABC:'
+        alphanumeric: 'Ejemplo: 123ABC'
         numeric: 'Ejemplo: 123456'
       label: Código de un solo uso
     password_confirmation:
