@@ -14,7 +14,10 @@ RSpec.describe PhoneRecaptchaValidator do
   end
 
   it 'passes instance variables to validator' do
-    recaptcha_validator = instance_double(RecaptchaValidator, valid?: true)
+    recaptcha_validator = instance_double(
+      RecaptchaValidator,
+      submit: FormResponse.new(success: true),
+    )
     expect(RecaptchaValidator).to receive(:new).
       with(
         score_threshold: score_threshold_config,
@@ -26,7 +29,7 @@ RSpec.describe PhoneRecaptchaValidator do
       ).
       and_return(recaptcha_validator)
 
-    validator.valid?('token')
+    validator.submit('token')
   end
 
   context 'with custom recaptcha validator class' do
@@ -39,31 +42,37 @@ RSpec.describe PhoneRecaptchaValidator do
     end
 
     it 'delegates to validator instance of the given class' do
-      recaptcha_validator = instance_double(RecaptchaMockValidator, valid?: true)
+      recaptcha_validator = instance_double(
+        RecaptchaValidator,
+        submit: FormResponse.new(success: true),
+      )
       expect(RecaptchaMockValidator).to receive(:new).and_return(recaptcha_validator)
-      expect(recaptcha_validator).to receive(:valid?)
+      expect(recaptcha_validator).to receive(:submit)
 
-      validator.valid?('token')
+      validator.submit('token')
     end
   end
 
-  describe '#valid?' do
+  describe '#submit' do
     it 'is delegated to recaptcha validator' do
-      recaptcha_validator = instance_double(RecaptchaValidator, valid?: true)
+      recaptcha_validator = instance_double(
+        RecaptchaValidator,
+        submit: FormResponse.new(success: true),
+      )
       expect(validator).to receive(:validator).and_return(recaptcha_validator)
-      expect(recaptcha_validator).to receive(:valid?)
+      expect(recaptcha_validator).to receive(:submit)
 
-      validator.valid?('token')
+      validator.submit('token')
     end
   end
 
-  describe '#exempt?' do
+  describe '#errors' do
     it 'is delegated to recaptcha validator' do
-      recaptcha_validator = instance_double(RecaptchaValidator, exempt?: true)
+      recaptcha_validator = instance_double(RecaptchaValidator, errors: ActiveModel::Errors.new({}))
       expect(validator).to receive(:validator).and_return(recaptcha_validator)
-      expect(recaptcha_validator).to receive(:exempt?)
+      expect(recaptcha_validator).to receive(:errors)
 
-      validator.exempt?
+      validator.errors
     end
   end
 
