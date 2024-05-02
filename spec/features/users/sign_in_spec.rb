@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign in' do
+RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
   include SessionTimeoutWarningHelper
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Multi Two Factor Authentication' do
+RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] do
   include WebAuthnHelper
 
   describe 'When the user has not set up 2FA' do

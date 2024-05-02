@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'PIV/CAC Management' do
+RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
   context 'with no piv/cac associated yet' do
     let(:uuid) { SecureRandom.uuid }
     let(:user) { create(:user, :fully_registered, :with_phone, with: { phone: '+1 202-555-1212' }) }

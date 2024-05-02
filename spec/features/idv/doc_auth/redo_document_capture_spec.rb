@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth redo document capture', js: true do
+RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
