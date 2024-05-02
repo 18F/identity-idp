@@ -1177,9 +1177,9 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
             end
 
-            xit 'renders a client-side redirect back to the client app immediately if it is enabled' do
+            it 'renders a client-side redirect back to the client app immediately if it is enabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                               and_return('client_side')
+                and_return('client_side')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1191,9 +1191,9 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
-            xit 'renders a JS client-side redirect back to the client app immediately if it is enabled' do
+            it 'renders a JS client-side redirect back to the client app immediately if it is enabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                               and_return('client_side_js')
+                and_return('client_side_js')
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1205,11 +1205,11 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
-            xit 'redirects back to the client app immediately if UUID is overridden to server-side redirect' do
+            it 'redirects back to the client app immediately if UUID is overridden to server-side redirect' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                               and_return('client_side')
+                and_return('client_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
-                                               and_return({ user.uuid => 'server_side' })
+                and_return({ user.uuid => 'server_side' })
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1220,7 +1220,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
             end
 
-            xit 'renders a client-side redirect back to the client app immediately if UUID is overridden to client-side redirect' do
+            it 'renders a client-side redirect back to the client app immediately if UUID is overridden to client-side redirect' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                                                and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
@@ -1236,7 +1236,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
-            xit 'renders a JS client-side redirect back to the client app immediately if UUID is overridden to JS client-side redirect' do
+            it 'renders a JS client-side redirect back to the client app immediately if UUID is overridden to JS client-side redirect' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                                                and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
@@ -1252,7 +1252,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
-            xit 'respects UUID redirect config when issuer config is also set' do
+            it 'respects UUID redirect config when issuer config is also set' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                                                and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
@@ -1271,7 +1271,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
-            xit 'respects issuer redirect config if UUID config is not set' do
+            it 'respects issuer redirect config if UUID config is not set' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                                                and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
@@ -1288,7 +1288,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
-            xit 'redirects to the password capture url when pii is locked' do
+            it 'redirects to the password capture url when pii is locked' do
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
@@ -1299,7 +1299,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(response).to redirect_to(capture_password_url)
             end
 
-            xit 'tracks IAL2 authentication event' do
+            it 'tracks IAL2 authentication event' do
               stub_analytics
               expect(@analytics).to receive(:track_event).
                                       with('OpenID Connect: authorization request',
@@ -1361,7 +1361,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               context 'selfie check was performed' do
-                xit 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                   user.active_profile.idv_level = :unsupervised_with_selfie
 
                   action
@@ -1371,7 +1371,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               context 'selfie check was not performed' do
-                xit 'redirects to have the user verify their account' do
+                it 'redirects to have the user verify their account' do
                   action
                   expect(controller).to redirect_to(idv_url)
                 end
@@ -1381,7 +1381,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 let(:selfie_capture_enabled) { false }
                 let(:vtr) { ['Pb'].to_json }
 
-                xit 'returns status not_acceptable' do
+                it 'returns status not_acceptable' do
                   action
 
                   expect(response.status).to eq(406)
@@ -1392,7 +1392,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 let(:selfie_capture_enabled) { false }
                 let(:vtr) { ['P1'].to_json }
 
-                xit 'redirects to the service provider' do
+                it 'redirects to the service provider' do
                   action
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 end
@@ -1472,10 +1472,10 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
               before do
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                                               and_return(selfie_capture_enabled)
+                  and_return(selfie_capture_enabled)
               end
 
-              xit 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+              it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                 create(:profile, :verify_by_mail_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
                 user.active_profile.idv_level = :legacy_unsupervised
 
@@ -1485,7 +1485,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 expect(user.identities.last.verified_attributes).to eq(%w[birthdate family_name given_name verified_at])
               end
 
-              xit 'redirects to please call page if user has a fraudualent profile' do
+              it 'redirects to please call page if user has a fraudualent profile' do
                 create(:profile, :fraud_review_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
 
                 action
@@ -1501,7 +1501,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
               before do
                 expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                                               and_return(selfie_capture_enabled)
+                  and_return(selfie_capture_enabled)
               end
 
               it 'redirects to gpo enter code page' do
@@ -1515,7 +1515,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           end
 
           context 'account is not already verified' do
-            xit 'redirects to have the user verify their account' do
+            it 'redirects to have the user verify their account' do
               action
               expect(controller).to redirect_to(idv_url)
             end
