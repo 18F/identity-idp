@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class FrontendLogController < ApplicationController
+  include Idv::HybridMobile::HybridMobileConcern
   respond_to :json
 
   skip_before_action :verify_authenticity_token
