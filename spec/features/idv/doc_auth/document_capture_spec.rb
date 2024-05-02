@@ -466,7 +466,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
               expect(page).to have_content(selfie_inline_error_message)
 
-
               # when there is a doc auth error on one side of the ID and face match errors
 
               attach_images(
@@ -497,7 +496,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               expect(page).to have_content(inline_error_message)
               selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
               expect(page).not_to have_content(selfie_inline_error_message)
-
 
               # when there is a doc auth error on one side of the ID and a liveness error
 
@@ -656,7 +654,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               )
               expect(page).to have_content(inline_error_message)
               selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
-              expect(page).to have_content(inline_error_message)
+              expect(page).to have_content(selfie_inline_error_message)
             end
           end
 
