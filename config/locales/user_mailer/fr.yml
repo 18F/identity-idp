@@ -147,25 +147,6 @@ fr:
           bureau de poste de %{location} le %{date}.
       greeting: Bonjour,
       subject: Votre identité n’a pas pu être vérifiée en personne
-    in_person_outage_notification:
-      body:
-        closing_html: Nous nous excusons sincèrement pour le retard de service. Si vous
-          avez des questions ou si vous ne recevez pas votre résultat avant le
-          1er juin, veuillez <a href="%{contact_us_url}">contacter le soutien au
-          client de %{app_name}</a>.
-        heading: Résultats de la vérification en personne reportés du 20 mai au 30 mai
-        instructions: Pour le moment, si vous avez tenté de terminer le processus de
-          vérification d’identité dans un bureau de poste, vous n’avez pas
-          besoin de réessayer. Rassurez-vous que vos résultats de vérification
-          ne sont pas perdus; ils sont stockés en toute sécurité et vous seront
-          envoyés par courriel une fois que nous aurons résolu le problème
-          technique.
-        intro_html: Nous travaillons pour résoudre un problème technique qui retarde les
-          courriels des résultats de la vérification en personne. <strong>Si
-          vous avez tenté d’effectuer une vérification d’identité dans un bureau
-          de poste entre le 20 et le 29 mai, vos résultats ne vous seront
-          peut-être pas envoyés par courriel avant le mardi 30 mai.</strong>
-      subject: Les résultats de la vérification en personne de %{app_name} sont reportés
     in_person_please_call:
       body:
         contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez
