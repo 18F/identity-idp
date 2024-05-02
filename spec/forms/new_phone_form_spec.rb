@@ -374,8 +374,8 @@ RSpec.describe NewPhoneForm do
     end
 
     context 'with recaptcha enabled' do
-      let(:errors) { ActiveModel::Errors.new(RecaptchaValidator.new) }
-      let(:validator) { PhoneRecaptchaValidator.new(parsed_phone: nil) }
+      let(:errors) { ActiveModel::Errors.new(RecaptchaForm.new) }
+      let(:recaptcha_form) { PhoneRecaptchaForm.new(parsed_phone: nil) }
       let(:recaptcha_token) { 'token' }
       let(:phone) { '3065550100' }
       let(:international_code) { 'CA' }
@@ -385,9 +385,9 @@ RSpec.describe NewPhoneForm do
 
       before do
         allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
-        allow(validator).to receive(:submit).with(recaptcha_token)
-        allow(validator).to receive(:errors).and_return(errors)
-        allow(form).to receive(:recaptcha_validator).and_return(validator)
+        allow(recaptcha_form).to receive(:submit).with(recaptcha_token)
+        allow(recaptcha_form).to receive(:errors).and_return(errors)
+        allow(form).to receive(:recaptcha_form).and_return(recaptcha_form)
       end
 
       context 'with valid recaptcha result' do
@@ -397,9 +397,9 @@ RSpec.describe NewPhoneForm do
         end
 
         context 'with recaptcha enterprise' do
-          let(:validator) do
-            PhoneRecaptchaValidator.new(
-              validator_class: RecaptchaEnterpriseValidator,
+          let(:recaptcha_form) do
+            PhoneRecaptchaForm.new(
+              form_class: RecaptchaEnterpriseForm,
               parsed_phone: nil,
             )
           end
