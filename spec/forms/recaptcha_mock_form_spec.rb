@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe RecaptchaMockValidator do
+RSpec.describe RecaptchaMockForm do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:score) { nil }
-  subject(:validator) do
-    RecaptchaMockValidator.new(score_threshold:, analytics:, score:)
+  subject(:form) do
+    RecaptchaMockForm.new(score_threshold:, analytics:, score:)
   end
 
   around do |example|
@@ -14,7 +14,7 @@ RSpec.describe RecaptchaMockValidator do
 
   describe '#submit' do
     let(:token) { 'token' }
-    subject(:response) { validator.submit(token) }
+    subject(:response) { form.submit(token) }
 
     context 'with failing score from validation service' do
       let(:score) { score_threshold - 0.1 }
@@ -39,7 +39,7 @@ RSpec.describe RecaptchaMockValidator do
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          validator_class: 'RecaptchaMockValidator',
+          form_class: 'RecaptchaMockForm',
         )
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe RecaptchaMockValidator do
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          validator_class: 'RecaptchaMockValidator',
+          form_class: 'RecaptchaMockForm',
         )
       end
 

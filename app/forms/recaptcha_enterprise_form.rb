@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RecaptchaEnterpriseValidator < RecaptchaValidator
+class RecaptchaEnterpriseForm < RecaptchaForm
   BASE_VERIFICATION_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1/projects'
 
   private
