@@ -187,21 +187,19 @@ class NewPhoneForm
       rate_limit_type: :phone_fingerprint_confirmation,
     )
     @submission_rate_limiter.increment!
-    lock_out_phone_fingerprint if @submission_rate_limiter.maxed?
-  end
-
-  def lock_out_phone_fingerprint
-    errors.add(
-      :phone_fingerprint,
-      I18n.t(
-        'errors.messages.phone_confirmation_limited',
-        timeout: distance_of_time_in_words(
-          Time.zone.now,
-          [@submission_rate_limiter.expires_at, Time.zone.now].compact.max,
-          except: :seconds,
+    if @submission_rate_limiter.maxed?
+      errors.add(
+        :phone_fingerprint,
+        I18n.t(
+          'errors.messages.phone_confirmation_limited',
+          timeout: distance_of_time_in_words(
+            Time.zone.now,
+            [@submission_rate_limiter.expires_at, Time.zone.now].compact.max,
+            except: :seconds,
+          ),
         ),
-      ),
-      type: :locked_phone_fingerprint,
-    )
+        type: :locked_phone_fingerprint,
+      )
+    end
   end
 end
