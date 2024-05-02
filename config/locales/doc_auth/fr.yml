@@ -118,8 +118,8 @@ fr:
         network_error: Nous avons des difficultés techniques de notre côté. Veuillez
           essayer de soumettre à nouveau vos images plus tard.
         no_liveness: Essayez de prendre de nouvelles photos.
-        selfie_failure: Essayez de prendre de nouvelles photos de vous-même. Veillez à
-          ce que toutes vos photos soient claires et nettes.
+        selfie_failure: Nous n’avons pas pu vérifier votre photo. Essayez de prendre une
+          nouvelle photo.
         selfie_failure_help_link_text: Consultez plus de conseils pour prendre des photos claires
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.

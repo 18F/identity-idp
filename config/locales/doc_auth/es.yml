@@ -111,8 +111,7 @@ es:
         network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
           enviar sus imágenes de nuevo más tarde.
         no_liveness: Intente tomar nuevas fotografías.
-        selfie_failure: Intente tomar de nuevo sus fotos. Asegúrese de que sus fotos
-          estén claras y enfocadas.
+        selfie_failure: No pudimos verificar su foto. Intente tomar una nueva foto.
         selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
       glare:
         failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
@@ -190,7 +189,7 @@ es:
       verify_at_post_office: Verifique su identidad en una oficina de correos
       verify_identity: Verifique su identidad
       verify_online: Verifique su identidad en línea
-      welcome: 'Verifiquemos su identidad para %{sp_name}'
+      welcome: 'Verifiquemos su identidad para %{sp_name}'
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
         verificar su identidad y acceder a
