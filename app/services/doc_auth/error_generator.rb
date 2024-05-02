@@ -211,10 +211,6 @@ module DocAuth
         return nil
       end
 
-      # Error when the image on the id does not match the selfie image, but the image was acceptable
-      if error_is_success(face_match_error)
-        return Errors::SELFIE_FAILURE
-      end
       # Error when the image on the id is poor quality
       if error_is_poor_quality(face_match_error)
         return Errors::SELFIE_POOR_QUALITY
