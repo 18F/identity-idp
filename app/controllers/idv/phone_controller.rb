@@ -114,7 +114,6 @@ module Idv
       result = send_phone_confirmation_otp
       analytics.idv_phone_confirmation_otp_sent(
         **result.to_h.merge(adapter: Telephony.config.adapter),
-        **ab_test_analytics_buckets,
       )
 
       irs_attempts_api_tracker.idv_phone_otp_sent(
@@ -195,7 +194,6 @@ module Idv
           hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
         **opt_in_analytics_properties,
-        **ab_test_analytics_buckets,
       )
 
       if form_result.success?
