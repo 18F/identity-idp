@@ -228,6 +228,38 @@ module I18n
         { key: 'risc.security_event.errors.typ_error', locales: %i[zh] },
       ].freeze
       # rubocop:enable Layout/LineLength
+      FULL_STOPS = ['.', '。']
+      QUESTION_MARKS = ['?', '？']
+
+      def inconsistent_ending_punctuation_keys
+        data[base_locale].key_values.each_with_object([]) do |key_value, result|
+          key, value = key_value
+
+          result << key if inconsistent_ending_punctuation?(key)
+          result
+        end
+      end
+
+      def inconsistent_ending_punctuation?(key)
+        values = self.locales.map do |current_locale|
+          value = data[current_locale].first.children[key]&.value
+          if value.is_a?(String)
+            value
+          else
+            nil
+          end
+        end.compact
+
+        consistent_full_stop = values.map do |value|
+          value.end_with?(*FULL_STOPS)
+        end.uniq.count == 1
+
+        consistent_question_mark = values.map do |value|
+          value.end_with?(*QUESTION_MARKS)
+        end.uniq.count == 1
+
+        !consistent_full_stop || !consistent_question_mark
+      end
 
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
@@ -270,11 +302,19 @@ RSpec.describe 'I18n' do
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
   let(:untranslated_keys) { i18n.untranslated_keys }
+  let(:inconsistent_ending_punctuation_keys) { i18n.inconsistent_ending_punctuation_keys }
 
   it 'does not have missing keys' do
     expect(missing_keys).to(
       be_empty,
       "Missing #{missing_keys.leaves.count} i18n keys, run `i18n-tasks missing' to show them",
+    )
+  end
+
+  it 'does not have inconsistent ending punctuation' do
+    expect(inconsistent_ending_punctuation_keys).to(
+      be_empty,
+      "inconsistent ending punctuation: #{inconsistent_ending_punctuation_keys}"
     )
   end
 
