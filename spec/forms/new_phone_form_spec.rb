@@ -399,7 +399,7 @@ RSpec.describe NewPhoneForm do
         context 'with recaptcha enterprise' do
           let(:form) do
             PhoneRecaptchaForm.new(
-              validator_class: RecaptchaEnterpriseForm,
+              form_class: RecaptchaEnterpriseForm,
               parsed_phone: nil,
             )
           end
