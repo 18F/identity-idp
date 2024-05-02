@@ -73,6 +73,7 @@ fr:
       format_mismatch: Veuillez vous assurer de respecter le format requis.
       gpo_otp_expired: Votre code de vérification a expiré. Veuillez solliciter une
         autre lettre afin d’obtenir un nouveau code.
+      gpo_otp_expired_and_cannot_request_another: Votre code de vérification a expiré.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro de
         téléphone valide.
       inclusion: N’est pas inclus dans la liste

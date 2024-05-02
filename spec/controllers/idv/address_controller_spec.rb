@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::AddressController do
   let(:user) { create(:user) }
 
-  let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.stringify_keys }
+  let(:pii_from_doc) { Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT) }
 
   before do
     stub_sign_in(user)

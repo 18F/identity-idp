@@ -29,17 +29,6 @@ module Users
       track_backup_codes_created
     end
 
-    def create
-      generate_codes
-      result = BackupCodeSetupForm.new(current_user).submit
-      visit_result = result.to_h.merge(analytics_properties_for_visit)
-      analytics.backup_code_setup_visit(**visit_result)
-      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
-
-      save_backup_codes
-      track_backup_codes_created
-    end
-
     def edit
       analytics.backup_code_regenerate_visit(**analytics_properties_for_visit)
     end
@@ -101,13 +90,6 @@ module Users
 
     def mfa_user
       @mfa_user ||= MfaContext.new(current_user)
-    end
-
-    def track_backup_codes_confirmation_setup_visit
-      analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        in_account_creation_flow: in_account_creation_flow?,
-      )
     end
 
     def ensure_backup_codes_in_session

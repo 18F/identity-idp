@@ -40,7 +40,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.flow_path = 'standard'
         idv_session.phone_for_mobile_flow = '201-555-1212'
 
-        idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
         idv_session.had_barcode_read_failure = true
         idv_session.had_barcode_attention_error = true
 
