@@ -1000,9 +1000,9 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
       end
 
       context 'vtr with valid params' do
-        xit 'redirects back to the client app with a code if server-side redirect is enabled' do
+        it 'redirects back to the client app with a code if server-side redirect is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                           and_return('server_side')
+            and_return('server_side')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -1015,9 +1015,9 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           expect(redirect_params[:state]).to eq(params[:state])
         end
 
-        xit 'renders a client-side redirect back to the client app with a code if it is enabled' do
+        it 'renders a client-side redirect back to the client app with a code if it is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                           and_return('client_side')
+            and_return('client_side')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -1031,9 +1031,9 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           expect(redirect_params[:state]).to eq(params[:state])
         end
 
-        xit 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
+        it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                           and_return('client_side_js')
+            and_return('client_side_js')
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
@@ -1092,7 +1092,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           end
         end
 
-        xcontext 'with ial1 requested using vtr' do
+        context 'with ial1 requested using vtr' do
           let(:acr_values) { nil }
           let(:vtr) { ['C1'].to_json }
 
@@ -1144,7 +1144,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           end
         end
 
-        context 'with ial2 requested' do
+        context 'with ial2 requested using acr' do
           before { params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
           context 'account is already verified' do
@@ -1903,7 +1903,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
           it 'redirects back to the client app with a code if client-side redirect is disabled' do
             allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                             and_return('server_side')
+              and_return('server_side')
             action
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -2068,7 +2068,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         end
       end
 
-      xcontext 'vtr with invalid params that do not interfere with the redirect_uri' do
+      context 'vtr with invalid params that do not interfere with the redirect_uri' do
         before { params[:prompt] = '' }
 
         it 'redirects the user with an invalid request if client-side redirect is disabled' do
@@ -2227,7 +2227,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         end
       end
 
-      xcontext 'vtr with invalid params that mean the redirect_uri is not trusted' do
+      context 'vtr with invalid params that mean the redirect_uri is not trusted' do
         before { params.delete(:client_id) }
 
         it 'renders the error page' do
