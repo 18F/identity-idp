@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe 'phone rate limitting', allowed_extra_analytics: [:*] do
+RSpec.describe 'phone rate limiting', allowed_extra_analytics: [:*] do
   let(:phone) { '2025551234' }
 
   context 'on sign up' do
     let!(:user) { sign_up_and_set_password }
 
-    it_behaves_like 'phone rate limitting', :sms
-    it_behaves_like 'phone rate limitting', :voice
+    it_behaves_like 'phone rate limiting', :sms
+    it_behaves_like 'phone rate limiting', :voice
 
     def visit_otp_confirmation(delivery_method)
       select_2fa_option(:phone)
@@ -20,8 +20,8 @@ RSpec.describe 'phone rate limitting', allowed_extra_analytics: [:*] do
   context 'on add phone' do
     let(:user) { create(:user, :fully_registered) }
 
-    it_behaves_like 'phone rate limitting', :sms
-    it_behaves_like 'phone rate limitting', :voice
+    it_behaves_like 'phone rate limiting', :sms
+    it_behaves_like 'phone rate limiting', :voice
 
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
