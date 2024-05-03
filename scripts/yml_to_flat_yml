@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'yaml'
 require 'json'
 
@@ -7,11 +9,11 @@ combined = {}
 # @yieldparam keypath [Array<String>]
 # @yieldparam value
 def each_full_key(obj, keypath: [], &block)
-  if obj.kind_of?(Hash)
+  if obj.is_a?(Hash)
     obj.each do |key, value|
       each_full_key(value, keypath: keypath + [key], &block)
     end
-  elsif obj.kind_of?(Array)
+  elsif obj.is_a?(Array)
     obj.each_with_index do |item, idx|
       each_full_key(item, keypath: keypath + [idx], &block)
     end

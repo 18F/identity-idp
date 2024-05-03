@@ -1,4 +1,6 @@
-require_relative './i18n_flat_yml_backend.rb'
+# frozen_string_literal: true
+
+require_relative './i18n_flat_yml_backend'
 
 module I18nTasksFlatYml
   module FileFormatsOverrides

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # Merges YML files, in order of least to greatest precedence
 # Intended to only be used for flat yml file migration for translations

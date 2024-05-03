@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'i18n'
 require 'json'
 
 # Custom i18n backend that parse our "flat_yml" files into the nested
 # hash structure that i18n works with
 class I18nFlatYmlBackend < I18n::Backend::Simple
-  # @param filename [String] filename, assumed to have the locale slug in the filename such as "en.txt"
+  # @param filename [String] filename, assumed to have the locale slug in the filename ex "en.txt"
   # @return [Array(Hash, Boolean)] tuple of a hash and keys_symbolized
   def load_yml(filename)
     content, keys_symbolized = super
@@ -14,7 +16,7 @@ class I18nFlatYmlBackend < I18n::Backend::Simple
     else
       [
         {
-          self.class.locale(filename) => self.class.unflatten(content)
+          self.class.locale(filename) => self.class.unflatten(content),
         },
         false,
       ]
