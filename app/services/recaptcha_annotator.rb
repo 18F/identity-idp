@@ -21,7 +21,7 @@ class RecaptchaAnnotator
   end
 
   def annotate(reason: nil, annotation: nil)
-    submit_annotation(reason:, annotation:) if !IdentityConfig.store.phone_recaptcha_mock_validator
+    submit_annotation(reason:, annotation:) if FeatureManagement.recaptcha_enterprise?
     log_analytics(reason:, annotation:)
   end
 
