@@ -185,9 +185,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
       perform_in_browser(:desktop) do
         expect(page).to_not have_current_path(idv_session_errors_rate_limited_path, wait: 10)
         expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
-        # we may need wait up to 5 seconds, the polling interval for the page to refresh
-        sleep(6)
-        expect(page).to have_current_path(idv_ssn_path)
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
       end
     end
   end
