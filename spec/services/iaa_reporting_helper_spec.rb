@@ -191,6 +191,4 @@ RSpec.describe IaaReportingHelper do
       end
     end
   end
-
-  describe '#'
 end
