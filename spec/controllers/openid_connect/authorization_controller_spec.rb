@@ -108,37 +108,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         context 'with ial1 requested using acr_values' do
           it 'tracks IAL1 authentication event' do
             stub_analytics
-            expect(@analytics).to receive(:track_event).
-              with('OpenID Connect: authorization request',
-                   success: true,
-                   client_id: client_id,
-                   prompt: 'select_account',
-                   referer: nil,
-                   allow_prompt_login: true,
-                   errors: {},
-                   unauthorized_scope: true,
-                   user_fully_authenticated: true,
-                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                   code_challenge_present: false,
-                   service_provider_pkce: nil,
-                   scope: 'openid',
-                   vtr: nil,
-                   vtr_param: nil)
-            expect(@analytics).to receive(:track_event).
-              with('OpenID Connect: authorization request handoff',
-                   success: true,
-                   client_id: client_id,
-                   user_sp_authorized: true,
-                   code_digest: kind_of(String))
-            expect(@analytics).to receive(:track_event).
-              with(
-                'SP redirect initiated',
-                ial: 1,
-                billed_ial: 1,
-                sign_in_flow:,
-                acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                vtr: nil,
-              )
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
@@ -147,6 +116,39 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
             sp_return_log = SpReturnLog.find_by(issuer: client_id)
             expect(sp_return_log.ial).to eq(1)
+
+            expect(@analytics).to have_logged_event(
+              'OpenID Connect: authorization request',
+              success: true,
+              client_id: client_id,
+              prompt: 'select_account',
+              referer: nil,
+              allow_prompt_login: true,
+              errors: {},
+              unauthorized_scope: true,
+              user_fully_authenticated: true,
+              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+              code_challenge_present: false,
+              service_provider_pkce: nil,
+              scope: 'openid',
+              vtr: nil,
+              vtr_param: nil,
+            )
+            expect(@analytics).to have_logged_event(
+              'OpenID Connect: authorization request handoff',
+              success: true,
+              client_id: client_id,
+              user_sp_authorized: true,
+              code_digest: kind_of(String),
+            )
+            expect(@analytics).to have_logged_event(
+              'SP redirect initiated',
+              ial: 1,
+              billed_ial: 1,
+              sign_in_flow:,
+              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+              vtr: nil,
+            )
           end
         end
 
@@ -1058,39 +1060,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
           it 'tracks IAL1 authentication event' do
             stub_analytics
-            expect(@analytics).to receive(:track_event).
-                                    with('OpenID Connect: authorization request',
-                                         success: true,
-                                         client_id: client_id,
-                                         prompt: 'select_account',
-                                         referer: nil,
-                                         allow_prompt_login: true,
-                                         errors: {},
-                                         unauthorized_scope: true,
-                                         user_fully_authenticated: true,
-                                         acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                                         code_challenge_present: false,
-                                         service_provider_pkce: nil,
-                                         scope: 'openid',
-                                         vtr: nil,
-
-                                         vtr_param: nil)
-            expect(@analytics).to receive(:track_event).
-                                    with('OpenID Connect: authorization request handoff',
-                                         success: true,
-                                         client_id: client_id,
-                                         user_sp_authorized: true,
-                                         code_digest: kind_of(String))
-            expect(@analytics).to receive(:track_event).
-                                    with(
-                                      'SP redirect initiated',
-                                      ial: 1,
-                                      billed_ial: 1,
-                                      sign_in_flow:,
-                                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                                      vtr: nil,
-                                    )
-
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
@@ -1098,6 +1067,39 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
             sp_return_log = SpReturnLog.find_by(issuer: client_id)
             expect(sp_return_log.ial).to eq(1)
+            expect(@analytics).to have_logged_event(
+              'OpenID Connect: authorization request',
+              success: true,
+              client_id: client_id,
+              prompt: 'select_account',
+              referer: nil,
+              allow_prompt_login: true,
+              errors: {},
+              unauthorized_scope: true,
+              user_fully_authenticated: true,
+              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+              code_challenge_present: false,
+              service_provider_pkce: nil,
+              scope: 'openid',
+              vtr: nil,
+
+              vtr_param: nil,
+            )
+            expect(@analytics).to have_logged_event(
+              'OpenID Connect: authorization request handoff',
+              success: true,
+              client_id: client_id,
+              user_sp_authorized: true,
+              code_digest: kind_of(String),
+            )
+            expect(@analytics).to have_logged_event(
+              'SP redirect initiated',
+              ial: 1,
+              billed_ial: 1,
+              sign_in_flow:,
+              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+              vtr: nil,
+            )
           end
         end
 
@@ -1524,7 +1526,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               context 'user has a gpo pending profile' do
                 let(:user) { create(:profile, :verify_by_mail_pending).user }
 
-                xit 'redirects to gpo verify page' do
+                it 'redirects to gpo verify page' do
                   action
                   expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
                 end
@@ -1533,7 +1535,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               context 'user has an in person pending profile' do
                 let(:user) { create(:profile, :in_person_verification_pending).user }
 
-                xit 'redirects to in person ready to verify page' do
+                it 'redirects to in person ready to verify page' do
                   action
                   expect(controller).to redirect_to(idv_in_person_ready_to_verify_url)
                 end
@@ -1542,7 +1544,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               context 'user is under fraud review' do
                 let(:user) { create(:profile, :fraud_review_pending).user }
 
-                xit 'redirects to fraud review page if fraud review is pending' do
+                it 'redirects to fraud review page if fraud review is pending' do
                   action
                   expect(controller).to redirect_to(idv_please_call_url)
                 end
@@ -1551,7 +1553,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               context 'user is rejected due to fraud' do
                 let(:user) { create(:profile, :fraud_rejection).user }
 
-                xit 'redirects to fraud rejection page if user is fraud rejected ' do
+                it 'redirects to fraud rejection page if user is fraud rejected ' do
                   action
                   expect(controller).to redirect_to(idv_not_verified_url)
                 end
@@ -1567,7 +1569,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                     ).user
                   end
 
-                  xit 'redirects to gpo verify page' do
+                  it 'redirects to gpo verify page' do
                     action
                     expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
                   end
@@ -1582,7 +1584,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                     ).user
                   end
 
-                  xit 'redirects to gpo verify page' do
+                  it 'redirects to gpo verify page' do
                     action
                     expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
                   end
@@ -1594,7 +1596,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           context 'profile is reset' do
             let(:user) { create(:profile, :verified, :password_reset).user }
 
-            xit 'redirects to have the user enter their personal key' do
+            it 'redirects to have the user enter their personal key' do
               action
               expect(controller).to redirect_to(reactivate_account_url)
             end
@@ -1603,8 +1605,10 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
         context 'with ialmax requested' do
           context 'provider is on the ialmax allow list' do
+            let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
+            let(:vtr) { nil }
+
             before do
-              params[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
               allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [client_id] }
             end
 
@@ -1630,7 +1634,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
               it 'renders client-side redirect to the client app immediately if PII is unlocked and it is enabled' do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                                 and_return('client_side')
+                  and_return('client_side')
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
                 user.identities.last.update!(
@@ -1669,7 +1673,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 expect(response).to redirect_to(capture_password_url)
               end
 
-              xit 'tracks IAL2 authentication event' do
+              it 'tracks IAL2 authentication event' do
                 stub_analytics
                 expect(@analytics).to receive(:track_event).
                                         with('OpenID Connect: authorization request',
@@ -1757,7 +1761,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
               end
 
-              xit 'tracks IAL1 authentication event' do
+              it 'tracks IAL1 authentication event' do
                 stub_analytics
                 expect(@analytics).to receive(:track_event).
                                         with('OpenID Connect: authorization request',
@@ -1846,7 +1850,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
               end
 
-              xit 'tracks IAL1 authentication event' do
+              it 'tracks IAL1 authentication event' do
                 stub_analytics
                 expect(@analytics).to receive(:track_event).
                                         with('OpenID Connect: authorization request',
@@ -1955,6 +1959,9 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
       end
 
       context 'acr with invalid params that do not interfere with the redirect_uri' do
+        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+        let(:vtr) { nil }
+
         before { params[:prompt] = '' }
 
         it 'redirects the user with an invalid request if client-side redirect is disabled' do
@@ -2051,9 +2058,9 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           expect(redirect_params[:state]).to eq(params[:state])
         end
 
-        xit 'tracks the event with errors' do
+        it 'tracks the event with errors' do
           stub_analytics
-          expect(@analytics).to receive(:track_event).
+           expect(@analytics).to receive(:track_event).
             with('OpenID Connect: authorization request',
                  success: false,
                  client_id: client_id,
@@ -2079,11 +2086,15 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
       end
 
       context 'vtr with invalid params that do not interfere with the redirect_uri' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C1'].to_json }
+
         before { params[:prompt] = '' }
 
         it 'redirects the user with an invalid request if client-side redirect is disabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
-                                           and_return('server_side')
+            and_return('server_side')
+
           action
 
           expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -2175,34 +2186,38 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           expect(redirect_params[:state]).to eq(params[:state])
         end
 
-        xit 'tracks the event with errors' do
+        it 'tracks the event with errors' do
           stub_analytics
-          expect(@analytics).to receive(:track_event).
-                                  with('OpenID Connect: authorization request',
-                                       success: false,
-                                       client_id: client_id,
-                                       prompt: '',
-                                       referer: nil,
-                                       allow_prompt_login: true,
-                                       unauthorized_scope: true,
-                                       errors: hash_including(:prompt),
-                                       error_details: hash_including(:prompt),
-                                       user_fully_authenticated: true,
-                                       acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                                       code_challenge_present: false,
-                                       service_provider_pkce: nil,
-                                       scope: 'openid',
-                                       vtr: nil,
-                                       vtr_param: nil)
-          expect(@analytics).to_not receive(:track_event).with('sp redirect initiated')
-
           action
+          expect(@analytics).to have_logged_event(
+            'OpenID Connect: authorization request',
+            success: false,
+            client_id: client_id,
+            prompt: '',
+            referer: nil,
+            allow_prompt_login: true,
+            unauthorized_scope: true,
+            errors: hash_including(:prompt),
+            error_details: hash_including(:prompt),
+            user_fully_authenticated: true,
+            acr_values: '',
+            code_challenge_present: false,
+            service_provider_pkce: nil,
+            scope: 'openid',
+            vtr: ['C1'],
+            vtr_param: '["C1"]',
+          )
+
+          expect(@analytics).to_not have_logged_event('sp redirect initiated')
 
           expect(SpReturnLog.count).to eq(0)
         end
       end
 
       context 'acr with invalid params that mean the redirect_uri is not trusted' do
+        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+        let(:vtr) { nil }
+
         before { params.delete(:client_id) }
 
         it 'renders the error page' do
@@ -2210,34 +2225,39 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           expect(controller).to render_template('openid_connect/authorization/error')
         end
 
-        xit 'tracks the event with errors' do
+        it 'tracks the event with errors' do
           stub_analytics
-          expect(@analytics).to receive(:track_event).
-            with('OpenID Connect: authorization request',
-                 success: false,
-                 client_id: nil,
-                 prompt: 'select_account',
-                 referer: nil,
-                 allow_prompt_login: nil,
-                 unauthorized_scope: true,
-                 errors: hash_including(:client_id),
-                 error_details: hash_including(:client_id),
-                 user_fully_authenticated: true,
-                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 code_challenge_present: false,
-                 service_provider_pkce: nil,
-                 scope: 'openid',
-                 vtr: nil,
-                 vtr_param: nil)
-          expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
 
           expect(SpReturnLog.count).to eq(0)
+
+          expect(@analytics).to have_logged_event(
+            'OpenID Connect: authorization request',
+            success: false,
+            client_id: nil,
+            prompt: 'select_account',
+            referer: nil,
+            allow_prompt_login: nil,
+            unauthorized_scope: true,
+            errors: hash_including(:client_id),
+            error_details: hash_including(:client_id),
+            user_fully_authenticated: true,
+            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+            code_challenge_present: false,
+            service_provider_pkce: nil,
+            scope: 'openid',
+            vtr: nil,
+            vtr_param: nil,
+          )
+          expect(@analytics).to_not have_logged_event('SP redirect initiated')
         end
       end
 
       context 'vtr with invalid params that mean the redirect_uri is not trusted' do
+        let(:acr_values) { nil }
+        let(:vtr) { ['C1'].to_json }
+
         before { params.delete(:client_id) }
 
         it 'renders the error page' do
@@ -2245,30 +2265,32 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           expect(controller).to render_template('openid_connect/authorization/error')
         end
 
-        xit 'tracks the event with errors' do
+        it 'tracks the event with errors' do
           stub_analytics
-          expect(@analytics).to receive(:track_event).
-            with('OpenID Connect: authorization request',
-                 success: false,
-                 client_id: nil,
-                 prompt: 'select_account',
-                 referer: nil,
-                 allow_prompt_login: nil,
-                 unauthorized_scope: true,
-                 errors: hash_including(:client_id),
-                 error_details: hash_including(:client_id),
-                 user_fully_authenticated: true,
-                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 code_challenge_present: false,
-                 service_provider_pkce: nil,
-                 scope: 'openid',
-                 vtr: nil,
-                 vtr_param: nil)
-          expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
 
           expect(SpReturnLog.count).to eq(0)
+
+          expect(@analytics).to have_logged_event(
+            'OpenID Connect: authorization request',
+            success: false,
+            client_id: nil,
+            prompt: 'select_account',
+            referer: nil,
+            allow_prompt_login: nil,
+            unauthorized_scope: true,
+            errors: hash_including(:client_id),
+            error_details: hash_including(:client_id),
+            user_fully_authenticated: true,
+            acr_values: '',
+            code_challenge_present: false,
+            service_provider_pkce: nil,
+            scope: 'openid',
+            vtr: ['C1'],
+            vtr_param: '["C1"]',
+          )
+          expect(@analytics).to_not have_logged_event('SP redirect initiated')
         end
       end
     end
