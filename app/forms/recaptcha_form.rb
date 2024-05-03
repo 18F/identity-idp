@@ -57,7 +57,8 @@ class RecaptchaForm
     [response, @recaptcha_result&.assessment_id]
   rescue Faraday::Error => error
     log_analytics(error:)
-    FormResponse.new(success: true, serialize_error_details_only: true)
+    response = FormResponse.new(success: true, serialize_error_details_only: true)
+    [response, nil]
   end
 
   private
