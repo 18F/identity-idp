@@ -13,7 +13,7 @@ module PivCacFormHelpers
 
   def token_decoded
     @data = PivCacService.decode_token(token)
-    self.key_id = @data['key_id']
+    @key_id = @data['key_id']
     true
   end
 
