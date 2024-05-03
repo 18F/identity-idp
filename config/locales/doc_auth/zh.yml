@@ -103,7 +103,7 @@ zh:
       document_capture: 添加你身份证件的照片
       document_capture_back: 你身份证件的背面
       document_capture_front: 你身份证件的正面
-      document_capture_selfie: 你本人照片
+      document_capture_selfie: 你面部照片
       document_capture_subheader_id: 驾照或州政府颁发的身份证件
       document_capture_subheader_selfie: 你本人照片
       document_capture_with_selfie: 添加你身份证件和本人的照片
@@ -166,7 +166,7 @@ zh:
       no_ssn: 你必须有社会保障号码才能完成身份验证。
       review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
       secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
-      selfie_capture_content: We’ll check that you are the person on your ID.
+      selfie_capture_content: 我们会查看你是身份证件上的人。
       selfie_capture_status:
         face_close_to_border: Too close to the frame
         face_not_found: Face not found
@@ -203,16 +203,16 @@ zh:
       text4: Your password saves and encrypts your personal information.
     tips:
       document_capture_hint: 必须是 JPG 或 PNG
-      document_capture_id_text1: 使用暗色背景
-      document_capture_id_text2: 在平坦平面上拍照。
-      document_capture_id_text3: 不要使用相机的闪光灯
+      document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
+      document_capture_id_text2: 在光线明亮的地方拍照。
+      document_capture_id_text3: 避免身份证件上有炫光或阴影。
       document_capture_id_text4: 文件大小应当至少 2 兆。
-      document_capture_selfie_id_header_text: 拍出清晰照片的提示
-      document_capture_selfie_selfie_text: 拍出清晰照片的提示
-      document_capture_selfie_text1: 把设备放在眼睛水平
-      document_capture_selfie_text2: 确保你整个面孔都可以看到
-      document_capture_selfie_text3: 在光线充沛的地方拍照
-      document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+      document_capture_selfie_id_header_text: 如何拍摄你身份证件的清晰照片
+      document_capture_selfie_selfie_text: 如何准备拍照
+      document_capture_selfie_text1: 摘掉可能盖住你面部的任何服饰。我们建议你摘掉眼镜和帽子。
+      document_capture_selfie_text2: 在光线明亮的地方拍照。
+      document_capture_selfie_text3: 面部表情保持中性。
+      document_capture_selfie_text4: 确保你整个面部都可以在绿色圆圈中看到。
       review_issues_id_header_text: '请仔细查看你州政府颁发身份证件的图像：'
       review_issues_id_text1: 你是否使用了暗色背景？
       review_issues_id_text2: 是否在平坦平面上拍的照？
