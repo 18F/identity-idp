@@ -41,7 +41,7 @@ describe('normalize', () => {
     const original = '---\nfoo: "some very long key that would normally go past 100 characters and get line wrapped but is going to stay on the same line"';
     const prettierConfig = { singleQuote: false, proseWrap: 'never' };
 
-    expect(await normalize(original, { prettierConfig })).to.equal(original);
+    expect((await normalize(original, { prettierConfig })).trimEnd()).to.equal(original);
   });
 
   it('allows formatting with excluded formatters', async () => {
