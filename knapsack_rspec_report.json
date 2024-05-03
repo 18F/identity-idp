@@ -297,7 +297,7 @@
   "spec/features/phone/confirmation_spec.rb": 202.880041808,
   "spec/features/phone/default_phone_selection_spec.rb": 33.68962708,
   "spec/features/phone/edit_phone_spec.rb": 21.15221282,
-  "spec/features/phone/rate_limitting_spec.rb": 93.738608051,
+  "spec/features/phone/rate_limiting_spec.rb": 93.738608051,
   "spec/features/phone/remove_phone_spec.rb": 12.755412848,
   "spec/features/remember_device/cookie_expiration_spec.rb": 6.613393484,
   "spec/features/remember_device/phone_spec.rb": 58.912246182000004,
