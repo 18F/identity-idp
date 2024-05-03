@@ -222,17 +222,17 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('errors.messages.invalid_recaptcha_token'))
     expect(fake_analytics).to have_logged_event(
       'reCAPTCHA verify result received',
-      hash_including(
-        recaptcha_result: {
-          success: true,
-          score: 0.5,
-          errors: [],
-          reasons: [],
-        },
-        evaluated_as_valid: false,
-        score_threshold: 0.6,
-        phone_country_code: 'AU',
-      ),
+      recaptcha_result: {
+        assessment_id: kind_of(String),
+        success: true,
+        score: 0.5,
+        errors: [],
+        reasons: [],
+      },
+      evaluated_as_valid: false,
+      score_threshold: 0.6,
+      phone_country_code: 'AU',
+      form_class: 'RecaptchaMockForm',
     )
 
     # Passing international should display OTP confirmation
