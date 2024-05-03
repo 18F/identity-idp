@@ -110,7 +110,7 @@ zh:
       front: 驾照或州政府颁发身份证件的正面
       how_to_verify: 选择你想如何验证身份
       hybrid_handoff: 你想怎么添加身份证件？
-      hybrid_handoff_selfie: Enter your phone number to switch devices
+      hybrid_handoff_selfie: 输入电话号码来切换设备
       interstitial: 我们正在处理你的图像
       lets_go: 你的身份是如何验证的
       no_ssn: 没有社会保障号码？
@@ -150,8 +150,7 @@ zh:
       how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
       how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
       hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
-      hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can
-        verify your identity at a United States Post Office instead.
+      hybrid_handoff_ipp_html: <strong>没有手机？</strong>你可以去一个美国邮局验证身份。
       image_loaded: 图像已加载
       image_loading: 图像加载中
       image_updated: 图像已上传
