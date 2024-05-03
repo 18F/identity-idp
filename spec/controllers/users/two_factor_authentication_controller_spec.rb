@@ -289,7 +289,7 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       before do
         @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
-        @old_otp = subject.current_user.direct_otp
+        @old_otp = controller.current_user.direct_otp
         allow(Telephony).to receive(:send_authentication_otp).and_call_original
       end
 
@@ -391,6 +391,37 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           end
 
           expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
+        end
+      end
+
+      context 'with recaptcha phone assessment id in session' do
+        let(:assessment_id) { 'assessment-id' }
+
+        subject(:response) do
+          get :send_code, params: {
+            otp_delivery_selection_form: {
+              **otp_preference_sms,
+              otp_make_default_number: nil,
+            },
+          }
+        end
+
+        before do
+          stub_analytics
+          controller.user_session[:phone_recaptcha_assessment_id] = assessment_id
+        end
+
+        it 'annotates recaptcha assessment with initiated 2fa' do
+          annotator = instance_double(RecaptchaAnnotator)
+          expect(annotator).to receive(:annotate).once.with(
+            reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+          )
+
+          allow(RecaptchaAnnotator).to receive(:new).
+            with(assessment_id:, analytics: @analytics).
+            and_return(annotator)
+
+          response
         end
       end
 

@@ -33,7 +33,7 @@ RSpec.describe RecaptchaForm do
 
   describe '#submit' do
     let(:token) { nil }
-    subject(:response) { form.submit(token) }
+    subject(:result) { form.submit(token) }
 
     context 'with exemption' do
       before do
@@ -41,11 +41,14 @@ RSpec.describe RecaptchaForm do
       end
 
       it 'is successful' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(success: true)
+        expect(assessment_id).to be_nil
       end
 
       it 'does not log analytics' do
-        response
+        result
 
         expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
       end
@@ -55,14 +58,17 @@ RSpec.describe RecaptchaForm do
       let(:token) { nil }
 
       it 'is unsuccessful with error for blank token' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(
           success: false,
           error_details: { recaptcha_token: { blank: true } },
         )
+        expect(assessment_id).to be_nil
       end
 
       it 'does not log analytics' do
-        response
+        result
 
         expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
       end
@@ -72,14 +78,17 @@ RSpec.describe RecaptchaForm do
       let(:token) { '' }
 
       it 'is unsuccessful with error for blank token' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(
           success: false,
           error_details: { recaptcha_token: { blank: true } },
         )
+        expect(assessment_id).to be_nil
       end
 
       it 'does not log analytics' do
-        response
+        result
 
         expect(analytics).not_to have_logged_event('reCAPTCHA verify result received')
       end
@@ -96,18 +105,22 @@ RSpec.describe RecaptchaForm do
       end
 
       it 'is unsuccessful with error for invalid token' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(
           success: false,
           error_details: { recaptcha_token: { invalid: true } },
         )
+        expect(assessment_id).to be_nil
       end
 
       it 'logs analytics of the body' do
-        response
+        result
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            assessment_id: nil,
             success: false,
             score: nil,
             reasons: ['timeout-or-duplicate'],
@@ -129,15 +142,19 @@ RSpec.describe RecaptchaForm do
           end
 
           it 'is successful' do
+            response, assessment_id = result
+
             expect(response.to_h).to eq(success: true)
+            expect(assessment_id).to be_nil
           end
 
           it 'logs analytics of the body' do
-            response
+            result
 
             expect(analytics).to have_logged_event(
               'reCAPTCHA verify result received',
               recaptcha_result: {
+                assessment_id: nil,
                 success: false,
                 score: nil,
                 errors: ['missing-input-secret'],
@@ -159,15 +176,19 @@ RSpec.describe RecaptchaForm do
           end
 
           it 'is successful' do
+            response, assessment_id = result
+
             expect(response.to_h).to eq(success: true)
+            expect(assessment_id).to be_nil
           end
 
           it 'logs analytics of the body' do
-            response
+            result
 
             expect(analytics).to have_logged_event(
               'reCAPTCHA verify result received',
               recaptcha_result: {
+                assessment_id: nil,
                 success: false,
                 score: nil,
                 errors: ['invalid-input-secret'],
@@ -190,11 +211,14 @@ RSpec.describe RecaptchaForm do
       end
 
       it 'is successful' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(success: true)
+        expect(assessment_id).to be_nil
       end
 
       it 'logs analytics of the body' do
-        response
+        result
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
@@ -215,18 +239,22 @@ RSpec.describe RecaptchaForm do
       end
 
       it 'is unsuccessful with error for invalid token' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(
           success: false,
           error_details: { recaptcha_token: { invalid: true } },
         )
+        expect(assessment_id).to be_nil
       end
 
       it 'logs analytics of the body' do
-        response
+        result
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            assessment_id: nil,
             success: true,
             score:,
             errors: [],
@@ -250,15 +278,19 @@ RSpec.describe RecaptchaForm do
       end
 
       it 'is successful' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(success: true)
+        expect(assessment_id).to be_nil
       end
 
       it 'logs analytics of the body' do
-        response
+        result
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            assessment_id: nil,
             success: true,
             score:,
             errors: [],
@@ -274,11 +306,12 @@ RSpec.describe RecaptchaForm do
         let(:extra_analytics_properties) { { extra: true } }
 
         it 'logs analytics of the body' do
-          response
+          result
 
           expect(analytics).to have_logged_event(
             'reCAPTCHA verify result received',
             recaptcha_result: {
+              assessment_id: nil,
               success: true,
               score:,
               errors: [],
@@ -296,7 +329,7 @@ RSpec.describe RecaptchaForm do
         let(:analytics) { nil }
 
         it 'validates gracefully without analytics logging' do
-          response
+          result
         end
       end
     end

@@ -470,29 +470,29 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
       let(:user) { create(:user, :fully_registered) }
       before do
         sign_in_as_user(user)
-        subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-        subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
-        subject.user_session[:context] = 'confirmation'
+        controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
+        controller.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
+        controller.user_session[:context] = 'confirmation'
 
         @previous_phone_confirmed_at =
-          MfaContext.new(subject.current_user).phone_configurations.first&.confirmed_at
+          MfaContext.new(controller.current_user).phone_configurations.first&.confirmed_at
 
-        subject.current_user.create_direct_otp
+        controller.current_user.create_direct_otp
 
         stub_analytics
         stub_attempts_tracker
 
         allow(@analytics).to receive(:track_event)
-        allow(subject).to receive(:create_user_event)
+        allow(controller).to receive(:create_user_event)
 
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
 
-        subject.current_user.email_addresses.each do |email_address|
+        controller.current_user.email_addresses.each do |email_address|
           allow(UserMailer).to receive(:phone_added).
-            with(subject.current_user, email_address, disavowal_token: instance_of(String)).
+            with(controller.current_user, email_address, disavowal_token: instance_of(String)).
             and_return(@mailer)
         end
-        @previous_phone = MfaContext.new(subject.current_user).phone_configurations.first&.phone
+        @previous_phone = MfaContext.new(controller.current_user).phone_configurations.first&.phone
       end
 
       context 'user is fully authenticated and has an existing phone number' do
@@ -660,16 +660,16 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
 
       context 'when user does not have an existing phone number' do
         before do
-          MfaContext.new(subject.current_user).phone_configurations.clear
-          subject.current_user.create_direct_otp
+          MfaContext.new(controller.current_user).phone_configurations.clear
+          controller.current_user.create_direct_otp
         end
 
         context 'when given valid code' do
-          before do
+          subject(:response) do
             post(
               :create,
               params: {
-                code: subject.current_user.direct_otp,
+                code: controller.current_user.direct_otp,
                 otp_delivery_preference: 'sms',
               },
             )
@@ -697,15 +697,39 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
               in_account_creation_flow: false,
             }
 
+            response
+
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', properties)
 
-            expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
-            expect(subject).to have_received(:create_user_event).exactly(:once)
+            expect(controller).to have_received(:create_user_event).with(:phone_confirmed)
+            expect(controller).to have_received(:create_user_event).exactly(:once)
+          end
+
+          it 'annotates with passed 2fa and resets a recaptcha assessment' do
+            assessment_id = 'assessment-id'
+
+            controller.user_session[:phone_recaptcha_assessment_id] = assessment_id
+
+            annotator = instance_double(RecaptchaAnnotator)
+            expect(annotator).to receive(:annotate).once.with(
+              reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+              annotation: RecaptchaAnnotator::Annotations::LEGITIMATE,
+            )
+
+            allow(RecaptchaAnnotator).to receive(:new).
+              with(assessment_id:, analytics: @analytics).
+              and_return(annotator)
+
+            expect { response }.
+              to change { controller.user_session[:phone_recaptcha_assessment_id] }.
+              from(assessment_id).to(nil)
           end
 
           it 'resets context to authentication' do
-            expect(subject.user_session[:context]).to eq 'authentication'
+            response
+
+            expect(controller.user_session[:context]).to eq 'authentication'
           end
         end
 
