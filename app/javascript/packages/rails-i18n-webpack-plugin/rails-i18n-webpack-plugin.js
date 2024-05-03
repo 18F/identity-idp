@@ -105,13 +105,11 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
     // Prefix search localeData, used in ".one", ".other" keys
     if (translation === undefined && typeof localeData === 'object') {
       const prefix = `${key}.`;
-      const prefixedEntries = Object.fromEntries(
-        Object.entries(localeData)
+      const prefixedEntries = Object.entries(localeData)
           .filter(([localeDataKey]) => localeDataKey.startsWith(prefix))
-          .map(([localeDataKey, value]) => [localeDataKey.replace(prefix, ''), value]),
-      );
-      if (Object.keys(prefixedEntries).length) {
-        translation = prefixedEntries;
+          .map(([localeDataKey, value]) => [localeDataKey.replace(prefix, ''), value]);
+      if (prefixedEntries.length) {
+        translation = Object.fromEntries(prefixedEntries);
       }
     }
 
