@@ -59,8 +59,8 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    */
   getLocaleFilePaths(locale) {
     return /** @type {string[]} */ (readdirSync(this.options.configPath, { recursive: true }))
-      .filter((/** @type {string} */ path) => path.endsWith(`${locale}.yml`))
-      .map((p) => path.resolve(this.options.configPath, p));
+      .filter((/** @type {string} */ filePath) => filePath.endsWith(`${locale}.yml`))
+      .map((filePath) => path.resolve(this.options.configPath, filePath));
   }
 
   /**
@@ -73,15 +73,13 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
   getLocaleData(locale) {
     if (!(locale in this.localeData)) {
       this.localeData[locale] = Promise.all(
-        this.getLocaleFilePaths(locale).map((path) =>
+        this.getLocaleFilePaths(locale).map((filePath) =>
           fs
-            .readFile(path, 'utf-8')
+            .readFile(filePath, 'utf-8')
             .then(YAML.parse)
             .catch(() => {}),
         ),
-      ).then((keys) => {
-        return /** @type {Record<string, string>} */ Object.assign({}, ...keys);
-      });
+      ).then((keys) => /** @type {Record<string, string>} */ Object.assign({}, ...keys));
     }
 
     return this.localeData[locale];
