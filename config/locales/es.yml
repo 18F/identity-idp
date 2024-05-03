@@ -490,17 +490,14 @@ doc_auth.errors.alerts.id_not_recognized: No pudimos reconocer su identificació
 doc_auth.errors.alerts.id_not_verified: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.issue_date_checks: No pudimos leer la fecha de emisión en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.ref_control_number_check: No pudimos leer el código de barras del número de control. Intente tomar nuevas fotos.
-doc_auth.errors.alerts.selfie_not_live: Intente tomar de nuevo una foto de usted. Asegúrese de que su rostro se vea claramente en la foto.
 doc_auth.errors.alerts.selfie_not_live_help_link_text: Consulte más consejos para tomar una foto clara de usted mismo
 doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Intente tomar de nuevo una foto de usted. Asegúrese de que su rostro se vea claramente en la foto.
-doc_auth.errors.alerts.selfie_poor_quality: Intente tomar de nuevo una foto de usted. Asegúrese de que su rostro se vea claramente en la foto.
 doc_auth.errors.alerts.sex_check: No pudimos leer el sexo en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.visible_color_check: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto, o que la foto es demasiado oscura. Intente tomar nuevas fotografías con una luz más brillante.
 doc_auth.errors.alerts.visible_photo_check: No pudimos verificar la fotografía de su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.barcode_attention.confirm_info: Si la información siguiente es incorrecta, cargue nuevas fotos de su identificación emitida por el estado.
 doc_auth.errors.barcode_attention.heading: No pudimos leer el código de barras en su identificación.
 doc_auth.errors.camera.blocked: Su cámara está bloqueada
-doc_auth.errors.camera.blocked_detail: No tenemos permiso para acceder a la cámara. Por favor, compruebe la configuración de su navegador o sistema, recargue esta página o suba una foto en su lugar.
 doc_auth.errors.camera.blocked_detail_html: "<strong>Permita el acceso a su cámara para tomar las fotografías de %{app_name}.</strong><span>Intente tomar las fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal vez necesite revisar la configuración de su dispositivo para permitir el acceso.</span>"
 doc_auth.errors.camera.failed: No se pudo activar la cámara; inténtelo de nuevo.
 doc_auth.errors.card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de identificación estatal.
@@ -1095,7 +1092,6 @@ idv.messages.phone.failed_number.try_again_html: Intente con <strong>otro</stron
 idv.messages.phone.rules.0: Con base en Estados Unidos (incluidos los territorios de EE.UU.)
 idv.messages.phone.rules.1: Su número principal (el que utiliza con más frecuencia)
 idv.messages.return_to_profile: "‹ Vuelva a su perfil de %{app_name}"
-idv.messages.select_verification_with_sp: Para protegerlo de robo de identidad, no puede utilizar su cuenta en %{sp_name} hasta que la active ingresando un código único.
 idv.messages.select_verification_without_sp: Para proteger su cuenta de robo de identidad, su perfil no se activará hasta que ingrese un código único.
 idv.messages.sessions.enter_password_message: Cuando vuelva a ingresar su contraseña, %{app_name} protegerá la información que nos dio, para que solo usted pueda acceder a ella.
 idv.messages.sessions.no_pii: SITIO DE PRUEBA - No use información personal real (para fines de demostración únicamente) - SITIO DE PRUEBA

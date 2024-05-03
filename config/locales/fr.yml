@@ -490,17 +490,14 @@ doc_auth.errors.alerts.id_not_recognized: Nous n’avons pas pu reconnaître vot
 doc_auth.errors.alerts.id_not_verified: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut qu’elle ait bougé lorsque vous avez pris la photo. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.issue_date_checks: Nous n’avons pas pu lire la date d’émission sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de contrôle. Essayez de prendre de nouvelles photos.
-doc_auth.errors.alerts.selfie_not_live: Essayez de prendre une nouvelle photo de vous-même. Assurez-vous que l’ensemble de votre visage soit clair et visible sur la photo.
 doc_auth.errors.alerts.selfie_not_live_help_link_text: Consultez plus de conseils pour prendre une photo claire de vous-même
 doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Essayez de prendre une nouvelle photo de vous-même. Assurez-vous que l’ensemble de votre visage soit clair et visible sur la photo.
-doc_auth.errors.alerts.selfie_poor_quality: Essayez de prendre une nouvelle photo de vous-même. Assurez-vous que l’ensemble de votre visage soit clair et visible sur la photo.
 doc_auth.errors.alerts.sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut qu’elle ait bougé lorsque vous avez pris la photo, ou que la photo soit trop sombre. Essayez de prendre de nouvelles photos avec un meilleur éclairage.
 doc_auth.errors.alerts.visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.barcode_attention.confirm_info: Si les informations ci-dessous sont incorrectes, veuillez télécharger de nouvelles photos de votre pièce d’identité délivrée par l’État.
 doc_auth.errors.barcode_attention.heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
 doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
-doc_auth.errors.camera.blocked_detail: Nous n’avons pas la permission d’accéder à l’appareil photo. Veuillez vérifier les paramètres de votre navigateur ou de votre système, recharger cette page ou télécharger une photo à la place.
 doc_auth.errors.camera.blocked_detail_html: "<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>"
 doc_auth.errors.camera.failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
 doc_auth.errors.card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un État.
@@ -1096,7 +1093,6 @@ idv.messages.phone.failed_number.try_again_html: Essayez un <strong>autre</stron
 idv.messages.phone.rules.0: Basé aux Etats-Unis (y compris les territoires américains)
 idv.messages.phone.rules.1: Votre numéro principal (celui que vous utilisez le plus souvent)
 idv.messages.return_to_profile: "‹ Revenir à votre profil %{app_name}"
-idv.messages.select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne l’aurez pas activé en entrant votre code à usage unique.
 idv.messages.select_verification_without_sp: Afin de protéger votre compte des fraudes liées à l’identité, votre profil ne sera pas activé tant que vous n’aurez pas entré votre code à usage unique.
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
 idv.messages.sessions.no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à des fins de démonstration uniquement) - SITE DE TEST
