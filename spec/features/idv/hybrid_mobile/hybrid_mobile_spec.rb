@@ -173,17 +173,20 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
           click_on t('idv.failure.button.warning')
         end
 
-        # final failure
+        # reset to return mocked normal success response for the last attempt
+        DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-        expect(page).not_to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       end
 
       perform_in_browser(:desktop) do
         expect(page).to_not have_current_path(idv_session_errors_rate_limited_path, wait: 10)
-        # expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+        expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+        # we may need wait up to 5 seconds, the polling interval for the page to refresh
+        sleep(6)
         expect(page).to have_current_path(idv_ssn_path)
       end
     end

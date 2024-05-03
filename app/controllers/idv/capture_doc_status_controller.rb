@@ -43,12 +43,7 @@ module Idv
 
     def redirect_url
       return unless document_capture_session
-
-      if rate_limiter.limited?
-        idv_session_errors_rate_limited_url
-      elsif user_has_establishing_in_person_enrollment?
-        idv_in_person_url
-      end
+      user_has_establishing_in_person_enrollment? ? idv_in_person_url : nil
     end
 
     def session_result
