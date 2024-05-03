@@ -272,11 +272,6 @@ es:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Vuelva a su perfil de %{app_name}'
-      select_verification_with_sp: Para protegerle contra el fraude de identidad,
-        contactaremos con usted para confirmar que esta cuenta de %{sp_name} es
-        legítima.
-      select_verification_without_sp: Para protegerle contra el fraude de identidad,
-        contactaremos con usted para confirmar que esta cuenta es legítima.
       sessions:
         enter_password_message: Cuando vuelva a ingresar su contraseña, %{app_name}
           protegerá la información que nos dio, para que solo usted pueda

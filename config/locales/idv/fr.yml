@@ -283,12 +283,6 @@ fr:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
-      select_verification_with_sp: Afin de vous protéger contre l’usurpation
-        d’identité, nous vous contacterons pour confirmer que ce compte
-        %{sp_name} est légitime.
-      select_verification_without_sp: Afin de vous protéger contre l’usurpation
-        d’identité, nous vous contacterons pour confirmer que ce compte est
-        légitime.
       sessions:
         enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name}
           protégera les informations que vous nous aurez données pour que vous

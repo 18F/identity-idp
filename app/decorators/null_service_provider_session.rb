@@ -9,10 +9,6 @@ class NullServiceProviderSession
     I18n.t('headings.sign_in_without_sp')
   end
 
-  def verification_method_choice
-    I18n.t('idv.messages.select_verification_without_sp')
-  end
-
   def cancel_link_url
     view_context.root_url
   end

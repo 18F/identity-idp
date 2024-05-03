@@ -211,8 +211,6 @@ zh:
           - 美国的（包括美国属地）
           - 你的主要号码（你最常用的）
       return_to_profile: '‹ 返回你的 %{app_name} 用户资料'
-      select_verification_with_sp: 为了保护你不受身份欺诈，我们会联系你确认该 %{sp_name} 账户是真实的。
-      select_verification_without_sp: 为了保护你不受身份欺诈，我们会联系你确认该账户是真实的。
       sessions:
         enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
         no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的） - 测试站点
