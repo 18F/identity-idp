@@ -492,6 +492,7 @@ doc_auth.errors.alerts.issue_date_checks: 我们读取不到你身份证件上�
 doc_auth.errors.alerts.ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
 doc_auth.errors.alerts.selfie_not_live: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
 doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
 doc_auth.errors.alerts.selfie_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
 doc_auth.errors.alerts.sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
 doc_auth.errors.alerts.visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
@@ -514,7 +515,7 @@ doc_auth.errors.general.multiple_back_id_failures: 我们无法验证你身份�
 doc_auth.errors.general.multiple_front_id_failures: 我们无法验证你身份证件的正面。尝试重拍一张。
 doc_auth.errors.general.network_error: 我们这边有技术困难。请稍后再提交你的图像。
 doc_auth.errors.general.no_liveness: 尝试重拍。
-doc_auth.errors.general.selfie_failure: Try taking your photos again. Make sure all of your photos are clear and in focus.
+doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
 doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
@@ -1134,7 +1135,9 @@ idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation:
-  "遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。\n"
+  "遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
+
+  "
 idv.warning.state_id.heading: 我们正在争取解决错误。
 idv.warning.state_id.next_steps.items_html.0: S现在再试一次<strong>或者</strong>
 idv.warning.state_id.next_steps.items_html.1: 退出 %{app_name}，稍后再试

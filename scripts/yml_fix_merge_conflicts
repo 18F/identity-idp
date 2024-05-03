@@ -8,7 +8,7 @@ set -xeuo pipefail
 
 # git checkout origin/main -- config/locales/
 
-locales=("en" "es" "fr" "zh")
+locales="en es fr zh"
 
 function find_locale_files() {
   locale=$1
