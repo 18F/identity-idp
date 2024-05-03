@@ -259,10 +259,6 @@ en:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
-      select_verification_with_sp: To protect you from identity fraud, we will contact
-        you to confirm that this %{sp_name} account is legitimate.
-      select_verification_without_sp: To protect you from identity fraud, we will
-        contact you to confirm that this account is legitimate.
       sessions:
         enter_password_message: When you re-enter your password, %{app_name} will
           protect the information you’ve given us, so that only you can access

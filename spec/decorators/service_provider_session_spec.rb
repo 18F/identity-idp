@@ -35,14 +35,6 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#verification_method_choice' do
-    it 'returns the correct string' do
-      expect(subject.verification_method_choice).to eq(
-        I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name),
-      )
-    end
-  end
-
   describe '#sp_alert' do
     context 'sp has custom alert' do
       it 'uses the custom template' do
