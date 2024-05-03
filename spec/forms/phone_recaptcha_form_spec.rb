@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe PhoneRecaptchaValidator do
+RSpec.describe PhoneRecaptchaForm do
   let(:country_score_overrides_config) { {} }
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
   let(:analytics) { FakeAnalytics.new }
-  subject(:validator) { described_class.new(parsed_phone:, analytics:) }
+  subject(:form) { described_class.new(parsed_phone:, analytics:) }
   before do
     allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
       and_return(country_score_overrides_config)
@@ -13,12 +13,12 @@ RSpec.describe PhoneRecaptchaValidator do
       and_return(score_threshold_config)
   end
 
-  it 'passes instance variables to validator' do
-    recaptcha_validator = instance_double(
-      RecaptchaValidator,
+  it 'passes instance variables to form' do
+    recaptcha_form = instance_double(
+      RecaptchaForm,
       submit: FormResponse.new(success: true),
     )
-    expect(RecaptchaValidator).to receive(:new).
+    expect(RecaptchaForm).to receive(:new).
       with(
         score_threshold: score_threshold_config,
         analytics:,
@@ -27,52 +27,52 @@ RSpec.describe PhoneRecaptchaValidator do
           phone_country_code: parsed_phone.country,
         },
       ).
-      and_return(recaptcha_validator)
+      and_return(recaptcha_form)
 
-    validator.submit('token')
+    form.submit('token')
   end
 
-  context 'with custom recaptcha validator class' do
-    subject(:validator) do
+  context 'with custom recaptcha form class' do
+    subject(:form) do
       described_class.new(
         parsed_phone:,
         analytics:,
-        validator_class: RecaptchaMockValidator,
+        form_class: RecaptchaMockForm,
       )
     end
 
-    it 'delegates to validator instance of the given class' do
-      recaptcha_validator = instance_double(
-        RecaptchaValidator,
+    it 'delegates to form instance of the given class' do
+      recaptcha_form = instance_double(
+        RecaptchaForm,
         submit: FormResponse.new(success: true),
       )
-      expect(RecaptchaMockValidator).to receive(:new).and_return(recaptcha_validator)
-      expect(recaptcha_validator).to receive(:submit)
+      expect(RecaptchaMockForm).to receive(:new).and_return(recaptcha_form)
+      expect(recaptcha_form).to receive(:submit)
 
-      validator.submit('token')
+      form.submit('token')
     end
   end
 
   describe '#submit' do
-    it 'is delegated to recaptcha validator' do
-      recaptcha_validator = instance_double(
-        RecaptchaValidator,
+    it 'is delegated to recaptcha form' do
+      recaptcha_form = instance_double(
+        RecaptchaForm,
         submit: FormResponse.new(success: true),
       )
-      expect(validator).to receive(:validator).and_return(recaptcha_validator)
-      expect(recaptcha_validator).to receive(:submit)
+      expect(form).to receive(:form).and_return(recaptcha_form)
+      expect(recaptcha_form).to receive(:submit)
 
-      validator.submit('token')
+      form.submit('token')
     end
   end
 
   describe '#errors' do
-    it 'is delegated to recaptcha validator' do
-      recaptcha_validator = instance_double(RecaptchaValidator, errors: ActiveModel::Errors.new({}))
-      expect(validator).to receive(:validator).and_return(recaptcha_validator)
-      expect(recaptcha_validator).to receive(:errors)
+    it 'is delegated to recaptcha form' do
+      recaptcha_form = instance_double(RecaptchaForm, errors: ActiveModel::Errors.new({}))
+      expect(form).to receive(:form).and_return(recaptcha_form)
+      expect(recaptcha_form).to receive(:errors)
 
-      validator.errors
+      form.errors
     end
   end
 
@@ -85,7 +85,7 @@ RSpec.describe PhoneRecaptchaValidator do
   end
 
   describe '#score_threshold' do
-    subject(:score_threshold) { validator.score_threshold }
+    subject(:score_threshold) { form.score_threshold }
 
     context 'without country override' do
       it 'returns default score threshold configuration value' do

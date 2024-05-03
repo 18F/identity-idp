@@ -1,42 +1,22 @@
 require 'rails_helper'
 
-RSpec.describe RecaptchaEnterpriseValidator do
+RSpec.describe RecaptchaForm do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
-  let(:action) { 'example_action' }
-  let(:recaptcha_enterprise_api_key) { 'recaptcha_enterprise_api_key' }
-  let(:recaptcha_enterprise_project_id) { 'project_id' }
-  let(:recaptcha_site_key) { 'recaptcha_site_key' }
-  let(:assessment_url) do
-    format(
-      '%{base_endpoint}/%{project_id}/assessments?key=%{api_key}',
-      base_endpoint: described_class::BASE_VERIFICATION_ENDPOINT,
-      project_id: recaptcha_enterprise_project_id,
-      api_key: recaptcha_enterprise_api_key,
-    )
-  end
+  let(:recaptcha_secret_key) { 'recaptcha_secret_key' }
 
-  subject(:validator) do
-    described_class.new(
-      recaptcha_action: action,
-      score_threshold:,
-      analytics:,
-      extra_analytics_properties:,
-    )
+  subject(:form) do
+    RecaptchaForm.new(score_threshold:, analytics:, extra_analytics_properties:)
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id).
-      and_return(recaptcha_enterprise_project_id)
-    allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
-      and_return(recaptcha_enterprise_api_key)
-    allow(IdentityConfig.store).to receive(:recaptcha_site_key).
-      and_return(recaptcha_site_key)
+    allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
+      and_return(recaptcha_secret_key)
   end
 
   describe '#exempt?' do
-    subject(:exempt) { validator.exempt? }
+    subject(:exempt) { form.exempt? }
 
     context 'with initialized score threshold of 0' do
       let(:score_threshold) { 0.0 }
@@ -53,11 +33,11 @@ RSpec.describe RecaptchaEnterpriseValidator do
 
   describe '#submit' do
     let(:token) { nil }
-    subject(:response) { validator.submit(token) }
+    subject(:response) { form.submit(token) }
 
     context 'with exemption' do
       before do
-        allow(validator).to receive(:exempt?).and_return(true)
+        allow(form).to receive(:exempt?).and_return(true)
       end
 
       it 'is successful' do
@@ -110,11 +90,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
 
       before do
         stub_recaptcha_response(
-          body: {
-            tokenProperties: { valid: false, action:, invalidReason: 'EXPIRED' },
-            event: {},
-          },
-          action:,
+          body: { success: false, 'error-codes': ['timeout-or-duplicate'] },
           token:,
         )
       end
@@ -134,48 +110,75 @@ RSpec.describe RecaptchaEnterpriseValidator do
           recaptcha_result: {
             success: false,
             score: nil,
+            reasons: ['timeout-or-duplicate'],
             errors: [],
-            reasons: ['EXPIRED'],
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          validator_class: 'RecaptchaEnterpriseValidator',
-        )
-      end
-    end
-
-    context 'with unsuccessful response due to misconfiguration' do
-      let(:token) { 'token' }
-
-      before do
-        stub_recaptcha_response(
-          body: {
-            error: { code: 400, status: 'INVALID_ARGUMENT' },
-          },
-          action:,
-          token:,
+          form_class: 'RecaptchaForm',
         )
       end
 
-      it 'is successful' do
-        expect(response.to_h).to eq(success: true)
-      end
+      context 'with unsuccessful response due to misconfiguration' do
+        context 'with missing input secret' do
+          before do
+            stub_recaptcha_response(
+              body: { success: false, 'error-codes': ['missing-input-secret'] },
+              token:,
+            )
+          end
 
-      it 'logs analytics of the body' do
-        response
+          it 'is successful' do
+            expect(response.to_h).to eq(success: true)
+          end
 
-        expect(analytics).to have_logged_event(
-          'reCAPTCHA verify result received',
-          recaptcha_result: {
-            success: false,
-            score: nil,
-            errors: ['INVALID_ARGUMENT'],
-            reasons: [],
-          },
-          evaluated_as_valid: true,
-          score_threshold: score_threshold,
-          validator_class: 'RecaptchaEnterpriseValidator',
-        )
+          it 'logs analytics of the body' do
+            response
+
+            expect(analytics).to have_logged_event(
+              'reCAPTCHA verify result received',
+              recaptcha_result: {
+                success: false,
+                score: nil,
+                errors: ['missing-input-secret'],
+                reasons: [],
+              },
+              evaluated_as_valid: true,
+              score_threshold: score_threshold,
+              form_class: 'RecaptchaForm',
+            )
+          end
+        end
+
+        context 'with invalid input secret' do
+          before do
+            stub_recaptcha_response(
+              body: { success: false, 'error-codes': ['invalid-input-secret'] },
+              token:,
+            )
+          end
+
+          it 'is successful' do
+            expect(response.to_h).to eq(success: true)
+          end
+
+          it 'logs analytics of the body' do
+            response
+
+            expect(analytics).to have_logged_event(
+              'reCAPTCHA verify result received',
+              recaptcha_result: {
+                success: false,
+                score: nil,
+                errors: ['invalid-input-secret'],
+                reasons: [],
+              },
+              evaluated_as_valid: true,
+              score_threshold: score_threshold,
+              form_class: 'RecaptchaForm',
+            )
+          end
+        end
       end
     end
 
@@ -183,7 +186,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
       let(:token) { 'token' }
 
       before do
-        stub_request(:post, assessment_url).to_timeout
+        stub_request(:post, RecaptchaForm::VERIFICATION_ENDPOINT).to_timeout
       end
 
       it 'is successful' do
@@ -197,7 +200,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
           'reCAPTCHA verify result received',
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          validator_class: 'RecaptchaEnterpriseValidator',
+          form_class: 'RecaptchaForm',
           exception_class: 'Faraday::ConnectionFailed',
         )
       end
@@ -208,15 +211,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
       let(:score) { score_threshold - 0.1 }
 
       before do
-        stub_recaptcha_response(
-          body: {
-            tokenProperties: { valid: true, action: },
-            riskAnalysis: { score:, reasons: ['AUTOMATION'] },
-            event: {},
-          },
-          action:,
-          token:,
-        )
+        stub_recaptcha_response(body: { success: true, score: }, token:)
       end
 
       it 'is unsuccessful with error for invalid token' do
@@ -234,12 +229,12 @@ RSpec.describe RecaptchaEnterpriseValidator do
           recaptcha_result: {
             success: true,
             score:,
-            reasons: ['AUTOMATION'],
             errors: [],
+            reasons: [],
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
-          validator_class: 'RecaptchaEnterpriseValidator',
+          form_class: 'RecaptchaForm',
         )
       end
     end
@@ -249,15 +244,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
       let(:score) { score_threshold + 0.1 }
 
       around do |example|
-        stubbed_request = stub_recaptcha_response(
-          body: {
-            tokenProperties: { valid: true, action: },
-            riskAnalysis: { score:, reasons: ['LOW_CONFIDENCE'] },
-            event: {},
-          },
-          action:,
-          token:,
-        )
+        stubbed_request = stub_recaptcha_response(body: { success: true, score: }, token:)
         example.run
         expect(stubbed_request).to have_been_made.once
       end
@@ -274,34 +261,13 @@ RSpec.describe RecaptchaEnterpriseValidator do
           recaptcha_result: {
             success: true,
             score:,
-            reasons: ['LOW_CONFIDENCE'],
             errors: [],
+            reasons: [],
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
-          validator_class: 'RecaptchaEnterpriseValidator',
+          form_class: 'RecaptchaForm',
         )
-      end
-
-      context 'with action mismatch' do
-        before do
-          stub_recaptcha_response(
-            body: {
-              tokenProperties: { valid: true, action: 'wrong' },
-              riskAnalysis: { score:, reasons: ['LOW_CONFIDENCE'] },
-              event: {},
-            },
-            action:,
-            token:,
-          )
-        end
-
-        it 'is unsuccessful with error for invalid token' do
-          expect(response.to_h).to eq(
-            success: false,
-            error_details: { recaptcha_token: { invalid: true } },
-          )
-        end
       end
 
       context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
@@ -315,12 +281,12 @@ RSpec.describe RecaptchaEnterpriseValidator do
             recaptcha_result: {
               success: true,
               score:,
-              reasons: ['LOW_CONFIDENCE'],
               errors: [],
+              reasons: [],
             },
             evaluated_as_valid: true,
             score_threshold: score_threshold,
-            validator_class: 'RecaptchaEnterpriseValidator',
+            form_class: 'RecaptchaForm',
             extra: true,
           )
         end
@@ -336,11 +302,9 @@ RSpec.describe RecaptchaEnterpriseValidator do
     end
   end
 
-  def stub_recaptcha_response(body:, action:, site_key: recaptcha_site_key, token: nil)
-    stub_request(:post, assessment_url).
-      with do |req|
-        req.body == { event: { token:, siteKey: site_key, expectedAction: action } }.to_json
-      end.
+  def stub_recaptcha_response(body:, secret: recaptcha_secret_key, token: nil)
+    stub_request(:post, RecaptchaForm::VERIFICATION_ENDPOINT).
+      with { |req| req.body == URI.encode_www_form(secret:, response: token) }.
       to_return(headers: { 'Content-Type': 'application/json' }, body: body.to_json)
   end
 end

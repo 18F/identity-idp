@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RecaptchaValidator
+class RecaptchaForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
 
@@ -103,7 +103,7 @@ class RecaptchaValidator
       score_threshold:,
       evaluated_as_valid: recaptcha_result_valid?(result),
       exception_class: error&.class&.name,
-      validator_class: self.class.name,
+      form_class: self.class.name,
       **extra_analytics_properties,
     )
   end

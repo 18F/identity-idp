@@ -494,7 +494,7 @@ trigger_devops:
     - echo "Address of IDP review app:"
     - echo https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG.review-app.pivcac.identitysandbox.gov
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
 
