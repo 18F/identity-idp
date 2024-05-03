@@ -143,13 +143,13 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    * @param {string[]} keys
    * @param {string} locale
    *
-   * @return {Promise<Record<string,string>|undefined>}
+   * @return {Promise<Record<string,string|Record<string,string>>|undefined>}
    */
   async getTranslationData(keys, locale) {
     /**
      * @param {string} key
      *
-     * @return {Promise<[key: string, string: string]>}
+     * @return {Promise<[key: string, string: string|Record<string, string>]>}
      */
     const getKeyTranslationPairs = async (key) => [key, await this.resolveTranslation(key, locale)];
 
