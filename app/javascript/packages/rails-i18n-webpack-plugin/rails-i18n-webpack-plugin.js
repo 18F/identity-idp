@@ -1,4 +1,4 @@
-const { promises: fs } = require('fs');
+const { promises: fs, readdirSync } = require('fs');
 const { format } = require('util');
 const path = require('path');
 const YAML = require('yaml');
@@ -55,10 +55,12 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    *
    * @param {string} locale
    *
-   * @return {string}
+   * @return {string[]}
    */
-  getLocaleFilePath(locale) {
-    return path.resolve(this.options.configPath, `${locale}.yml`);
+  getLocaleFilePaths(locale) {
+    return /** @type {string[]} */ (readdirSync(this.options.configPath, { recursive: true }))
+      .filter((/** @type {string} */ path) => path.endsWith(`${locale}.yml`))
+      .map((p) => path.resolve(this.options.configPath, p));
   }
 
   /**
@@ -70,12 +72,16 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    */
   getLocaleData(locale) {
     if (!(locale in this.localeData)) {
-      const localePath = this.getLocaleFilePath(locale);
-
-      this.localeData[locale] = fs
-        .readFile(localePath, 'utf-8')
-        .then(YAML.parse)
-        .catch(() => {});
+      this.localeData[locale] = Promise.all(
+        this.getLocaleFilePaths(locale).map((path) =>
+          fs
+            .readFile(path, 'utf-8')
+            .then(YAML.parse)
+            .catch(() => {}),
+        ),
+      ).then((keys) => {
+        return /** @type {Record<string, string>} */ Object.assign({}, ...keys);
+      });
     }
 
     return this.localeData[locale];
@@ -88,14 +94,29 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    * @param {string} locale
    * @param {MissingStringCallback} onMissingString
    *
-   * @return {Promise<string>}
+   * @return {Promise<string|Record<string, string>>}
    */
   async resolveTranslation(key, locale, onMissingString = this.options.onMissingString) {
     const localeData = await this.getLocaleData(locale);
 
+    /** @type {undefined | string | Record<string,string>} */
     let translation = localeData?.[key];
+
+    // Prefix search localeData, used in ".one", ".other" keys
+    if (translation === undefined && typeof localeData === 'object') {
+      const prefix = `${key}.`;
+      const prefixedEntries = Object.fromEntries(
+        Object.entries(localeData)
+          .filter(([localeDataKey]) => localeDataKey.startsWith(prefix))
+          .map(([localeDataKey, value]) => [localeDataKey.replace(prefix, ''), value]),
+      );
+      if (Object.keys(prefixedEntries).length) {
+        translation = prefixedEntries;
+      }
+    }
+
     if (translation === undefined) {
-      translation = onMissingString(key, locale);
+      translation = /** @type {string|undefined} */ (onMissingString(key, locale));
     }
 
     if (translation === undefined && locale !== this.options.defaultLocale) {
