@@ -714,7 +714,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
             annotator = instance_double(RecaptchaAnnotator)
             expect(annotator).to receive(:annotate).once.with(
               reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
-              annotation: RecaptchaAnnotator::Annotations::LEGITIMATE,
             )
 
             allow(RecaptchaAnnotator).to receive(:new).

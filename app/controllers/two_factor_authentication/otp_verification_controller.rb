@@ -58,7 +58,6 @@ module TwoFactorAuthentication
       return if assessment_id.blank?
       RecaptchaAnnotator.new(assessment_id:, analytics:).annotate(
         reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
-        annotation: RecaptchaAnnotator::Annotations::LEGITIMATE,
       )
     end
 
