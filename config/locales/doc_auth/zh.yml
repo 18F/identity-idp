@@ -166,10 +166,10 @@ zh:
       secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
       selfie_capture_content: 我们会查看你是身份证件上的人。
       selfie_capture_status:
-        face_close_to_border: Too close to the frame
-        face_not_found: Face not found
-        face_too_small: Face too small
-        too_many_faces: Too many faces
+        face_close_to_border: 距离相框太近
+        face_not_found: 没找到面孔
+        face_too_small: 面孔太小
+        too_many_faces: 太多张面孔
       ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
       stepping_up_html: Verify your identity again to access this service. %{link_html}
       tag: 建议
