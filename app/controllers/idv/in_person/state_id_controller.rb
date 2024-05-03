@@ -21,9 +21,9 @@ module Idv
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
         pii_from_user = flow_session[:pii_from_user]
-        initial_state_of_same_address_as_id = flow_session[:pii_from_user][:same_address_as_id]
+        initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
-          flow_session[:pii_from_user][attr] = flow_params[attr]
+          pii_from_user[attr] = flow_params[attr]
         end
         form_result = form.submit(flow_params)
 
@@ -80,11 +80,11 @@ module Idv
           next_steps: [:ipp_address, :ipp_ssn],
           preconditions: ->(idv_session:, user:) { user.establishing_in_person_enrollment },
           undo_step: ->(idv_session:, user:) do
-            flow_session[:pii_from_user][:identity_doc_address1] = nil
-            flow_session[:pii_from_user][:identity_doc_address2] = nil
-            flow_session[:pii_from_user][:identity_doc_city] = nil
-            flow_session[:pii_from_user][:identity_doc_zipcode] = nil
-            flow_session[:pii_from_user][:identity_doc_state] = nil
+            pii_from_user[:identity_doc_address1] = nil
+            pii_from_user[:identity_doc_address2] = nil
+            pii_from_user[:identity_doc_city] = nil
+            pii_from_user[:identity_doc_zipcode] = nil
+            pii_from_user[:identity_doc_state] = nil
           end,
         )
       end
@@ -131,7 +131,7 @@ module Idv
       end
 
       def updating_state_id?
-        flow_session[:pii_from_user].has_key?(:first_name)
+        pii_from_user.has_key?(:first_name)
       end
 
       def parsed_dob
@@ -147,7 +147,7 @@ module Idv
       end
 
       def pii
-        data = flow_session[:pii_from_user]
+        data = pii_from_user
         data = data.merge(flow_params) if params.has_key?(:state_id)
         data.deep_symbolize_keys
       end
