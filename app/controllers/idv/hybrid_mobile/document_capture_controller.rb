@@ -65,7 +65,7 @@ module Idv
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
           liveness_checking_required: biometric_comparison_required,
-          selfie_required: biometric_comparison_required,
+          selfie_check_required: biometric_comparison_required,
         }.merge(
           ab_test_analytics_buckets,
         )
