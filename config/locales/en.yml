@@ -1,4 +1,11 @@
 ---
+datetime.dotiw.last_word_connector: " and "
+datetime.dotiw.minutes.one: 1 minute
+datetime.dotiw.minutes.other: "%{count} minutes"
+datetime.dotiw.seconds.one: 1 second
+datetime.dotiw.seconds.other: "%{count} seconds"
+datetime.dotiw.two_words_connector: " and "
+datetime.dotiw.words_connector: ", "
 doc_auth.accessible_labels.camera_video_capture_instructions: We will automatically take the picture
 doc_auth.accessible_labels.camera_video_capture_label: Viewfinder with frame to center your ID
 doc_auth.accessible_labels.document_capture_dialog: Document capture

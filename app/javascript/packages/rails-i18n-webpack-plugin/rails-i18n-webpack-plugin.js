@@ -106,8 +106,9 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
     if (translation === undefined && typeof localeData === 'object') {
       const prefix = `${key}.`;
       const prefixedEntries = Object.entries(localeData)
-          .filter(([localeDataKey]) => localeDataKey.startsWith(prefix))
-          .map(([localeDataKey, value]) => [localeDataKey.replace(prefix, ''), value]);
+        .filter(([localeDataKey]) => localeDataKey.startsWith(prefix))
+        .map(([localeDataKey, value]) => [localeDataKey.replace(prefix, ''), value]);
+
       if (prefixedEntries.length) {
         translation = Object.fromEntries(prefixedEntries);
       }
