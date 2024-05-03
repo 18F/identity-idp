@@ -32,8 +32,7 @@ zh:
         issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
         ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
         selfie_not_live_help_link_text: 查看更多有关清晰拍摄你本人照片的提示
-        selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure
-          your whole face is clear and visible in the photo.
+        selfie_not_live_or_poor_quality: 尝试再拍一张你自己。确保照片中你整个面孔都清楚可见。
         sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
         visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
         visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
