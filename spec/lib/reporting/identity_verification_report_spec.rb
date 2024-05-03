@@ -57,7 +57,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
-  # rubocop:enable Layout/LineLength
+
   describe '#as_csv' do
     it 'renders a csv report' do
       expected_csv = [
@@ -83,7 +83,12 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Successfully verified - GPO Code Entry', 1],
         ['Successfully verified - In Person', 1],
         ['Successfully verified - Passed Fraud Review', 1],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 0.8],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 0.8],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 0.8],
+        ['Industry Proofing Rate (Verified minus IDV Rejected)', 0.8],
       ]
+      # rubocop:enable Layout/LineLength
 
       aggregate_failures do
         report.as_csv.zip(expected_csv).each do |actual, expected|
@@ -120,6 +125,10 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Successfully verified - GPO Code Entry', '1'],
         ['Successfully verified - In Person', '1'],
         ['Successfully verified - Passed Fraud Review', '1'],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', '0.8'],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', '0.8'],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', '0.8'],
+        ['Industry Proofing Rate (Verified minus IDV Rejected)', '0.8'],
       ]
 
       aggregate_failures do
