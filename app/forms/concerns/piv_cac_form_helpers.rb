@@ -13,12 +13,12 @@ module PivCacFormHelpers
 
   def token_decoded
     @data = PivCacService.decode_token(token)
+    self.key_id = @data['key_id']
     true
   end
 
   def not_error_token
     possible_error = @data['error']
-    self.key_id = @data['key_id']
     if possible_error
       self.error_type = possible_error
       false
@@ -35,7 +35,6 @@ module PivCacFormHelpers
       true
     else
       self.error_type = 'token.invalid'
-      self.key_id = @data['key_id']
       false
     end
   end
