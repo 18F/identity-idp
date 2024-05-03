@@ -707,7 +707,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
           end
 
           it 'annotates with passed 2fa and resets a recaptcha assessment' do
-            assessment_id = 'assessment-id'
+            assessment_id = 'projects/project-id/assessments/assessment-id'
 
             controller.user_session[:phone_recaptcha_assessment_id] = assessment_id
 

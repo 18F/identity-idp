@@ -385,7 +385,7 @@ RSpec.describe NewPhoneForm do
       let(:international_code) { 'CA' }
       let(:params) { super().merge(recaptcha_token:) }
       let(:recaptcha_form_response) { FormResponse.new(success: true) }
-      let(:recaptcha_assessment_id) { 'assessment-id' }
+      let(:recaptcha_assessment_id) { 'projects/project-id/assessments/assessment-id' }
 
       subject(:result) { form.submit(params) }
 

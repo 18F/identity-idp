@@ -27,10 +27,11 @@ class RecaptchaAnnotator
 
   private
 
-  BASE_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1/projects'
+  BASE_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1'
 
   def submit_annotation(reason:, annotation:)
-    request_body = { reason:, annotation: }.compact
+    request_body = { annotation: }.compact
+    request_body[:reasons] = [reason] if reason
     faraday.post(annotation_url, request_body) do |request|
       request.options.context = { service_name: 'recaptcha_annotate' }
     end
@@ -47,7 +48,7 @@ class RecaptchaAnnotator
   def annotation_url
     UriService.add_params(
       format(
-        '%{base_endpoint}/%{project_id}/assessments/%{assessment_id}:annotate',
+        '%{base_endpoint}/%{assessment_id}:annotate',
         base_endpoint: BASE_ENDPOINT,
         project_id: IdentityConfig.store.recaptcha_enterprise_project_id,
         assessment_id:,

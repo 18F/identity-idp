@@ -116,7 +116,7 @@ RSpec.describe RecaptchaEnterpriseForm do
 
     context 'with unsuccessful response from validation service' do
       let(:token) { 'token' }
-      let(:name) { 'assessment-id' }
+      let(:name) { 'projects/project-id/assessments/assessment-id' }
 
       before do
         stub_recaptcha_response(
@@ -227,7 +227,7 @@ RSpec.describe RecaptchaEnterpriseForm do
 
     context 'with failing score from validation service' do
       let(:token) { 'token' }
-      let(:name) { 'assessment-id' }
+      let(:name) { 'projects/project-id/assessments/assessment-id' }
       let(:score) { score_threshold - 0.1 }
 
       before do
@@ -274,7 +274,7 @@ RSpec.describe RecaptchaEnterpriseForm do
 
     context 'with successful score from validation service' do
       let(:token) { 'token' }
-      let(:name) { 'assessment-id' }
+      let(:name) { 'projects/project-id/assessments/assessment-id' }
       let(:score) { score_threshold + 0.1 }
 
       around do |example|
@@ -318,7 +318,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       end
 
       context 'with action mismatch' do
-        let(:name) { 'assessment-id' }
+        let(:name) { 'projects/project-id/assessments/assessment-id' }
 
         before do
           stub_recaptcha_response(

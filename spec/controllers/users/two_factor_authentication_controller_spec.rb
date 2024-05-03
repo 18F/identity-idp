@@ -395,7 +395,7 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       end
 
       context 'with recaptcha phone assessment id in session' do
-        let(:assessment_id) { 'assessment-id' }
+        let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
 
         subject(:response) do
           get :send_code, params: {
