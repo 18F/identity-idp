@@ -1098,7 +1098,6 @@ idv.messages.phone.failed_number.try_again_html: 试试 <strong>另一个</stron
 idv.messages.phone.rules.0: 美国的（包括美国属地）
 idv.messages.phone.rules.1: 你的主要号码（你最常用的）
 idv.messages.return_to_profile: "‹ 返回你的 %{app_name} 用户资料"
-idv.messages.select_verification_without_sp: 为了保护你不受身份欺诈，我们会联系你确认该账户是真实的。
 idv.messages.sessions.enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
 idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的） - 测试站点
 idv.messages.verify_info: 我们从你的身份证件上读取你的信息。提交进行验证之前请检查一下并做出必要更新。
@@ -1770,11 +1769,6 @@ user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮�
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: "验证你的身份时:"
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-user_mailer.in_person_outage_notification.body.closing_html: 对于服务的延迟，我们诚恳道歉。如果你 6 月 1 日之前有问题或没有收到结果，请 <a href="%{contact_us_url}">联系 %{app_name} 客户支持</a>。
-user_mailer.in_person_outage_notification.body.heading: 亲身验证身份的结果从 5 月 20 日延到了 5 月 30 日。
-user_mailer.in_person_outage_notification.body.instructions: 如果你已尝试过在邮局完成验证身份的过程，现在则没必要再去试。请放心，你的验证结果没有丢失，而是已被安全保存，而且等我们解决技术问题后就会通过电邮发给你。
-user_mailer.in_person_outage_notification.body.intro_html: 我们正在解决导致亲身验证身份结果延迟的一个技术问题。<strong>如果你 5 月 20 日到 29 日之间已经尝试过在邮局完成验证身份的过程，结果可能直到 5 月 30 日（礼拜二）才能通过电邮发给你 </strong>。
-user_mailer.in_person_outage_notification.subject: "%{app_name} 亲身验证身份的结果延迟了"
 user_mailer.in_person_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
 user_mailer.in_person_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
 user_mailer.in_person_please_call.header: Please give us a call

@@ -1093,7 +1093,6 @@ idv.messages.phone.failed_number.try_again_html: Essayez un <strong>autre</stron
 idv.messages.phone.rules.0: Basé aux Etats-Unis (y compris les territoires américains)
 idv.messages.phone.rules.1: Votre numéro principal (celui que vous utilisez le plus souvent)
 idv.messages.return_to_profile: "‹ Revenir à votre profil %{app_name}"
-idv.messages.select_verification_without_sp: Afin de protéger votre compte des fraudes liées à l’identité, votre profil ne sera pas activé tant que vous n’aurez pas entré votre code à usage unique.
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
 idv.messages.sessions.no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à des fins de démonstration uniquement) - SITE DE TEST
 idv.messages.verify_info: Nous lisons vos informations à partir de votre pièce d’identité. Passez-les en revue et mettez-les à jour avant de les envoyer pour vérification.
@@ -1765,11 +1764,6 @@ user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifié
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne
 user_mailer.in_person_failed.verifying_identity: "Lors de la vérification de votre identité :"
 user_mailer.in_person_failed.verifying_step_not_expired: Votre carte d’identité délivrée par l’État ou votre permis de conduire ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
-user_mailer.in_person_outage_notification.body.closing_html: Nous nous excusons sincèrement pour le retard de service. Si vous avez des questions ou si vous ne recevez pas votre résultat avant le 1er juin, veuillez <a href="%{contact_us_url}">contacter le soutien au client de %{app_name}</a>.
-user_mailer.in_person_outage_notification.body.heading: Résultats de la vérification en personne reportés du 20 mai au 30 mai
-user_mailer.in_person_outage_notification.body.instructions: Pour le moment, si vous avez tenté de terminer le processus de vérification d’identité dans un bureau de poste, vous n’avez pas besoin de réessayer. Rassurez-vous que vos résultats de vérification ne sont pas perdus; ils sont stockés en toute sécurité et vous seront envoyés par courriel une fois que nous aurons résolu le problème technique.
-user_mailer.in_person_outage_notification.body.intro_html: Nous travaillons pour résoudre un problème technique qui retarde les courriels des résultats de la vérification en personne. <strong>Si vous avez tenté d’effectuer une vérification d’identité dans un bureau de poste entre le 20 et le 29 mai, vos résultats ne vous seront peut-être pas envoyés par courriel avant le mardi 30 mai.</strong>
-user_mailer.in_person_outage_notification.subject: Les résultats de la vérification en personne de %{app_name} sont reportés
 user_mailer.in_person_please_call.body.contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez le code d’erreur <strong>%{support_code}</strong>.
 user_mailer.in_person_please_call.body.intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong> pour continuer à vérifier votre identité.
 user_mailer.in_person_please_call.header: S’il vous plaît, appelez-nous

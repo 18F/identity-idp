@@ -1092,7 +1092,6 @@ idv.messages.phone.failed_number.try_again_html: Intente con <strong>otro</stron
 idv.messages.phone.rules.0: Con base en Estados Unidos (incluidos los territorios de EE.UU.)
 idv.messages.phone.rules.1: Su número principal (el que utiliza con más frecuencia)
 idv.messages.return_to_profile: "‹ Vuelva a su perfil de %{app_name}"
-idv.messages.select_verification_without_sp: Para proteger su cuenta de robo de identidad, su perfil no se activará hasta que ingrese un código único.
 idv.messages.sessions.enter_password_message: Cuando vuelva a ingresar su contraseña, %{app_name} protegerá la información que nos dio, para que solo usted pueda acceder a ella.
 idv.messages.sessions.no_pii: SITIO DE PRUEBA - No use información personal real (para fines de demostración únicamente) - SITIO DE PRUEBA
 idv.messages.verify_info: Leímos sus datos en su identificación. Revíselos y haga los cambios necesarios antes de enviarlos para verificación.
@@ -1764,11 +1763,6 @@ user_mailer.in_person_failed.intro: No se pudo verificar su identidad en la ofic
 user_mailer.in_person_failed.subject: No se pudo verificar su identidad en persona
 user_mailer.in_person_failed.verifying_identity: "Cuando verifique su identidad:"
 user_mailer.in_person_failed.verifying_step_not_expired: Su licencia de conducir o identificación emitida por el estado debe estar vigente. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
-user_mailer.in_person_outage_notification.body.closing_html: Le pedimos sinceras disculpas por el retraso en el servicio. Si tiene alguna pregunta o no recibe su resultado antes del 1 de junio, <a href="%{contact_us_url}">póngase en contacto con el servicio de atención al cliente de %{app_name}</a>.
-user_mailer.in_person_outage_notification.body.heading: Los resultados de la verificación presencial se pospondrán del 20 al 30 de mayo
-user_mailer.in_person_outage_notification.body.instructions: En este momento, si ha intentado completar el proceso de verificación de identidad en una oficina de correos, no es necesario que vuelva a intentarlo. Tenga la seguridad de que los resultados de su verificación no se han perdido; están almacenados de forma segura y se le enviarán por correo electrónico una vez que solucionemos el problema técnico.
-user_mailer.in_person_outage_notification.body.intro_html: Estamos trabajando en un problema técnico que está retrasando el envío de los correos electrónicos con los resultados de la verificación presencial. <strong>Si ha intentado verificar su identidad en una oficina de correos entre el 20 y el 29 de mayo, es posible que no reciba los resultados por correo electrónico hasta el martes 30 de mayo.</strong>
-user_mailer.in_person_outage_notification.subject: Los resultados de la verificación presencial de %{app_name} se han retrasado
 user_mailer.in_person_please_call.body.contact_message_html: Llame al <strong>%{contact_number}</strong> y proporcione el código de error <strong>%{support_code}</strong>.
 user_mailer.in_person_please_call.body.intro_html: Llame a nuestro centro de contacto antes del <strong>%{date}</strong> para seguir verificando su identidad.
 user_mailer.in_person_please_call.header: Llámenos
