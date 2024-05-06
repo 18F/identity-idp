@@ -412,16 +412,20 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         end
 
         it 'annotates recaptcha assessment with initiated 2fa' do
-          annotator = instance_double(RecaptchaAnnotator)
-          expect(annotator).to receive(:annotate).once.with(
+          recaptcha_annotation = {
+            assessment_id:,
             reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
-          )
-
-          allow(RecaptchaAnnotator).to receive(:new).
-            with(assessment_id:, analytics: @analytics).
-            and_return(annotator)
+          }
+          expect(RecaptchaAnnotator).to receive(:annotate).once.
+            with(**recaptcha_annotation).
+            and_return(recaptcha_annotation)
 
           response
+
+          expect(@analytics).to have_logged_event(
+            'Telephony: OTP sent',
+            hash_including(recaptcha_annotation:),
+          )
         end
       end
 

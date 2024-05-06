@@ -45,20 +45,11 @@ module TwoFactorAuthentication
     def handle_valid_confirmation_otp
       assign_phone
       track_mfa_added
-      annotate_valid_recaptcha_phone_assessment
       handle_valid_verification_for_confirmation_context(
         auth_method: params[:otp_delivery_preference],
       )
       flash[:success] = t('notices.phone_confirmed')
       redirect_to next_setup_path || after_mfa_setup_path
-    end
-
-    def annotate_valid_recaptcha_phone_assessment
-      assessment_id = user_session.delete(:phone_recaptcha_assessment_id)
-      return if assessment_id.blank?
-      RecaptchaAnnotator.new(assessment_id:, analytics:).annotate(
-        reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
-      )
     end
 
     def otp_verification_form
@@ -76,6 +67,10 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_added_phone(
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session.delete(:phone_recaptcha_assessment_id),
+          reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+        ),
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end

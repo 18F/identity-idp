@@ -13,12 +13,11 @@ RSpec.describe RecaptchaAnnotator do
       api_key: recaptcha_enterprise_api_key,
     )
   end
-  subject(:annotator) { RecaptchaAnnotator.new(assessment_id:, analytics:) }
 
   describe '#annotate' do
     let(:reason) { RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR }
     let(:annotation) { RecaptchaAnnotator::Annotations::LEGITIMATE }
-    subject(:annotate) { annotator.annotate(reason:, annotation:) }
+    subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:, annotation:) }
 
     context 'without recaptcha enterprise' do
       before do
@@ -31,15 +30,18 @@ RSpec.describe RecaptchaAnnotator do
         expect(WebMock).not_to have_requested(:post, annotation_url)
       end
 
-      it 'logs analytics' do
-        annotate
-
-        expect(analytics).to have_logged_event(
-          :recaptcha_assessment_annotated,
+      it 'returns a hash describing annotation' do
+        expect(annotate).to eq(
           assessment_id:,
           reason:,
           annotation:,
         )
+      end
+
+      context 'with nil assessment id' do
+        let(:assessment_id) { nil }
+
+        it { expect(annotate).to be_nil }
       end
     end
 
@@ -70,8 +72,7 @@ RSpec.describe RecaptchaAnnotator do
       it 'logs analytics' do
         annotate
 
-        expect(analytics).to have_logged_event(
-          :recaptcha_assessment_annotated,
+        expect(annotate).to eq(
           assessment_id:,
           reason:,
           annotation:,
@@ -80,21 +81,34 @@ RSpec.describe RecaptchaAnnotator do
 
       context 'with an optional argument omitted' do
         let(:annotation) { nil }
-        subject(:annotate) { annotator.annotate(reason:) }
+        subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:) }
 
-        it 'submits and logs only what is provided' do
+        it 'submits only what is provided' do
           annotate
 
           expect(WebMock).to have_requested(:post, annotation_url).
             with(body: { reasons: [reason] }.to_json)
+        end
 
-          expect(analytics).to have_logged_event(
-            :recaptcha_assessment_annotated,
+        it 'returns a hash describing annotation' do
+          expect(annotate).to eq(
             assessment_id:,
-            annotation: nil,
             reason:,
+            annotation:,
           )
         end
+      end
+
+      context 'with nil assessment id' do
+        let(:assessment_id) { nil }
+
+        it 'does not submit annotation' do
+          annotate
+
+          expect(WebMock).not_to have_requested(:post, annotation_url)
+        end
+
+        it { expect(annotate).to be_nil }
       end
     end
   end

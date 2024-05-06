@@ -231,6 +231,10 @@ module Users
         adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session[:phone_recaptcha_assessment_id],
+          reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        ),
       )
 
       if UserSessionContext.reauthentication_context?(context)
@@ -309,21 +313,11 @@ module Users
         },
       }
 
-      annotate_recaptcha_phone_assessment
-
       if UserSessionContext.authentication_or_reauthentication_context?(context)
         Telephony.send_authentication_otp(**otp_params)
       else
         Telephony.send_confirmation_otp(**otp_params)
       end
-    end
-
-    def annotate_recaptcha_phone_assessment
-      assessment_id = user_session[:phone_recaptcha_assessment_id]
-      return if assessment_id.blank?
-      RecaptchaAnnotator.new(assessment_id:, analytics:).annotate(
-        reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
-      )
     end
 
     def user_selected_default_number

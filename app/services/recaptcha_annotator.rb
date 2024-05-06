@@ -15,48 +15,48 @@ class RecaptchaAnnotator
     FRAUDULENT = :FRAUDULENT
   end
 
-  def initialize(assessment_id:, analytics:)
-    @assessment_id = assessment_id
-    @analytics = analytics
-  end
+  class << self
+    def annotate(assessment_id:, reason: nil, annotation: nil)
+      return if assessment_id.blank?
 
-  def annotate(reason: nil, annotation: nil)
-    submit_annotation(reason:, annotation:) if FeatureManagement.recaptcha_enterprise?
-    log_analytics(reason:, annotation:)
+      if FeatureManagement.recaptcha_enterprise?
+        submit_annotation(assessment_id:, reason:, annotation:)
+      end
+
+      { assessment_id:, reason:, annotation: }
+    end
+
+    private
+
+    def submit_annotation(assessment_id:, reason:, annotation:)
+      request_body = { annotation:, reasons: reason && [reason] }.compact
+      faraday.post(annotation_url(assessment_id:), request_body) do |request|
+        request.options.context = { service_name: 'recaptcha_annotate' }
+      end
+    end
+
+    def faraday
+      Faraday.new do |conn|
+        conn.request :instrumentation, name: 'request_log.faraday'
+        conn.request :json
+        conn.response :json
+      end
+    end
+
+    def annotation_url(assessment_id:)
+      UriService.add_params(
+        format(
+          '%{base_endpoint}/%{assessment_id}:annotate',
+          base_endpoint: BASE_ENDPOINT,
+          project_id: IdentityConfig.store.recaptcha_enterprise_project_id,
+          assessment_id:,
+        ),
+        key: IdentityConfig.store.recaptcha_enterprise_api_key,
+      )
+    end
   end
 
   private
 
   BASE_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1'
-
-  def submit_annotation(reason:, annotation:)
-    request_body = { annotation:, reasons: reason && [reason] }.compact
-    faraday.post(annotation_url, request_body) do |request|
-      request.options.context = { service_name: 'recaptcha_annotate' }
-    end
-  end
-
-  def faraday
-    Faraday.new do |conn|
-      conn.request :instrumentation, name: 'request_log.faraday'
-      conn.request :json
-      conn.response :json
-    end
-  end
-
-  def annotation_url
-    UriService.add_params(
-      format(
-        '%{base_endpoint}/%{assessment_id}:annotate',
-        base_endpoint: BASE_ENDPOINT,
-        project_id: IdentityConfig.store.recaptcha_enterprise_project_id,
-        assessment_id:,
-      ),
-      key: IdentityConfig.store.recaptcha_enterprise_api_key,
-    )
-  end
-
-  def log_analytics(reason:, annotation:)
-    analytics&.recaptcha_assessment_annotated(assessment_id:, reason:, annotation:)
-  end
 end

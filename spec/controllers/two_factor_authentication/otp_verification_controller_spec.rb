@@ -482,7 +482,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
         stub_analytics
         stub_attempts_tracker
 
-        allow(@analytics).to receive(:track_event)
         allow(controller).to receive(:create_user_event)
 
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
@@ -522,8 +521,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
               in_account_creation_flow: true,
             }
 
-            expect(@analytics).to receive(:track_event).
-              with('Multi-Factor Authentication Setup', properties)
             controller.user_session[:phone_id] = phone_id
 
             expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
@@ -536,6 +533,8 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
                 otp_delivery_preference: 'sms',
               },
             )
+
+            expect(@analytics).to have_logged_event('Multi-Factor Authentication Setup', properties)
           end
 
           it 'resets otp session data' do
@@ -612,8 +611,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
               in_account_creation_flow: false,
             }
 
-            expect(@analytics).to have_received(:track_event).
-              with('Multi-Factor Authentication Setup', properties)
+            expect(@analytics).to have_logged_event('Multi-Factor Authentication Setup', properties)
           end
 
           context 'user enters in valid code after invalid entry' do
@@ -699,8 +697,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
 
             response
 
-            expect(@analytics).to have_received(:track_event).
-              with('Multi-Factor Authentication Setup', properties)
+            expect(@analytics).to have_logged_event('Multi-Factor Authentication Setup', properties)
 
             expect(controller).to have_received(:create_user_event).with(:phone_confirmed)
             expect(controller).to have_received(:create_user_event).exactly(:once)
@@ -708,21 +705,25 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
 
           it 'annotates with passed 2fa and resets a recaptcha assessment' do
             assessment_id = 'projects/project-id/assessments/assessment-id'
+            recaptcha_annotation = {
+              assessment_id:,
+              reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+            }
 
             controller.user_session[:phone_recaptcha_assessment_id] = assessment_id
 
-            annotator = instance_double(RecaptchaAnnotator)
-            expect(annotator).to receive(:annotate).once.with(
-              reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
-            )
-
-            allow(RecaptchaAnnotator).to receive(:new).
-              with(assessment_id:, analytics: @analytics).
-              and_return(annotator)
+            expect(RecaptchaAnnotator).to receive(:annotate).
+              with(**recaptcha_annotation).
+              and_return(recaptcha_annotation)
 
             expect { response }.
               to change { controller.user_session[:phone_recaptcha_assessment_id] }.
               from(assessment_id).to(nil)
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: Added phone',
+              hash_including(recaptcha_annotation:),
+            )
           end
 
           it 'resets context to authentication' do

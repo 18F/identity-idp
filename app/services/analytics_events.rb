@@ -3771,12 +3771,14 @@ module AnalyticsEvents
 
   # Tracks when the the user has added the MFA method phone to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, recaptcha_annotation:, **extra)
     track_event(
       'Multi-Factor Authentication: Added phone',
       {
         method_name: :phone,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
+        recaptcha_annotation:,
         **extra,
       }.compact,
     )
@@ -5079,6 +5081,7 @@ module AnalyticsEvents
   # @param [Hash] telephony_response
   # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # @param [Boolean] success
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # A phone one-time password send was attempted
   def telephony_otp_sent(
     area_code:,
@@ -5090,6 +5093,7 @@ module AnalyticsEvents
     telephony_response:,
     adapter:,
     success:,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5104,6 +5108,7 @@ module AnalyticsEvents
         telephony_response: telephony_response,
         adapter: adapter,
         success: success,
+        recaptcha_annotation:,
         **extra,
       },
     )
