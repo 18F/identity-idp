@@ -30,4 +30,15 @@ module AbTests
           0,
     },
   ).freeze
+
+  IDV_TEN_DIGIT_OTP = AbTestBucket.new(
+    experiment_name: 'idv_ten_digit_otp',
+    default_bucket: :six_alphanumeric_otp,
+    buckets: {
+      ten_digit_otp:
+        IdentityConfig.store.ab_testing_idv_ten_digit_otp_enabled ?
+          IdentityConfig.store.ab_testing_idv_ten_digit_otp_percent :
+          0,
+    },
+  ).freeze
 end

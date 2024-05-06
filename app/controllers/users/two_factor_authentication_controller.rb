@@ -312,8 +312,14 @@ module Users
       if UserSessionContext.authentication_or_reauthentication_context?(context)
         Telephony.send_authentication_otp(**otp_params)
       else
-        Telephony.send_confirmation_otp(**otp_params)
+        Telephony.send_confirmation_otp(**otp_params, otp_length: otp_length)
       end
+    end
+
+    def otp_length
+      bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
+      length = bucket == :ten_digit_otp ? 'ten' : 'six'
+      I18n.t("telephony.format_length.#{length}")
     end
 
     def user_selected_default_number
