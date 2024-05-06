@@ -37,7 +37,7 @@
 
   <%= render CaptchaSubmitButtonComponent.new(
         form: f,
-        action: PhoneRecaptchaValidator::RECAPTCHA_ACTION,
+        action: PhoneRecaptchaForm::RECAPTCHA_ACTION,
       ).with_content(t('forms.buttons.send_one_time_code')) %>
 <% end %>
 

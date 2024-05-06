@@ -36,7 +36,7 @@ RSpec.shared_examples 'verification code entry' do
     click_button t('idv.gpo.form.submit')
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
-    expect(page).to have_content t('errors.messages.gpo_otp_expired')
+    expect(page).to have_content t('errors.messages.gpo_otp_expired_and_cannot_request_another')
 
     user.reload
 
@@ -50,7 +50,7 @@ RSpec.shared_examples 'verification code entry' do
     sign_in_live_with_2fa(user)
 
     expect(GpoConfirmation.count).to eq(0)
-    expect(GpoConfirmationCode.count).to eq(0)
+    expect(GpoConfirmationCode.count).to eq(1)
     click_on t('idv.messages.gpo.resend')
 
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
@@ -58,7 +58,7 @@ RSpec.shared_examples 'verification code entry' do
     click_on t('idv.gpo.request_another_letter.button')
 
     expect(GpoConfirmation.count).to eq(1)
-    expect(GpoConfirmationCode.count).to eq(1)
+    expect(GpoConfirmationCode.count).to eq(2)
     expect(current_path).to eq idv_letter_enqueued_path
 
     confirmation_code = GpoConfirmationCode.first

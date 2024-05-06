@@ -314,7 +314,8 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_enter_password_step
       click_idv_continue
       click_on t('account.index.verification.reactivate_button')
-      click_on t('idv.messages.clear_and_start_over')
+      click_on t('idv.gpo.address_accordion.title')
+      click_on t('idv.gpo.address_accordion.cta_link')
       click_idv_continue
 
       expect(page).to have_current_path(idv_welcome_path)

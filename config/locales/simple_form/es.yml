@@ -2,10 +2,10 @@
 es:
   simple_form:
     error_notification:
-      default_message: 'Por favor revise los siguientes problemas:'
+      default_message: 'Revise los siguientes problemas:'
     'no': 'No'
     required:
       html: ''
       mark: ''
-      text: Este campo es requerido
+      text: Este campo es obligatorio
     'yes': Sí

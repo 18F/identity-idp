@@ -31,11 +31,9 @@ zh:
         id_not_verified: 我们无法验证你的身份证件。可能因为你拍照时身份证件移动了。尝试重拍。
         issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
         ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
-        selfie_not_live: Try taking a photo of yourself again. Make sure your whole face
-          is clear and visible in the photo.
         selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-        selfie_poor_quality: Try taking a photo of yourself again. Make sure your whole
-          face is clear and visible in the photo.
+        selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure
+          your whole face is clear and visible in the photo.
         sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
         visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
         visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
@@ -66,8 +64,7 @@ zh:
         multiple_front_id_failures: 我们无法验证你身份证件的正面。尝试重拍一张。
         network_error: 我们这边有技术困难。请稍后再提交你的图像。
         no_liveness: 尝试重拍。
-        selfie_failure: Try taking your photos again. Make sure all of your photos are
-          clear and in focus.
+        selfie_failure: 我们无法验证你自己的照片。请重拍一张。
         selfie_failure_help_link_text: Review more tips for taking clear photos
       glare:
         failed_short: 图像有炫光，请再试一次。

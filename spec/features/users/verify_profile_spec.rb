@@ -42,7 +42,7 @@ RSpec.feature 'verify profile with OTP', allowed_extra_analytics: [:*] do
       fill_in t('idv.gpo.form.otp_label'), with: otp
       click_button t('idv.gpo.form.submit')
 
-      expect(page).to have_content t('errors.messages.gpo_otp_expired')
+      expect(page).to have_content t('errors.messages.gpo_otp_expired_and_cannot_request_another')
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
     end
 
