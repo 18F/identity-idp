@@ -30,8 +30,7 @@ class RecaptchaAnnotator
   BASE_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1'
 
   def submit_annotation(reason:, annotation:)
-    request_body = { annotation: }.compact
-    request_body[:reasons] = [reason] if reason
+    request_body = { annotation:, reasons: reason && [reason] }.compact
     faraday.post(annotation_url, request_body) do |request|
       request.options.context = { service_name: 'recaptcha_annotate' }
     end
