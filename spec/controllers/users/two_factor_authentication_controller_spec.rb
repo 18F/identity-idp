@@ -549,6 +549,7 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
           expiration: 10,
           channel: :sms,
           otp_format: 'digit',
+          otp_length: '6',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {
