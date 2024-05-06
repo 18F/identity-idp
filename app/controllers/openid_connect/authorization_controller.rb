@@ -223,7 +223,7 @@ module OpenidConnect
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
         sign_in_duration_seconds: (Time.zone.now - Time.zone.parse(
-          session[:sign_in_page_visited_at],
+          session[:sign_in_page_visited_at] || Time.zone.now.to_s,
         )).seconds.to_i.round(2),
       )
       track_billing_events

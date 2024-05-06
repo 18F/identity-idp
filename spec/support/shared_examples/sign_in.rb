@@ -47,6 +47,7 @@ RSpec.shared_examples 'signing in from service provider' do |sp|
     expect(analytics).to have_logged_event(
       'SP redirect initiated',
       ial: 1,
+      sign_in_duration_seconds: 1,
       billed_ial: 1,
       sign_in_flow: 'sign_in',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,

@@ -483,6 +483,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     expect(analytics).to have_logged_event(
       'SP redirect initiated',
       ial: 1,
+      sign_in_duration_seconds: 1,
       billed_ial: 1,
       sign_in_flow: 'create_account',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
