@@ -1,4 +1,4 @@
-import { isValidNumberForRegion, isValidNumber, parsePhoneNumber } from 'libphonenumber-js';
+import { isValidNumberForRegion, isValidNumber, NationalNumber } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
@@ -186,7 +186,7 @@ export class PhoneInputElement extends HTMLElement {
       return;
     }
 
-    const phoneNumber = textInput.value;
+    const phoneNumber = textInput.value as NationalNumber;
     const countryCode = codeInput.value as CountryCode;
 
     textInput.setCustomValidity('');
@@ -194,14 +194,12 @@ export class PhoneInputElement extends HTMLElement {
       return;
     }
 
-    const parsedNumber = parsePhoneNumber(phoneNumber, countryCode);
-
-    const isInvalidCountry = !isValidNumberForRegion(parsedNumber.nationalNumber, countryCode);
+    const isInvalidCountry = !isValidNumberForRegion(phoneNumber, countryCode);
     if (isInvalidCountry) {
       textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
 
-    const isInvalidPhoneNumber = !isValidNumber(parsedNumber.nationalNumber, countryCode);
+    const isInvalidPhoneNumber = !isValidNumber(phoneNumber, countryCode);
     if (isInvalidPhoneNumber) {
       textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
