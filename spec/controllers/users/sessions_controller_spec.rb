@@ -619,6 +619,7 @@ RSpec.describe Users::SessionsController, devise: true do
       it 'renders the new template' do
         get :new
         expect(response).to render_template(:new)
+        expect(subject.session[:sign_in_page_visited_at]).to_not be(nil)
       end
 
       it 'tracks page visit, any alert flashes, and the Devise stored location' do

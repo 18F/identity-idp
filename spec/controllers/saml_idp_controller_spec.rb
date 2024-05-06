@@ -518,6 +518,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       # All the tests here were written prior to the interstitial
       # authorization confirmation page so let's force the system
       # to skip past that page
+      session[:sign_in_page_visited_at] = (Time.zone.now - 2.minutes).to_s
       allow(controller).to receive(:auth_count).and_return(2)
     end
 
@@ -817,6 +818,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: Idp::Constants::IAL2,
+          sign_in_duration_seconds: 120,
           billed_ial: Idp::Constants::IAL2,
           sign_in_flow:,
           acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -965,6 +967,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: 0,
+          sign_in_duration_seconds: 120,
           billed_ial: 2,
           sign_in_flow:,
           acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
@@ -2434,6 +2437,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: 1,
+          sign_in_duration_seconds: 120,
           billed_ial: 1,
           sign_in_flow: :sign_in,
           acr_values: [
@@ -2484,6 +2488,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: 1,
+          sign_in_duration_seconds: 120,
           billed_ial: 1,
           sign_in_flow: :sign_in,
           acr_values: [

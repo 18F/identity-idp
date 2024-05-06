@@ -24,6 +24,7 @@ module Users
         issuer: decorated_sp_session.sp_issuer,
       )
       analytics.sign_in_page_visit(flash: flash[:alert])
+      session[:sign_in_page_visited_at] = Time.zone.now
       super
     end
 

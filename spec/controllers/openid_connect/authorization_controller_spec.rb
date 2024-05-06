@@ -52,6 +52,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
       before do
         stub_sign_in user
         session[:sign_in_flow] = sign_in_flow
+        session[:sign_in_page_visited_at] = (Time.zone.now - 2.minutes).to_s
       end
 
       context 'acr with valid params' do
