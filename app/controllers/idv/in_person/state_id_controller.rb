@@ -38,7 +38,6 @@ module Idv
 
           if pii_from_user[:same_address_as_id] == 'true'
             copy_state_id_address_to_residential_address(pii_from_user)
-            flow_session['Idv::Steps::InPerson::AddressStep'] = true
             redirect_url = idv_in_person_ssn_url
           end
 
