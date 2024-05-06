@@ -245,7 +245,8 @@ es:
         too_many_faces: Demasiados rostros
       ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de
         nacimiento y dirección.
-      stepping_up_html: Verifique su identidad de nuevo para acceder a este servicio. %{link_html}
+      stepping_up_html: Verifique su identidad de nuevo para acceder a este servicio.
+        %{link_html}
       tag: Recomendado
       upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación
         desde esta computadora.'
