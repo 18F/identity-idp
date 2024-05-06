@@ -52,10 +52,22 @@ RSpec.describe Reporting::ProtocolsReport do
         'invalid_signature_count' => '2',
       },
     ]
+    loa_issuers_query_response = [
+      {
+        'issuer' => 'Issuer1',
+      },
+      {
+        'issuer' => 'Issuer2',
+      },
+      {
+        'issuer' => 'Issuer3',
+      },
+    ]
     cloudwatch_client = instance_double('Reporting::CloudwatchClient')
     allow(cloudwatch_client).to receive(:fetch).and_return(
       protocol_query_response,
       saml_signature_query_response,
+      loa_issuers_query_response,
     )
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
@@ -81,7 +93,7 @@ RSpec.describe Reporting::ProtocolsReport do
   describe '#to_csvs' do
     it 'generates a csv' do
       csv_string_list = report.to_csvs
-      expect(csv_string_list.count).to be 3
+      expect(csv_string_list.count).to be 4
 
       csvs = csv_string_list.map { |csv| CSV.parse(csv) }
 
@@ -179,6 +191,13 @@ RSpec.describe Reporting::ProtocolsReport do
         ['Issue', 'Count of integrations with the issue', 'List of issuers with the issue'],
         ['Not signing SAML authentication requests', string_or_num(strings, 2), 'Issuer1, Issuer3'],
         ['Incorrectly signing SAML authentication requests', string_or_num(strings, 1), 'Issuer1'],
+      ],
+      [
+        ['Count of integrations using LOA', 'List of issuers with the issue'],
+        [
+          string_or_num(strings, 3),
+          'Issuer1, Issuer2, Issuer3',
+        ],
       ],
     ]
   end

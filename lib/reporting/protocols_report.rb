@@ -49,6 +49,7 @@ module Reporting
         overview_table,
         protocols_table,
         saml_signature_issues_table,
+        loa_acr_requests_table,
       ]
     end
 
@@ -65,6 +66,10 @@ module Reporting
         Reporting::EmailableReport.new(
           title: 'SAML Signature Issues',
           table: saml_signature_issues_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'LOA ACR Requests',
+          table: loa_acr_requests_table,
         ),
       ]
     end
@@ -208,6 +213,48 @@ module Reporting
           saml_signature_data[:invalid_signature].join(', '),
         ],
       ]
+    end
+
+    def loa_acr_requests_table
+      [
+        ['Count of integrations using LOA', 'List of issuers with the issue'],
+        [
+          loa_issuers_data.length,
+          loa_issuers_data.join(', '),
+        ],
+      ]
+    end
+
+    def loa_issuers_data
+      @loa_issuers_data ||= begin
+        cloudwatch_client.fetch(
+          query: loa_issuers_query,
+          from: time_range.begin,
+          to: time_range.end,
+        ).
+          map { |slice| slice['issuer'] }.
+          uniq
+      end
+    end
+
+    def loa_issuers_query
+      params = {
+        event: quote([SAML_AUTH_EVENT, OIDC_AUTH_EVENT]),
+      }
+
+      format(<<~QUERY, params)
+        fields
+          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id) as issuer,
+          properties.event_properties.acr_values as acr
+        | parse @message '"authn_context":[*]' as authn
+        | filter
+          name IN %{event}
+          AND (authn like /ns\\/assurance\\/loa/ OR acr like /ns\\/assurance\\/loa/)
+          AND properties.event_properties.success= 1
+        | display issuer
+        | sort issuer
+        | dedup issuer
+      QUERY
     end
 
     def to_percent(numerator, denominator)
