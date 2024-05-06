@@ -16,14 +16,13 @@ module Idv
 
     def initialize(params, service_provider:, analytics: nil,
                    uuid_prefix: nil, irs_attempts_api_tracker: nil,
-                   store_encrypted_images: false, liveness_checking_required: false)
+                   liveness_checking_required: false)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
-      @store_encrypted_images = store_encrypted_images
       @liveness_checking_required = liveness_checking_required
     end
 
