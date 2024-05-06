@@ -79,7 +79,9 @@ module Idv
     end
 
     def pii
-      idv_session.pii_from_doc
+      idv_session.pii_from_doc.to_h.merge(
+        idv_session.updated_user_address.to_h,
+      ).with_indifferent_access
     end
   end
 end

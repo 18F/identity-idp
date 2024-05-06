@@ -36,7 +36,7 @@ RSpec.describe Idv::OtpVerificationController,
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant[:phone] = phone
@@ -175,6 +175,7 @@ RSpec.describe Idv::OtpVerificationController,
         errors: {},
         code_expired: false,
         code_matches: true,
+        otp_delivery_preference: :sms,
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
         **ab_test_args,

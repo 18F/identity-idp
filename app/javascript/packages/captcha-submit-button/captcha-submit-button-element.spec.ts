@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { screen, waitFor, fireEvent } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import '@18f/identity-spinner-button/spinner-button-element';
-import { CAPTCHA_EVENT_NAME } from './captcha-submit-button-element';
+import './captcha-submit-button-element';
 
 describe('CaptchaSubmitButtonElement', () => {
   const sandbox = useSandbox();
@@ -112,29 +112,6 @@ describe('CaptchaSubmitButtonElement', () => {
         });
       });
 
-      context('with cancellation of challenge event', () => {
-        beforeEach(() => {
-          const form = document.querySelector('form')!;
-          form.addEventListener(CAPTCHA_EVENT_NAME, (event) => event.preventDefault());
-        });
-
-        it('submits the form without challenge', async () => {
-          const button = screen.getByRole('button', { name: 'Submit' });
-          const form = document.querySelector('form')!;
-
-          let didSubmit = false;
-          form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            didSubmit = true;
-          });
-
-          await userEvent.click(button);
-          await waitFor(() => expect(didSubmit).to.be.true());
-
-          expect(grecaptcha.ready).not.to.have.been.called();
-        });
-      });
-
       context('with recaptcha enterprise', () => {
         beforeEach(() => {
           const element = document.querySelector('lg-captcha-submit-button')!;
@@ -157,6 +134,27 @@ describe('CaptchaSubmitButtonElement', () => {
           expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
             recaptcha_token: RECAPTCHA_TOKEN_VALUE,
           });
+        });
+      });
+
+      context('when recaptcha fails to load', () => {
+        beforeEach(() => {
+          delete (global as any).grecaptcha;
+        });
+
+        it('does not prevent default form submission', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+
+          let didSubmit = false;
+          form.addEventListener('submit', (event) => {
+            expect(event.defaultPrevented).to.equal(false);
+            event.preventDefault();
+            didSubmit = true;
+          });
+
+          await userEvent.click(button);
+          await waitFor(() => expect(didSubmit).to.be.true());
         });
       });
     });

@@ -94,9 +94,8 @@ module Proofing
 
         # The API call will fail without a session ID, so do not attempt to make
         # it to avoid leaking data when not required.
-        return threatmetrix_disabled_result if threatmetrix_session_id.blank?
-
-        return threatmetrix_disabled_result unless applicant_pii
+        return threatmetrix_id_missing_result if threatmetrix_session_id.blank?
+        return threatmetrix_pii_missing_result if applicant_pii.blank?
 
         ddp_pii = applicant_pii.dup
         ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
@@ -199,6 +198,22 @@ module Proofing
           success: true,
           client: 'tmx_disabled',
           review_status: 'pass',
+        )
+      end
+
+      def threatmetrix_pii_missing_result
+        Proofing::DdpResult.new(
+          success: false,
+          client: 'tmx_pii_missing',
+          review_status: 'reject',
+        )
+      end
+
+      def threatmetrix_id_missing_result
+        Proofing::DdpResult.new(
+          success: false,
+          client: 'tmx_session_id_missing',
+          review_status: 'reject',
         )
       end
 

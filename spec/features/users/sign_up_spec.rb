@@ -179,9 +179,8 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
-    expect(page).to have_content(t('titles.spam_protection'), wait: 5)
-    expect(page).to have_link(t('two_factor_authentication.login_options_link_text'))
-    expect(page).not_to have_link(t('links.cancel'))
+    expect(page).to have_current_path(phone_setup_path, wait: 5)
+    expect(page).to have_content(t('errors.messages.invalid_recaptcha_token'))
   end
 
   context 'with js', js: true do
@@ -271,7 +270,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     it 'returns them to the resend email confirmation page' do
       visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
 
-      expect(page).to have_current_path(sign_up_email_resend_path)
+      expect(page).to have_current_path(sign_up_register_path)
 
       expect(page).
         to have_content t('errors.messages.confirmation_invalid_token')
@@ -514,6 +513,34 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
         click_link APP_NAME, href: new_user_session_path
 
         expect(current_path).to eq authentication_methods_setup_path
+      end
+    end
+  end
+
+  describe 'mil or gov email account' do
+    before do
+      confirm_email('test@test.gov')
+      submit_form_with_valid_password
+    end
+    it 'should land user on piv cac suggestion page' do
+      expect(current_path).to eq login_piv_cac_recommended_path
+    end
+
+    context 'user can skip piv cac prompt' do
+      it 'should skip piv cac prompt and land on mfa screen' do
+        expect(current_path).to eq login_piv_cac_recommended_path
+        click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
+
+        expect(current_path).to eq authentication_methods_setup_path
+      end
+    end
+
+    context 'user who selects to add piv is directed to piv screen' do
+      it 'should be directed straight to piv add screen' do
+        expect(current_path).to eq login_piv_cac_recommended_path
+        click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
+
+        expect(current_path).to eq setup_piv_cac_path
       end
     end
   end

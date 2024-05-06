@@ -72,7 +72,7 @@ class ServiceProviderSession
     sp.issuer
   end
 
-  def selfie_required?
+  def biometric_comparison_required?
     !!(FeatureManagement.idv_allow_selfie_check? &&
       sp_session[:biometric_comparison_required])
   end
@@ -88,16 +88,6 @@ class ServiceProviderSession
     if alert.present?
       format(alert, sp_name: sp_name, sp_create_link: sp_create_link, app_name: APP_NAME)
     end
-  end
-
-  def mfa_expiration_interval
-    aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
-    aal_2_expiration = IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
-    return aal_2_expiration if sp_aal > 1
-    return aal_2_expiration if sp_ial > 1
-    return aal_2_expiration if resolved_authn_context_result.aal2?
-
-    aal_1_expiration
   end
 
   def requested_more_recent_verification?
@@ -132,24 +122,14 @@ class ServiceProviderSession
     view_context&.current_user
   end
 
+  attr_reader :sp, :sp_session
+
   private
 
-  attr_reader :sp, :view_context, :sp_session, :service_provider_request
-
-  def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
-      service_provider: sp,
-      vtr: sp_session[:vtr],
-      acr_values: sp_session[:acr_values],
-    ).resolve
-  end
+  attr_reader :view_context, :service_provider_request
 
   def sp_aal
-    sp.default_aal || 1
-  end
-
-  def sp_ial
-    sp.ial || 1
+    sp&.default_aal || 1
   end
 
   def request_url

@@ -184,6 +184,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
             remaining_submit_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
+            result_code_invalid: true,
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
@@ -200,6 +201,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             errors: [{ field: 'limit', message: 'We couldn’t verify your ID' }],
             redirect: redirect_url,
             remaining_submit_attempts: 0,
+            result_code_invalid: true,
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
@@ -334,7 +336,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
+          allow(controller.decorated_sp_session).to receive(:biometric_comparison_required?).
+            and_return(true)
         end
 
         it 'returns a successful response and modifies the session' do
@@ -459,6 +462,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           transaction_status: nil,
           vendor: nil,
           workflow: an_instance_of(String),
+          birth_year: 1938,
         )
 
         expect(@analytics).to have_logged_event(
@@ -532,9 +536,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                   },
                 },
               },
-              pii_from_doc: {
+              pii_from_doc: Pii::StateId.new(
                 first_name: first_name,
                 last_name: last_name,
+                middle_name: nil,
                 address1: address1,
                 state: state,
                 state_id_type: state_id_type,
@@ -542,7 +547,12 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                 state_id_jurisdiction: jurisdiction,
                 state_id_number: state_id_number,
                 zipcode: zipcode,
-              },
+                address2: nil,
+                city: nil,
+                state_id_expiration: nil,
+                state_id_issued: nil,
+                issuing_country_code: nil,
+              ),
             ),
           )
         end
@@ -656,6 +666,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_reason_code: nil,
               transaction_status: nil,
               vendor: nil,
+              birth_year: 1938,
             )
 
             expect(@analytics).to have_logged_event(
@@ -766,6 +777,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_reason_code: nil,
               transaction_status: nil,
               vendor: nil,
+              birth_year: 1938,
             )
 
             expect(@analytics).to have_logged_event(
@@ -876,6 +888,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_reason_code: nil,
               transaction_status: nil,
               vendor: nil,
+              birth_year: 1938,
             )
 
             expect(@analytics).to have_logged_event(
@@ -983,6 +996,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_reason_code: nil,
               transaction_status: nil,
               vendor: nil,
+              birth_year: nil,
             )
 
             expect(@analytics).to have_logged_event(
@@ -1099,6 +1113,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           transaction_reason_code: nil,
           transaction_status: nil,
           vendor: nil,
+          birth_year: nil,
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1190,6 +1205,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           transaction_status: nil,
           vendor: nil,
           workflow: an_instance_of(String),
+          birth_year: nil,
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1225,7 +1241,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
     context 'the frontend requests a selfie' do
       before do
         allow(controller).to receive(:decorated_sp_session).
-          and_return(double('decorated_session', { selfie_required?: true }))
+          and_return(double('decorated_session', { biometric_comparison_required?: true }))
       end
 
       let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }

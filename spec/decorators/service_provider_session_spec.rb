@@ -190,22 +190,22 @@ RSpec.describe ServiceProviderSession do
 
       it 'returns true when sp biometric_comparison_required is true' do
         sp_session[:biometric_comparison_required] = true
-        expect(subject.selfie_required?).to eq(true)
+        expect(subject.biometric_comparison_required?).to eq(true)
       end
 
       it 'returns true when sp biometric_comparison_required is truthy' do
         sp_session[:biometric_comparison_required] = 1
-        expect(subject.selfie_required?).to eq(true)
+        expect(subject.biometric_comparison_required?).to eq(true)
       end
 
       it 'returns false when sp biometric_comparison_required is false' do
         sp_session[:biometric_comparison_required] = false
-        expect(subject.selfie_required?).to eq(false)
+        expect(subject.biometric_comparison_required?).to eq(false)
       end
 
       it 'returns false when sp biometric_comparison_required is nil' do
         sp_session[:biometric_comparison_required] = nil
-        expect(subject.selfie_required?).to eq(false)
+        expect(subject.biometric_comparison_required?).to eq(false)
       end
     end
 
@@ -214,7 +214,7 @@ RSpec.describe ServiceProviderSession do
 
       it 'returns false' do
         sp_session[:biometric_comparison_required] = true
-        expect(subject.selfie_required?).to eq(false)
+        expect(subject.biometric_comparison_required?).to eq(false)
       end
     end
   end
@@ -237,33 +237,6 @@ RSpec.describe ServiceProviderSession do
     it 'returns view_context.new_user_session_url' do
       expect(decorator.cancel_link_url).
         to eq 'https://www.example.com/'
-    end
-  end
-
-  describe '#mfa_expiration_interval' do
-    context 'with an AAL2 sp' do
-      before do
-        allow(sp).to receive(:default_aal).and_return(2)
-      end
-
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
-    end
-
-    context 'with an IAL2 sp' do
-      before do
-        allow(sp).to receive(:ial).and_return(2)
-      end
-
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
-    end
-
-    context 'with an sp that is not AAL2 or IAL2 and AAL1 requested' do
-      it { expect(subject.mfa_expiration_interval).to eq(30.days) }
-    end
-
-    context 'with an sp that is not AAL2 or IAL2 and AAL2 requested' do
-      let(:sp_session) { { acr_values: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF } }
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
     end
   end
 

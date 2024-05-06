@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe UserMailer, type: :mailer do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
   let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
@@ -144,7 +144,6 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#email_confirmation_instructions' do
-    let(:instructions) { 'do the things' }
     let(:request_id) { '1234-abcd' }
     let(:token) { 'asdf123' }
 
@@ -153,7 +152,6 @@ RSpec.describe UserMailer, type: :mailer do
         email_confirmation_instructions(
           token,
           request_id: request_id,
-          instructions: instructions,
         )
     end
 
@@ -203,6 +201,32 @@ RSpec.describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
+  end
+
+  describe '#new_device_sign_in_before_2fa' do
+    let(:event) { create(:event, event_type: :sign_in_before_2fa, user:, device: create(:device)) }
+    subject(:mail) do
+      UserMailer.with(user:, email_address:).new_device_sign_in_before_2fa(
+        events: user.events.where(event_type: 'sign_in_before_2fa').includes(:device).to_a,
+        disavowal_token: 'token',
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+  end
+
+  describe '#new_device_sign_in_after_2fa' do
+    let(:event) { create(:event, event_type: :sign_in_after_2fa, user:, device: create(:device)) }
+    subject(:mail) do
+      UserMailer.with(user:, email_address:).new_device_sign_in_after_2fa(
+        events: user.events.where(event_type: 'sign_in_after_2fa').includes(:device).to_a,
+        disavowal_token: 'token',
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
   end
 
   describe '#personal_key_regenerated' do
@@ -514,8 +538,10 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#letter_reminder' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).letter_reminder }
+  describe '#verify_by_mail_letter_requested' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).verify_by_mail_letter_requested
+    end
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -853,7 +879,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#gpo_reminder' do
+  describe '#verify_by_mail_reminder' do
     let(:date_letter_was_sent) { Date.new(1969, 7, 20) }
 
     let(:user) do
@@ -863,7 +889,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).gpo_reminder
+      UserMailer.with(user: user, email_address: email_address).verify_by_mail_reminder
     end
 
     it_behaves_like 'a system email'

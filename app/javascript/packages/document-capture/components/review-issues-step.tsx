@@ -38,6 +38,7 @@ export interface ReviewIssuesStepValue {
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   remainingSubmitAttempts?: number;
+  isResultCodeInvalid?: boolean;
   isFailedResult?: boolean;
   isFailedSelfie?: boolean;
   isFailedDocType?: boolean;
@@ -56,6 +57,7 @@ function ReviewIssuesStep({
   registerField = () => undefined,
   toPreviousStep = () => undefined,
   remainingSubmitAttempts = Infinity,
+  isResultCodeInvalid = false,
   isFailedResult = false,
   isFailedDocType = false,
   isFailedSelfie = false,
@@ -124,6 +126,7 @@ function ReviewIssuesStep({
     // Warning(try again screen)
     return (
       <DocumentCaptureWarning
+        isResultCodeInvalid={isResultCodeInvalid}
         isFailedDocType={isFailedDocType}
         isFailedResult={isFailedResult}
         isFailedSelfie={isFailedSelfie}

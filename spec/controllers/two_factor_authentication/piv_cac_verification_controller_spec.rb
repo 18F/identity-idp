@@ -89,10 +89,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
       end
 
       it 'resets the second_factor_attempts_count' do
-        UpdateUser.new(
-          user: subject.current_user,
-          attributes: { second_factor_attempts_count: 1 },
-        ).call
+        subject.current_user.update!(second_factor_attempts_count: 1)
 
         get :show, params: { token: 'good-token' }
 
@@ -133,6 +130,10 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
 
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
+
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC).
+          and_call_original
 
         get :show, params: { token: 'good-token' }
       end

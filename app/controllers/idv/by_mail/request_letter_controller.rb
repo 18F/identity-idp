@@ -124,7 +124,7 @@ module Idv
       end
 
       def send_reminder
-        current_user.send_email_to_all_addresses(:letter_reminder)
+        current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
       end
 
       def pii_locked?

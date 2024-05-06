@@ -16,7 +16,7 @@
   <p><%= t('idv.warning.attempts_html', count: @remaining_submit_attempts) %></p>
 
   <% c.with_action_button(
-       action: ->(**tag_options, &block) { link_to(@try_again_path, **tag_options, &block) },
+       url: @try_again_path,
        class: 'margin-bottom-2',
      ) { t('idv.forgot_password.try_again') } %>
 <% end %>

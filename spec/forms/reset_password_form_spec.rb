@@ -83,17 +83,16 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
         password = 'valid password'
-        user_updater = instance_double(UpdateUser)
-        allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: { password: password }).and_return(user_updater)
 
-        expect(user_updater).to receive(:call)
-        expect(
-          form.submit(
+        result = nil
+        expect do
+          result = form.submit(
             password: password,
             password_confirmation: password,
-          ).to_h,
-        ).to eq(
+          ).to_h
+        end.to(change { user.reload.encrypted_password_digest })
+
+        expect(result).to eq(
           success: true,
           errors: {},
           user_id: '123',

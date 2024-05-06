@@ -35,10 +35,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'resets the second_factor_attempts_count' do
-        UpdateUser.new(
-          user: subject.current_user,
-          attributes: { second_factor_attempts_count: 1 },
-        ).call
+        subject.current_user.update!(second_factor_attempts_count: 1)
 
         post :create, params: { code: generate_totp_code(@secret) }
 
@@ -62,6 +59,9 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
         expect(@irs_attempts_api_tracker).to receive(:track_event).
           with(:mfa_login_totp, success: true)
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP).
+          and_call_original
 
         post :create, params: { code: generate_totp_code(@secret) }
       end

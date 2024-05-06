@@ -41,7 +41,6 @@ fr:
       disable: Effacer
       edit: Modifier
       manage: Administrer
-      resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_link: Envoyer le lien
       send_one_time_code: Envoyer le code
       submit:
@@ -100,9 +99,6 @@ fr:
       labels:
         email: Entrez votre adresse email
         email_language: Sélectionnez votre préférence de langue pour les e-mails
-    spam_protection:
-      description: Nous utilisons reCAPTCHA pour nous protéger contre les pourriels
-        automatisés. Cochez la case ci-dessous pour continuer.
     ssn:
       show: Afficher le numéro de sécurité sociale
     totp_setup:

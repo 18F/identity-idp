@@ -19,7 +19,6 @@ module Idv
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
-      pii_from_doc
       previous_phone_step_params
       profile_id
       redo_document_capture
@@ -169,6 +168,32 @@ module Idv
       session[:failed_phone_step_params] ||= []
     end
 
+    def pii_from_doc=(new_pii_from_doc)
+      if new_pii_from_doc.blank?
+        session[:pii_from_doc] = nil
+      else
+        session[:pii_from_doc] = new_pii_from_doc.to_h
+      end
+    end
+
+    def pii_from_doc
+      return nil if session[:pii_from_doc].blank?
+      Pii::StateId.new(**session[:pii_from_doc].slice(*Pii::StateId.members))
+    end
+
+    def updated_user_address=(updated_user_address)
+      if updated_user_address.blank?
+        session[:updated_user_address] = nil
+      else
+        session[:updated_user_address] = updated_user_address.to_h
+      end
+    end
+
+    def updated_user_address
+      return nil if session[:updated_user_address].blank?
+      Pii::Address.new(**session[:updated_user_address])
+    end
+
     def add_failed_phone_step_number(phone)
       parsed_phone = Phonelib.parse(phone)
       phone_e164 = parsed_phone.e164
@@ -188,7 +213,7 @@ module Idv
     end
 
     def remote_document_capture_complete?
-      pii_from_doc
+      pii_from_doc.present?
     end
 
     def ipp_document_capture_complete?

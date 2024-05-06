@@ -35,8 +35,7 @@ class OtpDeliverySelectionForm
   attr_reader :success, :user
 
   def change_otp_delivery_preference_to_sms
-    user_attributes = { otp_delivery_preference: 'sms' }
-    UpdateUser.new(user: user, attributes: user_attributes).call
+    user.update!(otp_delivery_preference: 'sms')
   end
 
   def extra_analytics_attributes

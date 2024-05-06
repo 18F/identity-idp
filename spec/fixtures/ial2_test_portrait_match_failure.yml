@@ -11,7 +11,7 @@ document:
   state_id_jurisdiction: 'ND'
   state_id_number: '1111111111111'
 doc_auth_result: Passed
-failed_alert: []
+failed_alerts: []
 portrait_match_results:
   FaceMatchResult: Fail
   FaceErrorMessage: 'Successful. Liveness: Live'

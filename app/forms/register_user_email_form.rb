@@ -10,15 +10,13 @@ class RegisterUserEmailForm
 
   attr_reader :email_address, :terms_accepted
   attr_accessor :email_language
-  attr_accessor :password_reset_requested
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(analytics:, attempts_tracker:, password_reset_requested: false)
+  def initialize(analytics:, attempts_tracker:)
     @rate_limited = false
-    @password_reset_requested = password_reset_requested
     @analytics = analytics
     @attempts_tracker = attempts_tracker
   end
@@ -48,13 +46,13 @@ class RegisterUserEmailForm
   end
 
   def validate_terms_accepted
-    return if @terms_accepted || email_address_record&.user&.accepted_terms_at.present?
+    return if @terms_accepted
 
     errors.add(:terms_accepted, t('errors.registration.terms'), type: :terms)
   end
 
-  def submit(params, instructions = nil)
-    @terms_accepted = params[:terms_accepted] == '1'
+  def submit(params)
+    @terms_accepted = !!ActiveModel::Type::Boolean.new.cast(params[:terms_accepted])
     build_user_and_email_address_with_email(
       email: params[:email],
       email_language: params[:email_language],
@@ -62,7 +60,7 @@ class RegisterUserEmailForm
     self.request_id = params[:request_id]
 
     self.success = valid?
-    process_successful_submission(request_id, instructions) if success
+    process_successful_submission(request_id) if success
 
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
@@ -70,10 +68,6 @@ class RegisterUserEmailForm
   def email_taken?
     return @email_taken unless @email_taken.nil?
     @email_taken = lookup_email_taken
-  end
-
-  def password_reset_requested?
-    @password_reset_requested
   end
 
   private
@@ -98,7 +92,7 @@ class RegisterUserEmailForm
     true
   end
 
-  def process_successful_submission(request_id, instructions)
+  def process_successful_submission(request_id)
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
     if email_address_record&.user&.suspended?
@@ -111,7 +105,7 @@ class RegisterUserEmailForm
     elsif email_taken?
       send_sign_up_confirmed_email
     else
-      send_sign_up_email(request_id, instructions)
+      send_sign_up_email(request_id)
     end
   end
 
@@ -140,7 +134,7 @@ class RegisterUserEmailForm
     @rate_limited = rate_limiter.limited?
   end
 
-  def send_sign_up_email(request_id, instructions)
+  def send_sign_up_email(request_id)
     rate_limit!(:reg_unconfirmed_email)
 
     if rate_limited?
@@ -154,11 +148,7 @@ class RegisterUserEmailForm
       user.accepted_terms_at = Time.zone.now
       user.save!
 
-      SendSignUpEmailConfirmation.new(user).call(
-        request_id: email_request_id(request_id),
-        instructions: instructions,
-        password_reset_requested: password_reset_requested?,
-      )
+      SendSignUpEmailConfirmation.new(user).call(request_id: email_request_id(request_id))
     end
   end
 

@@ -15,15 +15,12 @@
   </ul>
 
   <% c.with_action_button(
-       action: ->(**tag_options, &block) do
-         button_to(sign_up_destroy_path, method: :delete, **tag_options, &block)
-       end,
+       url: sign_up_destroy_path,
+       method: :delete,
      ) { t('forms.buttons.cancel') } %>
 
   <% c.with_action_button(
-       action: ->(**tag_options, &block) do
-         link_to(@presenter.go_back_path, **tag_options, &block)
-       end,
+       url: @presenter.go_back_path,
        outline: true,
      ) { t('links.go_back') } %>
 <% end %>

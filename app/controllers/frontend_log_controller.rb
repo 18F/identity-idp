@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class FrontendLogController < ApplicationController
+  include Idv::HybridMobile::HybridMobileConcern
   respond_to :json
 
   skip_before_action :verify_authenticity_token
@@ -22,7 +23,6 @@ class FrontendLogController < ApplicationController
     'IdV: Capture troubleshooting dismissed' => :idv_capture_troubleshooting_dismissed,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,
-    'IdV: exit optional questions' => :idv_exit_optional_questions,
     'IdV: front image added' => :idv_front_image_added,
     'IdV: front image clicked' => :idv_front_image_clicked,
     'IdV: Image capture failed' => :idv_image_capture_failed,
@@ -35,7 +35,6 @@ class FrontendLogController < ApplicationController
     'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
     'IdV: prepare submitted' => :idv_in_person_prepare_submitted,
     'IdV: prepare visited' => :idv_in_person_prepare_visited,
-    'IdV: selfie image clicked' => :idv_selfie_image_clicked,
     'IdV: switch_back submitted' => :idv_in_person_switch_back_submitted,
     'IdV: switch_back visited' => :idv_in_person_switch_back_visited,
     'IdV: user clicked sp link on ready to verify page' => :idv_in_person_ready_to_verify_sp_link_clicked,
@@ -48,10 +47,17 @@ class FrontendLogController < ApplicationController
   # rubocop:enable Layout/LineLength
 
   ALLOWED_EVENTS = %i[
+    idv_camera_info_error
+    idv_camera_info_logged
+    idv_sdk_error_before_init
     idv_sdk_selfie_image_capture_closed_without_photo
     idv_sdk_selfie_image_capture_failed
+    idv_sdk_selfie_image_capture_initialized
     idv_sdk_selfie_image_capture_opened
+    idv_sdk_selfie_image_re_taken
+    idv_sdk_selfie_image_taken
     idv_selfie_image_added
+    idv_selfie_image_clicked
     phone_input_country_changed
   ].freeze
 

@@ -2,7 +2,6 @@
 
 module Idp
   module Constants
-    AVAILABLE_LOCALES = %w[en es fr].freeze
     UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
 
     KMS_LOG_FILENAME = 'kms.log'
@@ -100,7 +99,6 @@ module Idp
       first_name: 'FAKEY',
       last_name: 'MCFAKERSON',
       middle_name: nil,
-      phone: nil,
       state: 'MT',
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
@@ -108,7 +106,7 @@ module Idp
       state_id_number: '1111111111111',
       state_id_type: 'drivers_license',
       zipcode: '59010',
-      same_address_as_id: nil,
+      issuing_country_code: 'US',
     }.freeze
 
     MOCK_IPP_APPLICANT = {

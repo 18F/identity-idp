@@ -43,18 +43,12 @@
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
   <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          link_to(
-            otp_send_path(
-              otp_delivery_selection_form: {
-                otp_delivery_preference: @presenter.otp_delivery_preference,
-                resend: true,
-              },
-            ),
-            **tag_options,
-            &block
-          )
-        end,
+        url: otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: @presenter.otp_delivery_preference,
+            resend: true,
+          },
+        ),
         outline: true,
         icon: :loop,
         class: 'margin-bottom-neg-1',

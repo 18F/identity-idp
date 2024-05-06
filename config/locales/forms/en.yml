@@ -37,7 +37,6 @@ en:
       disable: Delete
       edit: Edit
       manage: Manage
-      resend_confirmation: Resend confirmation instructions
       send_link: Send link
       send_one_time_code: Send code
       submit:
@@ -94,9 +93,6 @@ en:
       labels:
         email: Enter your email address
         email_language: Select your email language preference
-    spam_protection:
-      description: We use reCAPTCHA to protect against automated spam. Check the box
-        below to continue.
     ssn:
       show: Show Social Security number
     totp_setup:

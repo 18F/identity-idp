@@ -3,7 +3,7 @@
     <% routes.each do |route| %>
       <li class="usa-button-group__item">
         <%= render ButtonComponent.new(
-              action: ->(**tag_options, &block) { link_to(route[:path], **tag_options, &block) },
+              url: route[:path],
               big: true,
               outline: !is_current_path?(route[:path]),
               aria: { current: is_current_path?(route[:path]) ? 'page' : nil },

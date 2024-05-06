@@ -30,7 +30,7 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     stub_analytics
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
-    allow(controller.decorated_sp_session).to receive(:selfie_required?).
+    allow(controller.decorated_sp_session).to receive(:biometric_comparison_required?).
       and_return(doc_auth_selfie_capture_enabled && sp_selfie_enabled)
     subject.idv_session.flow_path = flow_path
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
@@ -200,13 +200,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       end
     end
 
-    it 'does not use effective user outside of analytics_user in ApplicationControler' do
-      allow(subject).to receive(:analytics_user).and_return(subject.current_user)
-      expect(subject).not_to receive(:effective_user)
-
-      get :show
-    end
-
     context 'user is rate limited' do
       it 'redirects to rate limited page' do
         user = create(:user)
@@ -265,7 +258,8 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything).and_return(false)
-        allow(subject.decorated_sp_session).to receive(:selfie_required?).and_return(true)
+        allow(subject.decorated_sp_session).to receive(:biometric_comparison_required?).
+          and_return(true)
       end
       it 'redirect back when accessed from handoff' do
         subject.idv_session.skip_hybrid_handoff = nil

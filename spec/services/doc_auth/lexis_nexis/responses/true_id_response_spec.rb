@@ -12,6 +12,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:doc_auth_success_with_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
+  let(:success_with_failed_to_ocr_dob) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failed_to_ocr_dob)
+  end
   let(:failure_response_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
@@ -120,22 +123,25 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(extra_attributes).to have_key(:reference)
     end
     it 'has PII data' do
-      # This is the minimum expected by doc_pii_form in the core IDP
-      minimum_expected_hash = {
+      expected_state_id_pii = Pii::StateId.new(
         first_name: 'DAVID',
         last_name: 'SAMPLE',
-        dob: '1986-07-01',
+        middle_name: 'LICENSE',
+        address1: '123 ABC AVE',
+        address2: 'APT 3E',
+        city: 'ANYTOWN',
         state: 'MD',
+        dob: '1986-07-01',
+        state_id_expiration: '2099-10-15',
+        state_id_issued: '2016-10-15',
+        state_id_jurisdiction: 'MD',
+        state_id_number: 'M555555555555',
         state_id_type: 'drivers_license',
-      }
+        zipcode: '12345',
+        issuing_country_code: 'USA',
+      )
 
-      expect(response.pii_from_doc).to include(minimum_expected_hash)
-    end
-    it 'includes expiration' do
-      expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
-    end
-    it 'includes issued date' do
-      expect(response.pii_from_doc).to include(state_id_issued: '2016-10-15')
+      expect(response.pii_from_doc).to eq(expected_state_id_pii)
     end
 
     it 'excludes pii fields from logging' do
@@ -213,7 +219,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'notes that address line 2 was present' do
-      expect(response.pii_from_doc).to include(address2: 'APT 3E')
+      expect(response.pii_from_doc.address2).to eq('APT 3E')
       expect(response.to_h).to include(address_line2_present: true)
     end
 
@@ -252,7 +258,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:response) { described_class.new(success_response_no_line2, config) }
 
     it 'notes that address line 2 was not present' do
-      expect(response.pii_from_doc[:address2]).to be_nil
+      expect(response.pii_from_doc.address2).to be_nil
       expect(response.to_h).to include(address_line2_present: false)
     end
   end
@@ -316,22 +322,25 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(extra_attributes).not_to be_empty
     end
     it 'has PII data' do
-      # This is the minimum expected by doc_pii_form in the core IDP
-      minimum_expected_hash = {
+      expected_state_id_pii = Pii::StateId.new(
         first_name: 'DAVID',
         last_name: 'SAMPLE',
-        dob: '1986-10-13',
+        middle_name: 'LICENSE',
+        address1: '123 ABC AVE',
+        address2: nil,
+        city: 'ANYTOWN',
         state: 'MD',
+        dob: '1986-10-13',
+        state_id_expiration: '2099-10-15',
+        state_id_issued: '2016-10-15',
+        state_id_jurisdiction: 'MD',
+        state_id_number: 'M555555555555',
         state_id_type: 'drivers_license',
-      }
+        zipcode: '12345',
+        issuing_country_code: nil,
+      )
 
-      expect(response.pii_from_doc).to include(minimum_expected_hash)
-    end
-    it 'includes expiration' do
-      expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
-    end
-    it 'includes issued date' do
-      expect(response.pii_from_doc).to include(state_id_issued: '2016-10-15')
+      expect(response.pii_from_doc).to eq(expected_state_id_pii)
     end
   end
 
@@ -400,10 +409,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           success: false,
           exception: nil,
           errors: {
-            general: [DocAuth::Errors::GENERAL_ERROR],
+            general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
             front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
             back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
-            hints: true,
+            hints: false,
           },
           attention_with_barcode: false,
           doc_type_supported: true,
@@ -541,12 +550,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the dob is incorrectly parsed' do
-    let(:response) { described_class.new(success_response, config) }
-    let(:bad_pii) { { dob_year: 'OCR', dob_month: 'failed', dob_day: 'to parse' } }
+    let(:response) { described_class.new(success_with_failed_to_ocr_dob, config) }
 
     it 'does not throw an exception when getting pii from doc' do
-      allow(response).to receive(:pii).and_return(bad_pii)
-      expect { response.pii_from_doc }.not_to raise_error
+      expect(response.pii_from_doc.dob).to be_nil
     end
   end
 

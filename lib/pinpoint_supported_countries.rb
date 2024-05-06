@@ -196,7 +196,7 @@ class PinpointSupportedCountries
       table = doc.xpath('//table').first
 
       headings = []
-      table.xpath('//thead/tr').each do |row|
+      table.xpath('thead/tr').each do |row|
         row.xpath('th').each do |cell|
           headings << cell.text
         end

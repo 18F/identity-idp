@@ -30,7 +30,7 @@ module OpenidConnect
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
-        return redirect_to idv_url if selfie_needed?
+        return redirect_to idv_url if biometric_comparison_needed?
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -63,8 +63,7 @@ module OpenidConnect
     end
 
     def biometric_comparison_requested?
-      @authorize_form.parsed_vector_of_trust&.biometric_comparison? ||
-        params['biometric_comparison_required'] == 'true'
+      @authorize_form.parsed_vector_of_trust&.biometric_comparison?
     end
 
     def check_sp_active
@@ -127,9 +126,9 @@ module OpenidConnect
         current_user.reproof_for_irs?(service_provider: current_sp)
     end
 
-    def selfie_needed?
-      decorated_sp_session.selfie_required? &&
-        !current_user.identity_verified_with_selfie?
+    def biometric_comparison_needed?
+      decorated_sp_session.biometric_comparison_required? &&
+        !current_user.identity_verified_with_biometric_comparison?
     end
 
     def build_authorize_form_from_params

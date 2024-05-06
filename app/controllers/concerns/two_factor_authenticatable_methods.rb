@@ -10,6 +10,26 @@ module TwoFactorAuthenticatableMethods
     @auth_methods_session ||= AuthMethodsSession.new(user_session:)
   end
 
+  def handle_valid_verification_for_authentication_context(auth_method:)
+    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
+    disavowal_event, disavowal_token = create_user_event_with_disavowal(:sign_in_after_2fa)
+
+    if IdentityConfig.store.feature_new_device_alert_aggregation_enabled &&
+       user_session[:new_device] != false
+      if current_user.sign_in_new_device_at.blank?
+        current_user.update(sign_in_new_device_at: disavowal_event.created_at)
+      end
+
+      UserAlerts::AlertUserAboutNewDevice.send_alert(
+        user: current_user,
+        disavowal_event:,
+        disavowal_token:,
+      )
+    end
+
+    reset_second_factor_attempts_count
+  end
+
   private
 
   def authenticate_user
@@ -82,13 +102,10 @@ module TwoFactorAuthenticatableMethods
   def reset_attempt_count_if_user_no_longer_locked_out
     return unless current_user.no_longer_locked_out?
 
-    UpdateUser.new(
-      user: current_user,
-      attributes: {
-        second_factor_attempts_count: 0,
-        second_factor_locked_at: nil,
-      },
-    ).call
+    current_user.update!(
+      second_factor_attempts_count: 0,
+      second_factor_locked_at: nil,
+    )
   end
 
   def handle_remember_device_preference(remember_device_preference)
@@ -163,15 +180,8 @@ module TwoFactorAuthenticatableMethods
     reset_second_factor_attempts_count
   end
 
-  def handle_valid_verification_for_authentication_context(auth_method:)
-    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
-    create_user_event(:sign_in_after_2fa)
-
-    reset_second_factor_attempts_count
-  end
-
   def reset_second_factor_attempts_count
-    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
+    current_user.update!(second_factor_attempts_count: 0)
   end
 
   def mark_user_session_authenticated(auth_method:, authentication_type:)

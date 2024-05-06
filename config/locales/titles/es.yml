@@ -8,7 +8,6 @@ es:
     backup_codes: No pierda sus códigos de respaldo
     confirmations:
       delete: Por favor confirmar
-      new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
     doc_auth:
       address: Actualice su dirección postal
@@ -59,6 +58,8 @@ es:
       new: Use su PIV / CAC para iniciar sesión en su cuenta
     piv_cac_setup:
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
+      upsell: Aumente la seguridad de su cuenta con una identificación de empleado del
+        gobierno.
     present_piv_cac: Presenta tu PIV/CAC
     present_webauthn: Conecte su clave de seguridad de hardware
     reactivate_account: Reactive su cuenta
@@ -77,7 +78,6 @@ es:
       completion_new_sp: Acabas de iniciar sesión por primera vez
       completion_reverified_consent: Proporciónale tu información actualizada a %{sp}
       confirmation: Continuar para iniciar sesión
-    spam_protection: Protección contra el correo no deseado
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores
