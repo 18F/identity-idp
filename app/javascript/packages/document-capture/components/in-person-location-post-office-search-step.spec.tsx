@@ -5,7 +5,6 @@ import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue } from '@18f/identity-test-helpers';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
-import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { ComponentType } from 'react';
 import { InPersonContext } from '../context';
@@ -94,31 +93,6 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
     server.resetHandlers();
   });
 
-  context('initial ArcGIS API request throws an error', () => {
-    beforeEach(() => {
-      server.use(http.post(addressSearchURL, () => HttpResponse.json([], { status: 422 })));
-    });
-
-    it('displays a try again error message', async () => {
-      const { findByText, findByLabelText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
-        </SWRConfig>,
-      );
-
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-        '222 Merchandise Mart Plaza',
-      );
-
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
-
-      const error = await findByText('idv.failure.exceptions.post_office_search_error');
-      expect(error).to.exist();
-    });
-  });
   context('initial USPS API request throws an error', () => {
     beforeEach(() => {
       server.use(
