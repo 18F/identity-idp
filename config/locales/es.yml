@@ -1125,9 +1125,7 @@ idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{c
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
 idv.warning.state_id.explanation:
-  "Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
-
-  "
+  "Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.\n"
 idv.warning.state_id.heading: Estamos trabajando para corregir un error
 idv.warning.state_id.next_steps.items_html.0: Volver a intentarlo ahora <strong>o</strong>
 idv.warning.state_id.next_steps.items_html.1: Salir de %{app_name} y volver a intentarlo más tarde

@@ -1126,9 +1126,7 @@ idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation:
-  "Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
-
-  "
+  "Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.\n"
 idv.warning.state_id.heading: Nous travaillons à la résolution d’une erreur
 idv.warning.state_id.next_steps.items_html.0: Réessayer maintenant <strong>ou</strong>
 idv.warning.state_id.next_steps.items_html.1: Quitter %{app_name} et réessayer plus tard
