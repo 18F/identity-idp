@@ -174,6 +174,11 @@ en:
       state: State
       zipcode: ZIP Code
     gpo:
+      address_accordion:
+        body: 'We sent a letter with your verification code to:'
+        cta_html: Not the right address? %{cta_link_html}
+        cta_link: Clear your information and start over.
+        title: Where was my letter sent?
       alert_info: 'We sent a letter with your verification code to:'
       alert_rate_limit_warning_html: You can’t request more letters right now. Your
         previous letter request was on <strong>%{date_letter_was_sent}</strong>.
@@ -190,14 +195,14 @@ en:
             <span>%{request_new_letter_link}</span>.
         title: Didn’t get your letter?
       form:
-        instructions: Enter the 10-character code from the letter you received.
         otp_label: Verification code
-        submit: Confirm account
+        submit: Submit
         title: Confirm your account
-      intro_html: '<p>If you have received your letter, please enter your verification
-        code below. </p><p>If your letter hasn’t arrived yet, please be patient
-        as letters take up to <strong>10 days</strong> to arrive. Thank you for
-        your patience.</p>'
+      intro: Welcome back. Enter the 10-character code from the letter you received.
+      last_letter_request_message_html: You last requested a letter on
+        <strong>%{date_letter_was_sent}</strong>. If your letter hasn’t arrived
+        yet, please be patient as letters take up to <strong>10 days</strong> to
+        arrive. Thank you for your patience.
       request_another_letter:
         button: Request another letter
         instructions_html: Request a new letter if you have issues with your current
@@ -206,7 +211,7 @@ en:
         learn_more_link: Learn more about verifying your address by mail
         title: Request another letter?
       return_to_profile: Return to your profile
-      title: Welcome back
+      title: Enter your verification code
       wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark

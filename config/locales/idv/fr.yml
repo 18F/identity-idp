@@ -191,7 +191,12 @@ fr:
       state: État
       zipcode: Code postal
     gpo:
-      alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à :'
+      address_accordion:
+        body: 'Nous avons envoyé une lettre avec votre code de vérification à :'
+        cta_html: Ce n’est pas la bonne adresse? %{cta_link_html}
+        cta_link: Effacez vos renseignements et recommencez.
+        title: Où ma lettre a-t-elle été envoyée?
+      alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à :'
       alert_rate_limit_warning_html: Vous ne pouvez pas demander d’autres lettres pour
         le moment. Votre demande de lettre précédente a été effectuée le
         <strong>%{date_letter_was_sent}</strong>.
@@ -208,15 +213,16 @@ fr:
             pouvez <span>%{request_new_letter_link}</span>.
         title: Vous n’avez pas reçu votre lettre ?
       form:
-        instructions: Saisissez le code à 10 caractères que contient la lettre.
         otp_label: Code de vérification
-        submit: Confirmer le compte
+        submit: Valider
         title: Confirmez votre compte
-      intro_html: '<p>Si vous avez reçu votre lettre, veuillez saisir votre code de
-        vérification ci-dessous.</p><p>Les lettres mettent jusqu’à <strong>10
-        jours</strong> pour arriver. Par conséquent, si votre lettre ne vous est
-        pas encore parvenue, veuillez patienter. Nous vous remercions de votre
-        patience.</p>'
+      intro: Bienvenue à nouveau. Saisissez le code à 10 caractères contenu dans le
+        courrier que vous avez reçu.
+      last_letter_request_message_html: Vous avez demandé pour la dernière fois de
+        recevoir un courrier le <strong>%{date_letter_was_sent}</strong>. Si
+        votre lettre n’est pas encore arrivée, veuillez patienter car elle peut
+        mettre jusqu’à <strong>10 jours</strong>. Nous vous remercions de votre
+        patience.
       request_another_letter:
         button: Demander une autre lettre
         instructions_html: Vous pouvez demander une nouvelle lettre si vous avez des
@@ -226,7 +232,7 @@ fr:
         learn_more_link: En savoir plus sur la vérification de votre adresse par courrier
         title: Vous voulez demander une autre lettre ?
       return_to_profile: Retourner à votre profil
-      title: Bienvenue de nouveau
+      title: Saisir votre code de vérification
       wrong_address: Pas la bonne adresse ?
     images:
       come_back_later: Lettre avec une coche

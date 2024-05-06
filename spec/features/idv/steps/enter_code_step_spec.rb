@@ -12,11 +12,13 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
       :with_pii,
     )
   end
-  let(:gpo_confirmation_code) do
+  let!(:gpo_confirmation_code) do
     create(
       :gpo_confirmation_code,
       profile: profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      created_at: 2.days.ago,
+      updated_at: 2.days.ago,
     )
   end
   let(:user) { profile.user }
@@ -165,7 +167,6 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
         expect(page).to have_content t('idv.messages.gpo.resend')
 
         verify_no_rate_limit_banner
-        gpo_confirmation_code
         fill_in t('idv.gpo.form.otp_label'), with: otp
         click_button t('idv.gpo.form.submit')
 
@@ -193,8 +194,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
     end
   end
 
-  it 'allows a user to cancel and start over in the footer' do
-    gpo_confirmation_code
+  it 'allows a user to cancel and start over in the accordion' do
     another_gpo_confirmation_code = create(
       :gpo_confirmation_code,
       profile: profile,
@@ -205,7 +205,7 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
     verify_rate_limit_banner_present(another_gpo_confirmation_code.updated_at)
 
-    click_on t('idv.messages.clear_and_start_over')
+    click_on t('idv.gpo.address_accordion.cta_link')
 
     expect(current_path).to eq idv_confirm_start_over_path
 
@@ -238,7 +238,8 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
 
       sign_in_live_with_2fa(user)
 
-      click_on t('idv.messages.clear_and_start_over')
+      click_on t('idv.gpo.address_accordion.title')
+      click_on t('idv.gpo.address_accordion.cta_link')
       expect(current_path).to eq idv_confirm_start_over_path
       click_idv_continue
 
