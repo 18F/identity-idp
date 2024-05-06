@@ -622,7 +622,7 @@ doc_auth.instructions.bullet1: Tener una licencia de conducir o una tarjeta de i
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
 doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}
-doc_auth.instructions.consent: Al marcar esta casilla, usted permite que %{app_name} pida, utilice, conserve y divulgue su información personal. La usaremos para verificar su identidad.
+doc_auth.instructions.consent: Al marcar esta casilla, usted permite que %{app_name} solicite, utilice, conserve y comparta su información personal. La utilizaremos para verificar su identidad.
 doc_auth.instructions.getting_started: "Necesitará:"
 doc_auth.instructions.learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
 doc_auth.instructions.switch_back: Vuelva a su computadora para finalizar la verificación de su identidad.
@@ -1041,25 +1041,33 @@ idv.form.ssn: Número de Seguro Social
 idv.form.ssn_label: Número de Seguro Social
 idv.form.state: Estado
 idv.form.zipcode: Código postal
+idv.gpo.address_accordion.body: "Le enviamos una carta con su código de verificación a:"
+idv.gpo.address_accordion.cta_html: "¿La dirección es incorrecta? %{cta_link_html}"
+idv.gpo.address_accordion.cta_link: Borre su información y comience nuevamente.
+idv.gpo.address_accordion.title: "¿A dónde enviaron mi carta?"
 idv.gpo.alert_info: "Enviamos una carta con su código de verificación a:"
-idv.gpo.alert_rate_limit_warning_html: No puede solicitar más cartas por ahora. La fecha de su solicitud de carta anterior es el <strong>%{date_letter_was_sent}</strong>.
+idv.gpo.alert_rate_limit_warning_html: No puede solicitar más cartas ahora mismo. Su solicitud de carta anterior la hizo el <strong>%{date_letter_was_sent}</strong>.
 idv.gpo.clear_and_start_over: Borre su información y empiece de nuevo
 idv.gpo.did_not_receive_letter.form.instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la carta que recibió.
+idv.gpo.did_not_receive_letter.intro_html: La última vez que solicitó una carta fue el <strong>%{date_letter_was_sent}</strong>.
 idv.gpo.did_not_receive_letter.intro.be_patient_html: Recuerde que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias por su paciencia.
 idv.gpo.did_not_receive_letter.intro.request_new_letter_link: solicitar una carta nueva
 idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html: Si no ha recibido su carta, puede <span>%{request_new_letter_link}</span>.
+idv.gpo.did_not_receive_letter.request_a_new_letter_html: Solicite una nueva carta si han pasado más de <strong>10 días</strong> desde la última vez que la solicitó o si su código de verificación ha caducado.
 idv.gpo.did_not_receive_letter.title: "¿No recibió su carta?"
 idv.gpo.form.instructions: Introduzca el código de 10 caracteres de la carta que recibió.
 idv.gpo.form.otp_label: Código de verificación
-idv.gpo.form.submit: Confirmar cuenta
+idv.gpo.form.submit: Enviar
 idv.gpo.form.title: Confirme su cuenta
+idv.gpo.intro: Bienvenido de nuevo. Introduzca el código de 10 caracteres de la carta que recibió.
 idv.gpo.intro_html: "<p>Si ya recibió su carta, introduzca su código de verificación a continuación. </p><p>Si su carta aún no ha llegado, tenga paciencia, ya que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias por su paciencia.</p>"
+idv.gpo.last_letter_request_message_html: Usted solicitó una carta el <strong>%{date_letter_was_sent}</strong>. Si aún no ha llegado, tenga paciencia, ya que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias por su paciencia.
 idv.gpo.request_another_letter.button: Solicitar otra carta
 idv.gpo.request_another_letter.instructions_html: Solicite otra carta si tiene problemas con la carta actual o si nunca llegó. Las cartas tardan de <strong>5 a 10 días</strong> en llegar.
 idv.gpo.request_another_letter.learn_more_link: Obtenga más información sobre la verificación de su dirección por correo
 idv.gpo.request_another_letter.title: "¿Solicitar otra carta?"
 idv.gpo.return_to_profile: Vuelva a su perfil
-idv.gpo.title: Bienvenido de nuevo
+idv.gpo.title: Introduzca su código de verificación
 idv.gpo.wrong_address: "¿No es la dirección correcta?"
 idv.images.come_back_later: Carta con una marca de verificación
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
@@ -1078,7 +1086,7 @@ idv.messages.gpo.another_letter_on_the_way: Le enviaremos otra carta
 idv.messages.gpo.info_alert: Tendrá que esperar hasta que reciba su carta para terminar de verificar su identidad.
 idv.messages.gpo.learn_more_verify_by_mail: Obtenga más información sobre la verificación de su dirección por correo
 idv.messages.gpo.letter_on_the_way: Le enviaremos una carta
-idv.messages.gpo.resend: Envíeme otra carta
+idv.messages.gpo.resend: Envíenme otra carta
 idv.messages.gpo.start_over_html: Si esta no es la dirección correcta, tendrá que %{start_over_link_html}.
 idv.messages.gpo.start_over_link_text: empezar de nuevo y verificar con su nueva dirección
 idv.messages.gpo.timeframe_html: Recibirá una carta con un <strong>código de verificación</strong> en un plazo de <strong>5 a 10 días</strong>.
@@ -1125,7 +1133,9 @@ idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{c
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
 idv.warning.state_id.explanation:
-  "Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.\n"
+  "Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
+
+  "
 idv.warning.state_id.heading: Estamos trabajando para corregir un error
 idv.warning.state_id.next_steps.items_html.0: Volver a intentarlo ahora <strong>o</strong>
 idv.warning.state_id.next_steps.items_html.1: Salir de %{app_name} y volver a intentarlo más tarde
