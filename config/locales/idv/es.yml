@@ -257,7 +257,7 @@ es:
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
           dirección por correo
         letter_on_the_way: Le enviaremos una carta
-        resend: Envíeme otra carta
+        resend: Envíenme otra carta
         start_over_html: Si esta no es la dirección correcta, tendrá que
           %{start_over_link_html}.
         start_over_link_text: empezar de nuevo y verificar con su nueva dirección
