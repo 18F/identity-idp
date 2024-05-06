@@ -18,7 +18,7 @@ en:
         %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
 
         @%{domain} #%{code}
-      voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
+      voice: Hello! Your %{format_length}-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
     doc_auth_link: |-
       %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
     error:
@@ -36,6 +36,9 @@ en:
         timeout: The server took too long to respond. Please try again.
         unknown_failure: We are experiencing technical difficulties. Please try again later.
         voice_unsupported: Invalid phone number. Check that you’ve entered the correct country code or area code.
+    format_length:
+      six: '6'
+      ten: '10'
     format_type:
       character: character
       digit: digit

@@ -1046,20 +1046,14 @@ idv.gpo.address_accordion.body: "Nous avons envoyé une lettre avec votre code d
 idv.gpo.address_accordion.cta_html: Ce n’est pas la bonne adresse? %{cta_link_html}
 idv.gpo.address_accordion.cta_link: Effacez vos renseignements et recommencez.
 idv.gpo.address_accordion.title: Où ma lettre a-t-elle été envoyée?
-
 idv.gpo.alert_rate_limit_warning_html: Vous ne pouvez pas demander d’autres lettres pour le moment. Votre demande de lettre précédente a été effectuée le <strong>%{date_letter_was_sent}</strong>.
-
 idv.gpo.did_not_receive_letter.form.instructions: Si vous avez votre lettre, veuillez saisir le code à 10 caractères qu’elle contient.
 idv.gpo.did_not_receive_letter.intro_html: Vous avez demandé pour la dernière fois de recevoir un courrier le <strong>%{date_letter_was_sent}</strong>.
-
 idv.gpo.did_not_receive_letter.request_a_new_letter_html: Demandez à recevoir un nouveau courrier si plus de <strong>10 jours</strong> se sont écoulés depuis la dernière fois que vous en avez demandé un ou si votre code de vérification a expiré.
 idv.gpo.did_not_receive_letter.title: Vous n’avez pas reçu votre lettre ?
-
 idv.gpo.form.otp_label: Code de vérification
 idv.gpo.form.submit: Valider
-
 idv.gpo.intro: Bienvenue à nouveau. Saisissez le code à 10 caractères contenu dans le courrier que vous avez reçu.
-
 idv.gpo.last_letter_request_message_html: Vous avez demandé pour la dernière fois de recevoir un courrier le <strong>%{date_letter_was_sent}</strong>. Si votre lettre n’est pas encore arrivée, veuillez patienter car elle peut mettre jusqu’à <strong>10 jours</strong>. Nous vous remercions de votre patience.
 idv.gpo.request_another_letter.button: Demander une autre lettre
 idv.gpo.request_another_letter.instructions_html: Vous pouvez demander une nouvelle lettre si vous avez des problèmes avec votre lettre actuelle ou si elle ne vous est jamais parvenue. Les lettres mettent entre <strong>5 et 10 jours</strong> pour arriver.
@@ -1067,11 +1061,9 @@ idv.gpo.request_another_letter.learn_more_link: En savoir plus sur la vérificat
 idv.gpo.request_another_letter.title: Vous voulez demander une autre lettre ?
 idv.gpo.return_to_profile: Retourner à votre profil
 idv.gpo.title: Saisir votre code de vérification
-
 idv.images.come_back_later: Lettre avec une coche
 idv.messages.activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier les informations qui ont été vérifiées, veuillez %{link_html}.
 idv.messages.activated_link: nous contacter
-
 idv.messages.come_back_later_html: "<p>Les lettres mettent <strong>5 à 10 jours</strong> pour arriver par courrier prioritaire via USPS.</p> <p>Une fois votre lettre arrivée, connectez-vous à %{app_name} et saisissez votre code de vérification lorsque vous y êtes invité.</p>"
 idv.messages.come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte %{app_name}</strong> pour le moment.
 idv.messages.come_back_later_password_html: "<strong>N’oubliez pas votre mot de passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code de vérification figurant dans votre lettre ne fonctionnera plus et vous serez obligé de vérifier à nouveau votre identité."
@@ -1132,7 +1124,9 @@ idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation:
-  "Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.\n"
+  "Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
+
+  "
 idv.warning.state_id.heading: Nous travaillons à la résolution d’une erreur
 idv.warning.state_id.next_steps.items_html.0: Réessayer maintenant <strong>ou</strong>
 idv.warning.state_id.next_steps.items_html.1: Quitter %{app_name} et réessayer plus tard

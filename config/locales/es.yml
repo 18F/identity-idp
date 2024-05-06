@@ -606,7 +606,7 @@ doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
 doc_auth.info.selfie_capture_status.face_too_small: Rostro demasiado pequeño
 doc_auth.info.selfie_capture_status.too_many_faces: Demasiados rostros
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
-doc_auth.info.stepping_up_html: Verifica su identidad de nuevo para acceder a este servicio. %{link_html}
+doc_auth.info.stepping_up_html: Verifique su identidad de nuevo para acceder a este servicio. %{link_html}
 doc_auth.info.tag: Recomendado
 doc_auth.info.upload_from_computer: "¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora."
 doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
@@ -1045,20 +1045,14 @@ idv.gpo.address_accordion.body: "Le enviamos una carta con su código de verific
 idv.gpo.address_accordion.cta_html: "¿La dirección es incorrecta? %{cta_link_html}"
 idv.gpo.address_accordion.cta_link: Borre su información y comience nuevamente.
 idv.gpo.address_accordion.title: "¿A dónde enviaron mi carta?"
-
 idv.gpo.alert_rate_limit_warning_html: No puede solicitar más cartas ahora mismo. Su solicitud de carta anterior la hizo el <strong>%{date_letter_was_sent}</strong>.
-
 idv.gpo.did_not_receive_letter.form.instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la carta que recibió.
 idv.gpo.did_not_receive_letter.intro_html: La última vez que solicitó una carta fue el <strong>%{date_letter_was_sent}</strong>.
-
 idv.gpo.did_not_receive_letter.request_a_new_letter_html: Solicite una nueva carta si han pasado más de <strong>10 días</strong> desde la última vez que la solicitó o si su código de verificación ha caducado.
 idv.gpo.did_not_receive_letter.title: "¿No recibió su carta?"
-
 idv.gpo.form.otp_label: Código de verificación
 idv.gpo.form.submit: Enviar
-
 idv.gpo.intro: Bienvenido de nuevo. Introduzca el código de 10 caracteres de la carta que recibió.
-
 idv.gpo.last_letter_request_message_html: Usted solicitó una carta el <strong>%{date_letter_was_sent}</strong>. Si aún no ha llegado, tenga paciencia, ya que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias por su paciencia.
 idv.gpo.request_another_letter.button: Solicitar otra carta
 idv.gpo.request_another_letter.instructions_html: Solicite otra carta si tiene problemas con la carta actual o si nunca llegó. Las cartas tardan de <strong>5 a 10 días</strong> en llegar.
@@ -1066,11 +1060,9 @@ idv.gpo.request_another_letter.learn_more_link: Obtenga más información sobre 
 idv.gpo.request_another_letter.title: "¿Solicitar otra carta?"
 idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
-
 idv.images.come_back_later: Carta con una marca de verificación
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
 idv.messages.activated_link: contáctenos
-
 idv.messages.come_back_later_html: "<p>Las cartas tardan de <strong>5 a 10 días</strong> en llegar por First-Class Mail del Servicio Postal de los EE. UU. (USPS).</p> <p>Una vez que reciba su carta, inicie sesión en %{app_name} e introduzca su código de verificación cuando se le solicite.</p>"
 idv.messages.come_back_later_no_sp_html: Por ahora, puede volver a su <strong>cuenta de %{app_name}</strong>.
 idv.messages.come_back_later_password_html: "<strong>No olvide su contraseña.</strong><br /> Si restablece su contraseña, el código de verificación de su carta ya no funcionará y tendrá que verificar su identidad de nuevo."
@@ -1131,7 +1123,9 @@ idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{c
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
 idv.warning.state_id.explanation:
-  "Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.\n"
+  "Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
+
+  "
 idv.warning.state_id.heading: Estamos trabajando para corregir un error
 idv.warning.state_id.next_steps.items_html.0: Volver a intentarlo ahora <strong>o</strong>
 idv.warning.state_id.next_steps.items_html.1: Salir de %{app_name} y volver a intentarlo más tarde

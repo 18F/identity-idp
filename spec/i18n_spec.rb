@@ -127,6 +127,8 @@ module I18n
         { key: 'notices.signed_up_but_unconfirmed.resend_confirmation_email', locales: %i[zh] },
         { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] },
         { key: 'telephony.account_deleted_notice', locales: %i[zh] },
+        { key: 'telephony.format_length.six', locales: %i[zh] },
+        { key: 'telephony.format_length.ten', locales: %i[zh] },
         { key: 'titles.idv.canceled', locales: %i[zh] },
         { key: 'titles.piv_cac_setup.upsell', locales: %i[zh] },
         { key: 'two_factor_authentication.auth_app.change_nickname', locales: %i[zh] },

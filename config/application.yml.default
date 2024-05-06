@@ -20,6 +20,8 @@ aamva_cert_enabled: true
 aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
+ab_testing_idv_ten_digit_otp_enabled: false
+ab_testing_idv_ten_digit_otp_percent: 0
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'

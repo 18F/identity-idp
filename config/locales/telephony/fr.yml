@@ -17,7 +17,7 @@ fr:
         %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour ! Votre code à usage unique de six %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. De nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
+      voice: Bonjour ! Votre code à usage unique de %{format_length} %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. De nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
     doc_auth_link: "%{app_name} : %{link} Vous êtes en train de confirmer votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer."
     error:
       friendly_message:
@@ -34,6 +34,9 @@ fr:
         timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
         unknown_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer plus tard.
         voice_unsupported: Numéro de téléphone non valide. Vérifiez que vous avez saisi le bon indicatif pays ou régional.
+    format_length:
+      six: six
+      ten: dix
     format_type:
       character: caractère
       digit: chiffre
