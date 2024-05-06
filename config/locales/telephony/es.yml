@@ -23,9 +23,10 @@ es:
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
-      voice: 'Hola: Su código de un solo uso de %{format_length} %{format_type} de %{app_name} es
-        %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un
-        solo uso es %{code}. Este código vence en %{expiration} minutos.'
+      voice: 'Hola: Su código de un solo uso de %{format_length} %{format_type} de
+        %{app_name} es %{code}. Su código de un solo uso es %{code}. De nuevo,
+        su código de un solo uso es %{code}. Este código vence en %{expiration}
+        minutos.'
     doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder
       a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
     error:
