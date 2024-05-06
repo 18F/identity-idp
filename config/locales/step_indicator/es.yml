@@ -5,13 +5,15 @@ es:
     flows:
       idv:
         find_a_post_office: Busque una oficina de correos
-        get_a_letter: Obtenga una carta por correo
+        #        get_a_letter: Obtenga una carta por correo
         getting_started: Inicio
         go_to_the_post_office: Vaya a la oficina de correos
+        re_enter_password: Vuelve a ingresar tu contraseña
         secure_account: Vuelve a ingresar tu contraseña
+        verify_address: Verifique su dirección
         verify_id: Verifique su identidad
         verify_info: Verifique su información
-        verify_phone_or_address: Verifique su número de teléfono
+        verify_phone: Verifique su número de teléfono
     status:
       complete: Completado
       current: Este paso

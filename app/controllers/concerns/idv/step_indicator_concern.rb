@@ -8,15 +8,15 @@ module Idv
       { name: :getting_started },
       { name: :verify_id },
       { name: :verify_info },
-      { name: :verify_phone_or_address },
-      { name: :secure_account },
+      { name: :verify_phone },
+      { name: :re_enter_password },
     ].freeze
 
     STEP_INDICATOR_STEPS_GPO = [
       { name: :getting_started },
       { name: :verify_id },
       { name: :verify_info },
-      { name: :get_a_letter },
+      { name: :verify_address },
       { name: :secure_account },
     ].freeze
 

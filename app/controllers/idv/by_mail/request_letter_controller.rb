@@ -15,7 +15,6 @@ module Idv
       def index
         @applicant = idv_session.applicant
         @presenter = RequestLetterPresenter.new(current_user, url_options)
-        @step_indicator_current_step = step_indicator_current_step
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:usps_address, :view, true)
@@ -61,14 +60,6 @@ module Idv
 
       def confirm_profile_not_too_old
         redirect_to idv_path if gpo_mail_service.profile_too_old?
-      end
-
-      def step_indicator_current_step
-        if resend_requested?
-          :get_a_letter
-        else
-          :verify_phone_or_address
-        end
       end
 
       def update_tracking
@@ -138,6 +129,14 @@ module Idv
 
       def pii_locked?
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
+      end
+
+      def step_indicator_steps
+        if in_person_proofing?
+          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
+        else
+          StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
+        end
       end
     end
   end

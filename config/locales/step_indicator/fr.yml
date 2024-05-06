@@ -5,13 +5,15 @@ fr:
     flows:
       idv:
         find_a_post_office: Trouver un bureau de poste
-        get_a_letter: Recevoir une lettre par la poste
+        #        get_a_letter: Recevoir une lettre par la poste
         getting_started: Démarrer
         go_to_the_post_office: Se rendre au bureau de poste
-        secure_account: Saisir à nouveau votre mot de passe
+        re_enter_password: Saisir à nouveau votre mot de passe
+        secure_account: Sécurisez votre compte
+        verify_address: Vérifier votre adresse
         verify_id: Vérifier votre identité
         verify_info: Vérifier vos informations
-        verify_phone_or_address: Vérifier votre numéro de téléphone
+        verify_phone: Vérifier votre numéro de téléphone
     status:
       complete: Étape effectuée
       current: Étape en cours
