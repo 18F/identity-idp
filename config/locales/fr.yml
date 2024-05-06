@@ -38,9 +38,9 @@ account_reset.request.title: Suppression et réinitialisation de compte
 account_reset.request.yes_continue: Oui, continuer la suppression
 account.connected_apps.associated: Connecté %{timestamp}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
-account.email_language.default: "%{language} (par défaut)"
+account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
-account.email_language.languages_list: "%{app_name} vous permet de recevoir des communications par e-mail en %{list}."
+account.email_language.languages_list: '%{app_name} vous permet de recevoir des communications par e-mail en %{list}.'
 account.email_language.name.en: anglais
 account.email_language.name.es: espagnol
 account.email_language.name.fr: français
@@ -57,7 +57,7 @@ account.index.backup_codes_exist: Généré
 account.index.backup_codes_no_exist: Non généré
 account.index.continue_to_service_provider: Continuer sur %{service_provider}
 account.index.default: défaut
-account.index.device: "%{browser} sur %{os}"
+account.index.device: '%{browser} sur %{os}'
 account.index.email: Adresse e-mail
 account.index.email_add: Ajouter une nouvelle adresse e-mail
 account.index.email_addresses: Adresses e-mail
@@ -81,7 +81,7 @@ account.items.delete_your_account: Supprimer votre compte
 account.items.personal_key: Clé personnelle
 account.links.delete_account: Supprimer
 account.links.regenerate_personal_key: Réinitialiser
-account.login.forced_reauthentication_notice_html: "<strong>%{sp_name}</strong> nécessite que vous saisissiez à nouveau votre adresse e-mail et votre mot de passe."
+account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> nécessite que vous saisissiez à nouveau votre adresse e-mail et votre mot de passe.'
 account.login.piv_cac: Connectez-vous avec votre identifiant d’employé.
 account.login.tab_navigation: Onglets de création de compte
 account.navigation.add_authentication_apps: Ajouter des applis d’authentification
@@ -133,12 +133,12 @@ banned_user.title: L’accès est restreint
 components.barcode.image_alt: Code-barres
 components.captcha_submit_button.action_message: Vérification en cours…
 components.captcha_submit_button.mock_score_disclaimer: Usage interne uniquement
-components.captcha_submit_button.mock_score_label: "Score reCAPTCHA : (0,0 - 1,0)"
+components.captcha_submit_button.mock_score_label: 'Score reCAPTCHA : (0,0 - 1,0)'
 components.clipboard_button.label: Copier
 components.clipboard_button.tooltip: Copié !
 components.countdown_alert.time_remaining_html: Il reste %{countdown_html}
 components.download_button.label: Télécharger
-components.javascript_required.browser_instructions: "Suivez les instructions pour activer JavaScript dans votre navigateur :"
+components.javascript_required.browser_instructions: 'Suivez les instructions pour activer JavaScript dans votre navigateur :'
 components.javascript_required.enabled_alert: Vous avez activé JavaScript dans votre navigateur.
 components.javascript_required.next_step: Veuillez rafraîchir cette page une fois que vous avez activé JavaScript dans votre navigateur.
 components.manageable_authenticator.cancel: Annuler
@@ -172,8 +172,8 @@ components.memorable_date.errors.range_overflow: Saisissez une date au plus tard
 components.memorable_date.errors.range_underflow: Saisissez une date au plus tôt le %{date}
 components.memorable_date.month: Mois
 components.memorable_date.year: Année
-components.one_time_code_input.hint.alphanumeric: "Exemple : 123ABC"
-components.one_time_code_input.hint.numeric: "Exemple : 123456"
+components.one_time_code_input.hint.alphanumeric: 'Exemple : 123ABC'
+components.one_time_code_input.hint.numeric: 'Exemple : 123456'
 components.one_time_code_input.label: Code à usage unique
 components.password_confirmation.confirm_label: Confirmer le mot de passe
 components.password_confirmation.errors.empty: Saisissez à nouveau votre mot de passe
@@ -183,8 +183,8 @@ components.password_toggle.label: Mot de passe
 components.password_toggle.toggle_label: Afficher le mot de passe
 components.phone_input.country_code_label: Indicatif pays
 components.print_button.label: Imprimer
-components.troubleshooting_options.default_heading: "Des difficultés ? Voici ce que vous pouvez faire :"
-components.troubleshooting_options.ipp_heading: "Options de dépannage supplémentaires :"
+components.troubleshooting_options.default_heading: 'Des difficultés ? Voici ce que vous pouvez faire :'
+components.troubleshooting_options.ipp_heading: 'Options de dépannage supplémentaires :'
 countries.ad: Andorre
 countries.ae: Émirats arabes unis
 countries.af: Afghanistan
@@ -413,8 +413,8 @@ date.day_names.4: jeudi
 date.day_names.5: vendredi
 date.day_names.6: samedi
 date.day_names.7: dimanche
-date.formats.long: "%-d %B %Y"
-date.formats.short: "%A, %-d %B"
+date.formats.long: '%-d %B %Y'
+date.formats.short: '%A, %-d %B'
 date.month_names.0:
 date.month_names.1: janvier
 date.month_names.10: octobre
@@ -429,20 +429,20 @@ date.month_names.7: juillet
 date.month_names.8: août
 date.month_names.9: septembre
 date.range: du %{from} au %{to}
-datetime.dotiw.last_word_connector: " et "
+datetime.dotiw.last_word_connector: ' et '
 datetime.dotiw.minutes.one: 1 minute
-datetime.dotiw.minutes.other: "%{count} minutes"
+datetime.dotiw.minutes.other: '%{count} minutes'
 datetime.dotiw.seconds.one: 1 seconde
-datetime.dotiw.seconds.other: "%{count} secondes"
-datetime.dotiw.two_words_connector: " et "
-datetime.dotiw.words_connector: ", "
+datetime.dotiw.seconds.other: '%{count} secondes'
+datetime.dotiw.two_words_connector: ' et '
+datetime.dotiw.words_connector: ', '
 devise.confirmations.already_confirmed: Votre adresse e-mail a déjà été confirmée. %{action}
 devise.confirmations.confirmed: Vous avez confirmé votre adresse e-mail
 devise.confirmations.confirmed_but_must_set_password: Vous avez confirmé votre adresse e-mail
 devise.confirmations.confirmed_but_remove_from_other_account: Cette adresse e-mail est déjà associée à un compte %{app_name}, nous ne pouvons donc pas l’ajouter à un autre compte. Vous devez d’abord la supprimer ou la retirer du compte auquel elle est associée. Pour ce faire, connectez-vous avec cette adresse e-mail.
 devise.confirmations.confirmed_but_sign_in: Vous avez confirmé votre adresse e-mail. Veuillez vous connecter pour voir votre profil.
 devise.confirmations.sign_in: Veuillez vous connecter.
-devise.failure.already_authenticated: ""
+devise.failure.already_authenticated: ''
 devise.failure.inactive: Votre compte n’est pas activé.
 devise.failure.invalid_html: L’adresse e-mail ou le mot de passe que vous avez saisi est erroné. Essayez de %{link_html}.
 devise.failure.invalid_link_text: réinitialiser votre mot de passe
@@ -465,7 +465,7 @@ devise.passwords.updated: Votre mot de passe a été modifié. Vous êtes mainte
 devise.passwords.updated_not_active: Votre mot de passe a été modifié. Veuillez vous connecter avec votre nouveau mot de passe.
 devise.registrations.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
 devise.registrations.destroyed: Votre compte a bien été supprimé.
-devise.sessions.signed_in: ""
+devise.sessions.signed_in: ''
 devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo
 doc_auth.accessible_labels.camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
@@ -473,7 +473,7 @@ doc_auth.accessible_labels.document_capture_dialog: Capture du document
 doc_auth.buttons.add_new_photos: Ajouter de nouvelles photos
 doc_auth.buttons.close: Fermer
 doc_auth.buttons.continue: Suite
-doc_auth.buttons.take_or_upload_picture_html: "<lg-take-photo>Prendre une photo</lg-take-photo><lg-or> ou </lg-or><lg-upload>Télécharger une photo</lg-upload>"
+doc_auth.buttons.take_or_upload_picture_html: '<lg-take-photo>Prendre une photo</lg-take-photo><lg-or> ou </lg-or><lg-upload>Télécharger une photo</lg-upload>'
 doc_auth.buttons.take_picture: Prendre une photo
 doc_auth.buttons.take_picture_retry: Reprendre la photo
 doc_auth.buttons.upload_picture: Télécharger une photo
@@ -498,7 +498,7 @@ doc_auth.errors.alerts.visible_photo_check: Nous n’avons pas pu vérifier la p
 doc_auth.errors.barcode_attention.confirm_info: Si les informations ci-dessous sont incorrectes, veuillez télécharger de nouvelles photos de votre pièce d’identité délivrée par l’État.
 doc_auth.errors.barcode_attention.heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
 doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
-doc_auth.errors.camera.blocked_detail_html: "<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>"
+doc_auth.errors.camera.blocked_detail_html: '<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>'
 doc_auth.errors.camera.failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
 doc_auth.errors.card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un État.
 doc_auth.errors.doc.doc_type_check: Votre permis de conduire ou votre carte d’identité doit être délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires.
@@ -568,7 +568,7 @@ doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité et accéder à <strong>%{service_provider_name}</strong> et à ses services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
-doc_auth.hybrid_flow_warning.only_add_if_text: "N’AJOUTEZ VOTRE PIÈCE D’IDENTITÉ QUE SI :"
+doc_auth.hybrid_flow_warning.only_add_if_text: 'N’AJOUTEZ VOTRE PIÈCE D’IDENTITÉ QUE SI :'
 doc_auth.hybrid_flow_warning.only_add_own_account: Vous utilisez votre propre compte %{app_name}
 doc_auth.hybrid_flow_warning.only_add_phone_verify: Vous avez demandé à %{app_name} de confirmer votre identité à l’aide de votre téléphone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: Vous essayez d’accéder aux services de <strong>%{service_provider_name}</strong>
@@ -580,12 +580,12 @@ doc_auth.info.capture_status_small_document: Approchez-vous
 doc_auth.info.capture_status_tap_to_capture: Appuyez pour prendre la photo
 doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
-doc_auth.info.getting_started_html: "%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}"
+doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
 doc_auth.info.how_to_verify: Vous avez la possibilité de vérifier votre identité en ligne ou en personne dans un bureau de poste participant.
 doc_auth.info.how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de confirmer votre identité ?
 doc_auth.info.hybrid_handoff: Nous recueillerons des informations vous concernant en lisant votre pièce d’identité délivrée par un État.
-doc_auth.info.hybrid_handoff_ipp_html: "<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant."
+doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
 doc_auth.info.image_loaded: Image chargée
 doc_auth.info.image_loading: Image en cours de chargement
 doc_auth.info.image_updated: Image mise à jour
@@ -593,7 +593,7 @@ doc_auth.info.interstitial_eta: Cette opération peut prendre jusqu’à une min
 doc_auth.info.interstitial_thanks: Merci de votre patience !
 doc_auth.info.keep_window_open: Ne fermez pas cette fenêtre.
 doc_auth.info.learn_more: En savoir plus sur la façon dont nous protégeons vos informations confidentielles
-doc_auth.info.lets_go: "La vérification de l’identité se fait en deux temps :"
+doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps :'
 doc_auth.info.link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité délivrée par l’État.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
@@ -617,13 +617,13 @@ doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité,
 doc_auth.info.verify_online_description: Cette option est préférable si vous disposez d’un téléphone pour prendre des photos de votre pièce d’identité.
 doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne. La plupart des utilisateurs effectuent l’ensemble du processus en une seule fois.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
-doc_auth.info.you_entered: "Vous avez saisi :"
+doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Présenter votre permis de conduire ou votre carte d’identité d’un État
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
 doc_auth.instructions.consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos renseignements personnels. Nous les utiliserons pour confirmer votre identité.
-doc_auth.instructions.getting_started: "Vous devrez :"
+doc_auth.instructions.getting_started: 'Vous devrez :'
 doc_auth.instructions.learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
 doc_auth.instructions.switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité.
 doc_auth.instructions.switch_back_image: Flèche pointant du téléphone vers l’ordinateur
@@ -643,7 +643,7 @@ doc_auth.tips.document_capture_selfie_text1: Retirez tous articles ou accessoire
 doc_auth.tips.document_capture_selfie_text2: Prenez votre photo dans un endroit bien éclairé.
 doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre.
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage soit visible à l’intérieur du cercle vert.
-doc_auth.tips.review_issues_id_header_text: "Examinez les images de votre carte d’identité délivrée par l’État :"
+doc_auth.tips.review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État :'
 doc_auth.tips.review_issues_id_text1: Avez-vous utilisé un arrière-plan de couleur sombre ?
 doc_auth.tips.review_issues_id_text2: Avez-vous pris la photo sur une surface plane ?
 doc_auth.tips.review_issues_id_text3: Le flash de votre appareil photo est-il éteint ?
@@ -656,7 +656,7 @@ email_addresses.delete.confirm: Êtes-vous sûr de vouloir supprimer %{email} ?
 email_addresses.delete.failure: Nous n’avons pas pu supprimer cette adresse e-mail.
 email_addresses.delete.success: L’adresse e-mail a été supprimée.
 email_addresses.delete.warning: Si vous supprimez votre adresse e-mail
-email_addresses.unconfirmed: "(non confirmé)"
+email_addresses.unconfirmed: '(non confirmé)'
 errors.account_reset.cancel_token_invalid: le jeton d’annulation n’est pas valide
 errors.account_reset.cancel_token_missing: le jeton d’annulation est manquant
 errors.account_reset.granted_token_expired: Le lien pour supprimer votre compte %{app_name} a expiré. Veuillez créer une autre demande pour supprimer votre compte.
@@ -759,7 +759,7 @@ event_types.authenticated_at_html: Connecté à %{service_provider_link_html}
 event_types.authenticator_disabled: Appli d’authentification supprimée
 event_types.authenticator_enabled: Appli d’authentification ajoutée
 event_types.backup_codes_added: Codes de sauvegarde ajoutés
-event_types.eastern_timestamp: "%{timestamp} (heure de l’Est)"
+event_types.eastern_timestamp: '%{timestamp} (heure de l’Est)'
 event_types.email_changed: Adresse e-mail modifiée
 event_types.email_deleted: Adresse e-mail supprimée
 event_types.gpo_mail_sent: Lettre envoyée
@@ -792,7 +792,7 @@ forms.backup_code.generate: Obtenir des codes
 forms.backup_code.last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
 forms.backup_code.regenerate: Obtenir de nouveaux codes
 forms.backup_code.saved: J’ai placé mes codes de sauvegarde en lieu sûr.
-forms.backup_code.subinfo_html: "<strong>Si vous perdez votre appareil, vous aurez besoin de ces codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les et placez-les en lieu sûr."
+forms.backup_code.subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les et placez-les en lieu sûr.'
 forms.backup_code.title: Enregistrer ces codes de sauvegarde
 forms.buttons.back: Retour
 forms.buttons.cancel: Oui, annuler
@@ -812,7 +812,7 @@ forms.buttons.submit.update: Mettre à jour
 forms.buttons.upload_photos: Télécharger des photos
 forms.confirmation.show_hdr: Créer un mot de passe fort
 forms.email.buttons.delete: Supprimer l’adresse e-mail
-forms.example: "Exemple :"
+forms.example: 'Exemple :'
 forms.messages.remember_device: Se souvenir de ce navigateur
 forms.password: Mot de passe
 forms.passwords.edit.buttons.submit: Modifier le mot de passe
@@ -849,7 +849,7 @@ forms.two_factor.try_again: Utiliser un autre numéro de téléphone
 forms.validation.required_checkbox: Veuillez cocher cette case pour continuer
 forms.webauthn_platform_setup.continue: Suite
 forms.webauthn_platform_setup.info_text: Vous aurez besoin de configurer une autre méthode d’authentification après la configuration du déverrouillage facial ou tactile.
-forms.webauthn_platform_setup.intro_html: "<p>Authentifiez-vous de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode.</p><p>Si vous utilisez un gestionnaire de mots de passe tel que le trousseau iCloud ou le gestionnaire de mots de passe Google, il peut vous demander d’enregistrer une clé d’accès. Cela vous permet de vous authentifier sur n’importe quel appareil à l’aide de ce gestionnaire de mots de passe. %{link}</p>"
+forms.webauthn_platform_setup.intro_html: '<p>Authentifiez-vous de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode.</p><p>Si vous utilisez un gestionnaire de mots de passe tel que le trousseau iCloud ou le gestionnaire de mots de passe Google, il peut vous demander d’enregistrer une clé d’accès. Cela vous permet de vous authentifier sur n’importe quel appareil à l’aide de ce gestionnaire de mots de passe. %{link}</p>'
 forms.webauthn_platform_setup.intro_link_text: En savoir plus sur l’utilisation de plusieurs appareils.
 forms.webauthn_platform_setup.nickname: Surnom de l’appareil
 forms.webauthn_platform_setup.nickname_hint: Au cas où vous ajouteriez d’autres appareils pour le déverrouillage facial ou tactile, vous saurez les différencier.
@@ -929,8 +929,8 @@ help_text.requested_attributes.ial1_consent_reminder_html: Vous devez consentir 
 help_text.requested_attributes.ial1_intro_html: Nous partagerons vos informations avec <strong>%{sp}</strong> pour connecter votre compte.
 help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
   ng> a besoin de savoir qui vous êtes pour se connecter à votre compte. Vous devez consentir chaque année à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous partagerons ces informations :"
-help_text.requested_attributes.ial2_intro_html: "<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour connecter votre compte. Nous partagerons ces informations avec %{sp} :"
-help_text.requested_attributes.ial2_reverified_consent_info: "Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp} :"
+help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour connecter votre compte. Nous partagerons ces informations avec %{sp} :'
+help_text.requested_attributes.ial2_reverified_consent_info: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp} :'
 help_text.requested_attributes.phone: Numéro de téléphone
 help_text.requested_attributes.social_security_number: Numéro de sécurité sociale
 help_text.requested_attributes.verified_at: Mis à jour le
@@ -958,7 +958,7 @@ idv.cancel.description.exit.with_sp_html.1: Vous aurez toujours un compte %{app_
 idv.cancel.description.exit.without_sp.0: Si vous quittez la vérification d’identité et accédez à la page de votre compte, vous n’aurez pas vérifié votre identité.
 idv.cancel.description.exit.without_sp.1: Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou supprimer votre compte sur %{account_page_text}.
 idv.cancel.description.gpo.continue: Continuez pour recommencer et confirmer votre identité depuis le début.
-idv.cancel.description.gpo.start_over: "Si vous effacez vos informations et recommencez :"
+idv.cancel.description.gpo.start_over: 'Si vous effacez vos informations et recommencez :'
 idv.cancel.description.gpo.start_over_new_address: Pour envoyer votre lettre à une autre adresse, vous devrez recommencer et confirmer votre identité à la nouvelle adresse.
 idv.cancel.description.gpo.warnings.0: Le code de vérification dans votre lettre ne fonctionnera plus
 idv.cancel.description.gpo.warnings.1: Vous recommencerez la vérification de votre identité depuis le début
@@ -998,7 +998,7 @@ idv.failure.phone.rate_limited.gpo.button: Vérifier par courrier
 idv.failure.phone.rate_limited.heading: Nous n’avons pas pu confirmer votre identité par téléphone
 idv.failure.phone.rate_limited.option_try_again_later_html: Annuler et recommencer après <strong>%{time_left}</strong>
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Vérifier par courrier, ce qui prend <strong>5 à 10 jours</strong>.
-idv.failure.phone.rate_limited.options_header: "Vous pouvez :"
+idv.failure.phone.rate_limited.options_header: 'Vous pouvez :'
 idv.failure.phone.timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez réessayer.
 idv.failure.phone.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
 idv.failure.phone.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
@@ -1010,7 +1010,7 @@ idv.failure.phone.warning.heading: Nous n’avons pas pu vous associer à ce num
 idv.failure.phone.warning.learn_more_link: En savoir plus sur quel numéro de téléphone utiliser
 idv.failure.phone.warning.next_steps_html: Essayez <strong>un autre</strong> numéro que vous utilisez souvent et depuis longtemps. Il peut s’agir d’un numéro professionnel ou personnel.
 idv.failure.phone.warning.try_again_button: Essayez un autre numéro
-idv.failure.phone.warning.you_entered: "Vous avez saisi :"
+idv.failure.phone.warning.you_entered: 'Vous avez saisi :'
 idv.failure.sessions.exception: Une erreur interne s’est produite lors du traitement de votre demande.
 idv.failure.sessions.fail_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier des renseignements personnels en ligne. <strong>Réessayez dans %{timeout}.</strong>
 idv.failure.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
@@ -1042,7 +1042,7 @@ idv.form.ssn: Numéro de sécurité sociale
 idv.form.ssn_label: Numéro de sécurité sociale
 idv.form.state: État
 idv.form.zipcode: Code postal
-idv.gpo.address_accordion.body: "Nous avons envoyé une lettre avec votre code de vérification à :"
+idv.gpo.address_accordion.body: 'Nous avons envoyé une lettre avec votre code de vérification à :'
 idv.gpo.address_accordion.cta_html: Ce n’est pas la bonne adresse? %{cta_link_html}
 idv.gpo.address_accordion.cta_link: Effacez vos renseignements et recommencez.
 idv.gpo.address_accordion.title: Où ma lettre a-t-elle été envoyée?
@@ -1064,15 +1064,15 @@ idv.gpo.title: Saisir votre code de vérification
 idv.images.come_back_later: Lettre avec une coche
 idv.messages.activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier les informations qui ont été vérifiées, veuillez %{link_html}.
 idv.messages.activated_link: nous contacter
-idv.messages.come_back_later_html: "<p>Les lettres mettent <strong>5 à 10 jours</strong> pour arriver par courrier prioritaire via USPS.</p> <p>Une fois votre lettre arrivée, connectez-vous à %{app_name} et saisissez votre code de vérification lorsque vous y êtes invité.</p>"
+idv.messages.come_back_later_html: '<p>Les lettres mettent <strong>5 à 10 jours</strong> pour arriver par courrier prioritaire via USPS.</p> <p>Une fois votre lettre arrivée, connectez-vous à %{app_name} et saisissez votre code de vérification lorsque vous y êtes invité.</p>'
 idv.messages.come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte %{app_name}</strong> pour le moment.
-idv.messages.come_back_later_password_html: "<strong>N’oubliez pas votre mot de passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code de vérification figurant dans votre lettre ne fonctionnera plus et vous serez obligé de vérifier à nouveau votre identité."
+idv.messages.come_back_later_password_html: '<strong>N’oubliez pas votre mot de passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code de vérification figurant dans votre lettre ne fonctionnera plus et vous serez obligé de vérifier à nouveau votre identité.'
 idv.messages.come_back_later_sp_html: Vous pouvez retourner à <strong>%{sp}</strong> pour le moment.
 idv.messages.confirm: Nous avons sécurisé vos informations vérifiées
-idv.messages.enter_password.by_mail_password_reminder_html: "<strong>Mémorisez votre mot de passe.</strong> Le code de vérification contenu dans votre lettre ne fonctionnera pas si vous réinitialisez votre mot de passe par la suite."
-idv.messages.enter_password.message: "%{app_name} chiffre vos informations avec votre mot de passe. Cela signifie que vos informations sont sécurisées et que vous seul pourrez y accéder ou les modifier."
+idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Mémorisez votre mot de passe.</strong> Le code de vérification contenu dans votre lettre ne fonctionnera pas si vous réinitialisez votre mot de passe par la suite.'
+idv.messages.enter_password.message: '%{app_name} chiffre vos informations avec votre mot de passe. Cela signifie que vos informations sont sécurisées et que vous seul pourrez y accéder ou les modifier.'
 idv.messages.enter_password.phone_verified: Nous avons vérifié votre numéro de téléphone
-idv.messages.gpo.address_on_file: "Nous enverrons la lettre à l’adresse que vous avez vérifiée précédemment :"
+idv.messages.gpo.address_on_file: 'Nous enverrons la lettre à l’adresse que vous avez vérifiée précédemment :'
 idv.messages.gpo.another_letter_on_the_way: Nous vous envoyons une autre lettre
 idv.messages.gpo.info_alert: Vous devrez attendre de recevoir votre lettre pour achever la vérification de votre identité.
 idv.messages.gpo.learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
@@ -1082,7 +1082,7 @@ idv.messages.gpo.start_over_html: Si ce n’est pas la bonne adresse, vous devre
 idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
-idv.messages.phone.alert_html: "<strong>Saisissez un numéro de téléphone qui est :</strong>"
+idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons ce numéro dans nos données et vous enverrons un code à usage unique. L’objectif est d’aider à vérifier votre identité.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
 idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
@@ -1090,7 +1090,7 @@ idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
 idv.messages.phone.failed_number.try_again_html: Essayez un <strong>autre</strong> numéro.
 idv.messages.phone.rules.0: Basé aux Etats-Unis (y compris les territoires américains)
 idv.messages.phone.rules.1: Votre numéro principal (celui que vous utilisez le plus souvent)
-idv.messages.return_to_profile: "‹ Revenir à votre profil %{app_name}"
+idv.messages.return_to_profile: '‹ Revenir à votre profil %{app_name}'
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
 idv.messages.sessions.no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à des fins de démonstration uniquement) - SITE DE TEST
 idv.messages.verify_info: Nous lisons vos informations à partir de votre pièce d’identité. Passez-les en revue et mettez-les à jour avant de les envoyer pour vérification.
@@ -1103,7 +1103,7 @@ idv.titles.otp_delivery_method: Comment devrions-nous envoyer un code ?
 idv.titles.session.enter_password: Ressaisissez votre mot de passe %{app_name}
 idv.titles.session.enter_password_letter: Ressaisissez votre mot de passe %{app_name} pour envoyer votre lettre
 idv.titles.unavailable: Nous travaillons à la résolution d’une erreur
-idv.troubleshooting.headings.need_assistance: "Vous avez besoin d’une assistance immédiate ? Voici comment obtenir de l’aide :"
+idv.troubleshooting.headings.need_assistance: 'Vous avez besoin d’une assistance immédiate ? Voici comment obtenir de l’aide :'
 idv.troubleshooting.options.contact_support: Contacter le service d’assistance de %{app_name}
 idv.troubleshooting.options.doc_capture_tips: Conseils pour prendre des photos nettes de votre pièce d’identité
 idv.troubleshooting.options.get_help_at_sp: Obtenir de l’aide sur %{sp_name}
@@ -1114,9 +1114,9 @@ idv.troubleshooting.options.learn_more_verify_in_person: En savoir plus sur la v
 idv.troubleshooting.options.supported_documents: En savoir plus sur les pièces d’identité acceptées
 idv.troubleshooting.options.verify_by_mail: Vérifier plutôt votre adresse par courrier
 idv.unavailable.exit_button: Quitter %{app_name}
-idv.unavailable.idv_explanation.with_sp_html: "<strong>%{sp}</strong> doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous."
+idv.unavailable.idv_explanation.with_sp_html: '<strong>%{sp}</strong> doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.'
 idv.unavailable.idv_explanation.without_sp: L’organisme auquel vous essayez d’accéder doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.
-idv.unavailable.next_steps_html: "%{status_page_link_html} ou quittez le site %{app_name} et réessayez plus tard."
+idv.unavailable.next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et réessayez plus tard.'
 idv.unavailable.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
 idv.unavailable.technical_difficulties: Malheureusement, nous rencontrons des difficultés techniques et ne pouvons pas vérifier votre identité pour le moment.
 idv.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
@@ -1124,16 +1124,14 @@ idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation:
-  "Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
-
-  "
+  "Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.\n"
 idv.warning.state_id.heading: Nous travaillons à la résolution d’une erreur
 idv.warning.state_id.next_steps.items_html.0: Réessayer maintenant <strong>ou</strong>
 idv.warning.state_id.next_steps.items_html.1: Quitter %{app_name} et réessayer plus tard
-idv.warning.state_id.next_steps.preamble: "Vous pouvez :"
+idv.warning.state_id.next_steps.preamble: 'Vous pouvez :'
 idv.warning.state_id.try_again_button: Réessayer
 idv.welcome.no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
-idv.welcome.no_js_intro: "%{sp_name} a besoin de vous pour vérifier votre identité. Vous devez activer JavaScript pour poursuivre ce processus."
+idv.welcome.no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous devez activer JavaScript pour poursuivre ce processus.'
 image_description.camera_mobile_phone: Flash de l’appareil photo d’un téléphone portable
 image_description.delete: Poubelle rouge
 image_description.error: Erreur X rouge
@@ -1172,7 +1170,7 @@ in_person_proofing.body.location.info: Aucun rendez-vous n’est nécessaire pou
 in_person_proofing.body.location.inline_error: Saisissez une adresse valide avec la ville, l’État et le code postal
 in_person_proofing.body.location.location_button: Sélectionner
 in_person_proofing.body.location.po_search.address_label: Adresse
-in_person_proofing.body.location.po_search.address_search_hint: "Exemple : 1234 N Example St., Allentown, PA 12345"
+in_person_proofing.body.location.po_search.address_search_hint: 'Exemple : 1234 N Example St., Allentown, PA 12345'
 in_person_proofing.body.location.po_search.address_search_label: Saisissez une adresse pour trouver un bureau de poste près de chez vous.
 in_person_proofing.body.location.po_search.city_label: Ville
 in_person_proofing.body.location.po_search.is_searching_message: Recherche des bureaux de poste en cours…
@@ -1186,39 +1184,39 @@ in_person_proofing.body.location.po_search.search_button: Rechercher
 in_person_proofing.body.location.po_search.state_label: État
 in_person_proofing.body.location.po_search.zipcode_label: Code postal
 in_person_proofing.body.location.retail_hours_heading: Heures d’ouverture
-in_person_proofing.body.location.retail_hours_sat: "Sam :"
-in_person_proofing.body.location.retail_hours_sun: "Dim :"
-in_person_proofing.body.location.retail_hours_weekday: "Du lundi au vendredi :"
-in_person_proofing.body.location.selection: "Voici le bureau que vous avez sélectionné :"
-in_person_proofing.body.prepare.privacy_disclaimer: "%{app_name} est un site Web sécurisé de l’administration. La Poste des États-Unis et nous utilisons vos données pour confirmer votre identité."
+in_person_proofing.body.location.retail_hours_sat: 'Sam :'
+in_person_proofing.body.location.retail_hours_sun: 'Dim :'
+in_person_proofing.body.location.retail_hours_weekday: 'Du lundi au vendredi :'
+in_person_proofing.body.location.selection: 'Voici le bureau que vous avez sélectionné :'
+in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} est un site Web sécurisé de l’administration. La Poste des États-Unis et nous utilisons vos données pour confirmer votre identité.'
 in_person_proofing.body.prepare.privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
 in_person_proofing.body.prepare.privacy_disclaimer_questions: Des questions ?
-in_person_proofing.body.prepare.verify_step_about: "Suivez les étapes ci-dessous pour générer le code-barres que vous emporterez avec vous au bureau de poste :"
+in_person_proofing.body.prepare.verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que vous emporterez avec vous au bureau de poste :'
 in_person_proofing.body.prepare.verify_step_enter_phone: Saisissez votre numéro de téléphone principal ou celui que vous utilisez le plus souvent.
 in_person_proofing.body.prepare.verify_step_enter_pii: Saisissez votre nom, votre date de naissance, le numéro de votre pièce d’identité délivrée par l’État, votre adresse et votre numéro de sécurité sociale.
 in_person_proofing.body.prepare.verify_step_post_office: Trouver un bureau de poste participant près de chez vous.
-in_person_proofing.body.state_id.alert_message: "Votre pièce d’identité délivrée par un État ne doit pas être périmée. Les pièces d’identité acceptées sont les suivantes :"
+in_person_proofing.body.state_id.alert_message: 'Votre pièce d’identité délivrée par un État ne doit pas être périmée. Les pièces d’identité acceptées sont les suivantes :'
 in_person_proofing.body.state_id.id_types.0: Permis de conduire national
 in_person_proofing.body.state_id.id_types.1: Carte d’identité nationale de non-conducteur
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
 in_person_proofing.body.state_id.learn_more_link: En savoir plus sur les pièces d’identité acceptées.
 in_person_proofing.body.state_id.questions: Des questions ?
-in_person_proofing.form.address.errors.unsupported_chars: "Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères."
-in_person_proofing.form.address.state_prompt: "- Sélectionnez -"
+in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
+in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.address1: Adresse ligne 1
-in_person_proofing.form.state_id.address1_hint: "Exemple : 150 Calle A Apt 3"
+in_person_proofing.form.state_id.address1_hint: 'Exemple : 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Adresse ligne 2
-in_person_proofing.form.state_id.address2_hint: "Exemple : URB Las Gladiolas ou COND Miraflor"
+in_person_proofing.form.state_id.address2_hint: 'Exemple : URB Las Gladiolas ou COND Miraflor'
 in_person_proofing.form.state_id.city: Ville
-in_person_proofing.form.state_id.date_hint.day: "Exemple : 28"
-in_person_proofing.form.state_id.date_hint.month: "Exemple : 4"
-in_person_proofing.form.state_id.date_hint.year: "Exemple : 1986"
+in_person_proofing.form.state_id.date_hint.day: 'Exemple : 28'
+in_person_proofing.form.state_id.date_hint.month: 'Exemple : 4'
+in_person_proofing.form.state_id.date_hint.year: 'Exemple : 1986'
 in_person_proofing.form.state_id.dob: Date de naissance
-in_person_proofing.form.state_id.dob_hint: "Exemple : 4 28 1986"
-in_person_proofing.form.state_id.errors.unsupported_chars: "Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant les caractères de votre pièce d’identité."
+in_person_proofing.form.state_id.dob_hint: 'Exemple : 4 28 1986'
+in_person_proofing.form.state_id.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant les caractères de votre pièce d’identité.'
 in_person_proofing.form.state_id.first_name: Prénom
 in_person_proofing.form.state_id.identity_doc_address_state: État
-in_person_proofing.form.state_id.identity_doc_address_state_prompt: "- Sélectionnez -"
+in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.last_name: Nom de famille
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Saisissez une date de naissance
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
@@ -1228,10 +1226,10 @@ in_person_proofing.form.state_id.same_address_as_id_no: Non, j’habite à une a
 in_person_proofing.form.state_id.same_address_as_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État
 in_person_proofing.form.state_id.state_id_jurisdiction: État d’émission
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
-in_person_proofing.form.state_id.state_id_jurisdiction_prompt: "- Sélectionnez -"
+in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.state_id_number: Numéro de la pièce d’identité
 in_person_proofing.form.state_id.state_id_number_florida_hint_html: Il s’agit du numéro de votre carte d’identité comportant une lettre et&nbsp;12 chiffres. Exemple:&nbsp;D123-456-78-901-2
-in_person_proofing.form.state_id.state_id_number_hint: "Il peut comprendre des lettres, des chiffres et les symboles suivants :"
+in_person_proofing.form.state_id.state_id_number_hint: 'Il peut comprendre des lettres, des chiffres et les symboles suivants :'
 in_person_proofing.form.state_id.state_id_number_hint_asterisks: des astérisques
 in_person_proofing.form.state_id.state_id_number_hint_dashes: des tirets
 in_person_proofing.form.state_id.state_id_number_hint_forward_slashes: des barres obliques avant
@@ -1256,7 +1254,7 @@ in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé
 in_person_proofing.process.what_to_do.heading: Faites la queue
 in_person_proofing.process.what_to_do.info: Dites au préposé du bureau de poste que vous êtes là pour confirmer votre identité auprès de %{app_name}.
 instructions.account.reactivate.begin: Commençons.
-instructions.account.reactivate.explanation: "Lorsque vous avez créé votre compte, nous vous avons donné une liste de mots et vous avons demandé de les placer en lieu sûr. La liste ressemblait à ceci :"
+instructions.account.reactivate.explanation: 'Lorsque vous avez créé votre compte, nous vous avons donné une liste de mots et vous avons demandé de les placer en lieu sûr. La liste ressemblait à ceci :'
 instructions.account.reactivate.intro: Comme nous prenons des mesures supplémentaires pour maintenir vos informations sécurisées et confidentielles, la réinitialisation de votre mot de passe est un peu plus fastidieuse.
 instructions.account.reactivate.modal.copy: Si vous ne disposez pas de votre clé personnelle, vous devrez reconfirmer votre identité.
 instructions.account.reactivate.modal.heading: Vous ne disposez pas de votre clé personnelle ?
@@ -1265,8 +1263,8 @@ instructions.forgot_password.close_window: Vous pourrez fermer cette fenêtre de
 instructions.go_back_to_mobile_app: Pour continuer, veuillez retourner à l’appli %{friendly_name} et vous connecter.
 instructions.mfa.authenticator.confirm_code_html: Saisissez le code à partir de votre appli d’authentification. Si vous avez plusieurs comptes configurés dans votre appli, saisissez le code correspondant à %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: Ou saisissez ce code manuellement dans votre appli d’authentification
-instructions.mfa.piv_cac.account_not_found_html: "<p><strong>%{sign_in}</strong> avec votre adresse e-mail et votre mot de passe. Ensuite, ajoutez votre carte PIV/CAC à votre compte.</p> <p><strong>Vous n’avez pas de compte %{app_name}?</strong> %{create_account}</p>"
-instructions.mfa.piv_cac.add_from_sign_in_html: "<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre NIP</strong> (votre NIP a été créé lors de la configuration de votre carte PIV/CAC)."
+instructions.mfa.piv_cac.account_not_found_html: '<p><strong>%{sign_in}</strong> avec votre adresse e-mail et votre mot de passe. Ensuite, ajoutez votre carte PIV/CAC à votre compte.</p> <p><strong>Vous n’avez pas de compte %{app_name}?</strong> %{create_account}</p>'
+instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre NIP</strong> (votre NIP a été créé lors de la configuration de votre carte PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Veuillez choisir un certificat associé à une autre carte PIV/CAC ; contactez votre administrateur afin de vérifier que votre carte PIV/CAC est bien à jour. Si vous pensez qu’il s’agit d’une erreur, veuillez %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Retourner vous connecter
 instructions.mfa.piv_cac.confirm_piv_cac: Veuillez présenter la carte PIV/CAC que vous avez associée à votre compte.
@@ -1286,7 +1284,7 @@ instructions.mfa.sms.number_message_html: Nous avons envoyé un SMS (texto) avec
 instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
 instructions.mfa.webauthn_platform.learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
 instructions.mfa.webauthn.confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
-instructions.mfa.webauthn.confirm_webauthn_platform_html: "<p>Vous pouvez vous authentifier de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode. </p> <p>Si vous avez utilisé un gestionnaire de mots de passe pour configurer le déverrouillage facial ou tactile, vous pouvez vous authentifier à partir de n’importe quel appareil utilisant ce gestionnaire. Sinon, utilisez le même appareil que celui sur lequel vous avez configuré le déverrouillage facial ou tactile.</p>"
+instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Vous pouvez vous authentifier de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode. </p> <p>Si vous avez utilisé un gestionnaire de mots de passe pour configurer le déverrouillage facial ou tactile, vous pouvez vous authentifier à partir de n’importe quel appareil utilisant ce gestionnaire. Sinon, utilisez le même appareil que celui sur lequel vous avez configuré le déverrouillage facial ou tactile.</p>'
 instructions.mfa.wrong_number: Vous avez saisi un mauvais numéro de téléphone ?
 instructions.password.forgot: Vous ne connaissez pas votre mot de passe ? Réinitialisez-le après avoir confirmé votre adresse e-mail.
 instructions.password.help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels que ceux de vos banques, adresses e-mail et comptes de réseaux sociaux. N’incluez pas de mots figurant dans votre adresse e-mail.
@@ -1298,21 +1296,21 @@ instructions.password.strength.1: Faible
 instructions.password.strength.2: Moyen
 instructions.password.strength.3: Bonne
 instructions.password.strength.4: Excellente
-instructions.password.strength.intro: "Force du mot de passe : "
+instructions.password.strength.intro: 'Force du mot de passe : '
 instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
 links.account.reactivate.with_key: J’ai ma clé
 links.account.reactivate.without_key: Je n’ai pas ma clé
 links.back_to_sp: Retour à %{sp}
 links.cancel: Annuler
-links.cancel_account_creation: "‹ Annuler la création du compte"
+links.cancel_account_creation: '‹ Annuler la création du compte'
 links.contact: Contact
 links.continue_sign_in: Continuer la connexion
 links.create_account: Créer un compte
 links.exit_login: Quitter %{app_name}
 links.go_back: Retour
 links.help: Aide
-links.new_tab: "(ouvre un nouvel onglet)"
+links.new_tab: '(ouvre un nouvel onglet)'
 links.passwords.forgot: Mot de passe oublié ?
 links.privacy_policy: Confidentialité et sécurité
 links.resend: Renvoyer
@@ -1427,8 +1425,8 @@ saml_idp.shared.saml_post_binding.heading: Valider pour continuer
 saml_idp.shared.saml_post_binding.no_js: JavaScript semble être désactivé dans votre navigateur. Normalement, cette étape se produit automatiquement, mais comme vous avez désactivé JavaScript, veuillez cliquer sur le bouton « Valider » pour poursuivre la connexion ou la déconnexion.
 service_providers.errors.generic_sp_name: Cet organisme
 service_providers.errors.inactive.button_text: Voir mon compte %{app_name}
-service_providers.errors.inactive.heading: "%{sp_name} n’utilise plus %{app_name}"
-service_providers.errors.inactive.instructions: "%{sp_name} n’utilise plus %{app_name} comme service de connexion pour son site Web. Si vous avez déjà créé un compte %{app_name}, sachez qu’il est toujours actif et qu’il peut être utilisé pour accéder aux autres sites Web participants de l’administration."
+service_providers.errors.inactive.heading: '%{sp_name} n’utilise plus %{app_name}'
+service_providers.errors.inactive.instructions: '%{sp_name} n’utilise plus %{app_name} comme service de connexion pour son site Web. Si vous avez déjà créé un compte %{app_name}, sachez qu’il est toujours actif et qu’il peut être utilisé pour accéder aux autres sites Web participants de l’administration.'
 service_providers.errors.inactive.instructions2: Pour plus d’informations, veuillez vous rendre sur le site de l’organisme concerné pour le contacter.
 shared.banner.fake_site: Un site Web de DÉMONSTRATION des autorités des États-Unis
 shared.banner.gov_description_html: Un site Web <strong>.gov</strong> appartient à un organisme officiel des États-Unis.
@@ -1443,13 +1441,13 @@ shared.footer_lite.gsa: Administration des services généraux des États-Unis
 shared.skip_link: Passer au contenu principal
 sign_up.agree_and_continue: Accepter et continuer
 sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos informations.
-sign_up.cancel.warning_header: "Si vous annulez maintenant :"
+sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
-simple_form.error_notification.default_message: "Veuillez examiner les problèmes ci-dessous :"
+simple_form.error_notification.default_message: 'Veuillez examiner les problèmes ci-dessous :'
 simple_form.no: Non
-simple_form.required.html: ""
-simple_form.required.mark: ""
+simple_form.required.html: ''
+simple_form.required.mark: ''
 simple_form.required.text: Ce champ est obligatoire
 simple_form.yes: Oui
 step_indicator.accessible_label: Progression par étapes
@@ -1465,13 +1463,13 @@ step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
 time.am: A.M.
-time.formats.event_date: "%-d %B %Y"
-time.formats.event_time: "%-l h %M %p"
-time.formats.event_timestamp: "%-d %B %Y à %-l h %M %p"
-time.formats.event_timestamp_js: "%{day} %{month} %{year} à %{hour} h %{minute}"
-time.formats.event_timestamp_utc: "%-d %B %Y à %-l h %M %p UTC"
-time.formats.event_timestamp_with_zone: "%-d %B %Y à %-l h %M %p %Z"
-time.formats.sms_date: "%d/%m/%Y"
+time.formats.event_date: '%-d %B %Y'
+time.formats.event_time: '%-l h %M %p'
+time.formats.event_timestamp: '%-d %B %Y à %-l h %M %p'
+time.formats.event_timestamp_js: '%{day} %{month} %{year} à %{hour} h %{minute}'
+time.formats.event_timestamp_utc: '%-d %B %Y à %-l h %M %p UTC'
+time.formats.event_timestamp_with_zone: '%-d %B %Y à %-l h %M %p %Z'
+time.formats.sms_date: '%d/%m/%Y'
 time.pm: P.M.
 titles.account: Compte
 titles.account_locked: Compte temporairement verrouillé
@@ -1528,7 +1526,7 @@ titles.sign_up.completion_consent_expired_ial1: Cela fait un an que vous nous av
 titles.sign_up.completion_consent_expired_ial2: Cela fait un an que vous nous avez donné votre consentement pour partager votre identité vérifiée
 titles.sign_up.completion_first_sign_in: Continuer vers %{sp}
 titles.sign_up.completion_ial2: Connecter vos informations vérifiées à %{sp}
-titles.sign_up.completion_new_attributes: "%{sp} demande de nouvelles informations"
+titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informations'
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
 titles.sign_up.confirmation: Continuer à vous connecter
@@ -1537,7 +1535,7 @@ titles.two_factor_setup: Configuration de l’authentification à deux facteurs
 titles.verify_email: Consulter vos e-mails
 titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
-two_factor_authentication.aal2_request.phishing_resistant_html: "<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral."
+two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
 two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
   strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité."
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
@@ -1557,8 +1555,8 @@ two_factor_authentication.auth_app.renamed: Votre méthode d’application d’a
 two_factor_authentication.backup_code_header_text: Saisissez votre code de sauvegarde
 two_factor_authentication.backup_code_prompt: Vous pouvez utiliser ce code de sauvegarde une seule fois. Après l’avoir envoyé, vous devrez utiliser un nouveau code de sauvegarde la fois suivante.
 two_factor_authentication.backup_codes.instructions: Si vous n’avez pas accès à un autre appareil, conservez vos codes de sauvegarde en lieu sûr. Si vous perdez vos codes de sauvegarde, vous ne pourrez plus vous connecter à %{app_name}.
-two_factor_authentication.backup_codes.warning_html: "<strong>Vous n’avez configuré que des codes de sauvegarde sur votre compte. </strong>Si vous avez accès à un autre appareil, tel qu’un téléphone, protégez votre compte à l’aide d’une autre méthode d’authentification."
-two_factor_authentication.choose_another_option: "‹ Choisir une autre méthode d’authentification"
+two_factor_authentication.backup_codes.warning_html: '<strong>Vous n’avez configuré que des codes de sauvegarde sur votre compte. </strong>Si vous avez accès à un autre appareil, tel qu’un téléphone, protégez votre compte à l’aide d’une autre méthode d’authentification.'
+two_factor_authentication.choose_another_option: '‹ Choisir une autre méthode d’authentification'
 two_factor_authentication.form_legend: Choisissez vos méthodes d’authentification
 two_factor_authentication.header_text: Saisissez votre code à usage unique
 two_factor_authentication.important_alert_icon: icône d’alerte importante
@@ -1652,8 +1650,8 @@ two_factor_authentication.two_factor_choice_options.auth_app: Application d’au
 two_factor_authentication.two_factor_choice_options.auth_app_info: Télécharger ou utiliser une appli d’authentification de votre choix pour générer des codes sécurisés.
 two_factor_authentication.two_factor_choice_options.backup_code: Codes de sauvegarde
 two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de 10 codes que vous pouvez imprimer ou enregistrer sur votre appareil. Lorsque vous utilisez le dernier code, nous générerons une nouvelle liste. Gardez à l’esprit que les codes de sauvegarde sont faciles à perdre.
-two_factor_authentication.two_factor_choice_options.configurations_added.one: "%{count} ajouté"
-two_factor_authentication.two_factor_choice_options.configurations_added.other: "%{count} ajouté"
+two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} ajouté'
+two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Ajouté
 two_factor_authentication.two_factor_choice_options.phone: SMS ou message vocal
 two_factor_authentication.two_factor_choice_options.phone_info: Recevoir un code sécurisé par SMS (texto) ou appel téléphonique.
@@ -1692,7 +1690,7 @@ two_factor_authentication.webauthn_roaming.nickname: Pseudo
 two_factor_authentication.webauthn_roaming.renamed: Votre méthode de clé de sécurité a été renommée avec succès
 two_factor_authentication.webauthn_use_key: Utiliser la clé de sécurité
 user_authorization_confirmation.continue: Suite
-user_authorization_confirmation.currently_logged_in: "Vous êtes déjà connecté avec l’adresse e-mail suivante :"
+user_authorization_confirmation.currently_logged_in: 'Vous êtes déjà connecté avec l’adresse e-mail suivante :'
 user_authorization_confirmation.or: Ou
 user_authorization_confirmation.sign_in: Changer d’adresse e-mail
 user_mailer.account_reinstated.subject: Votre compte est déverrouillé
@@ -1710,7 +1708,7 @@ user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{wait
 user_mailer.account_reset_granted.subject: Supprimer votre compte %{app_name}
 user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte %{app_name} pour annuler.
 user_mailer.account_reset_request.header: Votre compte sera supprimé dans %{interval}
-user_mailer.account_reset_request.intro_html: "Par mesure de sécurité, %{app_name} nécessite un processus en deux étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a un delai d’attente de %{waiting_period} si vous avez perdu l’accès à vos méthodes d’authentification et devez supprimer votre compte. Si vous trouvez vos méthodes d’authentification, vous pouvez vous connecter à votre compte %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après la période d’attente de %{waiting_period}, vous recevrez un e-mail qui vous demandera de confirmer la suppression de votre compte %{app_name}. Votre compte ne sera pas supprimé tant que vous n’aurez pas confirmé."
+user_mailer.account_reset_request.intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a un delai d’attente de %{waiting_period} si vous avez perdu l’accès à vos méthodes d’authentification et devez supprimer votre compte. Si vous trouvez vos méthodes d’authentification, vous pouvez vous connecter à votre compte %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après la période d’attente de %{waiting_period}, vous recevrez un e-mail qui vous demandera de confirmer la suppression de votre compte %{app_name}. Votre compte ne sera pas supprimé tant que vous n’aurez pas confirmé.'
 user_mailer.account_reset_request.subject: Comment supprimer votre compte %{app_name}
 user_mailer.account_verified.change_password_link: changer votre mot de passe
 user_mailer.account_verified.contact_link: nous contacter
@@ -1730,7 +1728,7 @@ user_mailer.email_added.subject: Nouvelle adresse e-mail ajoutée
 user_mailer.email_confirmation_instructions.first_sentence.confirmed: Vous tentez de changer votre adresse e-mail ?
 user_mailer.email_confirmation_instructions.first_sentence.unconfirmed: Merci d’avoir envoyé votre adresse e-mail.
 user_mailer.email_confirmation_instructions.footer: Ce lien expirera dans %{confirmation_period}.
-user_mailer.email_confirmation_instructions.header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou faire un copier-coller de l’ensemble du lien dans votre navigateur."
+user_mailer.email_confirmation_instructions.header: '%{intro} Veuillez cliquer sur le lien ci-dessous ou faire un copier-coller de l’ensemble du lien dans votre navigateur.'
 user_mailer.email_confirmation_instructions.link_text: Confirmer votre adresse e-mail
 user_mailer.email_confirmation_instructions.subject: Confirmer votre adresse e-mail
 user_mailer.email_deleted.header: Une adresse e-mail a été supprimée de votre profil %{app_name}.
@@ -1760,7 +1758,7 @@ user_mailer.in_person_failed.body.with_cta: Cliquez sur le bouton ou copiez le l
 user_mailer.in_person_failed.body.without_cta: Veuillez réessayer de confirmer votre identité sur le site Web de %{sp_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
 user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne
-user_mailer.in_person_failed.verifying_identity: "Lors de la vérification de votre identité :"
+user_mailer.in_person_failed.verifying_identity: 'Lors de la vérification de votre identité :'
 user_mailer.in_person_failed.verifying_step_not_expired: Votre carte d’identité délivrée par l’État ou votre permis de conduire ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
 user_mailer.in_person_please_call.body.contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez le code d’erreur <strong>%{support_code}</strong>.
 user_mailer.in_person_please_call.body.intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong> pour continuer à vérifier votre identité.
@@ -1781,7 +1779,7 @@ user_mailer.in_person_verified.next_sign_in.without_sp: Maintenant, cliquez sur 
 user_mailer.in_person_verified.sign_in: Se connecter
 user_mailer.in_person_verified.subject: Vous avez réussi à vérifier votre identité avec %{app_name}
 user_mailer.in_person_verified.warning_contact_us_html: Si vous n’avez pas essayé de confirmer votre identité en personne, veuillez vous connecter pour <a href="%{reset_password_url}">réinitialiser votre mot de passe</a>. Pour signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance de %{app_name}</a>.
-user_mailer.letter_reminder_14_days.body_html: "<p>Vous avez demandé une lettre avec un code de vérification le <strong>%{date_letter_was_sent}</strong>.</p><p>Reconnectez-vous à %{app_name} et saisissez le code de vérification pour terminer la vérification de votre identité. %{help_link}.</p>"
+user_mailer.letter_reminder_14_days.body_html: '<p>Vous avez demandé une lettre avec un code de vérification le <strong>%{date_letter_was_sent}</strong>.</p><p>Reconnectez-vous à %{app_name} et saisissez le code de vérification pour terminer la vérification de votre identité. %{help_link}.</p>'
 user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
 user_mailer.letter_reminder_14_days.finish: Terminer la vérification de votre identité
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: connectez-vous pour en demander une autre
@@ -1822,7 +1820,7 @@ user_mailer.phone_added.disavowal_link: réinitialiser votre mot de passe
 user_mailer.phone_added.help_html: Si vous n’avez pas apporté cette modification, connectez-vous à votre profil et gérez vos numéros de téléphone. Nous vous recommandons également de %{disavowal_link_html}.
 user_mailer.phone_added.intro: Un nouveau numéro de téléphone a été ajouté à votre profil %{app_name}.
 user_mailer.phone_added.subject: Nouveau numéro de téléphone ajouté
-user_mailer.please_reset_password.call_to_action: "Par précaution, nous avons désactivé votre mot de passe pour conserver vos informations en sécurité. Veuillez suivre les étapes ci-dessous pour réinitialiser votre mot de passe et sécuriser votre compte :"
+user_mailer.please_reset_password.call_to_action: 'Par précaution, nous avons désactivé votre mot de passe pour conserver vos informations en sécurité. Veuillez suivre les étapes ci-dessous pour réinitialiser votre mot de passe et sécuriser votre compte :'
 user_mailer.please_reset_password.intro: Nous avons détecté une activité inhabituelle sur votre compte %{app_name}. Nous nous inquiétons que quelqu’un d’autre que vous pourrait être en train d’essayer d’accéder à vos informations.
 user_mailer.please_reset_password.learn_more_link_text: En savoir plus sur les options qui s’offrent à vous
 user_mailer.please_reset_password.reminder_html: Pour rappel, <strong>%{app_name} ne vous demandera jamais vos identifiants de connexion par téléphone ou par e-mail</strong>. Vous pouvez prendre des mesures supplémentaires pour sécuriser votre compte en activant l’authentification à deux facteurs.
@@ -1840,9 +1838,9 @@ user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un n
 user_mailer.signup_with_your_email.intro_html: Cette adresse courriel est déjà associée à un compte %{app_name_html}, nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous connecter à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
 user_mailer.signup_with_your_email.link_text: Aller sur %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez sur %{app_name_html} pour le réinitialiser.
-user_mailer.suspended_create_account.message: "Il y a eu un problème lors de la création de votre compte %{app_name} avec cette adresse e-mail. Veuillez appeler notre centre de contact au %{contact_number} et indiquer le code suivant : %{support_code}."
+user_mailer.suspended_create_account.message: 'Il y a eu un problème lors de la création de votre compte %{app_name} avec cette adresse e-mail. Veuillez appeler notre centre de contact au %{contact_number} et indiquer le code suivant : %{support_code}.'
 user_mailer.suspended_create_account.subject: Nous ne parvenons pas à créer votre compte
-user_mailer.suspended_reset_password.message: "Une erreur s’est produite lors de la réinitialisation de votre mot de passe. Veuillez appeler notre centre de contact au %{contact_number} et indiquer le code suivant : %{support_code}."
+user_mailer.suspended_reset_password.message: 'Une erreur s’est produite lors de la réinitialisation de votre mot de passe. Veuillez appeler notre centre de contact au %{contact_number} et indiquer le code suivant : %{support_code}.'
 user_mailer.suspended_reset_password.subject: Nous n’avons pas pu réinitialiser votre mot de passe
 user_mailer.suspension_confirmed.contact_agency: Veuillez contacter l’organisme dont vous essayez d’accéder au service.
 user_mailer.suspension_confirmed.remain_locked: Nous avons terminé l’examen de votre compte %{app_name} et votre compte restera verrouillé.
@@ -1851,12 +1849,12 @@ users.delete.actions.cancel: Retour au profil
 users.delete.actions.delete: Supprimer le compte
 users.delete.bullet_1: Vous n’aurez pas de compte %{app_name}.
 users.delete.bullet_2_basic: Nous supprimerons votre adresse e-mail, votre mot de passe et votre numéro de téléphone
-users.delete.bullet_2_verified: "%{app_name} supprimera de notre système votre adresse e-mail, votre mot de passe, votre numéro de téléphone, votre nom, votre adresse, votre date de naissance et votre numéro de sécurité sociale."
+users.delete.bullet_2_verified: '%{app_name} supprimera de notre système votre adresse e-mail, votre mot de passe, votre numéro de téléphone, votre nom, votre adresse, votre date de naissance et votre numéro de sécurité sociale.'
 users.delete.bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations à l’aide de %{app_name}.
 users.delete.bullet_4: Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous n’avez plus de compte
 users.delete.heading: Êtes-vous sûr de vouloir supprimer votre compte ?
 users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez supprimer votre compte.
-users.delete.subheading: "Si vous supprimez votre compte :"
+users.delete.subheading: 'Si vous supprimez votre compte :'
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle
 users.personal_key.confirmation_error: Vous avez saisi une clé personnelle erronée.
@@ -1883,10 +1881,10 @@ valid_email.validations.email.invalid: L’adresse e-mail n’est pas valide
 vendor_outage.alerts.phone.default: Nous ne sommes pas actuellement en mesure de vérifier les téléphones. Veuillez utiliser une autre méthode d’authentification si vous en avez une ou réessayer ultérieurement.
 vendor_outage.alerts.phone.idv: Nous ne sommes pas actuellement en mesure de vérifier les téléphones. Veuillez réessayer ultérieurement ou vérifier votre adresse par courrier.
 vendor_outage.alerts.pinpoint.idv.header: Nous travaillons à la résolution d’une erreur
-vendor_outage.alerts.pinpoint.idv.message_html: "%{sp_name_html} doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous."
+vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.'
 vendor_outage.alerts.pinpoint.idv.options_html.0: Continuer maintenant et effectuer la vérification par courrier, qui nécessite <strong>5 à 10 jours</strong>.
 vendor_outage.alerts.pinpoint.idv.options_html.1: Quitter Login.gov.
-vendor_outage.alerts.pinpoint.idv.options_prompt: "Vous pouvez :"
+vendor_outage.alerts.pinpoint.idv.options_prompt: 'Vous pouvez :'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Malheureusement, nous rencontrons actuellement des difficultés techniques. %{link_html} pour savoir quand l’erreur est résolue.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
 vendor_outage.alerts.sms.default: Nous ne sommes pas actuellement en mesure d’envoyer de SMS (textos). Vous pouvez obtenir un code par appel téléphonique ou choisir une autre méthode d’authentification si vous en avez une.

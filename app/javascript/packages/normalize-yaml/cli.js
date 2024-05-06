@@ -16,12 +16,9 @@ const args = process.argv.slice(2);
 const files = args.filter((arg) => !arg.startsWith('-'));
 const flags = args.filter((arg) => arg.startsWith('-'));
 
-const doubleQuote = flags.includes('--double-quote');
-const prettierConfigOverride = doubleQuote ? { singleQuote: false } : {};
-
 /** @type {import('./index').NormalizeOptions} */
 const options = {
-  prettierConfig: { ...prettierConfig, ...prettierConfigOverride },
+  prettierConfig,
   exclude: /** @type {import('./index').Formatter[]} */ (
     [
       flags.includes('--disable-sort-keys') && 'sortKeys',

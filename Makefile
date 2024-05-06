@@ -214,8 +214,7 @@ normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, 
 	find ./config/locales/transliterate -type f -name '*.yml' -exec yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
 	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
 	find ./config/locales -not \( -path "./config/locales/telephony*" -o -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
-	xargs yarn normalize-yaml --double-quote
-	yarn normalize-yaml \
+		xargs yarn normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml
