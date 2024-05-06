@@ -4637,14 +4637,6 @@ module AnalyticsEvents
     track_event('Reactivate Account Visited')
   end
 
-  # A previous reCAPTCHA assessment was annotated
-  # @param [String] assessment_id Assessment reference identifier
-  # @param [String] reason Reason for annotating the assessment
-  # @param [String] annotation Type of annotation
-  def recaptcha_assessment_annotated(assessment_id:, reason:, annotation:, **extra)
-    track_event(:recaptcha_assessment_annotated, assessment_id:, reason:, annotation:, **extra)
-  end
-
   # The result of a reCAPTCHA verification request was received
   # @param [Hash] recaptcha_result Full reCAPTCHA response body
   # @param [Float] score_threshold Minimum value for considering passing result
