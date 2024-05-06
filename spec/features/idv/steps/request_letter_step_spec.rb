@@ -153,14 +153,14 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
     def confirm_rate_limited
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect(page).not_to have_link(
-        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        t('idv.messages.gpo.resend'),
       )
       # does not allow the user to go to the resend page manually
       visit idv_request_letter_path
 
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect(page).not_to have_link(
-        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        t('idv.messages.gpo.resend'),
       )
     end
   end

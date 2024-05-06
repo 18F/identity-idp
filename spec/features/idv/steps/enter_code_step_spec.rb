@@ -179,12 +179,19 @@ RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
       sign_in_live_with_2fa(user)
 
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
-      expect(page).to have_content t('idv.gpo.alert_info')
-      expect(page).to have_content t('idv.gpo.wrong_address')
+      expect(page).to have_content t('idv.gpo.intro')
+      expect(page).to have_content(
+        strip_tags(
+          t(
+            'idv.gpo.address_accordion.cta_html',
+            cta_link_html: t('idv.gpo.address_accordion.cta_link'),
+          ),
+        ),
+      )
       expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
       verify_no_rate_limit_banner
 
-      click_on t('idv.gpo.clear_and_start_over')
+      click_on t('idv.gpo.address_accordion.cta_link')
 
       expect(current_path).to eq idv_confirm_start_over_path
 
