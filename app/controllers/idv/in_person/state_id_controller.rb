@@ -55,7 +55,7 @@ module Idv
             redirect_url = idv_in_person_ssn_url
           end
 
-          redirect_to redirect_url if redirect_url
+          redirect_to redirect_url
         else
           render :show, locals: extra_view_variables
         end
