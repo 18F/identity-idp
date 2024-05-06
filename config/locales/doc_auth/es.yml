@@ -273,9 +273,9 @@ es:
       bullet2: Ingresar su número de Seguro Social
       bullet3: Hacer coincidir su número de teléfono
       bullet4: Volver a ingresar su contraseña de %{app_name}
-      consent: Al marcar esta casilla, usted permite que %{app_name} pida, utilice,
-        conserve y divulgue su información personal. La usaremos para verificar
-        su identidad.
+      consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
+        utilice, conserve y comparta su información personal. La utilizaremos
+        para verificar su identidad.
       getting_started: 'Necesitará:'
       learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
       switch_back: Vuelva a su computadora para finalizar la verificación de su identidad.
