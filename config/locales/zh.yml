@@ -1051,22 +1051,20 @@ idv.gpo.address_accordion.body: 我们把带有你验证代码的信寄发到了
 idv.gpo.address_accordion.cta_html: 地址不对？%{cta_link_html}
 idv.gpo.address_accordion.cta_link: 清除我的信息并重新开始。
 idv.gpo.address_accordion.title: 我的信寄发到哪里了？
-idv.gpo.alert_info: 我们把带有你验证码的信件寄到了：
+
 idv.gpo.alert_rate_limit_warning_html: 你现在不能再要求发信了。你此前曾在<strong>%{date_letter_was_sent}</strong> 要求过信件。
-idv.gpo.clear_and_start_over: 清除你的信息并重新开始。
+
 idv.gpo.did_not_receive_letter.form.instructions: 如果你收到了信，请输入信中由 10 个字符组成的代码。
 idv.gpo.did_not_receive_letter.intro_html: 你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>.
-idv.gpo.did_not_receive_letter.intro.be_patient_html: 请注意信件最多需要<strong> 10 天</strong>才能送到。感谢你的耐心。
-idv.gpo.did_not_receive_letter.intro.request_new_letter_link: 要求再发一封信
-idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html: 如果你尚未收到信，可以 <span>%{request_new_letter_link}</span>。
+
 idv.gpo.did_not_receive_letter.request_a_new_letter_html: 如果从你最近一次要求信件后 <strong>10 天</strong>已经过去了，或者你的验证代码已失效，请重新要求一封信。
 idv.gpo.did_not_receive_letter.title: 没收到信？
-idv.gpo.form.instructions: 输入你收到信中的由 10 个字符组成的代码。
+
 idv.gpo.form.otp_label: 验证码
 idv.gpo.form.submit: 提交
-idv.gpo.form.title: 确认你的账户
+
 idv.gpo.intro: 欢迎回来输入你收到信中的由 10 个字符组成的代码。
-idv.gpo.intro_html: "<p>如果你收到了信件，请在下面输入你的一次性代码 。</p><p>如果你的信件还没到，请耐心等待，因为信件最多需要 <strong>10 天</strong>才能送到。感谢你的耐心。</p>"
+
 idv.gpo.last_letter_request_message_html: 你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>。如果你的信件还没到，请耐心一点，因为信件有可能需要<strong>10 days</strong>才能送到。感谢你的耐心。
 idv.gpo.request_another_letter.button: 要求再发一封信
 idv.gpo.request_another_letter.instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>5 到 10 天</strong>到达。
@@ -1074,11 +1072,11 @@ idv.gpo.request_another_letter.learn_more_link: 对通过邮件验证你地址�
 idv.gpo.request_another_letter.title: 要求再发一封信？
 idv.gpo.return_to_profile: 返回你的用户资料
 idv.gpo.title: 输入你的验证代码
-idv.gpo.wrong_address: 地址不对？
+
 idv.images.come_back_later: 带有打勾符的信件
 idv.messages.activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
 idv.messages.activated_link: 联系我们
-idv.messages.clear_and_start_over: 清除我的信息并重新开始。
+
 idv.messages.come_back_later_html: "<p> 美国邮局平信一般需要 <strong> 5 到 10 天</strong> 送达。</p> <p> 你的信件到达后，请登录 %{app_name}，并按照提示输入你的验证码 </p>。"
 idv.messages.come_back_later_no_sp_html: 你目前可以返回你的<strong>%{app_name} 账户</strong> 了。
 idv.messages.come_back_later_password_html: "<strong>请勿忘记密码。</strong><br /> 如果你重设密码，信件中的一次性代码就会失效，你就需要再次验证身份。"
@@ -1139,9 +1137,7 @@ idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation:
-  "遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
-
-  "
+  "遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。\n"
 idv.warning.state_id.heading: 我们正在争取解决错误。
 idv.warning.state_id.next_steps.items_html.0: S现在再试一次<strong>或者</strong>
 idv.warning.state_id.next_steps.items_html.1: 退出 %{app_name}，稍后再试
