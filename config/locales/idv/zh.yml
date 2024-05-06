@@ -145,39 +145,37 @@ zh:
       state: 州
       zipcode: 邮编
     gpo:
-      alert_info: '我们把带有你验证码的信件寄到了：'
+      address_accordion:
+        body: '我们把带有你验证代码的信寄发到了：'
+        cta_html: 地址不对？%{cta_link_html}
+        cta_link: 清除我的信息并重新开始。
+        title: 我的信寄发到哪里了？
       alert_rate_limit_warning_html: 你现在不能再要求发信了。你此前曾在<strong>%{date_letter_was_sent}</strong> 要求过信件。
-      clear_and_start_over: 清除你的信息并重新开始。
       did_not_receive_letter:
         form:
           instructions: 如果你收到了信，请输入信中由 10 个字符组成的代码。
-        intro:
-          be_patient_html: 请注意信件最多需要<strong> 10 天</strong>才能送到。感谢你的耐心。
-          request_new_letter_link: 要求再发一封信
-          request_new_letter_prompt_html: 如果你尚未收到信，可以 <span>%{request_new_letter_link}</span>。
+        intro_html: 你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>.
+        request_a_new_letter_html: 如果从你最近一次要求信件后 <strong>10 天</strong>已经过去了，或者你的验证代码已失效，请重新要求一封信。
         title: 没收到信？
       form:
-        instructions: 输入你收到信中的由 10 个字符组成的代码。
         otp_label: 验证码
-        submit: 确认账户
-        title: 确认你的账户
-      intro_html:
-        '<p>如果你收到了信件，请在下面输入你的一次性代码 。</p><p>如果你的信件还没到，请耐心等待，因为信件最多需要
-        <strong>10 天</strong>才能送到。感谢你的耐心。</p>'
+        submit: 提交
+      intro: 欢迎回来输入你收到信中的由 10 个字符组成的代码。
+      last_letter_request_message_html:
+        你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>。如果你的信件还没到，请耐心一点，因为信件有可能需要<strong>10
+        days</strong>才能送到。感谢你的耐心。
       request_another_letter:
         button: 要求再发一封信
         instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>5 到 10 天</strong>到达。
         learn_more_link: 对通过邮件验证你地址获得更多了解
         title: 要求再发一封信？
       return_to_profile: 返回你的用户资料
-      title: 欢迎回来
-      wrong_address: 地址不对？
+      title: 输入你的验证代码
     images:
       come_back_later: 带有打勾符的信件
     messages:
       activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
       activated_link: 联系我们
-      clear_and_start_over: 清除我的信息并重新开始。
       come_back_later_html: <p> 美国邮局平信一般需要 <strong> 5 到 10 天</strong> 送达。</p> <p>
         你的信件到达后，请登录 %{app_name}，并按照提示输入你的验证码 </p>。
       come_back_later_no_sp_html: 你目前可以返回你的<strong>%{app_name} 账户</strong> 了。
@@ -211,8 +209,6 @@ zh:
           - 美国的（包括美国属地）
           - 你的主要号码（你最常用的）
       return_to_profile: '‹ 返回你的 %{app_name} 用户资料'
-      select_verification_with_sp: 为了保护你不受身份欺诈，我们会联系你确认该 %{sp_name} 账户是真实的。
-      select_verification_without_sp: 为了保护你不受身份欺诈，我们会联系你确认该账户是真实的。
       sessions:
         enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
         no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的） - 测试站点

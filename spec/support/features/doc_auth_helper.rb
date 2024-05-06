@@ -270,6 +270,38 @@ module DocAuthHelper
     )
   end
 
+  def mock_doc_auth_fail_face_match_fail
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_failure_with_face_match_fail,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_pass_and_portrait_match_not_live
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_success_with_portrait_match_not_live,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
   def mock_doc_auth_pass_face_match_pass_no_address1
     response = instance_double(
       Faraday::Response,

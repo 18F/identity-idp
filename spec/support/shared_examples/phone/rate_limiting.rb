@@ -1,4 +1,4 @@
-RSpec.shared_examples 'phone rate limitting' do |delivery_method|
+RSpec.shared_examples 'phone rate limiting' do |delivery_method|
   let(:max_confirmation_attempts) { 4 }
   let(:max_otp_sends) { 2 }
   let(:min_attempts) { 2 }
@@ -20,7 +20,7 @@ RSpec.shared_examples 'phone rate limitting' do |delivery_method|
 
     expect(page).to have_content(t('two_factor_authentication.max_otp_requests_reached'))
     expect_user_to_be_rate_limitted
-    expect_rate_limitting_to_expire
+    expect_rate_limiting_to_expire
   end
 
   it 'limits the number of times a code can be sent to a phone across accounts' do
@@ -40,7 +40,7 @@ RSpec.shared_examples 'phone rate limitting' do |delivery_method|
     expect(page).to have_content(t('two_factor_authentication.max_otp_requests_reached'))
 
     expect_user_to_be_rate_limitted
-    expect_rate_limitting_to_expire
+    expect_rate_limiting_to_expire
   end
 
   it 'limits the number of times the user can enter an OTP' do
@@ -78,7 +78,7 @@ RSpec.shared_examples 'phone rate limitting' do |delivery_method|
 
     expect(page).to have_content(t('two_factor_authentication.max_otp_login_attempts_reached'))
     expect_user_to_be_rate_limitted
-    expect_rate_limitting_to_expire
+    expect_rate_limiting_to_expire
   end
 
   def expect_user_to_be_rate_limitted
@@ -94,7 +94,7 @@ RSpec.shared_examples 'phone rate limitting' do |delivery_method|
     expect(page).to have_content(t('two_factor_authentication.max_generic_login_attempts_reached'))
   end
 
-  def expect_rate_limitting_to_expire
+  def expect_rate_limiting_to_expire
     travel (IdentityConfig.store.lockout_period_in_minutes + 1).minutes do
       visit root_path
 

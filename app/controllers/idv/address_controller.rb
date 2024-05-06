@@ -49,11 +49,11 @@ module Idv
 
     def address_from_document
       Pii::Address.new(
-        address1: idv_session.pii_from_doc[:address1],
-        address2: idv_session.pii_from_doc[:address2],
-        city: idv_session.pii_from_doc[:city],
-        state: idv_session.pii_from_doc[:state],
-        zipcode: idv_session.pii_from_doc[:zipcode],
+        address1: idv_session.pii_from_doc.address1,
+        address2: idv_session.pii_from_doc.address2,
+        city: idv_session.pii_from_doc.city,
+        state: idv_session.pii_from_doc.state,
+        zipcode: idv_session.pii_from_doc.zipcode,
       )
     end
 

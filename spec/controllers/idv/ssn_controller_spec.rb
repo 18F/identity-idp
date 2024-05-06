@@ -146,7 +146,7 @@ RSpec.describe Idv::SsnController do
 
       context 'with a Puerto Rico address and pii_from_doc in idv_session' do
         it 'redirects to address controller after user enters their SSN' do
-          subject.idv_session.pii_from_doc[:state] = 'PR'
+          subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(state: 'PR')
 
           put :update, params: params
 
@@ -155,7 +155,7 @@ RSpec.describe Idv::SsnController do
 
         it 'redirects to the verify info controller if a user is updating their SSN' do
           subject.idv_session.ssn = ssn
-          subject.idv_session.pii_from_doc[:state] = 'PR'
+          subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(state: 'PR')
 
           put :update, params: params
 

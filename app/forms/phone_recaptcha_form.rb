@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-class PhoneRecaptchaValidator
+class PhoneRecaptchaForm
   RECAPTCHA_ACTION = 'phone_setup'
 
-  attr_reader :parsed_phone, :validator_class, :validator_args
+  attr_reader :parsed_phone, :form_class, :form_args
 
-  delegate :valid?, :exempt?, to: :validator
+  delegate :submit, :errors, to: :form
 
-  def initialize(parsed_phone:, validator_class: RecaptchaValidator, **validator_args)
+  def initialize(parsed_phone:, form_class: RecaptchaForm, **form_args)
     @parsed_phone = parsed_phone
-    @validator_class = validator_class
-    @validator_args = validator_args
+    @form_class = form_class
+    @form_args = form_args
   end
 
   def self.country_score_overrides
@@ -23,14 +23,14 @@ class PhoneRecaptchaValidator
 
   private
 
-  def validator
-    @validator ||= validator_class.new(
+  def form
+    @form ||= form_class.new(
       score_threshold:,
       recaptcha_action: RECAPTCHA_ACTION,
       extra_analytics_properties: {
         phone_country_code: parsed_phone.country,
       },
-      **validator_args,
+      **form_args,
     )
   end
 

@@ -82,14 +82,14 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
       render_views
 
       it 'With address2 in PII, shows address line 2 input' do
-        subject.idv_session.pii_from_doc[:address2] = 'APT 3E'
+        subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(address2: 'APT 3E')
         get :show
 
         expect(response.body).to have_content(t('idv.form.address2'))
       end
 
       it 'No address2 in PII, still shows address line 2 input' do
-        subject.idv_session.pii_from_doc[:address2] = nil
+        subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(address2: nil)
 
         get :show
 

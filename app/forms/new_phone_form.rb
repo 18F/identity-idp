@@ -130,24 +130,21 @@ class NewPhoneForm
   end
 
   def validate_recaptcha_token
-    return if !validate_recaptcha_token? || recaptcha_validator.valid?(recaptcha_token)
-    errors.add(
-      :recaptcha_token,
-      I18n.t('errors.messages.invalid_recaptcha_token'),
-      type: :invalid_recaptcha_token,
-    )
+    return if !validate_recaptcha_token?
+    recaptcha_form.submit(recaptcha_token)
+    errors.merge!(recaptcha_form)
   end
 
-  def recaptcha_validator
-    @recaptcha_validator ||= PhoneRecaptchaValidator.new(parsed_phone:, **recaptcha_validator_args)
+  def recaptcha_form
+    @recaptcha_form ||= PhoneRecaptchaForm.new(parsed_phone:, **recaptcha_form_args)
   end
 
-  def recaptcha_validator_args
+  def recaptcha_form_args
     args = { analytics: }
     if IdentityConfig.store.phone_recaptcha_mock_validator
-      args.merge(validator_class: RecaptchaMockValidator, score: recaptcha_mock_score)
+      args.merge(form_class: RecaptchaMockForm, score: recaptcha_mock_score)
     elsif FeatureManagement.recaptcha_enterprise?
-      args.merge(validator_class: RecaptchaEnterpriseValidator)
+      args.merge(form_class: RecaptchaEnterpriseForm)
     else
       args
     end

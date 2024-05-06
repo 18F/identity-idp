@@ -3,107 +3,103 @@ fr:
   instructions:
     account:
       reactivate:
-        begin: Démarrons.
+        begin: Commençons.
         explanation: 'Lorsque vous avez créé votre compte, nous vous avons donné une
           liste de mots et vous avons demandé de les placer en lieu sûr. La
-          liste était similaire à ceci:'
-        intro: Nous en faisons un peu plus pour garder votre information sécurisée et
-          confidentielle, alors réinitialiser votre mot de passe demande un peu
-          plus d’effort.
+          liste ressemblait à ceci :'
+        intro: Comme nous prenons des mesures supplémentaires pour maintenir vos
+          informations sécurisées et confidentielles, la réinitialisation de
+          votre mot de passe est un peu plus fastidieuse.
         modal:
-          copy: Si vous n’avez pas votre clé personnelle, vous devrez vérifier votre
-            identité de nouveau.
-          heading: Ne disposez-vous pas de votre clé personnelle ?
-        with_key: Vous n’avez pas votre clé personnelle?
+          copy: Si vous ne disposez pas de votre clé personnelle, vous devrez reconfirmer
+            votre identité.
+          heading: Vous ne disposez pas de votre clé personnelle ?
+        with_key: Vous disposez de votre clé personnelle ?
     forgot_password:
       close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez
         réinitialisé votre mot de passe.
-    go_back_to_mobile_app: Pour continuer, veuillez retourner à l’application
+    go_back_to_mobile_app: Pour continuer, veuillez retourner à l’appli
       %{friendly_name} et vous connecter.
     mfa:
       authenticator:
-        confirm_code_html: Entrez le code à partir de votre application
-          d’authentification. Si vous avez plusieurs comptes configurés dans
-          votre application, entrez le code correspondant à %{app_name_html}.
-        manual_entry: Ou entrez ce code manuellement dans votre application
-          d’authentification
+        confirm_code_html: Saisissez le code à partir de votre appli d’authentification.
+          Si vous avez plusieurs comptes configurés dans votre appli, saisissez
+          le code correspondant à %{app_name_html}.
+        manual_entry: Ou saisissez ce code manuellement dans votre appli d’authentification
       piv_cac:
-        account_not_found_html: '<p><strong>%{sign_in}</strong> votre adresse email et
-          votre mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte.</p>
-          <p><strong>Vous n’avez pas de compte %{app_name}?</strong>
-          %{create_account}</p>'
-        add_from_sign_in_html: '<strong> Instructions: </strong> insérez votre PIV ou
-          votre CAC dans <strong> “AJOUTER PIV / CAC” </strong>. Vous devez
-          <strong> choisir un certificat </strong> (le bon en a probablement
-          votre nom) et <strong> saisir votre code confidentiel </strong> (votre
-          code confidentiel a été créé lors de la configuration de votre PIV /
-          CAC). ).'
+        account_not_found_html: '<p><strong>%{sign_in}</strong> avec votre adresse
+          e-mail et votre mot de passe. Ensuite, ajoutez votre carte PIV/CAC à
+          votre compte.</p> <p><strong>Vous n’avez pas de compte
+          %{app_name}?</strong> %{create_account}</p>'
+        add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte
+          PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez
+          <strong>choisir un certificat</strong> (le bon a probablement le nom
+          que vous lui avez donné) et <strong>saisir votre NIP</strong> (votre
+          NIP a été créé lors de la configuration de votre carte PIV/CAC).'
         already_associated_html: Veuillez choisir un certificat associé à une autre
-          carte PIV/CAC ou contactez votre administrateur afin de vérifier que
-          votre carte PIV/CAC est bien à jour. Si vous pensez que c’est une
-          erreur, %{try_again_html}.
-        back_to_sign_in: Retourner à vous connecter
+          carte PIV/CAC ; contactez votre administrateur afin de vérifier que
+          votre carte PIV/CAC est bien à jour. Si vous pensez qu’il s’agit d’une
+          erreur, veuillez %{try_again_html}.
+        back_to_sign_in: Retourner vous connecter
         confirm_piv_cac: Veuillez présenter la carte PIV/CAC que vous avez associée à
           votre compte.
         did_not_work_html: Veuillez %{please_try_again_html}. Si ce problème persiste,
-          contactez l’administrateur de votre agence.
+          contactez l’administrateur de votre organisme.
         http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
-        no_certificate_html: Veuillez vous assurer que votre PIV/CAC est connecté et
-          %{try_again_html}. Si ce problème persiste, contactez l’administrateur
-          de votre agence.
+        no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est connectée
+          et %{try_again_html}. Si ce problème persiste, contactez
+          l’administrateur de votre organisme.
         not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide
           pour ce compte. Veuillez %{please_try_again_html} avec un autre
           certificat. Si ce problème persiste, contactez l’administrateur de
-          votre agence.
+          votre organisme.
         please_try_again: réessayer
         sign_in_html: Assurez-vous que <strong>vous disposez d’un compte
-          %{app_name}</strong> et que <strong>vous avez configuré
+          %{app_name}</strong> et que <strong>vous avez configuré votre carte
           PIV/CAC</strong> en tant que méthode d’authentification à deux
           facteurs.
         step_1: Donnez-lui un surnom
-        step_1_info: Si vous ajoutez plus d’un PIV / CAC, vous saurez lequel.
+        step_1_info: Si vous ajoutez plus d’une carte PIV/CAC, vous saurez laquelle.
         step_2: Insérez votre PIV/CAC dans votre lecteur de carte
-        step_3: Ajoutez votre PIV/CAC
-        step_3_info_html: Vous devrez <strong> choisir un certificat </strong> (celui de
-          droite contient probablement votre nom) et <strong> entrer votre code
-          PIN </strong> (votre code PIN a été créé lors de la configuration de
-          votre PIV / CAC ).
+        step_3: Ajoutez votre carte PIV/CAC
+        step_3_info_html: Vous devrez <strong>choisir un certificat</strong> (le bon a
+          probablement votre nom) et <strong>saisir votre NIP</strong> (votre
+          NIP a été créé lors de la configuration de votre carte PIV/CAC).
         try_again: réessayer
       sms:
-        number_message_html: Nous avons envoyé un texte (SMS) avec un code à usage
+        number_message_html: Nous avons envoyé un SMS (texto) avec un code à usage
           unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
       voice:
-        number_message_html: Nous avons envoyé un code à usage unique par appel au
+        number_message_html: Nous avons passé un appel avec un code à usage unique au
           %{number_html}. Ce code expirera dans %{expiration} minutes.
       webauthn:
         confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
-        confirm_webauthn_platform_html: <p>Vous pouvez vous authentifier de la même
-          manière que vous déverrouillez votre appareil – avec votre visage ou
-          votre empreinte digitale, un mot de passe ou une autre méthode.</p>
-          <p>Si vous avez utilisé un gestionnaire de mots de passe pour
-          configurer le déverrouillage facial ou tactile, vous pouvez vous
+        confirm_webauthn_platform_html: '<p>Vous pouvez vous authentifier de la même
+          manière que vous déverrouillez votre appareil, que ce soit avec votre
+          visage ou votre empreinte digitale, un mot de passe ou une autre
+          méthode. </p> <p>Si vous avez utilisé un gestionnaire de mots de passe
+          pour configurer le déverrouillage facial ou tactile, vous pouvez vous
           authentifier à partir de n’importe quel appareil utilisant ce
           gestionnaire. Sinon, utilisez le même appareil que celui sur lequel
-          vous avez configuré le déverrouillage facial ou tactile.</p>
+          vous avez configuré le déverrouillage facial ou tactile.</p>'
       webauthn_platform:
         learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
-      wrong_number: Vous avez entré un mauvais numéro de téléphone?
+      wrong_number: Vous avez saisi un mauvais numéro de téléphone ?
     password:
-      forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir
-        confirmé votre adresse courriel.
+      forgot: Vous ne connaissez pas votre mot de passe ? Réinitialisez-le après avoir
+        confirmé votre adresse e-mail.
       help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels
-        que ceux de vos banques, de vos comptes de courriel et de vos réseaux
-        sociaux. N’incluez pas les mots de votre adresse de courriel. bancaires,
-        les comptes courriel et les comptes de médias sociaux.
-      help_text_header: Conseils sur la sécurité du mot de passe
+        que ceux de vos banques, adresses e-mail et comptes de réseaux sociaux.
+        N’incluez pas de mots figurant dans votre adresse e-mail.
+      help_text_header: Conseils de sécurité pour votre mot de passe
       info:
-        lead_html: Votre mot de passe doit comporter <strong>%{min_length}
-          caractères</strong> ou plus. N’utilisez pas de phrases courantes ou de
-          caractères répétés, comme « abc » ou « 111 ».
+        lead_html: Votre mot de passe doit comporter au moins <strong>%{min_length}
+          caractères</strong>. N’utilisez pas de séquences courantes de
+          caractères ou de caractères répétés, comme « abc » ou « 111 ».
       password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour
         réinitialiser votre mot de passe si vous avez vérifié votre identité
-        avec ce compte. Si vous ne l’avez pas, vous pouvez toujours
-        réinitialiser votre mot de passe et ensuite revérifier votre identité.
+        avec ce compte. Si vous ne l’avez pas, vous pouvez quand même
+        réinitialiser votre mot de passe, puis reconfirmer votre identité.
       strength:
         0: Très faible
         1: Faible
