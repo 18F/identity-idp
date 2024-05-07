@@ -10,7 +10,7 @@ lg-phone-input {
   .iti__flag {
     background-image: url('/flags.png');
 
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    @media (resolution >= 2x) {
       background-image: url('/flags@2x.png');
     }
   }
