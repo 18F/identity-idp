@@ -107,10 +107,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
   end
 
   it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
-    user = nil
-
     perform_in_browser(:desktop) do
-      user = sign_in_and_2fa_user
+      sign_in_and_2fa_user
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
@@ -152,10 +150,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
     end
 
     it 'does not rate limit on last attempt if successful', js: true do
-      user = nil
-
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
@@ -192,10 +188,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
   context 'barcode read error on mobile (redo document capture)' do
     it 'continues to ssn on desktop when user selects Continue', js: true do
-      user = nil
-
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
@@ -274,10 +268,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
         to receive(:biometric_comparison_required?).and_return(true)
     end
     it 'continues to ssn on desktop when user selects Continue', js: true do
-      user = nil
-
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
