@@ -1,1 +1,6 @@
+@use 'uswds-core' as *;
 @forward 'usa-verification-badge';
+
+.lg-verification-badge .usa-icon {
+  margin-right: units(1);
+}

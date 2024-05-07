@@ -2,8 +2,8 @@
 
 class BadgeComponent < BaseComponent
   ICONS = %i[
-    unphishable
-    success
+    lock
+    check_circle
   ].to_set.freeze
 
   attr_reader :icon, :tag_options
