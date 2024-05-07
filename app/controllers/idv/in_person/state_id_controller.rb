@@ -130,7 +130,7 @@ module Idv
       end
 
       def updating_state_id?
-        pii_from_user.has_key?(:first_name) && !user_session[:idv][:ssn].nil?
+        pii_from_user.has_key?(:first_name) && user_session.dig(:idv, :ssn).present?
       end
 
       def parsed_dob
