@@ -129,7 +129,7 @@ module Reporting
     # @return [Array<Float>]
     def blanket_proofing_rates(reports)
       reports.map do |report|
-        report.successfully_verified_users.to_f / report.idv_started
+        report.blanket_proofing_rates
       end
     end
 
@@ -137,7 +137,7 @@ module Reporting
     # @return [Array<Float>]
     def intent_proofing_rates(reports)
       reports.map do |report|
-        report.successfully_verified_users.to_f / report.idv_doc_auth_welcome_submitted
+        report.intent_proofing_rates
       end
     end
 
@@ -145,7 +145,7 @@ module Reporting
     # @return [Array<Float>]
     def actual_proofing_rates(reports)
       reports.map do |report|
-        report.successfully_verified_users.to_f / report.idv_doc_auth_image_vendor_submitted
+        report.actual_proofing_rates
       end
     end
 
@@ -153,9 +153,7 @@ module Reporting
     # @return [Array<Float>]
     def industry_proofing_rates(reports)
       reports.map do |report|
-        report.successfully_verified_users.to_f / (
-          report.successfully_verified_users + report.idv_doc_auth_rejected
-        )
+        report.industry_proofing_rates
       end
     end
 
