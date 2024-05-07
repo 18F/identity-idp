@@ -96,7 +96,7 @@ module Reporting
       csv << []
       csv << ['Metric', '# of Users']
       csv << []
-      csv << ['IDV Started', idv_started]
+      csv << ['IDV started', idv_started]
       csv << ['Welcome Submitted', idv_doc_auth_welcome_submitted]
       csv << ['Image Submitted', idv_doc_auth_image_vendor_submitted]
       csv << []
