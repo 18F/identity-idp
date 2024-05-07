@@ -186,7 +186,7 @@ export class PhoneInputElement extends HTMLElement {
       return;
     }
 
-    const phoneNumber = textInput.value as NationalNumber;
+    const phoneNumber = textInput.value;
     const countryCode = codeInput.value as CountryCode;
 
     textInput.setCustomValidity('');
