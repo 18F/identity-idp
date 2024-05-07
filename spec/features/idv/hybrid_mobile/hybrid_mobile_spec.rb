@@ -184,6 +184,39 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
         expect(page).to have_current_path(idv_ssn_path, wait: 10)
       end
     end
+
+    it 'shows capture complete on mobile and error page on desktop', js: true do
+      perform_in_browser(:desktop) do
+        sign_in_and_2fa_user
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+
+        (max_attempts - 1).times do |i|
+          attach_and_submit_images
+          click_on t('idv.failure.button.warning')
+        end
+
+        # final failure
+        attach_and_submit_images
+
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        expect(page).not_to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to have_current_path(idv_session_errors_rate_limited_path, wait: 10)
+      end
+    end
   end
 
   context 'barcode read error on mobile (redo document capture)' do
