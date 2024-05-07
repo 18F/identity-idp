@@ -12,6 +12,7 @@ module.exports = {
       {
         message:
           'Class selectors should be named using "Two Dashes Style" BEM format. See: https://en.bem.info/methodology/naming-convention/#two-dashes-style',
+        resolveNestedSelectors: true,
       },
     ],
   },
