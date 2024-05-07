@@ -62,10 +62,10 @@ module Reporting
       csv << ['IDV Rejected (Non-Fraud)', *reports.map(&:idv_doc_auth_rejected)]
       csv << ['IDV Rejected (Fraud)', *reports.map(&:idv_fraud_rejected)]
 
-      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *blanket_proofing_rates(reports)]
-      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *intent_proofing_rates(reports)]
-      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *actual_proofing_rates(reports)]
-      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *industry_proofing_rates(reports)]
+      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *reports.map(&:blanket_proofing_rates)]
+      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *reports.map(&:intent_proofing_rates)]
+      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *reports.map(&:actual_proofing_rates)]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *reports.map(&:industry_proofing_rates)]
 
       csv
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
@@ -122,38 +122,6 @@ module Reporting
             acc << report.merge(acc.last)
           end
         end
-      end
-    end
-
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def blanket_proofing_rates(reports)
-      reports.map do |report|
-        report.blanket_proofing_rates
-      end
-    end
-
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def intent_proofing_rates(reports)
-      reports.map do |report|
-        report.intent_proofing_rates
-      end
-    end
-
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def actual_proofing_rates(reports)
-      reports.map do |report|
-        report.actual_proofing_rates
-      end
-    end
-
-    # @param [Array<Reporting::IdentityVerificationReport>] reports
-    # @return [Array<Float>]
-    def industry_proofing_rates(reports)
-      reports.map do |report|
-        report.industry_proofing_rates
       end
     end
 
