@@ -317,7 +317,6 @@ es:
       mobile_phone_required: Se necesita un teléfono móvil
       review_issues_id_header_text: 'Revise las imágenes de su identificación emitida por el estado:'
       review_issues_id_text1: '¿Usó un fondo de color oscuro?'
-
       review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
       review_issues_id_text3: '¿Está apagado el flash de su cámara?'
       review_issues_id_text4: '¿Todos los detalles se ven con precisión y claridad?'
