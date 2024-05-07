@@ -186,6 +186,7 @@ zh:
       verify_at_post_office_link_text: 对亲身验证获得更多了解
       verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
       verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
+      verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
       verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
       verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。
       verify_online_instruction_selfie: 你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
