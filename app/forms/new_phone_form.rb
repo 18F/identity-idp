@@ -24,7 +24,8 @@ class NewPhoneForm
               :otp_make_default_number,
               :setup_voice_preference,
               :recaptcha_token,
-              :recaptcha_mock_score
+              :recaptcha_mock_score,
+              :recaptcha_assessment_id
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
@@ -131,7 +132,8 @@ class NewPhoneForm
 
   def validate_recaptcha_token
     return if !validate_recaptcha_token?
-    recaptcha_form.submit(recaptcha_token)
+    _response, assessment_id = recaptcha_form.submit(recaptcha_token)
+    @recaptcha_assessment_id = assessment_id
     errors.merge!(recaptcha_form)
   end
 
