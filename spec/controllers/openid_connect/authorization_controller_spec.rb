@@ -142,15 +142,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               user_sp_authorized: true,
               code_digest: kind_of(String),
             )
-            expect(@analytics).to have_logged_event(
-              'SP redirect initiated',
-              ial: 1,
-              billed_ial: 1,
-              sign_in_duration_seconds: 60,
-              sign_in_flow:,
-              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-              vtr: nil,
-            )
+            freeze_time do
+              expect(@analytics).to have_logged_event(
+                'SP redirect initiated',
+                ial: 1,
+                billed_ial: 1,
+                sign_in_duration_seconds: 60,
+                sign_in_flow:,
+                acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                vtr: nil,
+              )
+            end
           end
         end
 
@@ -199,15 +201,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               code_digest: kind_of(String),
             )
 
-            expect(@analytics).to have_logged_event(
-              'SP redirect initiated',
-              ial: 1,
-              sign_in_duration_seconds: 60,
-              billed_ial: 1,
-              sign_in_flow:,
-              acr_values: '',
-              vtr: ['C1'],
-            )
+            freeze_time do
+              expect(@analytics).to have_logged_event(
+                'SP redirect initiated',
+                ial: 1,
+                sign_in_duration_seconds: 60,
+                billed_ial: 1,
+                sign_in_flow:,
+                acr_values: '',
+                vtr: ['C1'],
+              )
+            end
           end
         end
 
@@ -395,15 +399,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 code_digest: kind_of(String),
               )
 
-              expect(@analytics).to have_logged_event(
-                'SP redirect initiated',
-                ial: 2,
-                sign_in_duration_seconds: 60,
-                billed_ial: 2,
-                sign_in_flow:,
-                acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
-                vtr: nil,
-              )
+              freeze_time do
+                expect(@analytics).to have_logged_event(
+                  'SP redirect initiated',
+                  ial: 2,
+                  sign_in_duration_seconds: 60,
+                  billed_ial: 2,
+                  sign_in_flow:,
+                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
+                  vtr: nil,
+                )
+              end
             end
 
             context 'SP requests biometric_comparison_required' do
@@ -770,15 +776,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   code_digest: kind_of(String),
                 )
 
-                expect(@analytics).to have_logged_event(
-                  'SP redirect initiated',
-                  ial: 0,
-                  sign_in_duration_seconds: 60,
-                  billed_ial: 2,
-                  sign_in_flow:,
-                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
-                )
+                freeze_time do
+                  expect(@analytics).to have_logged_event(
+                    'SP redirect initiated',
+                    ial: 0,
+                    sign_in_duration_seconds: 60,
+                    billed_ial: 2,
+                    sign_in_flow:,
+                    acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                    vtr: nil,
+                  )
+                end
               end
             end
 
@@ -862,15 +870,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   code_digest: kind_of(String),
                 )
 
-                expect(@analytics).to have_logged_event(
-                  'SP redirect initiated',
-                  ial: 0,
-                  sign_in_duration_seconds: 60,
-                  billed_ial: 1,
-                  sign_in_flow:,
-                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
-                )
+                freeze_time do
+                  expect(@analytics).to have_logged_event(
+                    'SP redirect initiated',
+                    ial: 0,
+                    sign_in_duration_seconds: 60,
+                    billed_ial: 1,
+                    sign_in_flow:,
+                    acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                    vtr: nil,
+                  )
+                end
               end
             end
 
@@ -957,15 +967,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   code_digest: kind_of(String),
                 )
 
-                expect(@analytics).to have_logged_event(
-                  'SP redirect initiated',
-                  ial: 0,
-                  sign_in_duration_seconds: 60,
-                  billed_ial: 1,
-                  sign_in_flow:,
-                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
-                )
+                freeze_time do
+                  expect(@analytics).to have_logged_event(
+                    'SP redirect initiated',
+                    ial: 0,
+                    sign_in_duration_seconds: 60,
+                    billed_ial: 1,
+                    sign_in_flow:,
+                    acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                    vtr: nil,
+                  )
+                end
               end
             end
           end
@@ -1123,15 +1135,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               code_digest: kind_of(String),
             )
 
-            expect(@analytics).to have_logged_event(
-              'SP redirect initiated',
-              ial: 1,
-              sign_in_duration_seconds: 60,
-              billed_ial: 1,
-              sign_in_flow:,
-              acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-              vtr: nil,
-            )
+            freeze_time do
+              expect(@analytics).to have_logged_event(
+                'SP redirect initiated',
+                ial: 1,
+                sign_in_duration_seconds: 60,
+                billed_ial: 1,
+                sign_in_flow:,
+                acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                vtr: nil,
+              )
+            end
           end
         end
 
@@ -1180,15 +1194,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               code_digest: kind_of(String),
             )
 
-            expect(@analytics).to have_logged_event(
-              'SP redirect initiated',
-              ial: 1,
-              sign_in_duration_seconds: 60,
-              billed_ial: 1,
-              sign_in_flow:,
-              acr_values: '',
-              vtr: ['C1'],
-            )
+            freeze_time do
+              expect(@analytics).to have_logged_event(
+                'SP redirect initiated',
+                ial: 1,
+                sign_in_duration_seconds: 60,
+                billed_ial: 1,
+                sign_in_flow:,
+                acr_values: '',
+                vtr: ['C1'],
+              )
+            end
           end
         end
 
@@ -1377,15 +1393,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 code_digest: kind_of(String),
               )
 
-              expect(@analytics).to have_logged_event(
-                'SP redirect initiated',
-                ial: 2,
-                sign_in_duration_seconds: 60,
-                billed_ial: 2,
-                sign_in_flow:,
-                acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
-                vtr: nil,
-              )
+              freeze_time do
+                expect(@analytics).to have_logged_event(
+                  'SP redirect initiated',
+                  ial: 2,
+                  sign_in_duration_seconds: 60,
+                  billed_ial: 2,
+                  sign_in_flow:,
+                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
+                  vtr: nil,
+                )
+              end
             end
 
             context 'SP requests biometric_comparison_required' do
@@ -1754,15 +1772,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   code_digest: kind_of(String),
                 )
 
-                expect(@analytics).to have_logged_event(
-                  'SP redirect initiated',
-                  ial: 0,
-                  sign_in_duration_seconds: 60,
-                  billed_ial: 2,
-                  sign_in_flow:,
-                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
-                )
+                freeze_time do
+                  expect(@analytics).to have_logged_event(
+                    'SP redirect initiated',
+                    ial: 0,
+                    sign_in_duration_seconds: 60,
+                    billed_ial: 2,
+                    sign_in_flow:,
+                    acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                    vtr: nil,
+                  )
+                end
               end
             end
 
@@ -1846,15 +1866,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   code_digest: kind_of(String),
                 )
 
-                expect(@analytics).to have_logged_event(
-                  'SP redirect initiated',
-                  ial: 0,
-                  sign_in_duration_seconds: 60,
-                  billed_ial: 1,
-                  sign_in_flow:,
-                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
-                )
+                freeze_time do
+                  expect(@analytics).to have_logged_event(
+                    'SP redirect initiated',
+                    ial: 0,
+                    sign_in_duration_seconds: 60,
+                    billed_ial: 1,
+                    sign_in_flow:,
+                    acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                    vtr: nil,
+                  )
+                end
               end
             end
 
@@ -1941,15 +1963,17 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   code_digest: kind_of(String),
                 )
 
-                expect(@analytics).to have_logged_event(
-                  'SP redirect initiated',
-                  ial: 0,
-                  sign_in_duration_seconds: 60,
-                  billed_ial: 1,
-                  sign_in_flow:,
-                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
-                )
+                freeze_time do
+                  expect(@analytics).to have_logged_event(
+                    'SP redirect initiated',
+                    ial: 0,
+                    sign_in_duration_seconds: 60,
+                    billed_ial: 1,
+                    sign_in_flow:,
+                    acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                    vtr: nil,
+                  )
+                end
               end
             end
           end
