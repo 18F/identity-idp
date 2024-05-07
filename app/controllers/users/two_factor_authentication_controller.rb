@@ -231,6 +231,10 @@ module Users
         adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session[:phone_recaptcha_assessment_id],
+          reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        ),
       )
 
       if UserSessionContext.reauthentication_context?(context)
@@ -312,8 +316,14 @@ module Users
       if UserSessionContext.authentication_or_reauthentication_context?(context)
         Telephony.send_authentication_otp(**otp_params)
       else
-        Telephony.send_confirmation_otp(**otp_params)
+        Telephony.send_confirmation_otp(**otp_params, otp_length: otp_length)
       end
+    end
+
+    def otp_length
+      bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
+      length = bucket == :ten_digit_otp ? 'ten' : 'six'
+      I18n.t("telephony.format_length.#{length}")
     end
 
     def user_selected_default_number

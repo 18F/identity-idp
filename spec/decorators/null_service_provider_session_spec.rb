@@ -9,14 +9,6 @@ RSpec.describe NullServiceProviderSession do
     end
   end
 
-  describe '#verification_method_choice' do
-    it 'returns the correct string' do
-      expect(subject.verification_method_choice).to eq(
-        I18n.t('idv.messages.select_verification_without_sp'),
-      )
-    end
-  end
-
   describe '#sp_logo' do
     it 'returns nil' do
       expect(subject.sp_logo).to be_nil

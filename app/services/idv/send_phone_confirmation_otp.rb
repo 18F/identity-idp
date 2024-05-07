@@ -66,7 +66,8 @@ module Idv
         otp: code,
         to: phone,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
-        otp_format: I18n.t('telephony.format_type.character'),
+        otp_format: I18n.t("telephony.format_type.#{format}"),
+        otp_length: I18n.t("telephony.format_length.#{length}"),
         channel: delivery_method,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,
@@ -77,6 +78,24 @@ module Idv
         },
       )
       otp_sent_response
+    end
+
+    def bucket
+      @bucket ||= AbTests::IDV_TEN_DIGIT_OTP.bucket(
+        idv_session.user_phone_confirmation_session.user.uuid,
+      )
+    end
+
+    def format
+      return 'digit' if delivery_method == :voice && bucket == :ten_digit_otp
+
+      'character'
+    end
+
+    def length
+      return 'ten' if delivery_method == :voice && bucket == :ten_digit_otp
+
+      'six'
     end
 
     def otp_sent_response

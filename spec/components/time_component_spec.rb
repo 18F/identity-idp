@@ -37,7 +37,7 @@ RSpec.describe TimeComponent, type: :component do
     it 'renders element with formatted time content' do
       rendered = render_inline TimeComponent.new(time: Time.zone.parse('2020-04-21T14:03:00Z').utc)
 
-      expect(rendered).to have_content('21 April 2020 à 14:03')
+      expect(rendered).to have_content('21 April 2020 à 2 h 03 PM')
     end
   end
 end

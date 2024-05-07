@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class GpoConfirmationCode < ApplicationRecord
-  self.ignored_columns = [:bounced_at]
-
   self.table_name = 'usps_confirmation_codes'
 
   belongs_to :profile

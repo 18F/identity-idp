@@ -14,7 +14,7 @@ locals:
         text: t('idv.failure.button.warning'),
         url: idv_phone_path,
       },
-      current_step: :verify_phone_or_address,
+      current_step: :verify_phone,
       options: [
         local_assigns[:contact_support_option] && {
           url: MarketingSite.contact_url,
