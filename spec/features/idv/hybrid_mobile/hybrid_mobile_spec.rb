@@ -200,7 +200,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
       perform_in_browser(:mobile) do
         visit @sms_link
 
-        (max_attempts - 1).times do |i|
+        (max_attempts - 1).times do
           attach_and_submit_images
           click_on t('idv.failure.button.warning')
         end
