@@ -3776,12 +3776,14 @@ module AnalyticsEvents
 
   # Tracks when the the user has added the MFA method phone to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, recaptcha_annotation:, **extra)
     track_event(
       'Multi-Factor Authentication: Added phone',
       {
         method_name: :phone,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
+        recaptcha_annotation:,
         **extra,
       }.compact,
     )
@@ -4644,14 +4646,14 @@ module AnalyticsEvents
   # @param [Hash] recaptcha_result Full reCAPTCHA response body
   # @param [Float] score_threshold Minimum value for considering passing result
   # @param [Boolean] evaluated_as_valid Whether result was considered valid
-  # @param [String] validator_class Class name of validator
+  # @param [String] form_class Class name of form
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
     evaluated_as_valid:,
-    validator_class:,
+    form_class:,
     exception_class:,
     phone_country_code: nil,
     **extra
@@ -4662,7 +4664,7 @@ module AnalyticsEvents
         recaptcha_result:,
         score_threshold:,
         evaluated_as_valid:,
-        validator_class:,
+        form_class:,
         exception_class:,
         phone_country_code:,
         **extra,
@@ -5076,6 +5078,7 @@ module AnalyticsEvents
   # @param [Hash] telephony_response
   # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # @param [Boolean] success
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # A phone one-time password send was attempted
   def telephony_otp_sent(
     area_code:,
@@ -5087,6 +5090,7 @@ module AnalyticsEvents
     telephony_response:,
     adapter:,
     success:,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5101,6 +5105,7 @@ module AnalyticsEvents
         telephony_response: telephony_response,
         adapter: adapter,
         success: success,
+        recaptcha_annotation:,
         **extra,
       },
     )

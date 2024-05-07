@@ -12,16 +12,16 @@ fr:
     continue_sign_in: Continuer la connexion
     create_account: Créer un compte
     exit_login: Quitter %{app_name}
-    go_back: Retourner
+    go_back: Retour
     help: Aide
     new_tab: '(ouvre un nouvel onglet)'
     passwords:
-      forgot: Vous avez oublié votre mot de passe?
+      forgot: Mot de passe oublié ?
     privacy_policy: Confidentialité et sécurité
     resend: Renvoyer
-    reverify: Veuillez vérifier votre identité de nouveau.
+    reverify: Veuillez reconfirmer votre identité.
     sign_in: Se connecter
-    sign_out: Déconnectez-vous
+    sign_out: Se déconnecter
     two_factor_authentication:
       send_another_code: Envoyer un autre code
-    what_is_totp: Qu’est-ce qu’une application d’authentification?
+    what_is_totp: Qu’est-ce qu’une appli d’authentification ?

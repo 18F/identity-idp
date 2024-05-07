@@ -336,8 +336,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          allow(controller.decorated_sp_session).to receive(:biometric_comparison_required?).
-            and_return(true)
+          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context_result)
         end
 
         it 'returns a successful response and modifies the session' do
@@ -1240,8 +1242,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
     context 'the frontend requests a selfie' do
       before do
-        allow(controller).to receive(:decorated_sp_session).
-          and_return(double('decorated_session', { biometric_comparison_required?: true }))
+        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+        allow(controller).to(
+          receive(:resolved_authn_context_result).and_return(authn_context_result),
+        )
       end
 
       let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }

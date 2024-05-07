@@ -2,14 +2,16 @@
 
 module Telephony
   class OtpSender
-    attr_reader :recipient_phone, :otp, :expiration, :otp_format, :channel, :domain, :country_code,
-                :extra_metadata
+    attr_reader :recipient_phone, :otp, :expiration, :otp_format, :otp_length, :channel,
+                :domain, :country_code, :extra_metadata
 
     def initialize(to:, otp:, expiration:, otp_format:,
-                   channel:, domain:, country_code:, extra_metadata:)
+                   channel:, domain:, country_code:, extra_metadata:,
+                   otp_length: I18n.t('telephony.format_length.six'))
       @recipient_phone = to
       @otp = otp
       @otp_format = otp_format
+      @otp_length = otp_length
       @expiration = expiration
       @channel = channel.to_sym
       @domain = domain
@@ -58,6 +60,7 @@ module Telephony
           "telephony.confirmation_otp.#{channel}",
           app_name: APP_NAME,
           code: otp_transformed_for_channel,
+          format_length: otp_length,
           format_type: otp_format,
           expiration: expiration,
           domain: domain,

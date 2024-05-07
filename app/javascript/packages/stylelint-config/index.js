@@ -1,8 +1,14 @@
 module.exports = {
-  extends: ['stylelint-config-recommended-scss', 'stylelint-prettier/recommended'],
+  extends: ['stylelint-config-standard-scss', 'stylelint-prettier/recommended'],
   rules: {
+    'at-rule-empty-line-before': null,
+    'color-function-notation': null,
+    'declaration-empty-line-before': null,
     'no-descending-specificity': null,
+    'rule-empty-line-before': null,
     'scss/comment-no-empty': null,
+    'scss/dollar-variable-empty-line-before': null,
+    'scss/double-slash-comment-empty-line-before': null,
     'scss/no-global-function-names': null,
     'scss/operator-no-newline-after': null,
     'scss/operator-no-newline-before': null,
@@ -12,6 +18,7 @@ module.exports = {
       {
         message:
           'Class selectors should be named using "Two Dashes Style" BEM format. See: https://en.bem.info/methodology/naming-convention/#two-dashes-style',
+        resolveNestedSelectors: true,
       },
     ],
   },

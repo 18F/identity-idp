@@ -16,6 +16,51 @@ module Idv
         render :show, locals: extra_view_variables
       end
 
+      def update
+        # don't clear the ssn when updating address, clear after SsnController
+        clear_future_steps_from!(controller: Idv::InPerson::SsnController)
+
+        pii_from_user = flow_session[:pii_from_user]
+        initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
+        Idv::StateIdForm::ATTRIBUTES.each do |attr|
+          pii_from_user[attr] = flow_params[attr]
+        end
+        form_result = form.submit(flow_params)
+
+        analytics.idv_in_person_proofing_state_id_submitted(
+          **analytics_arguments.merge(**form_result.to_h),
+        )
+
+        if form_result.success?
+          # Accept Date of Birth from both memorable date and input date components
+          formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
+          pii_from_user[:dob] = formatted_dob if formatted_dob
+
+          if pii_from_user[:same_address_as_id] == 'true'
+            copy_state_id_address_to_residential_address(pii_from_user)
+            redirect_url = idv_in_person_ssn_url
+          end
+
+          if initial_state_of_same_address_as_id == 'true' &&
+             pii_from_user[:same_address_as_id] == 'false'
+            clear_residential_address(pii_from_user)
+          end
+
+          if (idv_session.ssn && pii_from_user[:same_address_as_id] == 'true') ||
+             initial_state_of_same_address_as_id == 'false'
+            redirect_url = idv_in_person_verify_info_url
+          elsif pii_from_user[:same_address_as_id] == 'false'
+            redirect_url = idv_in_person_address_url
+          else
+            redirect_url = idv_in_person_ssn_url
+          end
+
+          redirect_to redirect_url
+        else
+          render :show, locals: extra_view_variables
+        end
+      end
+
       def extra_view_variables
         {
           form:,
@@ -23,6 +68,24 @@ module Idv
           parsed_dob:,
           updating_state_id: updating_state_id?,
         }
+      end
+
+      # update Idv::DocumentCaptureController.step_info.next_steps to include
+      # :ipp_state_id instead of :ipp_ssn (or :ipp_address) in delete PR
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :ipp_state_id,
+          controller: self,
+          next_steps: [:ipp_address, :ipp_ssn],
+          preconditions: ->(idv_session:, user:) { user.establishing_in_person_enrollment },
+          undo_step: ->(idv_session:, user:) do
+            pii_from_user[:identity_doc_address1] = nil
+            pii_from_user[:identity_doc_address2] = nil
+            pii_from_user[:identity_doc_city] = nil
+            pii_from_user[:identity_doc_zipcode] = nil
+            pii_from_user[:identity_doc_state] = nil
+          end,
+        )
       end
 
       private
@@ -50,8 +113,24 @@ module Idv
           merge(extra_analytics_properties)
       end
 
+      def clear_residential_address(pii_from_user)
+        pii_from_user.delete(:address1)
+        pii_from_user.delete(:address2)
+        pii_from_user.delete(:city)
+        pii_from_user.delete(:state)
+        pii_from_user.delete(:zipcode)
+      end
+
+      def copy_state_id_address_to_residential_address(pii_from_user)
+        pii_from_user[:address1] = flow_params[:identity_doc_address1]
+        pii_from_user[:address2] = flow_params[:identity_doc_address2]
+        pii_from_user[:city] = flow_params[:identity_doc_city]
+        pii_from_user[:state] = flow_params[:identity_doc_address_state]
+        pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
+      end
+
       def updating_state_id?
-        flow_session[:pii_from_user].has_key?(:first_name)
+        pii_from_user.has_key?(:first_name)
       end
 
       def parsed_dob
@@ -67,7 +146,7 @@ module Idv
       end
 
       def pii
-        data = flow_session[:pii_from_user]
+        data = pii_from_user
         data = data.merge(flow_params) if params.has_key?(:state_id)
         data.deep_symbolize_keys
       end

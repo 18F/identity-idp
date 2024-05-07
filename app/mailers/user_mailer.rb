@@ -392,19 +392,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_outage_notification(enrollment:)
-    with_user_locale(user) do
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
-      )
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.in_person_outage_notification.subject', app_name: APP_NAME),
-      )
-    end
-  end
-
   def account_rejected
     with_user_locale(user) do
       mail(

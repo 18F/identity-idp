@@ -49,7 +49,9 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !decorated_sp_session.biometric_comparison_required? || stored_result.selfie_check_performed?
+      !FeatureManagement.idv_allow_selfie_check? ||
+        !resolved_authn_context_result.biometric_comparison? ||
+        stored_result.selfie_check_performed?
     end
 
     private

@@ -11,6 +11,7 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
       phone: phone,
       sent_at: Time.zone.now,
       delivery_method: delivery_preference,
+      user: user,
     )
   end
   let(:idv_session) do
@@ -60,6 +61,7 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
           expiration: 10,
           channel: :sms,
           otp_format: 'character',
+          otp_length: '6',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {
@@ -93,6 +95,7 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
           expiration: 10,
           channel: :voice,
           otp_format: 'character',
+          otp_length: '6',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {

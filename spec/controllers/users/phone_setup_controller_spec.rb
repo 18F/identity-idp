@@ -97,7 +97,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
       expect(flash[:error]).to be_blank
     end
 
-    context 'with recaptcha error' do
+    context 'with recaptcha enabled' do
       before do
         allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
         allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).
@@ -105,13 +105,39 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
         allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
       end
 
-      it 'renders form with error message' do
-        stub_sign_in
+      context 'with recaptcha success' do
+        it 'assigns assessment id to user session' do
+          recaptcha_token = 'token'
+          stub_sign_in
 
-        post :create, params: { new_phone_form: { phone: '3065550100', international_code: 'CA' } }
+          post(
+            :create,
+            params: {
+              new_phone_form: {
+                phone: '3065550100',
+                international_code: 'CA',
+                recaptcha_token:,
+                recaptcha_mock_score: '0.7',
+              },
+            },
+          )
 
-        expect(response).to render_template(:index)
-        expect(flash[:error]).to eq(t('errors.messages.invalid_recaptcha_token'))
+          expect(controller.user_session[:phone_recaptcha_assessment_id]).to be_kind_of(String)
+        end
+      end
+
+      context 'with recaptcha error' do
+        it 'renders form with error message' do
+          stub_sign_in
+
+          post(
+            :create,
+            params: { new_phone_form: { phone: '3065550100', international_code: 'CA' } },
+          )
+
+          expect(response).to render_template(:index)
+          expect(flash[:error]).to eq(t('errors.messages.invalid_recaptcha_token'))
+        end
       end
     end
 

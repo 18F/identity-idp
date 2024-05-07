@@ -18,7 +18,7 @@ class UserPivCacVerificationForm
     FormResponse.new(
       success: success,
       errors: errors,
-      extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
+      extra: extra_analytics_attributes,
     )
   end
 
@@ -57,6 +57,8 @@ class UserPivCacVerificationForm
     {
       multi_factor_auth_method: 'piv_cac',
       piv_cac_configuration_id: piv_cac_configuration&.id,
+      piv_cac_configuration_dn_uuid: x509_dn_uuid,
+      key_id: key_id,
       multi_factor_auth_method_created_at: piv_cac_configuration&.created_at&.strftime('%s%L'),
     }
   end

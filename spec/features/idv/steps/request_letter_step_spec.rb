@@ -112,6 +112,7 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
     context 'logged in with PIV/CAC and no password' do
       it 'does not 500' do
         create(:profile, :with_pii, user: user, gpo_verification_pending_at: 1.day.ago)
+        create(:gpo_confirmation_code, profile: user.pending_profile)
         create(:piv_cac_configuration, user: user, x509_dn_uuid: 'helloworld', name: 'My PIV Card')
 
         signin_with_piv(user)
@@ -152,14 +153,14 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
     def confirm_rate_limited
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect(page).not_to have_link(
-        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        t('idv.messages.gpo.resend'),
       )
       # does not allow the user to go to the resend page manually
       visit idv_request_letter_path
 
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect(page).not_to have_link(
-        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        t('idv.messages.gpo.resend'),
       )
     end
   end
@@ -204,7 +205,7 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_content(t('idv.gpo.form.instructions'))
+      expect(page).to have_content(t('idv.gpo.intro'))
     end
   end
 end

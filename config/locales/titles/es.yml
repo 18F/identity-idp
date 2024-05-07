@@ -5,48 +5,47 @@ es:
     account_locked: Cuenta bloqueada temporalmente
     add_info:
       phone: Agregar un número de teléfono
-    backup_codes: No pierda sus códigos de respaldo
-    cancel_exit_login: ¿Está seguro de que desea cancelar y salir de %{app_name}?
+    backup_codes: No pierda sus códigos de recuperación
     confirmations:
-      delete: Por favor confirmar
+      delete: Confirme
       show: Elija una contraseña
     doc_auth:
       address: Actualice su dirección postal
-      doc_capture: Agrega tu identificación
-      hybrid_handoff: Verifica tu identificación
-      link_sent: Enlace enviado
-      processing_images: Procesando tus imágenes
-      ssn: Ingresa tu número del seguro social
-      switch_back: Regresar a tu computadora
-      verify: Verifica tu identidad
+      doc_capture: Agregue su identificación
+      hybrid_handoff: Verifique su identidad
+      link_sent: Vínculo enviado
+      processing_images: Procesando sus imágenes
+      ssn: Ingrese su número de Seguro Social
+      switch_back: Vuelva a su computadora
+      verify: Verifique su identidad
     edit_info:
       email_language: Editar la preferencia de idioma del correo electrónico
       password: Edite su contraseña
       phone: Edite su número de teléfono
     enter_2fa_code:
-      one_time_code: Ingrese el código de seguridad de un solo uso
-      security_code: Ingese su código de seguridad de sólo un uso
+      one_time_code: Ingrese el código seguro de un solo uso
+      security_code: Ingrese el código de seguridad de un solo uso
     failure:
       information_not_verified: Información personal no verificada
       phone_verification: Número telefónico no verificado
-    forget_all_browsers: Olvídate de todos los navegadores
+    forget_all_browsers: Olvidar todos los navegadores
     idv:
       canceled: Se canceló la verificación de identidad
-      cancellation_prompt: Cancela la verificación de identidad
-      come_back_soon: Vuelve pronto
-      enter_one_time_code: Introduzca su código único
-      enter_password: Vuelve a ingresar tu contraseña
-      enter_password_letter: Vuelve a ingresar tu contraseña para enviar su carta
-      get_letter: Recibe una carta
-      personal_key: Guarda tu llave personal
+      cancellation_prompt: Cancelar la verificación de identidad
+      come_back_soon: Vuelva pronto
+      enter_one_time_code: Introduzca su código de un solo uso
+      enter_password: Vuelva a ingresar su contraseña
+      enter_password_letter: Vuelva a ingresar su contraseña para enviar su carta
+      get_letter: Obtenga una carta
+      personal_key: Guarde su clave personal
       phone: Verifique su número de teléfono
       reset_password: Restablecer la contraseña
-      verify_info: Verifica tu información
+      verify_info: Verifique su información
     mfa_setup:
-      face_touch_unlock_confirmation: Agregado el desbloqueo facial o táctil
-      suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
-        segundo método como respaldo.'
-    no_auth_option: No se encontró mensaje de inicio de sesión
+      face_touch_unlock_confirmation: Se agregó el desbloqueo facial o táctil
+      suggest_second_mfa: Agregó su primer método de autenticación. Agregue un segundo
+        método como respaldo.
+    no_auth_option: No se encontró ningún método de inicio de sesión
     openid_connect:
       authorization: Autorización de OpenID Connect
       logout: Cierre de sesión de OpenID Connect
@@ -55,34 +54,33 @@ es:
       forgot: Restablecer la contraseña
     personal_key: Por si acaso
     piv_cac_login:
-      add: Agregue su PIV o CAC
-      new: Use su PIV / CAC para iniciar sesión en su cuenta
+      add: Agregue su tarjeta PIV o CAC
+      new: Use su tarjeta PIV o CAC para iniciar sesión en su cuenta
     piv_cac_setup:
-      new: Use su tarjeta PIV/CAC para asegurar su cuenta
+      new: Use su tarjeta PIV o CAC para proteger su cuenta
       upsell: Aumente la seguridad de su cuenta con una identificación de empleado del
         gobierno.
-    present_piv_cac: Presenta tu PIV/CAC
+    present_piv_cac: Presente su tarjeta PIV o CAC
     present_webauthn: Conecte su clave de seguridad de hardware
     reactivate_account: Reactive su cuenta
     registrations:
-      new: Crea tu cuenta
+      new: Cree su cuenta
     revoke_consent: Revocar consentimiento
     rules_of_use: Reglas de uso
     sign_up:
-      completion_consent_expired_ial1: Ya ha pasado un año desde que nos dio su
-        consentimiento para compartir su información.
-      completion_consent_expired_ial2: Ha pasado un año desde que nos dio su
-        consentimiento para compartir su identidad verificada.
-      completion_first_sign_in: Continúa con %{sp}
+      completion_consent_expired_ial1: Hace un año que nos dio su consentimiento para divulgar su información
+      completion_consent_expired_ial2: Hace un año que nos dio su consentimiento para
+        divulgar su identidad verificada
+      completion_first_sign_in: Continuar con %{sp}
       completion_ial2: Conecte su información verificada a %{sp}
       completion_new_attributes: '%{sp} está solicitando nueva información'
-      completion_new_sp: Acabas de iniciar sesión por primera vez
-      completion_reverified_consent: Proporciónale tu información actualizada a %{sp}
+      completion_new_sp: Está iniciando sesión por primera vez
+      completion_reverified_consent: Comunique su información actualizada a %{sp}
       confirmation: Continuar para iniciar sesión
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores
-    verify_email: Consulta tu correo electrónico
+    verify_email: Revise su correo electrónico
     visitors:
-      index: Bienvenido/a
-    webauthn_setup: Añade tu clave de seguridad
+      index: Bienvenido
+    webauthn_setup: Añada su clave de seguridad
