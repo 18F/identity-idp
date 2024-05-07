@@ -45,7 +45,6 @@ module Db
               ActiveRecord::Base.connection.execute(query).each do |row|
                 user_id = row['user_id']
                 year_month = row['year_month']
-                auth_count = row['auth_count']
                 ial = row['ial']
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
@@ -131,17 +130,11 @@ module Db
       # @return [Array<String>]
       def build_queries(issuers:, months:)
         months.map do |month_range|
-          today = Date.today
           params = {
             range_start: month_range.begin,
             range_end: month_range.end,
             year_month: month_range.begin.strftime('%Y%m'),
             issuers: issuers,
-            one_years_ago: today - 365,
-            two_years_ago: today - 2 * 365,
-            three_years_ago: today - 3 * 365,
-            four_years_ago: today - 4 * 365,
-            five_years_ago: today - 5 * 365,
           }.transform_values { |value| quote(value) }
 
 
