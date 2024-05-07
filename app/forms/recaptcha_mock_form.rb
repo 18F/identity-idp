@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RecaptchaMockValidator < RecaptchaValidator
+class RecaptchaMockForm < RecaptchaForm
   attr_reader :score
 
   def initialize(score:, **kwargs)
@@ -10,7 +10,7 @@ class RecaptchaMockValidator < RecaptchaValidator
 
   private
 
-  def recaptcha_result(_recaptcha_token)
+  def recaptcha_result
     RecaptchaResult.new(success: true, score:)
   end
 end

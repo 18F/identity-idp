@@ -25,24 +25,28 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
       'subject' => x509_subject,
       'issuer' => x509_issuer,
       'nonce' => nonce,
+      'key_id' => 'foo',
     )
     allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
       'uuid' => user.piv_cac_configurations.first.x509_dn_uuid + 'X',
       'subject' => x509_subject + 'X',
       'issuer' => x509_issuer,
       'nonce' => nonce,
+      'key_id' => 'foo',
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
       'uuid' => 'bad-uuid',
       'subject' => bad_dn,
       'issuer' => x509_issuer,
       'nonce' => nonce,
+      'key_id' => 'foo',
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
       'uuid' => user.piv_cac_configurations.first.x509_dn_uuid,
       'subject' => x509_subject,
       'issuer' => x509_issuer,
       'nonce' => 'bad-' + nonce,
+      'key_id' => 'foo',
     )
   end
 
@@ -119,6 +123,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
           new_device: nil,
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           piv_cac_configuration_id: cfg.id,
+          piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
+          key_id: 'foo',
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
@@ -154,6 +160,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
             new_device: false,
             multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
             piv_cac_configuration_id: cfg.id,
+            piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
+            key_id: 'foo',
           }
           expect(@analytics).to receive(:track_mfa_submit_event).
             with(submit_attributes)
@@ -264,7 +272,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
           new_device: nil,
-          key_id: nil,
+          key_id: 'foo',
+          piv_cac_configuration_dn_uuid: 'bad-uuid',
           piv_cac_configuration_id: nil,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).

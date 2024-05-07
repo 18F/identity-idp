@@ -11,6 +11,7 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
       phone: phone,
       sent_at: phone_confirmation_otp_sent_at,
       delivery_method: :sms,
+      user: user,
     )
   end
   let(:max_attempts) { 2 }

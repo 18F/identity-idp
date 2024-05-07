@@ -39,11 +39,9 @@ en:
           the picture. Try taking new pictures.
         issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-        selfie_not_live: Try taking a photo of yourself again. Make sure your whole face
-          is clear and visible in the photo.
         selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-        selfie_poor_quality: 'Try taking a photo of yourself again. Make sure your whole
-          face is clear and visible in the photo.'
+        selfie_not_live_or_poor_quality: 'Try taking a photo of yourself again. Make
+          sure your whole face is clear and visible in the photo.'
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
         visible_color_check: We couldn’t verify your ID. It might have moved when you
           took the picture, or the picture is too dark. Try taking new pictures
@@ -87,8 +85,7 @@ en:
         network_error: We are having technical difficulties on our end. Please try to
           submit your images again later.
         no_liveness: Try taking new pictures.
-        selfie_failure: Try taking your photos again. Make sure all of your photos are
-          clear and in focus.
+        selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
         selfie_failure_help_link_text: Review more tips for taking clear photos
       glare:
         failed_short: Image has glare, please try again.

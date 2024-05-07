@@ -178,6 +178,16 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_failure_with_face_match_pass.json')
     end
 
+    def true_id_response_failure_with_face_match_fail
+      read_fixture_file_at_path('true_id/true_id_response_failure_with_face_match_fail.json')
+    end
+
+    def true_id_response_success_with_portrait_match_not_live
+      read_fixture_file_at_path(
+        'true_id/true_id_response_success_with_portrait_match_not_live.json',
+      )
+    end
+
     def true_id_response_failure_no_liveness
       read_fixture_file_at_path('true_id/true_id_response_failure_no_liveness.json')
     end

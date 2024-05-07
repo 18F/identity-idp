@@ -257,6 +257,7 @@ module Idv
         phone: original_session.phone,
         sent_at: original_session.sent_at,
         delivery_method: original_session.delivery_method,
+        user: current_user,
       )
     end
   end
