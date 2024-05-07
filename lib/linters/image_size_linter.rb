@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
@@ -14,9 +16,9 @@ module RuboCop
       #   image_tag 'example.svg', width: 10, height: 20
       #
       class ImageSizeLinter < RuboCop::Cop::Cop
-        MSG = 'Assign width and height to images'.freeze
+        MSG = 'Assign width and height to images'
 
-        RESTRICT_ON_SEND = [:image_tag]
+        RESTRICT_ON_SEND = [:image_tag].freeze
 
         def on_send(node)
           add_offense(node, location: :expression) if !valid?(node)

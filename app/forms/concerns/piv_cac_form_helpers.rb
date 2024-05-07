@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PivCacFormHelpers
   extend ActiveSupport::Concern
 
@@ -11,6 +13,7 @@ module PivCacFormHelpers
 
   def token_decoded
     @data = PivCacService.decode_token(token)
+    @key_id = @data['key_id']
     true
   end
 
@@ -18,7 +21,6 @@ module PivCacFormHelpers
     possible_error = @data['error']
     if possible_error
       self.error_type = possible_error
-      self.key_id = @data['key_id']
       false
     else
       self.x509_dn_uuid = @data['uuid']
@@ -33,7 +35,6 @@ module PivCacFormHelpers
       true
     else
       self.error_type = 'token.invalid'
-      self.key_id = @data['key_id']
       false
     end
   end

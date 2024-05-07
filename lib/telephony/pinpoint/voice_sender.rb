@@ -1,9 +1,19 @@
+# frozen_string_literal: true
+
 require 'time'
 
 module Telephony
   module Pinpoint
     class VoiceSender
+      DEFAULT_VOICE_ID = ['en-US', 'Joey'].freeze
+      LANGUAGE_CODE_TO_VOICE_ID = {
+        en: DEFAULT_VOICE_ID,
+        fr: ['fr-FR', 'Mathieu'],
+        es: ['es-US', 'Miguel'],
+        zh: ['cmn-CN', 'Zhiyu'],
+      }.freeze
       # One connection pool per config (aka per-region)
+      # rubocop:disable Style/MutableConstant
       CLIENT_POOL = Hash.new do |h, voice_config|
         h[voice_config] = ConnectionPool.new(size: IdentityConfig.store.pinpoint_voice_pool_size) do
           credentials = AwsCredentialBuilder.new(voice_config).call
@@ -15,6 +25,7 @@ module Telephony
           )
         end
       end
+      # rubocop:enable Style/MutableConstant
 
       # rubocop:disable Lint/UnusedMethodArgument
       # rubocop:disable Metrics/BlockLength
@@ -94,16 +105,7 @@ module Telephony
       end
 
       def language_code_and_voice_id
-        case I18n.locale.to_sym
-        when :en
-          ['en-US', 'Joey']
-        when :fr
-          ['fr-FR', 'Mathieu']
-        when :es
-          ['es-US', 'Miguel']
-        else
-          ['en-US', 'Joey']
-        end
+        LANGUAGE_CODE_TO_VOICE_ID.fetch(I18n.locale.to_sym, DEFAULT_VOICE_ID)
       end
     end
   end

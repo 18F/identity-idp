@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   ProofingComponentsLogging = Struct.new(:proofing_components) do
     def as_json(*)

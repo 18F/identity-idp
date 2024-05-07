@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StoreSpMetadataInSession
   def initialize(session:, request_id:)
     @session = session
@@ -34,17 +36,13 @@ class StoreSpMetadataInSession
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
 
-  def biometric_comparison_required_value
-    parsed_vot&.biometric_comparison? || sp_request&.biometric_comparison_required
-  end
-
   def update_session
     session[:sp] = {
       issuer: sp_request.issuer,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      biometric_comparison_required: biometric_comparison_required_value,
+      biometric_comparison_required: parsed_vot&.biometric_comparison?,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
     }

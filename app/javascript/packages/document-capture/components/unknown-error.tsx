@@ -83,9 +83,22 @@ function UnknownError({
     );
   }
   if ((isFailedSelfieLivenessOrQuality || isFailedSelfie) && err) {
+    let selfieHelpCenterLinkText = t('doc_auth.errors.general.selfie_failure_help_link_text');
+    const helpCenterURL = new URL(helpCenterLink);
+    if (isFailedSelfieLivenessOrQuality) {
+      helpCenterURL.hash = 'how-to-add-a-photo-of-your-face-to-help-verify-your-id';
+      selfieHelpCenterLinkText = t('doc_auth.errors.alerts.selfie_not_live_help_link_text');
+    }
     return (
       <>
-        <p>{err.message}</p>
+        <p>
+          {err.message}{' '}
+          {altIsFailedSelfieDontIncludeAttempts && (
+            <Link isExternal isNewTab href={helpCenterURL.toString()}>
+              {selfieHelpCenterLinkText}
+            </Link>
+          )}
+        </p>
         <p>
           {!altIsFailedSelfieDontIncludeAttempts && (
             <HtmlTextWithStrongNoWrap

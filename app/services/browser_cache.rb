@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 class BrowserCache
   @cache = LruRedux::Cache.new(1_000)
+  # rubocop:disable Style/MutableConstant
   DEFAULT_BROWSER = Browser.new(nil)
+  # rubocop:enable Style/MutableConstant
   USER_AGENT_SIZE = Browser.user_agent_size_limit - 1
 
   # Detects browser attributes from User-Agent, truncated to 2047 bytes due

@@ -1,5 +1,5 @@
 class FakeAnalytics < Analytics
-  PiiDetected = Class.new(StandardError)
+  PiiDetected = Class.new(StandardError).freeze
 
   include AnalyticsEvents
   prepend Idv::AnalyticsEventsEnhancer
@@ -69,7 +69,7 @@ class FakeAnalytics < Analytics
     end
   end
 
-  UndocumentedParams = Class.new(StandardError)
+  UndocumentedParams = Class.new(StandardError).freeze
 
   module UndocumentedParamsChecker
     mattr_accessor :allowed_extra_analytics

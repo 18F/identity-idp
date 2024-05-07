@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 # UserMailer handles all email sending to the User class. It expects to be called using `with`
 # that receives a `user` and `email_address`. This pattern is preferred as the User and
 # EmailAddress database records are needed across any email being sent.
 #
 # Arguments sent to UserMailer must not include personally-identifiable information (PII).
 # This includes email addresses. All arguments to UserMailer are stored in the database when the
-# email is being sent asynchronusly by ActiveJob and we must not put PII in the database in
+# email is being sent asynchronously by ActiveJob and we must not put PII in the database in
 # plaintext.
 #
 # Example:
@@ -36,6 +38,8 @@ class UserMailer < ActionMailer::Base
     ),
   )
 
+  layout 'mailer'
+
   def validate_user_and_email_address
     @user = params.fetch(:user)
     @email_address = params.fetch(:email_address)
@@ -54,10 +58,10 @@ class UserMailer < ActionMailer::Base
     )
   end
 
-  def email_confirmation_instructions(token, request_id:, instructions:)
+  def email_confirmation_instructions(token, request_id:)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
+      @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @request_id = request_id
       @locale = locale_url_param
@@ -65,21 +69,6 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.email_confirmation_instructions.subject'),
-      )
-    end
-  end
-
-  def unconfirmed_email_instructions(token, request_id:, instructions:)
-    with_user_locale(user) do
-      presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = instructions || presenter.first_sentence
-      @confirmation_period = presenter.confirmation_period
-      @request_id = request_id
-      @locale = locale_url_param
-      @token = token
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
       )
     end
   end
@@ -132,6 +121,37 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_after_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
+  # @param [String] disavowal_token Token to generate URL for disavowing event
+  def new_device_sign_in_before_2fa(events:, disavowal_token:)
+    with_user_locale(user) do
+      @events = events
+      @disavowal_token = disavowal_token
+      @failed_times = events.count { |event| event.event_type == 'sign_in_unsuccessful_2fa' }
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
       )
     end
   end
@@ -197,7 +217,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def letter_reminder
+  def verify_by_mail_letter_requested
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.letter_reminder.subject'))
     end
@@ -372,19 +392,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_outage_notification(enrollment:)
-    with_user_locale(user) do
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
-      )
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.in_person_outage_notification.subject', app_name: APP_NAME),
-      )
-    end
-  end
-
   def account_rejected
     with_user_locale(user) do
       mail(
@@ -406,7 +413,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def gpo_reminder
+  def verify_by_mail_reminder
     with_user_locale(user) do
       @gpo_verification_pending_at = I18n.l(
         user.gpo_verification_pending_profile.gpo_verification_pending_at,

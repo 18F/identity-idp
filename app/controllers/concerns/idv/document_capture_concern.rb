@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
@@ -47,7 +49,9 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed?
+      !FeatureManagement.idv_allow_selfie_check? ||
+        !resolved_authn_context_result.biometric_comparison? ||
+        stored_result.selfie_check_performed?
     end
 
     private

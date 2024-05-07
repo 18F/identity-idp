@@ -35,14 +35,6 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#verification_method_choice' do
-    it 'returns the correct string' do
-      expect(subject.verification_method_choice).to eq(
-        I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name),
-      )
-    end
-  end
-
   describe '#sp_alert' do
     context 'sp has custom alert' do
       it 'uses the custom template' do
@@ -179,46 +171,6 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#selfie_required' do
-    before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
-        and_return(selfie_capture_enabled)
-    end
-
-    context 'doc_auth_selfie_capture_enabled is true' do
-      let(:selfie_capture_enabled) { true }
-
-      it 'returns true when sp biometric_comparison_required is true' do
-        sp_session[:biometric_comparison_required] = true
-        expect(subject.selfie_required?).to eq(true)
-      end
-
-      it 'returns true when sp biometric_comparison_required is truthy' do
-        sp_session[:biometric_comparison_required] = 1
-        expect(subject.selfie_required?).to eq(true)
-      end
-
-      it 'returns false when sp biometric_comparison_required is false' do
-        sp_session[:biometric_comparison_required] = false
-        expect(subject.selfie_required?).to eq(false)
-      end
-
-      it 'returns false when sp biometric_comparison_required is nil' do
-        sp_session[:biometric_comparison_required] = nil
-        expect(subject.selfie_required?).to eq(false)
-      end
-    end
-
-    context 'doc_auth_selfie_capture_enabled is false' do
-      let(:selfie_capture_enabled) { false }
-
-      it 'returns false' do
-        sp_session[:biometric_comparison_required] = true
-        expect(subject.selfie_required?).to eq(false)
-      end
-    end
-  end
-
   describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSession.new(
@@ -237,33 +189,6 @@ RSpec.describe ServiceProviderSession do
     it 'returns view_context.new_user_session_url' do
       expect(decorator.cancel_link_url).
         to eq 'https://www.example.com/'
-    end
-  end
-
-  describe '#mfa_expiration_interval' do
-    context 'with an AAL2 sp' do
-      before do
-        allow(sp).to receive(:default_aal).and_return(2)
-      end
-
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
-    end
-
-    context 'with an IAL2 sp' do
-      before do
-        allow(sp).to receive(:ial).and_return(2)
-      end
-
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
-    end
-
-    context 'with an sp that is not AAL2 or IAL2 and AAL1 requested' do
-      it { expect(subject.mfa_expiration_interval).to eq(30.days) }
-    end
-
-    context 'with an sp that is not AAL2 or IAL2 and AAL2 requested' do
-      let(:sp_session) { { acr_values: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF } }
-      it { expect(subject.mfa_expiration_interval).to eq(0.hours) }
     end
   end
 

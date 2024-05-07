@@ -1,0 +1,15 @@
+<%= render(
+      'idv/shared/error',
+      heading: 'Password Compromised',
+    ) do %>
+    <p>
+        PASSWORD COMPROMISED
+    </p>
+<% end %>
+
+<div class="col-12">
+  <%= link_to(
+        @after_sign_in_path,
+        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+      ) { 'SKIP' } %>
+</div>

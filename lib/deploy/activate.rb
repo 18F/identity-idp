@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
 require 'identity/hostdata'
-require 'subprocess'
 require 'yaml'
 
 module Deploy
   class Activate
     FILES_TO_LINK =
       %w[agencies iaa_gtcs iaa_orders iaa_statuses integration_statuses integrations
-         partner_account_statuses partner_accounts service_providers]
+         partner_account_statuses partner_accounts service_providers].freeze
 
     attr_reader :logger, :s3_client
 
@@ -104,7 +105,8 @@ module Deploy
 
       cmd = ['git', 'clone', '--depth', '1', '--branch', 'main', private_git_repo_url, checkout_dir]
       logger.info('+ ' + cmd.join(' '))
-      Subprocess.check_call(cmd)
+      result = system(*cmd)
+      raise "failed to execute command #{cmd.join(' ')}" if !result
     end
 
     def idp_config_checkout_name

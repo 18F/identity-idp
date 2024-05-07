@@ -10,11 +10,12 @@ type VerifyFlowStepIndicatorStep =
   | 'getting_started'
   | 'verify_id'
   | 'verify_info'
-  | 'verify_phone_or_address'
+  | 'verify_phone'
   | 'secure_account'
   | 'find_a_post_office'
   | 'go_to_the_post_office'
-  | 'get_a_letter';
+  | 'get_a_letter'
+  | 're_enter_password';
 
 interface VerifyFlowConfig {
   /**
@@ -30,26 +31,20 @@ interface VerifyFlowConfig {
 
 const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
   [VerifyFlowPath.DEFAULT]: {
-    steps: [
-      'getting_started',
-      'verify_id',
-      'verify_info',
-      'verify_phone_or_address',
-      'secure_account',
-    ],
+    steps: ['getting_started', 'verify_id', 'verify_info', 'verify_phone', 're_enter_password'],
     mapping: {
       document_capture: 'verify_id',
-      password_confirm: 'secure_account',
-      personal_key: 'secure_account',
-      personal_key_confirm: 'secure_account',
+      password_confirm: 're_enter_password',
+      personal_key: 're_enter_password',
+      personal_key_confirm: 're_enter_password',
     },
   },
   [VerifyFlowPath.IN_PERSON]: {
     steps: [
       'find_a_post_office',
       'verify_info',
-      'verify_phone_or_address',
-      'secure_account',
+      'verify_phone',
+      're_enter_password',
       'go_to_the_post_office',
     ],
     mapping: {
@@ -101,11 +96,12 @@ function VerifyFlowStepIndicator({
   // i18n-tasks-use t('step_indicator.flows.idv.getting_started')
   // i18n-tasks-use t('step_indicator.flows.idv.verify_id')
   // i18n-tasks-use t('step_indicator.flows.idv.verify_info')
-  // i18n-tasks-use t('step_indicator.flows.idv.verify_phone_or_address')
+  // i18n-tasks-use t('step_indicator.flows.idv.verify_phone')
   // i18n-tasks-use t('step_indicator.flows.idv.secure_account')
   // i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
   // i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
-  // i18n-tasks-use t('step_indicator.flows.idv.get_a_letter')
+  // i18n-tasks-use t('step_indicator.flows.idv.verify_address')
+  // i18n-tasks-use t('step_indicator.flows.idv.re_enter_password')
 
   return (
     <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">

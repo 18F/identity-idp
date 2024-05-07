@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class PhoneConfirmationOtpVerificationForm
     attr_reader :user, :user_phone_confirmation_session, :irs_attempts_api_tracker, :code
@@ -27,7 +29,7 @@ module Idv
     end
 
     def clear_second_factor_attempts
-      UpdateUser.new(user: user, attributes: { second_factor_attempts_count: 0 }).call
+      user.update!(second_factor_attempts_count: 0)
     end
 
     def increment_second_factor_attempts
@@ -46,6 +48,7 @@ module Idv
       {
         code_expired: user_phone_confirmation_session.expired?,
         code_matches: user_phone_confirmation_session.matches_code?(code),
+        otp_delivery_preference: user_phone_confirmation_session.delivery_method,
         second_factor_attempts_count: user.second_factor_attempts_count,
         second_factor_locked_at: user.second_factor_locked_at,
       }

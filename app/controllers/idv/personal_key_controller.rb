@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class PersonalKeyController < ApplicationController
     include Idv::AvailabilityConcern
@@ -131,5 +133,13 @@ module Idv
       user_session[:stored_location] = request.original_fullpath
       redirect_to fix_broken_personal_key_url
     end
+
+    def step_indicator_step
+      return :secure_account if idv_session.verify_by_mail?
+      return :go_to_the_post_office if in_person_proofing?
+
+      StepIndicatorComponent::ALL_STEPS_COMPLETE
+    end
+    helper_method :step_indicator_step
   end
 end

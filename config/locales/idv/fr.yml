@@ -2,19 +2,19 @@
 fr:
   idv:
     accessible_labels:
-      masked_ssn: Texte sécurisé, commençant par %{first_number} et finissant par
+      masked_ssn: SMS sécurisé, commençant par %{first_number} et finissant par
         %{last_number}
     buttons:
-      change_address_label: Mettre à jour votre adresse actuelle
+      change_address_label: Mettre à jour votre adresse
       change_label: Mettre à jour
-      change_ssn_label: Mettre à jour votre numéro de Sécurité Sociale
-      change_state_id_label: Mettre à jour les informations figurant sur votre document d’identité
-      continue_plain: Continuer
+      change_ssn_label: Mettre à jour votre numéro de sécurité sociale
+      change_state_id_label: Mettre à jour votre pièce d’identité
+      continue_plain: Suite
       mail:
         send: Demander une lettre
     cancel:
       actions:
-        account_page: Accéder à la page de votre compte
+        account_page: Aller à la page de votre compte
         exit: Quitter %{app_name}
         keep_going: Non, continuer
         start_over: Recommencer
@@ -32,37 +32,39 @@ fr:
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_text}.
         gpo:
-          continue: Recommencez et vérifiez votre identité depuis le début.
-          start_over: Si vous supprimez vos informations et recommencez
+          continue: Continuez pour recommencer et confirmer votre identité depuis le
+            début.
+          start_over: 'Si vous effacez vos informations et recommencez :'
           start_over_new_address: Pour envoyer votre lettre à une autre adresse, vous
-            devrez recommencer et vérifier votre identité à la nouvelle adresse.
+            devrez recommencer et confirmer votre identité à la nouvelle
+            adresse.
           warnings:
             - Le code de vérification dans votre lettre ne fonctionnera plus
             - Vous recommencerez la vérification de votre identité depuis le
               début
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
-          ordinateur pour continuer à vérifier votre identité.
+          ordinateur pour continuer à confirmer votre identité.
         start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
       headings:
         confirmation:
           hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
             téléphone
         exit:
-          with_sp: Quittez %{app_name} et retournez à %{sp_name}
-          without_sp: Quittez la vérification d’identité et accédez à la page de votre
+          with_sp: Quitter %{app_name} et revenir à %{sp_name}
+          without_sp: Quitter la vérification d’identité et accéder à la page de votre
             compte
         prompt:
-          hybrid: Êtes-vous sûr de vouloir annuler le téléchargement de vos photos
-            d’identité sur ce téléphone?
-          standard: Annuler la vérification de votre identité?
-          start_over: Recommencez la vérification de votre identité?
+          hybrid: Êtes-vous sûr de vouloir annuler le téléchargement des photos de votre
+            pièce d’identité sur ce téléphone ?
+          standard: Annuler la vérification de votre identité ?
+          start_over: Recommencer la vérification de votre identité ?
         start_over: Recommencez la vérification de votre identité
     errors:
-      incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
+      incorrect_password: Le mot de passe que vous avez saisi est incorrect.
       pattern_mismatch:
-        ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
-        zipcode: Entrez un code postal à 5 ou 9 chiffres
-        zipcode_five: Entrez un code postal à 5 chiffres
+        ssn: Saisissez un numéro de sécurité sociale à neuf chiffres
+        zipcode: Saisissez un code postal à 5 ou 9 chiffres
+        zipcode_five: Saisissez un code postal à 5 chiffres
     failure:
       attempts_html:
         one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>
@@ -71,45 +73,44 @@ fr:
           tentatives</strong> pour ajouter votre pièce d’identité en ligne.
       button:
         try_online: Réessayer en ligne
-        warning: Essayez à nouveau
+        warning: Réessayer
       exceptions:
         in_person_outage_error_message:
           post_cta:
             body: En attendant, vous pouvez toujours commencer la procédure de vérification
-              en personne sur %{app_name} et vous pouvez visiter un bureau de
+              en personne sur %{app_name} avant de vous rendre dans un bureau de
               poste. Si vous avez un besoin urgent d’accès aux services,
-              veuillez contacter directement votre agence.
-            title: Nous travaillons sur un problème technique. Il se peut que les résultats
-              de votre vérification d’identité ne vous soient pas envoyés par
-              courrier électronique avant le %{date}.
+              veuillez contacter directement l’organisme concerné.
+            title: Nous travaillons à la résolution d’un problème technique. Il se peut que
+              les résultats de votre vérification d’identité ne vous soient pas
+              envoyés par e-mail avant le %{date}.
           ready_to_verify:
-            body: Vous pouvez toujours vous rendre dans un bureau de poste pour finalisation
-              de la vérification de votre identité. Si vous avez un besoin
-              urgent d’accès aux services, veuillez contacter directement votre
-              agence.
+            body: Vous pouvez toujours vous rendre dans un bureau de poste pour achever la
+              vérification de votre identité. Si vous avez un besoin urgent
+              d’accès aux services, veuillez contacter directement l’organisme
+              concerné.
             contact_html: <a href="%{help_url}" target="_blank">Contactez l’assistance
-              %{app_name}</a> si vous n’avez pas reçu de courrier électronique
-              contenant les résultats de votre vérification avant le %{date}.
-            title: Nous travaillons sur un problème technique. Il se peut que les résultats
-              de votre vérification d’identité ne vous soient pas envoyés par
-              courrier électronique avant le %{date}.
+              %{app_name}</a> si vous n’avez pas reçu d’e-mail contenant les
+              résultats de votre vérification d’ici le %{date}.
+            title: Nous travaillons à la résolution d’un problème technique. Il se peut que
+              les résultats de votre vérification d’identité ne vous soient pas
+              envoyés par e-mail avant le %{date}.
         internal_error: Une erreur interne s’est produite lors du traitement de votre
           demande. Veuillez réessayer.
-        link: contactez-nous
-        post_office_search_error: Nous connaissons des difficultés techniques en ce
-          moment. Essayez de chercher à nouveau un bureau de poste. Si le
-          problème persiste, revenez plus tard.
-        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs,
-          %{link_html}
+        link: veuillez nous contacter
+        post_office_search_error: Nous rencontrons actuellement des difficultés
+          techniques. Réessayez de chercher un bureau de poste. Si le problème
+          persiste, revenez plus tard.
+        text_html: Veuillez réessayer. Si ces erreurs persistent, %{link_html}
       exit:
-        with_sp: Quittez %{app_name} et retournez à %{sp_name}
-        without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
+        with_sp: Quitter %{app_name} et revenir à %{sp_name}
+        without_sp: Quitter la vérification de l’identité et aller à la page de votre
+          compte
       gpo:
         rate_limited:
-          heading: Réessayez plus tard
+          heading: Réessayez ultérieurement
       phone:
-        heading: Nous n’avons pas pu faire correspondre ce numéro de téléphone à
-          d’autres enregistrements
+        heading: Nous n’avons pas pu associer ce numéro de téléphone à d’autres données
         jobfail: Un problème s’est produit et nous ne pouvons pas traiter votre demande
           pour le moment. Veuillez réessayer.
         rate_limited:
@@ -117,10 +118,10 @@ fr:
             vérification de votre numéro de téléphone en ligne.
           gpo:
             button: Vérifier par courrier
-          heading: Nous n’avons pas pu vérifier votre identité par téléphone
-          option_try_again_later_html: 'Annuler et recommencer après <strong>%{time_left}</strong>'
-          option_verify_by_mail_html: Vérifier par courrier, qui nécessite <strong>5 à 10 jours</strong>.
-          options_header: 'Vous Pouvez :'
+          heading: Nous n’avons pas pu confirmer votre identité par téléphone
+          option_try_again_later_html: Annuler et recommencer après <strong>%{time_left}</strong>
+          option_verify_by_mail_html: Vérifier par courrier, ce qui prend <strong>5 à 10 jours</strong>.
+          options_header: 'Vous pouvez :'
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
         warning:
@@ -135,19 +136,19 @@ fr:
             heading: Vérifier par courrier
             how_long_it_takes_html: Cela prend <strong>5 à 10 jours</strong>.
           heading: Nous n’avons pas pu vous associer à ce numéro
-          learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
-          next_steps_html: 'Essayez <strong>un autre</strong> numéro que vous utilisez
+          learn_more_link: En savoir plus sur quel numéro de téléphone utiliser
+          next_steps_html: Essayez <strong>un autre</strong> numéro que vous utilisez
             souvent et depuis longtemps. Il peut s’agir d’un numéro
-            professionnel ou personnel.'
-          try_again_button: 'Essayez un autre numéro'
-          you_entered: 'Tu as soumis:'
+            professionnel ou personnel.
+          try_again_button: Essayez un autre numéro
+          you_entered: 'Vous avez saisi :'
       sessions:
         exception: Une erreur interne s’est produite lors du traitement de votre demande.
-        fail_html: 'Pour votre sécurité, nous limitons le nombre de fois où vous pouvez
-          tenter de vérifier des informations personnelles en ligne.
-          <strong>Réessayer dans %{timeout}.</strong>'
+        fail_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez
+          tenter de vérifier des renseignements personnels en ligne.
+          <strong>Réessayez dans %{timeout}.</strong>
         heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
-          personnelles téléphoniques.
+          personnelles
         warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
@@ -157,14 +158,14 @@ fr:
           identité.
         fail_html: Appelez le <strong>%{contact_number}</strong> et indiquez le
           <br/>code d’erreur <strong>%{support_code}</strong>.
-        heading: S’il vous plaît, appelez-nous
+        heading: Veuillez nous appeler
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
-        que d’habitude Veuillez réessayer.
+        que d’habitude. Veuillez réessayer.
       verify:
         exit: Quitter %{app_name}
         fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_name}</strong>
         fail_text: pour accéder aux services.
-        heading: Nous n’avons pas pu vérifier votre identité
+        heading: Nous n’avons pas pu confirmer votre identité
     forgot_password:
       link_text: Mot de passe oublié?
       modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
@@ -181,8 +182,8 @@ fr:
       city: Ville
       dob: Date de naissance
       first_name: Prénom
-      id_number: Numéro d’identification
-      issuing_state: État émetteur
+      id_number: Numéro de la pièce d’identité
+      issuing_state: État d’émission
       last_name: Nom de famille
       password: Mot de passe
       ssn: Numéro de sécurité sociale
@@ -190,62 +191,48 @@ fr:
       state: État
       zipcode: Code postal
     gpo:
-      alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
+      address_accordion:
+        body: 'Nous avons envoyé une lettre avec votre code de vérification à :'
+        cta_html: Ce n’est pas la bonne adresse? %{cta_link_html}
+        cta_link: Effacez vos renseignements et recommencez.
+        title: Où ma lettre a-t-elle été envoyée?
       alert_rate_limit_warning_html: Vous ne pouvez pas demander d’autres lettres pour
-        le moment. Votre précédente demande de lettre a été effectuée le
+        le moment. Votre demande de lettre précédente a été effectuée le
         <strong>%{date_letter_was_sent}</strong>.
-      clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
         form:
-          instructions: Si vous avez reçu votre lettre, veuillez entrer le code à 10
-            caractères figurant sur la lettre que vous avez reçue.
-        intro:
-          be_patient_html: 'Veuillez noter que les lettres mettent jusqu’à <strong>10
-            jours</strong> pour arriver. Nous vous remercions de votre
-            patience.'
-          request_new_letter_link: demander une nouvelle
-          request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
-            pouvez en <span>%{request_new_letter_link}</span>.
-        title: N’avez-vous pas reçu votre lettre?
+          instructions: Si vous avez votre lettre, veuillez saisir le code à 10 caractères
+            qu’elle contient.
+        intro_html: Vous avez demandé pour la dernière fois de recevoir un courrier le
+          <strong>%{date_letter_was_sent}</strong>.
+        request_a_new_letter_html: Demandez à recevoir un nouveau courrier si plus de
+          <strong>10 jours</strong> se sont écoulés depuis la dernière fois que
+          vous en avez demandé un ou si votre code de vérification a expiré.
+        title: Vous n’avez pas reçu votre lettre ?
       form:
-        instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
-          avez reçue.
         otp_label: Code de vérification
-        submit: Confirmer le compte
-        title: Confirmez votre compte
-      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code de
-        vérification ci-dessous. </p> <p>Si votre lettre n’est pas encore
-        arrivée, veuillez être patient car les lettres mettent jusqu’à
-        <strong>10 jours</strong> pour arriver. Nous vous remercions de votre
-        patience.</p>'
+        submit: Valider
+      intro: Bienvenue à nouveau. Saisissez le code à 10 caractères contenu dans le
+        courrier que vous avez reçu.
+      last_letter_request_message_html: Vous avez demandé pour la dernière fois de
+        recevoir un courrier le <strong>%{date_letter_was_sent}</strong>. Si
+        votre lettre n’est pas encore arrivée, veuillez patienter car elle peut
+        mettre jusqu’à <strong>10 jours</strong>. Nous vous remercions de votre
+        patience.
       request_another_letter:
-        button: Faire une nouvelle demande
-        instructions_html: Vous pouvez demander à faire une nouvelle demande si vous
-          avez des problèmes avec votre lettre actuelle ou si elle n’est pas
-          parvenue à destination. Les lettres mettent entre <strong>5 et 10
-          jours</strong> pour arriver.
+        button: Demander une autre lettre
+        instructions_html: Vous pouvez demander une nouvelle lettre si vous avez des
+          problèmes avec votre lettre actuelle ou si elle ne vous est jamais
+          parvenue. Les lettres mettent entre <strong>5 et 10 jours</strong>
+          pour arriver.
         learn_more_link: En savoir plus sur la vérification de votre adresse par courrier
-        title: Voulez-vous faire une nouvelle demande?
+        title: Vous voulez demander une autre lettre ?
       return_to_profile: Retourner à votre profil
       title: Content de vous revoir
       will_send_to: 'Nous vous enverrons un courrier à :'
       wrong_address: Pas la bonne adresse?
     images:
-      come_back_later: Lettre avec un crochet
-    legal_statement:
-      information_collection: >-
-        Cette collecte d’informations répond aux exigences de l’article 3507 du
-        44 U.S.C., tel que modifié par l’article 2 de la loi de 1995 sur la
-        réduction des tâches administratives. Vous n’avez pas besoin de répondre
-        à ces questions, sauf si nous affichons un numéro de contrôle valide de
-        l’Office of Management and Budget (OMB). Le numéro de contrôle de l’OMB
-        pour cette collecte est 3090-0325. Nous estimons qu’il faut une minute
-        pour lire les instructions, rassembler les preuves et répondre aux
-        questions. N’envoyez que des commentaires relatifs à notre estimation du
-        temps, y compris des suggestions pour réduire cette charge, ou tout
-        autre aspect de cette collecte d’informations à : General Services
-        Administration, Regulatory Secretariat Division (MVCB), ATTN : Lois
-        Mandell/IC 3090-0325, 1800 F Street, NW, Washington, DC 20405.
+      come_back_later: Lettre avec une coche
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link_html}.
@@ -256,18 +243,18 @@ fr:
         saisir votre code de vérification.
       confirm: Nous avons sécurisé vos informations vérifiées
       enter_password:
-        by_mail_password_reminder_html: <strong>Mémorisez votre mot de passe.</strong>
+        by_mail_password_reminder_html: '<strong>Mémorisez votre mot de passe.</strong>
           Le code de vérification contenu dans votre lettre ne fonctionnera pas
-          si vous réinitialisez votre mot de passe par la suite.
-        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
+          si vous réinitialisez votre mot de passe par la suite.'
+        message: '%{app_name} chiffre vos informations avec votre mot de passe. Cela
           signifie que vos informations sont sécurisées et que vous seul pourrez
           y accéder ou les modifier.'
         phone_verified: Nous avons vérifié votre numéro de téléphone
       gpo:
         address_on_file: 'Nous enverrons la lettre à l’adresse que vous avez vérifiée
-          précédemment:'
+          précédemment :'
         another_letter_on_the_way: Nous vous envoyons une autre lettre
-        info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
+        info_alert: Vous devrez attendre de recevoir votre lettre pour achever la
           vérification de votre identité.
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         letter_on_the_way: Nous vous envoyons une lettre
@@ -279,9 +266,9 @@ fr:
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       phone:
-        alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
-        description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
-          code à usage unique. Ceci est pour aider à vérifier votre identité.
+        alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
+        description: Nous vérifierons ce numéro dans nos données et vous enverrons un
+          code à usage unique. L’objectif est d’aider à vérifier votre identité.
         failed_number:
           alert_text: Nous n’avons pas pu vous associer à ce numéro.
           gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
@@ -291,59 +278,51 @@ fr:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
-      select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
-        ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
-        l’aurez pas activé en entrant votre code à usage unique.
-      select_verification_without_sp: Afin de protéger votre compte des fraudes liées
-        à l’identité, votre profil ne sera pas activé tant que vous n’aurez pas
-        entré votre code à usage unique.
       sessions:
-        enter_password_message: Lorsque vous entrez à nouveau votre mot de passe,
-          %{app_name} crypte vos données pour vous assurer que personne ne peut
-          y accéder.
-        no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
-          s’agit d’une démonstration seulement) - SITE DE TEST
+        enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name}
+          protégera les informations que vous nous aurez données pour que vous
+          seul puissiez y accéder.
+        no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à
+          des fins de démonstration uniquement) - SITE DE TEST
       verify_info: Nous lisons vos informations à partir de votre pièce d’identité.
-        Passez-les en revue et mettez-les à jour avant de les soumettre pour
+        Passez-les en revue et mettez-les à jour avant de les envoyer pour
         vérification.
-      verifying: Vérification…
+      verifying: Vérification en cours…
     titles:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Votre lettre est en route
-      enter_password: Réviser et soumettre
+      enter_password: Révisez et validez
       mail:
         verify: Vérifiez votre adresse
-      otp_delivery_method: Comment envoyer un code?
+      otp_delivery_method: Comment devrions-nous envoyer un code ?
       session:
-        enter_password: 'Saisissez à nouveau votre mot de passe %{app_name}'
-        enter_password_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour
-          envoyer votre lettre'
+        enter_password: Ressaisissez votre mot de passe %{app_name}
+        enter_password_letter: Ressaisissez votre mot de passe %{app_name} pour envoyer votre lettre
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:
-        need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
-          obtenir de l’aide:'
+        need_assistance: 'Vous avez besoin d’une assistance immédiate ? Voici comment
+          obtenir de l’aide :'
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
-        doc_capture_tips: Conseils pour prendre des photos claires de votre pièce d’identité
-        get_help_at_sp: Demandez de l’aide à %{sp_name}
+        doc_capture_tips: Conseils pour prendre des photos nettes de votre pièce d’identité
+        get_help_at_sp: Obtenir de l’aide sur %{sp_name}
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
-        learn_more_verify_by_phone: Apprenez-en plus sur quel numéro de téléphone utiliser
+        learn_more_verify_by_phone: En savoir plus sur quel numéro de téléphone utiliser
         learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone
         learn_more_verify_in_person: En savoir plus sur la vérification en personne
         supported_documents: En savoir plus sur les pièces d’identité acceptées
-        verify_by_mail: Vérifiez plutôt votre adresse par courrier
+        verify_by_mail: Vérifier plutôt votre adresse par courrier
     unavailable:
-      exit_button: 'Quitter %{app_name}'
+      exit_button: Quitter %{app_name}
       idv_explanation:
-        with_sp_html: '<strong>%{sp}</strong> doit s’assurer que c’est bien vous — et
-          non quelqu’un qui se fait passer pour vous.'
-        without_sp: 'L’agence à laquelle vous essayez d’accéder doit s’assurer qu’il
-          s’agit bien de vous, et non de quelqu’un qui se fait passer pour
-          vous.'
+        with_sp_html: '<strong>%{sp}</strong> doit s’assurer qu’il s’agit bien de vous,
+          et non de quelqu’un qui se fait passer pour vous.'
+        without_sp: L’organisme auquel vous essayez d’accéder doit s’assurer qu’il
+          s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.
       next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et
         réessayez plus tard.'
-      status_page_link: 'Obtenez des mises à jour sur notre page de statut'
+      status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
     warning:
@@ -356,14 +335,17 @@ fr:
           personnelles
       state_id:
         cancel_button: Quitter %{app_name}
-        explanation: |
-          Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations en ce moment.
+        explanation: 'Malheureusement, nous rencontrons des difficultés techniques avec
+          les pièces d’identité de votre État et ne sommes pas en mesure de
+          vérifier vos informations pour le moment.
+
+          '
         heading: Nous travaillons à la résolution d’une erreur
         next_steps:
           items_html:
             - Réessayer maintenant <strong>ou</strong>
             - Quitter %{app_name} et réessayer plus tard
-          preamble: 'Vous pouvez:'
+          preamble: 'Vous pouvez :'
         try_again_button: Réessayer
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.

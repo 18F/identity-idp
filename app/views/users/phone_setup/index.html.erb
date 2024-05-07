@@ -24,7 +24,6 @@
         form: f,
         confirmed_phone: false,
         required: true,
-        captcha_exempt_countries: FeatureManagement.phone_recaptcha_enabled? ? PhoneRecaptchaValidator.exempt_countries : nil,
         class: 'margin-bottom-4',
       ) %>
 
@@ -38,7 +37,7 @@
 
   <%= render CaptchaSubmitButtonComponent.new(
         form: f,
-        action: PhoneRecaptchaValidator::RECAPTCHA_ACTION,
+        action: PhoneRecaptchaForm::RECAPTCHA_ACTION,
       ).with_content(t('forms.buttons.send_one_time_code')) %>
 <% end %>
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
@@ -65,6 +67,10 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_added_phone(
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session.delete(:phone_recaptcha_assessment_id),
+          reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+        ),
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end
@@ -221,13 +227,13 @@ module TwoFactorAuthentication
     end
 
     def update_phone_attributes
-      UpdateUser.new(
+      UpdateUserPhoneConfiguration.update!(
         user: current_user,
         attributes: { phone_id: user_session[:phone_id],
                       phone: user_session[:unconfirmed_phone],
                       phone_confirmed_at: Time.zone.now,
                       otp_make_default_number: selected_otp_make_default_number },
-      ).call
+      )
     end
 
     def phone_changed

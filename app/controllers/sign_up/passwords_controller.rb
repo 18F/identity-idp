@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SignUp
   class PasswordsController < ApplicationController
     include UnconfirmedUserConcern
@@ -54,10 +56,10 @@ module SignUp
     def process_successful_password_creation
       password = permitted_params[:password]
       now = Time.zone.now
-      UpdateUser.new(
-        user: @user,
-        attributes: { password: password, confirmed_at: now },
-      ).call
+      @user.update!(
+        password: password,
+        confirmed_at: now,
+      )
       @user.email_addresses.take.update(confirmed_at: now)
 
       sign_in_and_redirect_user

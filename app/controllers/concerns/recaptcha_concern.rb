@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RecaptchaConcern
   RECAPTCHA_SCRIPT_SRC = [
     'https://www.google.com/recaptcha/',
@@ -8,10 +10,6 @@ module RecaptchaConcern
     'https://www.google.com/recaptcha/',
     'https://recaptcha.google.com/recaptcha/',
   ].freeze
-
-  def recoverable_recaptcha_error?(result)
-    result.errors.keys == [:recaptcha_token]
-  end
 
   def allow_csp_recaptcha_src
     policy = current_content_security_policy

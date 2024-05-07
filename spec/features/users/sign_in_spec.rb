@@ -162,6 +162,30 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
       to(include(expected_form_action))
   end
 
+  scenario 'User with gov/mil email directed to recommended PIV page' do
+    user = create(:user, :with_phone, { email: 'example@example.gov' })
+
+    visit new_user_session_path
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    expect(page).to have_current_path(login_piv_cac_recommended_path)
+    click_button(t('two_factor_authentication.piv_cac_upsell.add_piv'))
+    expect(page).to have_current_path(setup_piv_cac_path)
+  end
+
+  scenario 'User with gov/mil email and skips recommendation page' do
+    user = create(:user, :with_phone, { email: 'example@example.gov' })
+
+    visit new_user_session_path
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    expect(page).to have_current_path(login_piv_cac_recommended_path)
+    click_button(t('two_factor_authentication.piv_cac_upsell.skip'))
+    expect(page).to have_current_path(account_path)
+  end
+
   scenario 'user attempts sign in with piv/cac with no account then creates account' do
     visit_idp_from_sp_with_ial1(:oidc)
     click_on t('account.login.piv_cac')
@@ -940,6 +964,86 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
           },
         )
         expect(page).to_not have_content 'The page you were looking for doesn’t exist'
+      end
+    end
+  end
+
+  context 'check_password_compromised feature toggle is true' do
+    before do
+      allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
+    end
+
+    context 'user has a compromised password' do
+      let(:user) { create(:user, :fully_registered, password: '3.141592653589793238') }
+      context 'user is chosen to check if password compromised' do
+        before do
+          allow(SecureRandom).to receive(:random_number).and_return(5)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+            and_return(2)
+        end
+        it 'should bring user to compromised password page' do
+          visit new_user_session_path
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect(current_path).to eq user_password_compromised_path
+        end
+      end
+
+      context 'user is not chosen to check if password compromised' do
+        before do
+          allow(SecureRandom).to receive(:random_number).and_return(2)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+            and_return(5)
+        end
+        it 'should continue without issue' do
+          visit new_user_session_path
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect(current_path).to eq account_path
+        end
+      end
+    end
+
+    context 'user does not have compromised password' do
+      let(:user) { create(:user, :fully_registered) }
+      context 'user is chosen to check if password compromised' do
+        before do
+          allow(SecureRandom).to receive(:random_number).and_return(5)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+            and_return(2)
+        end
+        it 'should bring user to account page and set password compromised attr' do
+          visit new_user_session_path
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect(current_path).to eq account_path
+          user.reload
+          expect(user.password_compromised_checked_at).to be_truthy
+        end
+      end
+
+      context 'user is not chosen to check if password compromised' do
+        before do
+          allow(SecureRandom).to receive(:random_number).and_return(2)
+          allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
+            and_return(5)
+        end
+        it 'should continue without issue and does not set password compromised attr' do
+          visit new_user_session_path
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect(current_path).to eq account_path
+          user.reload
+          expect(user.password_compromised_checked_at).to be_falsey
+        end
       end
     end
   end

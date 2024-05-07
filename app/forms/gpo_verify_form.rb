@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoVerifyForm
   include ActiveModel::Model
 
@@ -83,7 +85,11 @@ class GpoVerifyForm
   def validate_otp_not_expired
     return unless gpo_confirmation_code.present? && gpo_confirmation_code.expired?
 
-    errors.add :otp, :gpo_otp_expired, type: :gpo_otp_expired
+    if user_can_request_another_letter?
+      errors.add :otp, :gpo_otp_expired
+    else
+      errors.add :otp, :gpo_otp_expired_and_cannot_request_another
+    end
   end
 
   def validate_pending_profile
@@ -114,5 +120,9 @@ class GpoVerifyForm
   def activate_profile
     pending_profile&.remove_gpo_deactivation_reason
     pending_profile&.activate
+  end
+
+  def user_can_request_another_letter?
+    !Idv::GpoMail.new(user).rate_limited?
   end
 end

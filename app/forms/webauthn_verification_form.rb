@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The WebauthnVerificationForm class is responsible for validating webauthn verification input
 class WebauthnVerificationForm
   include ActiveModel::Model

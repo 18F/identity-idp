@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ResetUserPassword
   def initialize(user:, remember_device_revoked_at: nil)
     @user = user

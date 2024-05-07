@@ -1,0 +1,11 @@
+---
+zh:
+  simple_form:
+    error_notification:
+      default_message: '请仔细阅读以下问题：'
+    'no': '不'
+    required:
+      html: ''
+      mark: ''
+      text: 该字段必需做
+    'yes': '对'

@@ -1,3 +1,9 @@
+## 4.1.0
+
+### Improvements
+
+- The `selector-class-pattern` configuration now specifies [`resolveNestedSelectors: true`](https://stylelint.io/user-guide/rules/selector-class-pattern/#resolvenestedselectors-true--false-default-false) to resolve nested selectors using `&` interpolation.
+
 ## 4.0.0
 
 ### Breaking Changes

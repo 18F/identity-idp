@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPivCacSetupForm
   include ActiveModel::Model
   include PivCacFormHelpers
@@ -19,7 +21,7 @@ class UserPivCacSetupForm
     FormResponse.new(
       success: success && process_valid_submission,
       errors: errors,
-      extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
+      extra: extra_analytics_attributes,
     )
   end
 
@@ -59,6 +61,7 @@ class UserPivCacSetupForm
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'piv_cac',
+      key_id: key_id,
     }
   end
 

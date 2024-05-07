@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module Errors
     # HTTP Status Codes
@@ -20,6 +22,7 @@ module DocAuth
     EXPIRATION_CHECKS = 'expiration_checks' # expiration date valid, expiration crosscheck
     FULL_NAME_CHECK = 'full_name_check'
     GENERAL_ERROR = 'general_error'
+    GENERAL_ERROR_LIVENESS = 'general_error_liveness'
     ID_NOT_RECOGNIZED = 'id_not_recognized'
     ID_NOT_VERIFIED = 'id_not_verified'
     ISSUE_DATE_CHECKS = 'issue_date_checks'
@@ -27,8 +30,7 @@ module DocAuth
     MULTIPLE_FRONT_ID_FAILURES = 'multiple_front_id_failures'
     REF_CONTROL_NUMBER_CHECK = 'ref_control_number_check'
     SELFIE_FAILURE = 'selfie_failure'
-    SELFIE_NOT_LIVE = 'selfie_not_live'
-    SELFIE_POOR_QUALITY = 'selfie_poor_quality'
+    SELFIE_NOT_LIVE_OR_POOR_QUALITY = 'selfie_not_live_or_poor_quality'
     SEX_CHECK = 'sex_check'
     VISIBLE_COLOR_CHECK = 'visible_color_check'
     VISIBLE_PHOTO_CHECK = 'visible_photo_check'
@@ -63,6 +65,7 @@ module DocAuth
       EXPIRATION_CHECKS,
       FULL_NAME_CHECK,
       GENERAL_ERROR,
+      GENERAL_ERROR_LIVENESS,
       ID_NOT_RECOGNIZED,
       ID_NOT_VERIFIED,
       ISSUE_DATE_CHECKS,
@@ -118,10 +121,10 @@ module DocAuth
       MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       # Selfie errors
+      GENERAL_ERROR_LIVENESS => { long_msg: GENERAL_ERROR_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
       SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_FAILURE, hints: false },
-      SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_FAILURE, hints: false },
-      SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },
-    }
+      SELFIE_NOT_LIVE_OR_POOR_QUALITY => { long_msg: SELFIE_NOT_LIVE_OR_POOR_QUALITY, field_msg: SELFIE_FAILURE, hints: false },
+    }.transform_values(&:freeze).freeze
     # rubocop:enable Layout/LineLength
   end
 end

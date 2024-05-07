@@ -83,29 +83,30 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
     # phone page
     expect_in_person_step_indicator_current_step(
-      t('step_indicator.flows.idv.verify_phone_or_address'),
+      t('step_indicator.flows.idv.verify_phone'),
     )
     expect(page).to have_content(t('titles.idv.phone'))
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
     click_idv_send_security_code
     expect_in_person_step_indicator_current_step(
-      t('step_indicator.flows.idv.verify_phone_or_address'),
+      t('step_indicator.flows.idv.verify_phone'),
     )
 
     expect_in_person_step_indicator_current_step(
-      t('step_indicator.flows.idv.verify_phone_or_address'),
+      t('step_indicator.flows.idv.verify_phone'),
     )
     fill_in_code_with_last_phone_otp
     click_submit_default
 
     # password confirm page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
     expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
     complete_enter_password_step(user)
 
     # personal key page
-    expect_in_person_step_indicator
-    expect(page).not_to have_css('.step-indicator__step--current')
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.go_to_the_post_office'),
+    )
     expect(page).to have_content(t('titles.idv.personal_key'))
     deadline = nil
     freeze_time do
@@ -274,14 +275,14 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
-      expect_in_person_step_indicator_current_step(
-        t('step_indicator.flows.idv.verify_phone_or_address'),
+      expect_in_person_gpo_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_address'),
       )
       click_on t('idv.buttons.mail.send')
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
       complete_enter_password_step
 
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_letter_enqueued_path)
 
@@ -289,12 +290,11 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       expect(page).to have_current_path(account_path)
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
       click_button t('idv.gpo.form.submit')
 
       # personal key
-      expect_in_person_step_indicator
-      expect(page).not_to have_css('.step-indicator__step--current')
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       expect(page).to have_content(t('titles.idv.personal_key'))
       acknowledge_and_confirm_personal_key
 
@@ -314,7 +314,8 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       complete_enter_password_step
       click_idv_continue
       click_on t('account.index.verification.reactivate_button')
-      click_on t('idv.messages.clear_and_start_over')
+      click_on t('idv.gpo.address_accordion.title')
+      click_on t('idv.gpo.address_accordion.cta_link')
       click_idv_continue
 
       expect(page).to have_current_path(idv_welcome_path)
@@ -483,29 +484,30 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
       # phone page
       expect_in_person_step_indicator_current_step(
-        t('step_indicator.flows.idv.verify_phone_or_address'),
+        t('step_indicator.flows.idv.verify_phone'),
       )
       expect(page).to have_content(t('titles.idv.phone'))
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
       expect_in_person_step_indicator_current_step(
-        t('step_indicator.flows.idv.verify_phone_or_address'),
+        t('step_indicator.flows.idv.verify_phone'),
       )
 
       expect_in_person_step_indicator_current_step(
-        t('step_indicator.flows.idv.verify_phone_or_address'),
+        t('step_indicator.flows.idv.verify_phone'),
       )
       fill_in_code_with_last_phone_otp
       click_submit_default
 
       # password confirm page
-      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
       complete_enter_password_step(user)
 
       # personal key page
-      expect_in_person_step_indicator
-      expect(page).not_to have_css('.step-indicator__step--current')
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.go_to_the_post_office'),
+      )
       expect(page).to have_content(t('titles.idv.personal_key'))
       deadline = nil
       freeze_time do

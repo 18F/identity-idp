@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/hash/except'
 require 'faraday'
 require 'nokogiri'
@@ -6,8 +8,8 @@ require 'phonelib'
 # Scrapes HTML tables from Pinpoint help sites to parse out supported countries, and
 # puts them in a format compatible with country_dialing_codes.yml
 class PinpointSupportedCountries
-  PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html'.freeze
-  PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-voice-support-by-country.html'.freeze
+  PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html'
+  PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-voice-support-by-country.html'
 
   # The list of countries where we have our sender ID registered
   SENDER_ID_COUNTRIES = %w[
@@ -194,7 +196,7 @@ class PinpointSupportedCountries
       table = doc.xpath('//table').first
 
       headings = []
-      table.xpath('//thead/tr').each do |row|
+      table.xpath('thead/tr').each do |row|
         row.xpath('th').each do |cell|
           headings << cell.text
         end

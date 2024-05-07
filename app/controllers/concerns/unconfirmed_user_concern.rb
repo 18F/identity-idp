@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UnconfirmedUserConcern
   include ActionView::Helpers::DateHelper
 
@@ -60,7 +62,7 @@ module UnconfirmedUserConcern
   def process_unsuccessful_confirmation
     @confirmation_token = params[:confirmation_token]
     flash[:error] = unsuccessful_confirmation_error
-    redirect_to sign_up_email_resend_url(request_id: params[:_request_id])
+    redirect_to sign_up_register_url(request_id: params[:_request_id])
   end
 
   def unsuccessful_confirmation_error

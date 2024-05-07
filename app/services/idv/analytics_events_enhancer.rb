@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module AnalyticsEventsEnhancer
     IGNORED_METHODS = %i[
@@ -36,7 +38,6 @@ module Idv
       idv_doc_auth_warning_visited
       idv_doc_auth_welcome_submitted
       idv_doc_auth_welcome_visited
-      idv_exit_optional_questions
       idv_front_image_added
       idv_front_image_clicked
       idv_gpo_confirm_start_over_before_letter_visited

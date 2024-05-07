@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NullServiceProviderSession
   def initialize(view_context: nil)
     @view_context = view_context
@@ -7,16 +9,8 @@ class NullServiceProviderSession
     I18n.t('headings.sign_in_without_sp')
   end
 
-  def verification_method_choice
-    I18n.t('idv.messages.select_verification_without_sp')
-  end
-
   def cancel_link_url
     view_context.root_url
-  end
-
-  def mfa_expiration_interval
-    IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
   end
 
   def remember_device_default
@@ -43,10 +37,6 @@ class NullServiceProviderSession
 
   def request_url_params
     {}
-  end
-
-  def selfie_required?
-    false
   end
 
   def current_user

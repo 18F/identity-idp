@@ -2,5 +2,6 @@
 fr:
   pages:
     page_took_too_long:
-      body: Veuillez réessayer dans quelques minutes. (503)
-      header: Le système d’information a pris trop de temps à traiter votre demande.
+      body: Nous vous recommandons de patienter quelques minutes, puis de réessayer.
+        (503)
+      header: Le serveur a mis trop de temps à traiter votre demande.

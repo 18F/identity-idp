@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
@@ -186,6 +188,10 @@ module Users
           context: context,
         )
       end
+
+      if exceeded_short_term_otp_rate_limit?
+        return handle_too_many_short_term_otp_sends(method: method, default: default)
+      end
       return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
       @telephony_result = send_user_otp(method)
@@ -225,6 +231,10 @@ module Users
         adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session[:phone_recaptcha_assessment_id],
+          reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        ),
       )
 
       if UserSessionContext.reauthentication_context?(context)
@@ -261,6 +271,18 @@ module Users
       )
     end
 
+    def short_term_otp_rate_limiter
+      @short_term_otp_rate_limiter ||= RateLimiter.new(
+        user: current_user,
+        rate_limit_type: :short_term_phone_otp,
+      )
+    end
+
+    def exceeded_short_term_otp_rate_limit?
+      short_term_otp_rate_limiter.increment!
+      short_term_otp_rate_limiter.limited?
+    end
+
     def exceeded_phone_confirmation_limit?
       return false unless UserSessionContext.confirmation_context?(context)
       phone_confirmation_rate_limiter.increment!
@@ -294,8 +316,14 @@ module Users
       if UserSessionContext.authentication_or_reauthentication_context?(context)
         Telephony.send_authentication_otp(**otp_params)
       else
-        Telephony.send_confirmation_otp(**otp_params)
+        Telephony.send_confirmation_otp(**otp_params, otp_length: otp_length)
       end
+    end
+
+    def otp_length
+      bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
+      length = bucket == :ten_digit_otp ? 'ten' : 'six'
+      I18n.t("telephony.format_length.#{length}")
     end
 
     def user_selected_default_number
@@ -344,7 +372,36 @@ module Users
       { platform: current_user.webauthn_configurations.platform_authenticators.present? }
     end
 
+    def handle_too_many_short_term_otp_sends(method:, default:)
+      analytics.rate_limit_reached(
+        limiter_type: short_term_otp_rate_limiter.rate_limit_type,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        context: context,
+        otp_delivery_preference: method,
+      )
+
+      flash[:error] = t(
+        'errors.messages.phone_confirmation_limited',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [short_term_otp_rate_limiter.expires_at, Time.zone.now].compact.max,
+        ),
+      )
+
+      redirect_to login_two_factor_url(
+        otp_delivery_preference: method,
+        otp_make_default_number: default,
+      )
+    end
+
     def handle_too_many_confirmation_sends
+      analytics.rate_limit_reached(
+        limiter_type: phone_confirmation_rate_limiter.rate_limit_type,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+      )
+
       flash[:error] = t(
         'errors.messages.phone_confirmation_limited',
         timeout: distance_of_time_in_words(

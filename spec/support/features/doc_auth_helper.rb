@@ -7,11 +7,11 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
   include UserAgentHelper
 
-  GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-  GOOD_SSN_MASKED = '9**-**-***4'
-  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }
-  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
-  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
+  GOOD_SSN = (Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]).freeze
+  GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  SAMPLE_TMX_SUMMARY_REASON_CODE = { tmx_summary_reason_code: ['Identity_Negative_History'] }.freeze
+  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
+  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
   def clear_and_fill_in(field_name, text)
     fill_in field_name, with: ''
@@ -259,6 +259,38 @@ module DocAuthHelper
       Faraday::Response,
       status: 200,
       body: LexisNexisFixtures.true_id_response_failure_with_face_match_pass,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_fail_face_match_fail
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_failure_with_face_match_fail,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_pass_and_portrait_match_not_live
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_success_with_portrait_match_not_live,
     )
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,

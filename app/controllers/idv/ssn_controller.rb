@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class SsnController < ApplicationController
     include Idv::AvailabilityConcern
@@ -73,7 +75,7 @@ module Idv
     private
 
     def next_url
-      if idv_session.pii_from_doc[:state] == 'PR' && !ssn_presenter.updating_ssn?
+      if idv_session.pii_from_doc.state == 'PR' && !ssn_presenter.updating_ssn?
         idv_address_url
       else
         idv_verify_info_url

@@ -19,7 +19,7 @@ en:
         address_check: We couldn’t read the address on your ID. Try taking new pictures.
         barcode_content_check: We couldn’t read the barcode on the back of your ID. It
           could be because of a problem with the barcode, or the barcode is a
-          new type that we don’t recognize yet. Use another state‑issued ID if
+          new type that we don’t recognize yet. Use another state‑issued ID if
           you have one.
         barcode_read_check: We couldn’t read the barcode on the back of your ID. Try
           taking a new picture.
@@ -39,10 +39,9 @@ en:
           the picture. Try taking new pictures.
         issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
         ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-        selfie_not_live: Try taking a photo of yourself again. Make sure your whole face
-          is clear and visible in the photo.
-        selfie_poor_quality: 'Try taking a photo of yourself again. Make sure your whole
-          face is clear and visible in the photo.'
+        selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
+        selfie_not_live_or_poor_quality: 'Try taking a photo of yourself again. Make
+          sure your whole face is clear and visible in the photo.'
         sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
         visible_color_check: We couldn’t verify your ID. It might have moved when you
           took the picture, or the picture is too dark. Try taking new pictures
@@ -54,9 +53,10 @@ en:
         heading: We couldn’t read the barcode on your ID.
       camera:
         blocked: Your camera is blocked
-        blocked_detail: We don’t have permission to access the camera. Please check your
-          browser or system settings, reload this page, or upload a photo
-          instead.
+        blocked_detail_html: <strong>Allow access to your camera to take photos for
+          %{app_name}.</strong><span>Try taking photos again and allowing
+          permission. If that doesn’t work, you may need to check your device
+          settings to allow access.</span>
         failed: Camera failed to start, please try again.
       card_type: Try again with your driver’s license or state ID card.
       doc:
@@ -85,8 +85,8 @@ en:
         network_error: We are having technical difficulties on our end. Please try to
           submit your images again later.
         no_liveness: Try taking new pictures.
-        selfie_failure: Try taking your photos again. Make sure all of your photos are
-          clear and in focus.
+        selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
+        selfie_failure_help_link_text: Review more tips for taking clear photos
       glare:
         failed_short: Image has glare, please try again.
         top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the
@@ -117,30 +117,6 @@ en:
         top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark.
           Try taking new pictures in a bright area.
       upload_error: Sorry, something went wrong on our end.
-    exit_survey:
-      content_html: <strong>If you do not have a driver’s license or state ID card,
-        you cannot continue with %{app_name}.</strong> Please <a>exit
-        %{app_name} and contact %{sp_name}</a> to find out what you can do.
-      content_nosp_html: <strong>If you do not have a driver’s license or state ID
-        card, you cannot continue with %{app_name}.</strong> <a>Cancel verifying
-        your identity with %{app_name}</a> and you can restart the process when
-        you’re ready.
-      header: Don’t have a driver’s license or state ID?
-      optional:
-        button: Submit and exit %{app_name}
-        content: Help us add more identity documents to %{app_name}. Which types of
-          identity documents do you have instead?
-        id_types:
-          military_id: Military ID card (this includes a Department of Defense
-            Identification Card, a Veteran Health Identification Card, or a
-            Veteran ID Card)
-          other: Something not listed
-          resident_card: U.S. Green Card (also referred to as a Permanent Resident Card)
-          tribal_id: Tribal ID card
-          us_passport: U.S. Passport
-          voter_registration_card: Voter registration card
-        legend: Optional. Select any of the documents you have.
-        tag: Optional
     forms:
       captured_image: Captured Image
       change_file: Change file
@@ -155,12 +131,12 @@ en:
         information below is incorrect, please %{link_html} of your
         state‑issued ID.
       capture_scan_warning_link: upload new photos
-      document_capture: Add photos of your ID
+      document_capture: Add photos of your driver’s license or state ID card
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
-      document_capture_selfie: A photo of yourself
+      document_capture_selfie: Photo of your face
       document_capture_subheader_id: Driver’s license or state ID card
-      document_capture_subheader_selfie: Photo of yourself
+      document_capture_subheader_selfie: Photo of your face
       document_capture_with_selfie: Add photos of your ID and a photo of yourself
       front: Front of your driver’s license or state ID
       how_to_verify: Choose how you want to verify your identity
@@ -171,7 +147,7 @@ en:
       no_ssn: Don’t have a Social Security number?
       review_issues: Check your images and try again
       secure_account: Secure your account
-      selfie: Photo
+      selfie: Photo of your face
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
       text_message: We sent a message to your phone
@@ -229,6 +205,7 @@ en:
       secure_account: We’ll encrypt your account when you re-enter your password.
         Encryption means your data is protected and only you will be able to
         access or change your information.
+      selfie_capture_content: We’ll check that you are the person on your ID.
       selfie_capture_status:
         face_close_to_border: Too close to the frame
         face_not_found: Face not found
@@ -236,8 +213,7 @@ en:
         too_many_faces: Too many faces
       ssn: We need your Social Security number to verify your name, date of birth and
         address.
-      stepping_up_html: 'Verify your identity again and take a photo of yourself to
-        access this service. %{link_html}'
+      stepping_up_html: 'Verify your identity again to access this service. %{link_html}'
       tag: Recommended
       upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
       upload_from_phone: You won’t have to sign in again, and you’ll switch back to
@@ -256,8 +232,7 @@ en:
       verify_online_link_text: Learn more about verifying online
       you_entered: 'You entered:'
     instructions:
-      bullet1: Take photos of your ID
-      bullet1_with_selfie: Take photos of yourself and your ID
+      bullet1: Have a driver’s license or state ID
       bullet2: Enter your Social Security number
       bullet3: Match to your phone number
       bullet4: Re-enter your %{app_name} password
@@ -270,25 +245,25 @@ en:
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
-      text1: Use your driver’s license or state ID card. Other forms of ID are not
-        accepted.
-      text1_with_selfie: Take a photo of yourself and take photos of your driver’s
-        license or state ID card. Other forms of ID are not accepted.
+      text1: Other forms of ID are not accepted. We’ll check that you are the person
+        on your ID.
       text2: You will not need your physical SSN card.
-      text3: Your phone number matches you to your personal information. After you
-        match, we’ll send you a code.
+      text3: We match your phone number with your personal information and send a
+        one-time code to your phone.
       text4: Your password saves and encrypts your personal information.
     tips:
       document_capture_hint: Must be a JPG or PNG
-      document_capture_id_text1: Use a dark background
-      document_capture_id_text2: Take the photo on a flat surface
-      document_capture_id_text3: Do not use the flash on your camera
-      document_capture_id_text4: File size should be at least 2 MB
-      document_capture_selfie_id_header_text: Tips for taking clear photos
-      document_capture_selfie_selfie_text: Tips for taking a clear photo
-      document_capture_selfie_text1: Hold your device at eye level
-      document_capture_selfie_text2: Make sure your whole face is visible
-      document_capture_selfie_text3: Take your photo in a well-lit place
+      document_capture_id_text1: Place your ID on a flat and dark surface.
+      document_capture_id_text2: Take your photo in a well-lit place.
+      document_capture_id_text3: Avoid glare or shadows on your ID.
+      document_capture_id_text4: File size should be at least 2 MB.
+      document_capture_selfie_id_header_text: How to take clear photos of your ID
+      document_capture_selfie_selfie_text: How to prepare for your photo
+      document_capture_selfie_text1: Remove any clothing items or accessories that
+        might cover your face. We suggest removing your glasses or hat.
+      document_capture_selfie_text2: Take your photo in a well-lit place.
+      document_capture_selfie_text3: Keep your expression neutral.
+      document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
       review_issues_id_header_text: 'Review the images of your state‑issued ID:'
       review_issues_id_text1: Did you use a dark background?
       review_issues_id_text2: Did you take the photo on a flat surface?

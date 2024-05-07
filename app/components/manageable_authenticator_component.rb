@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ManageableAuthenticatorComponent < BaseComponent
   attr_reader :configuration,
               :user_session,

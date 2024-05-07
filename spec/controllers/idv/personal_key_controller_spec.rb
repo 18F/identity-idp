@@ -17,6 +17,7 @@ RSpec.describe Idv::PersonalKeyController do
       state_id_issued
       state_id_number
       state_id_type
+      issuing_country_code
     ]
 
     profile_pii_pairs.each do |profile, pii|
@@ -419,7 +420,10 @@ RSpec.describe Idv::PersonalKeyController do
   describe '#update' do
     context 'user selected phone verification' do
       it 'redirects to sign up completed for an sp' do
-        subject.session[:sp] = { issuer: create(:service_provider).issuer }
+        subject.session[:sp] = {
+          issuer: create(:service_provider).issuer,
+          vtr: ['C1'],
+        }
         patch :update
 
         expect(response).to redirect_to sign_up_completed_url

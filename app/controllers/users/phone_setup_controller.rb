@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class PhoneSetupController < ApplicationController
     include TwoFactorAuthenticatableMethods
@@ -33,9 +35,8 @@ module Users
 
       if result.success?
         handle_create_success(@new_phone_form.phone)
-      elsif recoverable_recaptcha_error?(result)
-        render :spam_protection
       else
+        flash.now[:error] = result.first_error_message(:recaptcha_token)
         render :index
       end
     end
@@ -72,30 +73,27 @@ module Users
 
     def handle_create_success(phone)
       if MfaContext.new(current_user).phone_configurations.map(&:phone).index(phone).nil?
-        prompt_to_confirm_phone(
-          id: nil,
-          phone: @new_phone_form.phone,
-          selected_delivery_method: @new_phone_form.otp_delivery_preference,
-          phone_type: @new_phone_form.phone_info&.type,
-          selected_default_number: @new_phone_form.otp_make_default_number,
-        )
+        prompt_to_confirm_phone
       else
         flash[:error] = t('errors.messages.phone_duplicate')
         redirect_to phone_setup_url
       end
     end
 
-    def prompt_to_confirm_phone(id:, phone:, selected_delivery_method: nil,
-                                selected_default_number: nil, phone_type: nil)
-
-      user_session[:unconfirmed_phone] = phone
+    def prompt_to_confirm_phone
+      user_session[:unconfirmed_phone] = @new_phone_form.phone
       user_session[:context] = 'confirmation'
-      user_session[:phone_type] = phone_type.to_s
+      user_session[:phone_type] = @new_phone_form.phone_info&.type.to_s
+      user_session[:phone_recaptcha_assessment_id] = @new_phone_form.recaptcha_assessment_id
 
       redirect_to otp_send_url(
         otp_delivery_selection_form: {
-          otp_delivery_preference: otp_delivery_method(id, phone, selected_delivery_method),
-          otp_make_default_number: selected_default_number,
+          otp_delivery_preference: otp_delivery_method(
+            nil,
+            @new_phone_form.phone,
+            @new_phone_form.otp_delivery_preference,
+          ),
+          otp_make_default_number: @new_phone_form.otp_make_default_number,
         },
       )
     end
@@ -129,7 +127,6 @@ module Users
         :otp_delivery_preference,
         :otp_make_default_number,
         :recaptcha_token,
-        :recaptcha_version,
         :recaptcha_mock_score,
       )
     end

@@ -1,8 +1,20 @@
+# frozen_string_literal: true
+
 class ButtonComponent < BaseComponent
-  attr_reader :action, :icon, :big, :wide, :full_width, :outline, :unstyled, :danger, :tag_options
+  attr_reader :url,
+              :method,
+              :icon,
+              :big,
+              :wide,
+              :full_width,
+              :outline,
+              :unstyled,
+              :danger,
+              :tag_options
 
   def initialize(
-    action: ->(**tag_options, &block) { button_tag(**tag_options, &block) },
+    url: nil,
+    method: nil,
     icon: nil,
     big: false,
     wide: false,
@@ -12,7 +24,8 @@ class ButtonComponent < BaseComponent
     danger: false,
     **tag_options
   )
-    @action = action
+    @url = url
+    @method = method
     @icon = icon
     @big = big
     @wide = wide
@@ -49,6 +62,22 @@ class ButtonComponent < BaseComponent
       trimmed_content
     else
       original_content
+    end
+  end
+
+  private
+
+  def action
+    @action ||= begin
+      if url
+        if method && method != :get
+          ->(**tag_options, &block) { button_to(url, method:, **tag_options, &block) }
+        else
+          ->(**tag_options, &block) { link_to(url, **tag_options, &block) }
+        end
+      else
+        ->(**tag_options, &block) { button_tag(**tag_options, &block) }
+      end
     end
   end
 end

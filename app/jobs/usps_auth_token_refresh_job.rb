@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UspsAuthTokenRefreshJob < ApplicationJob
   queue_as :default
 
@@ -5,7 +7,7 @@ class UspsAuthTokenRefreshJob < ApplicationJob
     analytics.idv_usps_auth_token_refresh_job_started
 
     usps_proofer.retrieve_token!
-  rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed, Faraday::ServerError => err
     analytics.idv_usps_auth_token_refresh_job_network_error(
       exception_class: err.class.name,
       exception_message: err.message,

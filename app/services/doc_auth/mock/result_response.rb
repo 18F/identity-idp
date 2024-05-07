@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
@@ -39,7 +41,7 @@ module DocAuth
           else
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
-            failed = failed_file_data(file_data.dig('failed_alerts')&.dup)
+            failed = file_data.dig('failed_alerts')&.dup
             passed = file_data.dig('passed_alerts')
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
@@ -78,10 +80,9 @@ module DocAuth
 
       def pii_from_doc
         if parsed_data_from_uploaded_file.present?
-          raw_pii = parsed_data_from_uploaded_file['document']
-          raw_pii&.symbolize_keys || {}
+          parsed_pii_from_doc
         else
-          Idp::Constants::MOCK_IDV_APPLICANT
+          Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
         end
       end
 
@@ -127,6 +128,16 @@ module DocAuth
 
       def parsed_alerts
         parsed_data_from_uploaded_file&.dig('failed_alerts')
+      end
+
+      def parsed_pii_from_doc
+        if parsed_data_from_uploaded_file.has_key?('document')
+          Pii::StateId.new(
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
+              parsed_data_from_uploaded_file['document'].symbolize_keys,
+            ).slice(*Pii::StateId.members),
+          )
+        end
       end
 
       def parsed_data_from_uploaded_file
@@ -223,13 +234,6 @@ module DocAuth
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
           extra: { liveness_checking_required: liveness_enabled },
         }.compact
-      end
-
-      def failed_file_data(failed_alerts_data)
-        if attention_with_barcode?
-          failed_alerts_data&.delete(ATTENTION_WITH_BARCODE_ALERT)
-        end
-        failed_alerts_data
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IdvController < ApplicationController
   include IdvSessionConcern
   include AccountReactivationConcern
@@ -30,11 +32,12 @@ class IdvController < ApplicationController
   private
 
   def already_verified?
-    if decorated_sp_session.selfie_required?
-      return current_user.identity_verified_with_selfie?
+    if FeatureManagement.idv_allow_selfie_check? &&
+       resolved_authn_context_result.biometric_comparison?
+      current_user.identity_verified_with_biometric_comparison?
+    else
+      current_user.active_profile.present?
     end
-
-    return current_user.active_profile.present?
   end
 
   def verify_identity

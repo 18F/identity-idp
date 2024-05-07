@@ -1,0 +1,31 @@
+---
+zh:
+  vendor_outage:
+    alerts:
+      phone:
+        default: 我们目前无法验证电话。请使用另一个身份证实方法（如果有），或者稍后再试。
+        idv: 我们目前无法验证电话。请等一会再试或使用邮件来验证地址。
+      pinpoint:
+        idv:
+          header: 我们正在争取解决错误。
+          message_html: '%{sp_name_html}需要确保你是你，而不是别人冒充你。'
+          options_html:
+            - 现在继续并通过普通邮件验证，这需要<strong>5 到 10 天</strong>。
+            - 退出 Login.gov，稍后再试。
+          options_prompt: '你可以：'
+          status_page_html: 遗憾的是，我们目前遇到技术困难。到 %{link_html} 了解错误何时能解决。
+          status_page_link: 在我们的状态页面获得最新信息。
+      sms:
+        default: 我们目前无法发送短信（SMS）。你可以通过接听电话得到一个代码，或选择另一个身份证实方法（如果有）。
+        idv: 我们目前无法发送短信（SMS）。你可以通过接听电话得到一个代码，或者使用邮件来验证地址。
+      voice:
+        default: 我们目前无法拨打电话。你可以通过短信（SMS）得到一个代码，或选择另一个身份证实方法（如果有）。
+        idv: 我们目前无法拨打电话。你可以通过短信（SMS）得到一个代码，或者使用邮件来验证地址。
+    blocked:
+      idv:
+        generic: 我们这边现在遇到技术困难，目前无法验证你的身份。请稍后再试。
+      phone:
+        default: 我们目前无法验证电话。请稍后再试。
+    get_updates: 获得最新信息
+    get_updates_on_status_page: 在我们的状态页面获得最新信息。
+    working: 我们正在争取解决错误。

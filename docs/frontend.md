@@ -209,8 +209,9 @@ Each component should have a name that is used consistently in its implementatio
 describes its purpose. This should be reflected in file names and the code itself.
 
 - ViewComponent classes should be named `[ExampleName]Component`
-- ViewComponent files should be named `app/components/[example_name]_component.rb`
-- Stylesheet files should be named `app/assets/stylesheets/components/_[example-name].scss`
+- ViewComponent classes should be defined in `app/components/[example_name]_component.rb`
+- ViewComponent stylesheets should be named `app/components/[example_name].scss`
+- ViewComponent scripts should be named `app/components/[example_name].ts`
 - Stylesheet selectors should use `[example-name]` as the ["block name" in BEM](https://en.bem.info/methodology/naming-convention/#two-dashes-style)
 - React components should be named `<[ExampleName] />`
 - React component files should be named `app/javascript/packages/[example-name]/[example-name].tsx`
@@ -220,8 +221,9 @@ describes its purpose. This should be reflected in file names and the code itsel
 For example, consider a **Password Input** component:
 
 - A ViewComponent implementation would be named `PasswordInputComponent`
-- A ViewComponent file would be named `app/components/password_input_component.rb`
-- A stylesheet file would be named `app/assets/stylesheets/componewnts/_password-input.scss`
+- A ViewComponent classes would be defined in `app/components/password_input_component.rb`
+- A ViewComponent stylesheet would be named `app/components/password_input_component.scss`
+- A ViewComponent script would be named `app/components/password_input_component.ts`
 - A stylesheet selector would be named `.password-input`, with child elements prefixed as `.password-input__`
 - A React component would be named `<PasswordInput />`
 - A React component file would be named `app/javascript/packages/password-input/password-input.tsx`

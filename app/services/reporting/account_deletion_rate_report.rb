@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reporting
   class AccountDeletionRateReport
     attr_reader :report_date

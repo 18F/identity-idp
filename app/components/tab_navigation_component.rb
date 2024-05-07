@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TabNavigationComponent < BaseComponent
   attr_reader :label, :routes, :tag_options
 

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'reporting/identity_verification_report'
 
 module Reports
   class IdentityVerificationReport < BaseReport
-    REPORT_NAME = 'identity-verification-report'.freeze
+    REPORT_NAME = 'identity-verification-report'
 
     attr_accessor :report_date
 

@@ -10,7 +10,6 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
-  FeatureFlagContext,
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -40,7 +39,6 @@ interface AppRootData {
   skipDocAuthFromHandoff: string;
   howToVerifyURL: string;
   previousStepUrl: string;
-  uiExitQuestionSectionEnabled: string;
   docAuthSelfieDesktopTestMode: string;
 }
 
@@ -110,7 +108,6 @@ const {
   skipDocAuthFromHandoff,
   howToVerifyUrl,
   previousStepUrl,
-  uiExitQuestionSectionEnabled = '',
   docAuthSelfieDesktopTestMode,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
@@ -199,14 +196,6 @@ const App = composeComponents(
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-    },
-  ],
-  [
-    FeatureFlagContext.Provider,
-    {
-      value: {
-        exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
-      },
     },
   ],
   [

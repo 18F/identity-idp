@@ -50,9 +50,21 @@ interface AcuantSelfieCameraContextProps {
    */
   onImageCaptureFeedback: (text: string) => void;
   /**
+   * Selfie taken, ready for accept or retake
+   */
+  onSelfieTaken: () => void;
+  /**
+   * Selfie captured by user initiated retake
+   */
+  onSelfieRetaken: () => void;
+  /**
    * React children node
    */
   children: ReactNode;
+  /**
+   * Face detection is initialized and ready.
+   */
+  onImageCaptureInitialized: () => void;
 }
 
 interface FaceCaptureCallback {
@@ -74,11 +86,14 @@ interface FaceDetectionStates {
 }
 
 function AcuantSelfieCamera({
+  onImageCaptureInitialized = () => {},
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
   onImageCaptureOpen = () => {},
   onImageCaptureClose = () => {},
   onImageCaptureFeedback = () => {},
+  onSelfieTaken = () => {},
+  onSelfieRetaken = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -89,6 +104,7 @@ function AcuantSelfieCamera({
         // This callback is triggered when the face detector is ready.
         // Until then, no actions are executed and the user sees only the camera stream.
         // You can opt to display an alert before the callback is triggered.
+        onImageCaptureInitialized();
       },
       onDetection: (text) => {
         onImageCaptureFeedback(text);
@@ -97,10 +113,12 @@ function AcuantSelfieCamera({
       },
       onOpened: () => {
         // Camera has opened
+        onImageCaptureFeedback('');
         onImageCaptureOpen();
       },
       onClosed: () => {
         // Camera has closed
+        onImageCaptureFeedback('');
         onImageCaptureClose();
       },
       onError: (error) => {
@@ -110,9 +128,11 @@ function AcuantSelfieCamera({
       },
       onPhotoTaken: () => {
         // The photo has been taken and it's showing a preview with a button to accept or retake the image.
+        onSelfieTaken();
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped
+        onSelfieRetaken();
       },
       onCaptured: (base64Image) => {
         // Triggered when accept button is tapped

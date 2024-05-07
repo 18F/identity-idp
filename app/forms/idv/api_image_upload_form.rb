@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class ApiImageUploadForm
     include ActiveModel::Model
@@ -93,8 +95,8 @@ module Idv
       end
 
       response.extra.merge!(extra_attributes)
-      response.extra[:state] = response.pii_from_doc[:state]
-      response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
+      response.extra[:state] = response.pii_from_doc.to_h[:state]
+      response.extra[:state_id_type] = response.pii_from_doc.to_h[:state_id_type]
 
       update_analytics(
         client_response: response,
@@ -117,7 +119,7 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(
-        pii: client_response.pii_from_doc,
+        pii: client_response.pii_from_doc.to_h,
         attention_with_barcode: client_response.attention_with_barcode?,
       ).submit
       response.extra.merge!(extra_attributes)
@@ -340,8 +342,10 @@ module Idv
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
+      birth_year = client_response.pii_from_doc&.dob&.to_date&.year
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
+          birth_year: birth_year,
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
@@ -450,7 +454,7 @@ module Idv
     end
 
     def track_event(response)
-      pii_from_doc = response.pii_from_doc || {}
+      pii_from_doc = response.pii_from_doc.to_h || {}
       stored_image_result = store_encrypted_images_if_required
 
       irs_attempts_api_tracker.idv_document_upload_submitted(

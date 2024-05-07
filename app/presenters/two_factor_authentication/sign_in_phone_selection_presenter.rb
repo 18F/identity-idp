@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class SignInPhoneSelectionPresenter < SignInSelectionPresenter
     attr_reader :configuration, :user, :delivery_method

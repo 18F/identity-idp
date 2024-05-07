@@ -20,9 +20,7 @@
 </div>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(webauthn_setup_path(platform: true), **tag_options, &block)
-      end,
+      url: webauthn_setup_path(platform: true),
       icon: :add,
       outline: true,
       class: 'margin-top-2',

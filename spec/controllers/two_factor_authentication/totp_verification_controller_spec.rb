@@ -35,10 +35,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'resets the second_factor_attempts_count' do
-        UpdateUser.new(
-          user: subject.current_user,
-          attributes: { second_factor_attempts_count: 1 },
-        ).call
+        subject.current_user.update!(second_factor_attempts_count: 1)
 
         post :create, params: { code: generate_totp_code(@secret) }
 
@@ -62,6 +59,9 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
         expect(@irs_attempts_api_tracker).to receive(:track_event).
           with(:mfa_login_totp, success: true)
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP).
+          and_call_original
 
         post :create, params: { code: generate_totp_code(@secret) }
       end
@@ -111,16 +111,19 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
     end
 
     context 'when the user enters an invalid TOTP' do
+      subject(:response) { post :create, params: { code: 'abc' } }
+
       before do
         sign_in_before_2fa
-        user = subject.current_user
+        user = controller.current_user
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
-        post :create, params: { code: 'abc' }
       end
 
       it 'increments second_factor_attempts_count' do
-        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+        response
+
+        expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
       it 're-renders the TOTP entry screen' do
@@ -128,12 +131,22 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'displays flash error message' do
+        response
+
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
       end
 
       it 'does not set auth_method and still requires 2FA' do
-        expect(subject.user_session[:auth_events]).to eq nil
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+        response
+
+        expect(controller.user_session[:auth_events]).to eq nil
+        expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+      end
+
+      it 'records unsuccessful 2fa event' do
+        expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
+
+        response
       end
     end
 

@@ -33,9 +33,15 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           )],
         }
 
-        expect(UpdateUser).not_to receive(:new)
         expect(UserProfilesEncryptor).not_to receive(:new)
-        expect(subject.submit(params).to_h).to include(
+        user.save!
+
+        result = nil
+        expect do
+          result = subject.submit(params).to_h
+        end.to_not(change { user.reload.encrypted_password_digest })
+
+        expect(result).to include(
           success: false,
           errors: errors,
           error_details: hash_including(:password, :password_confirmation),
@@ -54,16 +60,12 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         )
       end
 
-      it 'updates the user' do
-        user_updater = instance_double(UpdateUser)
-        allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: { password: 'salty new password' }).
-          and_return(user_updater)
-        allow(user_updater).to receive(:call)
+      it 'updates the user password' do
+        user.save!
 
-        subject.submit(params)
-
-        expect(user_updater).to have_received(:call)
+        expect do
+          subject.submit(params)
+        end.to(change { user.reload.encrypted_password_digest })
       end
     end
 

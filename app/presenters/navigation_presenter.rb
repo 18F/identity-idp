@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NavigationPresenter
   include Rails.application.routes.url_helpers
 
@@ -62,7 +64,7 @@ class NavigationPresenter
     if TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
       backup_code_regenerate_path
     else
-      backup_code_create_path
+      backup_code_setup_path
     end
   end
 end

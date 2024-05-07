@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class LexisNexisInstantVerify
     attr_reader :document_capture_session_uuid

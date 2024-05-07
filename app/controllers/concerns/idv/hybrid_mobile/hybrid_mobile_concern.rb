@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module HybridMobile
     module HybridMobileConcern
@@ -5,6 +7,20 @@ module Idv
 
       include AcuantConcern
       include Idv::AbTestAnalyticsConcern
+
+      def analytics_user
+        current_or_hybrid_user || AnonymousUser.new
+      end
+
+      def current_or_hybrid_user
+        return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_user?
+
+        current_user
+      end
+
+      def hybrid_user?
+        session[:doc_capture_user_id].present?
+      end
 
       def check_valid_document_capture_session
         if !document_capture_user

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module PhoneOtpRateLimitable
     extend ActiveSupport::Concern
@@ -17,13 +19,10 @@ module Idv
     def reset_attempt_count_if_user_no_longer_locked_out
       return unless current_user.no_longer_locked_out?
 
-      UpdateUser.new(
-        user: current_user,
-        attributes: {
-          second_factor_attempts_count: 0,
-          second_factor_locked_at: nil,
-        },
-      ).call
+      current_user.update!(
+        second_factor_attempts_count: 0,
+        second_factor_locked_at: nil,
+      )
     end
 
     def handle_too_many_otp_sends

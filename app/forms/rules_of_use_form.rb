@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RulesOfUseForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -33,6 +35,6 @@ class RulesOfUseForm
 
   def process_successful_submission
     self.success = true
-    UpdateUser.new(user: user, attributes: { accepted_terms_at: Time.zone.now }).call
+    user.update!(accepted_terms_at: Time.zone.now)
   end
 end

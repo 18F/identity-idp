@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenidConnect
   class UserInfoController < ApplicationController
     prepend_before_action :skip_session_load
@@ -15,11 +17,11 @@ module OpenidConnect
 
     def authenticate_identity_via_bearer_token
       verifier = AccessTokenVerifier.new(request.env['HTTP_AUTHORIZATION'])
-      response = verifier.submit
+      response, identity = verifier.submit
       analytics.openid_connect_bearer_token(**response.to_h)
 
       if response.success?
-        @current_identity = verifier.identity
+        @current_identity = identity
       else
         render json: { error: verifier.errors[:access_token].join(' ') },
                status: :unauthorized

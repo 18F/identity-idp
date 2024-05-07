@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IdvSessionConcern
   extend ActiveSupport::Concern
 
@@ -15,7 +17,7 @@ module IdvSessionConcern
   end
 
   def idv_needed?
-    user_needs_selfie? ||
+    user_needs_biometric_comparison? ||
       idv_session_user.active_profile.blank? ||
       decorated_sp_session.requested_more_recent_verification? ||
       idv_session_user.reproof_for_irs?(service_provider: current_sp)
@@ -64,7 +66,9 @@ module IdvSessionConcern
     current_user
   end
 
-  def user_needs_selfie?
-    decorated_sp_session.selfie_required? && !current_user.identity_verified_with_selfie?
+  def user_needs_biometric_comparison?
+    FeatureManagement.idv_allow_selfie_check? &&
+      resolved_authn_context_result.biometric_comparison? &&
+      !current_user.identity_verified_with_biometric_comparison?
   end
 end

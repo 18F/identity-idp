@@ -62,6 +62,7 @@ en:
       format_mismatch: Please match the requested format.
       gpo_otp_expired: Your verification code has expired. Please request another
         letter for a new code.
+      gpo_otp_expired_and_cannot_request_another: Your verification code has expired.
       improbable_phone: Invalid phone number. Please make sure you enter a valid phone number.
       inclusion: is not included in the list
       invalid_calling_area: Calls to that phone number are not supported. Please try
@@ -69,7 +70,9 @@ en:
       invalid_phone_number:
         international: Enter a phone number with the correct number of digits.
         us: Enter a 10 digit phone number.
-      invalid_recaptcha_token: You must complete the spam prevention challenge.
+      invalid_recaptcha_token: We’re sorry, but your computer or network may be
+        sending automated queries. To protect our users, we can’t process your
+        request right now.
       invalid_sms_number: The phone number entered doesn’t support text messaging. Try
         the Phone call option.
       invalid_voice_number: Invalid phone number. Check that you’ve entered the

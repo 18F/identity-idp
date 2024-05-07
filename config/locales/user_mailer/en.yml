@@ -71,22 +71,14 @@ en:
         email addresses. We recommend that you also change your password.
       subject: New email address added
     email_confirmation_instructions:
-      create_new_account: create a new account.
-      email_not_found: Email not found
       first_sentence:
         confirmed: Trying to change your email address?
-        forgot_password: You tried to reset your %{app_name} password but we don’t have
-          an account linked to this email address.
         unconfirmed: Thanks for submitting your email address.
       footer: This link will expire in %{confirmation_period}.
       header: '%{intro} Please click the link below or copy and paste the entire link
         into your browser.'
       link_text: Confirm email address
-      request_with_diff_email: You can request your password using a different email
-        address that is connected to your %{app_name} account.
       subject: Confirm your email
-      try_diff_email: Try a different email address
-      use_this_email: Or use this email address and
     email_deleted:
       header: An email address was deleted from your %{app_name} profile.
       help_html: If you did not want to delete this email address, please visit the
@@ -144,22 +136,6 @@ en:
           %{location} Post Office on %{date}.
       greeting: Hello,
       subject: Your identity could not be verified in person
-    in_person_outage_notification:
-      body:
-        closing_html: We sincerely apologize for the delay in service. Should you have
-          questions or do not receive your result by June 1, please <a
-          href="%{contact_us_url}">contact %{app_name} Customer Support</a>.
-        heading: Results for In-Person Verification Delayed from May 20 until May 30
-        instructions: At this time, if you attempted to complete the identity
-          verification process at a Post Office, you do not need to try again.
-          Rest assured that your verification results are not lost; they are
-          securely stored and will be emailed to you once we fix the technical
-          issue.
-        intro_html: We’re working on a technical issue that is delaying emails of
-          in-person verification results. <strong>If you attempted to complete
-          identity verification at a Post Office between May 20 and May 29, your
-          results may not be emailed to you until Tuesday, May 30.</strong>
-      subject: '%{app_name} In-Person Verification Results Delayed'
     in_person_please_call:
       body:
         contact_message_html: Call <strong>%{contact_number}</strong> and provide them
@@ -218,6 +194,34 @@ en:
         help, please visit the %{app_name_html} %{help_link_html} or
         %{contact_link_html}.
       info: 'Your %{app_name} account was just used to sign in on a new device.'
+      subject: New sign-in with your %{app_name} account
+    new_device_sign_in_after_2fa:
+      authentication_methods: authentication methods
+      info_p1: Your %{app_name} email and password were used to sign-in and
+        authenticate on a new device.
+      info_p2: If you recognize this activity, you don’t need to do anything.
+      info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your
+        %{authentication_methods_link_html} immediately.
+      reset_password: reset your password
+      subject: New sign-in and authentication with your %{app_name} account
+    new_device_sign_in_attempts:
+      events:
+        sign_in_after_2fa: Authenticated
+        sign_in_before_2fa: Signed in with password
+        sign_in_unsuccessful_2fa: Failed to authenticate
+      new_sign_in_from: New sign-in potentially located in %{location}
+    new_device_sign_in_before_2fa:
+      info_p1_html:
+        one: Your %{app_name} email and password were used to sign in from a new device
+          but <strong>failed to authenticate</strong>.
+        other: Your %{app_name} email and password were used to sign in from a new
+          device but <strong>failed to authenticate %{count} times</strong>.
+        zero: Your %{app_name} email and password were used to sign in from a new device
+          but <strong>failed to authenticate</strong>.
+      info_p2: If you recognize this activity, you don’t need to do anything.
+      info_p3_html: Two-factor authentication protects your account from unauthorized
+        access. If this wasn’t you, %{reset_password_link_html} immediately.
+      reset_password: reset your password
       subject: New sign-in with your %{app_name} account
     password_changed:
       disavowal_link: reset your password

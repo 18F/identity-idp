@@ -1,8 +1,11 @@
 {
   "name": "@18f/identity-stylelint-config",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "private": false,
   "description": "Stylelint shareable configuration for Login.gov CSS/SASS standards",
+  "exports": {
+    ".": "./index.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/18f/identity-idp.git",

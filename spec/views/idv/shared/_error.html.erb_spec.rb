@@ -177,7 +177,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
     end
 
     context 'current_step provided' do
-      let(:current_step) { :verify_phone_or_address }
+      let(:current_step) { :verify_phone }
 
       it 'does not render a step indicator' do
         expect(view.content_for(:pre_flash_content)).not_to have_css('lg-step-indicator')
@@ -192,7 +192,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
         it 'selects the correct step' do
           expect(view.content_for(:pre_flash_content)).to have_css(
             '.step-indicator__step--current .step-indicator__step-title',
-            text: t('step_indicator.flows.idv.verify_phone_or_address'),
+            text: t('step_indicator.flows.idv.verify_phone'),
           )
         end
       end

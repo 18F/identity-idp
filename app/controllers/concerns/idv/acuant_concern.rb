@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module AcuantConcern
     def acuant_sdk_ab_test_analytics_args

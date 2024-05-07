@@ -31,7 +31,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
@@ -139,7 +139,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       it 'uses the correct step indicator step' do
         indicator_step = subject.step_indicator_step
 
-        expect(indicator_step).to eq(:secure_account)
+        expect(indicator_step).to eq(:re_enter_password)
       end
 
       context 'user is in gpo flow' do
@@ -170,7 +170,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
         it 'uses the correct step indicator step' do
           indicator_step = subject.step_indicator_step
 
-          expect(indicator_step).to eq(:get_a_letter)
+          expect(indicator_step).to eq(:verify_address)
         end
       end
 

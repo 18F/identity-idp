@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module HybridMobile
     class CaptureCompleteController < ApplicationController
@@ -18,12 +20,16 @@ module Idv
       private
 
       def analytics_arguments
+        liveness_checking_required =
+          FeatureManagement.idv_allow_selfie_check? &&
+          resolved_authn_context_result.biometric_comparison?
+
         {
           flow_path: 'hybrid',
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-          liveness_checking_required: decorated_sp_session.selfie_required?,
+          liveness_checking_required:,
         }.merge(ab_test_analytics_buckets)
       end
     end

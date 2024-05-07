@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StringRedacter
   module_function
 

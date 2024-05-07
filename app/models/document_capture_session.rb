@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DocumentCaptureSession < ApplicationRecord
   include NonNullUuid
   include ApplicationHelper
@@ -14,7 +16,7 @@ class DocumentCaptureSession < ApplicationRecord
       id: generate_result_id,
     )
     session_result.success = doc_auth_response.success?
-    session_result.pii = doc_auth_response.pii_from_doc
+    session_result.pii = doc_auth_response.pii_from_doc.to_h
     session_result.captured_at = Time.zone.now
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?

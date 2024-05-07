@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Update ServiceProvider from config/service_providers.yml (all environments in rake db:seed)
 class ServiceProviderSeeder
   class ExtraServiceProviderError < StandardError; end

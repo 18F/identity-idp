@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module InPerson
     class SsnController < ApplicationController
@@ -101,7 +103,7 @@ module Idv
 
       def confirm_in_person_address_step_complete
         return if flow_session[:pii_from_user] && flow_session[:pii_from_user][:address1].present?
-        redirect_to idv_in_person_proofing_address_url
+        redirect_to idv_in_person_address_url
       end
     end
   end

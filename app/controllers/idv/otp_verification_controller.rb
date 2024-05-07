@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class OtpVerificationController < ApplicationController
     include Idv::AvailabilityConcern
@@ -14,6 +16,7 @@ module Idv
       # memoize the form so the ivar is available to the view
       phone_confirmation_otp_verification_form
       analytics.idv_phone_confirmation_otp_visit
+      @otp_code_length = code_length
     end
 
     def update
@@ -32,6 +35,7 @@ module Idv
         flash[:success] = t('idv.messages.enter_password.phone_verified')
         redirect_to idv_enter_password_url
       else
+        @otp_code_length = code_length
         handle_otp_confirmation_failure
       end
     end
@@ -93,6 +97,19 @@ module Idv
         user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
       )
+    end
+
+    def code_length
+      if ten_digit_otp?
+        10
+      else
+        TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
+      end
+    end
+
+    def ten_digit_otp?
+      AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid) == :ten_digit_otp &&
+        idv_session.user_phone_confirmation_session.delivery_method == :voice
     end
   end
 end

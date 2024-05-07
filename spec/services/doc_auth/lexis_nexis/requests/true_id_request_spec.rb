@@ -82,15 +82,25 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
         expect(response.success?).to eq(false)
         expect(response.errors.keys).to contain_exactly(:general, :front, :back, :hints)
-        expect(response.errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
-        expect(response.errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-        expect(response.errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-        expect(response.errors[:hints]).to eq(true)
-        expect(response.exception).to be_nil
+
         if include_liveness_expected
+          expect(response.errors[:general]).to contain_exactly(
+            DocAuth::Errors::GENERAL_ERROR_LIVENESS,
+          )
+          expect(response.errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(response.errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(response.errors[:hints]).to eq(false)
+
+          expect(response.exception).to be_nil
           expect(request_stub_liveness).to have_been_requested
           expect(response.selfie_check_performed?).to be(true)
         else
+          expect(response.errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+          expect(response.errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(response.errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(response.errors[:hints]).to eq(true)
+
+          expect(response.exception).to be_nil
           expect(request_stub).to have_been_requested
           expect(response.selfie_check_performed?).to be(false)
         end

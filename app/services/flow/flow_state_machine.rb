@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern
@@ -171,7 +173,15 @@ module Flow
 
     def redirect_to_step(step)
       flow_finish and return unless next_step
-      redirect_to send(@step_url, step: step)
+      redirect_url(step)
+    end
+
+    def redirect_url(step)
+      if IdentityConfig.store.in_person_state_id_controller_enabled
+        redirect_to idv_in_person_proofing_state_id_url
+      else
+        redirect_to send(@step_url, step: step)
+      end
     end
 
     def analytics_properties
@@ -180,7 +190,7 @@ module Flow
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
         analytics_id: @analytics_id,
-        irs_reproofing: effective_user&.reproof_for_irs?(
+        irs_reproofing: current_user&.reproof_for_irs?(
           service_provider: current_sp,
         ).present?,
       }.merge(flow.extra_analytics_properties).

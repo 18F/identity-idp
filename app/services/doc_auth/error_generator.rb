@@ -11,7 +11,7 @@ module DocAuth
   class IdTypeErrorHandler < ErrorHandler
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
     def handle(response_info)
       get_id_type_errors(response_info[:classification_info])
     end
@@ -103,18 +103,90 @@ module DocAuth
     end
   end
 
+  class DocAuthErrorHandler < ErrorHandler
+    def handle(response_info, known_alert_error_count)
+      get_doc_auth_errors(response_info, known_alert_error_count)
+    end
+
+    private
+
+    def get_doc_auth_errors(response_info, known_error_count)
+      # don't worry about unknown alert errors here
+      return if known_error_count < 1
+
+      doc_auth_error_messages = get_doc_auth_error_messages(response_info)
+      liveness_enabled = response_info[:liveness_enabled]
+
+      if known_error_count == 1
+        process_single_doc_auth_error(doc_auth_error_messages)
+      else
+        # Simplify multiple errors into a single error for the user
+        consolidate_multiple_doc_auth_errors(doc_auth_error_messages, liveness_enabled)
+      end
+    end
+
+    def get_doc_auth_error_messages(response_info)
+      errors = Hash.new { |hash, key| hash[key] = Set.new }
+
+      if response_info[:doc_auth_result] != LexisNexis::ResultCodes::PASSED.name
+        response_info[:processed_alerts][:failed]&.each do |alert|
+          alert_msg_hash = ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym]
+
+          if alert_msg_hash.present?
+            field_type = alert[:side] || alert_msg_hash[:type]
+            errors[field_type.to_sym] << alert_msg_hash[:msg_key]
+          end
+        end
+      end
+      errors
+    end
+
+    def process_single_doc_auth_error(alert_errors)
+      error = alert_errors.values[0].to_a.pop
+      side = alert_errors.keys[0]
+      ErrorResult.new(error, side)
+    end
+
+    def consolidate_multiple_doc_auth_errors(alert_errors, liveness_enabled)
+      error_fields = alert_errors.keys
+      if error_fields.length == 1
+        side = error_fields.first
+        case side
+        when ErrorGenerator::ID
+          error = ErrorGenerator.general_error(liveness_enabled)
+        when ErrorGenerator::FRONT
+          error = Errors::MULTIPLE_FRONT_ID_FAILURES
+        when ErrorGenerator::BACK
+          error = Errors::MULTIPLE_BACK_ID_FAILURES
+        end
+      elsif error_fields.length > 1
+        error = ErrorGenerator.general_error(liveness_enabled)
+        side = ErrorGenerator::ID
+      end
+      ErrorResult.new(error, side)
+    end
+  end
+
   class SelfieErrorHandler < ErrorHandler
     include SelfieConcern
     def handle(response_info)
       liveness_enabled = response_info[:liveness_enabled]
-      get_selfie_error(liveness_enabled, response_info)
+      selfie_error = get_selfie_error(liveness_enabled, response_info)
+
+      if is_generic_selfie_error?(selfie_error)
+        selfie_general_failure_error
+      else
+        error = selfie_error
+        side = ErrorGenerator::SELFIE
+        ErrorResult.new(error, side)
+      end
     end
 
     def is_generic_selfie_error?(error)
       error == Errors::SELFIE_FAILURE
     end
 
-    SELFIE_GENERAL_FAILURE_ERROR =
+    def selfie_general_failure_error
       {
         general: [Errors::SELFIE_FAILURE],
         front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
@@ -122,6 +194,7 @@ module DocAuth
         selfie: [Errors::SELFIE_FAILURE],
         hints: false,
       }
+    end
 
     private
 
@@ -138,105 +211,37 @@ module DocAuth
         return nil
       end
 
-      # Error when the image on the id does not match the selfie image, but the image was acceptable
-      if error_is_success(face_match_error)
-        return Errors::SELFIE_FAILURE
+      if error_is_poor_quality(face_match_error) || error_is_not_live(face_match_error)
+        return Errors::SELFIE_NOT_LIVE_OR_POOR_QUALITY
       end
-      # Error when the image on the id is poor quality
-      if error_is_poor_quality(face_match_error)
-        return Errors::SELFIE_POOR_QUALITY
-      end
-      # Error when the image on the id is not live
-      if error_is_not_live(face_match_error)
-        return Errors::SELFIE_NOT_LIVE
-      end
-      # Fallback, we don't expect this to happen
+
       Errors::SELFIE_FAILURE
     end
   end
 
-  class AlertErrorHandler < ErrorHandler
-    def initialize(config:, liveness_enabled:)
+  class UnknownErrorHandler < ErrorHandler
+    def initialize(config:)
       @config = config
-      @liveness_enabled = liveness_enabled
     end
 
-    def handle(known_alert_error_count, response_info, selfie_error)
-      alert_errors = get_error_messages(response_info)
-      # take non general selfie error into account
-      if @liveness_enabled && !!selfie_error
-        alert_errors[ErrorGenerator::SELFIE] << selfie_error
-      end
-      known_alert_error_count += 1 if alert_errors.include?(ErrorGenerator::SELFIE)
-
-      # consolidate error based on count
-      if known_alert_error_count < 1
-        process_unknown_alert_error(response_info)
-      elsif known_alert_error_count == 1
-        process_single_alert_error(alert_errors)
-      elsif known_alert_error_count > 1
-        # Simplify multiple errors into a single error for the user
-        consolidate_multiple_alert_errors(alert_errors)
-      else
-        # default fall back
-        ErrorResult.new(error, side)
-      end
+    def handle(response_info)
+      process_unknown_error(response_info)
     end
 
     private
 
-    def get_error_messages(response_info)
-      errors = Hash.new { |hash, key| hash[key] = Set.new }
-
-      if response_info[:doc_auth_result] != 'Passed'
-        response_info[:processed_alerts][:failed]&.each do |alert|
-          alert_msg_hash = ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym]
-
-          if alert_msg_hash.present?
-            field_type = alert[:side] || alert_msg_hash[:type]
-            errors[field_type.to_sym] << alert_msg_hash[:msg_key]
-          end
-        end
-      end
-      errors
-    end
-
     ##
     # Return ErrorResult as hash, there is error but known_error_count = 0
     ##
-    def process_unknown_alert_error(response_info)
+    def process_unknown_error(response_info)
       @config.warn_notifier&.call(
         message: 'DocAuth failure escaped without useful errors',
         response_info: response_info,
       )
 
-      error = Errors::GENERAL_ERROR
+      liveness_enabled = response_info[:liveness_enabled]
+      error = ErrorGenerator.general_error(liveness_enabled)
       side = ErrorGenerator::ID
-      ErrorResult.new(error, side)
-    end
-
-    def process_single_alert_error(alert_errors)
-      error = alert_errors.values[0].to_a.pop
-      side = alert_errors.keys[0]
-      ErrorResult.new(error, side)
-    end
-
-    def consolidate_multiple_alert_errors(alert_errors)
-      error_fields = alert_errors.keys
-      if error_fields.length == 1
-        side = error_fields.first
-        case side
-        when ErrorGenerator::ID
-          error = Errors::GENERAL_ERROR
-        when ErrorGenerator::FRONT
-          error = Errors::MULTIPLE_FRONT_ID_FAILURES
-        when ErrorGenerator::BACK
-          error = Errors::MULTIPLE_BACK_ID_FAILURES
-        end
-      elsif error_fields.length > 1
-        error = Errors::GENERAL_ERROR
-        side = ErrorGenerator::ID
-      end
       ErrorResult.new(error, side)
     end
   end
@@ -252,7 +257,7 @@ module DocAuth
     GENERAL = :general
 
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
-                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name]
+                             DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
 
     ERROR_KEYS = [
       ID,
@@ -311,28 +316,38 @@ module DocAuth
       metrics_error = metrics_error_handler.handle(response_info)
       return metrics_error.to_h if metrics_error.present? && !metrics_error.empty?
 
-      # check selfie error
-      selfie_error_handler = SelfieErrorHandler.new
-      selfie_error = selfie_error_handler.handle(response_info)
+      doc_auth_error_count = doc_auth_error_count(response_info)
+      known_error_count = doc_auth_error_count - unknown_fail_count
+      doc_auth_error_handler = DocAuthErrorHandler.new
+      doc_auth_error = doc_auth_error_handler.handle(response_info, known_error_count)
 
-      # if selfie itself is ok, but we have selfie related error
-      if selfie_error_handler.is_generic_selfie_error?(selfie_error)
-        return SelfieErrorHandler::SELFIE_GENERAL_FAILURE_ERROR
+      if doc_auth_error.present? && !doc_auth_error.empty?
+        return doc_auth_error.to_h
       end
 
-      # other vendor response detail error
-      liveness_enabled = response_info[:liveness_enabled]
-      alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
-                            0 : response_info[:alert_failure_count]
+      # check selfie error
+      if doc_auth_error_count < 1
+        selfie_error_handler = SelfieErrorHandler.new
+        selfie_error = selfie_error_handler.handle(response_info)
+        if selfie_error.present? && !selfie_error.empty?
+          return selfie_error.to_h
+        end
+      end
 
-      known_alert_error_count = alert_error_count - unknown_fail_count
-      alert_error_handler = AlertErrorHandler.new(
-        config: config,
-        liveness_enabled: liveness_enabled,
-      )
-      alert_error = alert_error_handler.handle(known_alert_error_count, response_info, selfie_error)
-      alert_error.to_h
+      # catch all route, technically should not happen
+      unknown_error_handler = UnknownErrorHandler.new(config: config)
+      unknown_error_handler.handle(response_info).to_h
     end
+
+    def self.general_error(liveness_enabled)
+      liveness_enabled ? Errors::GENERAL_ERROR_LIVENESS : Errors::GENERAL_ERROR
+    end
+
+    def self.wrapped_general_error(liveness_enabled)
+      { general: [ErrorGenerator.general_error(liveness_enabled)], hints: true }
+    end
+
+    private
 
     def scan_for_unknown_alerts(response_info)
       all_alerts = [
@@ -346,7 +361,7 @@ module DocAuth
         if ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym].blank?
           unknown_alerts.push(alert[:name])
 
-          unknown_fail_count += 1 if alert[:result] != 'Passed'
+          unknown_fail_count += 1 if alert[:result] != LexisNexis::ResultCodes::PASSED.name
         end
       end
 
@@ -361,12 +376,28 @@ module DocAuth
       unknown_fail_count
     end
 
-    def self.general_error(_liveness_enabled)
-      Errors::GENERAL_ERROR
+    # This method replicates TrueIdResponse::attention_with_barcode? and
+    # should be removed/updated when that is.
+    def attention_with_barcode_result(doc_auth_result, processed_alerts)
+      attention_result_name = LexisNexis::ResultCodes::ATTENTION.name
+      barcode_alerts = processed_alerts[:failed]&.count.to_i == 1 &&
+                       processed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
+                       processed_alerts.dig(:failed, 0, :result) == 'Attention'
+
+      doc_auth_result == attention_result_name && barcode_alerts
     end
 
-    def self.wrapped_general_error(liveness_enabled)
-      { general: [ErrorGenerator.general_error(liveness_enabled)], hints: true }
+    def doc_auth_passed_or_attn_with_barcode(response_info)
+      doc_auth_result = response_info[:doc_auth_result]
+      processed_alerts = response_info[:processed_alerts]
+
+      doc_auth_result_passed = doc_auth_result == LexisNexis::ResultCodes::PASSED.name
+      doc_auth_result_passed || attention_with_barcode_result(doc_auth_result, processed_alerts)
+    end
+
+    def doc_auth_error_count(response_info)
+      doc_auth_passed_or_attn_with_barcode(response_info) ?
+        0 : response_info[:alert_failure_count]
     end
   end
 end

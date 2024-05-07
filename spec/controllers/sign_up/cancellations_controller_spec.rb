@@ -32,7 +32,7 @@ RSpec.describe SignUp::CancellationsController do
     it 'redirects if no user is present' do
       delete :destroy
 
-      expect(response).to redirect_to(sign_up_email_resend_url)
+      expect(response).to redirect_to(sign_up_register_url)
     end
 
     it 'redirects if user has completed sign up' do
@@ -68,7 +68,7 @@ RSpec.describe SignUp::CancellationsController do
       delete :destroy
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
-      expect(response).to redirect_to(sign_up_email_resend_url)
+      expect(response).to redirect_to(sign_up_register_url)
     end
 
     it 'redirects if confirmation_token is expired' do
@@ -89,7 +89,7 @@ RSpec.describe SignUp::CancellationsController do
       subject.session[:user_confirmation_token] = confirmation_token
 
       delete :destroy
-      expect(response).to redirect_to(sign_up_email_resend_url)
+      expect(response).to redirect_to(sign_up_register_url)
       expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
     end
 

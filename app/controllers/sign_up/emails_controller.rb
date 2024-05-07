@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SignUp
   class EmailsController < ApplicationController
     def show
@@ -7,7 +9,8 @@ module SignUp
         @resend_confirmation = params[:resend].present?
 
         email = session.delete(:email)
-        @resend_email_confirmation_form = ResendEmailConfirmationForm.new(email:)
+        terms_accepted = session.delete(:terms_accepted)
+        @resend_email_confirmation_form = ResendEmailConfirmationForm.new(email:, terms_accepted:)
 
         render :show, locals: { email: email }
       end

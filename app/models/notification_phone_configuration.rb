@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotificationPhoneConfiguration < ApplicationRecord
   include EncryptableAttribute
 

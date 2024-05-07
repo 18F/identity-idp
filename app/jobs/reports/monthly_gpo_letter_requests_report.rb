@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'identity/hostdata'
 
 module Reports
   class MonthlyGpoLetterRequestsReport < BaseReport
-    REPORT_NAME = 'monthly-usps-letter-requests-report'.freeze
+    REPORT_NAME = 'monthly-usps-letter-requests-report'
 
     def perform(_date, start_time: first_of_this_month, end_time: end_of_today)
       daily_results = transaction_with_timeout do

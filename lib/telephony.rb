@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'aws-sdk-pinpoint'
 require 'aws-sdk-pinpointsmsvoice'
 require 'forwardable'
@@ -58,13 +60,14 @@ module Telephony
     ).send_authentication_otp
   end
 
-  def self.send_confirmation_otp(to:, otp:, expiration:, otp_format:,
+  def self.send_confirmation_otp(to:, otp:, expiration:, otp_format:, otp_length:,
                                  channel:, domain:, country_code:, extra_metadata:)
     OtpSender.new(
       to: to,
       otp: otp,
       expiration: expiration,
       otp_format: otp_format,
+      otp_length: otp_length,
       channel: channel,
       domain: domain,
       country_code: country_code,

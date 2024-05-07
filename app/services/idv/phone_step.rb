@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class PhoneStep
     def initialize(idv_session:, trace_id:, analytics:, attempts_tracker:)
@@ -141,6 +143,7 @@ module Idv
       idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.start(
         phone: PhoneFormatter.format(applicant[:phone]),
         delivery_method: otp_delivery_preference,
+        user: idv_session.current_user, # needed for 10-digit A/B test
       )
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   class Response
     include ApplicationHelper
@@ -8,14 +10,14 @@ module DocAuth
     ID_TYPE_SLUGS = {
       'Identification Card' => 'state_id_card',
       'Drivers License' => 'drivers_license',
-    }
+    }.freeze
 
     def initialize(
       success:,
       errors: {},
       exception: nil,
       extra: {},
-      pii_from_doc: {},
+      pii_from_doc: nil,
       attention_with_barcode: false,
       doc_type_supported: true,
       selfie_status: :not_processed,
@@ -32,21 +34,6 @@ module DocAuth
       @selfie_status = selfie_status
       @selfie_live = selfie_live
       @selfie_quality_good = selfie_quality_good
-    end
-
-    def merge(other)
-      Response.new(
-        success: success? && other.success?,
-        errors: errors.merge(other.errors),
-        exception: exception || other.exception,
-        extra: extra.merge(other.extra),
-        pii_from_doc: pii_from_doc.merge(other.pii_from_doc),
-        attention_with_barcode: attention_with_barcode? || other.attention_with_barcode?,
-        doc_type_supported: doc_type_supported? || other.doc_type_supported?,
-        selfie_status: selfie_status,
-        selfie_live: selfie_live?,
-        selfie_quality_good: selfie_quality_good?,
-      )
     end
 
     def success?

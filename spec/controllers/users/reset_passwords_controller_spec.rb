@@ -538,18 +538,15 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
       it 'send an email to tell the user they do not have an account yet' do
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
-          email: email,
-          **success_properties,
-        )
 
         expect do
           put :create, params: {
             password_reset_email_form: { email: email },
           }
         end.to(change { ActionMailer::Base.deliveries.count }.by(1))
+
+        expect(ActionMailer::Base.deliveries.last.subject).
+          to eq t('anonymous_mailer.password_reset_missing_user.subject')
 
         analytics_hash = {
           success: true,
@@ -561,19 +558,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
-
-        analytics_hash = {
-          success: true,
-          rate_limited: false,
-          errors: {},
-          email_already_exists: false,
-          user_id: User.find_with_email(email).uuid,
-          domain_name: 'example.com',
-        }
-        expect(@analytics).to have_logged_event(
-          'User Registration: Email Submitted',
-          analytics_hash,
-        )
         expect(response).to redirect_to forgot_password_path
       end
     end
@@ -636,15 +620,10 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
       before do
         stub_analytics
-        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
       end
 
-      it 'sends password reset email to user and tracks event' do
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
-          email: user.email,
-        )
-
+      it 'sends missing user email and tracks event' do
         expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
@@ -652,7 +631,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Email Submitted', analytics_hash)
 
         expect(ActionMailer::Base.deliveries.last.subject).
-          to eq t('user_mailer.reset_password_instructions.subject')
+          to eq t('anonymous_mailer.password_reset_missing_user.subject')
         expect(response).to redirect_to forgot_password_path
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneNumberCapabilities
   def self.load_config
     YAML.load_file(
@@ -7,7 +9,7 @@ class PhoneNumberCapabilities
 
   INTERNATIONAL_CODES = load_config.freeze
   ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES =
-    IdentityConfig.store.address_identity_proofing_supported_country_codes
+    IdentityConfig.store.address_identity_proofing_supported_country_codes.freeze
 
   attr_reader :phone, :phone_confirmed
 
@@ -32,7 +34,7 @@ class PhoneNumberCapabilities
     translated_intl_codes_data[I18n.locale] if translated_intl_codes_data
   end
 
-  TRANSLATED_INTL_CODES_DATA = generate_translated_international_codes_data
+  TRANSLATED_INTL_CODES_DATA = generate_translated_international_codes_data.freeze
 
   def initialize(phone, phone_confirmed:)
     @phone = phone
