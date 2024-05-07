@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'i18n'
-require 'json'
 
 # Custom i18n backend that parse our "flat_yml" files into the nested
 # hash structure that i18n works with
