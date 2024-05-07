@@ -11,6 +11,7 @@
     - [`rule-empty-line-before`](https://stylelint.io/user-guide/rules/rule-empty-line-before/)
     - [`scss/dollar-variable-empty-line-before`](https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/dollar-variable-empty-line-before/README.md)
     - [`scss/double-slash-comment-empty-line-before`](https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/double-slash-comment-empty-line-before/README.md)
+    - [`color-function-notation`](https://stylelint.io/user-guide/rules/color-function-notation/) (due to [Sass incompatibilities](https://github.com/sass/sass/issues/2831))
 
 ## 4.1.0
 

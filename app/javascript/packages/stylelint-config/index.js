@@ -2,6 +2,7 @@ module.exports = {
   extends: ['stylelint-config-standard-scss', 'stylelint-prettier/recommended'],
   rules: {
     'at-rule-empty-line-before': null,
+    'color-function-notation': null,
     'declaration-empty-line-before': null,
     'no-descending-specificity': null,
     'rule-empty-line-before': null,
