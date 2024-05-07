@@ -215,16 +215,13 @@ module OpenidConnect
         service_provider: @authorize_form.service_provider,
         user: current_user,
       )
-
       analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
-        sign_in_duration_seconds: (Time.zone.now - Time.zone.parse(
-          session[:sign_in_page_visited_at] || Time.zone.now.to_s,
-        )).seconds.to_i.round(2),
+        sign_in_duration_seconds: sign_in_duration,
       )
       track_billing_events
     end
