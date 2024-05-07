@@ -1,3 +1,17 @@
+## 5.0.0-beta.1
+
+### Breaking Changes
+
+- The ruleset now extends [`stylelint-config-standard-scss`](https://github.com/stylelint-scss/stylelint-config-standard-scss) instead of [`stylelint-config-recommended-scss`](https://github.com/stylelint-scss/stylelint-config-recommended-scss). This configures a number of additional rules which may identify existing issues in your code.
+  - This is intended to bring the ruleset into closer alignment with the [TTS Engineering CSS Coding Standards](https://guides.18f.gov/engineering/languages-runtimes/css/), which recommends the "standard" Stylelint rules.
+  - Many of these rules can be fixed automatically using [Stylelint's `--fix` option](https://stylelint.io/user-guide/options/#fix).
+  - Some rules have been disabled to permit more flexibility in code arrangement, particularly rules affecting blank line enforcement with comments and Sass `@`-rules:
+    - [`at-rule-empty-line-before`](https://stylelint.io/user-guide/rules/at-rule-empty-line-before/)
+    - [`declaration-empty-line-before`](https://stylelint.io/user-guide/rules/declaration-empty-line-before/)
+    - [`rule-empty-line-before`](https://stylelint.io/user-guide/rules/rule-empty-line-before/)
+    - [`scss/dollar-variable-empty-line-before`](https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/dollar-variable-empty-line-before/README.md)
+    - [`scss/double-slash-comment-empty-line-before`](https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/double-slash-comment-empty-line-before/README.md)
+
 ## 4.1.0
 
 ### Improvements
