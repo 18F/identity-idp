@@ -61,7 +61,7 @@ RSpec.describe 'IdvStepConcern' do
 
     context 'document capture complete' do
       before do
-        idv_session.pii_from_doc = { first_name: 'Susan' }
+        idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
       end
 
       it 'allows the back button and stays on page' do

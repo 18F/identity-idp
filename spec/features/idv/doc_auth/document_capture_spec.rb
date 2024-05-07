@@ -211,7 +211,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     before do
       expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
         and_return(selfie_check_enabled)
-      complete_doc_auth_steps_before_document_capture_step
+      allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     end
 
     context 'when a selfie is not requested by SP' do
@@ -243,12 +243,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
 
     context 'when a selfie is required by the SP' do
-      before do
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).
-          and_return(true)
-      end
-
       context 'on mobile platform', allow_browser_log: true do
         before do
           # mock mobile device as cameraCapable, this allows us to process
@@ -293,10 +287,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         context 'selfie with error is uploaded' do
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
-
-            allow_any_instance_of(FederatedProtocols::Oidc).
-              to receive(:biometric_comparison_required?).
-              and_return(true)
             perform_in_browser(:mobile) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
               sign_in_and_2fa_user(@user)
@@ -751,7 +741,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
         context 'with Attention with Barcode' do
           it 'try again and page show selfie fail inline error message' do
-            visit_idp_from_oidc_sp_with_ial2
+            visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
             sign_in_and_2fa_user(@user)
             complete_doc_auth_steps_before_document_capture_step
             attach_images(

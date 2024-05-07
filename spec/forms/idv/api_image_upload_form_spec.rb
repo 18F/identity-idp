@@ -258,6 +258,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           transaction_status: nil,
           transaction_reason_code: nil,
           workflow: 'test_non_liveness_workflow',
+          birth_year: 1938,
         )
       end
 
@@ -377,6 +378,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             transaction_status: nil,
             transaction_reason_code: nil,
             workflow: 'test_liveness_workflow',
+            birth_year: 1938,
           )
         end
 

@@ -101,7 +101,7 @@ RSpec.describe Idv::LinkSentController do
 
       context 'with pii in idv_session' do
         it 'allows the back button and does not redirect' do
-          subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+          subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
           get :show
 
           expect(response).to render_template :show
