@@ -46,10 +46,15 @@ module Db
               ActiveRecord::Base.connection.execute(query).each do |row|
                 user_id = row['user_id']
                 year_month = row['year_month']
-                auth_count = row['auth_count']
                 ial = row['ial']
-
-                ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+                if row['min_returned_at'].nil? 
+                  next
+                elsif row['max_profile_verified_at'].nil?
+                  profile_age = -1
+                else
+                  profile_age = (Time.zone.parse(row['min_returned_at'].to_s).year - Time.zone.parse(row['max_profile_verified_at'].to_s).year)
+                end
+                ial_to_year_month_to_users[ial][year_month].add([user_id, profile_age])
               end
             end
           end
@@ -69,6 +74,13 @@ module Db
             unique_users = year_month_users.uniq.to_set
 
             new_unique_users = unique_users - prev_seen_users
+            new_unique_users_year1 = new_unique_users.select { |user_id, profile_age| profile_age == 0 }
+            new_unique_users_year2 = new_unique_users.select { |user_id, profile_age| profile_age == 1 }
+            new_unique_users_year3 = new_unique_users.select { |user_id, profile_age| profile_age == 2 }
+            new_unique_users_year4 = new_unique_users.select { |user_id, profile_age| profile_age == 3 }
+            new_unique_users_year5 = new_unique_users.select { |user_id, profile_age| profile_age == 4 }
+            new_unique_users_year_greater_than_5 = new_unique_users.select { |user_id, profile_age| profile_age > 4 }
+            new_unique_users_unknown = new_unique_users.select { |user_id, profile_age| profile_age < 0 }
             prev_seen_users |= unique_users
 
             rows << {
@@ -77,9 +89,15 @@ module Db
               year_month: year_month,
               iaa_start_date: date_range.begin.to_s,
               iaa_end_date: date_range.end.to_s,
-              total_auth_count: auth_count,
               unique_users: unique_users.count,
               new_unique_users: new_unique_users.count,
+              partner_ial2_new_unique_users_year1: new_unique_users_year1.count,
+              partner_ial2_new_unique_users_year2: new_unique_users_year2.count,
+              partner_ial2_new_unique_users_year3: new_unique_users_year3.count,
+              partner_ial2_new_unique_users_year4: new_unique_users_year4.count,
+              partner_ial2_new_unique_users_year5: new_unique_users_year5.count,
+              partner_ial2_new_unique_users_year_greater_than_5: new_unique_users_year_greater_than_5.count,
+              partner_ial2_new_unique_users_unknown: new_unique_users_unknown.count,
             }
           end
         end
@@ -93,17 +111,11 @@ module Db
       # @return [Array<String>]
       def build_queries(issuers:, months:)
         months.map do |month_range|
-          today = Date.today
           params = {
             range_start: month_range.begin,
             range_end: month_range.end,
             year_month: month_range.begin.strftime('%Y%m'),
             issuers: issuers,
-            one_years_ago: today - 365,
-            two_years_ago: today - 2 * 365,
-            three_years_ago: today - 3 * 365,
-            four_years_ago: today - 4 * 365,
-            five_years_ago: today - 5 * 365,
           }.transform_values { |value| quote(value) }
 
 
@@ -112,32 +124,13 @@ module Db
             SELECT
               sp_return_logs.user_id
             , %{year_month} AS year_month
-            , COUNT(sp_return_logs.id) AS auth_count
             , sp_return_logs.ial
-            , SUM (
-              CASE WHEN sp_return_logs.profile_verified_at IS BETWEEN %{now) AND %{one_years_ago}
-              THEN 1 ELSE 0 END) as partner_ial2_new_unique_users_year1
-            , SUM (
-              CASE WHEN sp_return_logs.profile_verified_at IS BETWEEN %{one_years_ago) AND %{two_years_ago}
-              THEN 1 ELSE 0 END) as partner_ial2_new_unique_users_year2
-            , SUM (
-              CASE WHEN sp_return_logs.profile_verified_at IS BETWEEN %{two_years_ago) AND %{three_years_ago}
-              THEN 1 ELSE 0 END) as partner_ial2_new_unique_users_year3
-            , SUM (
-              CASE WHEN sp_return_logs.profile_verified_at IS BETWEEN %{three_years_ago) AND %{four_years_ago}
-              THEN 1 ELSE 0 END) as partner_ial2_new_unique_users_year4
-            , SUM (
-              CASE WHEN sp_return_logs.profile_verified_at IS BETWEEN %{four_years_ago) AND %{five_years_ago}
-              THEN 1 ELSE 0 END) as partner_ial2_new_unique_users_year5
-            , SUM (
-              CASE WHEN sp_return_logs.profile_verified_at > %{five_years_ago} 
-              THEN 1 ELSE 0 END) as partner_ial2_new_unique_users_year_greater_than_5
-            , SUM (
-              CASE When sp_return_logs.ial = 2 AND sp_return_logs.profile_verified_at IS NULL
-              THEN 1 ELSE 0 END) as partner_ial2_new_unique_users_unknown
+            , MIN(sp_return_logs.returned_at) AS min_returned_at
+            , MAX(sp_return_logs.profile_verified_at) AS max_profile_verified_at
 
             FROM sp_return_logs
             WHERE
+                  sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.issuer IN %{issuers}
               AND sp_return_logs.billable = true
             GROUP BY
