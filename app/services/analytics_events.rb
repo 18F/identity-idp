@@ -313,6 +313,11 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
+  # User visits the "Are you sure you want to cancel and exit" page
+  def completions_cancellation_visited
+    track_event(:completions_cancellation_visited)
+  end
+
   # User was logged out due to an existing active session
   def concurrent_session_logout
     track_event(:concurrent_session_logout)
