@@ -33,6 +33,8 @@ class RecaptchaAnnotator
       faraday.post(annotation_url(assessment_id:), request_body) do |request|
         request.options.context = { service_name: 'recaptcha_annotate' }
       end
+    rescue Faraday::Error => error
+      NewRelic::Agent.notice_error(error)
     end
 
     def faraday

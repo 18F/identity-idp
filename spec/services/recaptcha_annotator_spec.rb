@@ -110,6 +110,22 @@ RSpec.describe RecaptchaAnnotator do
 
         it { expect(annotate).to be_nil }
       end
+
+      context 'with connection error' do
+        before do
+          stub_request(:post, annotation_url).to_timeout
+        end
+
+        it 'fails gracefully' do
+          annotate
+        end
+
+        it 'notices the error to NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error).with(Faraday::Error)
+
+          annotate
+        end
+      end
     end
   end
 end
