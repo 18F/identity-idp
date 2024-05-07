@@ -40,6 +40,7 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
 });
 global.navigator.sendBeacon = () => true;
 
+/* eslint-disable react-hooks/rules-of-hooks */
 useCleanDOM(dom);
 useConsoleLogSpy();
 
