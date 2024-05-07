@@ -15,6 +15,10 @@ RSpec.describe Reporting::ProofingRateReport do
         [
           instance_double(
             'Reporting::IdentityVerificationReport',
+            blanket_proofing_rates: 0.25,
+            intent_proofing_rates: 0.3333333333333333,
+            actual_proofing_rates: 0.5,
+            industry_proofing_rates: 0.5,
             idv_started: 4,
             idv_doc_auth_welcome_submitted: 3,
             idv_doc_auth_image_vendor_submitted: 2,
@@ -25,6 +29,10 @@ RSpec.describe Reporting::ProofingRateReport do
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
+            blanket_proofing_rates: 0.4,
+            intent_proofing_rates: 0.5,
+            actual_proofing_rates: 0.6666666666666666,
+            industry_proofing_rates: 0.6666666666666666,
             idv_started: 5,
             idv_doc_auth_welcome_submitted: 4,
             idv_doc_auth_image_vendor_submitted: 3,
@@ -35,6 +43,10 @@ RSpec.describe Reporting::ProofingRateReport do
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
+            blanket_proofing_rates: 0.5,
+            intent_proofing_rates: 0.6,
+            actual_proofing_rates: 0.75,
+            industry_proofing_rates: 0.75,
             idv_started: 6,
             idv_doc_auth_welcome_submitted: 5,
             idv_doc_auth_image_vendor_submitted: 4,
