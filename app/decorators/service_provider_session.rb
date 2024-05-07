@@ -52,10 +52,6 @@ class ServiceProviderSession
     I18n.t('headings.sign_in_with_sp', sp: sp_name)
   end
 
-  def verification_method_choice
-    I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
-  end
-
   def requested_attributes
     (sp_session[:requested_attributes] || service_provider_request.requested_attributes).sort
   end

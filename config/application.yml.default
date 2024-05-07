@@ -20,6 +20,8 @@ aamva_cert_enabled: true
 aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
+ab_testing_idv_ten_digit_otp_enabled: false
+ab_testing_idv_ten_digit_otp_percent: 0
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
@@ -417,6 +419,7 @@ development:
   newrelic_license_key: ''
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  phone_recaptcha_score_threshold: 0.5
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   push_notifications_enabled: true
   rails_mailer_previews_enabled: true

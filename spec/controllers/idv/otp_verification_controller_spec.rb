@@ -9,16 +9,13 @@ RSpec.describe Idv::OtpVerificationController,
   let(:user_phone_confirmation) { false }
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
-  let(:phone_confirmation_session_properties) do
-    {
-      code: phone_confirmation_otp_code,
-      phone: phone,
-      delivery_method: :sms,
-    }
-  end
+  let(:delivery_method) { :sms }
   let(:user_phone_confirmation_session) do
     Idv::PhoneConfirmationSession.new(
-      **phone_confirmation_session_properties,
+      code: phone_confirmation_otp_code,
+      phone: phone,
+      delivery_method: delivery_method,
+      user: user,
       sent_at: phone_confirmation_otp_sent_at,
     )
   end
@@ -36,7 +33,7 @@ RSpec.describe Idv::OtpVerificationController,
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant[:phone] = phone
@@ -140,13 +137,7 @@ RSpec.describe Idv::OtpVerificationController,
       end
 
       context 'the user uses voice otp' do
-        let(:phone_confirmation_session_properties) do
-          {
-            code: phone_confirmation_otp_code,
-            phone: phone,
-            delivery_method: :voice,
-          }
-        end
+        let(:delivery_method) { :voice }
 
         it 'does not save the phone number if the feature flag is off' do
           put :update, params: otp_code_param
@@ -213,15 +204,9 @@ RSpec.describe Idv::OtpVerificationController,
       end
 
       context 'when the phone otp code has expired' do
-        let(:expired_phone_confirmation_otp_sent_at) do
+        let(:phone_confirmation_otp_sent_at) do
           # Set time to a long time ago
-          phone_confirmation_otp_sent_at - 900000000
-        end
-        let(:user_phone_confirmation_session) do
-          Idv::PhoneConfirmationSession.new(
-            **phone_confirmation_session_properties,
-            sent_at: expired_phone_confirmation_otp_sent_at,
-          )
+          Time.zone.now - 900000000
         end
 
         it 'captures failure event' do
