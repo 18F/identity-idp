@@ -416,12 +416,14 @@ module SamlIdp
         let(:cert) { saml_settings.get_sp_cert }
 
         describe 'the service provider has no registered certs' do
+          before { subject.service_provider.certs = [] }
+
           it 'returns nil' do
             expect(subject.matching_cert).to be nil
           end
         end
 
-        describe 'the service provider has one registered certs' do
+        describe 'the service provider has one registered cert' do
           before { subject.service_provider.certs = [cert] }
 
           describe 'the cert matches the assertion cert' do
