@@ -185,7 +185,7 @@ RSpec.configure do |c|
     if keys.present?
       group = ex.example_group
       group = group.superclass while group.superclass != RSpec::Core::ExampleGroup
-      groups << [group, FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics]
+      groups << [group, FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics.to_a]
     end
   ensure
     FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = []
@@ -196,7 +196,7 @@ RSpec.configure do |c|
     groups.group_by(&:first).each do |group, pairs|
       allowed_extra_analytics = group.metadata[:allowed_extra_analytics]
       next if allowed_extra_analytics.blank?
-      all_checked_extra_analytics = pairs.map(&:last).flatten.uniq.compact
+      all_checked_extra_analytics = pairs.map(&:last).flatten.uniq
       if allowed_extra_analytics.include?(:*)
         expect(all_checked_extra_analytics).not_to(
           be_blank,
