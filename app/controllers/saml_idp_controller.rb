@@ -17,6 +17,7 @@ class SamlIdpController < ApplicationController
   include AuthorizationCountConcern
   include BillableEventTrackable
   include SecureHeadersConcern
+  include SignInDurationConcern
 
   prepend_before_action :skip_session_load, only: [:metadata, :remotelogout]
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]

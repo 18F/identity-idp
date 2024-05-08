@@ -10,6 +10,7 @@ module OpenidConnect
     include BillableEventTrackable
     include ForcedReauthenticationConcern
     include OpenidConnectRedirectConcern
+    include SignInDurationConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :block_biometric_requests_in_production, only: [:index]
