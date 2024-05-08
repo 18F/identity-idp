@@ -104,12 +104,11 @@ zh:
       subject: 你的身份未能亲身被验证。
     in_person_please_call:
       body:
-        contact_message_html: Call <strong>%{contact_number}</strong> and provide them
-          with the error code <strong>%{support_code}</strong>.
-        intro_html: Call our contact center by <strong>%{date}</strong> to continue
-          verifying your identity.
-      header: Please give us a call
-      subject: Call %{app_name} to continue with your identity verification
+        contact_message_html: 请拨打 <strong>%{contact_number}</strong> 向他们提供错误信息 代码
+          <strong>%{support_code}</strong>.
+        intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
+      header: 请给我们打个电话
+      subject: 致电 %{app_name} 继续进行身份验证
     in_person_ready_to_verify:
       subject: 你可以在 %{app_name} 亲身验证身份了
     in_person_ready_to_verify_reminder:
