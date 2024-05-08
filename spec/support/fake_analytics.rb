@@ -201,10 +201,11 @@ RSpec.configure do |c|
           "Unnecessary allowed_extra_analytics on example group #{group}",
         )
       else
-        expect(allowed_extra_analytics).to(
-          match_array(all_checked_extra_analytics),
+        unchecked_extra_analytics = allowed_extra_analytics - all_checked_extra_analytics
+        expect(unchecked_extra_analytics).to(
+          be_blank,
           "Unnecessary allowed_extra_analytics method names on example group #{group}: " +
-            (allowed_extra_analytics - all_checked_extra_analytics).to_s,
+            unchecked_extra_analytics.to_s,
         )
       end
     end
