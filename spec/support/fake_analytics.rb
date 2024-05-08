@@ -73,6 +73,7 @@ class FakeAnalytics < Analytics
 
   module UndocumentedParamsChecker
     mattr_accessor :allowed_extra_analytics
+    mattr_accessor :checked_extra_analytics
     mattr_accessor :asts
     mattr_accessor :docstrings
 
@@ -83,6 +84,8 @@ class FakeAnalytics < Analytics
         match(/:in `(?<method_name>[^']+)'/)&.
         [](:method_name)&.
         to_sym
+
+      @@checked_extra_analytics = checked_extra_analytics.to_a.push(method_name)
 
       if method_name && (allowed_extra_analytics & [:*, method_name]).blank?
         analytics_method = AnalyticsEvents.instance_method(method_name)
@@ -172,11 +175,38 @@ class FakeAnalytics < Analytics
 end
 
 RSpec.configure do |c|
+  groups = []
+
   c.around do |ex|
     keys = Array(ex.metadata[:allowed_extra_analytics])
     FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = keys
     ex.run
+
+    group = ex.example_group
+    group = group.superclass while group.superclass != RSpec::Core::ExampleGroup
+    groups << [group, FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics]
   ensure
     FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = []
+    FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics = []
+  end
+
+  c.after(:all) do |ex|
+    groups.group_by { |pair| pair[0] }.each do |group, pairs|
+      allowed_extra_analytics = group.metadata[:allowed_extra_analytics]
+      next if allowed_extra_analytics.blank?
+      all_checked_extra_analytics = pairs.map(&:last).flatten.uniq.compact
+      if allowed_extra_analytics.include?(:*)
+        expect(all_checked_extra_analytics).not_to(
+          be_blank,
+          "Unnecessary allowed_extra_analytics on example group #{group}",
+        )
+      else
+        expect(allowed_extra_analytics).to(
+          match_array(all_checked_extra_analytics),
+          "Unnecessary allowed_extra_analytics method names on example group #{group}: " +
+            (allowed_extra_analytics - all_checked_extra_analytics).to_s,
+        )
+      end
+    end
   end
 end
