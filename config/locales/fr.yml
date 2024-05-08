@@ -879,7 +879,8 @@ headings.account.verified_account: Compte vérifié
 headings.account.verified_information: Informations vérifiées
 headings.add_email: Ajouter une nouvelle adresse e-mail
 headings.add_info.phone: Ajouter un numéro de téléphone
-headings.cancellations.prompt: Êtes-vous sûr de vouloir annuler ?
+headings.cancellations.login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
+headings.cancellations.prompt: Es-tu sûre de vouloir annuler?
 headings.create_account_new_users: Créer un compte pour les nouveaux utilisateurs
 headings.create_account_with_sp.sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre compte de façon sûre et sécurisée.
 headings.edit_info.password: Changer votre mot de passe
@@ -1124,7 +1125,9 @@ idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation:
-  "Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.\n"
+  'Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
+
+  '
 idv.warning.state_id.heading: Nous travaillons à la résolution d’une erreur
 idv.warning.state_id.next_steps.items_html.0: Réessayer maintenant <strong>ou</strong>
 idv.warning.state_id.next_steps.items_html.1: Quitter %{app_name} et réessayer plus tard
@@ -1319,6 +1322,12 @@ links.sign_in: Se connecter
 links.sign_out: Se déconnecter
 links.two_factor_authentication.send_another_code: Envoyer un autre code
 links.what_is_totp: Qu’est-ce qu’une appli d’authentification ?
+login_cancel.account_page: page de votre compte
+login_cancel.bullet1_html: Vous ne pourrez pas utiliser %{app_name} pour accéder à <strong>%{sp_name}</strong> tant que vous ne leur communiquerez pas les renseignements vous concernant.
+login_cancel.bullet2_html: Vous aurez néanmoins toujours un compte %{app_name} que vous pourrez gérer ou supprimer la %{link_html}.
+login_cancel.exit: Quitter %{app_name}
+login_cancel.header: 'Si vous quittez %{app_name} maintenant:'
+login_cancel.keep_going: Non, continuer
 mailer.about: À propos de %{app_name}
 mailer.email_reuse_notice.subject: Cette adresse e-mail est déjà associée à un compte.
 mailer.help_html: Si vous avez besoin d’aide, rendez-vous sur %{link_html}
@@ -1455,9 +1464,12 @@ step_indicator.flows.idv.find_a_post_office: Trouver un bureau de poste
 step_indicator.flows.idv.get_a_letter: Recevoir une lettre par la poste
 step_indicator.flows.idv.getting_started: Démarrer
 step_indicator.flows.idv.go_to_the_post_office: Se rendre au bureau de poste
-step_indicator.flows.idv.secure_account: Saisir à nouveau votre mot de passe
-step_indicator.flows.idv.verify_id: Vérifier votre identité
+step_indicator.flows.idv.re_enter_password: Saisir à nouveau votre mot de passe
+step_indicator.flows.idv.secure_account: Sécuriser votre compte
+step_indicator.flows.idv.verify_address: Vérifier votre adresse
+step_indicator.flows.idv.verify_id: Confirmer votre identité
 step_indicator.flows.idv.verify_info: Vérifier vos informations
+step_indicator.flows.idv.verify_phone: Vérifier votre numéro de téléphone
 step_indicator.flows.idv.verify_phone_or_address: Vérifier votre numéro de téléphone
 step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
@@ -1475,6 +1487,7 @@ titles.account: Compte
 titles.account_locked: Compte temporairement verrouillé
 titles.add_info.phone: Ajouter un numéro de téléphone
 titles.backup_codes: Ne perdez pas vos codes de sauvegarde
+titles.cancel_exit_login: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
 titles.confirmations.delete: Veuillez confirmer
 titles.confirmations.show: Choisir un mot de passe
 titles.doc_auth.address: Mettre à jour votre adresse postale

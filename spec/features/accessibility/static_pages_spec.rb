@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.feature 'Accessibility on static pages', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'Accessibility on static pages', :js do
   scenario 'not found page', allow_browser_log: true do
     visit '/non_existent_page'
 

@@ -1,1 +1,7 @@
+@use 'uswds-core' as *;
 @forward 'usa-verification-badge';
+
+// Upstream: https://github.com/18F/identity-design-system/pull/445
+.lg-verification-badge .usa-icon {
+  margin-right: units(1);
+}

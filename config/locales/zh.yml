@@ -883,6 +883,7 @@ headings.account.verified_account: 验证过的账户
 headings.account.verified_information: 验证过的信息
 headings.add_email: 添加一个新电邮地址
 headings.add_info.phone: 添加一个电话号码
+headings.cancellations.login_cancel_prompt: 你确定要取消并退出 %{app_name} 吗？
 headings.cancellations.prompt: 你确定要取消吗？
 headings.create_account_new_users: 为新用户创建一个账户
 headings.create_account_with_sp.sp_text: 正在使用 %{app_name} 使你能够安全可靠地登入账户。
@@ -1129,7 +1130,9 @@ idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation:
-  "遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。\n"
+  '遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
+
+  '
 idv.warning.state_id.heading: 我们正在争取解决错误。
 idv.warning.state_id.next_steps.items_html.0: S现在再试一次<strong>或者</strong>
 idv.warning.state_id.next_steps.items_html.1: 退出 %{app_name}，稍后再试
@@ -1325,6 +1328,12 @@ links.sign_in: 登录
 links.sign_out: 登出
 links.two_factor_authentication.send_another_code: 发送另一个代码
 links.what_is_totp: 什么是身份证实应用程序？
+login_cancel.account_page: 账户页面
+login_cancel.bullet1_html: 在你与 %{app_name} 合作伙伴机构分享信息之前，将无法通过 <strong>%{sp_name}</strong> 访问该机构。
+login_cancel.bullet2_html: 在你%{link_html}，将仍有一个 %{app_name} 账户，你可以管理或删除。
+login_cancel.exit: 退出 %{app_name}
+login_cancel.header: 如果你现在退出 %{app_name}：
+login_cancel.keep_going: 不，继续下去
 mailer.about: 关于 %{app_name}
 mailer.email_reuse_notice.subject: 该电邮地址已与一个账户相关。
 mailer.help_html: 如果需要帮助，请访问 %{link_html}
@@ -1461,9 +1470,12 @@ step_indicator.flows.idv.find_a_post_office: 找一个邮局
 step_indicator.flows.idv.get_a_letter: 接收一封信
 step_indicator.flows.idv.getting_started: 开始
 step_indicator.flows.idv.go_to_the_post_office: 去邮局
-step_indicator.flows.idv.secure_account: 保护你的账户安全
+step_indicator.flows.idv.re_enter_password: 重新输入你的密码
+step_indicator.flows.idv.secure_account: 保护你账户的安全
+step_indicator.flows.idv.verify_address: 验证你的地址
 step_indicator.flows.idv.verify_id: 验证你的身份证件
 step_indicator.flows.idv.verify_info: 验证你的信息
+step_indicator.flows.idv.verify_phone: 验证你的电话号码
 step_indicator.flows.idv.verify_phone_or_address: 验证电话或地址
 step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
@@ -1481,6 +1493,7 @@ titles.account: 账户
 titles.account_locked: 账户临时锁住
 titles.add_info.phone: 添加电话号码
 titles.backup_codes: 别丢了你的备用代码
+titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
 titles.confirmations.delete: 请确认
 titles.confirmations.show: 选择一个密码
 titles.doc_auth.address: 更新你的邮政地址

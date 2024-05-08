@@ -11,6 +11,6 @@ class RecaptchaMockForm < RecaptchaForm
   private
 
   def recaptcha_result
-    RecaptchaResult.new(success: true, score:)
+    RecaptchaResult.new(success: true, assessment_id: SecureRandom.uuid, score:)
   end
 end

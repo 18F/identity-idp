@@ -879,7 +879,8 @@ headings.account.verified_account: Cuenta verificada
 headings.account.verified_information: Información verificada
 headings.add_email: Agregar una nueva dirección de correo electrónico
 headings.add_info.phone: Agregar un número de teléfono
-headings.cancellations.prompt: '¿Está seguro de que desea cancelar?'
+headings.cancellations.login_cancel_prompt: '¿Está seguro de que desea cancelar y salir de %{app_name}?'
+headings.cancellations.prompt: '¿Estas seguro que quieres cancelar?'
 headings.create_account_new_users: Crear una cuenta para usuarios nuevos
 headings.create_account_with_sp.sp_text: está usando %{app_name} para permitirle iniciar sesión en su cuenta de forma segura.
 headings.edit_info.password: Cambie su contraseña
@@ -1123,7 +1124,9 @@ idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{c
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
 idv.warning.state_id.explanation:
-  "Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.\n"
+  'Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
+
+  '
 idv.warning.state_id.heading: Estamos trabajando para corregir un error
 idv.warning.state_id.next_steps.items_html.0: Volver a intentarlo ahora <strong>o</strong>
 idv.warning.state_id.next_steps.items_html.1: Salir de %{app_name} y volver a intentarlo más tarde
@@ -1318,6 +1321,12 @@ links.sign_in: Iniciar sesión
 links.sign_out: Cerrar sesión
 links.two_factor_authentication.send_another_code: Enviar otro código
 links.what_is_totp: '¿Qué es una aplicación de autenticación?'
+login_cancel.account_page: página de su cuenta
+login_cancel.bullet1_html: No podrá usar %{app_name} para acceder a <strong>%{sp_name}</strong> hasta que dé a conocer su información a esa agencia.
+login_cancel.bullet2_html: Seguirá teniendo una cuenta de %{app_name} que puede administrar o eliminar en la %{link_html}.
+login_cancel.exit: Salir de %{app_name}
+login_cancel.header: 'Si sale de %{app_name} ahora:'
+login_cancel.keep_going: No, continuar
 mailer.about: Acerca de %{app_name}
 mailer.email_reuse_notice.subject: Esta dirección de correo electrónico ya está asociada con una cuenta.
 mailer.help_html: Si necesita ayuda, visite %{link_html}
@@ -1454,9 +1463,12 @@ step_indicator.flows.idv.find_a_post_office: Busque una oficina de correos
 step_indicator.flows.idv.get_a_letter: Obtenga una carta por correo
 step_indicator.flows.idv.getting_started: Inicio
 step_indicator.flows.idv.go_to_the_post_office: Vaya a la oficina de correos
-step_indicator.flows.idv.secure_account: Vuelve a ingresar tu contraseña
+step_indicator.flows.idv.re_enter_password: Vuelva a ingresar su contraseña
+step_indicator.flows.idv.secure_account: Proteja su cuenta
+step_indicator.flows.idv.verify_address: Verifique su dirección
 step_indicator.flows.idv.verify_id: Verifique su identidad
 step_indicator.flows.idv.verify_info: Verifique su información
+step_indicator.flows.idv.verify_phone: Verifique su número de teléfono
 step_indicator.flows.idv.verify_phone_or_address: Verifique su número de teléfono
 step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
@@ -1474,6 +1486,7 @@ titles.account: Cuenta
 titles.account_locked: Cuenta bloqueada temporalmente
 titles.add_info.phone: Agregar un número de teléfono
 titles.backup_codes: No pierda sus códigos de recuperación
+titles.cancel_exit_login: '¿Está seguro de que desea cancelar y salir de %{app_name}?'
 titles.confirmations.delete: Confirme
 titles.confirmations.show: Elija una contraseña
 titles.doc_auth.address: Actualice su dirección postal

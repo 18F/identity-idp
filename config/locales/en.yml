@@ -879,6 +879,7 @@ headings.account.verified_account: Verified Account
 headings.account.verified_information: Verified information
 headings.add_email: Add a new email address
 headings.add_info.phone: Add a phone number
+headings.cancellations.login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?
 headings.cancellations.prompt: Are you sure you want to cancel?
 headings.create_account_new_users: Create an account for new users
 headings.create_account_with_sp.sp_text: is using %{app_name} to allow you to sign in to your account safely and securely.
@@ -1320,6 +1321,12 @@ links.sign_in: Sign in
 links.sign_out: Sign out
 links.two_factor_authentication.send_another_code: Send another code
 links.what_is_totp: What is an authentication app?
+login_cancel.account_page: account page
+login_cancel.bullet1_html: You won’t be able to use %{app_name} to access <strong>%{sp_name}</strong> until you share your information with them.
+login_cancel.bullet2_html: You’ll still have a %{app_name} account which you can manage or delete on your %{link_html}.
+login_cancel.exit: Exit %{app_name}
+login_cancel.header: 'If you exit %{app_name} now:'
+login_cancel.keep_going: No, keep going
 mailer.about: About %{app_name}
 mailer.email_reuse_notice.subject: This email address is already associated with an account.
 mailer.help_html: If you need help, visit %{link_html}
@@ -1456,9 +1463,12 @@ step_indicator.flows.idv.find_a_post_office: Find a Post Office
 step_indicator.flows.idv.get_a_letter: Get a letter in the mail
 step_indicator.flows.idv.getting_started: Getting started
 step_indicator.flows.idv.go_to_the_post_office: Go to the Post Office
-step_indicator.flows.idv.secure_account: Re-enter your password
+step_indicator.flows.idv.re_enter_password: Re-enter your password
+step_indicator.flows.idv.secure_account: Secure your account
+step_indicator.flows.idv.verify_address: Verify your address
 step_indicator.flows.idv.verify_id: Verify your ID
 step_indicator.flows.idv.verify_info: Verify your information
+step_indicator.flows.idv.verify_phone: Verify your phone number
 step_indicator.flows.idv.verify_phone_or_address: Verify your phone number
 step_indicator.status.complete: Completed
 step_indicator.status.current: Current step
@@ -1476,6 +1486,7 @@ titles.account: Account
 titles.account_locked: Account temporarily locked
 titles.add_info.phone: Add a phone number
 titles.backup_codes: Don’t lose your backup codes
+titles.cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
 titles.confirmations.delete: Please confirm
 titles.confirmations.show: Choose a password
 titles.doc_auth.address: Update your mailing address
