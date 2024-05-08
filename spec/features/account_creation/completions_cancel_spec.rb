@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'canceling at the completions screen', allowed_extra_analytics: [:*] do
+RSpec.feature 'canceling at the completions screen' do
   include SamlAuthHelper
 
   it 'redirects accordingly' do

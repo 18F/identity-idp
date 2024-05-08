@@ -257,10 +257,12 @@ module AnalyticsEvents
 
   # Tracks when the user creates a set of backup mfa codes.
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def backup_code_created(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
+  def backup_code_created(enabled_mfa_methods_count:, in_account_creation_flow:, **extra)
     track_event(
       'Backup Code Created',
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -273,19 +275,28 @@ module AnalyticsEvents
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
   # @param [Boolean] success
+  # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
+  # @param [Number] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Boolean] in_account_creation_flow Whether page is visited as part of account creation
   # @param [Hash] errors
   # @param [Hash] error_details
   def backup_code_setup_visit(
     success:,
+    mfa_method_counts:,
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
     errors: nil,
     error_details: nil,
     **extra
   )
     track_event(
       'Backup Code Setup Visited',
-      success: success,
-      errors: errors,
-      error_details: error_details,
+      success:,
+      errors:,
+      error_details:,
+      mfa_method_counts:,
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -4161,6 +4172,13 @@ module AnalyticsEvents
   end
 
   # Tracks when openid authorization request is made
+  # @param [Boolean] success Whether form validations were succcessful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] prompt OIDC prompt parameter
+  # @param [Boolean] allow_prompt_login Whether service provider is configured to allow prompt=login
+  # @param [Boolean] code_challenge_present Whether code challenge is present
+  # @param [Boolean, nil] service_provider_pkce Whether service provider is configured with PKCE
+  # @param [String, nil] referer Request referer
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
@@ -4169,6 +4187,13 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
+    success:,
+    errors:,
+    prompt:,
+    allow_prompt_login:,
+    code_challenge_present:,
+    service_provider_pkce:,
+    referer:,
     client_id:,
     scope:,
     acr_values:,
@@ -4180,13 +4205,20 @@ module AnalyticsEvents
   )
     track_event(
       'OpenID Connect: authorization request',
-      client_id: client_id,
-      scope: scope,
-      acr_values: acr_values,
-      vtr: vtr,
-      vtr_param: vtr_param,
-      unauthorized_scope: unauthorized_scope,
-      user_fully_authenticated: user_fully_authenticated,
+      success:,
+      errors:,
+      prompt:,
+      allow_prompt_login:,
+      code_challenge_present:,
+      service_provider_pkce:,
+      referer:,
+      client_id:,
+      scope:,
+      acr_values:,
+      vtr:,
+      vtr_param:,
+      unauthorized_scope:,
+      user_fully_authenticated:,
       **extra,
     )
   end
@@ -4263,9 +4295,11 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [String] user_id UUID of the user
+  # @param [Boolean] request_id_present Whether request_id URL parameter is present
   # The user added a password after verifying their email for account creation
-  def password_creation(success:, errors:, **extra)
-    track_event('Password Creation', success: success, errors: errors, **extra)
+  def password_creation(success:, errors:, user_id:, request_id_present:, **extra)
+    track_event('Password Creation', success:, errors:, user_id:, request_id_present:, **extra)
   end
 
   # The user got their password incorrect the max number of times, their session was terminated
@@ -5231,6 +5265,7 @@ module AnalyticsEvents
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_agency_handoff_page_visit(
@@ -5238,6 +5273,7 @@ module AnalyticsEvents
       service_provider_name:,
       page_occurence:,
       needs_completion_screen_reason:,
+      in_account_creation_flow:,
       sp_session_requested_attributes:,
       sp_request_requested_attributes: nil,
       ialmax: nil,
@@ -5245,13 +5281,14 @@ module AnalyticsEvents
     )
     track_event(
       'User registration: agency handoff visited',
-      ial2: ial2,
-      ialmax: ialmax,
-      service_provider_name: service_provider_name,
-      page_occurence: page_occurence,
-      needs_completion_screen_reason: needs_completion_screen_reason,
-      sp_request_requested_attributes: sp_request_requested_attributes,
-      sp_session_requested_attributes: sp_session_requested_attributes,
+      ial2:,
+      ialmax:,
+      service_provider_name:,
+      page_occurence:,
+      needs_completion_screen_reason:,
+      in_account_creation_flow:,
+      sp_request_requested_attributes:,
+      sp_session_requested_attributes:,
       **extra,
     )
   end

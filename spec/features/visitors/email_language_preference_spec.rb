@@ -27,7 +27,7 @@ RSpec.describe 'visitor signs up with email language preference' do
     end
   end
 
-  it 'sends emails in the selected language', allowed_extra_analytics: [:*] do
+  it 'sends emails in the selected language' do
     email = 'test@example.com'
 
     visit sign_up_email_path
