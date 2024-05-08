@@ -195,6 +195,7 @@ RSpec.configure do |c|
   c.after(:all) do |ex|
     groups.group_by(&:first).each do |group, pairs|
       allowed_extra_analytics = group.metadata[:allowed_extra_analytics]
+      next if allowed_extra_analytics.blank?
       all_checked_extra_analytics = pairs.map(&:last).flatten.uniq.compact
       if allowed_extra_analytics.include?(:*)
         expect(all_checked_extra_analytics).not_to(
