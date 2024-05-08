@@ -30,11 +30,11 @@ account_reset.recovery_options.use_same_device: Otherwise, try using the same de
 account_reset.request.are_you_sure: Are you sure you don’t have access to any of your authentication methods?
 account_reset.request.delete_account: Delete your account
 account_reset.request.delete_account_info:
-- Deleting your existing account and creating a new one will allow you to use the same email address and set up new authentication methods. However, deleting will remove any agency applications you have linked to your account and you will need to restore each connection.
-- If you continue, you will first receive an email confirmation. As a security measure, you will receive another email with the link to continue deleting your account %{interval} after the initial confirmation email arrives.
+  - Deleting your existing account and creating a new one will allow you to use the same email address and set up new authentication methods. However, deleting will remove any agency applications you have linked to your account and you will need to restore each connection.
+  - If you continue, you will first receive an email confirmation. As a security measure, you will receive another email with the link to continue deleting your account %{interval} after the initial confirmation email arrives.
 account_reset.request.info:
-- If you can’t access your account using the authentication methods you set up previously, deleting your account and creating a new one is the only option.
-- We can’t undo an account delete, so please verify if you have another authentication method you can use instead.
+  - If you can’t access your account using the authentication methods you set up previously, deleting your account and creating a new one is the only option.
+  - We can’t undo an account delete, so please verify if you have another authentication method you can use instead.
 account_reset.request.no_cancel: Cancel
 account_reset.request.title: Account deletion and reset
 account_reset.request.yes_continue: Yes, continue deletion
@@ -408,30 +408,30 @@ countries.za: South Africa
 countries.zm: Zambia
 countries.zw: Zimbabwe
 date.day_names:
-- null
-- Monday
-- Tuesday
-- Wednesday
-- Thursday
-- Friday
-- Saturday
-- Sunday
+  - null
+  - Monday
+  - Tuesday
+  - Wednesday
+  - Thursday
+  - Friday
+  - Saturday
+  - Sunday
 date.formats.long: '%B %-d, %Y'
 date.formats.short: '%A, %B %-d'
 date.month_names:
-- null
-- January
-- February
-- March
-- April
-- May
-- June
-- July
-- August
-- September
-- October
-- November
-- December
+  - null
+  - January
+  - February
+  - March
+  - April
+  - May
+  - June
+  - July
+  - August
+  - September
+  - October
+  - November
+  - December
 date.range: '%{from} to %{to}'
 datetime.dotiw.last_word_connector: ' and '
 datetime.dotiw.minutes.one: 1 minute
@@ -959,17 +959,17 @@ idv.cancel.actions.keep_going: No, keep going
 idv.cancel.actions.start_over: Start over
 idv.cancel.description.account_page: account page
 idv.cancel.description.exit.with_sp_html:
-- If you exit %{app_name} and return to %{sp_name}, you will not have verified your identity.
-- You will still have a %{app_name} account. You can manage or delete your account on your %{account_page_link_html}.
+  - If you exit %{app_name} and return to %{sp_name}, you will not have verified your identity.
+  - You will still have a %{app_name} account. You can manage or delete your account on your %{account_page_link_html}.
 idv.cancel.description.exit.without_sp:
-- If you exit identity verification and go to your account page, you will not have verified your identity.
-- You will still have a %{app_name} account. You can manage or delete your account on your %{account_page_text}.
+  - If you exit identity verification and go to your account page, you will not have verified your identity.
+  - You will still have a %{app_name} account. You can manage or delete your account on your %{account_page_text}.
 idv.cancel.description.gpo.continue: Continue to start over and verify your identity from the beginning.
 idv.cancel.description.gpo.start_over: 'If you clear your information and start over:'
 idv.cancel.description.gpo.start_over_new_address: To mail your letter to another address, you’ll need to start over and verify your identity with the new address.
 idv.cancel.description.gpo.warnings:
-- The verification code in your letter will no longer work
-- You will start over verifying your identity from the beginning
+  - The verification code in your letter will no longer work
+  - You will start over verifying your identity from the beginning
 idv.cancel.description.hybrid: If you cancel now, you will be prompted to switch back to your computer to continue verifying your identity.
 idv.cancel.description.start_over: If you start over, you will restart this process from the beginning.
 idv.cancel.headings.confirmation.hybrid: You have canceled uploading photos of your ID on this phone
@@ -1036,8 +1036,8 @@ idv.forgot_password.modal_header: Are you sure you can’t remember your passwor
 idv.forgot_password.reset_password: Reset password
 idv.forgot_password.try_again: Try again
 idv.forgot_password.warnings:
-- If you forgot your password, you’ll need to reset it and fill out the form again.
-- You’ll have to re-enter your personal information, like your name, state‑issued ID, etc.
+  - If you forgot your password, you’ll need to reset it and fill out the form again.
+  - You’ll have to re-enter your personal information, like your name, state‑issued ID, etc.
 idv.form.address1: Address line 1
 idv.form.address2: Address line 2
 idv.form.city: City
@@ -1098,8 +1098,8 @@ idv.messages.phone.failed_number.gpo_alert_html: Try <strong>another</strong> nu
 idv.messages.phone.failed_number.gpo_verify_link: verify by mail
 idv.messages.phone.failed_number.try_again_html: Try <strong>another</strong> number.
 idv.messages.phone.rules:
-- Based in the United States (including U.S. territories)
-- Your primary number (the one you use the most often)
+  - Based in the United States (including U.S. territories)
+  - Your primary number (the one you use the most often)
 idv.messages.return_to_profile: '‹ Return to your %{app_name} profile'
 idv.messages.sessions.enter_password_message: When you re-enter your password, %{app_name} will protect the information you’ve given us, so that only you can access it.
 idv.messages.sessions.no_pii: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
@@ -1138,8 +1138,8 @@ idv.warning.state_id.explanation: |
   with IDs from your state and are currently unable to verify your information.
 idv.warning.state_id.heading: We are working to resolve an error
 idv.warning.state_id.next_steps.items_html:
-- Try again now <strong>or</strong>
-- Exit %{app_name} and try again later
+  - Try again now <strong>or</strong>
+  - Exit %{app_name} and try again later
 idv.warning.state_id.next_steps.preamble: 'You can:'
 idv.warning.state_id.try_again_button: Try again
 idv.welcome.no_js_header: You must enable JavaScript to verify your identity.
@@ -1209,8 +1209,8 @@ in_person_proofing.body.prepare.verify_step_enter_pii: Enter your name, date of 
 in_person_proofing.body.prepare.verify_step_post_office: Find a participating Post Office near you.
 in_person_proofing.body.state_id.alert_message: 'Your state‑issued ID must not be expired. Accepted forms of ID are:'
 in_person_proofing.body.state_id.id_types:
-- State Driver’s License
-- State Non-Driver’s Identification Card
+  - State Driver’s License
+  - State Non-Driver’s Identification Card
 in_person_proofing.body.state_id.info_html: Enter information <strong>exactly as it appears on your state-issued ID.</strong> We will use this information to confirm it matches your ID in person.
 in_person_proofing.body.state_id.learn_more_link: Learn more about accepted forms of ID.
 in_person_proofing.body.state_id.questions: Questions?
@@ -1906,8 +1906,8 @@ vendor_outage.alerts.phone.idv: We cannot verify phones at this time. Please try
 vendor_outage.alerts.pinpoint.idv.header: We are working to resolve an error
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} needs to make sure you are you — not someone pretending to be you.'
 vendor_outage.alerts.pinpoint.idv.options_html:
-- Continue now and verify by mail, which takes <strong>5 to 10 days</strong>.
-- Exit Login.gov and try again later.
+  - Continue now and verify by mail, which takes <strong>5 to 10 days</strong>.
+  - Exit Login.gov and try again later.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'You can:'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Unfortunately, we’re having technical difficulties right now. %{link_html} to learn when the error is resolved.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Get updates on our status page

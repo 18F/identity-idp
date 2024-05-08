@@ -30,11 +30,11 @@ account_reset.recovery_options.use_same_device: Sinon, essayez d’utiliser le m
 account_reset.request.are_you_sure: Êtes-vous sûr de n’avoir accès à aucune de vos méthodes d’authentification ?
 account_reset.request.delete_account: Supprimer votre compte
 account_reset.request.delete_account_info:
-- Supprimer votre compte existant et en créer un nouveau vous permet d’utiliser la même adresse e-mail et de définir de nouvelles options de sécurité. cependant, la suppression supprimera toutes les applications d’agence que vous avez liées à votre compte et vous devrez restaurer chaque connexion.
-- Si vous continuez, vous recevra d’abord un email de confirmation. Par mesure de sécurité, vous devrez recevoir un autre e-mail avec le lien pour continuer la suppression de votre compte %{interval} après l’email de confirmation initial arrive.
+  - Supprimer votre compte existant et en créer un nouveau vous permet d’utiliser la même adresse e-mail et de définir de nouvelles options de sécurité. cependant, la suppression supprimera toutes les applications d’agence que vous avez liées à votre compte et vous devrez restaurer chaque connexion.
+  - Si vous continuez, vous recevra d’abord un email de confirmation. Par mesure de sécurité, vous devrez recevoir un autre e-mail avec le lien pour continuer la suppression de votre compte %{interval} après l’email de confirmation initial arrive.
 account_reset.request.info:
-- Si vous ne pouvez pas accéder à votre compte via les options de sécurité que vous avez définies auparavant, la suppression de votre compte et la création d’un nouveau compte est la seule option.
-- Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît assurez-vous que vous n’avez pas une autre option de sécurité que vous pouvez utiliser à la place.
+  - Si vous ne pouvez pas accéder à votre compte via les options de sécurité que vous avez définies auparavant, la suppression de votre compte et la création d’un nouveau compte est la seule option.
+  - Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît assurez-vous que vous n’avez pas une autre option de sécurité que vous pouvez utiliser à la place.
 account_reset.request.no_cancel: Annuler
 account_reset.request.title: Suppression et réinitialisation de compte
 account_reset.request.yes_continue: Oui, continuer la suppression
@@ -408,30 +408,30 @@ countries.za: Afrique du Sud
 countries.zm: Zambie
 countries.zw: Zimbabwe
 date.day_names:
-- null
-- lundi
-- mardi
-- mercredi
-- jeudi
-- vendredi
-- samedi
-- dimanche
+  - null
+  - lundi
+  - mardi
+  - mercredi
+  - jeudi
+  - vendredi
+  - samedi
+  - dimanche
 date.formats.long: '%-d %B %Y'
 date.formats.short: '%A, %-d %B'
 date.month_names:
-- null
-- janvier
-- février
-- mars
-- avril
-- mai
-- juin
-- juillet
-- août
-- septembre
-- octobre
-- novembre
-- décembre
+  - null
+  - janvier
+  - février
+  - mars
+  - avril
+  - mai
+  - juin
+  - juillet
+  - août
+  - septembre
+  - octobre
+  - novembre
+  - décembre
 date.range: du %{from} au %{to}
 datetime.dotiw.last_word_connector: ' et '
 datetime.dotiw.minutes.one: 1 minute
@@ -959,17 +959,17 @@ idv.cancel.actions.keep_going: Non, continuer
 idv.cancel.actions.start_over: Recommencer
 idv.cancel.description.account_page: la page de votre compte
 idv.cancel.description.exit.with_sp_html:
-- Si vous quittez %{app_name} maintenant pour retourner sur %{sp_name}, vous n’aurez pas vérifié votre identité.
-- Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou supprimer votre compte sur %{account_page_link_html}.
+  - Si vous quittez %{app_name} maintenant pour retourner sur %{sp_name}, vous n’aurez pas vérifié votre identité.
+  - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou supprimer votre compte sur %{account_page_link_html}.
 idv.cancel.description.exit.without_sp:
-- Si vous quittez la vérification d’identité et accédez à la page de votre compte, vous n’aurez pas vérifié votre identité.
-- Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou supprimer votre compte sur %{account_page_text}.
+  - Si vous quittez la vérification d’identité et accédez à la page de votre compte, vous n’aurez pas vérifié votre identité.
+  - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou supprimer votre compte sur %{account_page_text}.
 idv.cancel.description.gpo.continue: Continuez pour recommencer et confirmer votre identité depuis le début.
 idv.cancel.description.gpo.start_over: 'Si vous effacez vos informations et recommencez :'
 idv.cancel.description.gpo.start_over_new_address: Pour envoyer votre lettre à une autre adresse, vous devrez recommencer et confirmer votre identité à la nouvelle adresse.
 idv.cancel.description.gpo.warnings:
-- Le code de vérification dans votre lettre ne fonctionnera plus
-- Vous recommencerez la vérification de votre identité depuis le début
+  - Le code de vérification dans votre lettre ne fonctionnera plus
+  - Vous recommencerez la vérification de votre identité depuis le début
 idv.cancel.description.hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre ordinateur pour continuer à confirmer votre identité.
 idv.cancel.description.start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
 idv.cancel.headings.confirmation.hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce téléphone
@@ -1036,8 +1036,8 @@ idv.forgot_password.modal_header: Êtes-vous sûr de ne pas pouvoir vous souveni
 idv.forgot_password.reset_password: Réinitialiser le mot de passe
 idv.forgot_password.try_again: Réessayer
 idv.forgot_password.warnings:
-- Si vous avez oublié votre mot de passe, vous devrez le réinitialiser et remplir à nouveau le formulaire.
-- Vous devrez ressaisir vos informations personnelles, comme votre nom, pièce d’identité officielle, etc.
+  - Si vous avez oublié votre mot de passe, vous devrez le réinitialiser et remplir à nouveau le formulaire.
+  - Vous devrez ressaisir vos informations personnelles, comme votre nom, pièce d’identité officielle, etc.
 idv.form.address1: Adresse ligne 1
 idv.form.address2: Adresse ligne 2
 idv.form.city: Ville
@@ -1098,8 +1098,8 @@ idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</stron
 idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
 idv.messages.phone.failed_number.try_again_html: Essayez un <strong>autre</strong> numéro.
 idv.messages.phone.rules:
-- Basé aux Etats-Unis (y compris les territoires américains)
-- Votre numéro principal (celui que vous utilisez le plus souvent)
+  - Basé aux Etats-Unis (y compris les territoires américains)
+  - Votre numéro principal (celui que vous utilisez le plus souvent)
 idv.messages.return_to_profile: '‹ Revenir à votre profil %{app_name}'
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
 idv.messages.sessions.no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à des fins de démonstration uniquement) - SITE DE TEST
@@ -1139,8 +1139,8 @@ idv.warning.state_id.explanation:
   '
 idv.warning.state_id.heading: Nous travaillons à la résolution d’une erreur
 idv.warning.state_id.next_steps.items_html:
-- Réessayer maintenant <strong>ou</strong>
-- Quitter %{app_name} et réessayer plus tard
+  - Réessayer maintenant <strong>ou</strong>
+  - Quitter %{app_name} et réessayer plus tard
 idv.warning.state_id.next_steps.preamble: 'Vous pouvez :'
 idv.warning.state_id.try_again_button: Réessayer
 idv.welcome.no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
@@ -1210,8 +1210,8 @@ in_person_proofing.body.prepare.verify_step_enter_pii: Saisissez votre nom, votr
 in_person_proofing.body.prepare.verify_step_post_office: Trouver un bureau de poste participant près de chez vous.
 in_person_proofing.body.state_id.alert_message: 'Votre pièce d’identité délivrée par un État ne doit pas être périmée. Les pièces d’identité acceptées sont les suivantes :'
 in_person_proofing.body.state_id.id_types:
-- Permis de conduire national
-- Carte d’identité nationale de non-conducteur
+  - Permis de conduire national
+  - Carte d’identité nationale de non-conducteur
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
 in_person_proofing.body.state_id.learn_more_link: En savoir plus sur les pièces d’identité acceptées.
 in_person_proofing.body.state_id.questions: Des questions ?
@@ -1907,8 +1907,8 @@ vendor_outage.alerts.phone.idv: Nous ne sommes pas actuellement en mesure de vé
 vendor_outage.alerts.pinpoint.idv.header: Nous travaillons à la résolution d’une erreur
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.'
 vendor_outage.alerts.pinpoint.idv.options_html:
-- Continuer maintenant et effectuer la vérification par courrier, qui nécessite <strong>5 à 10 jours</strong>.
-- Quitter Login.gov.
+  - Continuer maintenant et effectuer la vérification par courrier, qui nécessite <strong>5 à 10 jours</strong>.
+  - Quitter Login.gov.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'Vous pouvez :'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Malheureusement, nous rencontrons actuellement des difficultés techniques. %{link_html} pour savoir quand l’erreur est résolue.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
