@@ -32,27 +32,30 @@ RSpec.shared_examples 'signing in from service provider' do |sp|
   end
 
   it 'logs expected analytics events' do
-    user = create(:user, :fully_registered)
-    analytics = FakeAnalytics.new(user:)
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+    freeze_time do
+      user = create(:user, :fully_registered)
+      analytics = FakeAnalytics.new(user:)
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
 
-    visit_idp_from_sp_with_ial1(sp)
-    fill_in_credentials_and_submit(user.email, user.password)
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-    click_submit_default if current_path == complete_saml_path
-    click_agree_and_continue
-    click_submit_default if current_path == complete_saml_path
+      visit_idp_from_sp_with_ial1(sp)
+      travel_to Time.zone.now + 15.seconds
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_submit_default if current_path == complete_saml_path
+      click_agree_and_continue
+      click_submit_default if current_path == complete_saml_path
 
-    expect(analytics).to have_logged_event(
-      'SP redirect initiated',
-      ial: 1,
-      sign_in_duration_seconds: 1,
-      billed_ial: 1,
-      sign_in_flow: 'sign_in',
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      vtr: nil,
-    )
+      expect(analytics).to have_logged_event(
+        'SP redirect initiated',
+        ial: 1,
+        sign_in_duration_seconds: 15,
+        billed_ial: 1,
+        sign_in_flow: 'sign_in',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        vtr: nil,
+      )
+    end
   end
 end
 
