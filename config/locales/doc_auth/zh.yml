@@ -149,7 +149,7 @@ zh:
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
-      how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份
+      how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
       how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
       hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
       hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can
