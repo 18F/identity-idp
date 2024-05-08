@@ -183,7 +183,6 @@ module Features
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         session['warden.user.user.session'] = {}.with_indifferent_access
-        session[:sign_in_page_visited_at] = (Time.zone.now - 2.minutes).to_s
         if auth_method
           session['warden.user.user.session']['auth_events'] = [{ auth_method:, at: Time.zone.now }]
         end
