@@ -473,14 +473,14 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   it 'logs expected analytics events for end-to-end sign-up' do
-    analytics = FakeAnalytics.new
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
-
-    visit_idp_from_sp_with_ial1(:oidc)
-    register_user
-    click_agree_and_continue
-
     freeze_time do
+      analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+
+      visit_idp_from_sp_with_ial1(:oidc)
+      register_user
+      click_agree_and_continue
+
       expect(analytics).to have_logged_event(
         'SP redirect initiated',
         ial: 1,
