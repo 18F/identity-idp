@@ -83,6 +83,12 @@ search:
 
 ## Do not consider these keys missing:
 ignore_missing:
+  - 'datetime.dotiw.days'
+  - 'datetime.dotiw.hours'
+  - 'datetime.dotiw.less_than_x'
+  - 'datetime.dotiw.months'
+  - 'datetime.dotiw.weeks'
+  - 'datetime.dotiw.years'
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
@@ -102,6 +108,17 @@ ignore_unused:
   - 'time.*'
   - 'datetime.dotiw.words_connector'
   - 'datetime.dotiw.last_word_connector'
+  - 'datetime.dotiw.days.one'
+  - 'datetime.dotiw.days.other'
+  - 'datetime.dotiw.hours.one'
+  - 'datetime.dotiw.hours.other'
+  - 'datetime.dotiw.less_than_x'
+  - 'datetime.dotiw.months.one'
+  - 'datetime.dotiw.months.other'
+  - 'datetime.dotiw.weeks.one'
+  - 'datetime.dotiw.weeks.other'
+  - 'datetime.dotiw.years.one'
+  - 'datetime.dotiw.years.other'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:

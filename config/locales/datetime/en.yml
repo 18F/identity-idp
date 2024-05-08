@@ -11,3 +11,19 @@ en:
         other: '%{count} seconds'
       two_words_connector: ' and '
       words_connector: ', '
+      hours:
+        one: 1 hour
+        other: "%{count} hours"
+      days:
+        one: 1 day
+        other: "%{count} days"
+      weeks:
+        one: 1 week
+        other: "%{count} weeks"
+      months:
+        one: 1 month
+        other: "%{count} months"
+      years:
+        one: 1 year
+        other: "%{count} years"
+      less_than_x: "less than %{distance}"
