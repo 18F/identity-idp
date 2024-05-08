@@ -79,7 +79,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
             .then(YAML.parse)
             .catch(() => {}),
         ),
-      ).then((keys) => /** @type {Record<string, string>} */ Object.assign({}, ...keys));
+      ).then((fileDatas) => /** @type {Record<string, string>} */ Object.assign({}, ...fileDatas));
     }
 
     return this.localeData[locale];
