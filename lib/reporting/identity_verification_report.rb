@@ -85,6 +85,7 @@ module Reporting
       )
     end
 
+    # rubocop:disable Layout/LineLength
     def as_csv
       csv = []
 
@@ -95,9 +96,9 @@ module Reporting
       csv << []
       csv << ['Metric', '# of Users']
       csv << []
-      csv << ['Started IdV Verification', idv_started]
-      csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted]
-      csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted]
+      csv << ['IDV started', idv_started]
+      csv << ['Welcome Submitted', idv_doc_auth_welcome_submitted]
+      csv << ['Image Submitted', idv_doc_auth_image_vendor_submitted]
       csv << []
       csv << ['Workflow completed', idv_final_resolution]
       csv << ['Workflow completed - Verified', idv_final_resolution_verified]
@@ -106,12 +107,17 @@ module Reporting
       csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
       csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
       csv << []
-      csv << ['Successfully verified', successfully_verified_users]
-      csv << ['Successfully verified - Inline', idv_final_resolution_verified]
-      csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
-      csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
-      csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
+      csv << ['Successfully Verified', successfully_verified_users]
+      csv << ['Successfully Verified - With phone number', idv_final_resolution_verified]
+      csv << ['Successfully Verified - With mailed code', gpo_verification_submitted]
+      csv << ['Successfully Verified - In Person', usps_enrollment_status_updated]
+      csv << ['Successfully Verified - Passed fraud review', fraud_review_passed]
+      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', blanket_proofing_rates]
+      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', intent_proofing_rates]
+      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', actual_proofing_rates]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', industry_proofing_rates]
     end
+    # rubocop:enable Layout/LineLength
 
     def to_csv
       CSV.generate do |csv|
@@ -134,6 +140,22 @@ module Reporting
           old_user_ids + new_user_ids
         end,
       )
+    end
+
+    def blanket_proofing_rates
+      successfully_verified_users.to_f / idv_started
+    end
+
+    def intent_proofing_rates
+      successfully_verified_users.to_f / idv_doc_auth_welcome_submitted
+    end
+
+    def actual_proofing_rates
+      successfully_verified_users.to_f / idv_doc_auth_image_vendor_submitted
+    end
+
+    def industry_proofing_rates
+      successfully_verified_users.to_f / (successfully_verified_users + idv_doc_auth_rejected)
     end
 
     def idv_final_resolution

@@ -18,7 +18,8 @@ fr:
     add_info:
       phone: Ajouter un numéro de téléphone
     cancellations:
-      prompt: Êtes-vous sûr de vouloir annuler ?
+      login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
+      prompt: Es-tu sûre de vouloir annuler?
     create_account_new_users: Créer un compte pour les nouveaux utilisateurs
     create_account_with_sp:
       sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre

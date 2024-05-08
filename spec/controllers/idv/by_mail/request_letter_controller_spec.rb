@@ -256,7 +256,7 @@ RSpec.describe Idv::ByMail::RequestLetterController,
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 
     service_provider = create(:service_provider, issuer: '123abc')
-    session[:sp] = { issuer: service_provider.issuer }
+    session[:sp] = { issuer: service_provider.issuer, vtr: ['C1'] }
 
     gpo_confirmation_maker = instance_double(GpoConfirmationMaker)
     allow(GpoConfirmationMaker).to receive(:new).

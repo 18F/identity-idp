@@ -126,8 +126,6 @@ module I18n
         { key: 'mfa.recommendation', locales: %i[zh] },
         { key: 'notices.signed_up_but_unconfirmed.resend_confirmation_email', locales: %i[zh] },
         { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] },
-        { key: 'step_indicator.flows.idv.re_enter_password', locales: %i[zh] },
-        { key: 'step_indicator.flows.idv.verify_address', locales: %i[zh] },
         { key: 'telephony.account_deleted_notice', locales: %i[zh] },
         { key: 'telephony.format_length.six', locales: %i[zh] },
         { key: 'telephony.format_length.ten', locales: %i[zh] },
@@ -294,7 +292,11 @@ RSpec.describe 'I18n' do
       I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.reject { |key| key[:used] }
     expect(unused_allowed_untranslated_keys).to(
       be_empty,
-      "unused allowed untranslated i18n keys: #{unused_allowed_untranslated_keys}",
+      <<~EOS,
+        ALLOWED_UNTRANSLATED_KEYS contains unused allowed untranslated i18n keys.
+        The following keys can be removed from ALLOWED_UNTRANSLATED_KEYS:
+        #{unused_allowed_untranslated_keys.pretty_inspect}
+      EOS
     )
   end
 

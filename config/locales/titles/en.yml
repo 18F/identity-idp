@@ -6,6 +6,7 @@ en:
     add_info:
       phone: Add a phone number
     backup_codes: Don’t lose your backup codes
+    cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
     confirmations:
       delete: Please confirm
       show: Choose a password

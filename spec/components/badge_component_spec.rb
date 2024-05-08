@@ -26,12 +26,12 @@ RSpec.describe BadgeComponent, type: :component do
   end
 
   context 'with valid icon' do
-    let(:icon) { :success }
+    let(:icon) { :check_circle }
 
     it 'renders badge with icon and content' do
-      expect(rendered).to have_css('.lg-verification-badge')
-      expect(rendered).to have_css('img[src^="/assets/alerts/success-"]')
-      expect(rendered).to have_content(content)
+      expect(rendered).to have_css('.lg-verification-badge .usa-icon.text-success')
+      inline_icon_style = rendered.at_css('.usa-icon style').text.strip
+      expect(inline_icon_style).to match(%r{url\([^)]+?/check_circle-\w+\.svg\)})
     end
 
     context 'with extra tag options' do
