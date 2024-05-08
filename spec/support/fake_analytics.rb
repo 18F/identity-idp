@@ -184,7 +184,7 @@ RSpec.configure do |c|
 
     if keys.present?
       group = ex.example_group
-      group = group.superclass while group.superclass != RSpec::Core::ExampleGroup
+      group = group.superclass until [nil, RSpec::Core::ExampleGroup].include?(group.superclass)
       groups << [group, FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics.to_a]
     end
   ensure
