@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneErrorsController,
-               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+RSpec.describe Idv::PhoneErrorsController, allowed_extra_analytics: [:idv_phone_error_visited] do
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
