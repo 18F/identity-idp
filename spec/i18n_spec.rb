@@ -295,7 +295,7 @@ RSpec.describe 'I18n' do
       <<~EOS,
         ALLOWED_UNTRANSLATED_KEYS contains unused allowed untranslated i18n keys.
         The following keys can be removed from ALLOWED_UNTRANSLATED_KEYS:
-        #{unused_allowed_untranslated_keys}
+        #{unused_allowed_untranslated_keys.pretty_inspect}
       EOS
     )
   end
