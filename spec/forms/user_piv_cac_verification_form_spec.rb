@@ -19,6 +19,7 @@ RSpec.describe UserPivCacVerificationForm do
           'uuid' => x509_dn_uuid,
           'subject' => 'x509-subject',
           'nonce' => nonce,
+          'key_id' => 'foo',
         }
       end
 
@@ -33,6 +34,7 @@ RSpec.describe UserPivCacVerificationForm do
             multi_factor_auth_method: 'piv_cac',
             piv_cac_configuration_id: nil,
             multi_factor_auth_method_created_at: nil,
+            piv_cac_configuration_dn_uuid: nil,
             key_id: nil,
           )
 
@@ -52,7 +54,8 @@ RSpec.describe UserPivCacVerificationForm do
             multi_factor_auth_method: 'piv_cac',
             multi_factor_auth_method_created_at: nil,
             piv_cac_configuration_id: nil,
-            key_id: nil,
+            piv_cac_configuration_dn_uuid: 'some-random-uuid',
+            key_id: 'foo',
           )
           expect(form.error_type).to eq 'user.piv_cac_mismatch'
         end
@@ -72,6 +75,8 @@ RSpec.describe UserPivCacVerificationForm do
             multi_factor_auth_method: 'piv_cac',
             piv_cac_configuration_id: piv_cac_configuration.id,
             multi_factor_auth_method_created_at: piv_cac_configuration.created_at.strftime('%s%L'),
+            key_id: 'foo',
+            piv_cac_configuration_dn_uuid: x509_dn_uuid,
           )
         end
 
@@ -88,7 +93,8 @@ RSpec.describe UserPivCacVerificationForm do
               multi_factor_auth_method: 'piv_cac',
               piv_cac_configuration_id: nil,
               multi_factor_auth_method_created_at: nil,
-              key_id: nil,
+              piv_cac_configuration_dn_uuid: nil,
+              key_id: 'foo',
             )
 
             expect(Event).to_not receive(:create)
@@ -101,7 +107,7 @@ RSpec.describe UserPivCacVerificationForm do
     context 'when token is invalid' do
       let(:token) { 'bad-token' }
       let(:token_response) do
-        { 'error' => 'token.bad', 'nonce' => nonce }
+        { 'error' => 'token.bad', 'nonce' => nonce, key_id: 'foo' }
       end
 
       it 'returns FormResponse with success: false' do
@@ -113,6 +119,7 @@ RSpec.describe UserPivCacVerificationForm do
           errors: { type: 'token.bad' },
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
+          piv_cac_configuration_dn_uuid: nil,
           piv_cac_configuration_id: nil,
           key_id: nil,
         )
@@ -132,6 +139,8 @@ RSpec.describe UserPivCacVerificationForm do
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
           piv_cac_configuration_id: nil,
+          piv_cac_configuration_dn_uuid: nil,
+          key_id: nil,
         )
       end
     end

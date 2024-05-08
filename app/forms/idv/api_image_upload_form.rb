@@ -16,14 +16,13 @@ module Idv
 
     def initialize(params, service_provider:, analytics: nil,
                    uuid_prefix: nil, irs_attempts_api_tracker: nil,
-                   store_encrypted_images: false, liveness_checking_required: false)
+                   liveness_checking_required: false)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
-      @store_encrypted_images = store_encrypted_images
       @liveness_checking_required = liveness_checking_required
     end
 
@@ -342,8 +341,10 @@ module Idv
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
+      birth_year = client_response.pii_from_doc&.dob&.to_date&.year
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
+          birth_year: birth_year,
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
@@ -351,25 +352,6 @@ module Idv
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )
-    end
-
-    def store_encrypted_images_if_required
-      return unless store_encrypted_images?
-
-      encrypted_document_storage_writer.encrypt_and_write_document(
-        front_image: front_image_bytes,
-        front_image_content_type: front.content_type,
-        back_image: back_image_bytes,
-        back_image_content_type: back.content_type,
-      )
-    end
-
-    def store_encrypted_images?
-      @store_encrypted_images
-    end
-
-    def encrypted_document_storage_writer
-      @encrypted_document_storage_writer ||= EncryptedDocumentStorage::DocumentWriter.new
     end
 
     def acuant_sdk_upgrade_ab_test_data
@@ -453,7 +435,6 @@ module Idv
 
     def track_event(response)
       pii_from_doc = response.pii_from_doc.to_h || {}
-      stored_image_result = store_encrypted_images_if_required
 
       irs_attempts_api_tracker.idv_document_upload_submitted(
         success: response.success?,
@@ -461,9 +442,9 @@ module Idv
         document_number: pii_from_doc[:state_id_number],
         document_issued: pii_from_doc[:state_id_issued],
         document_expiration: pii_from_doc[:state_id_expiration],
-        document_front_image_filename: stored_image_result&.front_filename,
-        document_back_image_filename: stored_image_result&.back_filename,
-        document_image_encryption_key: stored_image_result&.encryption_key,
+        document_front_image_filename: nil,
+        document_back_image_filename: nil,
+        document_image_encryption_key: nil,
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],

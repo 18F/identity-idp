@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RecaptchaEnterpriseValidator < RecaptchaValidator
+class RecaptchaEnterpriseForm < RecaptchaForm
   BASE_VERIFICATION_ENDPOINT = 'https://recaptchaenterprise.googleapis.com/v1/projects'
 
   private
@@ -16,7 +16,7 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
     )
   end
 
-  def recaptcha_result(recaptcha_token)
+  def recaptcha_result
     response = faraday.post(
       assessment_url,
       {
@@ -36,6 +36,7 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
       RecaptchaResult.new(
         success: response.body.dig('tokenProperties', 'valid') == true &&
           response.body.dig('tokenProperties', 'action') == recaptcha_action,
+        assessment_id: response.body.dig('name'),
         score: response.body.dig('riskAnalysis', 'score'),
         reasons: [
           *response.body.dig('riskAnalysis', 'reasons').to_a,

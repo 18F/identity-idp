@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_16_165602) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_02_192930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -572,6 +572,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_16_165602) do
     t.integer "user_id"
     t.datetime "returned_at", precision: nil
     t.boolean "billable"
+    t.bigint "profile_id"
+    t.datetime "profile_verified_at"
+    t.string "profile_requested_issuer"
     t.index "((returned_at)::date), issuer", name: "index_sp_return_logs_on_returned_at_date_issuer", where: "((billable = true) AND (returned_at IS NOT NULL))"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
   end
@@ -624,7 +627,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_16_165602) do
     t.datetime "code_sent_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "bounced_at", precision: nil
     t.datetime "reminder_sent_at", precision: nil
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"

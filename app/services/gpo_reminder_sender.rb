@@ -15,7 +15,7 @@ class GpoReminderSender
         # Only email the user if we have an eligible code.
         # Unlikely to have multiple codes since we only allow one letter/day
         # due to config setting: minimum_wait_before_another_usps_letter_in_hours
-        profile.user.send_email_to_all_addresses(:gpo_reminder)
+        profile.user.send_email_to_all_addresses(:verify_by_mail_reminder)
         analytics.idv_gpo_reminder_email_sent(user_id: profile.user.uuid)
         gpo_code.update(reminder_sent_at: Time.zone.now)
       end

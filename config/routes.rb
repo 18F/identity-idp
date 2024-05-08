@@ -286,7 +286,6 @@ Rails.application.routes.draw do
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
     get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
-    patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
@@ -318,6 +317,7 @@ Rails.application.routes.draw do
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
     get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
+    get '/sign_up/completed/cancel/' => 'completions_cancellation#show'
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
@@ -397,7 +397,9 @@ Rails.application.routes.draw do
       # during the deprecation process.
       get '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
       put '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
+
       get '/in_person_proofing/state_id' => 'in_person/state_id#show'
+      put '/in_person_proofing/state_id' => 'in_person/state_id#update'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',

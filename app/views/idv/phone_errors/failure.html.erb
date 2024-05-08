@@ -2,7 +2,7 @@
       'idv/shared/error',
       title: t('titles.failure.phone_verification'),
       heading: t('idv.failure.phone.rate_limited.heading'),
-      current_step: :verify_phone_or_address,
+      current_step: :verify_phone,
       options: [
         {
           url: MarketingSite.contact_url,
@@ -44,4 +44,3 @@
     <%= render PageFooterComponent.new do %>
       <%= link_to(t('links.cancel'), idv_cancel_path(step: :phone_error)) %>
     <% end %>
-

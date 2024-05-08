@@ -63,8 +63,7 @@ module OpenidConnect
     end
 
     def biometric_comparison_requested?
-      @authorize_form.parsed_vector_of_trust&.biometric_comparison? ||
-        params['biometric_comparison_required'] == 'true'
+      @authorize_form.parsed_vector_of_trust&.biometric_comparison?
     end
 
     def check_sp_active
@@ -128,7 +127,8 @@ module OpenidConnect
     end
 
     def biometric_comparison_needed?
-      decorated_sp_session.biometric_comparison_required? &&
+      FeatureManagement.idv_allow_selfie_check? &&
+        resolved_authn_context_result.biometric_comparison? &&
         !current_user.identity_verified_with_biometric_comparison?
     end
 

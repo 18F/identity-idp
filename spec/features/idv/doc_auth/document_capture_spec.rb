@@ -211,7 +211,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     before do
       expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
         and_return(selfie_check_enabled)
-      complete_doc_auth_steps_before_document_capture_step
+      allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     end
 
     context 'when a selfie is not requested by SP' do
@@ -243,12 +243,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
 
     context 'when a selfie is required by the SP' do
-      before do
-        allow_any_instance_of(FederatedProtocols::Oidc).
-          to receive(:biometric_comparison_required?).
-          and_return(true)
-      end
-
       context 'on mobile platform', allow_browser_log: true do
         before do
           # mock mobile device as cameraCapable, this allows us to process
@@ -293,10 +287,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         context 'selfie with error is uploaded' do
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
-
-            allow_any_instance_of(FederatedProtocols::Oidc).
-              to receive(:biometric_comparison_required?).
-              and_return(true)
             perform_in_browser(:mobile) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
               sign_in_and_2fa_user(@user)
@@ -359,10 +349,16 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               )
               expect(page).to have_content(h1_error_message)
 
-              body_error_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+              body_error_message = strip_tags(
+                t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
+              )
               expect(page).to have_content(body_error_message)
 
               click_try_again
+
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).to have_content(selfie_inline_error_message)
+
               expect(page).to have_current_path(idv_document_capture_path)
 
               # inline error to be fixed in lg-12999
@@ -395,6 +391,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
               inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).not_to have_content(selfie_inline_error_message)
 
               # when there are both doc auth errors and face match errors
 
@@ -424,6 +422,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
               inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).not_to have_content(selfie_inline_error_message)
 
               # when doc auth result and liveness pass but face match fails
 
@@ -455,6 +455,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 t('doc_auth.errors.general.multiple_front_id_failures'),
               )
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).to have_content(selfie_inline_error_message)
 
               # when there is a doc auth error on one side of the ID and face match errors
 
@@ -484,6 +486,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
               inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).not_to have_content(selfie_inline_error_message)
 
               # when there is a doc auth error on one side of the ID and a liveness error
 
@@ -513,6 +517,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
               inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).not_to have_content(selfie_inline_error_message)
 
               # when doc auth result is "attention" and face match errors
 
@@ -542,6 +548,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
               inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).not_to have_content(selfie_inline_error_message)
 
               # when doc auth passes but there are both liveness errors and face match errors
 
@@ -565,11 +573,16 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               )
               expect(page).to have_content(h1_error_message)
 
-              body_error_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+              body_error_message = strip_tags(
+                t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'),
+              )
               expect(page).to have_content(body_error_message)
 
               click_try_again
               expect(page).to have_current_path(idv_document_capture_path)
+
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).to have_content(selfie_inline_error_message)
 
               # when doc auth, liveness, and face match pass but PII validation fails
 
@@ -601,6 +614,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 t('doc_auth.errors.general.multiple_front_id_failures'),
               )
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).not_to have_content(selfie_inline_error_message)
 
               # when there are both face match errors and pii errors
 
@@ -632,6 +647,8 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 t('doc_auth.errors.general.multiple_front_id_failures'),
               )
               expect(page).to have_content(inline_error_message)
+              selfie_inline_error_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
+              expect(page).to have_content(selfie_inline_error_message)
             end
           end
 
@@ -654,7 +671,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             submit_images
             message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
-            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
               t(
                 'idv.warning.attempts_html',
@@ -692,7 +709,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             submit_images
             message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
-            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_poor_quality'))
+            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
               t(
                 'idv.warning.attempts_html',
@@ -751,7 +768,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
         context 'with Attention with Barcode' do
           it 'try again and page show selfie fail inline error message' do
-            visit_idp_from_oidc_sp_with_ial2
+            visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
             sign_in_and_2fa_user(@user)
             complete_doc_auth_steps_before_document_capture_step
             attach_images(
@@ -769,7 +786,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             submit_images
             message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
-            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+            detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
               t(
                 'idv.warning.attempts_html',

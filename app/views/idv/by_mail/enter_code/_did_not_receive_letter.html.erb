@@ -10,43 +10,49 @@
   <% end %>
 <% end %>
 
-<%= render AlertComponent.new(type: :info, class: 'margin-bottom-4', text_tag: 'div') do %>
-  <p>
-    <%= t('idv.gpo.alert_info') %>
-    <br>
-    <%= render 'shared/address', address: @gpo_verify_form.pii %>
-  </p>
-  <p>
-    <%= t('idv.gpo.wrong_address') %>
-    <%= link_to t('idv.gpo.clear_and_start_over'), idv_confirm_start_over_path %>
-  </p>
-<% end %>
-
 <%= render PageHeadingComponent.new.with_content(t('idv.gpo.did_not_receive_letter.title')) %>
 
-<% if @can_request_another_letter %>
+<p>
   <%= t(
-        'idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html',
-        request_new_letter_link: link_to(
-          t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
-          idv_request_letter_path,
+        'idv.gpo.did_not_receive_letter.intro_html',
+        date_letter_was_sent: I18n.l(
+          @last_date_letter_was_sent,
+          format: :event_date,
         ),
       ) %>
+</p>
+
+<%= render AccordionComponent.new(class: 'margin-bottom-4') do |c| %>
+  <% c.with_header { t('idv.gpo.address_accordion.title') } %>
+  <p><%= t('idv.gpo.address_accordion.body') %></p>
+  <p><%= render 'shared/address', address: @gpo_verify_form.pii %></p>
+  <p>
+    <%= t(
+          'idv.gpo.address_accordion.cta_html',
+          cta_link_html: link_to(
+            t('idv.gpo.address_accordion.cta_link'),
+            idv_confirm_start_over_path,
+          ),
+        ) %>
+  </p>
 <% end %>
-<%= t('idv.gpo.did_not_receive_letter.intro.be_patient_html') %>
+
+<p>
+  <%= t('idv.gpo.did_not_receive_letter.request_a_new_letter_html') %>
+</p>
+
+<% if @can_request_another_letter %>
+  <%= link_to t('idv.messages.gpo.resend'), idv_request_letter_path, class: 'display-block margin-top-4' %>
+<% end %>
 
 <hr class="margin-y-4" />
 
-<h2><%= t('idv.gpo.form.title') %></h2>
+<h2><%= t('idv.gpo.title') %></h2>
 
-<p class="margin-bottom-1">
-  <%= t('idv.gpo.did_not_receive_letter.form.instructions') %>
-</p>
+<p><%= t('idv.gpo.did_not_receive_letter.form.instructions') %></p>
 
 <%= render 'form' %>
 
-<%= link_to t('idv.gpo.return_to_profile'), account_path %>
+<hr class="margin-y-4" />
 
-<div class="margin-top-2 padding-top-2 border-top border-primary-light">
-  <%= link_to t('idv.messages.clear_and_start_over'), idv_confirm_start_over_path %>
-</div>
+<%= link_to t('idv.gpo.return_to_profile'), account_path %>

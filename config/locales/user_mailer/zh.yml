@@ -102,16 +102,6 @@ zh:
         intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
       greeting: 你好，
       subject: 你的身份未能亲身被验证。
-    in_person_outage_notification:
-      body:
-        closing_html: 对于服务的延迟，我们诚恳道歉。如果你 6 月 1 日之前有问题或没有收到结果，请 <a
-          href="%{contact_us_url}">联系 %{app_name} 客户支持</a>。
-        heading: 亲身验证身份的结果从 5 月 20 日延到了 5 月 30 日。
-        instructions: 如果你已尝试过在邮局完成验证身份的过程，现在则没必要再去试。请放心，你的验证结果没有丢失，而是已被安全保存，而且等我们解决技术问题后就会通过电邮发给你。
-        intro_html:
-          我们正在解决导致亲身验证身份结果延迟的一个技术问题。<strong>如果你 5 月 20 日到 29
-          日之间已经尝试过在邮局完成验证身份的过程，结果可能直到 5 月 30 日（礼拜二）才能通过电邮发给你 </strong>。
-      subject: '%{app_name} 亲身验证身份的结果延迟了'
     in_person_please_call:
       body:
         contact_message_html: Call <strong>%{contact_number}</strong> and provide them

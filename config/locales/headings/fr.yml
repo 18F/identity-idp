@@ -3,75 +3,75 @@ fr:
   headings:
     account:
       activity: Activité
-      authentication_apps: Applications d’authentification
+      authentication_apps: Applis d’authentification
       connected_accounts: Vos comptes connectés
-      devices: Dispositifs
+      devices: Appareils
       events: Événements
-      federal_employee_id: Identification des employés fédéraux
+      federal_employee_id: Carte d’employé fédéral
       login_info: Votre compte
-      reactivate: Réactivez votre compte
+      reactivate: Réactiver votre compte
       two_factor: Vos méthodes d’authentification
-      unphishable: Incapable de phishing
+      unphishable: Non hameçonnable
       verified_account: Compte vérifié
       verified_information: Informations vérifiées
     add_email: Ajouter une nouvelle adresse e-mail
     add_info:
       phone: Ajouter un numéro de téléphone
     cancellations:
+      login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
       prompt: Es-tu sûre de vouloir annuler?
     create_account_new_users: Créer un compte pour les nouveaux utilisateurs
     create_account_with_sp:
       sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre
         compte de façon sûre et sécurisée.
     edit_info:
-      password: Changez votre mot de passe
-      phone: Administrer les paramètres de votre téléphone
+      password: Changer votre mot de passe
+      phone: Gérer les paramètres de votre téléphone
     passwords:
-      change: Changez votre mot de passe
-      confirm: Confirmez votre mot de passe actuel pour continuer
-      confirm_for_personal_key: Entrez le mot de passe et obtenez une nouvelle clé personnelle
-      forgot: Vous avez oublié votre mot de passe?
+      change: Changer votre mot de passe
+      confirm: Confirmer votre mot de passe actuel pour continuer
+      confirm_for_personal_key: Saisir le mot de passe et obtenir une nouvelle clé personnelle
+      forgot: Mot de passe oublié ?
     piv_cac:
       certificate:
-        bad: Le certificat PIV/CAC que vous avez sélectionné n’est pas valide.
-        expired: Le certificat PIV/CAC que vous avez sélectionné a expiré.
-        invalid: Le certificat PIV/CAC que vous avez sélectionné n’est pas valide.
-        none: Nous ne pouvons pas détecter un certificat sur votre carte PIV/CAC.
-        not_auth_cert: Veuillez choisir un autre certificat de votre carte PIV/CAC.
-        revoked: Le certificat PIV/CAC que vous avez sélectionné a été retiré de votre
-          carte.
-        unverified: Le certificat PIV/CAC que vous avez sélectionné n’est pas valide.
-      did_not_work: Votre PIV / CAC n’a pas fonctionné
+        bad: Le certificat PIV/CAC sélectionné n’est pas valide.
+        expired: Le certificat PIV/CAC sélectionné a expiré.
+        invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
+        none: Nous ne pouvons pas détecter de certificat sur votre carte PIV/CAC.
+        not_auth_cert: Veuillez choisir un autre certificat pour votre carte PIV/CAC.
+        revoked: Le certificat PIV/CAC sélectionné a été révoqué de votre carte.
+        unverified: Le certificat PIV/CAC sélectionné n’est pas valide.
+      did_not_work: Votre PIV/CAC n’a pas fonctionné
       token:
         bad: Erreur interne.
         invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
         missing: Erreur interne.
     piv_cac_login:
-      account_not_found: Votre PIV / CAC n’est pas connecté à un compte
-      add: Configurez votre PIV ou votre CAC en tant que méthode d’authentification à
-        deux facteurs pour pouvoir l’utiliser pour vous connecter.
-      new: Utilisez votre PIV / CAC pour vous connecter à votre compte
-      success: Vous avez correctement configuré PIV/CAC en tant que méthode
+      account_not_found: Votre carte PIV/CAC n’est pas connectée à un compte
+      add: Configurer votre PIV ou votre CAC comme méthode d’authentification à deux
+        facteurs pour pouvoir l’utiliser pour vous connecter.
+      new: Vous connecter avec votre PIV/CAC
+      success: Votre carte PIV/CAC a bien été configurée comme méthode
         d’authentification.
     piv_cac_setup:
       already_associated: La carte PIV/CAC que vous avez présentée est associée à un
         autre utilisateur.
-      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
+      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte.
     redirecting: Redirection
-    residential_address: Adresse de résidence actuelle
-    session_timeout_warning: Vous avez besoin de plus de temps?
-    sign_in_existing_users: S’identifier pour les utilisateurs existants
-    sign_in_with_sp: Connectez-vous pour continuer à %{sp}
-    sign_in_without_sp: Connexion
+    residential_address: Adresse résidentielle actuelle
+    session_timeout_warning: Vous avez besoin de plus de temps ?
+    sign_in_existing_users: Se connecter pour les utilisateurs existants
+    sign_in_with_sp: Se connecter pour continuer vers %{sp}
+    sign_in_without_sp: Se connecter
     sp_handoff_bounced: Un problème est survenu lors de la connexion à %{sp_name}
     ssn: Numéro de sécurité sociale
     state_id: Carte d’identité délivrée par l’État
     totp_setup:
-      new: Ajouter une application d’authentification
-    verify: Vérifier votre informations
-    verify_email: Consultez vos courriels
+      new: Ajouter une appli d’authentification
+    verify: Vérifier vos informations
+    verify_email: Consulter vos e-mails
     verify_personal_key: Vérifier votre clé personnelle
     webauthn_platform_setup:
-      new: Déverrouillage facial ou tactile
+      new: Ajouter le déverrouillage facial ou tactile
     webauthn_setup:
       new: Insérer votre clé de sécurité

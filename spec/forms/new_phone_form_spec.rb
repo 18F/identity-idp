@@ -354,6 +354,10 @@ RSpec.describe NewPhoneForm do
           and_return(score_threshold)
       end
 
+      it 'assigns recaptcha_assessment_id value' do
+        expect { result }.to change { form.recaptcha_assessment_id }.from(nil).to kind_of(String)
+      end
+
       context 'with invalid captcha score' do
         let(:recaptcha_mock_score) { score_threshold - 0.1 }
 
@@ -374,33 +378,44 @@ RSpec.describe NewPhoneForm do
     end
 
     context 'with recaptcha enabled' do
-      let(:valid) { nil }
-      let(:validator) { PhoneRecaptchaValidator.new(parsed_phone: nil) }
+      let(:errors) { ActiveModel::Errors.new(RecaptchaForm.new) }
+      let(:recaptcha_form) { PhoneRecaptchaForm.new(parsed_phone: nil) }
       let(:recaptcha_token) { 'token' }
       let(:phone) { '3065550100' }
       let(:international_code) { 'CA' }
       let(:params) { super().merge(recaptcha_token:) }
+      let(:recaptcha_form_response) { FormResponse.new(success: true) }
+      let(:recaptcha_assessment_id) { 'projects/project-id/assessments/assessment-id' }
 
       subject(:result) { form.submit(params) }
 
       before do
         allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
-        allow(validator).to receive(:valid?).with(recaptcha_token).and_return(valid)
-        allow(form).to receive(:recaptcha_validator).and_return(validator)
+        allow(recaptcha_form).to receive(:submit).with(recaptcha_token).
+          and_return([recaptcha_form_response, recaptcha_assessment_id])
+        allow(recaptcha_form).to receive(:errors).and_return(errors)
+        allow(form).to receive(:recaptcha_form).and_return(recaptcha_form)
       end
 
       context 'with valid recaptcha result' do
-        let(:valid) { true }
+        let(:recaptcha_form_response) { FormResponse.new(success: true) }
 
         it 'is valid' do
           expect(result.success?).to eq(true)
           expect(result.errors).to be_blank
         end
 
+        it 'assigns recaptcha_assessment_id value' do
+          expect { result }.
+            to change { form.recaptcha_assessment_id }.
+            from(nil).
+            to(recaptcha_assessment_id)
+        end
+
         context 'with recaptcha enterprise' do
-          let(:validator) do
-            PhoneRecaptchaValidator.new(
-              validator_class: RecaptchaEnterpriseValidator,
+          let(:recaptcha_form) do
+            PhoneRecaptchaForm.new(
+              form_class: RecaptchaEnterpriseForm,
               parsed_phone: nil,
             )
           end
@@ -417,7 +432,9 @@ RSpec.describe NewPhoneForm do
       end
 
       context 'with invalid recaptcha result' do
-        let(:valid) { false }
+        before do
+          errors.add(:recaptcha_token, :fail, message: 'fail')
+        end
 
         it 'is invalid' do
           expect(result.success?).to eq(false)

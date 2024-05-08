@@ -131,8 +131,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).please_reset_password
   end
 
-  def letter_reminder
-    UserMailer.with(user: user, email_address: email_address_record).letter_reminder
+  def verify_by_mail_letter_requested
+    UserMailer.with(user: user, email_address: email_address_record).verify_by_mail_letter_requested
   end
 
   def add_email
@@ -209,12 +209,6 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def in_person_outage_notification
-    UserMailer.with(user: user, email_address: email_address_record).in_person_outage_notification(
-      enrollment: in_person_enrollment,
-    )
-  end
-
   def account_rejected
     UserMailer.with(user: user, email_address: email_address_record).account_rejected
   end
@@ -233,11 +227,11 @@ class UserMailerPreview < ActionMailer::Preview
     ).suspended_reset_password
   end
 
-  def gpo_reminder
+  def verify_by_mail_reminder
     UserMailer.with(
       user: user_with_pending_gpo_letter,
       email_address: email_address_record,
-    ).gpo_reminder
+    ).verify_by_mail_reminder
   end
 
   def suspension_confirmed
