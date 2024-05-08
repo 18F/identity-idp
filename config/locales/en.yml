@@ -1471,7 +1471,6 @@ simple_form.required.text: This field is required
 simple_form.yes: 'Yes'
 step_indicator.accessible_label: Step progress
 step_indicator.flows.idv.find_a_post_office: Find a Post Office
-step_indicator.flows.idv.get_a_letter: Get a letter in the mail
 step_indicator.flows.idv.getting_started: Getting started
 step_indicator.flows.idv.go_to_the_post_office: Go to the Post Office
 step_indicator.flows.idv.re_enter_password: Re-enter your password
@@ -1480,7 +1479,6 @@ step_indicator.flows.idv.verify_address: Verify your address
 step_indicator.flows.idv.verify_id: Verify your ID
 step_indicator.flows.idv.verify_info: Verify your information
 step_indicator.flows.idv.verify_phone: Verify your phone number
-step_indicator.flows.idv.verify_phone_or_address: Verify your phone number
 step_indicator.status.complete: Completed
 step_indicator.status.current: Current step
 step_indicator.status.not_complete: Not completed

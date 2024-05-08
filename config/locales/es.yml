@@ -1468,7 +1468,6 @@ simple_form.required.text: Este campo es obligatorio
 simple_form.yes: Sí
 step_indicator.accessible_label: Avance por pasos
 step_indicator.flows.idv.find_a_post_office: Busque una oficina de correos
-step_indicator.flows.idv.get_a_letter: Obtenga una carta por correo
 step_indicator.flows.idv.getting_started: Inicio
 step_indicator.flows.idv.go_to_the_post_office: Vaya a la oficina de correos
 step_indicator.flows.idv.re_enter_password: Vuelva a ingresar su contraseña
@@ -1477,7 +1476,6 @@ step_indicator.flows.idv.verify_address: Verifique su dirección
 step_indicator.flows.idv.verify_id: Verifique su identidad
 step_indicator.flows.idv.verify_info: Verifique su información
 step_indicator.flows.idv.verify_phone: Verifique su número de teléfono
-step_indicator.flows.idv.verify_phone_or_address: Verifique su número de teléfono
 step_indicator.status.complete: Completado
 step_indicator.status.current: Este paso
 step_indicator.status.not_complete: No completado

@@ -1475,7 +1475,6 @@ simple_form.required.text: 该字段必需做
 simple_form.yes: 对
 step_indicator.accessible_label: 步骤进展
 step_indicator.flows.idv.find_a_post_office: 找一个邮局
-step_indicator.flows.idv.get_a_letter: 接收一封信
 step_indicator.flows.idv.getting_started: 开始
 step_indicator.flows.idv.go_to_the_post_office: 去邮局
 step_indicator.flows.idv.re_enter_password: 重新输入你的密码
@@ -1484,7 +1483,6 @@ step_indicator.flows.idv.verify_address: 验证你的地址
 step_indicator.flows.idv.verify_id: 验证你的身份证件
 step_indicator.flows.idv.verify_info: 验证你的信息
 step_indicator.flows.idv.verify_phone: 验证你的电话号码
-step_indicator.flows.idv.verify_phone_or_address: 验证电话或地址
 step_indicator.status.complete: 完成了
 step_indicator.status.current: 目前步骤
 step_indicator.status.not_complete: 未完成

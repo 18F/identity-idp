@@ -1472,7 +1472,6 @@ simple_form.required.text: Ce champ est obligatoire
 simple_form.yes: Oui
 step_indicator.accessible_label: Progression par étapes
 step_indicator.flows.idv.find_a_post_office: Trouver un bureau de poste
-step_indicator.flows.idv.get_a_letter: Recevoir une lettre par la poste
 step_indicator.flows.idv.getting_started: Démarrer
 step_indicator.flows.idv.go_to_the_post_office: Se rendre au bureau de poste
 step_indicator.flows.idv.re_enter_password: Saisir à nouveau votre mot de passe
@@ -1481,7 +1480,6 @@ step_indicator.flows.idv.verify_address: Vérifier votre adresse
 step_indicator.flows.idv.verify_id: Confirmer votre identité
 step_indicator.flows.idv.verify_info: Vérifier vos informations
 step_indicator.flows.idv.verify_phone: Vérifier votre numéro de téléphone
-step_indicator.flows.idv.verify_phone_or_address: Vérifier votre numéro de téléphone
 step_indicator.status.complete: Étape effectuée
 step_indicator.status.current: Étape en cours
 step_indicator.status.not_complete: Étape non effectuée
