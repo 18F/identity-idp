@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ByMail::RequestLetterController,
-               allowed_extra_analytics: [:idv_gpo_address_letter_requested] do
+               allowed_extra_analytics: [
+                 :idv_gpo_address_letter_requested,
+                 :idv_gpo_address_letter_enqueued,
+               ] do
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
