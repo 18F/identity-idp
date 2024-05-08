@@ -292,11 +292,11 @@ RSpec.describe 'I18n' do
       I18n::Tasks::BaseTask::ALLOWED_UNTRANSLATED_KEYS.reject { |key| key[:used] }
     expect(unused_allowed_untranslated_keys).to(
       be_empty,
-      """
-      ALLOWED_UNTRANSLATED_KEYS contains unused allowed untranslated i18n keys.
-      The following keys can be removed from ALLOWED_UNTRANSLATED_KEYS:
-      #{unused_allowed_untranslated_keys}
-      """,
+      <<~EOS,
+        ALLOWED_UNTRANSLATED_KEYS contains unused allowed untranslated i18n keys.
+        The following keys can be removed from ALLOWED_UNTRANSLATED_KEYS:
+        #{unused_allowed_untranslated_keys}
+      EOS
     )
   end
 
