@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# Script to help migrating i18n files to our "flat yml" format
+# Can probably be removed after migration is complete
+
 require 'yaml'
 require 'json'
 
@@ -20,6 +23,19 @@ def each_full_key(obj, keypath: [], &block)
   else
     yield keypath, obj
   end
+end
+
+if ARGV.empty?
+  puts <<~EOS
+    Usage:
+
+      #{File.basename($PROGRAM_NAME)} FILE [OTHER...]
+
+    Takes each YAML file provided as an argument, combines them into one hash
+    and "flattens" the keys
+  EOS
+
+  exit 1
 end
 
 ARGV.each do |filename|
