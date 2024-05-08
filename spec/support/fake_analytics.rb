@@ -211,5 +211,7 @@ RSpec.configure do |c|
         )
       end
     end
+
+    groups = []
   end
 end
