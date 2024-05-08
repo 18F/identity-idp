@@ -29,10 +29,12 @@ account_reset.recovery_options.use_device: Utilice otro dispositivo.
 account_reset.recovery_options.use_same_device: De lo contrario, inténtalo con el mismo dispositivo en el que configuraste el desbloqueo facial o táctil.
 account_reset.request.are_you_sure: '¿Está seguro de que no tiene acceso a ninguno de sus métodos de autenticación?'
 account_reset.request.delete_account: Elimine su cuenta
-account_reset.request.delete_account_info.0: Eliminar su cuenta existente y crear una nueva le permite usar la misma dirección de correo electrónico y configurar nuevas opciones de seguridad. Sin embargo, eliminar eliminará cualquier aplicación de agencia que haya vinculado a su cuenta y deberá restaurar cada conexión.
-account_reset.request.delete_account_info.1: Si continúas, tú primero recibirá una confirmación por correo electrónico. Como medida de seguridad, lo hará reciba otro correo electrónico con el enlace para seguir eliminando su cuenta las %{interval} después del correo electrónico de confirmación inicial llega.
-account_reset.request.info.0: Si no puede acceder a su cuenta a través de las opciones de seguridad que configuró anteriormente, eliminar la cuenta y crear una nueva es la única opción.
-account_reset.request.info.1: No podemos deshacer la eliminación de una cuenta, así que por favor asegúrese de no tener otra opción de seguridad que puede usar.
+account_reset.request.delete_account_info:
+- Eliminar su cuenta existente y crear una nueva le permite usar la misma dirección de correo electrónico y configurar nuevas opciones de seguridad. Sin embargo, eliminar eliminará cualquier aplicación de agencia que haya vinculado a su cuenta y deberá restaurar cada conexión.
+- Si continúas, tú primero recibirá una confirmación por correo electrónico. Como medida de seguridad, lo hará reciba otro correo electrónico con el enlace para seguir eliminando su cuenta las %{interval} después del correo electrónico de confirmación inicial llega.
+account_reset.request.info:
+- Si no puede acceder a su cuenta a través de las opciones de seguridad que configuró anteriormente, eliminar la cuenta y crear una nueva es la única opción.
+- No podemos deshacer la eliminación de una cuenta, así que por favor asegúrese de no tener otra opción de seguridad que puede usar.
 account_reset.request.no_cancel: Cancelar
 account_reset.request.title: Eliminación y restablecimiento de cuenta
 account_reset.request.yes_continue: Sí, continuar con la eliminación
@@ -405,29 +407,31 @@ countries.yt: Mayotte
 countries.za: Sudáfrica
 countries.zm: Zambia
 countries.zw: Zimbabue
-date.day_names.0:
-date.day_names.1: lunes
-date.day_names.2: martes
-date.day_names.3: miércoles
-date.day_names.4: jueves
-date.day_names.5: viernes
-date.day_names.6: sábado
-date.day_names.7: domingo
+date.day_names:
+- null
+- lunes
+- martes
+- miércoles
+- jueves
+- viernes
+- sábado
+- domingo
 date.formats.long: '%B %-d, %Y'
 date.formats.short: '%A, %B %-d'
-date.month_names.0:
-date.month_names.1: enero
-date.month_names.10: octubre
-date.month_names.11: noviembre
-date.month_names.12: diciembre
-date.month_names.2: febrero
-date.month_names.3: marzo
-date.month_names.4: abril
-date.month_names.5: mayo
-date.month_names.6: junio
-date.month_names.7: julio
-date.month_names.8: agosto
-date.month_names.9: septiembre
+date.month_names:
+- null
+- enero
+- febrero
+- marzo
+- abril
+- mayo
+- junio
+- julio
+- agosto
+- septiembre
+- octubre
+- noviembre
+- diciembre
 date.range: De %{from} a %{to}
 datetime.dotiw.last_word_connector: ' y '
 datetime.dotiw.minutes.one: un minuto
@@ -953,15 +957,18 @@ idv.cancel.actions.exit: Salir de %{app_name}
 idv.cancel.actions.keep_going: No, continuar
 idv.cancel.actions.start_over: Empezar de nuevo
 idv.cancel.description.account_page: página de la cuenta
-idv.cancel.description.exit.with_sp_html.0: Si sale de %{app_name} ahora y regresa a %{sp_name}, no habrá verificado su identidad.
-idv.cancel.description.exit.with_sp_html.1: No obstante, continuará teniendo una cuenta en %{app_name}. Puede administrar o eliminar su cuenta desde %{account_page_link_html}.
-idv.cancel.description.exit.without_sp.0: Si sale de la verificación de identidad y se dirige a la página de su cuenta, no habrá verificado su identidad.
-idv.cancel.description.exit.without_sp.1: No obstante, continuará teniendo una cuenta en %{app_name}. Puede administrar o eliminar su cuenta desde %{account_page_text}.
+idv.cancel.description.exit.with_sp_html:
+- Si sale de %{app_name} ahora y regresa a %{sp_name}, no habrá verificado su identidad.
+- No obstante, continuará teniendo una cuenta en %{app_name}. Puede administrar o eliminar su cuenta desde %{account_page_link_html}.
+idv.cancel.description.exit.without_sp:
+- Si sale de la verificación de identidad y se dirige a la página de su cuenta, no habrá verificado su identidad.
+- No obstante, continuará teniendo una cuenta en %{app_name}. Puede administrar o eliminar su cuenta desde %{account_page_text}.
 idv.cancel.description.gpo.continue: Continúe para empezar de nuevo y verificar su identidad desde el principio.
 idv.cancel.description.gpo.start_over: 'Si borra su información y empieza de nuevo:'
 idv.cancel.description.gpo.start_over_new_address: Para enviar por correo su carta a otra dirección, tendrá que empezar de nuevo y verificar su identidad con la nueva dirección.
-idv.cancel.description.gpo.warnings.0: El código de verificación de tu carta ya no funcionará
-idv.cancel.description.gpo.warnings.1: Tendrás que volver a verificar tu identidad otra vez
+idv.cancel.description.gpo.warnings:
+- El código de verificación de tu carta ya no funcionará
+- Tendrás que volver a verificar tu identidad otra vez
 idv.cancel.description.hybrid: Si cancela ahora, se le pedirá que vuelva a su computadora para seguir verificando su identidad.
 idv.cancel.description.start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
 idv.cancel.headings.confirmation.hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
@@ -1027,8 +1034,9 @@ idv.forgot_password.link_text: '¿Olvidó su contraseña?'
 idv.forgot_password.modal_header: '¿Está seguro de que no puede recordar su contraseña?'
 idv.forgot_password.reset_password: Restablecer la contraseña
 idv.forgot_password.try_again: Vuelva a intentarlo
-idv.forgot_password.warnings.0: Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
-idv.forgot_password.warnings.1: Tendrá que volver a ingresar su información personal, como su nombre, documento de identidad emitido por el estado, etc.
+idv.forgot_password.warnings:
+- Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
+- Tendrá que volver a ingresar su información personal, como su nombre, documento de identidad emitido por el estado, etc.
 idv.form.address1: Línea de dirección 1
 idv.form.address2: Línea de dirección 2
 idv.form.city: Ciudad
@@ -1088,8 +1096,9 @@ idv.messages.phone.failed_number.alert_text: No pudimos asociarlo a este número
 idv.messages.phone.failed_number.gpo_alert_html: Intente con <strong>otro</strong> número o %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verificar por correo
 idv.messages.phone.failed_number.try_again_html: Intente con <strong>otro</strong> número.
-idv.messages.phone.rules.0: Con base en Estados Unidos (incluidos los territorios de EE.UU.)
-idv.messages.phone.rules.1: Su número principal (el que utiliza con más frecuencia)
+idv.messages.phone.rules:
+- Con base en Estados Unidos (incluidos los territorios de EE.UU.)
+- Su número principal (el que utiliza con más frecuencia)
 idv.messages.return_to_profile: '‹ Vuelva a su perfil de %{app_name}'
 idv.messages.sessions.enter_password_message: Cuando vuelva a ingresar su contraseña, %{app_name} protegerá la información que nos dio, para que solo usted pueda acceder a ella.
 idv.messages.sessions.no_pii: SITIO DE PRUEBA - No use información personal real (para fines de demostración únicamente) - SITIO DE PRUEBA
@@ -1123,13 +1132,11 @@ idv.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un int
 idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
-idv.warning.state_id.explanation:
-  'Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
-
-  '
+idv.warning.state_id.explanation: 'Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.'
 idv.warning.state_id.heading: Estamos trabajando para corregir un error
-idv.warning.state_id.next_steps.items_html.0: Volver a intentarlo ahora <strong>o</strong>
-idv.warning.state_id.next_steps.items_html.1: Salir de %{app_name} y volver a intentarlo más tarde
+idv.warning.state_id.next_steps.items_html:
+- Volver a intentarlo ahora <strong>o</strong>
+- Salir de %{app_name} y volver a intentarlo más tarde
 idv.warning.state_id.next_steps.preamble: 'Usted puede:'
 idv.warning.state_id.try_again_button: Vuelva a intentarlo
 idv.welcome.no_js_header: Debe habilitar JavaScript para verificar su identidad.
@@ -1198,8 +1205,9 @@ in_person_proofing.body.prepare.verify_step_enter_phone: Ingrese su número de t
 in_person_proofing.body.prepare.verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.
 in_person_proofing.body.prepare.verify_step_post_office: Busque una oficina de correos participantes cercana.
 in_person_proofing.body.state_id.alert_message: 'Su identificación emitida por el estado no debe estar vencida. Se aceptan estas formas de identificación:'
-in_person_proofing.body.state_id.id_types.0: Licencia para conducir estatal
-in_person_proofing.body.state_id.id_types.1: Identificación estatal que no sea la licencia para conducir
+in_person_proofing.body.state_id.id_types:
+- Licencia para conducir estatal
+- Identificación estatal que no sea la licencia para conducir
 in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
 in_person_proofing.body.state_id.learn_more_link: Obtenga más información sobre las formas de identificación aceptadas.
 in_person_proofing.body.state_id.questions: '¿Tiene alguna pregunta?'
@@ -1894,8 +1902,9 @@ vendor_outage.alerts.phone.default: No podemos verificar teléfonos en estos mom
 vendor_outage.alerts.phone.idv: No podemos verificar teléfonos en estos momentos. Vuelva a intentarlo más tarde, o bien verifique su dirección por correo.
 vendor_outage.alerts.pinpoint.idv.header: Estamos trabajando para corregir un error
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted.'
-vendor_outage.alerts.pinpoint.idv.options_html.0: Continuar ahora y verificar por correo, lo cual tarda entre <strong>5 y 10 días</strong>.
-vendor_outage.alerts.pinpoint.idv.options_html.1: Salir de Login.gov e inténtelo de nuevo más tarde.
+vendor_outage.alerts.pinpoint.idv.options_html:
+- Continuar ahora y verificar por correo, lo cual tarda entre <strong>5 y 10 días</strong>.
+- Salir de Login.gov e inténtelo de nuevo más tarde.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'Usted puede:'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Lamentablemente, estamos teniendo problemas técnicos. %{link_html} para saber cuando se haya resuelto el error.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Obtenga las actualizaciones en nuestra página de estado
