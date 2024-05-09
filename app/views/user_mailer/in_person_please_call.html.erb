@@ -6,9 +6,10 @@
     ) %>
 <h1><%= t('user_mailer.in_person_please_call.header') %></h1>
 <p>
+  <%= p locale %>
   <%= t(
         'user_mailer.in_person_please_call.body.intro_html',
-        date: I18n.l(14.days.from_now, format: I18n.t('time.formats.event_date')),
+        date: I18n.l(14.days.from_now, format: locale == :zh ? '%Y %B %-d' : I18n.t('time.formats.event_date')),
       ) %>
 </p>
 <p>

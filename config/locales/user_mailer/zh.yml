@@ -105,7 +105,7 @@ zh:
     in_person_please_call:
       body:
         contact_message_html: 请拨打 <strong>%{contact_number}</strong> 向他们提供错误信息 代码
-          <strong>%{support_code}</strong>.
+          <strong>%{support_code}</strong>。
         intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
       header: 请给我们打个电话
       subject: 致电 %{app_name} 继续进行身份验证
