@@ -193,6 +193,8 @@ RSpec.configure do |c|
   end
 
   c.after(:all) do |ex|
+    next if c.world.all_examples.count != c.world.example_count
+
     groups.group_by(&:first).each do |group, pairs|
       allowed_extra_analytics = group.metadata[:allowed_extra_analytics]
       next if allowed_extra_analytics.blank?
