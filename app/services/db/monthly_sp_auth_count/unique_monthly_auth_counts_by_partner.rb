@@ -55,19 +55,10 @@ module Db
         end
 
         rows = []
+        # binding.pry
         prev_seen_users = Set.new
         year_months = year_month_to_users_to_profile_age.keys.sort
-
-        ial_to_year_month_to_users.each do |ial, year_month_to_users|
-          prev_seen_users = Set.new
-
-          year_months = year_month_to_users.keys.sort
-
-          year_months.each do |year_month|
-            year_month_users = year_month_to_users[year_month]
-
-            auth_count = year_month_users.count
-            unique_users = year_month_users.uniq.to_set
+        # binding.pry
         year_months.each do |year_month|
           users_to_profile_age = year_month_to_users_to_profile_age[year_month]
 
@@ -104,6 +95,11 @@ module Db
             partner_ial2_new_unique_users_year_greater_than_5: profile_age_counts[:older].nil? ? 0 : profile_age_counts[:older].count,
             partner_ial2_new_unique_users_unknown: unknown_count,
           }
+          # binding.pry
+        end
+        # binding.pry
+        rows
+        # binding.pry
       end
 
       # @param [Array<String>] issuers all the issuers for this iaa
@@ -119,8 +115,7 @@ module Db
             issuers: issuers,
           }.transform_values { |value| quote(value) }
 
-
-
+          # binding.pry
           format(<<~SQL, params)
             SELECT
               sp_return_logs.user_id
