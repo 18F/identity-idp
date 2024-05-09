@@ -8,6 +8,12 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
 ].sort.freeze
 
+ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS = [
+  'datetime.dotiw.last_word_connector',
+  'datetime.dotiw.two_words_connector',
+  'datetime.dotiw.words_connector',
+].sort.freeze
+
 # These are keys with mismatch interpolation for specific locales
 ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   # need to be fixed
@@ -226,16 +232,17 @@ module I18n
       ].freeze
       # rubocop:enable Layout/LineLength
 
-      def inconsistent_leading_or_ending_whitespace_keys
+      def leading_or_trailing_whitespace_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
           key, _value = key_value
+          next if ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS.include?(key)
 
-          result << key if inconsistent_leading_or_ending_whitespace?(key)
+          result << key if leading_or_trailing_whitespace?(key)
           result
         end
       end
 
-      def inconsistent_leading_or_ending_whitespace?(key)
+      def leading_or_trailing_whitespace?(key)
         values_list = self.locales.map do |current_locale|
           value = data[current_locale].first.children[key]&.value
           if value.is_a?(String)
@@ -248,16 +255,10 @@ module I18n
         return false if values_list.empty?
         values_list = values_list.transpose
 
-        values_list.all? do |values|
-          consistent_leading_whitespace = values.map do |value|
-            value.match?(/^\s/) && value[0]
-          end.compact.uniq.count == 1
-
-          consistent_ending_whitespace = values.map do |value|
-            value.match?(/\s$/) && value[-1]
-          end.compact.uniq.count == 1
-
-          !consistent_leading_whitespace || !consistent_ending_whitespace
+        values_list.any? do |values|
+          values.any? do |value|
+            value.match?(/\A\s|\s\z/)
+          end
         end
       end
 
@@ -302,8 +303,8 @@ RSpec.describe 'I18n' do
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
   let(:untranslated_keys) { i18n.untranslated_keys }
-  let(:inconsistent_leading_or_ending_whitespace_keys) do
-    i18n.inconsistent_leading_or_ending_whitespace_keys
+  let(:leading_or_trailing_whitespace_keys) do
+    i18n.leading_or_trailing_whitespace_keys
   end
 
   it 'does not have missing keys' do
@@ -313,10 +314,10 @@ RSpec.describe 'I18n' do
     )
   end
 
-  it 'does not have inconsistent leading or ending whitespace' do
-    expect(inconsistent_leading_or_ending_whitespace_keys).to(
+  it 'does not have leading or trailing whitespace' do
+    expect(leading_or_trailing_whitespace_keys).to(
       be_empty,
-      "inconsistent leading or ending whitespace: #{inconsistent_leading_or_ending_whitespace_keys}",
+      "keys with leading or trailing whitespace: #{leading_or_trailing_whitespace_keys}",
     )
   end
 
