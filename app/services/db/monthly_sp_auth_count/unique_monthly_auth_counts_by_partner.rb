@@ -22,12 +22,12 @@ module Db
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
 
-        ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
-          ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
+        year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
+          ym_h[ym_k] = Hash.new { |user_h, user_k| }
         end
 
         queries.each do |query|
-          temp_copy = ial_to_year_month_to_users.deep_dup
+          temp_copy = year_month_to_users_to_profile_age.deep_dup
 
           with_retries(
             max_tries: 3,
@@ -38,7 +38,7 @@ module Db
               PG::UnableToSend,
             ],
             handler: proc do
-              ial_to_year_month_to_users = temp_copy
+              year_month_to_users_to_profile_age = temp_copy
               ActiveRecord::Base.connection.reconnect!
             end,
           ) do
@@ -46,21 +46,17 @@ module Db
               ActiveRecord::Base.connection.execute(query).each do |row|
                 user_id = row['user_id']
                 year_month = row['year_month']
-                ial = row['ial']
-                if row['min_returned_at'].nil? 
-                  next
-                elsif row['max_profile_verified_at'].nil?
-                  profile_age = -1
-                else
-                  profile_age = (Time.zone.parse(row['min_returned_at'].to_s).year - Time.zone.parse(row['max_profile_verified_at'].to_s).year)
-                end
-                ial_to_year_month_to_users[ial][year_month].add([user_id, profile_age])
+                profile_age = row['profile_age'] < 0 ? nil : row['profile_age']
+
+                year_month_to_users_to_profile_age[year_month][user_id] = profile_age
               end
             end
           end
         end
 
         rows = []
+        prev_seen_users = Set.new
+        year_months = year_month_to_users_to_profile_age.keys.sort
 
         ial_to_year_month_to_users.each do |ial, year_month_to_users|
           prev_seen_users = Set.new
@@ -72,36 +68,38 @@ module Db
 
             auth_count = year_month_users.count
             unique_users = year_month_users.uniq.to_set
+        year_months.each do |year_month|
+          year_month_users = [year_month]
+          unique_users = year_month_users.uniq.to_set
 
-            new_unique_users = unique_users - prev_seen_users
-            new_unique_users_year1 = new_unique_users.select { |user_id, profile_age| profile_age == 0 }
-            new_unique_users_year2 = new_unique_users.select { |user_id, profile_age| profile_age == 1 }
-            new_unique_users_year3 = new_unique_users.select { |user_id, profile_age| profile_age == 2 }
-            new_unique_users_year4 = new_unique_users.select { |user_id, profile_age| profile_age == 3 }
-            new_unique_users_year5 = new_unique_users.select { |user_id, profile_age| profile_age == 4 }
-            new_unique_users_year_greater_than_5 = new_unique_users.select { |user_id, profile_age| profile_age > 4 }
-            new_unique_users_unknown = new_unique_users.select { |user_id, profile_age| profile_age < 0 }
-            prev_seen_users |= unique_users
+          new_unique_users = unique_users - prev_seen_users
+          new_unique_users_year1 = new_unique_users.count { |_user_id, profile_age| profile_age == 0 }
+          new_unique_users_year2 = new_unique_users.count { |_user_id, profile_age| profile_age == 1 }
+          new_unique_users_year3 = new_unique_users.count { |_user_id, profile_age| profile_age == 2 }
+          new_unique_users_year4 = new_unique_users.count { |_user_id, profile_age| profile_age == 3 }
+          new_unique_users_year5 = new_unique_users.count { |_user_id, profile_age| profile_age == 4 }
+          new_unique_users_year_greater_than_5 = new_unique_users.count { |_user_id, profile_age| profile_age != nil && profile_age > 4 }
+          new_unique_users_unknown = new_unique_users.count { |_user_id, profile_age| profile_age == nil}
 
-            rows << {
-              key: key,
-              ial: ial,
-              year_month: year_month,
-              iaa_start_date: date_range.begin.to_s,
-              iaa_end_date: date_range.end.to_s,
-              unique_users: unique_users.count,
-              new_unique_users: new_unique_users.count,
-              partner_ial2_new_unique_users_year1: new_unique_users_year1.count,
-              partner_ial2_new_unique_users_year2: new_unique_users_year2.count,
-              partner_ial2_new_unique_users_year3: new_unique_users_year3.count,
-              partner_ial2_new_unique_users_year4: new_unique_users_year4.count,
-              partner_ial2_new_unique_users_year5: new_unique_users_year5.count,
-              partner_ial2_new_unique_users_year_greater_than_5: new_unique_users_year_greater_than_5.count,
-              partner_ial2_new_unique_users_unknown: new_unique_users_unknown.count,
-            }
-          end
+          prev_seen_users |= unique_users
+
+          rows << {
+            key: key,
+            issuers: issuers,
+            year_month: year_month,
+            iaa_start_date: date_range.begin.to_s,
+            iaa_end_date: date_range.end.to_s,
+            unique_users: unique_users.count,
+            new_unique_users: new_unique_users.count,
+            partner_ial2_new_unique_users_year1: new_unique_users_year1,
+            partner_ial2_new_unique_users_year2: new_unique_users_year2,
+            partner_ial2_new_unique_users_year3: new_unique_users_year3,
+            partner_ial2_new_unique_users_year4: new_unique_users_year4,
+            partner_ial2_new_unique_users_year5: new_unique_users_year5,
+            partner_ial2_new_unique_users_year_greater_than_5: new_unique_users_year_greater_than_5,
+            partner_ial2_new_unique_users_unknown: new_unique_users_unknown,
+          }
         end
-
         rows
       end
 
@@ -124,18 +122,27 @@ module Db
             SELECT
               sp_return_logs.user_id
             , %{year_month} AS year_month
-            , sp_return_logs.ial
-            , MIN(sp_return_logs.returned_at) AS min_returned_at
-            , MAX(sp_return_logs.profile_verified_at) AS max_profile_verified_at
-
+            , MIN(srl_age.profile_age) AS profile_age
             FROM sp_return_logs
+              LEFT JOIN (
+                  SELECT 
+                      sp_return_logs.user_id
+                    , sp_return_logs.issuer
+                    , DATE_PART('year', AGE(sp_return_logs.returned_at, sp_return_logs.profile_verified_at)) AS profile_age
+                  FROM sp_return_logs
+                  WHERE
+                        sp_return_logs.ial > 1
+                    AND sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
+                    AND sp_return_logs.issuer IN %{issuers}
+                    AND sp_return_logs.billable = true
+              ) AS srl_age ON sp_return_logs.user_id = srl_age.user_id AND sp_return_logs.issuer = srl_age.issuer
             WHERE
-                  sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
+                  sp_return_logs.ial > 1
+              AND sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.issuer IN %{issuers}
               AND sp_return_logs.billable = true
             GROUP BY
               sp_return_logs.user_id
-            , sp_return_logs.ial
           SQL
         end
       end
