@@ -1905,7 +1905,7 @@ vendor_outage.alerts.pinpoint.idv.header: We are working to resolve an error
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} needs to make sure you are you — not someone pretending to be you.'
 vendor_outage.alerts.pinpoint.idv.options_html:
   - Continue now and verify by mail, which takes <strong>5 to 10 days</strong>.
-  - Exit Login.gov and try again later.
+  - Exit %{app_name} and try again later.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'You can:'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Unfortunately, we’re having technical difficulties right now. %{link_html} to learn when the error is resolved.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Get updates on our status page
