@@ -236,24 +236,29 @@ module I18n
       end
 
       def inconsistent_leading_or_ending_whitespace?(key)
-        values = self.locales.map do |current_locale|
+        values_list = self.locales.map do |current_locale|
           value = data[current_locale].first.children[key]&.value
           if value.is_a?(String)
-            value
+            [value]
+          elsif value.is_a?(Array)
+            value.compact
           end
         end.compact
 
-        return false if values.empty?
+        return false if values_list.empty?
+        values_list = values_list.transpose
 
-        consistent_leading_whitespace = values.map do |value|
-          value.match?(/^\s/) && value[0]
-        end.compact.uniq.count == 1
+        values_list.all? do |values|
+          consistent_leading_whitespace = values.map do |value|
+            value.match?(/^\s/) && value[0]
+          end.compact.uniq.count == 1
 
-        consistent_ending_whitespace = values.map do |value|
-          value.match?(/\s$/) && value[-1]
-        end.compact.uniq.count == 1
+          consistent_ending_whitespace = values.map do |value|
+            value.match?(/\s$/) && value[-1]
+          end.compact.uniq.count == 1
 
-        !consistent_leading_whitespace || !consistent_ending_whitespace
+          !consistent_leading_whitespace || !consistent_ending_whitespace
+        end
       end
 
       def untranslated_keys
