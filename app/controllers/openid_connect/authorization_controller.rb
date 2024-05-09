@@ -222,7 +222,7 @@ module OpenidConnect
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
-        sign_in_duration_seconds: sign_in_duration,
+        sign_in_duration_seconds:,
       )
       track_billing_events
     end
