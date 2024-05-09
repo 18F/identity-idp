@@ -937,10 +937,9 @@ help_text.requested_attributes.full_name: 姓名
 help_text.requested_attributes.ial1_consent_reminder_html: 你每年都必须授权同意与 <strong>%{sp}</strong> 分享信息。我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
 help_text.requested_attributes.ial1_intro_html: 我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
 help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息：
-  "
-help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息： '
-help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。 '
+  ng> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息："
+help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息：'
+help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。'
 help_text.requested_attributes.phone: 电话号码
 help_text.requested_attributes.social_security_number: 社会保障号码
 help_text.requested_attributes.verified_at: 更新是在
@@ -1096,7 +1095,7 @@ idv.messages.gpo.start_over_html: 如果该地址不对，你需要%{start_over_
 idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验证。
 idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong> 的信。
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
-idv.messages.phone.alert_html: '<strong>输入一个这样的电话号码：</strong> '
+idv.messages.phone.alert_html: '<strong>输入一个这样的电话号码：</strong>'
 idv.messages.phone.description: 我们会将该号码与记录核对并给你发个一次性代码。这是为了帮助你验证身份。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong> 号码或者%{link_html}。
@@ -1313,7 +1312,7 @@ instructions.password.strength.1: 弱
 instructions.password.strength.2: 一般
 instructions.password.strength.3: 好
 instructions.password.strength.4: 棒！
-instructions.password.strength.intro: '密码强度： '
+instructions.password.strength.intro: '密码强度：'
 instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
 links.account.reactivate.with_key: 我有密钥

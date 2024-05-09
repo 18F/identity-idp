@@ -1133,10 +1133,7 @@ idv.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <st
 idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
-idv.warning.state_id.explanation:
-  'Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
-
-  '
+idv.warning.state_id.explanation: Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
 idv.warning.state_id.heading: Nous travaillons à la résolution d’une erreur
 idv.warning.state_id.next_steps.items_html:
   - Réessayer maintenant <strong>ou</strong>
@@ -1310,7 +1307,7 @@ instructions.password.strength.1: Faible
 instructions.password.strength.2: Moyen
 instructions.password.strength.3: Bonne
 instructions.password.strength.4: Excellente
-instructions.password.strength.intro: 'Force du mot de passe : '
+instructions.password.strength.intro: 'Force du mot de passe :'
 instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
 links.account.reactivate.with_key: J’ai ma clé
