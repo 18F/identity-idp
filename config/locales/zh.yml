@@ -1909,7 +1909,7 @@ vendor_outage.alerts.pinpoint.idv.header: 我们正在争取解决错误。
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html}需要确保你是你，而不是别人冒充你。'
 vendor_outage.alerts.pinpoint.idv.options_html:
   - 现在继续并通过普通邮件验证，这需要<strong>5 到 10 天</strong>。
-  - 退出 Login.gov，稍后再试。
+  - 退出 %{app_name}，稍后再试。
 vendor_outage.alerts.pinpoint.idv.options_prompt: 你可以：
 vendor_outage.alerts.pinpoint.idv.status_page_html: 遗憾的是，我们目前遇到技术困难。到 %{link_html} 了解错误何时能解决。
 vendor_outage.alerts.pinpoint.idv.status_page_link: 在我们的状态页面获得最新信息。

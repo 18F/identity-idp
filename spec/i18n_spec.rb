@@ -340,7 +340,8 @@ RSpec.describe 'I18n' do
 
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 
-  Dir[File.join(root_dir, '/config/locales/**')].sort.each do |group_path|
+  ([File.join(root_dir, '/config/locales')] + Dir[File.join(root_dir, '/config/locales/**')]).
+    sort.each do |group_path|
     i18n_group = group_path.sub("#{root_dir}/", '')
 
     describe i18n_group do
@@ -348,8 +349,9 @@ RSpec.describe 'I18n' do
         combined = Hash.new { |h, k| h[k] = {} }
 
         Dir["#{group_path}/**.yml"].each do |file|
-          locale, data = YAML.load_file(file).first
-          flatten_hash(data).each do |key, str|
+          locale = I18nFlatYmlBackend.locale(file)
+          data = YAML.load_file(file)
+          flatten_hash(data, flatten_arrays: false).each do |key, str|
             combined[key][locale] = str
           end
         end
@@ -363,65 +365,65 @@ RSpec.describe 'I18n' do
         expect(bad_keys).to be_empty
       end
     end
+  end
 
-    Dir["#{group_path}/*.yml"].each do |full_path|
-      i18n_file = full_path.sub("#{root_dir}/", '')
-      locale = File.basename(full_path, '.yml').to_sym
+  Dir[File.join(root_dir, '/config/locales/**/*.yml')].sort.each do |full_path|
+    i18n_file = full_path.sub("#{root_dir}/", '')
+    locale = File.basename(full_path, '.yml').to_sym
 
-      describe i18n_file do
-        let(:flattened_yaml_data) { flatten_hash(YAML.load_file(full_path)) }
+    describe i18n_file do
+      let(:flattened_yaml_data) { flatten_hash(YAML.load_file(full_path)) }
 
-        # Transliteration includes special characters by definition, so it could fail checks below
-        if !full_path.match?(%(/config/locales/transliterate/))
-          it 'has only lower_snake_case keys' do
-            keys = flattened_yaml_data.keys
+      # Transliteration includes special characters by definition, so it could fail checks below
+      if !full_path.match?(%(/config/locales/transliterate/))
+        it 'has only lower_snake_case keys' do
+          keys = flattened_yaml_data.keys
 
-            bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
-            expect(bad_keys).to be_empty
-          end
-        end
-
-        it 'has correctly-formatted interpolation values' do
-          bad_keys = flattened_yaml_data.select do |_key, value|
-            next unless value.is_a?(String)
-
-            interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
-
-            interpolation_names.any? { |name| name.downcase != name }
-          end
-
+          bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
           expect(bad_keys).to be_empty
         end
+      end
 
-        it 'does not contain any translations expecting legacy fallback behavior' do
-          bad_keys = flattened_yaml_data.select do |_key, value|
-            value.include?('NOT TRANSLATED YET')
-          end
+      it 'has correctly-formatted interpolation values' do
+        bad_keys = flattened_yaml_data.select do |_key, value|
+          next unless value.is_a?(String)
 
-          expect(bad_keys).to be_empty
+          interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
+
+          interpolation_names.any? { |name| name.downcase != name }
         end
 
-        it 'does not contain any translations that hardcode APP_NAME' do
-          bad_keys = flattened_yaml_data.select do |_key, value|
-            value.include?(APP_NAME)
-          end
+        expect(bad_keys).to be_empty
+      end
 
-          expect(bad_keys).to be_empty
+      it 'does not contain any translations expecting legacy fallback behavior' do
+        bad_keys = flattened_yaml_data.select do |_key, value|
+          value.include?('NOT TRANSLATED YET')
         end
 
-        it 'does not contain content from another language' do
-          flattened_yaml_data.each do |key, value|
-            other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
-            expect(value).not_to match(
-              Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
-            )
-          end
+        expect(bad_keys).to be_empty
+      end
+
+      it 'does not contain any translations that hardcode APP_NAME' do
+        bad_keys = flattened_yaml_data.select do |_key, value|
+          value.include?(APP_NAME)
         end
 
-        it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
-          flattened_yaml_data.each do |key, value|
-            expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
-          end
+        expect(bad_keys).to be_empty
+      end
+
+      it 'does not contain content from another language' do
+        flattened_yaml_data.each do |key, value|
+          other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
+          expect(value).not_to match(
+            Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
+          )
+        end
+      end
+
+      it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
+        flattened_yaml_data.each do |key, value|
+          expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
         end
       end
     end
@@ -452,13 +454,18 @@ RSpec.describe 'I18n' do
       map(&:compact).map(&:first).to_set
   end
 
-  def flatten_hash(hash, parent_keys: [], out_hash: {}, &block)
+  def flatten_hash(hash, flatten_arrays: true, parent_keys: [], out_hash: {})
     hash.each do |key, value|
       if value.is_a?(Hash)
-        flatten_hash(value, parent_keys: parent_keys + [key], out_hash: out_hash, &block)
+        flatten_hash(value, flatten_arrays:, parent_keys: parent_keys + [key], out_hash:)
+      elsif value.is_a?(Array) && flatten_arrays
+        value.each_with_index do |item, idx|
+          flat_key = [*parent_keys, key, idx.to_s].join('.')
+          out_hash[flat_key] = item if item
+        end
       else
         flat_key = [*parent_keys, key].join('.')
-        out_hash[flat_key] = value
+        out_hash[flat_key] = value if value
       end
     end
 

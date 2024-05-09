@@ -1906,7 +1906,7 @@ vendor_outage.alerts.pinpoint.idv.header: Nous travaillons à la résolution d�
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.'
 vendor_outage.alerts.pinpoint.idv.options_html:
   - Continuer maintenant et effectuer la vérification par courrier, qui nécessite <strong>5 à 10 jours</strong>.
-  - Quitter Login.gov.
+  - Quitter %{app_name}.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'Vous pouvez :'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Malheureusement, nous rencontrons actuellement des difficultés techniques. %{link_html} pour savoir quand l’erreur est résolue.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
