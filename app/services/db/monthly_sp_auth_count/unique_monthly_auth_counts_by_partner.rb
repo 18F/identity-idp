@@ -21,12 +21,12 @@ module Db
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
 
-        ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
-          ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
+        year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
+          ym_h[ym_k] = Hash.new { |user_h, user_k| }
         end
 
         queries.each do |query|
-          temp_copy = ial_to_year_month_to_users.deep_dup
+          temp_copy = year_month_to_users_to_profile_age.deep_dup
 
           with_retries(
             max_tries: 3,
@@ -37,7 +37,7 @@ module Db
               PG::UnableToSend,
             ],
             handler: proc do
-              ial_to_year_month_to_users = temp_copy
+              year_month_to_users_to_profile_age = temp_copy
               ActiveRecord::Base.connection.reconnect!
             end,
           ) do
@@ -80,6 +80,8 @@ module Db
         end
 
         rows = []
+        prev_seen_users = Set.new
+        year_months = year_month_to_users_to_profile_age.keys.sort
 
         prev_seen_users = Set.new
         year_months = year_month_to_users_to_profile_age.keys.sort
