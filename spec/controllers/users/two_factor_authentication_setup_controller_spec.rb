@@ -1,9 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe(
-  Users::TwoFactorAuthenticationSetupController,
-  allowed_extra_analytics: [:user_registration_2fa_setup],
-) do
+RSpec.describe Users::TwoFactorAuthenticationSetupController, allowed_extra_analytics: [:*] do
   describe 'GET index' do
     let(:user) { create(:user) }
 

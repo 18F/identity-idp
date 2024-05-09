@@ -85,9 +85,7 @@ class FakeAnalytics < Analytics
         [](:method_name)&.
         to_sym
 
-      @@checked_extra_analytics = checked_extra_analytics.to_a.push(method_name)
-
-      if method_name && (allowed_extra_analytics & [:*, method_name]).blank?
+      if method_name
         analytics_method = AnalyticsEvents.instance_method(method_name)
 
         param_names = analytics_method.
@@ -97,15 +95,20 @@ class FakeAnalytics < Analytics
 
         extra_keywords = original_attributes.keys \
           - [:pii_like_keypaths, :user_id] \
-          - Array(allowed_extra_analytics) \
           - param_names \
           - option_param_names(analytics_method)
 
         if extra_keywords.present?
-          raise UndocumentedParams, <<~ERROR
-            event :#{method_name} called with undocumented params #{extra_keywords.inspect}
-            (if these params are for specs only, use :allowed_extra_analytics metadata)
-          ERROR
+          @@checked_extra_analytics = checked_extra_analytics.to_a.concat(extra_keywords)
+
+          extra_keywords -= Array(allowed_extra_analytics)
+
+          if extra_keywords.present? && !allowed_extra_analytics.include?(:*)
+            raise UndocumentedParams, <<~ERROR
+              event :#{method_name} called with undocumented params #{extra_keywords.inspect}
+              (if these params are for specs only, use :allowed_extra_analytics metadata)
+            ERROR
+          end
         end
       end
 
@@ -208,7 +211,7 @@ RSpec.configure do |c|
         unchecked_extra_analytics = allowed_extra_analytics - all_checked_extra_analytics
         expect(unchecked_extra_analytics).to(
           be_blank,
-          "Unnecessary allowed_extra_analytics method names on example group #{group}: " +
+          "Unnecessary allowed_extra_analytics keywords on example group #{group}: " +
             unchecked_extra_analytics.to_s,
         )
       end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::OtpVerificationController,
-               allowed_extra_analytics: [:idv_phone_confirmation_otp_submitted] do
+               allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
   let(:user) { create(:user) }
 
   let(:phone) { '2255555000' }
