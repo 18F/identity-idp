@@ -1,6 +1,0 @@
----
-en:
-  pages:
-    page_took_too_long:
-      body: You might want to wait a few minutes and try again. (503)
-      header: The server took too long to process your request.

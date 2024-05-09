@@ -1,9 +1,0 @@
----
-zh:
-  login_cancel:
-    account_page: 账户页面
-    bullet1_html: 在你与 %{app_name} 合作伙伴机构分享信息之前，将无法通过 <strong>%{sp_name}</strong> 访问该机构。
-    bullet2_html: 在你%{link_html}，将仍有一个 %{app_name} 账户，你可以管理或删除。
-    exit: 退出 %{app_name}
-    header: '如果你现在退出 %{app_name}：'
-    keep_going: 不，继续下去
