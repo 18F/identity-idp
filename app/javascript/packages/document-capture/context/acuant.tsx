@@ -18,7 +18,6 @@ declare global {
     REPEAT_FAIL_CODE: string;
     SEQUENCE_BREAK_CODE: string;
     start?: AcuantWorkersInitialize;
-    startWorkers?: AcuantWorkersInitialize;
   }
 }
 
@@ -163,22 +162,8 @@ AcuantContext.displayName = 'AcuantContext';
 /**
  * Returns a found AcuantJavascriptWebSdk
  * object, if one is available.
- * Depending on the SDK version,
- * will use either startWorkers (11.8.2) or start (11.9.1)
  */
 const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
-  if (
-    window.AcuantJavascriptWebSdk &&
-    typeof window.AcuantJavascriptWebSdk.startWorkers === 'function' &&
-    typeof window.AcuantJavascriptWebSdk.start !== 'function'
-  ) {
-    return {
-      ...window.AcuantJavascriptWebSdk,
-      start(...args) {
-        window.AcuantJavascriptWebSdk.startWorkers?.(...args);
-      },
-    };
-  }
   if (window.AcuantJavascriptWebSdk && typeof window.AcuantJavascriptWebSdk.start === 'function') {
     return window.AcuantJavascriptWebSdk;
   }
