@@ -233,33 +233,29 @@ module I18n
       # rubocop:enable Layout/LineLength
 
       def leading_or_trailing_whitespace_keys
-        data[base_locale].key_values.each_with_object([]) do |key_value, result|
-          key, _value = key_value
-          next if ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS.include?(key)
+        self.locales.each_with_object([]) do |locale, result|
+          data[locale].key_values.each_with_object(result) do |key_value, result|
+            key, value = key_value
+            next if ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS.include?(key)
 
-          result << key if leading_or_trailing_whitespace?(key)
-          result
+            leading_or_trailing_whitespace =
+              if value.is_a?(String)
+                leading_or_trailing_whitespace?(value)
+              elsif value.is_a?(Array)
+                value.compact.any? { |x| leading_or_trailing_whitespace?(x) }
+              end
+
+            if leading_or_trailing_whitespace
+              result << "#{locale}.#{key}"
+            end
+
+            result
+          end
         end
       end
 
-      def leading_or_trailing_whitespace?(key)
-        values_list = self.locales.map do |current_locale|
-          value = data[current_locale].first.children[key]&.value
-          if value.is_a?(String)
-            [value]
-          elsif value.is_a?(Array)
-            value.compact
-          end
-        end.compact
-
-        return false if values_list.empty?
-        values_list = values_list.transpose
-
-        values_list.any? do |values|
-          values.any? do |value|
-            value.match?(/\A\s|\s\z/)
-          end
-        end
+      def leading_or_trailing_whitespace?(value)
+        value.match?(/\A\s|\s\z/)
       end
 
       def untranslated_keys
