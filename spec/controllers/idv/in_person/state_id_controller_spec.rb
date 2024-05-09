@@ -132,6 +132,21 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
     let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
     context 'with values submitted' do
+      let(:invalid_params) do
+        { state_id: {
+          first_name: 'S@ndy!',
+          last_name:,
+          same_address_as_id: 'true', # value on submission
+          identity_doc_address1:,
+          identity_doc_address2:,
+          identity_doc_city:,
+          state_id_jurisdiction:,
+          state_id_number:,
+          identity_doc_address_state:,
+          identity_doc_zipcode:,
+          dob:,
+        } }
+      end
       let(:params) do
         { state_id: {
           first_name:,
@@ -170,6 +185,22 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(@analytics).to have_received(
           :track_event,
         ).with(analytics_name, analytics_args)
+      end
+
+      it 'renders show when validation errors are present when first visiting page' do
+        put :update, params: invalid_params
+
+        expect(subject.idv_session.ssn).to eq(nil)
+        expect(subject.extra_view_variables[:updating_state_id]).to eq(false)
+        expect(response).to render_template :show
+      end
+
+      it 'renders show when validation errors are present when re-visiting page' do
+        subject.idv_session.ssn = '123-45-6789'
+        put :update, params: invalid_params
+
+        expect(subject.extra_view_variables[:updating_state_id]).to eq(true)
+        expect(response).to render_template :show
       end
 
       it 'invalidates future steps, but does not clear ssn' do

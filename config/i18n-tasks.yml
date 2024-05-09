@@ -7,6 +7,8 @@ base_locale: en
 ## Reporting locale, default: en. Available: en, ru.
 # internal_locale: en
 
+<% require './lib/i18n_tasks_flat_yml' %>
+
 # Read and write translations.
 data:
   ## Translations are read from the file system. Supported format: YAML, JSON.

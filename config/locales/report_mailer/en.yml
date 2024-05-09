@@ -1,7 +1,0 @@
----
-en:
-  report_mailer:
-    deleted_accounts_report:
-      issuers: Issuers
-      name: Name
-      subject: Deleted accounts report
