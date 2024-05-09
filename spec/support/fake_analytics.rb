@@ -198,8 +198,8 @@ RSpec.configure do |c|
       next if allowed_extra_analytics.blank?
       all_checked_extra_analytics = pairs.map(&:last).flatten.uniq
       if allowed_extra_analytics.include?(:*)
-        expect(all_checked_extra_analytics).not_to(
-          be_blank,
+        expect(all_checked_extra_analytics).to(
+          be_present,
           "Unnecessary allowed_extra_analytics on example group #{group}",
         )
       else
