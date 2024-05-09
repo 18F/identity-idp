@@ -80,6 +80,7 @@ module Db
         end
 
         rows = []
+        # binding.pry
         prev_seen_users = Set.new
         year_months = year_month_to_users_to_profile_age.keys.sort
 
@@ -139,8 +140,7 @@ module Db
             issuers: issuers,
           }.transform_values { |value| quote(value) }
 
-
-
+          # binding.pry
           format(<<~SQL, params)
             SELECT
               subq.user_id AS user_id
