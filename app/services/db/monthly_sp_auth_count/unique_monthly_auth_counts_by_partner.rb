@@ -69,38 +69,41 @@ module Db
             auth_count = year_month_users.count
             unique_users = year_month_users.uniq.to_set
         year_months.each do |year_month|
-          year_month_users = [year_month]
-          unique_users = year_month_users.uniq.to_set
+          users_to_profile_age = year_month_to_users_to_profile_age[year_month]
 
-          new_unique_users = unique_users - prev_seen_users
-          new_unique_users_year1 = new_unique_users.count { |_user_id, profile_age| profile_age == 0 }
-          new_unique_users_year2 = new_unique_users.count { |_user_id, profile_age| profile_age == 1 }
-          new_unique_users_year3 = new_unique_users.count { |_user_id, profile_age| profile_age == 2 }
-          new_unique_users_year4 = new_unique_users.count { |_user_id, profile_age| profile_age == 3 }
-          new_unique_users_year5 = new_unique_users.count { |_user_id, profile_age| profile_age == 4 }
-          new_unique_users_year_greater_than_5 = new_unique_users.count { |_user_id, profile_age| profile_age != nil && profile_age > 4 }
-          new_unique_users_unknown = new_unique_users.count { |_user_id, profile_age| profile_age == nil}
+          this_month_users = users_to_profile_age.keys.to_set
+          new_unique_users = this_month_users - prev_seen_users
 
-          prev_seen_users |= unique_users
+          unknown_count = 0
+
+          profile_age_counts = new_unique_users.group_by do |user_id|
+            age = users_to_profile_age[user_id].to_i
+            if age > 4 # TODO
+              :older
+            elsif age >= 0 && age <= 4
+              age
+            else
+              unknown_count += 1
+            end
+          end
+
+          prev_seen_users |= this_month_users
 
           rows << {
             key: key,
-            issuers: issuers,
             year_month: year_month,
             iaa_start_date: date_range.begin.to_s,
             iaa_end_date: date_range.end.to_s,
-            unique_users: unique_users.count,
+            unique_users: this_month_users.count,
             new_unique_users: new_unique_users.count,
-            partner_ial2_new_unique_users_year1: new_unique_users_year1,
-            partner_ial2_new_unique_users_year2: new_unique_users_year2,
-            partner_ial2_new_unique_users_year3: new_unique_users_year3,
-            partner_ial2_new_unique_users_year4: new_unique_users_year4,
-            partner_ial2_new_unique_users_year5: new_unique_users_year5,
-            partner_ial2_new_unique_users_year_greater_than_5: new_unique_users_year_greater_than_5,
-            partner_ial2_new_unique_users_unknown: new_unique_users_unknown,
+            partner_ial2_new_unique_users_year1: (profile_age_counts[0].nil? ? 0 : profile_age_counts[0].count),
+            partner_ial2_new_unique_users_year2: (profile_age_counts[1].nil? ? 0 : profile_age_counts[1].count),
+            partner_ial2_new_unique_users_year3: (profile_age_counts[2].nil? ? 0 : profile_age_counts[2].count),
+            partner_ial2_new_unique_users_year4: (profile_age_counts[3].nil? ? 0 : profile_age_counts[3].count),
+            partner_ial2_new_unique_users_year5: (profile_age_counts[4].nil? ? 0 : profile_age_counts[4].count),
+            partner_ial2_new_unique_users_year_greater_than_5: profile_age_counts[:older].nil? ? 0 : profile_age_counts[:older].count,
+            partner_ial2_new_unique_users_unknown: unknown_count,
           }
-        end
-        rows
       end
 
       # @param [Array<String>] issuers all the issuers for this iaa
