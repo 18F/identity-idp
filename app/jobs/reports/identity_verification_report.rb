@@ -16,7 +16,7 @@ module Reports
 
       save_report(REPORT_NAME, csv, extension: 'csv')
 
-      if emails.empty?
+      if emails.compact.empty?
         Rails.logger.warn 'No email addresses received - Identity Verification Report NOT SENT'
         return false
       end
