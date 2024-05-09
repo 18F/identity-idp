@@ -6,6 +6,7 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     backup_codes: No pierda sus códigos de recuperación
+    cancel_exit_login: ¿Está seguro de que desea cancelar y salir de %{app_name}?
     confirmations:
       delete: Confirme
       show: Elija una contraseña

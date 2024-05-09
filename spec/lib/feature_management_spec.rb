@@ -513,16 +513,6 @@ RSpec.describe 'FeatureManagement' do
       it 'says to allow biometric requests' do
         expect(FeatureManagement.idv_allow_selfie_check?).to eq(true)
       end
-
-      context 'in production' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return('prod')
-        end
-
-        it 'says to block biometric requests' do
-          expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
-        end
-      end
     end
   end
 end

@@ -257,10 +257,12 @@ module AnalyticsEvents
 
   # Tracks when the user creates a set of backup mfa codes.
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def backup_code_created(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
+  def backup_code_created(enabled_mfa_methods_count:, in_account_creation_flow:, **extra)
     track_event(
       'Backup Code Created',
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -273,19 +275,28 @@ module AnalyticsEvents
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
   # @param [Boolean] success
+  # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
+  # @param [Number] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Boolean] in_account_creation_flow Whether page is visited as part of account creation
   # @param [Hash] errors
   # @param [Hash] error_details
   def backup_code_setup_visit(
     success:,
+    mfa_method_counts:,
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
     errors: nil,
     error_details: nil,
     **extra
   )
     track_event(
       'Backup Code Setup Visited',
-      success: success,
-      errors: errors,
-      error_details: error_details,
+      success:,
+      errors:,
+      error_details:,
+      mfa_method_counts:,
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -311,6 +322,11 @@ module AnalyticsEvents
   # Tracks users going back or cancelling acoount recovery
   def cancel_account_reset_recovery
     track_event('Account Reset: Cancel Account Recovery Options')
+  end
+
+  # User visits the "Are you sure you want to cancel and exit" page
+  def completions_cancellation_visited
+    track_event(:completions_cancellation_visited)
   end
 
   # User was logged out due to an existing active session
@@ -3771,12 +3787,14 @@ module AnalyticsEvents
 
   # Tracks when the the user has added the MFA method phone to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, recaptcha_annotation:, **extra)
     track_event(
       'Multi-Factor Authentication: Added phone',
       {
         method_name: :phone,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
+        recaptcha_annotation:,
         **extra,
       }.compact,
     )
@@ -4154,6 +4172,13 @@ module AnalyticsEvents
   end
 
   # Tracks when openid authorization request is made
+  # @param [Boolean] success Whether form validations were succcessful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] prompt OIDC prompt parameter
+  # @param [Boolean] allow_prompt_login Whether service provider is configured to allow prompt=login
+  # @param [Boolean] code_challenge_present Whether code challenge is present
+  # @param [Boolean, nil] service_provider_pkce Whether service provider is configured with PKCE
+  # @param [String, nil] referer Request referer
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
@@ -4162,6 +4187,13 @@ module AnalyticsEvents
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
+    success:,
+    errors:,
+    prompt:,
+    allow_prompt_login:,
+    code_challenge_present:,
+    service_provider_pkce:,
+    referer:,
     client_id:,
     scope:,
     acr_values:,
@@ -4173,13 +4205,20 @@ module AnalyticsEvents
   )
     track_event(
       'OpenID Connect: authorization request',
-      client_id: client_id,
-      scope: scope,
-      acr_values: acr_values,
-      vtr: vtr,
-      vtr_param: vtr_param,
-      unauthorized_scope: unauthorized_scope,
-      user_fully_authenticated: user_fully_authenticated,
+      success:,
+      errors:,
+      prompt:,
+      allow_prompt_login:,
+      code_challenge_present:,
+      service_provider_pkce:,
+      referer:,
+      client_id:,
+      scope:,
+      acr_values:,
+      vtr:,
+      vtr_param:,
+      unauthorized_scope:,
+      user_fully_authenticated:,
       **extra,
     )
   end
@@ -4256,9 +4295,11 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [String] user_id UUID of the user
+  # @param [Boolean] request_id_present Whether request_id URL parameter is present
   # The user added a password after verifying their email for account creation
-  def password_creation(success:, errors:, **extra)
-    track_event('Password Creation', success: success, errors: errors, **extra)
+  def password_creation(success:, errors:, user_id:, request_id_present:, **extra)
+    track_event('Password Creation', success:, errors:, user_id:, request_id_present:, **extra)
   end
 
   # The user got their password incorrect the max number of times, their session was terminated
@@ -5071,6 +5112,7 @@ module AnalyticsEvents
   # @param [Hash] telephony_response
   # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # @param [Boolean] success
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # A phone one-time password send was attempted
   def telephony_otp_sent(
     area_code:,
@@ -5082,6 +5124,7 @@ module AnalyticsEvents
     telephony_response:,
     adapter:,
     success:,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5096,6 +5139,7 @@ module AnalyticsEvents
         telephony_response: telephony_response,
         adapter: adapter,
         success: success,
+        recaptcha_annotation:,
         **extra,
       },
     )
@@ -5221,6 +5265,7 @@ module AnalyticsEvents
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_agency_handoff_page_visit(
@@ -5228,6 +5273,7 @@ module AnalyticsEvents
       service_provider_name:,
       page_occurence:,
       needs_completion_screen_reason:,
+      in_account_creation_flow:,
       sp_session_requested_attributes:,
       sp_request_requested_attributes: nil,
       ialmax: nil,
@@ -5235,13 +5281,14 @@ module AnalyticsEvents
     )
     track_event(
       'User registration: agency handoff visited',
-      ial2: ial2,
-      ialmax: ialmax,
-      service_provider_name: service_provider_name,
-      page_occurence: page_occurence,
-      needs_completion_screen_reason: needs_completion_screen_reason,
-      sp_request_requested_attributes: sp_request_requested_attributes,
-      sp_session_requested_attributes: sp_session_requested_attributes,
+      ial2:,
+      ialmax:,
+      service_provider_name:,
+      page_occurence:,
+      needs_completion_screen_reason:,
+      in_account_creation_flow:,
+      sp_request_requested_attributes:,
+      sp_session_requested_attributes:,
       **extra,
     )
   end

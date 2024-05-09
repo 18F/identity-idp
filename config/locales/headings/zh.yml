@@ -18,6 +18,7 @@ zh:
     add_info:
       phone: 添加一个电话号码
     cancellations:
+      login_cancel_prompt: 你确定要取消并退出 %{app_name} 吗？
       prompt: 你确定要取消吗？
     create_account_new_users: 为新用户创建一个账户
     create_account_with_sp:

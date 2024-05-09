@@ -18,6 +18,7 @@ en:
     add_info:
       phone: Add a phone number
     cancellations:
+      login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?
       prompt: Are you sure you want to cancel?
     create_account_new_users: Create an account for new users
     create_account_with_sp:

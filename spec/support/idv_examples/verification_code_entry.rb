@@ -53,7 +53,7 @@ RSpec.shared_examples 'verification code entry' do
     expect(GpoConfirmationCode.count).to eq(1)
     click_on t('idv.messages.gpo.resend')
 
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_address'))
 
     click_on t('idv.gpo.request_another_letter.button')
 

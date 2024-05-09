@@ -6,6 +6,7 @@ zh:
     add_info:
       phone: 添加电话号码
     backup_codes: 别丢了你的备用代码
+    cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
     confirmations:
       delete: 请确认
       show: 选择一个密码

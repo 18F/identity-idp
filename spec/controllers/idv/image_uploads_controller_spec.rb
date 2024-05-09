@@ -30,10 +30,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
-    let(:store_encrypted_images) { false }
-
     before do
-      allow(controller).to receive(:store_encrypted_images?).and_return(store_encrypted_images)
       Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
       allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
         and_return(false)
@@ -336,8 +333,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          allow(controller.decorated_sp_session).to receive(:biometric_comparison_required?).
-            and_return(true)
+          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context_result)
         end
 
         it 'returns a successful response and modifies the session' do
@@ -484,26 +483,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         expect_funnel_update_counts(user, 1)
       end
 
-      context 'encrypted document storage is enabled' do
-        let(:store_encrypted_images) { true }
-
-        it 'includes image fields in attempts api event' do
-          stub_attempts_tracker
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :idv_document_upload_submitted,
-            hash_including(
-              success: true,
-              document_back_image_filename: match(document_filename_regex),
-              document_front_image_filename: match(document_filename_regex),
-              document_image_encryption_key: match(base64_regex),
-            ),
-          )
-
-          action
-        end
-      end
-
       context 'but doc_pii validation fails' do
         let(:first_name) { 'FAKEY' }
         let(:last_name) { 'MCFAKERSON' }
@@ -558,7 +537,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         end
 
         context 'encrypted document storage is enabled' do
-          let(:store_encrypted_images) { true }
           let(:first_name) { nil }
 
           it 'includes image references in attempts api' do
@@ -575,9 +553,9 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: address1,
-              document_back_image_filename: match(document_filename_regex),
-              document_front_image_filename: match(document_filename_regex),
-              document_image_encryption_key: match(base64_regex),
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
+              document_image_encryption_key: nil,
             )
 
             action
@@ -1240,8 +1218,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
     context 'the frontend requests a selfie' do
       before do
-        allow(controller).to receive(:decorated_sp_session).
-          and_return(double('decorated_session', { biometric_comparison_required?: true }))
+        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+        allow(controller).to(
+          receive(:resolved_authn_context_result).and_return(authn_context_result),
+        )
       end
 
       let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }

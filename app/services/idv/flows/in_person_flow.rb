@@ -17,16 +17,16 @@ module Idv
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
         { name: :verify_info },
-        { name: :verify_phone_or_address },
-        { name: :secure_account },
+        { name: :verify_phone },
+        { name: :re_enter_password },
         { name: :go_to_the_post_office },
       ].freeze
 
       STEP_INDICATOR_STEPS_GPO = [
         { name: :find_a_post_office },
         { name: :verify_info },
+        { name: :verify_address },
         { name: :secure_account },
-        { name: :get_a_letter },
         { name: :go_to_the_post_office },
       ].freeze
 

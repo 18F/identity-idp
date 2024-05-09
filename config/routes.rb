@@ -317,6 +317,7 @@ Rails.application.routes.draw do
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
     get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
+    get '/sign_up/completed/cancel/' => 'completions_cancellation#show'
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
@@ -396,7 +397,9 @@ Rails.application.routes.draw do
       # during the deprecation process.
       get '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
       put '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
+
       get '/in_person_proofing/state_id' => 'in_person/state_id#show'
+      put '/in_person_proofing/state_id' => 'in_person/state_id#update'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',

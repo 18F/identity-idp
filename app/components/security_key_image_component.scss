@@ -1,5 +1,5 @@
 .security-key-image__key {
-  animation: security-key-image__key__move 4s ease-in-out infinite;
+  animation: security-key-image-key-move 4s ease-in-out infinite;
 
   @media (prefers-reduced-motion) {
     animation: none;
@@ -7,7 +7,7 @@
 }
 
 .security-key-image__arrow {
-  animation: security-key-image__arrow__move 4s ease-in-out infinite;
+  animation: security-key-image-arrow-move 4s ease-in-out infinite;
 
   @media (prefers-reduced-motion) {
     animation: none;
@@ -16,15 +16,15 @@
 
 .security-key--mobile {
   .security-key-image__key {
-    animation-name: security-key-image__key__move__mobile;
+    animation-name: security-key-image-key-move-mobile;
   }
 
   .security-key-image__arrow {
-    animation-name: security-key-image__arrow__move__mobile;
+    animation-name: security-key-image-arrow-move-mobile;
   }
 }
 
-@keyframes security-key-image__key__move {
+@keyframes security-key-image-key-move {
   25% {
     transform: translate(0, 0);
   }
@@ -39,7 +39,7 @@
   }
 }
 
-@keyframes security-key-image__key__move__mobile {
+@keyframes security-key-image-key-move-mobile {
   25% {
     transform: translate(0, 0);
   }
@@ -54,7 +54,7 @@
   }
 }
 
-@keyframes security-key-image__arrow__move {
+@keyframes security-key-image-arrow-move {
   7.5% {
     transform: translate(0, 0);
   }
@@ -75,7 +75,7 @@
   }
 }
 
-@keyframes security-key-image__arrow__move__mobile {
+@keyframes security-key-image-arrow-move-mobile {
   7.5% {
     transform: translate(0, 0);
   }
