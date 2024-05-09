@@ -140,6 +140,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+      # need fix, network error should not be counted for rate limiting
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: DocAuth::Response.new(
@@ -205,7 +206,15 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
           click_on t('idv.failure.button.warning')
         end
 
-        # final failure
+        # final failure, not a network error, which currently will skip saving session result
+        DocAuth::Mock::DocAuthMockClient.reset!
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_front_image,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: { general_error: I18n.t('doc_auth.errors.general.multiple_front_id_failures') },
+          ),
+        )
         attach_and_submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)

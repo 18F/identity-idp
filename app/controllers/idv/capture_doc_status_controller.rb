@@ -28,6 +28,8 @@ module Idv
           :unauthorized
         elsif document_capture_session.cancelled_at
           :gone
+        elsif rate_limited_and_failed?
+          :too_many_requests
         elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
         elsif session_result.blank? || pending_barcode_attention_confirmation? ||
@@ -43,7 +45,11 @@ module Idv
 
     def redirect_url
       return unless document_capture_session
-      user_has_establishing_in_person_enrollment? ? idv_in_person_url : nil
+      if rate_limited_and_failed?
+        idv_session_errors_rate_limited_url
+      elsif user_has_establishing_in_person_enrollment?
+        idv_in_person_url
+      end
     end
 
     def session_result
@@ -95,6 +101,10 @@ module Idv
       return unless document_capture_session.requested_at
 
       document_capture_session.requested_at > session_result.captured_at
+    end
+
+    def rate_limited_and_failed?
+      rate_limiter.limited? && !session_result&.success? && session_result&.captured_at.present?
     end
   end
 end
