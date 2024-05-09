@@ -165,6 +165,17 @@ module SamlIdp
       errors.blank?
     end
 
+    def matching_cert
+      return nil unless signed?
+
+      Array(service_provider.certs).find do |cert|
+        document.valid_signature?(
+          OpenSSL::Digest::SHA256.new(cert.to_der).hexdigest,
+          options.merge(cert: cert)
+        )
+      end
+    end
+
     def signed?
       document.signed? || !!options[:get_params]&.key?(:Signature)
     end

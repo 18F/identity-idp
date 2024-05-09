@@ -397,6 +397,62 @@ module SamlIdp
       end
     end
 
+    describe '#matching_cert' do
+      let(:saml_request) { make_saml_request }
+
+      subject do
+        described_class.from_deflated_request saml_request
+      end
+
+      describe 'document is not signed' do
+        it 'returns nil' do
+          expect(subject.matching_cert).to be nil
+        end
+      end
+
+      describe 'document is signed' do
+        let(:saml_request) { signed_auth_request }
+        let(:service_provider)  { subject.service_provider }
+        let(:cert) { saml_settings.get_sp_cert }
+
+        describe 'the service provider has no registered certs' do
+          before { subject.service_provider.certs = [] }
+
+          it 'returns nil' do
+            expect(subject.matching_cert).to be nil
+          end
+        end
+
+        describe 'the service provider has one registered cert' do
+          before { subject.service_provider.certs = [cert] }
+
+          describe 'the cert matches the assertion cert' do
+            it 'returns the cert' do
+              expect(subject.matching_cert).to eq cert
+            end
+          end
+
+          describe 'the cert does not match the assertion cert' do
+            let(:cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+            it 'returns nil' do
+              expect(subject.matching_cert).to be nil
+            end
+          end
+
+        end
+
+        describe 'multiple certs' do
+          let(:not_matching_cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+
+          before { subject.service_provider.certs = [not_matching_cert, invalid_cert, cert] }
+
+          it 'returns the matching cert' do
+            expect(subject.matching_cert).to eq cert
+          end
+        end
+      end
+    end
+
     def build_authn_context_classref(contexts)
       [contexts].flatten.map do |c|
         "<saml:AuthnContextClassRef xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>#{c}</saml:AuthnContextClassRef>"
