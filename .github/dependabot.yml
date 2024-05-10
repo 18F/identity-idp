@@ -7,13 +7,13 @@ updates:
     groups:
       sync-all-versions:
         applies-to: version-updates
-        allow:
-          - dependency-name: '@18f/identity-design-system'
-          - dependency-name: libphonenumber-js
+        patterns:
+          - '@18f/identity-design-system'
+          - libphonenumber-js
       sync-major-versions:
         applies-to: version-updates
-        allow:
-          - dependency-name: stylelint
+        patterns:
+          - stylelint
         update-types:
           - major
       security:
@@ -25,7 +25,7 @@ updates:
     groups:
       sync-all-versions:
         applies-to: version-updates
-        allow:
-          - dependency-name: phonelib
+        patterns:
+          - phonelib
       security:
         applies-to: security-updates
