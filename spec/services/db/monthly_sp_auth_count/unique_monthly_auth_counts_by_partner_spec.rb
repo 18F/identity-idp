@@ -250,6 +250,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
   end
 end
 
-# Test cases for ial2 proofing each year (different sums) 
+# Test cases for ial2 proofing each year (different sums)
 # test case to capture reproofing > 5 years
 # create users outside of the range for testing to make sure our build query functions within the range only
