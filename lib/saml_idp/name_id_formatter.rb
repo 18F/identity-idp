@@ -1,7 +1,6 @@
 module SamlIdp
   class NameIdFormatter
-    attr_accessor :list
-    attr_accessor :sp_name_id_format
+    attr_accessor :list, :sp_name_id_format
 
     def initialize(list, sp_name_id_format = 'persistent')
       self.list = (list || {})
@@ -10,8 +9,8 @@ module SamlIdp
 
     def all
       if split?
-        one_one.map { |key_val| build("1.1", key_val)[:name] } +
-        two_zero.map { |key_val| build("2.0", key_val)[:name] }
+        one_one.map { |key_val| build('1.1', key_val)[:name] } +
+          two_zero.map { |key_val| build('2.0', key_val)[:name] }
       else
         list.map do |key_val|
           format_symbol = Array(key_val).first
@@ -33,7 +32,7 @@ module SamlIdp
     def default_name_getter_hash
       {
         name: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-        getter: 'id'
+        getter: 'id',
       }
     end
 
@@ -61,7 +60,7 @@ module SamlIdp
 
       {
         name: "urn:oasis:names:tc:SAML:#{version}:nameid-format:#{name}",
-        getter: getter
+        getter:,
       }
     end
     private :build
@@ -76,19 +75,19 @@ module SamlIdp
     private :build_getter
 
     def split?
-      list.is_a?(Hash) && (list.key?("2.0") || list.key?("1.1"))
+      list.is_a?(Hash) && (list.key?('2.0') || list.key?('1.1'))
     end
     private :split?
 
     def one_one
-      list["1.1"] || {}
+      list['1.1'] || {}
     rescue TypeError
       {}
     end
     private :one_one
 
     def two_zero
-      list["2.0"] || {}
+      list['2.0'] || {}
     rescue TypeError
       {}
     end

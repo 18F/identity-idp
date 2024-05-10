@@ -27,7 +27,7 @@ module SamlIdp
       )
     end
 
-    it "is a valid LogoutResponse" do
+    it 'is a valid LogoutResponse' do
       Timecop.travel(Time.zone.local(2010, 6, 1, 13, 0, 0)) do
         logout_response = OneLogin::RubySaml::Logoutresponse.new(
           subject.encoded,
@@ -38,10 +38,11 @@ module SamlIdp
       end
     end
 
-    it "includes the response_id in the signature" do
+    it 'includes the response_id in the signature' do
       signed = subject.signed
       doc = REXML::Document.new signed
-      signature = REXML::XPath.first(doc, "//ds:Signature", {"ds"=>SamlIdp::XMLSecurity::SignedDocument::DSIG})
+      signature = REXML::XPath.first(doc, '//ds:Signature',
+                                     { 'ds' => SamlIdp::XMLSecurity::SignedDocument::DSIG })
       expect(signature.to_s).to include(response_id)
     end
   end

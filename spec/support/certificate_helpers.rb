@@ -31,7 +31,7 @@ module CertificateHelpers
 
   def encrypted_secret_key
     key = OpenSSL::PKey::RSA.new(SamlIdp::Default::SECRET_KEY)
-    key.to_pem(OpenSSL::Cipher::AES.new('128-CBC'), encrypted_secret_key_password)
+    key.to_pem(OpenSSL::Cipher.new('aes-128-cbc'), encrypted_secret_key_password)
   end
 
   def encrypted_secret_key_password

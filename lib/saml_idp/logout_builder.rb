@@ -18,20 +18,20 @@ module SamlIdp
 
     def encoded
       @encoded ||= encode
-    end 
+    end
 
-    def raw 
+    def raw
       build
-    end 
+    end
 
     def encode
       Base64.strict_encode64(raw)
-    end 
+    end
     private :encode
 
     def response_id_string
       "_#{response_id}"
-    end 
+    end
     private :response_id_string
 
     def now_iso

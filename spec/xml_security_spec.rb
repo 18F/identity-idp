@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'xml_security'
 
 module SamlIdp
-  describe XMLSecurity, security: true do
+  describe XMLSecurity, :security do
     let(:document) { XMLSecurity::SignedDocument.new(Base64.decode64(response_document)) }
 
     let(:document_with_invalid_certificate) do
@@ -19,19 +19,23 @@ module SamlIdp
 
         context 'multiple validations' do
           it 'does not raise an error' do
-            expect { 2.times { document.validate_doc(base64cert, true) } }.to_not raise_error
+            expect { 2.times { document.validate_doc(base64cert, true) } }.not_to raise_error
           end
         end
       end
 
       describe 'when validating not softly' do
         it 'throws NS related exceptions' do
-          expect { document.validate_doc(base64cert, false) }.to raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError)
+          expect do
+            document.validate_doc(base64cert,
+                                  false)
+          end.to raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError)
         end
 
         it 'raises Fingerprint mismatch' do
           expect { document.validate('no:fi:ng:er:pr:in:t', false) }.to(
-            raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError, 'Fingerprint mismatch')
+            raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError,
+                        'Fingerprint mismatch')
           )
         end
 
@@ -48,7 +52,8 @@ module SamlIdp
           document = XMLSecurity::SignedDocument.new(response)
           base64cert = document.elements['//ds:X509Certificate'].text
           expect { document.validate_doc(base64cert, false) }.to(
-            raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError, 'Key validation error')
+            raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError,
+                        'Key validation error')
           )
         end
       end
@@ -58,7 +63,8 @@ module SamlIdp
       describe 'errors' do
         it 'raises invalid certificates when the document ceritficate is invalid' do
           expect { document_with_invalid_certificate.validate('no:fi:ng:er:pr:in:t', false) }.to(
-            raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError, 'Invalid certificate')
+            raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError,
+                        'Invalid certificate')
           )
         end
 
@@ -77,7 +83,8 @@ module SamlIdp
         it 'raises a validation error when find_base64_cert returns nil' do
           response = Base64.decode64(response_document)
           document = XMLSecurity::SignedDocument.new(response)
-          REXML::XPath.first(document, '//ds:X509Certificate', { 'ds' => 'http://www.w3.org/2000/09/xmldsig#' }).text = nil
+          REXML::XPath.first(document, '//ds:X509Certificate',
+                             { 'ds' => 'http://www.w3.org/2000/09/xmldsig#' }).text = nil
           expect { document.validate('a fingerprint', false) }.to(
             raise_error(
               SamlIdp::XMLSecurity::SignedDocument::ValidationError,

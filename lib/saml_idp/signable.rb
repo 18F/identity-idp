@@ -75,7 +75,7 @@ module SamlIdp
     def signed_info_builder
       SignedInfoBuilder.new(
         get_reference_id, get_digest, get_algorithm,
-        secret_key: secret_key, cloudhsm_key_label: cloudhsm_key_label
+        secret_key:, cloudhsm_key_label:
       )
     end
     private :signed_info_builder
@@ -110,8 +110,8 @@ module SamlIdp
     def x509_certificate
       (@x509_certificate || SamlIdp.config.x509_certificate).
         to_s.
-        gsub(/-----BEGIN CERTIFICATE-----/, '').
-        gsub(/-----END CERTIFICATE-----/, '').
+        gsub('-----BEGIN CERTIFICATE-----', '').
+        gsub('-----END CERTIFICATE-----', '').
         delete("\n")
     end
     private :x509_certificate
@@ -129,8 +129,8 @@ module SamlIdp
       canon_hashed_element = noko_raw.canonicalize(canon_algorithm, inclusive_namespaces)
       digest_algorithm = get_algorithm
 
-      hash                          = digest_algorithm.digest(canon_hashed_element)
-      Base64.strict_encode64(hash).gsub(/\n/, '')
+      hash = digest_algorithm.digest(canon_hashed_element)
+      Base64.strict_encode64(hash).gsub("\n", '')
     end
     private :digest
 

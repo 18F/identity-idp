@@ -1,10 +1,7 @@
 require 'xmlenc'
 module SamlIdp
   class Encryptor
-    attr_accessor :encryption_key
-    attr_accessor :block_encryption
-    attr_accessor :key_transport
-    attr_accessor :cert
+    attr_accessor :encryption_key, :block_encryption, :key_transport, :cert
 
     def initialize(opts)
       self.block_encryption = opts[:block_encryption]
@@ -29,11 +26,11 @@ module SamlIdp
     end
 
     def openssl_cert
-      if cert.is_a?(String)
-        @_openssl_cert ||= OpenSSL::X509::Certificate.new(Base64.decode64(cert))
-      else
-        @_openssl_cert ||= cert
-      end
+      @_openssl_cert ||= if cert.is_a?(String)
+          OpenSSL::X509::Certificate.new(Base64.decode64(cert))
+        else
+          cert
+        end
     end
     private :openssl_cert
 
@@ -55,12 +52,13 @@ module SamlIdp
     def build_encryption_template
       xml = Builder::XmlMarkup.new
       xml.EncryptedData Id: 'ED', Type: 'http://www.w3.org/2001/04/xmlenc#Element',
-        xmlns: 'http://www.w3.org/2001/04/xmlenc#' do |enc_data|
+                        xmlns: 'http://www.w3.org/2001/04/xmlenc#' do |enc_data|
         enc_data.EncryptionMethod Algorithm: block_encryption_ns
         enc_data.tag! 'ds:KeyInfo', 'xmlns:ds' => 'http://www.w3.org/2000/09/xmldsig#' do |key_info|
           key_info.EncryptedKey Id: 'EK', xmlns: 'http://www.w3.org/2001/04/xmlenc#' do |enc_key|
             enc_key.EncryptionMethod Algorithm: key_transport_ns
-            enc_key.tag! 'ds:KeyInfo', 'xmlns:ds' => 'http://www.w3.org/2000/09/xmldsig#' do |key_info2|
+            enc_key.tag! 'ds:KeyInfo',
+                         'xmlns:ds' => 'http://www.w3.org/2000/09/xmldsig#' do |key_info2|
               key_info2.tag! 'ds:X509Data' do |x509_data|
                 x509_data.tag! 'ds:X509Certificate' do |x509_cert|
                   x509_cert << cert.to_s.gsub(/-+(BEGIN|END) CERTIFICATE-+/, '')

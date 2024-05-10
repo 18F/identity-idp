@@ -2,15 +2,15 @@ require 'saml_idp/xml_security'
 require 'saml_idp/service_provider'
 module SamlIdp
   class Request
-    IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}.freeze
-    LOA_PREFIX = %r{^http://idmanagement.gov/ns/assurance/loa}.freeze
-    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}.freeze
-    VTR_REGEXP = %r{\A[A-Z][a-z0-9](\.[A-Z][a-z0-9])*\z}.freeze
+    IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}
+    LOA_PREFIX = %r{^http://idmanagement.gov/ns/assurance/loa}
+    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}
+    VTR_REGEXP = /\A[A-Z][a-z0-9](\.[A-Z][a-z0-9])*\z/
 
     def self.from_deflated_request(raw, options = {})
       if raw
         log "#{'~' * 20} RAW Request #{'~' * 20}\n#{raw}\n#{'~' * 18} Done RAW Request #{'~' * 17}\n"
-        decoded = Base64.decode64(raw.gsub(/\\r/, '').gsub(/\\n/, ''))
+        decoded = Base64.decode64(raw.gsub('\\r', '').gsub('\\n', ''))
         zstream = Zlib::Inflate.new(-Zlib::MAX_WBITS)
         begin
           inflated = zstream.inflate(decoded).tap do
@@ -75,7 +75,7 @@ module SamlIdp
     end
 
     def requested_authn_context
-      return authn_context_node.content if authn_request? && authn_context_node
+      authn_context_node.content if authn_request? && authn_context_node
     end
 
     def requested_authn_context_comparison
@@ -171,7 +171,7 @@ module SamlIdp
       Array(service_provider.certs).find do |cert|
         document.valid_signature?(
           OpenSSL::Digest::SHA256.new(cert.to_der).hexdigest,
-          options.merge(cert: cert)
+          options.merge(cert:)
         )
       end
     end
@@ -198,7 +198,7 @@ module SamlIdp
 
     def issuer
       @_issuer ||= xpath('//saml:Issuer', saml: assertion).first.try(:content)
-      @_issuer if @_issuer.present?
+      @_issuer.presence
     end
 
     def name_id
@@ -212,7 +212,7 @@ module SamlIdp
     end
 
     def session_index
-      @_session_index ||= xpath('//samlp:SessionIndex', samlp: samlp).first.try(:content)
+      @_session_index ||= xpath('//samlp:SessionIndex', samlp:).first.try(:content)
     end
 
     def document
@@ -224,39 +224,39 @@ module SamlIdp
       return @_name_id_format_node if defined?(@_name_id_format_node)
 
       @_name_id_format_node ||= xpath('//samlp:AuthnRequest/samlp:NameIDPolicy/@Format',
-                                      samlp: samlp,
+                                      samlp:,
                                       saml: assertion).first
     end
     private :name_id_format_node
 
     def requested_authn_context_node
       @_authn_context_node ||= xpath('//samlp:AuthnRequest/samlp:RequestedAuthnContext',
-                                     samlp: samlp,
+                                     samlp:,
                                      saml: assertion).first
     end
     private :requested_authn_context_node
 
     def authn_context_node
       @_authn_context_node ||= xpath('//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
-                                     samlp: samlp,
+                                     samlp:,
                                      saml: assertion).first
     end
     private :authn_context_node
 
     def authn_context_nodes
       @_authn_context_nodes ||= xpath('//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
-                                      samlp: samlp,
+                                      samlp:,
                                       saml: assertion)
     end
     private :authn_context_nodes
 
     def authn_request
-      @_authn_request ||= xpath('//samlp:AuthnRequest', samlp: samlp).first
+      @_authn_request ||= xpath('//samlp:AuthnRequest', samlp:).first
     end
     private :authn_request
 
     def logout_request
-      @_logout_request ||= xpath('//samlp:LogoutRequest', samlp: samlp).first
+      @_logout_request ||= xpath('//samlp:LogoutRequest', samlp:).first
     end
     private :logout_request
 

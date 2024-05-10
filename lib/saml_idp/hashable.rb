@@ -7,9 +7,8 @@ module SamlIdp
     end
 
     def to_h
-      hashables.reduce({}) do |hash, key|
+      hashables.each_with_object({}) do |key, hash|
         hash[key.to_sym] = send(key)
-        hash
       end
     end
 
@@ -19,7 +18,7 @@ module SamlIdp
       end
 
       def hashable(method_name)
-        self.hashables << method_name.to_s
+        hashables << method_name.to_s
       end
     end
   end

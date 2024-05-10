@@ -1,4 +1,4 @@
-require_relative './certificate_helpers'
+require_relative 'certificate_helpers'
 
 module CloudhsmMockable
   class MockSession
@@ -21,7 +21,7 @@ module CloudhsmMockable
       expect(algorithm).to eq(:SHA256_RSA_PKCS)
       expect(key).to eq(:hsm_key)
       key = OpenSSL::PKey::RSA.new(cloudhsm_idp_secret_key)
-      key.sign(OpenSSL::Digest::SHA1.new, raw)
+      key.sign(OpenSSL::Digest.new('SHA1'), raw)
     end
   end
 

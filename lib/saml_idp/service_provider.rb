@@ -22,7 +22,7 @@ module SamlIdp
 
     def valid_signature?(doc, require_signature = false, options = {})
       @matching_cert = Array(certs).find do |cert|
-        doc.valid_signature?(fingerprint_cert(cert), options.merge(cert: cert))
+        doc.valid_signature?(fingerprint_cert(cert), options.merge(cert:))
       end
 
       if require_signature || should_validate_signature?
@@ -39,16 +39,16 @@ module SamlIdp
 
     def should_validate_signature?
       attributes[:validate_signature] ||
-        current_metadata.respond_to?(:sign_assertions?) && current_metadata.sign_assertions?
+        (current_metadata.respond_to?(:sign_assertions?) && current_metadata.sign_assertions?)
     end
 
     def refresh_metadata
       fresh = fresh_incoming_metadata
-      if valid_signature?(fresh.document)
-        metadata_persister[identifier, fresh]
-        @current_metadata = nil
-        fresh
-      end
+      return unless valid_signature?(fresh.document)
+
+      metadata_persister[identifier, fresh]
+      @current_metadata = nil
+      fresh
     end
 
     def current_metadata
@@ -57,9 +57,9 @@ module SamlIdp
 
     def get_current_or_build
       persisted = metadata_getter[identifier, self]
-      if persisted.is_a? Hash
-        PersistedMetadata.new(persisted)
-      end
+      return unless persisted.is_a? Hash
+
+      PersistedMetadata.new(persisted)
     end
     private :get_current_or_build
 
@@ -79,7 +79,7 @@ module SamlIdp
     private :fresh_incoming_metadata
 
     def request_metadata
-      metadata_url.present? ? Faraday.get(metadata_url).body : ""
+      metadata_url.present? ? Faraday.get(metadata_url).body : ''
     end
     private :request_metadata
   end

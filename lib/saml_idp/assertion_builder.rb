@@ -6,16 +6,8 @@ module SamlIdp
     include Algorithmable
     include Signable
     attr_accessor :reference_id
-    attr_accessor :issuer_uri
-    attr_accessor :principal
-    attr_accessor :audience_uri
-    attr_accessor :saml_request_id
-    attr_accessor :saml_acs_url
-    attr_accessor :raw_algorithm
-    attr_accessor :authn_context_classref
-    attr_accessor :name_id_format
-    attr_accessor :expiry
-    attr_accessor :encryption_opts
+    attr_accessor :issuer_uri, :principal, :audience_uri, :saml_request_id, :saml_acs_url,
+                  :raw_algorithm, :authn_context_classref, :name_id_format, :expiry, :encryption_opts
 
     delegate :config, to: :SamlIdp
 
@@ -33,7 +25,7 @@ module SamlIdp
       x509_certificate,
       secret_key,
       cloudhsm_key_label,
-      expiry = 60*60,
+      expiry = 60 * 60,
       encryption_opts = nil
     )
       # rubocop:enable Metrics/ParameterLists
@@ -56,58 +48,61 @@ module SamlIdp
     def fresh
       builder = Builder::XmlMarkup.new
       builder.Assertion xmlns: Saml::XML::Namespaces::ASSERTION,
-        ID: reference_string,
-        IssueInstant: now_iso,
-        Version: "2.0" do |assertion|
-          assertion.Issuer issuer_uri
-          sign assertion
-          assertion.Subject do |subject|
-            subject.NameID name_id, Format: sp_name_id_format.fetch(:name)
-            subject.SubjectConfirmation Method: Saml::XML::Namespaces::Methods::BEARER do |confirmation|
-              confirmation.SubjectConfirmationData "", InResponseTo: saml_request_id,
-                NotOnOrAfter: not_on_or_after_subject,
-                Recipient: saml_acs_url
-            end
+                        ID: reference_string,
+                        IssueInstant: now_iso,
+                        Version: '2.0' do |assertion|
+        assertion.Issuer issuer_uri
+        sign assertion
+        assertion.Subject do |subject|
+          subject.NameID name_id, Format: sp_name_id_format.fetch(:name)
+          subject.SubjectConfirmation Method: Saml::XML::Namespaces::Methods::BEARER do |confirmation|
+            confirmation.SubjectConfirmationData '', InResponseTo: saml_request_id,
+                                                     NotOnOrAfter: not_on_or_after_subject,
+                                                     Recipient: saml_acs_url
           end
-          assertion.Conditions NotBefore: not_before, NotOnOrAfter: not_on_or_after_condition do |conditions|
-            conditions.AudienceRestriction do |restriction|
-              restriction.Audience audience_uri
-            end
+        end
+        assertion.Conditions NotBefore: not_before,
+                             NotOnOrAfter: not_on_or_after_condition do |conditions|
+          conditions.AudienceRestriction do |restriction|
+            restriction.Audience audience_uri
           end
-          if asserted_attributes
-            assertion.AttributeStatement do |attr_statement|
-              asserted_attributes.each do |friendly_name, attrs|
-                attrs = (attrs || {}).with_indifferent_access
-                attr_statement.Attribute Name: attrs[:name] || friendly_name,
-                  NameFormat: attrs[:name_format] || Saml::XML::Namespaces::Formats::Attr::URI,
-                  FriendlyName: friendly_name.to_s do |attr|
-                    values = get_values_for friendly_name, attrs[:getter]
-                    values.each do |val|
-                      attr.AttributeValue val.to_s
-                    end
-                  end
-              end
-            end
-          end
-          assertion.AuthnStatement AuthnInstant: now_iso, SessionIndex: reference_string do |statement|
-            statement.AuthnContext do |context|
-              case authn_context_classref
-              when Array
-                context.AuthnContextClassRef(
-                  authn_context_classref.select { |classref| %r{/ial/}.match? classref }.first
-                )
-              else
-                context.AuthnContextClassRef authn_context_classref
+        end
+        if asserted_attributes
+          assertion.AttributeStatement do |attr_statement|
+            asserted_attributes.each do |friendly_name, attrs|
+              attrs = (attrs || {}).with_indifferent_access
+              attr_statement.Attribute Name: attrs[:name] || friendly_name,
+                                       NameFormat: attrs[:name_format] || Saml::XML::Namespaces::Formats::Attr::URI,
+                                       FriendlyName: friendly_name.to_s do |attr|
+                values = get_values_for friendly_name, attrs[:getter]
+                values.each do |val|
+                  attr.AttributeValue val.to_s
+                end
               end
             end
           end
         end
+        assertion.AuthnStatement AuthnInstant: now_iso,
+                                 SessionIndex: reference_string do |statement|
+          statement.AuthnContext do |context|
+            case authn_context_classref
+            when Array
+              context.AuthnContextClassRef(
+                authn_context_classref.select { |classref| %r{/ial/}.match? classref }.first
+              )
+            else
+              context.AuthnContextClassRef authn_context_classref
+            end
+          end
+        end
+      end
     end
     alias_method :raw, :fresh
     private :fresh
 
     def encrypt(opts = {})
-      raise "Must set encryption_opts to encrypt" unless encryption_opts
+      raise 'Must set encryption_opts to encrypt' unless encryption_opts
+
       raw_xml = opts[:sign] ? signed : raw
       require 'saml_idp/encryptor'
       encryptor = Encryptor.new encryption_opts
@@ -117,7 +112,7 @@ module SamlIdp
     def asserted_attributes
       if principal.respond_to?(:asserted_attributes)
         principal.send(:asserted_attributes)
-      elsif !config.attributes.nil? && !config.attributes.empty?
+      elsif config.attributes.present?
         config.attributes
       end
     end
@@ -186,7 +181,7 @@ module SamlIdp
     private :not_on_or_after_condition
 
     def not_on_or_after_subject
-      iso { now + 3 * 60 }
+      iso { now + (3 * 60) }
     end
     private :not_on_or_after_subject
 

@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'openssl'
 require 'base64'
 require 'time'
@@ -13,20 +12,18 @@ module SamlIdp
       helper_method :saml_acs_url if respond_to? :helper_method
     end
 
-    attr_accessor :algorithm
-    attr_accessor :saml_request
+    attr_accessor :algorithm, :saml_request
 
     protected
 
     def validate_saml_request(raw_saml_request = params[:SAMLRequest])
-      log "validate_saml_request"
+      log 'validate_saml_request'
 
       decode_request(raw_saml_request)
 
       head :forbidden unless valid_saml_request?
-
     rescue Nokogiri::XML::SyntaxError => e
-      log "Nokogiri::XML::SyntaxError validating request"
+      log 'Nokogiri::XML::SyntaxError validating request'
       log e
       head :bad_request
     end
@@ -42,10 +39,11 @@ module SamlIdp
     def encode_authn_response(principal, opts = {})
       response_id = get_saml_response_id
       reference_id = opts[:reference_id] || get_saml_reference_id
-      audience_uri = opts[:audience_uri] || saml_request.issuer || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
+      audience_uri = opts[:audience_uri] || saml_request.issuer || saml_acs_url[%r{^(.*?//.*?/)},
+                                                                                1]
       opt_issuer_uri = opts[:issuer_uri] || issuer_uri
       my_authn_context_classref = opts[:authn_context_classref] || authn_context_classref
-      expiry = opts[:expiry] || 60*60
+      expiry = opts[:expiry] || (60 * 60)
       encryption_opts = opts[:encryption] || nil
       signature_opts = opts[:signature] || {}
       response_name_id_format = opts[:name_id_format] || saml_request.name_id_format
@@ -75,7 +73,7 @@ module SamlIdp
       end
     end
 
-    def encode_logout_response(principal, opts = {})
+    def encode_logout_response(_principal, opts = {})
       signature_opts = opts[:signature] || {}
 
       SamlIdp::LogoutResponseBuilder.new(
@@ -102,8 +100,8 @@ module SamlIdp
 
     def issuer_uri
       (SamlIdp.config.base_saml_location.present? && SamlIdp.config.base_saml_location) ||
-        (defined?(request) && request.url.to_s.split("?").first) ||
-        "http://example.com"
+        (defined?(request) && request.url.to_s.split('?').first) ||
+        'http://example.com'
     end
 
     def valid_saml_request?

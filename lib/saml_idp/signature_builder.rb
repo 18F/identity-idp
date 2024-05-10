@@ -10,12 +10,12 @@ module SamlIdp
 
     def raw
       builder = Builder::XmlMarkup.new
-      builder.tag! "ds:Signature", "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#" do |signature|
+      builder.tag! 'ds:Signature', 'xmlns:ds' => 'http://www.w3.org/2000/09/xmldsig#' do |signature|
         signature << signed_info
-        signature.tag! "ds:SignatureValue", signature_value
-        signature.KeyInfo xmlns: "http://www.w3.org/2000/09/xmldsig#" do |key_info|
-          key_info.tag! "ds:X509Data" do |x509|
-            x509.tag! "ds:X509Certificate", x509_certificate
+        signature.tag! 'ds:SignatureValue', signature_value
+        signature.KeyInfo xmlns: 'http://www.w3.org/2000/09/xmldsig#' do |key_info|
+          key_info.tag! 'ds:X509Data' do |x509|
+            x509.tag! 'ds:X509Certificate', x509_certificate
           end
         end
       end
@@ -25,9 +25,9 @@ module SamlIdp
       certificate = @x509_certificate || SamlIdp.config.x509_certificate
       certificate.
         to_s.
-        gsub(/-----BEGIN CERTIFICATE-----/,"").
-        gsub(/-----END CERTIFICATE-----/,"").
-        gsub(/\n/, "")
+        gsub('-----BEGIN CERTIFICATE-----', '').
+        gsub('-----END CERTIFICATE-----', '').
+        gsub("\n", '')
     end
     private :x509_certificate
 

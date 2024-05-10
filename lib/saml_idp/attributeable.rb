@@ -17,7 +17,7 @@ module SamlIdp
     module ClassMethods
       def attribute(att)
         define_method(att) { attributes[att] }
-        define_method("#{att}=") { |new_value| self.attributes[att] = new_value }
+        define_method("#{att}=") { |new_value| attributes[att] = new_value }
       end
     end
   end
