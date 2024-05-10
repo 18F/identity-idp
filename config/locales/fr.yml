@@ -1348,7 +1348,7 @@ mailer.privacy_policy: Politique de confidentialité
 mailer.sent_at: Envoyé à %{formatted_timestamp}
 mfa.account_info: L’ajout d’une autre méthode d’authentification vous évite de vous faire bloquer de votre compte si vous perdez l’une de vos méthodes.
 mfa.add: Ajouter une autre méthode
-mfa.info: Ajoutez une couche de protection supplémentaire à votre compte %{app_name} en sélectionnant une méthode d’authentification à plusieurs facteurs.
+mfa.info: Ajoutez une couche supplémentaire de sécurité à votre compte %{app_name} en sélectionnant une méthode d’authentification multi-facteurs.
 mfa.recommendation: Nous vous recommandons de sélectionner au moins deux options différentes au cas où vous perdriez l’une de vos méthodes.
 mfa.second_method_warning.link: Ajouter une deuxième méthode d’authentification.
 mfa.second_method_warning.text: Vous devrez supprimer votre compte et recommencer si vous perdez votre seule méthode d’authentification.
