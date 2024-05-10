@@ -48,14 +48,6 @@ class OtpRateLimiter
 
   attr_reader :phone, :user, :phone_confirmed
 
-  def otp_findtime
-    IdentityConfig.store.otp_delivery_blocklist_findtime.minutes
-  end
-
-  def otp_maxretry_times
-    IdentityConfig.store.otp_delivery_blocklist_maxretry
-  end
-
   def phone_fingerprint
     @phone_fingerprint ||= Pii::Fingerprinter.fingerprint(PhoneFormatter.format(phone))
   end
