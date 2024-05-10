@@ -164,7 +164,7 @@ AcuantContext.displayName = 'AcuantContext';
  * object, if one is available.
  */
 const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
-  if (window.AcuantJavascriptWebSdk && typeof window.AcuantJavascriptWebSdk.start === 'function') {
+  if (window.AcuantJavascriptWebSdk) {
     return window.AcuantJavascriptWebSdk;
   }
   if (!window.AcuantJavascriptWebSdk) {
