@@ -48,7 +48,12 @@
         },
       ) %>
   <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
-  <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
+
+  <%= render CaptchaSubmitButtonComponent.new(
+        form: f,
+        action: SignInRecaptchaForm::RECAPTCHA_ACTION,
+        button_options: { full_width: true },
+      ).with_content(t('links.sign_in')) %>
 <% end %>
 <% if desktop_device? %>
   <div class='margin-x-neg-1 margin-top-205'>

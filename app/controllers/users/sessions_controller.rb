@@ -31,6 +31,7 @@ module Users
       session[:sign_in_flow] = :sign_in
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
+      return process_failed_captcha if !valid_captcha_result?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
@@ -77,6 +78,40 @@ module Users
       warden.lock!
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url
+    end
+
+    def valid_captcha_result?
+      if cookies[:device] && (device = Device.find_by(cookie_uuid: cookies[:device]))
+        return true if device.user.email_addresses.lazy.map(&:email).include?(auth_params[:email])
+      end
+
+      response, _assessment_id = recaptcha_form.submit(params.require(:user)[:recaptcha_token])
+      flash[:error] = response.first_error_message if !response.success?
+      response.success?
+    end
+
+    def process_failed_captcha
+      warden.logout(:user)
+      warden.lock!
+      redirect_to root_url
+    end
+
+    def recaptcha_form
+      @recaptcha_form ||= SignInRecaptchaForm.new(**recaptcha_form_args)
+    end
+
+    def recaptcha_form_args
+      args = { analytics: }
+      if IdentityConfig.store.phone_recaptcha_mock_validator
+        args.merge(
+          form_class: RecaptchaMockForm,
+          score: params.require(:user)[:recaptcha_mock_score].to_f,
+        )
+      elsif FeatureManagement.recaptcha_enterprise?
+        args.merge(form_class: RecaptchaEnterpriseForm)
+      else
+        args
+      end
     end
 
     def redirect_to_signin

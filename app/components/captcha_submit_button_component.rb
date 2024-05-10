@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
 class CaptchaSubmitButtonComponent < BaseComponent
-  attr_reader :form, :action, :tag_options
+  attr_reader :form, :action, :button_options, :tag_options
 
   alias_method :f, :form
 
   # @param [String] action https://developers.google.com/recaptcha/docs/v3#actions
-  def initialize(form:, action:, **tag_options)
+  def initialize(form:, action:, button_options:, **tag_options)
     @form = form
     @action = action
+    @button_options = button_options
     @tag_options = tag_options
   end
 

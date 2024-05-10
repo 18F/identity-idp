@@ -385,6 +385,7 @@ module IdentityConfig
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:short_term_phone_otp_max_attempts, type: :integer)
     config.add(:short_term_phone_otp_max_attempt_window_in_seconds, type: :integer)
+    config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
