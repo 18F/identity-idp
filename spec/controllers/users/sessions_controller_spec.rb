@@ -65,6 +65,31 @@ RSpec.describe Users::SessionsController, devise: true do
       expect(subject.session[:sign_in_flow]).to eq(:sign_in)
     end
 
+    it 'saves and refreshes cookie for device for successful authentication' do
+      user = create(:user, :fully_registered)
+
+      first_expires = nil
+
+      freeze_time do
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
+        first_expires = CGI::Cookie.parse(device_cookie)['expires'].first
+        expect(Time.zone.parse(first_expires)).to be >= 20.years.from_now
+      end
+
+      sign_out(user)
+      expect(cookies[:device]).to be_present
+
+      travel_to 10.minutes.from_now do
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
+        second_expires = CGI::Cookie.parse(device_cookie)['expires'].first
+        expect(Time.zone.parse(second_expires)).to be >= Time.zone.parse(first_expires) + 10.minutes
+      end
+    end
+
     it 'tracks the unsuccessful authentication for existing user' do
       user = create(:user, :fully_registered)
 
