@@ -79,7 +79,6 @@ module Idv
     end
 
     def post_images_to_client
-
       # user submit a request, set the requested_at timestamp
       document_capture_session.requested_at = Time.zone.now
       document_capture_session.save!

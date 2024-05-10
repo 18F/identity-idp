@@ -23,7 +23,6 @@ module DocAuth
       end
 
       def self.response_delay(delay)
-        puts "Setting delay to #{delay} in #{object_id}"
         @delay = delay
       end
 

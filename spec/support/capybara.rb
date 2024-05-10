@@ -5,6 +5,7 @@ require 'extensions/capybara/node/simple'
 
 # temporary fix for local development feature tests
 # remove when we get a new working version of Chromedriver
+
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
   options.add_argument("--headless#{ENV['CI'] ? '' : '=new'}") if !ENV['SHOW_BROWSER']
