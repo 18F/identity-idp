@@ -49,32 +49,32 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       let(:inside_partial_month) { Date.new(2020, 9, 16) }
       let(:inside_whole_month) { Date.new(2020, 10, 16) }
 
-      let(:user1) { create(:user, profiles: [profile1])}
-      let(:profile1) { create(:profile, verified_at: "2020-02-15") }
+      let(:user1) { create(:user, profiles: [profile1]) }
+      let(:profile1) { create(:profile, verified_at: '2020-02-15') }
 
-      let(:user2) { create(:user, profiles: [profile2])}
-      let(:profile2) { create(:profile, verified_at:"2016-12-25") }
+      let(:user2) { create(:user, profiles: [profile2]) }
+      let(:profile2) { create(:profile, verified_at: '2016-12-25') }
 
-      let(:user3) { create(:user, profiles: [profile3])}
-      let(:profile3) { create(:profile, verified_at: "2019-11-10") }
+      let(:user3) { create(:user, profiles: [profile3]) }
+      let(:profile3) { create(:profile, verified_at: '2019-11-10') }
 
       let(:user4) { create(:user, profiles: [profile4]) }
-      let(:profile4) { create(:profile, verified_at: "2018-03-01") }
+      let(:profile4) { create(:profile, verified_at: '2018-03-01') }
 
       let(:user5) { create(:user, profiles: [profile5]) }
-      let(:profile5) { create(:profile, verified_at: "2019-09-17") }
+      let(:profile5) { create(:profile, verified_at: '2019-09-17') }
 
       let(:user6) { create(:user, profiles: [profile6]) }
-      let(:profile6) { create(:profile, verified_at: "2017-08-01") }
+      let(:profile6) { create(:profile, verified_at: '2017-08-01') }
 
       let(:user7) { create(:user, profiles: [profile7]) }
-      let(:profile7) { create(:profile, verified_at: "2016-09-15") }
+      let(:profile7) { create(:profile, verified_at: '2016-09-15') }
 
       let(:user8) { create(:user, profiles: [profile8]) }
-      let(:profile8) { create(:profile, verified_at: "2012-11-20") }
+      let(:profile8) { create(:profile, verified_at: '2012-11-20') }
 
       let(:user9) { create(:user, profiles: [profile9]) }
-      let(:profile9) { create(:profile, verified_at: "2022-12-15") } 
+      let(:profile9) { create(:profile, verified_at: '2022-12-15') }
 
       let(:user10) { create(:user, profiles: [profile10]) }
       let(:profile10) { create(:profile, verified_at: nil) }
@@ -139,89 +139,88 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
         #   end
         # end
 
-      # #  5 new users in partial month proofed in year 1-5 @ partner2
-      #   [user 1].each do |user|
-      #     3.times do
-      #       create(
-      #         :sp_return_log,
-      #         user_id: user.id,
-      #         ial: 2,
-      #         issuer: issuer2,
-      #         returned_at: inside_partial_month,
-      #         profile_verified_at: user.profiles[0].verified_at,
-      #         billable: true,
-      #       )
-      #     end
-      #   end
-      #   binding.pry
+        # #  5 new users in partial month proofed in year 1-5 @ partner2
+        #   [user 1].each do |user|
+        #     3.times do
+        #       create(
+        #         :sp_return_log,
+        #         user_id: user.id,
+        #         ial: 2,
+        #         issuer: issuer2,
+        #         returned_at: inside_partial_month,
+        #         profile_verified_at: user.profiles[0].verified_at,
+        #         billable: true,
+        #       )
+        #     end
+        #   end
+        #   binding.pry
 
-      #   # 2 new users nil profile verified and > 5 year bucket in whole month @ partner 1 
-      #   [user1, user2, user3].each do |user|
-      #     3.times do
-      #       create(
-      #         :sp_return_log,
-      #         user_id: user.id,
-      #         ial: 2,
-      #         issuer: issuer2,
-      #         requested_at: "2020-08-16",
-      #         returned_at: "2020-10-05",
-      #         profile_verified_at: user.profiles[0].verified_at,
-      #         billable: true,
-      #       )
-      #     end
-      #   end
+        #   # 2 new users nil profile verified and > 5 year bucket in whole month @ partner 1
+        #   [user1, user2, user3].each do |user|
+        #     3.times do
+        #       create(
+        #         :sp_return_log,
+        #         user_id: user.id,
+        #         ial: 2,
+        #         issuer: issuer2,
+        #         requested_at: "2020-08-16",
+        #         returned_at: "2020-10-05",
+        #         profile_verified_at: user.profiles[0].verified_at,
+        #         billable: true,
+        #       )
+        #     end
+        #   end
 
-      #   # 1 old user returning with new profile age in whole month @ partner 1
-      #   binding.pry
-      #   [user4].each do |user, profile|
-      #     3.times do
-      #       create(
-      #         :sp_return_log,
-      #         user_id: user.id,
-      #         ial: 2,
-      #         issuer: issuer2,
-      #         requested_at: "2020-08-16",
-      #         returned_at: "2020-10-05",
-      #         profile_verified_at: user.profiles[0].verified_at,
-      #         billable: true,
-      #       )
-      #     end
-      #   end
+        #   # 1 old user returning with new profile age in whole month @ partner 1
+        #   binding.pry
+        #   [user4].each do |user, profile|
+        #     3.times do
+        #       create(
+        #         :sp_return_log,
+        #         user_id: user.id,
+        #         ial: 2,
+        #         issuer: issuer2,
+        #         requested_at: "2020-08-16",
+        #         returned_at: "2020-10-05",
+        #         profile_verified_at: user.profiles[0].verified_at,
+        #         billable: true,
+        #       )
+        #     end
+        #   end
 
-      #   # 1 old user with new profile (new requesting agency and profile verification) in whole month @ partner 1
-      #   binding.pry
-      #   [user4].each do |user, profile|
-      #     3.times do
-      #       create(
-      #         :sp_return_log,
-      #         user_id: user.id,
-      #         ial: 2,
-      #         issuer: issuer2,
-      #         requested_at: "2020-08-16",
-      #         returned_at: "2020-10-05",
-      #         profile_verified_at: user.profiles[0].verified_at,
-      #         billable: true,
-      #       )
-      #     end
-      #   end
+        #   # 1 old user with new profile (new requesting agency and profile verification) in whole month @ partner 1
+        #   binding.pry
+        #   [user4].each do |user, profile|
+        #     3.times do
+        #       create(
+        #         :sp_return_log,
+        #         user_id: user.id,
+        #         ial: 2,
+        #         issuer: issuer2,
+        #         requested_at: "2020-08-16",
+        #         returned_at: "2020-10-05",
+        #         profile_verified_at: user.profiles[0].verified_at,
+        #         billable: true,
+        #       )
+        #     end
+        #   end
 
-      #   # 1 new user returning outside the range of analysis @ partner 1
-      #   binding.pry
-      #   [user4].each do |user, profile|
-      #     3.times do
-      #       create(
-      #         :sp_return_log,
-      #         user_id: user.id,
-      #         ial: 2,
-      #         issuer: issuer2,
-      #         requested_at: "2020-08-16",
-      #         returned_at: "2020-10-05",
-      #         profile_verified_at: user.profiles[0].verified_at,
-      #         billable: true,
-      #       )
-      #     end
-      #   end
-
+        #   # 1 new user returning outside the range of analysis @ partner 1
+        #   binding.pry
+        #   [user4].each do |user, profile|
+        #     3.times do
+        #       create(
+        #         :sp_return_log,
+        #         user_id: user.id,
+        #         ial: 2,
+        #         issuer: issuer2,
+        #         requested_at: "2020-08-16",
+        #         returned_at: "2020-10-05",
+        #         profile_verified_at: user.profiles[0].verified_at,
+        #         billable: true,
+        #       )
+        #     end
+        #   end
       end
 
       it 'adds up new unique users from sp_return_log instances and splits based on profile age' do
@@ -305,6 +304,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
   end
 end
 
-# Test cases for ial2 proofing each year (different sums) 
+# Test cases for ial2 proofing each year (different sums)
 # test case to capture reproofing > 5 years
 # create users outside of the range for testing to make sure our build query functions within the range only
