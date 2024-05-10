@@ -196,27 +196,27 @@ RSpec.configure do |c|
   end
 
   c.after(:all) do |ex|
-    if c.world.all_examples.count == c.world.example_count
-      groups.group_by(&:first).each do |group, pairs|
-        allowed_extra_analytics = group.metadata[:allowed_extra_analytics]
-        next if allowed_extra_analytics.blank?
-        all_checked_extra_analytics = pairs.map(&:last).flatten.uniq
-        if allowed_extra_analytics.include?(:*)
-          expect(all_checked_extra_analytics).to(
-            be_present,
-            "Unnecessary allowed_extra_analytics on example group #{group} (in #{group.id})",
-          )
-        else
-          unchecked_extra_analytics = allowed_extra_analytics - all_checked_extra_analytics
-          expect(unchecked_extra_analytics).to(
-            be_blank,
-            "Unnecessary allowed_extra_analytics keywords on example group #{group}: " \
-              "#{unchecked_extra_analytics} (in #{group.id})",
-          )
-        end
+    next if c.world.all_examples.count != c.world.example_count
+
+    groups.group_by(&:first).each do |group, pairs|
+      allowed_extra_analytics = group.metadata[:allowed_extra_analytics]
+      next if allowed_extra_analytics.blank?
+      all_checked_extra_analytics = pairs.map(&:last).flatten.uniq
+      if allowed_extra_analytics.include?(:*)
+        expect(all_checked_extra_analytics).to(
+          be_present,
+          "Unnecessary allowed_extra_analytics on example group #{group} (in #{group.id})",
+        )
+      else
+        unchecked_extra_analytics = allowed_extra_analytics - all_checked_extra_analytics
+        expect(unchecked_extra_analytics).to(
+          be_blank,
+          "Unnecessary allowed_extra_analytics keywords on example group #{group}: " \
+            "#{unchecked_extra_analytics} (in #{group.id})",
+        )
       end
     end
-
+  ensure
     groups = []
   end
 end
