@@ -20,10 +20,12 @@ production:
   redis_url: ['env', 'REDIS_URL']
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  phone_recaptcha_mock_validator: true
   piv_cac_service_url: ['env', 'PIV_CAC_SERVICE_URL']
   piv_cac_verify_token_secret: "a6ed2fb16320ae85a7a8e48f4b0eeb6afca5f1ac64af2a05a0c486df1c20b693987832a11f0910729f199b3ce5c7609fe6d580bed428d035ea8460990e38a382"
   piv_cac_verify_token_url: ['env', 'PIV_CAC_VERIFY_TOKEN_URL']
   secret_key_base: development_secret_key_base
+  sign_in_recaptcha_score_threshold: 0.3
   domain_name: ['env', 'DOMAIN_NAME']
   use_kms: false
   email_from: no-reply@identitysandbox.gov
