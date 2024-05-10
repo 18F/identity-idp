@@ -66,7 +66,7 @@ module SamlIdpAuthConcern
       service_provider: saml_request_service_provider,
       authn_context: requested_authn_contexts,
       authn_context_comparison: saml_request.requested_authn_context_comparison,
-      nameid_format: name_id_format,
+      nameid_format: saml_request.name_id_format,
     )
   end
 
@@ -78,8 +78,8 @@ module SamlIdpAuthConcern
     @saml_request_validator = SamlRequestValidator.new(blank_cert: true)
   end
 
-  def name_id_format
-    @name_id_format ||= specified_name_id_format || default_name_id_format
+  def response_name_id_format
+    @response_name_id_format ||= specified_name_id_format || default_name_id_format
   end
 
   def specified_name_id_format
@@ -93,9 +93,6 @@ module SamlIdpAuthConcern
   end
 
   def default_name_id_format
-    if saml_request_service_provider&.email_nameid_format_allowed
-      return Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
-    end
     Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
   end
 
@@ -170,7 +167,7 @@ module SamlIdpAuthConcern
     AttributeAsserter.new(
       user: principal,
       service_provider: saml_request_service_provider,
-      name_id_format: name_id_format,
+      name_id_format: response_name_id_format,
       authn_request: saml_request,
       decrypted_pii: decrypted_pii,
       user_session: user_session,
@@ -190,7 +187,7 @@ module SamlIdpAuthConcern
   def saml_response
     encode_response(
       current_user,
-      name_id_format: name_id_format,
+      name_id_format: response_name_id_format,
       authn_context_classref: response_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
