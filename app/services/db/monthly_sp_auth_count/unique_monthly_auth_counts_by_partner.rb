@@ -46,7 +46,7 @@ module Db
               ActiveRecord::Base.connection.execute(query).each do |row|
                 user_id = row['user_id']
                 year_month = row['year_month']
-                profile_age = row['profile_age'] < 0 ? nil : row['profile_age']
+                profile_age = row['profile_age']
 
                 year_month_to_users_to_profile_age[year_month][user_id] = profile_age
               end
@@ -55,26 +55,24 @@ module Db
         end
 
         rows = []
-        # binding.pry
+
         prev_seen_users = Set.new
         year_months = year_month_to_users_to_profile_age.keys.sort
-        # binding.pry
+
         year_months.each do |year_month|
           users_to_profile_age = year_month_to_users_to_profile_age[year_month]
 
           this_month_users = users_to_profile_age.keys.to_set
           new_unique_users = this_month_users - prev_seen_users
 
-          unknown_count = 0
-
           profile_age_counts = new_unique_users.group_by do |user_id|
-            age = users_to_profile_age[user_id].to_i
-            if age > 4 # TODO
+            age = users_to_profile_age[user_id]
+            if age.nil? || age < 0
+              :unknown
+            elsif age.to_i > 4
               :older
-            elsif age >= 0 && age <= 4
-              age
             else
-              unknown_count += 1
+              age
             end
           end
 
@@ -93,13 +91,10 @@ module Db
             partner_ial2_new_unique_users_year4: (profile_age_counts[3].nil? ? 0 : profile_age_counts[3].count),
             partner_ial2_new_unique_users_year5: (profile_age_counts[4].nil? ? 0 : profile_age_counts[4].count),
             partner_ial2_new_unique_users_year_greater_than_5: profile_age_counts[:older].nil? ? 0 : profile_age_counts[:older].count,
-            partner_ial2_new_unique_users_unknown: unknown_count,
+            partner_ial2_new_unique_users_unknown: profile_age_counts[:unknown].nil? ? 0 : profile_age_counts[:unknown].count,
           }
-          # binding.pry
         end
-        # binding.pry
         rows
-        # binding.pry
       end
 
       # @param [Array<String>] issuers all the issuers for this iaa
@@ -115,7 +110,6 @@ module Db
             issuers: issuers,
           }.transform_values { |value| quote(value) }
 
-          # binding.pry
           format(<<~SQL, params)
             SELECT
               sp_return_logs.user_id
