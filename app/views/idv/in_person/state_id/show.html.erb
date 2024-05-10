@@ -47,7 +47,7 @@
 <%= simple_form_for form,
                     url: url_for,
                     method: 'put',
-                    html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+                    html: { class: 'margin-y-5' } do |f| %>
 
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(

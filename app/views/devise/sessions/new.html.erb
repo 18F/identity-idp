@@ -27,7 +27,6 @@
       resource,
       as: resource_name,
       url: session_path(resource_name),
-      html: { autocomplete: 'off' },
     ) do |f|
 %>
   <%= render ValidatedFieldComponent.new(

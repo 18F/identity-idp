@@ -16,8 +16,6 @@
 
 <%= simple_form_for(
       @two_factor_options_form,
-      html: { autocomplete: 'off' },
-      method: :post,
       url: login_two_factor_options_path,
     ) do |f| %>
   <div role="group" aria-label="<%= @presenter.heading %>">

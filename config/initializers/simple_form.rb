@@ -7,6 +7,9 @@ SimpleForm.setup do |config|
   require Rails.root.join(
     'lib', 'extensions', 'simple_form', 'components', 'html5_no_aria_required'
   )
+  require Rails.root.join(
+    'lib', 'extensions', 'simple_form', 'active_view_extensions', 'form_helper'
+  )
 
   config.button_class = 'usa-button'
   config.boolean_label_class = nil
