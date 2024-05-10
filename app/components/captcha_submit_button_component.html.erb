@@ -25,7 +25,7 @@
       </div>
     <% end %>
   <% else %>
-    <%= f.input(:recaptcha_token, as: :hidden) %>
+    <%= f.input(:recaptcha_token, as: :hidden, input_html: { value: '' }) %>
   <% end %>
   <%= render SpinnerButtonComponent.new(
         action_message: t('components.captcha_submit_button.action_message'),
