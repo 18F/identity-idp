@@ -867,8 +867,8 @@ forms.webauthn_setup.step_1a: Si vous ajoutez plus d’une clé de sécurité, v
 forms.webauthn_setup.step_2: Insérer votre clé de sécurité
 forms.webauthn_setup.step_2_image_alt: Insertion d’une clé de sécurité dans le côté droit d’un ordinateur portable
 forms.webauthn_setup.step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
-forms.webauthn_setup.step_3: Configurer une clé de sécurité
-forms.webauthn_setup.step_3a: Cliquez sur « Configurer votre clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
+forms.webauthn_setup.step_3: Configurer votre clé de sécurité
+forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés
@@ -1681,7 +1681,7 @@ two_factor_authentication.two_factor_choice_options.phone_info_no_voip: N’util
 two_factor_authentication.two_factor_choice_options.piv_cac: Carte d’employé fédéral
 two_factor_authentication.two_factor_choice_options.piv_cac_info: Cartes PIV/CAC pour les employés fédéraux et militaires. Bureau uniquement.
 two_factor_authentication.two_factor_choice_options.webauthn: Clé de sécurité
-two_factor_authentication.two_factor_choice_options.webauthn_info: Connectez votre clé de sécurité physique à votre appareil. Vous n’aurez pas besoin d’entrer un code.
+two_factor_authentication.two_factor_choice_options.webauthn_info: Connectez votre clé de sécurité physique à votre appareil. Vous n’aurez pas besoin de saisir un code.
 two_factor_authentication.two_factor_choice_options.webauthn_platform: Déverrouillage facial ou tactile
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: Utilisez votre visage ou votre empreinte digitale pour accéder à votre compte sans code à usage unique.
 two_factor_authentication.two_factor_hspd12_choice: Authentification supplémentaire requise

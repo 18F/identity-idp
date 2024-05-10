@@ -861,18 +861,18 @@ forms.webauthn_platform_setup.intro_html:
 forms.webauthn_platform_setup.intro_link_text: 了解关于使用不同设备的更多信息。
 forms.webauthn_platform_setup.nickname: 设备昵称
 forms.webauthn_platform_setup.nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
-forms.webauthn_setup.intro: Use your physical security key to add an additional layer of protection to your %{app_name} account to prevent unauthorized access.
+forms.webauthn_setup.intro: 使用实体安全密钥为您的 %{app_name} 帐户添加了额外一层安全保障，以防止未经授权的访问。了解有关安全密钥的更多信息
 forms.webauthn_setup.learn_more: Learn more about security keys
 forms.webauthn_setup.nickname: 安全密钥昵称
 forms.webauthn_setup.saving: 正在保存你的凭据…
-forms.webauthn_setup.set_up: Set up security key
+forms.webauthn_setup.set_up: 设置安全密钥
 forms.webauthn_setup.step_1: Give it a nickname
 forms.webauthn_setup.step_1a: If you add more than one security key, you’ll know which one is which.
-forms.webauthn_setup.step_2: Insert a security key into your device
+forms.webauthn_setup.step_2: 将安全密钥插入您的设备
 forms.webauthn_setup.step_2_image_alt: A security key being inserted into the right side of a laptop
 forms.webauthn_setup.step_2_image_mobile_alt: A security key being inserted into the bottom of a smart phone
-forms.webauthn_setup.step_3: Set up your security key
-forms.webauthn_setup.step_3a: Click “set up security key” below and follow your browser’s instructions.
+forms.webauthn_setup.step_3: 设置您的安全密钥
+forms.webauthn_setup.step_3a: 点击下面的“设置安全密钥”并按照浏览器的说明进行操作。
 headings.account.activity: 活动
 headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_accounts: 你连接的账户
@@ -928,7 +928,7 @@ headings.verify: 验证你的信息
 headings.verify_email: 检查你的电邮
 headings.verify_personal_key: 验证你的个人密钥
 headings.webauthn_platform_setup.new: 添加人脸或触摸解锁
-headings.webauthn_setup.new: 添加你的安全密钥
+headings.webauthn_setup.new: 插入您的安全密钥
 help_text.requested_attributes.address: 地址
 help_text.requested_attributes.all_emails: 你账户上的电邮地址
 help_text.requested_attributes.birthdate: 生日
@@ -1138,7 +1138,7 @@ idv.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一�
 idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{count} 次 </strong>了 。
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
-idv.warning.state_id.explanation: '遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。'
+idv.warning.state_id.explanation: 遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
 idv.warning.state_id.heading: 我们正在争取解决错误。
 idv.warning.state_id.next_steps.items_html:
   - S现在再试一次<strong>或者</strong>
@@ -1351,7 +1351,7 @@ mailer.privacy_policy: 隐私政策
 mailer.sent_at: 在 %{formatted_timestamp}时发出
 mfa.account_info: 添加另外一个身份证实方法可以预防你在失去其他方法后被锁在账户外。
 mfa.add: 添加另外一个方法
-mfa.info: 选择一个多因素身份证实方法来增加更多一层安全防线。我们建议你选择至少两个不同方法，以防你丢失其中一个。
+mfa.info: 通过选择多因素身份证实方法来为您的 %{app_name} 帐户添加额外一层安全保障。
 mfa.recommendation: We recommend you select at least two different options in case you lose one of your methods.
 mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
@@ -1683,7 +1683,7 @@ two_factor_authentication.two_factor_choice_options.phone_info_no_voip: 请勿�
 two_factor_authentication.two_factor_choice_options.piv_cac: 政府雇员身份证件
 two_factor_authentication.two_factor_choice_options.piv_cac_info: 政府和军队雇员的 PIV/CAC 卡仅限桌面电脑。
 two_factor_authentication.two_factor_choice_options.webauthn: 安全密钥
-two_factor_authentication.two_factor_choice_options.webauthn_info: 一个实体设备，通常形状像一个U盘，可以插入你的设备。
+two_factor_authentication.two_factor_choice_options.webauthn_info: 将您的实体安全密钥连接到您的设备。您无需输入代码。
 two_factor_authentication.two_factor_choice_options.webauthn_platform: 人脸或触摸解锁
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
 two_factor_authentication.two_factor_hspd12_choice: 要求额外的身份证实

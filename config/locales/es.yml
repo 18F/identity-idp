@@ -1132,7 +1132,7 @@ idv.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un int
 idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
-idv.warning.state_id.explanation: 'Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.'
+idv.warning.state_id.explanation: Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
 idv.warning.state_id.heading: Estamos trabajando para corregir un error
 idv.warning.state_id.next_steps.items_html:
   - Volver a intentarlo ahora <strong>o</strong>
@@ -1344,7 +1344,7 @@ mailer.privacy_policy: Política de privacidad
 mailer.sent_at: 'Enviado: %{formatted_timestamp}'
 mfa.account_info: Agregar otro método de autenticación evita que el acceso a su cuenta quede bloqueado si pierde uno de sus métodos.
 mfa.add: Agregar otro método
-mfa.info: Añada una capa adicional de protección a su cuenta de %{app_name} al seleccionar un método de autenticación multifactor.
+mfa.info: Agregue un nivel de seguridad adicional para su cuenta de %{app_name} seleccionando un método de autenticación multifactor.
 mfa.recommendation: Le recomendamos seleccionar al menos dos opciones diferentes en caso de que pierda uno de los métodos.
 mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
@@ -1677,7 +1677,7 @@ two_factor_authentication.two_factor_choice_options.phone_info_no_voip: No use s
 two_factor_authentication.two_factor_choice_options.piv_cac: Identificación de empleado gubernamental
 two_factor_authentication.two_factor_choice_options.piv_cac_info: Tarjetas PIV o CAC para empleados gubernamentales y militares. Únicamente computadora de escritorio.
 two_factor_authentication.two_factor_choice_options.webauthn: Clave de seguridad
-two_factor_authentication.two_factor_choice_options.webauthn_info: Conecte su clave de seguridad física a su dispositivo. No necesitará ingresar un código.
+two_factor_authentication.two_factor_choice_options.webauthn_info: Conecte su clave de seguridad física a su dispositivo. No necesita introducir un código.
 two_factor_authentication.two_factor_choice_options.webauthn_platform: Desbloqueo facial o táctil
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: Use su rostro o huella dactilar para acceder a su cuenta sin un código de un solo uso.
 two_factor_authentication.two_factor_hspd12_choice: Se requiere autenticación adicional
