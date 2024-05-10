@@ -4,12 +4,28 @@ updates:
     directory: /
     schedule:
       interval: daily
-    allow:
-      - dependency-name: '@18f/identity-design-system'
-      - dependency-name: libphonenumber-js
+    groups:
+      sync-all-versions:
+        applies-to: version-updates
+        allow:
+          - dependency-name: '@18f/identity-design-system'
+          - dependency-name: libphonenumber-js
+      sync-major-versions:
+        applies-to: version-updates
+        allow:
+          - dependency-name: stylelint
+        update-types:
+          - major
+      security:
+        applies-to: security-updates
   - package-ecosystem: bundler
     directory: /
     schedule:
       interval: daily
-    allow:
-      - dependency-name: phonelib
+    groups:
+      sync-all-versions:
+        applies-to: version-updates
+        allow:
+          - dependency-name: phonelib
+      security:
+        applies-to: security-updates
