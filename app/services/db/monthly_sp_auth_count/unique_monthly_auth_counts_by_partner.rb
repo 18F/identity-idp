@@ -23,7 +23,7 @@ module Db
         queries = build_queries(issuers: issuers, months: months)
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
-          ym_h[ym_k] = Hash.new { |user_h, user_k| }
+          ym_h[ym_k] = {}
         end
 
         queries.each do |query|
@@ -72,7 +72,7 @@ module Db
             elsif age.to_i > 4
               :older
             else
-              age
+              age.to_i
             end
           end.tap { |counts| counts.default = [] }
 
