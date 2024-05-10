@@ -140,14 +140,20 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-      # need fix, network error should not be counted for rate limiting
+      allow(IdentityConfig.store).to receive(:doc_auth_check_failed_image_resubmission_enabled).
+        and_return(false)
+      # network error should not be counted for rate limiting
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: DocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+          errors: { general_error: I18n.t('doc_auth.errors.general.multiple_front_id_failures') },
         ),
       )
+    end
+
+    after do
+      DocAuth::Mock::DocAuthMockClient.reset!
     end
 
     it 'does not rate limit on last attempt if successful', js: true do
@@ -172,6 +178,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
         # reset to return mocked normal success response for the last attempt
         DocAuth::Mock::DocAuthMockClient.reset!
+        DocAuth::Mock::DocAuthMockClient.response_delay(8)
         attach_and_submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
@@ -206,15 +213,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
           click_on t('idv.failure.button.warning')
         end
 
-        # final failure, not a network error, which currently will skip saving session result
-        DocAuth::Mock::DocAuthMockClient.reset!
-        DocAuth::Mock::DocAuthMockClient.mock_response!(
-          method: :post_front_image,
-          response: DocAuth::Response.new(
-            success: false,
-            errors: { general_error: I18n.t('doc_auth.errors.general.multiple_front_id_failures') },
-          ),
-        )
+        DocAuth::Mock::DocAuthMockClient.response_delay(8)
         attach_and_submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)

@@ -53,8 +53,9 @@ module Idv
     end
 
     def session_result
-      return @session_result if defined?(@session_result)
-      @session_result = document_capture_session.load_result
+      # we need to reload fresh, otherwise when in real environment it almost always
+      # return outdated result, though this potentially increase load on backstore (redis)
+      document_capture_session.load_result
     end
 
     def document_capture_session
@@ -97,6 +98,7 @@ module Idv
     end
 
     def redo_document_capture_pending?
+      return true if !session_result && document_capture_session&.requested_at.present?
       return unless session_result&.dig(:captured_at)
       return unless document_capture_session.requested_at
 
@@ -104,7 +106,7 @@ module Idv
     end
 
     def rate_limited_and_failed?
-      rate_limiter.limited? && !session_result&.success? && session_result&.captured_at.present?
+      rate_limiter.limited? && !session_result&.success? && !redo_document_capture_pending?
     end
   end
 end

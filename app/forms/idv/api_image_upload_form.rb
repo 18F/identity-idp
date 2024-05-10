@@ -79,8 +79,12 @@ module Idv
     end
 
     def post_images_to_client
-      timer = JobHelpers::Timer.new
 
+      # user submit a request, set the requested_at timestamp
+      document_capture_session.requested_at = Time.zone.now
+      document_capture_session.save!
+
+      timer = JobHelpers::Timer.new
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
           front_image: front_image_bytes,
@@ -481,41 +485,41 @@ module Idv
     # @param [Object] doc_pii_response
     # @return [Object] latest failed fingerprints
     def store_failed_images(client_response, doc_pii_response)
-      unless image_resubmission_check?
-        return {
-          front: [],
-          back: [],
-          selfie: [],
-        }
-      end
       # doc auth failed due to non network error or doc_pii is not valid
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
         failed_front_fingerprint = nil
         failed_back_fingerprint = nil
-        if errors_hash[:front] || errors_hash[:back]
-          if errors_hash[:front]
+        selfie_image_fingerprint = nil
+        if image_resubmission_check?
+          if errors_hash[:front] || errors_hash[:back]
+            if errors_hash[:front]
+              failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+            end
+            if errors_hash[:back]
+              failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+            end
+          elsif !client_response.doc_auth_success?
             failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
-          end
-          if errors_hash[:back]
             failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
           end
-        elsif !client_response.doc_auth_success?
-          failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
-          failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+          selfie_image_fingerprint = extra_attributes[:selfie_image_fingerprint]
         end
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: failed_front_fingerprint,
           back_image_fingerprint: failed_back_fingerprint,
-          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          selfie_image_fingerprint: selfie_image_fingerprint,
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
         )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
-          front_image_fingerprint: extra_attributes[:front_image_fingerprint],
-          back_image_fingerprint: extra_attributes[:back_image_fingerprint],
-          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          front_image_fingerprint: image_resubmission_check? ?
+                                     extra_attributes[:front_image_fingerprint] : nil,
+          back_image_fingerprint: image_resubmission_check? ?
+                                    extra_attributes[:back_image_fingerprint] : nil,
+          selfie_image_fingerprint: image_resubmission_check? ?
+                                      extra_attributes[:selfie_image_fingerprint] : nil,
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
         )

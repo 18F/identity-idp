@@ -12,6 +12,7 @@ module DocAuth
 
       class << self
         attr_reader :response_mocks
+        attr_reader :delay
         attr_accessor :last_uploaded_front_image
         attr_accessor :last_uploaded_back_image
       end
@@ -21,10 +22,16 @@ module DocAuth
         @response_mocks[method.to_sym] = response
       end
 
+      def self.response_delay(delay)
+        puts "Setting delay to #{delay} in #{object_id}"
+        @delay = delay
+      end
+
       def self.reset!
         @response_mocks = {}
         @last_uploaded_front_image = nil
         @last_uploaded_back_image = nil
+        @delay = nil
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
@@ -54,6 +61,11 @@ module DocAuth
         uuid_prefix: nil,
         liveness_checking_required: false
       )
+        if self.class.delay
+          # mimic realistic situations where we have delays
+          # for testing result polling in hybrid flow
+          sleep self.class.delay
+        end
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         instance_id = SecureRandom.uuid
