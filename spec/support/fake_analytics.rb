@@ -205,14 +205,14 @@ RSpec.configure do |c|
       if allowed_extra_analytics.include?(:*)
         expect(all_checked_extra_analytics).to(
           be_present,
-          "Unnecessary allowed_extra_analytics on example group #{group}",
+          "Unnecessary allowed_extra_analytics on example group #{group} (in #{group.id})",
         )
       else
         unchecked_extra_analytics = allowed_extra_analytics - all_checked_extra_analytics
         expect(unchecked_extra_analytics).to(
           be_blank,
-          "Unnecessary allowed_extra_analytics keywords on example group #{group}: " +
-            unchecked_extra_analytics.to_s,
+          "Unnecessary allowed_extra_analytics keywords on example group #{group}: " \
+            "#{unchecked_extra_analytics} (in #{group.id})",
         )
       end
     end
