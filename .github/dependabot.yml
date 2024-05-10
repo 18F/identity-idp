@@ -18,6 +18,8 @@ updates:
           - major
       security:
         applies-to: security-updates
+        patterns:
+          - '*'
   - package-ecosystem: bundler
     directory: /
     schedule:
@@ -29,3 +31,5 @@ updates:
           - phonelib
       security:
         applies-to: security-updates
+        patterns:
+          - '*'
