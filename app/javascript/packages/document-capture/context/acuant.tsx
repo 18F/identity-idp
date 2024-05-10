@@ -17,7 +17,7 @@ declare global {
     START_FAIL_CODE: string;
     REPEAT_FAIL_CODE: string;
     SEQUENCE_BREAK_CODE: string;
-    start?: AcuantWorkersInitialize;
+    start: AcuantWorkersInitialize;
   }
 }
 
