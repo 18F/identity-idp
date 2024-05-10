@@ -40,7 +40,7 @@ RSpec.describe UserEventCreator do
         expect(device.last_used_at).to be_within(1).of(Time.zone.now)
       end
 
-      it 'saves the cookie permanently' do
+      it 'refreshes the permanent cookie' do
         expect(cookie_jar.permanent).to receive(:[]=).with(:device, existing_device_cookie)
 
         subject.create_user_event(event_type, user)
