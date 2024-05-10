@@ -6,7 +6,7 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 gem 'rails', '~> 7.1.3'
 
 gem 'ahoy_matey', '~> 3.0'
-gem 'aws-sdk-kms', '~> 1.4'
+gem 'aws-sdk-kms', '~> 1.80'
 gem 'aws-sdk-cloudwatchlogs', require: false
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
