@@ -67,11 +67,14 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       let(:issuer1) { 'issuer1' }
       let(:issuer2) { 'issuer2' }
       let(:issuer3) { 'issuer3' }
+      let(:issuer4) { 'issuer4' }
+      let(:issuer5) { 'issuer5' }
 
       before do
         # Inside partial month
 
         # non-billable event in partial month, should be ignored
+        binding.pry
         create(
           :sp_return_log,
           user_id: user1.id,
@@ -228,8 +231,9 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
             partner_ial2_new_unique_users_unknown: 1,
           },
         ]
-
+        # binding.pry
         expect(results).to match_array(rows)
+        # binding.pry
       end
     end
 
@@ -245,3 +249,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
     end
   end
 end
+
+# Test cases for ial2 proofing each year (different sums) 
+# test case to capture reproofing > 5 years
+# create users outside of the range for testing to make sure our build query functions within the range only
