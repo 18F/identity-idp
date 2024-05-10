@@ -322,10 +322,10 @@ GEM
       railties (>= 5.0.0)
     faker (2.19.0)
       i18n (>= 1.6, < 2)
-    faraday (2.7.10)
-      faraday-net_http (>= 2.0, < 3.1)
-      ruby2_keywords (>= 0.0.4)
-    faraday-net_http (3.0.2)
+    faraday (2.9.0)
+      faraday-net_http (>= 2.0, < 3.2)
+    faraday-net_http (3.1.0)
+      net-http
     faraday-retry (2.0.0)
       faraday (~> 2.0)
     ffi (1.15.5)
@@ -428,6 +428,8 @@ GEM
     msgpack (1.7.2)
     multiset (0.5.3)
     mutex_m (0.2.0)
+    net-http (0.4.1)
+      uri
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
     net-imap (0.4.10)
@@ -636,7 +638,6 @@ GEM
       nokogiri (>= 1.10.5)
       rexml
     ruby-statistics (3.0.2)
-    ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     safe_target_blank (1.0.2)
       rails
@@ -691,6 +692,7 @@ GEM
     unf_ext (0.0.9.1)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
+    uri (0.13.0)
     view_component (3.9.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
