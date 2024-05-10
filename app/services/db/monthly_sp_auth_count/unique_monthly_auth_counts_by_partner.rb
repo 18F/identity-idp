@@ -74,7 +74,7 @@ module Db
             else
               age
             end
-          end
+          end.tap { |counts| counts.default = [] }
 
           prev_seen_users |= this_month_users
 
@@ -85,13 +85,13 @@ module Db
             iaa_end_date: date_range.end.to_s,
             unique_users: this_month_users.count,
             new_unique_users: new_unique_users.count,
-            partner_ial2_new_unique_users_year1: (profile_age_counts[0].nil? ? 0 : profile_age_counts[0].count),
-            partner_ial2_new_unique_users_year2: (profile_age_counts[1].nil? ? 0 : profile_age_counts[1].count),
-            partner_ial2_new_unique_users_year3: (profile_age_counts[2].nil? ? 0 : profile_age_counts[2].count),
-            partner_ial2_new_unique_users_year4: (profile_age_counts[3].nil? ? 0 : profile_age_counts[3].count),
-            partner_ial2_new_unique_users_year5: (profile_age_counts[4].nil? ? 0 : profile_age_counts[4].count),
-            partner_ial2_new_unique_users_year_greater_than_5: profile_age_counts[:older].nil? ? 0 : profile_age_counts[:older].count,
-            partner_ial2_new_unique_users_unknown: profile_age_counts[:unknown].nil? ? 0 : profile_age_counts[:unknown].count,
+            partner_ial2_new_unique_users_year1: profile_age_counts[0].count,
+            partner_ial2_new_unique_users_year2: profile_age_counts[1].count,
+            partner_ial2_new_unique_users_year3: profile_age_counts[2].count,
+            partner_ial2_new_unique_users_year4: profile_age_counts[3].count,
+            partner_ial2_new_unique_users_year5: profile_age_counts[4].count,
+            partner_ial2_new_unique_users_year_greater_than_5: profile_age_counts[:older].count,
+            partner_ial2_new_unique_users_unknown: profile_age_counts[:unknown].count,
           }
         end
         rows
