@@ -103,7 +103,7 @@ RSpec.describe UserEventCreator do
         it 'saves the cookie permanently' do
           expect { subject.create_user_event(event_type, user) }.to change { cookie_jar[:device] }.
             from(nil).
-            to(kind_of(String))
+            to(lambda { |value| value == Device.last.cookie_uuid })
         end
       end
 
