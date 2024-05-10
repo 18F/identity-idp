@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe RateLimitConcern, allowed_extra_analytics: [:*] do
+RSpec.describe RateLimitConcern do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
 
   idv_step_controller_class = Class.new(ApplicationController) do
