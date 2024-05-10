@@ -112,29 +112,22 @@ module Db
 
           format(<<~SQL, params)
             SELECT
-              sp_return_logs.user_id
+              subq.user_id AS user_id
             , %{year_month} AS year_month
-            , MIN(srl_age.profile_age) AS profile_age
-            FROM sp_return_logs
-              LEFT JOIN (
-                  SELECT 
-                      sp_return_logs.user_id
-                    , sp_return_logs.issuer
-                    , DATE_PART('year', AGE(sp_return_logs.returned_at, sp_return_logs.profile_verified_at)) AS profile_age
-                  FROM sp_return_logs
-                  WHERE
-                        sp_return_logs.ial > 1
-                    AND sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
-                    AND sp_return_logs.issuer IN %{issuers}
-                    AND sp_return_logs.billable = true
-              ) AS srl_age ON sp_return_logs.user_id = srl_age.user_id AND sp_return_logs.issuer = srl_age.issuer
-            WHERE
-                  sp_return_logs.ial > 1
-              AND sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
-              AND sp_return_logs.issuer IN %{issuers}
-              AND sp_return_logs.billable = true
+            , MIN(subq.profile_age) AS profile_age
+            FROM (
+              SELECT
+                  sp_return_logs.user_id
+                , DATE_PART('year', AGE(sp_return_logs.returned_at, sp_return_logs.profile_verified_at)) AS profile_age
+              FROM sp_return_logs
+              WHERE
+                    sp_return_logs.ial > 1
+                AND sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
+                AND sp_return_logs.issuer IN %{issuers}
+                AND sp_return_logs.billable = true
+            ) subq
             GROUP BY
-              sp_return_logs.user_id
+              subq.user_id
           SQL
         end
       end
