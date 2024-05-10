@@ -43,7 +43,6 @@ module Idv
     end
 
     def extra_view_variables
-
       doc_auth_selfie_capture =
         FeatureManagement.idv_allow_selfie_check? &&
         resolved_authn_context_result.biometric_comparison?
