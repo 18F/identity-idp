@@ -19,7 +19,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
     context 'with no data' do
       let(:key) { partner }
       let(:partner) { 'DHS' }
-      let(:partner_range) {1.year.ago..Time.zone.now }
+      let(:partner_range) { 1.year.ago..Time.zone.now }
       let(:issuers) { [] }
 
       it 'is empty with no data issuers' do
@@ -74,8 +74,9 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       let(:issuer3) { 'issuer3' }
 
       before do
+        # Inside partial month
+
         # non-billable event in partial month, should be ignored
-        # binding.pry
         create(
           :sp_return_log,
           user_id: user1.id,
@@ -101,6 +102,22 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
           )
         end
 
+        # #  5 new users in whole month proofed in year 1-5
+        [user4, user5, user6, user7, user8].each do |user|
+          create(
+            :sp_return_log,
+            user_id: user.id,
+            ial: 2,
+            issuer: issuer2,
+            requested_at: inside_partial_month,
+            returned_at: inside_partial_month,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
+            billable: true,
+          )
+        end
+
+        # Inside whole month
+
         # 2 old user + 1 new user in whole month
         [user1, user2, user3].each do |user|
           2.times do
@@ -117,21 +134,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
           end
         end
 
-        # #  5 new users in whole month proofed in year 1-5
-        [user4, user5, user6, user7, user8].each do |user|
-          create(
-            :sp_return_log,
-            user_id: user.id,
-            ial: 2,
-            issuer: issuer2,
-            requested_at: inside_partial_month,
-            returned_at: inside_partial_month,
-            profile_verified_at: user.profiles.map(&:verified_at).max,
-            billable: true,
-          )
-        end
-
-        # 2 new users nil profile verified and > 5 year bucket in partial month 
+        # 2 new users nil profile verified and > 5 year bucket in partial month
         [user9, user10].each do |user|
           2.times do
             create(
@@ -163,7 +166,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
           end
         end
 
-        # 1 old user with new profile in whole month 
+        # 1 old user with new profile in whole month
         [user1].each do |user|
           2.times do
             create(
@@ -179,7 +182,8 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
           end
         end
 
-        # 1 new user returning outside the range of analysis 
+        # Outside analysis range
+        # 1 new user returning outside the range of analysis
         [user11].each do |user, profile|
           3.times do
             create(
@@ -231,7 +235,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
         ]
 
         expect(results).to match_array(rows)
-
       end
     end
 
