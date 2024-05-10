@@ -1492,6 +1492,7 @@ time.formats.event_timestamp: '%B %-d, %Y at %-l:%M %p'
 time.formats.event_timestamp_js: '%{year} %{month} %{day}, %{hour}:%{minute} %{day_period}'
 time.formats.event_timestamp_utc: '%B %-d, %Y， %-l:%M %p UTC'
 time.formats.event_timestamp_with_zone: '%B %-d, %Y，%-l:%M %p %Z'
+time.formats.full_date: '%Y 年 %B %-d 日'
 time.formats.sms_date: '%Y/%m/%d'
 time.pm: 下午
 titles.account: 账户
