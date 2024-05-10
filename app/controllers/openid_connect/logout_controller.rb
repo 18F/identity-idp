@@ -5,47 +5,35 @@ module OpenidConnect
     include SecureHeadersConcern
     include FullyAuthenticatable
 
-    before_action :set_devise_failure_redirect_for_concurrent_session_logout, only: [:index]
+    before_action :set_devise_failure_redirect_for_concurrent_session_logout,
+                  only: [:logout]
     before_action :confirm_two_factor_authenticated, only: [:delete]
 
-    def index
+    # Handle logout (with confirmation if initiated by relying partner)
+    def logout
       @logout_form = build_logout_form
-
       result = @logout_form.submit
-      analytics.oidc_logout_requested(**result.to_h.except(:redirect_uri))
+      redirect_uri = result.extra[:redirect_uri]
 
-      if result.success? && result.extra[:redirect_uri]
-        handle_successful_logout_request(result, result.extra[:redirect_uri])
+      analytics.oidc_logout_requested(**to_event(result))
+
+      if result.success? && redirect_uri
+        handle_successful_logout_request(result, redirect_uri)
       else
         render :error
       end
     end
 
+    # Sign out without confirmation
     def delete
       @logout_form = build_logout_form
       result = @logout_form.submit
+      redirect_uri = result.extra[:redirect_uri]
 
-      analytics.oidc_logout_submitted(**result.to_h.except(:redirect_uri))
+      analytics.oidc_logout_submitted(**to_event(result))
 
-      if result.success? && (redirect_uri = result.extra[:redirect_uri])
-        analytics.logout_initiated(**result.to_h.except(:redirect_uri))
-        irs_attempts_api_tracker.logout_initiated(success: result.success?)
-
-        redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
-        sign_out
-      else
-        render :error
-      end
-    end
-
-    def create
-      @logout_form = build_logout_form
-      result = @logout_form.submit
-
-      analytics.oidc_logout_requested(**result.to_h.except(:redirect_uri))
-
-      if result.success? && result.extra[:redirect_uri]
-        handle_successful_logout_request(result, result.extra[:redirect_uri])
+      if result.success? && redirect_uri
+        handle_logout(result, redirect_uri)
       else
         render :error
       end
@@ -117,7 +105,8 @@ module OpenidConnect
     def handle_successful_logout_request(result, redirect_uri)
       apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
       if require_logout_confirmation?
-        analytics.oidc_logout_visited(**result.to_h.except(:redirect_uri))
+        analytics.oidc_logout_visited(**to_event(result))
+
         @params = {
           client_id: logout_params[:client_id],
           post_logout_redirect_uri: logout_params[:post_logout_redirect_uri],
@@ -126,15 +115,25 @@ module OpenidConnect
         @service_provider_name = @logout_form.service_provider&.friendly_name
         delete_branded_experience(logout: true)
 
-        render :index
+        render :confirm_logout
       else
-        analytics.logout_initiated(**result.to_h.except(:redirect_uri))
-        irs_attempts_api_tracker.logout_initiated(success: result.success?)
-
-        sign_out
-
-        redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
+        handle_logout(result, redirect_uri)
       end
+    end
+
+    def handle_logout(result, redirect_uri)
+      analytics.logout_initiated(**to_event(result))
+      irs_attempts_api_tracker.logout_initiated(success: result.success?)
+
+      sign_out
+
+      redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
+    end
+
+    # Convert FormResponse into loggable analytics event
+    # @param [FormResponse] result
+    def to_event(result)
+      result.to_h.except(:redirect_uri)
     end
 
     def logout_params
