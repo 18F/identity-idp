@@ -868,7 +868,7 @@ forms.webauthn_setup.step_2: Inserte una clave de seguridad en su dispositivo
 forms.webauthn_setup.step_2_image_alt: Una llave de seguridad insertada en el lado derecho de una computadora portátil
 forms.webauthn_setup.step_2_image_mobile_alt: Una llave de seguridad insertada en la parte inferior de un celular
 forms.webauthn_setup.step_3: Configure su clave de seguridad
-forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” (set up security key) más abajo y siga las instrucciones de su navegador.
+forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” más abajo y siga las instrucciones de su navegador.
 headings.account.activity: Actividad
 headings.account.authentication_apps: Aplicaciones de autenticación
 headings.account.connected_accounts: Sus cuentas conectadas
