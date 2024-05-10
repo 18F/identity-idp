@@ -867,8 +867,8 @@ forms.webauthn_setup.step_1a: Si vous ajoutez plus d’une clé de sécurité, v
 forms.webauthn_setup.step_2: Insérer votre clé de sécurité
 forms.webauthn_setup.step_2_image_alt: Insertion d’une clé de sécurité dans le côté droit d’un ordinateur portable
 forms.webauthn_setup.step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
-forms.webauthn_setup.step_3: Configurer une clé de sécurité
-forms.webauthn_setup.step_3a: Cliquez sur « Configurer votre clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
+forms.webauthn_setup.step_3: Configurer votre clé de sécurité
+forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés
@@ -1348,7 +1348,7 @@ mailer.privacy_policy: Politique de confidentialité
 mailer.sent_at: Envoyé à %{formatted_timestamp}
 mfa.account_info: L’ajout d’une autre méthode d’authentification vous évite de vous faire bloquer de votre compte si vous perdez l’une de vos méthodes.
 mfa.add: Ajouter une autre méthode
-mfa.info: Ajoutez une couche de protection supplémentaire à votre compte %{app_name} en sélectionnant une méthode d’authentification à plusieurs facteurs.
+mfa.info: Ajoutez une couche supplémentaire de sécurité à votre compte %{app_name} en sélectionnant une méthode d’authentification multi-facteurs.
 mfa.recommendation: Nous vous recommandons de sélectionner au moins deux options différentes au cas où vous perdriez l’une de vos méthodes.
 mfa.second_method_warning.link: Ajouter une deuxième méthode d’authentification.
 mfa.second_method_warning.text: Vous devrez supprimer votre compte et recommencer si vous perdez votre seule méthode d’authentification.
@@ -1681,7 +1681,7 @@ two_factor_authentication.two_factor_choice_options.phone_info_no_voip: N’util
 two_factor_authentication.two_factor_choice_options.piv_cac: Carte d’employé fédéral
 two_factor_authentication.two_factor_choice_options.piv_cac_info: Cartes PIV/CAC pour les employés fédéraux et militaires. Bureau uniquement.
 two_factor_authentication.two_factor_choice_options.webauthn: Clé de sécurité
-two_factor_authentication.two_factor_choice_options.webauthn_info: Connectez votre clé de sécurité physique à votre appareil. Vous n’aurez pas besoin d’entrer un code.
+two_factor_authentication.two_factor_choice_options.webauthn_info: Connectez votre clé de sécurité physique à votre appareil. Vous n’aurez pas besoin de saisir un code.
 two_factor_authentication.two_factor_choice_options.webauthn_platform: Déverrouillage facial ou tactile
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: Utilisez votre visage ou votre empreinte digitale pour accéder à votre compte sans code à usage unique.
 two_factor_authentication.two_factor_hspd12_choice: Authentification supplémentaire requise
