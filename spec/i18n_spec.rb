@@ -8,6 +8,12 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
 ].sort.freeze
 
+ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS = [
+  'datetime.dotiw.last_word_connector',
+  'datetime.dotiw.two_words_connector',
+  'datetime.dotiw.words_connector',
+].sort.freeze
+
 # These are keys with mismatch interpolation for specific locales
 ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   # need to be fixed
@@ -220,6 +226,32 @@ module I18n
       ].freeze
       # rubocop:enable Layout/LineLength
 
+      def leading_or_trailing_whitespace_keys
+        self.locales.each_with_object([]) do |locale, result|
+          data[locale].key_values.each_with_object(result) do |key_value, result|
+            key, value = key_value
+            next if ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS.include?(key)
+
+            leading_or_trailing_whitespace =
+              if value.is_a?(String)
+                leading_or_trailing_whitespace?(value)
+              elsif value.is_a?(Array)
+                value.compact.any? { |x| leading_or_trailing_whitespace?(x) }
+              end
+
+            if leading_or_trailing_whitespace
+              result << "#{locale}.#{key}"
+            end
+
+            result
+          end
+        end
+      end
+
+      def leading_or_trailing_whitespace?(value)
+        value.match?(/\A\s|\s\z/)
+      end
+
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
           key, value = key_value
@@ -261,11 +293,21 @@ RSpec.describe 'I18n' do
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
   let(:untranslated_keys) { i18n.untranslated_keys }
+  let(:leading_or_trailing_whitespace_keys) do
+    i18n.leading_or_trailing_whitespace_keys
+  end
 
   it 'does not have missing keys' do
     expect(missing_keys).to(
       be_empty,
       "Missing #{missing_keys.leaves.count} i18n keys, run `i18n-tasks missing' to show them",
+    )
+  end
+
+  it 'does not have leading or trailing whitespace' do
+    expect(leading_or_trailing_whitespace_keys).to(
+      be_empty,
+      "keys with leading or trailing whitespace: #{leading_or_trailing_whitespace_keys}",
     )
   end
 

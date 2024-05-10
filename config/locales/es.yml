@@ -932,9 +932,9 @@ help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial1_consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a <strong>%{sp}</strong>. Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
 help_text.requested_attributes.ial1_intro_html: Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
-help_text.requested_attributes.ial2_consent_reminder_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Debe dar su consentimiento cada año para divulgar su información verificada a <strong>%{sp}</strong>. Divulgaremos esta información: '
-help_text.requested_attributes.ial2_intro_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Divulgaremos esta información a %{sp}: '
-help_text.requested_attributes.ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp}: '
+help_text.requested_attributes.ial2_consent_reminder_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Debe dar su consentimiento cada año para divulgar su información verificada a <strong>%{sp}</strong>. Divulgaremos esta información:'
+help_text.requested_attributes.ial2_intro_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Divulgaremos esta información a %{sp}:'
+help_text.requested_attributes.ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp}:'
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en
@@ -1306,7 +1306,7 @@ instructions.password.strength.1: Débil
 instructions.password.strength.2: Promedio
 instructions.password.strength.3: Buena
 instructions.password.strength.4: Muy buena
-instructions.password.strength.intro: 'Seguridad de la contraseña: '
+instructions.password.strength.intro: 'Seguridad de la contraseña:'
 instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
 links.account.reactivate.with_key: Tengo mi clave
