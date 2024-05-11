@@ -23,7 +23,7 @@ module Db
         queries = build_queries(issuers: issuers, months: months)
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
-          ym_h[ym_k] = Hash.new { |user_h, user_k| }
+          ym_h[ym_k] = Hash.new
         end
 
         queries.each do |query|
@@ -47,7 +47,6 @@ module Db
                 user_id = row['user_id']
                 year_month = row['year_month']
                 profile_age = row['profile_age']
-
                 year_month_to_users_to_profile_age[year_month][user_id] = profile_age
               end
             end
@@ -58,7 +57,7 @@ module Db
 
         prev_seen_users = Set.new
         year_months = year_month_to_users_to_profile_age.keys.sort
-
+        issuers_set = issuers.to_set
         year_months.each do |year_month|
           users_to_profile_age = year_month_to_users_to_profile_age[year_month]
 
@@ -72,7 +71,7 @@ module Db
             elsif age.to_i > 4
               :older
             else
-              age
+              age.to_i
             end
           end.tap { |counts| counts.default = [] }
 
@@ -80,6 +79,7 @@ module Db
 
           rows << {
             key: key,
+            issuer: issuers_set,
             year_month: year_month,
             iaa_start_date: date_range.begin.to_s,
             iaa_end_date: date_range.end.to_s,
