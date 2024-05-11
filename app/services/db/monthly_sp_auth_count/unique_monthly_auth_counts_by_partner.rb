@@ -59,6 +59,7 @@ module Db
         prev_seen_users = Set.new
         year_months = year_month_to_users_to_profile_age.keys.sort
 
+        # rubocop:disable Metrics/BlockLength
         year_months.each do |year_month|
           users_to_profile_age = year_month_to_users_to_profile_age[year_month]
 
@@ -69,7 +70,7 @@ module Db
             age = users_to_profile_age[user_id]
             if age.nil? || age < 0
               :unknown
-            elsif age.to_i > 4
+            elsif age > 4
               :older
             else
               age.to_i
@@ -94,6 +95,7 @@ module Db
             partner_ial2_new_unique_users_unknown: profile_age_counts[:unknown].count,
           }
         end
+        # rubocop:enable Metrics/BlockLength
         rows
       end
 
