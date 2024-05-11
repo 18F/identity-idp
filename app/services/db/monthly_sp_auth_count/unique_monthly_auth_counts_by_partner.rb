@@ -22,7 +22,7 @@ module Db
         queries = build_queries(issuers: issuers, months: months)
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
-          ym_h[ym_k] = Hash.new { |user_h, user_k| }
+          ym_h[ym_k] = Hash.new
         end
 
         queries.each do |query|
@@ -72,7 +72,6 @@ module Db
                 user_id = row['user_id']
                 year_month = row['year_month']
                 profile_age = row['profile_age']
-
                 year_month_to_users_to_profile_age[year_month][user_id] = profile_age
               end
             end
@@ -109,6 +108,7 @@ module Db
 
           rows << {
             key: key,
+            issuer: issuers_set,
             year_month: year_month,
             iaa_start_date: date_range.begin.to_s,
             iaa_end_date: date_range.end.to_s,
