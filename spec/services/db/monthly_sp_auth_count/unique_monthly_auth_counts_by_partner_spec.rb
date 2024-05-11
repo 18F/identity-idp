@@ -1,9 +1,4 @@
 require 'rails_helper'
-RSpec.configure do |rspec|
-  rspec.expect_with :rspec do |c|
-    c.max_formatted_output_length = nil
-  end
-end
 
 RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
   describe '.call' do
