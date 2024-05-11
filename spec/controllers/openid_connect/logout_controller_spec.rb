@@ -426,7 +426,7 @@ RSpec.describe OpenidConnect::LogoutController do
         it 'renders logout confirmation page' do
           action
 
-          expect(response).to render_template(:index)
+          expect(response).to render_template(:confirm_logout)
         end
 
         it 'tracks events' do
