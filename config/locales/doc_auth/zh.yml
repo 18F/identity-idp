@@ -9,17 +9,14 @@ zh:
       add_new_photos: 添加新照片
       close: Close
       continue: 继续
-      take_or_upload_picture_html: '<lg-take-photo>拍照</lg-take-photo> <lg-or> 或
-        </lg-or> <lg-upload>上传照片</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>拍照</lg-take-photo> <lg-or> 或 </lg-or> <lg-upload>上传照片</lg-upload>'
       take_picture: 拍照
       take_picture_retry: 重新拍照
       upload_picture: 上传照片
     errors:
       alerts:
         address_check: 我们读取不到你身份证件上的地址。尝试重拍。
-        barcode_content_check:
-          我们读取不到你身份证件背面的条形码可能是条形码有问题，也可能是条形码类型很新，我们还不认识。如果你有州政府颁发的别的身份证件，
-          请使用那个身份证件。
+        barcode_content_check: 我们读取不到你身份证件背面的条形码可能是条形码有问题，也可能是条形码类型很新，我们还不认识。如果你有州政府颁发的别的身份证件， 请使用那个身份证件。
         barcode_read_check: 我们读取不到你身份证件背面的条形码尝试重拍一张照片。
         birth_date_checks: 我们读取不到你身份证件上的生日。尝试重拍。
         control_number_check: 我们读取不到你身份证件背面的参考数字。尝试重拍一张照片。
@@ -32,8 +29,7 @@ zh:
         issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
         ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
         selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-        selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure
-          your whole face is clear and visible in the photo.
+        selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
         sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
         visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
         visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
@@ -42,16 +38,13 @@ zh:
         heading: 我们读取不到你身份证件上的条形码。
       camera:
         blocked: 你的镜头被遮住了。
-        blocked_detail_html: <strong>允许 %{app_name}
-          进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>
+        blocked_detail_html: <strong>允许 %{app_name} 进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>
         failed: 相机未开启，请再试一次。
       card_type: 再用你的驾照或州政府颁发的身份证件试一次。
       doc:
         doc_type_check: 你的驾照或身份证件必须是美国一个州或属地颁发的。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。
         resubmit_failed_image: 你已经试过这张图像，该图像不行。请尝试添加一个不同的图像。
-        wrong_id_type_html:
-          我们只接受由美国的一个州或属地颁发的驾照或身份证件。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。<a>
-          了解更多有关我们接受的身份证件的信息 </a>
+        wrong_id_type_html: 我们只接受由美国的一个州或属地颁发的驾照或身份证件。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。<a> 了解更多有关我们接受的身份证件的信息 </a>
       dpi:
         failed_short: 图像太小或模糊，请再试一次。
         top_msg: 我们无法辨认你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或太模糊。确保你的身份证件在图框中比较大，然后试着重拍一下。
@@ -128,8 +121,7 @@ zh:
       verify_online_selfie: 使用手机在网上验证你的身份
       welcome: 开始验证你的身份
     hybrid_flow_warning:
-      explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问
-        <strong>%{service_provider_name}</strong> 及其服务。
+      explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
       explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
       only_add_if_text: '只有在以下情况下才添加你的身份证件：'
       only_add_own_account: 你在使用自己的 %{app_name} 账户
@@ -145,15 +137,13 @@ zh:
       exit:
         with_sp: 退出 %{app_name} 并返回 %{app_name}
         without_sp: 退出身份验证并到你的账户页面
-      getting_started_html: '%{sp_name} needs to make sure you are you — not someone
-        pretending to be you. %{link_html}'
+      getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
       how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
       how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
       hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
-      hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can
-        verify your identity at a United States Post Office instead.
+      hybrid_handoff_ipp_html: <strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.
       image_loaded: 图像已加载
       image_loading: 图像加载中
       image_updated: 图像已上传
@@ -204,8 +194,7 @@ zh:
       test_ssn: 在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。
       text1: 你的身份证件不能是过期的。
       text2: 你不需要有卡。
-      text3: We match your phone number with your personal information and send a
-        one-time code to your phone.
+      text3: We match your phone number with your personal information and send a one-time code to your phone.
       text4: Your password saves and encrypts your personal information.
     tips:
       document_capture_hint: 必须是 JPG 或 PNG

@@ -8,6 +8,12 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
 ].sort.freeze
 
+ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS = [
+  'datetime.dotiw.last_word_connector',
+  'datetime.dotiw.two_words_connector',
+  'datetime.dotiw.words_connector',
+].sort.freeze
+
 # These are keys with mismatch interpolation for specific locales
 ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   # need to be fixed
@@ -19,7 +25,6 @@ ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   'zh.idv.cancel.headings.exit.with_sp',
   'zh.idv.failure.exit.with_sp',
   'zh.in_person_proofing.body.barcode.return_to_partner_link',
-  'zh.mfa.info',
   'zh.telephony.account_reset_notice',
   'zh.two_factor_authentication.account_reset.pending',
   'zh.user_mailer.account_reset_granted.intro_html',
@@ -109,16 +114,11 @@ module I18n
         { key: 'event_types.sign_in_unsuccessful_2fa', locales: %i[zh] },
         { key: 'forms.buttons.continue_ipp', locales: %i[zh] },
         { key: 'forms.buttons.continue_remote', locales: %i[zh] },
-        { key: 'forms.webauthn_setup.intro', locales: %i[zh] },
         { key: 'forms.webauthn_setup.learn_more', locales: %i[zh] },
-        { key: 'forms.webauthn_setup.set_up', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_1', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_1a', locales: %i[zh] },
-        { key: 'forms.webauthn_setup.step_2', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_2_image_alt', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_2_image_mobile_alt', locales: %i[zh] },
-        { key: 'forms.webauthn_setup.step_3', locales: %i[zh] },
-        { key: 'forms.webauthn_setup.step_3a', locales: %i[zh] },
         { key: 'idv.failure.setup.fail_html', locales: %i[zh] },
         { key: 'idv.failure.verify.exit', locales: %i[zh] },
         { key: 'image_description.phone_icon', locales: %i[zh] },
@@ -226,6 +226,32 @@ module I18n
       ].freeze
       # rubocop:enable Layout/LineLength
 
+      def leading_or_trailing_whitespace_keys
+        self.locales.each_with_object([]) do |locale, result|
+          data[locale].key_values.each_with_object(result) do |key_value, result|
+            key, value = key_value
+            next if ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS.include?(key)
+
+            leading_or_trailing_whitespace =
+              if value.is_a?(String)
+                leading_or_trailing_whitespace?(value)
+              elsif value.is_a?(Array)
+                value.compact.any? { |x| leading_or_trailing_whitespace?(x) }
+              end
+
+            if leading_or_trailing_whitespace
+              result << "#{locale}.#{key}"
+            end
+
+            result
+          end
+        end
+      end
+
+      def leading_or_trailing_whitespace?(value)
+        value.match?(/\A\s|\s\z/)
+      end
+
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
           key, value = key_value
@@ -267,11 +293,21 @@ RSpec.describe 'I18n' do
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
   let(:untranslated_keys) { i18n.untranslated_keys }
+  let(:leading_or_trailing_whitespace_keys) do
+    i18n.leading_or_trailing_whitespace_keys
+  end
 
   it 'does not have missing keys' do
     expect(missing_keys).to(
       be_empty,
       "Missing #{missing_keys.leaves.count} i18n keys, run `i18n-tasks missing' to show them",
+    )
+  end
+
+  it 'does not have leading or trailing whitespace' do
+    expect(leading_or_trailing_whitespace_keys).to(
+      be_empty,
+      "keys with leading or trailing whitespace: #{leading_or_trailing_whitespace_keys}",
     )
   end
 
@@ -340,7 +376,8 @@ RSpec.describe 'I18n' do
 
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 
-  Dir[File.join(root_dir, '/config/locales/**')].sort.each do |group_path|
+  ([File.join(root_dir, '/config/locales')] + Dir[File.join(root_dir, '/config/locales/**')]).
+    sort.each do |group_path|
     i18n_group = group_path.sub("#{root_dir}/", '')
 
     describe i18n_group do
@@ -348,8 +385,9 @@ RSpec.describe 'I18n' do
         combined = Hash.new { |h, k| h[k] = {} }
 
         Dir["#{group_path}/**.yml"].each do |file|
-          locale, data = YAML.load_file(file).first
-          flatten_hash(data).each do |key, str|
+          locale = I18nFlatYmlBackend.locale(file)
+          data = YAML.load_file(file)
+          flatten_hash(data, flatten_arrays: false).each do |key, str|
             combined[key][locale] = str
           end
         end
@@ -363,65 +401,65 @@ RSpec.describe 'I18n' do
         expect(bad_keys).to be_empty
       end
     end
+  end
 
-    Dir["#{group_path}/*.yml"].each do |full_path|
-      i18n_file = full_path.sub("#{root_dir}/", '')
-      locale = File.basename(full_path, '.yml').to_sym
+  Dir[File.join(root_dir, '/config/locales/**/*.yml')].sort.each do |full_path|
+    i18n_file = full_path.sub("#{root_dir}/", '')
+    locale = File.basename(full_path, '.yml').to_sym
 
-      describe i18n_file do
-        let(:flattened_yaml_data) { flatten_hash(YAML.load_file(full_path)) }
+    describe i18n_file do
+      let(:flattened_yaml_data) { flatten_hash(YAML.load_file(full_path)) }
 
-        # Transliteration includes special characters by definition, so it could fail checks below
-        if !full_path.match?(%(/config/locales/transliterate/))
-          it 'has only lower_snake_case keys' do
-            keys = flattened_yaml_data.keys
+      # Transliteration includes special characters by definition, so it could fail checks below
+      if !full_path.match?(%(/config/locales/transliterate/))
+        it 'has only lower_snake_case keys' do
+          keys = flattened_yaml_data.keys
 
-            bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
-            expect(bad_keys).to be_empty
-          end
-        end
-
-        it 'has correctly-formatted interpolation values' do
-          bad_keys = flattened_yaml_data.select do |_key, value|
-            next unless value.is_a?(String)
-
-            interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
-
-            interpolation_names.any? { |name| name.downcase != name }
-          end
-
+          bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
           expect(bad_keys).to be_empty
         end
+      end
 
-        it 'does not contain any translations expecting legacy fallback behavior' do
-          bad_keys = flattened_yaml_data.select do |_key, value|
-            value.include?('NOT TRANSLATED YET')
-          end
+      it 'has correctly-formatted interpolation values' do
+        bad_keys = flattened_yaml_data.select do |_key, value|
+          next unless value.is_a?(String)
 
-          expect(bad_keys).to be_empty
+          interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
+
+          interpolation_names.any? { |name| name.downcase != name }
         end
 
-        it 'does not contain any translations that hardcode APP_NAME' do
-          bad_keys = flattened_yaml_data.select do |_key, value|
-            value.include?(APP_NAME)
-          end
+        expect(bad_keys).to be_empty
+      end
 
-          expect(bad_keys).to be_empty
+      it 'does not contain any translations expecting legacy fallback behavior' do
+        bad_keys = flattened_yaml_data.select do |_key, value|
+          value.include?('NOT TRANSLATED YET')
         end
 
-        it 'does not contain content from another language' do
-          flattened_yaml_data.each do |key, value|
-            other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
-            expect(value).not_to match(
-              Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
-            )
-          end
+        expect(bad_keys).to be_empty
+      end
+
+      it 'does not contain any translations that hardcode APP_NAME' do
+        bad_keys = flattened_yaml_data.select do |_key, value|
+          value.include?(APP_NAME)
         end
 
-        it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
-          flattened_yaml_data.each do |key, value|
-            expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
-          end
+        expect(bad_keys).to be_empty
+      end
+
+      it 'does not contain content from another language' do
+        flattened_yaml_data.each do |key, value|
+          other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
+          expect(value).not_to match(
+            Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
+          )
+        end
+      end
+
+      it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
+        flattened_yaml_data.each do |key, value|
+          expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
         end
       end
     end
@@ -452,13 +490,18 @@ RSpec.describe 'I18n' do
       map(&:compact).map(&:first).to_set
   end
 
-  def flatten_hash(hash, parent_keys: [], out_hash: {}, &block)
+  def flatten_hash(hash, flatten_arrays: true, parent_keys: [], out_hash: {})
     hash.each do |key, value|
       if value.is_a?(Hash)
-        flatten_hash(value, parent_keys: parent_keys + [key], out_hash: out_hash, &block)
+        flatten_hash(value, flatten_arrays:, parent_keys: parent_keys + [key], out_hash:)
+      elsif value.is_a?(Array) && flatten_arrays
+        value.each_with_index do |item, idx|
+          flat_key = [*parent_keys, key, idx.to_s].join('.')
+          out_hash[flat_key] = item if item
+        end
       else
         flat_key = [*parent_keys, key].join('.')
-        out_hash[flat_key] = value
+        out_hash[flat_key] = value if value
       end
     end
 

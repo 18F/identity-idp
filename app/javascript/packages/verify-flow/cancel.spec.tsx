@@ -16,7 +16,6 @@ describe('Cancel', () => {
           value={{
             accountURL: 'http://example.test/account',
             cancelURL: 'http://example.test/cancel',
-            exitURL: 'http://example.test/exit',
             currentStep: 'one',
           }}
         >

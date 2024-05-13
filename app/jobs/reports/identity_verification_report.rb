@@ -54,7 +54,7 @@ module Reports
     end
 
     def emails
-      [IdentityConfig.store.team_ada_email]
+      [IdentityConfig.store.team_ada_email].compact
     end
 
     def reports

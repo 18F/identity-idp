@@ -111,6 +111,8 @@ module Identity
 
     config.time_zone = 'UTC'
 
+    require 'i18n_flat_yml_backend'
+    config.i18n.backend = I18nFlatYmlBackend.new
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
     config.i18n.available_locales = Identity::Hostdata.config.available_locales
     config.i18n.default_locale = :en
