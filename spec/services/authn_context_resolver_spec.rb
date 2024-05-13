@@ -18,6 +18,26 @@ RSpec.describe AuthnContextResolver do
       expect(result.identity_proofing?).to eq(true)
       expect(result.biometric_comparison?).to eq(true)
       expect(result.ialmax?).to eq(false)
+      expect(result.enhanced_ipp?).to eq(false)
+    end
+
+    it 'parses the vtr param for enhanced ipp' do
+      vtr = ['Pe']
+
+      result = AuthnContextResolver.new(
+        service_provider: nil,
+        vtr: vtr,
+        acr_values: nil,
+      ).resolve
+
+      expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pe')
+      expect(result.aal2?).to eq(true)
+      expect(result.phishing_resistant?).to eq(false)
+      expect(result.hspd12?).to eq(false)
+      expect(result.identity_proofing?).to eq(true)
+      expect(result.biometric_comparison?).to eq(false)
+      expect(result.ialmax?).to eq(false)
+      expect(result.enhanced_ipp?).to eq(true)
     end
 
     it 'ignores any acr_values params that are passed' do
@@ -59,6 +79,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.identity_proofing?).to eq(false)
         expect(result.biometric_comparison?).to eq(false)
         expect(result.ialmax?).to eq(false)
+        expect(result.enhanced_ipp?).to eq(false)
       end
 
       it 'properly parses an ACR value without an AAL ACR' do
@@ -79,6 +100,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.identity_proofing?).to eq(false)
         expect(result.biometric_comparison?).to eq(false)
         expect(result.ialmax?).to eq(false)
+        expect(result.enhanced_ipp?).to eq(false)
       end
 
       it 'properly parses an ACR value without an IAL ACR' do
@@ -99,6 +121,7 @@ RSpec.describe AuthnContextResolver do
         expect(result.identity_proofing?).to eq(false)
         expect(result.biometric_comparison?).to eq(false)
         expect(result.ialmax?).to eq(false)
+        expect(result.enhanced_ipp?).to eq(false)
       end
     end
 

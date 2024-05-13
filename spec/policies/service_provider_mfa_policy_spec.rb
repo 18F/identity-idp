@@ -15,6 +15,7 @@ RSpec.describe ServiceProviderMfaPolicy do
       identity_proofing?: false,
       biometric_comparison?: false,
       ialmax?: false,
+      enhanced_ipp?: false
     )
   end
   let(:auth_methods_session) { AuthMethodsSession.new(user_session: {}) }
