@@ -1,17 +1,4 @@
 ---
-0: 现在继续并通过普通邮件验证，这需要<strong>5 到 10 天</strong>。
-1: 退出 %{app_name}，稍后再试。
-10: 10月
-11: 11月
-12: 12月
-2: 2月
-3: 3月
-4: 4月
-5: 5月
-6: 6月
-7: 7月
-8: 8月
-9: 9月
 account_reset.cancel_request.are_you_sure: 你确定要取消删除账户的请求吗？
 account_reset.cancel_request.cancel: 退出
 account_reset.cancel_request.cancel_button: 取消删除账户
@@ -421,7 +408,7 @@ countries.za: 南非
 countries.zm: 赞比亚
 countries.zw: 津巴布韦
 date.day_names:
-  -
+  - null
   - 星期一
   - 星期二
   - 星期三
@@ -432,7 +419,7 @@ date.day_names:
 date.formats.long: '%B %-d, %Y'
 date.formats.short: '%A, %B %-d'
 date.month_names:
-  -
+  - null
   - 1月
   - 2月
   - 3月
@@ -882,18 +869,18 @@ forms.webauthn_platform_setup.intro_html:
 forms.webauthn_platform_setup.intro_link_text: 了解关于使用不同设备的更多信息。
 forms.webauthn_platform_setup.nickname: 设备昵称
 forms.webauthn_platform_setup.nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
-forms.webauthn_setup.intro: Use your physical security key to add an additional layer of protection to your %{app_name} account to prevent unauthorized access.
+forms.webauthn_setup.intro: 使用实体安全密钥为您的 %{app_name} 帐户添加了额外一层安全保障，以防止未经授权的访问。了解有关安全密钥的更多信息
 forms.webauthn_setup.learn_more: Learn more about security keys
 forms.webauthn_setup.nickname: 安全密钥昵称
 forms.webauthn_setup.saving: 正在保存你的凭据…
-forms.webauthn_setup.set_up: Set up security key
+forms.webauthn_setup.set_up: 设置安全密钥
 forms.webauthn_setup.step_1: Give it a nickname
 forms.webauthn_setup.step_1a: If you add more than one security key, you’ll know which one is which.
-forms.webauthn_setup.step_2: Insert a security key into your device
+forms.webauthn_setup.step_2: 将安全密钥插入您的设备
 forms.webauthn_setup.step_2_image_alt: A security key being inserted into the right side of a laptop
 forms.webauthn_setup.step_2_image_mobile_alt: A security key being inserted into the bottom of a smart phone
 forms.webauthn_setup.step_3: Set up your security key
-forms.webauthn_setup.step_3a: Click “set up security key” below and follow your browser’s instructions.
+forms.webauthn_setup.step_3a:  点击下面的“设置安全密钥”并按照浏览器的说明进行操作。
 headings.account.activity: 活动
 headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_accounts: 你连接的账户
@@ -960,7 +947,7 @@ help_text.requested_attributes.ial1_intro_html: 我们将与 <strong>%{sp}</stro
 help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
   ng> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息："
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息：'
-help_text.requested_attributes.ial2_reverified_consent_info: 因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。
+help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。'
 help_text.requested_attributes.phone: 电话号码
 help_text.requested_attributes.social_security_number: 社会保障号码
 help_text.requested_attributes.verified_at: 更新是在
@@ -1333,7 +1320,7 @@ instructions.password.strength.1: 弱
 instructions.password.strength.2: 一般
 instructions.password.strength.3: 好
 instructions.password.strength.4: 棒！
-instructions.password.strength.intro: 密码强度：
+instructions.password.strength.intro: '密码强度：'
 instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
 links.account.reactivate.with_key: 我有密钥

@@ -1,17 +1,4 @@
 ---
-0: Continuer maintenant et effectuer la vérification par courrier, qui nécessite <strong>5 à 10 jours</strong>.
-1: Quitter %{app_name}.
-10: octobre
-11: novembre
-12: décembre
-2: février
-3: mars
-4: avril
-5: mai
-6: juin
-7: juillet
-8: août
-9: septembre
 account_reset.cancel_request.are_you_sure: Êtes-vous sûr de vouloir annuler votre demande de suppression de compte ?
 account_reset.cancel_request.cancel: Quitter
 account_reset.cancel_request.cancel_button: Annuler la suppression du compte
@@ -421,7 +408,7 @@ countries.za: Afrique du Sud
 countries.zm: Zambie
 countries.zw: Zimbabwe
 date.day_names:
-  -
+  - null
   - lundi
   - mardi
   - mercredi
@@ -432,7 +419,7 @@ date.day_names:
 date.formats.long: '%-d %B %Y'
 date.formats.short: '%A, %-d %B'
 date.month_names:
-  -
+  - null
   - janvier
   - février
   - mars
@@ -888,8 +875,8 @@ forms.webauthn_setup.step_1a: Si vous ajoutez plus d’une clé de sécurité, v
 forms.webauthn_setup.step_2: Insérer votre clé de sécurité
 forms.webauthn_setup.step_2_image_alt: Insertion d’une clé de sécurité dans le côté droit d’un ordinateur portable
 forms.webauthn_setup.step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
-forms.webauthn_setup.step_3: Configurer une clé de sécurité
-forms.webauthn_setup.step_3a: Cliquez sur « Configurer votre clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
+forms.webauthn_setup.step_3: Configurer votre clé de sécurité
+forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés

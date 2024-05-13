@@ -1,17 +1,4 @@
 ---
-0: Continuar ahora y verificar por correo, lo cual tarda entre <strong>5 y 10 días</strong>.
-1: Salir de %{app_name} e inténtelo de nuevo más tarde.
-10: octubre
-11: noviembre
-12: diciembre
-2: febrero
-3: marzo
-4: abril
-5: mayo
-6: junio
-7: julio
-8: agosto
-9: septiembre
 account_reset.cancel_request.are_you_sure: '¿Está seguro de que desea cancelar su solicitud de eliminación de cuenta?'
 account_reset.cancel_request.cancel: Salir
 account_reset.cancel_request.cancel_button: Cancelar la cuenta eliminada
@@ -421,7 +408,7 @@ countries.za: Sudáfrica
 countries.zm: Zambia
 countries.zw: Zimbabue
 date.day_names:
-  -
+  - null
   - lunes
   - martes
   - miércoles
@@ -432,7 +419,7 @@ date.day_names:
 date.formats.long: '%B %-d, %Y'
 date.formats.short: '%A, %B %-d'
 date.month_names:
-  -
+  - null
   - enero
   - febrero
   - marzo
@@ -889,7 +876,7 @@ forms.webauthn_setup.step_2: Inserte una clave de seguridad en su dispositivo
 forms.webauthn_setup.step_2_image_alt: Una llave de seguridad insertada en el lado derecho de una computadora portátil
 forms.webauthn_setup.step_2_image_mobile_alt: Una llave de seguridad insertada en la parte inferior de un celular
 forms.webauthn_setup.step_3: Configure su clave de seguridad
-forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” (set up security key) más abajo y siga las instrucciones de su navegador.
+forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” más abajo y siga las instrucciones de su navegador.
 headings.account.activity: Actividad
 headings.account.authentication_apps: Aplicaciones de autenticación
 headings.account.connected_accounts: Sus cuentas conectadas
