@@ -7,8 +7,9 @@
 </p>
 
 <%= simple_form_for(
-      current_user, url: update_verify_password_path,
-                    html: { autocomplete: 'off', method: :put }
+      current_user,
+      url: update_verify_password_path,
+      method: :put,
     ) do |f| %>
   <%= render PasswordToggleComponent.new(
         form: f,

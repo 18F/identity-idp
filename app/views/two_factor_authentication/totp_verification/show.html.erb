@@ -2,7 +2,7 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
-<%= simple_form_for('', method: :post, html: { class: 'margin-bottom-5' }) do |f| %>
+<%= simple_form_for('', html: { class: 'margin-bottom-5' }) do |f| %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>

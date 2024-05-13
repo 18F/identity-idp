@@ -20,7 +20,7 @@
   <%= @presenter.phone_number_message %>
 </p>
 
-<%= simple_form_for('', method: :post) do |f| %>
+<%= simple_form_for('') do |f| %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>

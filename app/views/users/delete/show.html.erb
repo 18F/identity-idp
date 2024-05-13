@@ -16,7 +16,7 @@
 <%= simple_form_for(
       current_user,
       url: account_delete_path,
-      html: { autocomplete: 'off', method: :post },
+      method: :post,
     ) do |f| %>
   <p class="margin-bottom-4">
     <%= t('users.delete.instructions') %>
