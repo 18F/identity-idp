@@ -78,6 +78,15 @@ RSpec.describe ScriptHelper do
         )
       end
 
+      it 'adds preload header without nopush attribute' do
+        render_javascript_pack_once_tags
+
+        expect(response.headers['link']).to eq(
+          '</application.js>; rel=preload; as=script,' \
+            '</document-capture.js>; rel=preload; as=script',
+        )
+      end
+
       context 'with script integrity available' do
         before do
           allow(Rails.application.config.asset_sources).to receive(:get_integrity).and_return(nil)
