@@ -200,7 +200,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
         rows = [
           {
             partner: partner_key,
-            issuer: issuers,
+            issuers: issuers,
             year_month: '202009',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
@@ -216,7 +216,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           },
           {
             partner: partner_key,
-            issuer: issuers,
+            issuers: issuers,
             year_month: '202010',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,

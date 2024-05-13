@@ -109,7 +109,7 @@ module Reports
               iaa_end_date = Date.parse(iaa_results.first[:iaa_end_date])
 
               partner_results = by_partner_results.find do |result|
-                result[:year_month] == year_month && result[:issuer]&.include?(issuer)
+                result[:year_month] == year_month && result[:issuers]&.include?(issuer)
               end || {}
               csv << [
                 iaa_key,

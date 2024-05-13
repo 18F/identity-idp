@@ -81,7 +81,7 @@ module Db
 
           rows << {
             partner: partner,
-            issuer: issuers_set,
+            issuers: issuers_set,
             year_month: year_month,
             iaa_start_date: date_range.begin.to_s,
             iaa_end_date: date_range.end.to_s,
