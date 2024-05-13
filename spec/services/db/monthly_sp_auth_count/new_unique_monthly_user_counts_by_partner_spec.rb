@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
+RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
   describe '.call' do
     subject(:results) do
-      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner.call(
-        key: key,
+      Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
+        partner: partner_key,
         start_date: partner_range.begin,
         end_date: partner_range.end,
         issuers: issuers,
@@ -12,8 +12,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
     end
 
     context 'with no data' do
-      let(:key) { partner }
-      let(:partner) { 'DHS' }
+      let(:partner_key) { 'DHS' }
       let(:partner_range) { 1.year.ago..Time.zone.now }
       let(:issuers) { [] }
 
@@ -23,7 +22,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
     end
 
     context 'with data' do
-      let(:key) { 'DHS' }
+      let(:partner_key) { 'DHS' }
       let(:issuers) { [issuer1, issuer2, issuer3] }
 
       let(:partner_range) { Date.new(2020, 9, 15)..Date.new(2021, 9, 14) }
@@ -67,6 +66,8 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       let(:issuer1) { 'issuer1' }
       let(:issuer2) { 'issuer2' }
       let(:issuer3) { 'issuer3' }
+      let(:issuer4) { 'issuer4' }
+      let(:issuer5) { 'issuer5' }
 
       before do
         # Inside partial month
@@ -198,7 +199,8 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       it 'adds up new unique users from sp_return_log instances and splits based on profile age' do
         rows = [
           {
-            key: key,
+            partner: partner_key,
+            issuers: issuers,
             year_month: '202009',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
@@ -213,7 +215,8 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
             partner_ial2_new_unique_users_unknown: 0,
           },
           {
-            key: key,
+            partner: partner_key,
+            issuers: issuers,
             year_month: '202010',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
@@ -228,13 +231,12 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
             partner_ial2_new_unique_users_unknown: 1,
           },
         ]
-
         expect(results).to match_array(rows)
       end
     end
 
     context 'with only partial month data' do
-      let(:key) { 'DHS' }
+      let(:partner_key) { 'DHS' }
       let(:partner_range) { Date.new(2020, 9, 15)..Date.new(2020, 9, 17) }
       let(:issuers) { ['issuer1'] }
       let(:rows) { [] }

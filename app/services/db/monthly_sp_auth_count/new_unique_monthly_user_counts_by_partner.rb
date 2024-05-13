@@ -2,17 +2,17 @@
 
 module Db
   module MonthlySpAuthCount
-    module UniqueMonthlyAuthCountsByPartner
+    module NewUniqueMonthlyUserCountsByPartner
       extend Reports::QueryHelpers
 
       module_function
 
-      # @param [String] key label for billing (Partner requesting agency)
+      # @param [String] partner label for billing (Partner requesting agency)
       # @param [Array<String>] issuers issuers for the iaa
       # @param [Date] start_date iaa start date
       # @param [Date] end_date iaa end date
       # @return [PG::Result, Array]
-      def call(key:, issuers:, start_date:, end_date:)
+      def call(partner:, issuers:, start_date:, end_date:)
         date_range = start_date...end_date
 
         return [] if !date_range || issuers.blank?
@@ -56,6 +56,7 @@ module Db
         rows = []
 
         prev_seen_users = Set.new
+        issuers_set = issuers.to_set
         year_months = year_month_to_users_to_profile_age.keys.sort
 
         # rubocop:disable Metrics/BlockLength
@@ -79,7 +80,8 @@ module Db
           prev_seen_users |= this_month_users
 
           rows << {
-            key: key,
+            partner: partner,
+            issuers: issuers_set,
             year_month: year_month,
             iaa_start_date: date_range.begin.to_s,
             iaa_end_date: date_range.end.to_s,
