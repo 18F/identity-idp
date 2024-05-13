@@ -5,7 +5,9 @@ class Agreements::Integration < ApplicationRecord
 
   belongs_to :partner_account
   belongs_to :integration_status
+  # rubocop:disable Rails/InverseOf
   belongs_to :service_provider, foreign_key: :issuer, primary_key: :issuer
+  # rubocop:enable Rails/InverseOf
 
   has_many :integration_usages, dependent: :restrict_with_exception
   has_many :iaa_orders, through: :integration_usages

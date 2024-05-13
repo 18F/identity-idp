@@ -35,8 +35,8 @@ module Reports
       end
 
       by_partner_results = partner_accounts.flat_map do |partner_account|
-        Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner.call(
-          key: partner_account.partner,
+        Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
+          partner: partner_account.partner,
           issuers: partner_account.issuers,
           start_date: partner_account.start_date,
           end_date: partner_account.end_date,
@@ -111,10 +111,9 @@ module Reports
               partner_results = by_partner_results.find do |result|
                 result[:year_month] == year_month && result[:issuer]&.include?(issuer)
               end || {}
-
               csv << [
                 iaa_key,
-                partner_results[:key],
+                partner_results[:partner],
                 iaa_start_date,
                 iaa_end_date,
 

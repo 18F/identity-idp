@@ -2,17 +2,17 @@
 
 module Db
   module MonthlySpAuthCount
-    module UniqueMonthlyAuthCountsByPartner
+    module NewUniqueMonthlyUserCountsByPartner
       extend Reports::QueryHelpers
 
       module_function
 
-      # @param [String] key label for billing (Partner requesting agency)
+      # @param [String] partner label for billing (Partner requesting agency)
       # @param [Array<String>] issuers issuers for the iaa
       # @param [Date] start_date iaa start date
       # @param [Date] end_date iaa end date
       # @return [PG::Result, Array]
-      def call(key:, issuers:, start_date:, end_date:)
+      def call(partner:, issuers:, start_date:, end_date:)
         date_range = start_date...end_date
 
         return [] if !date_range || issuers.blank?
@@ -20,32 +20,6 @@ module Db
         # Query a month at a time, to keep query time/result size fairly reasonable
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
-
-        year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
-          ym_h[ym_k] = Hash.new
-        end
-
-        queries.each do |query|
-          temp_copy = year_month_to_users_to_profile_age.deep_dup
-
-          with_retries(
-            max_tries: 3,
-            rescue: [
-              ActiveRecord::SerializationFailure,
-              PG::ConnectionBad,
-              PG::TRSerializationFailure,
-              PG::UnableToSend,
-            ],
-            handler: proc do
-              year_month_to_users_to_profile_age = temp_copy
-              ActiveRecord::Base.connection.reconnect!
-            end,
-          ) do
-            Reports::BaseReport.transaction_with_timeout do
-              ActiveRecord::Base.connection.execute(query).each do |row|
-                user_id = row['user_id']
-                year_month = row['year_month']
-                ial = row['ial']
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
           ym_h[ym_k] = {}
@@ -72,6 +46,7 @@ module Db
                 user_id = row['user_id']
                 year_month = row['year_month']
                 profile_age = row['profile_age']
+
                 year_month_to_users_to_profile_age[year_month][user_id] = profile_age
               end
             end
@@ -81,9 +56,7 @@ module Db
         rows = []
 
         prev_seen_users = Set.new
-        year_months = year_month_to_users_to_profile_age.keys.sort
-
-        prev_seen_users = Set.new
+        issuers_set = issuers.to_set
         year_months = year_month_to_users_to_profile_age.keys.sort
 
         # rubocop:disable Metrics/BlockLength
@@ -107,7 +80,7 @@ module Db
           prev_seen_users |= this_month_users
 
           rows << {
-            key: key,
+            partner: partner,
             issuer: issuers_set,
             year_month: year_month,
             iaa_start_date: date_range.begin.to_s,
