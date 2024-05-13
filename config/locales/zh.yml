@@ -879,8 +879,8 @@ forms.webauthn_setup.step_1a: If you add more than one security key, you’ll kn
 forms.webauthn_setup.step_2: 将安全密钥插入您的设备
 forms.webauthn_setup.step_2_image_alt: A security key being inserted into the right side of a laptop
 forms.webauthn_setup.step_2_image_mobile_alt: A security key being inserted into the bottom of a smart phone
-forms.webauthn_setup.step_3: Set up your security key
-forms.webauthn_setup.step_3a:  点击下面的“设置安全密钥”并按照浏览器的说明进行操作。
+forms.webauthn_setup.step_3: 设置您的安全密钥
+forms.webauthn_setup.step_3a: 点击下面的“设置安全密钥”并按照浏览器的说明进行操作。
 headings.account.activity: 活动
 headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_accounts: 你连接的账户
