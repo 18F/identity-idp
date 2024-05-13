@@ -31,38 +31,38 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
       let(:inside_whole_month) { Date.new(2020, 10, 16) }
 
       let(:user1) { create(:user, profiles: [profile1a, profile1b]) }
-      let(:profile1a) { create(:profile, verified_at: '2015-09-16') }
-      let(:profile1b) { create(:profile, verified_at: '2020-09-16') }
+      let(:profile1a) { build(:profile, verified_at: '2015-09-16') }
+      let(:profile1b) { build(:profile, verified_at: '2020-09-16') }
 
       let(:user2) { create(:user, profiles: [profile2]) }
-      let(:profile2) { create(:profile, verified_at: '2018-12-25') }
+      let(:profile2) { build(:profile, verified_at: '2018-12-25') }
 
       let(:user3) { create(:user, profiles: [profile3]) }
-      let(:profile3) { create(:profile, verified_at: '2019-11-10') }
+      let(:profile3) { build(:profile, verified_at: '2019-11-10') }
 
       let(:user4) { create(:user, profiles: [profile4]) }
-      let(:profile4) { create(:profile, verified_at: '2020-03-01') }
+      let(:profile4) { build(:profile, verified_at: '2020-03-01') }
 
       let(:user5) { create(:user, profiles: [profile5]) }
-      let(:profile5) { create(:profile, verified_at: '2019-04-17') }
+      let(:profile5) { build(:profile, verified_at: '2019-04-17') }
 
       let(:user6) { create(:user, profiles: [profile6]) }
-      let(:profile6) { create(:profile, verified_at: '2018-09-15') }
+      let(:profile6) { build(:profile, verified_at: '2018-09-15') }
 
       let(:user7) { create(:user, profiles: [profile7]) }
-      let(:profile7) { create(:profile, verified_at: '2017-02-15') }
+      let(:profile7) { build(:profile, verified_at: '2017-02-15') }
 
       let(:user8) { create(:user, profiles: [profile8]) }
-      let(:profile8) { create(:profile, verified_at: '2016-03-20') }
+      let(:profile8) { build(:profile, verified_at: '2016-03-20') }
 
       let(:user9) { create(:user, profiles: [profile9]) }
-      let(:profile9) { create(:profile, verified_at: '2012-12-15') }
+      let(:profile9) { build(:profile, verified_at: '2012-12-15') }
 
       let(:user10) { create(:user, profiles: [profile10]) }
-      let(:profile10) { create(:profile, verified_at: nil) }
+      let(:profile10) { build(:profile, verified_at: nil) }
 
       let(:user11) { create(:user, profiles: [profile9]) }
-      let(:profile11) { create(:profile, verified_at: '2019-11-10') }
+      let(:profile11) { build(:profile, verified_at: '2019-11-10') }
 
       let(:issuer1) { 'issuer1' }
       let(:issuer2) { 'issuer2' }
@@ -97,7 +97,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByPartner do
           )
         end
 
-        # #  5 new users in whole month proofed in year 1-5
+        #  5 new users in whole month proofed in year 1-5
         [user4, user5, user6, user7, user8].each do |user|
           create(
             :sp_return_log,

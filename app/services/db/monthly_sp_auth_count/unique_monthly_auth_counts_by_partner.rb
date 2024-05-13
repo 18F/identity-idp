@@ -18,7 +18,6 @@ module Db
         return [] if !date_range || issuers.blank?
 
         # Query a month at a time, to keep query time/result size fairly reasonable
-        # The results are rows with [user_id, ial, auth_count, year_month]
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
 
