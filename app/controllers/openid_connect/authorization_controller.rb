@@ -9,6 +9,7 @@ module OpenidConnect
     include AuthorizationCountConcern
     include BillableEventTrackable
     include ForcedReauthenticationConcern
+    include OpenidConnectRedirectConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :block_biometric_requests_in_production, only: [:index]
@@ -137,13 +138,10 @@ module OpenidConnect
     end
 
     def secure_headers_override
-      if !IdentityConfig.store.openid_connect_content_security_form_action_enabled &&
-         oidc_redirect_method(
-           issuer: @authorize_form.service_provider.issuer,
-           user_uuid: current_user&.id,
-         ) != 'server_side'
-        return
-      end
+      return if form_action_csp_disabled_and_not_server_side_redirect?(
+        issuer: @authorize_form.service_provider.issuer,
+        user_uuid: current_user&.uuid,
+      )
 
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,

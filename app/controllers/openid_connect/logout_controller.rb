@@ -4,6 +4,7 @@ module OpenidConnect
   class LogoutController < ApplicationController
     include SecureHeadersConcern
     include FullyAuthenticatable
+    include OpenidConnectRedirectConcern
 
     before_action :set_devise_failure_redirect_for_concurrent_session_logout, only: [:index]
     before_action :confirm_two_factor_authenticated, only: [:delete]
@@ -68,13 +69,10 @@ module OpenidConnect
 
     def apply_logout_secure_headers_override(redirect_uri, service_provider)
       return if service_provider.nil? || redirect_uri.nil?
-      if !IdentityConfig.store.openid_connect_content_security_form_action_enabled &&
-         oidc_redirect_method(
-           issuer: service_provider.issuer,
-           user_uuid: current_user&.id,
-         ) != 'server_side'
-        return
-      end
+      return if form_action_csp_disabled_and_not_server_side_redirect?(
+        issuer: service_provider.issuer,
+        user_uuid: current_user&.id,
+      )
 
       uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         redirect_uri,

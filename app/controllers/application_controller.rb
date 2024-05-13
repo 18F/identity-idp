@@ -494,15 +494,4 @@ class ApplicationController < ActionController::Base
     sign_out
     redirect_to banned_user_url
   end
-
-  def oidc_redirect_method(issuer:, user_uuid:)
-    user_redirect_method_override =
-      IdentityConfig.store.openid_connect_redirect_uuid_override_map[user_uuid]
-
-    sp_redirect_method_override =
-      IdentityConfig.store.openid_connect_redirect_issuer_override_map[issuer]
-
-    user_redirect_method_override || sp_redirect_method_override ||
-      IdentityConfig.store.openid_connect_redirect
-  end
 end
