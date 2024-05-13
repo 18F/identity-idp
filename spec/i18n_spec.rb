@@ -62,7 +62,7 @@ module I18n
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
-        { key: 'time.formats.full_date' }, # format is the same in Spanish and English
+        { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
