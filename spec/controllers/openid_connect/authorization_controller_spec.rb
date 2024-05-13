@@ -53,8 +53,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         stub_sign_in user
         session[:sign_in_flow] = sign_in_flow
         session[:sign_in_page_visited_at] = Time.zone.now.to_s
-        # freeze_time
-        # travel_to Time.zone.now + 15.seconds
       end
 
       around do |ex|
