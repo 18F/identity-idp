@@ -1,17 +1,4 @@
 ---
-0: Continue now and verify by mail, which takes <strong>5 to 10 days</strong>.
-1: Exit %{app_name} and try again later.
-10: October
-11: November
-12: December
-2: February
-3: March
-4: April
-5: May
-6: June
-7: July
-8: August
-9: September
 account_reset.cancel_request.are_you_sure: Are you sure you want to cancel your delete account request?
 account_reset.cancel_request.cancel: Exit
 account_reset.cancel_request.cancel_button: Cancel delete account
@@ -421,7 +408,7 @@ countries.za: South Africa
 countries.zm: Zambia
 countries.zw: Zimbabwe
 date.day_names:
-  -
+  - null
   - Monday
   - Tuesday
   - Wednesday
@@ -432,7 +419,7 @@ date.day_names:
 date.formats.long: '%B %-d, %Y'
 date.formats.short: '%A, %B %-d'
 date.month_names:
-  -
+  - null
   - January
   - February
   - March
