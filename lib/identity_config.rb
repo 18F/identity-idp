@@ -145,6 +145,7 @@ module IdentityConfig
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_new_device_alert_aggregation_enabled, type: :boolean)
+    config.add(:federal_agencies_with_piv, type: :json)
     config.add(:geo_data_file_path, type: :string)
     config.add(:get_usps_proofing_results_job_cron, type: :string)
     config.add(:get_usps_proofing_results_job_reprocess_delay_minutes, type: :integer)

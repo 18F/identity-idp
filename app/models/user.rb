@@ -82,6 +82,10 @@ class User < ApplicationRecord
     confirmed_email_addresses.any?(&:gov_or_mil?)
   end
 
+  def has_agency_with_piv_card_issued_email?
+    confirmed_email_addresses.any?(&:fed_agency_issues_piv?)
+  end
+
   def accepted_rules_of_use_still_valid?
     if self.accepted_terms_at.present?
       self.accepted_terms_at > IdentityConfig.store.rules_of_use_updated_at &&

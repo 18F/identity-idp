@@ -37,6 +37,15 @@ class EmailAddress < ApplicationRecord
     email.end_with?('.gov', '.mil')
   end
 
+  def fed_agency_issues_piv?
+    email_domain = get_email_domain
+    IdentityConfig.store.federal_agencies_with_piv.include?(email_domain)
+  end
+
+  def get_email_domain
+    email.split('@').last
+  end
+
   class << self
     def find_with_email(email)
       return nil if !email.is_a?(String) || email.empty?
