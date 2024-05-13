@@ -27,7 +27,7 @@ class ServiceProvider < ApplicationRecord
           class_name: 'Agreements::Integration',
           dependent: nil
 
-  # Do not define validations in this model.
+  # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
 
