@@ -37,7 +37,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
     build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc2)
   end
 
-  # Have to do this because of invalid check when building integration usages
+  # Do this because of invalid check when building integration usages
   let!(:iaa_orders) do
     [
       iaa_order1,
