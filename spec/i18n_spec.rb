@@ -62,6 +62,7 @@ module I18n
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
+        { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
@@ -121,7 +122,6 @@ module I18n
         { key: 'forms.webauthn_setup.step_2_image_mobile_alt', locales: %i[zh] },
         { key: 'idv.failure.setup.fail_html', locales: %i[zh] },
         { key: 'idv.failure.verify.exit', locales: %i[zh] },
-        { key: 'image_description.phone_icon', locales: %i[zh] },
         { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] },
         { key: 'mfa.recommendation', locales: %i[zh] },
         { key: 'notices.signed_up_but_unconfirmed.resend_confirmation_email', locales: %i[zh] },
@@ -158,10 +158,6 @@ module I18n
         { key: 'two_factor_authentication.webauthn_roaming.manage_accessible_label', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.nickname', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.renamed', locales: %i[zh] },
-        { key: 'user_mailer.in_person_please_call.body.contact_message_html', locales: %i[zh] },
-        { key: 'user_mailer.in_person_please_call.body.intro_html', locales: %i[zh] },
-        { key: 'user_mailer.in_person_please_call.header', locales: %i[zh] },
-        { key: 'user_mailer.in_person_please_call.subject', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_after_2fa.authentication_methods', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_after_2fa.info_p1', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_after_2fa.info_p2', locales: %i[zh] },

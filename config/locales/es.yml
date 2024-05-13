@@ -1486,6 +1486,7 @@ time.formats.event_timestamp: '%B %-d, %Y a las %-l:%M %p'
 time.formats.event_timestamp_js: '%{month} %{day}, %{year} a las %{hour}:%{minute} %{day_period}'
 time.formats.event_timestamp_utc: '%B %-d, %Y a las %-l:%M %p UTC'
 time.formats.event_timestamp_with_zone: '%B %-d, %Y a las %-l:%M %p %Z'
+time.formats.full_date: '%B %-d, %Y'
 time.formats.sms_date: '%m/%d/%Y'
 time.pm: p. m.
 titles.account: Cuenta
