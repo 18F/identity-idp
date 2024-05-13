@@ -5,6 +5,7 @@ import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue } from '@18f/identity-test-helpers';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
+import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { ComponentType } from 'react';
 import { InPersonContext } from '../context';
