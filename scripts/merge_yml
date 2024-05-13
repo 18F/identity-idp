@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Merges YML files, in order of least to greatest precedence
+# Intended to only be used for flat yml file migration for translations
+require 'yaml'
+
+first, *rest = ARGV
+
+combined = rest.reduce(YAML.load_file(first) || {}) do |accumulator, path|
+  accumulator.merge(YAML.load_file(path) || {})
+end
+
+puts combined.to_yaml

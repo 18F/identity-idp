@@ -17,7 +17,7 @@
   </p>
   <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
   <ul class="margin-bottom-5">
-    <% t('vendor_outage.alerts.pinpoint.idv.options_html', status_page_url: StatusPage.base_url).each do | option | %>
+    <% t('vendor_outage.alerts.pinpoint.idv.options_html', app_name: APP_NAME).each do |option| %>
       <li>
         <%= option %>
       </li>

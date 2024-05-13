@@ -26,10 +26,20 @@ module Reports
           email: email,
           subject: "Daily Identity Verification Report - #{report_date.to_date}",
           reports: reports,
-          message: preamble,
+          message: message,
           attachment_format: :xlsx,
         ).deliver_now
       end
+    end
+
+    def message
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
+        #{preamble}
+
+        <a href="https://docs.google.com/document/d/1fERPx-8ryeO84xo32Ky0em8aHbQW_VzJvThhpgfkSYc/edit?usp=sharing">
+          Identity Verification Metrics Definitions
+        </a>
+      HTML
     end
 
     def preamble
@@ -44,7 +54,7 @@ module Reports
     end
 
     def emails
-      [IdentityConfig.store.team_ada_email]
+      [IdentityConfig.store.team_ada_email].compact
     end
 
     def reports

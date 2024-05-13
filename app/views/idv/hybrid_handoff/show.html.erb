@@ -41,9 +41,10 @@
             as: :doc_auth,
             url: url_for(type: :mobile, combined: true),
             method: 'PUT',
-            html: { autocomplete: 'off',
-                    id: 'form-to-submit-photos-through-mobile',
-                    'aria-label': t('forms.buttons.send_link') },
+            html: {
+              id: 'form-to-submit-photos-through-mobile',
+              aria: { label: t('forms.buttons.send_link') },
+            },
           ) do |f| %>
         <%= render PhoneInputComponent.new(
               form: f,
@@ -76,9 +77,10 @@
           as: :doc_auth,
           url: url_for(type: :mobile, combined: true),
           method: 'PUT',
-          html: { autocomplete: 'off',
-                  id: 'form-to-submit-photos-through-mobile',
-                  'aria-label': t('forms.buttons.send_link') },
+          html: {
+            id: 'form-to-submit-photos-through-mobile',
+            aria: { label: t('forms.buttons.send_link') },
+          },
         ) do |f| %>
       <%= render PhoneInputComponent.new(
             form: f,
@@ -125,7 +127,7 @@
             class: 'margin-bottom-4',
             html: {
               id: 'form-to-submit-photos-through-desktop',
-              'aria-label': t('forms.buttons.upload_photos'),
+              aria: { label: t('forms.buttons.upload_photos') },
             },
           ) do |f| %>
         <%= f.submit t('forms.buttons.upload_photos'), outline: true %>

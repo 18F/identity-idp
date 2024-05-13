@@ -26,8 +26,8 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
           { name: :getting_started },
           { name: :verify_id },
           { name: :verify_info },
-          { name: :verify_phone_or_address },
-          { name: :secure_account },
+          { name: :verify_phone },
+          { name: :re_enter_password },
         ]
       end
 
@@ -36,7 +36,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
           { name: :getting_started },
           { name: :verify_id },
           { name: :verify_info },
-          { name: :get_a_letter },
+          { name: :verify_address },
           { name: :secure_account },
         ]
       end
@@ -69,8 +69,8 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
         [
           { name: :find_a_post_office },
           { name: :verify_info },
-          { name: :verify_phone_or_address },
-          { name: :secure_account },
+          { name: :verify_phone },
+          { name: :re_enter_password },
           { name: :go_to_the_post_office },
         ]
       end
@@ -79,8 +79,8 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
         [
           { name: :find_a_post_office },
           { name: :verify_info },
+          { name: :verify_address },
           { name: :secure_account },
-          { name: :get_a_letter },
           { name: :go_to_the_post_office },
         ]
       end

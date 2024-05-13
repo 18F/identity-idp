@@ -231,6 +231,10 @@ module Users
         adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session[:phone_recaptcha_assessment_id],
+          reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        ),
       )
 
       if UserSessionContext.reauthentication_context?(context)

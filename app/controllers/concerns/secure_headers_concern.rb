@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 module SecureHeadersConcern
+  include OpenidConnectRedirectConcern
   extend ActiveSupport::Concern
 
   def apply_secure_headers_override
     return if stored_url_for_user.blank?
-    return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
 
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
     return unless authorize_form.valid?
+
+    return if form_action_csp_disabled_and_not_server_side_redirect?(
+      issuer: authorize_form.service_provider.issuer,
+      user_uuid: current_user&.uuid,
+    )
 
     override_form_action_csp(csp_uris)
   end

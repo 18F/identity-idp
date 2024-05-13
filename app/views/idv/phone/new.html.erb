@@ -1,7 +1,7 @@
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
-        current_step: :verify_phone_or_address,
+        current_step: :verify_phone,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
@@ -54,10 +54,7 @@
         wait_step_path: idv_phone_path,
         poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
       },
-      html: {
-        autocomplete: 'off',
-        method: :put,
-      },
+      method: :put,
     ) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,

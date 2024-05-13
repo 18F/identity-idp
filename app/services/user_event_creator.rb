@@ -102,19 +102,13 @@ class UserEventCreator
   def create_device_for_user(user)
     cookie_uuid = cookies[:device].presence || SecureRandom.hex(COOKIE_LENGTH / 2)
 
-    device = Device.create!(
+    Device.create!(
       user: user,
       user_agent: request.user_agent.to_s,
       cookie_uuid: cookie_uuid,
       last_used_at: Time.zone.now,
       last_ip: request.remote_ip,
     )
-    assign_device_cookie(device.cookie_uuid)
-    device
-  end
-
-  def assign_device_cookie(device_cookie)
-    cookies.permanent[:device] = device_cookie unless device_cookie == cookies[:device]
   end
 
   def send_new_device_notification(event:, device:, disavowal_token:)
@@ -133,6 +127,8 @@ class UserEventCreator
       event_type: event_type,
       disavowal_token_fingerprint: disavowal_token_fingerprint,
     )
+
+    cookies.permanent[:device] = device.cookie_uuid if device
 
     [event, disavowal_token]
   end

@@ -31,7 +31,6 @@ interface AppRootData {
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
-  exitUrl: string;
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
@@ -95,7 +94,6 @@ const {
   acuantVersion,
   flowPath,
   cancelUrl: cancelURL,
-  exitUrl: exitURL,
   accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
@@ -171,7 +169,6 @@ const App = composeComponents(
       value: {
         accountURL,
         cancelURL,
-        exitURL,
         currentStep: 'document_capture',
       },
     },

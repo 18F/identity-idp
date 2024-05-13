@@ -16,8 +16,7 @@
 <% end %>
 
 <%= simple_form_for(
-      form, url: url_for, method: 'PUT',
-            html: { autocomplete: 'off' }
+      form, url: url_for, method: 'PUT'
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         collection: us_states_territories,

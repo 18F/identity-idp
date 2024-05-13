@@ -5,11 +5,12 @@ RSpec.describe Reports::IdentityVerificationReport do
 
   before do
     allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:team_ada_email).and_return('ada@example.com')
   end
 
   describe '#perform' do
     it 'gets a CSV from the report maker, saves it to S3, and sends email to team' do
+      allow(IdentityConfig.store).to receive(:team_ada_email).and_return('ada@example.com')
+
       reports =
         Reporting::EmailableReport.new(
           title: 'Identity Verification Metrics',
@@ -58,6 +59,26 @@ RSpec.describe Reports::IdentityVerificationReport do
         message: anything,
         attachment_format: :xlsx,
       ).and_call_original
+
+      subject.perform(report_date)
+    end
+
+    it 'does not send report in email if the email field is empty' do
+      allow(IdentityConfig.store).to receive(:team_ada_email).and_return(nil)
+
+      report_maker = double(
+        Reporting::IdentityVerificationReport,
+        to_csv: 'I am a CSV, see',
+        identity_verification_emailable_report: 'I am a report',
+      )
+      allow(subject).to receive(:report_maker).and_return(report_maker)
+      expect(subject).to receive(:save_report).with(
+        'identity-verification-report',
+        'I am a CSV, see',
+        extension: 'csv',
+      )
+
+      expect(ReportMailer).to_not receive(:tables_report)
 
       subject.perform(report_date)
     end

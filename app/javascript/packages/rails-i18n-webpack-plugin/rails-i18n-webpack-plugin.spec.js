@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
-const { dig, uniq, compact, getKeyPath, getKeyDomain, getKeyDomains } = RailsI18nWebpackPlugin;
+const { compact } = RailsI18nWebpackPlugin;
 
 describe('RailsI18nWebpackPlugin', () => {
   it('generates expected output', (done) => {
@@ -163,83 +163,11 @@ describe('RailsI18nWebpackPlugin', () => {
   });
 });
 
-describe('dig', () => {
-  it('returns undefined when called on a nullish object', () => {
-    const object = undefined;
-    const result = dig(object, ['a', 'b']);
-
-    expect(result).to.be.undefined();
-  });
-
-  it('returns undefined when path is unreachable', () => {
-    const object = {};
-    const result = dig(object, ['a', 'b']);
-
-    expect(result).to.be.undefined();
-  });
-
-  it('returns value at path', () => {
-    const object = { a: { b: 1 } };
-    const result = dig(object, ['a', 'b']);
-
-    expect(result).to.be.equal(1);
-  });
-});
-
-describe('uniq', () => {
-  it('returns unique values', () => {
-    const values = [1, 2, 2, 3];
-    const result = uniq(values);
-
-    expect(result).to.deep.equal([1, 2, 3]);
-  });
-});
-
 describe('compact', () => {
   it('returns truthy values', () => {
     const values = [1, 0, null, false];
     const result = compact(values);
 
     expect(result).to.deep.equal([1]);
-  });
-});
-
-describe('getKeyPath', () => {
-  it('returns key path parts', () => {
-    const key = 'a.b.c';
-    const result = getKeyPath(key);
-
-    expect(result).to.deep.equal(['a', 'b', 'c']);
-  });
-});
-
-describe('getKeyDomain', () => {
-  context('key', () => {
-    const key = 'a.b.c';
-
-    it('returns domain', () => {
-      const result = getKeyDomain(key);
-
-      expect(result).to.equal('a');
-    });
-  });
-
-  context('key path', () => {
-    const keyPath = ['a', 'b', 'c'];
-
-    it('returns domain', () => {
-      const result = getKeyDomain(keyPath);
-
-      expect(result).to.equal('a');
-    });
-  });
-});
-
-describe('getKeyDomains', () => {
-  it('returns unique set of domains for keys', () => {
-    const keys = ['a.b.c', 'a.d.e', 'b.f.g'];
-    const domains = getKeyDomains(keys);
-
-    expect(domains).to.deep.equal(['a', 'b']);
   });
 });

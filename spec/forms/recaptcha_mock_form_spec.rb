@@ -14,24 +14,28 @@ RSpec.describe RecaptchaMockForm do
 
   describe '#submit' do
     let(:token) { 'token' }
-    subject(:response) { form.submit(token) }
+    subject(:result) { form.submit(token) }
 
     context 'with failing score from validation service' do
       let(:score) { score_threshold - 0.1 }
 
       it 'is unsuccessful with error for invalid token' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(
           success: false,
           error_details: { recaptcha_token: { invalid: true } },
         )
+        expect(assessment_id).to be_kind_of(String)
       end
 
       it 'logs analytics of the body' do
-        response
+        result
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            assessment_id: kind_of(String),
             success: true,
             score:,
             errors: [],
@@ -49,15 +53,19 @@ RSpec.describe RecaptchaMockForm do
       let(:score) { score_threshold + 0.1 }
 
       it 'is successful' do
+        response, assessment_id = result
+
         expect(response.to_h).to eq(success: true)
+        expect(assessment_id).to be_kind_of(String)
       end
 
       it 'logs analytics of the body' do
-        response
+        result
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            assessment_id: kind_of(String),
             success: true,
             score:,
             errors: [],
@@ -73,7 +81,7 @@ RSpec.describe RecaptchaMockForm do
         let(:analytics) { nil }
 
         it 'validates gracefully without analytics logging' do
-          response
+          result
         end
       end
     end
