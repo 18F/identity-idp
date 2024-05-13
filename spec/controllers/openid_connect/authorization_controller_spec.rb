@@ -55,6 +55,8 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         session[:sign_in_page_visited_at] = Time.zone.now.to_s
       end
 
+      let(:now) { Time.zone.now }
+
       around do |ex|
         freeze_time { ex.run }
       end
@@ -112,7 +114,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
         context 'with ial1 requested using acr_values' do
           it 'tracks IAL1 authentication event' do
-            travel_to Time.zone.now + 15.seconds
+            travel_to now + 15.seconds
             stub_analytics
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -168,7 +170,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           end
 
           it 'tracks IAL1 authentication event' do
-            travel_to Time.zone.now + 15.seconds
+            travel_to now + 15.seconds
             stub_analytics
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -363,7 +365,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             end
 
             it 'tracks IAL2 authentication event' do
-              travel_to Time.zone.now + 15.seconds
+              travel_to now + 15.seconds
               stub_analytics
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -739,7 +741,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'tracks IAL2 authentication event' do
-                travel_to Time.zone.now + 15.seconds
+                travel_to now + 15.seconds
                 stub_analytics
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -833,7 +835,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'tracks IAL1 authentication event' do
-                travel_to Time.zone.now + 15.seconds
+                travel_to now + 15.seconds
                 stub_analytics
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -929,7 +931,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'tracks IAL1 authentication event' do
-                travel_to Time.zone.now + 15.seconds
+                travel_to now + 15.seconds
                 stub_analytics
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -1098,7 +1100,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           let(:vtr) { nil }
 
           it 'tracks IAL1 authentication event' do
-            travel_to Time.zone.now + 15.seconds
+            travel_to now + 15.seconds
             stub_analytics
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
@@ -1155,7 +1157,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           end
 
           it 'tracks IAL1 authentication event' do
-            travel_to Time.zone.now + 15.seconds
+            travel_to now + 15.seconds
             stub_analytics
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -1351,7 +1353,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             end
 
             it 'tracks IAL2 authentication event' do
-              travel_to Time.zone.now + 15.seconds
+              travel_to now + 15.seconds
               stub_analytics
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -1729,7 +1731,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'tracks IAL2 authentication event' do
-                travel_to Time.zone.now + 15.seconds
+                travel_to now + 15.seconds
                 stub_analytics
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -1823,7 +1825,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'tracks IAL1 authentication event' do
-                travel_to Time.zone.now + 15.seconds
+                travel_to now + 15.seconds
                 stub_analytics
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -1919,7 +1921,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'tracks IAL1 authentication event' do
-                travel_to Time.zone.now + 15.seconds
+                travel_to now + 15.seconds
                 stub_analytics
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
