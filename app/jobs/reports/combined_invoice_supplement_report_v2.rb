@@ -12,6 +12,7 @@ module Reports
     end
 
     # @param [Array<IaaReportingHelper::IaaConfig>] iaas
+    # @param [Array<IaaReportingHelper::PartnerConfig>] partner_accounts
     # @return [String] CSV report
     def build_csv(iaas, partner_accounts)
       by_iaa_results = iaas.flat_map do |iaa|
