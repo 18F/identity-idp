@@ -20,11 +20,15 @@ class OpenidConnectUserInfoPresenter
     }
 
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
-    info.merge!(ial2_attributes) if scoper.ial2_scopes_requested? && ial2_data.present?
+    info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
-      info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
+      info[:ial] = if identity_proofing_requested_for_verified_user?
+                     Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+                   else
+                    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+                   end
       info[:aal] = identity.requested_aal_value
     else
       info[:vot] = vot_values
@@ -125,13 +129,20 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_data
-    @ial2_data ||= begin
-      if (ial2_session? || ialmax_session?) && active_profile.present?
-        out_of_band_session_accessor.load_pii(active_profile.id)
-      else
-        Pii::Attributes.new_from_hash({})
-      end
-    end
+    @ial2_data ||= out_of_band_session_accessor.load_pii(active_profile.id)
+  end
+
+  def identity_proofing_requested_for_verified_user?
+    return false unless active_profile.present?
+    resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
+  end
+
+  def resolved_authn_context_result
+    @resolved_authn_context_result ||= AuthnContextResolver.new(
+      service_provider: identity&.service_provider,
+      vtr: (JSON.parse(identity.vtr) if identity.vtr.present?),
+      acr_values: identity.acr_values,
+    ).resolve
   end
 
   def ial2_session?
