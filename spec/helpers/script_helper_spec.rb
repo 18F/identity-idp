@@ -85,7 +85,7 @@ RSpec.describe ScriptHelper do
           '</application.js>; rel=preload; as=script,' \
             '</document-capture.js>; rel=preload; as=script',
         )
-        expect(response.haeders['link']).to_not include('nopush')
+        expect(response.headers['link']).to_not include('nopush')
       end
 
       context 'with script integrity available' do
