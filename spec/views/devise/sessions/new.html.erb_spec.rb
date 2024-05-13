@@ -193,8 +193,12 @@ RSpec.describe 'devise/sessions/new.html.erb' do
 
       it 'renders DAP analytics' do
         allow(view).to receive(:javascript_packs_tag_once)
-        expect(view).to receive(:javascript_packs_tag_once).
-          with(a_string_matching('https://dap.digitalgov.gov/'), async: true, id: '_fed_an_ua_tag')
+        expect(view).to receive(:javascript_packs_tag_once).with(
+          a_string_matching('https://dap.digitalgov.gov/'),
+          async: true,
+          preload_links_header: false,
+          id: '_fed_an_ua_tag',
+        )
 
         render
       end
