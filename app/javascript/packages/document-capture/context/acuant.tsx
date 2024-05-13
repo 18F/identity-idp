@@ -164,9 +164,6 @@ AcuantContext.displayName = 'AcuantContext';
  * object, if one is available.
  */
 const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
-  if (window.AcuantJavascriptWebSdk) {
-    return window.AcuantJavascriptWebSdk;
-  }
   if (!window.AcuantJavascriptWebSdk) {
     // eslint-disable-next-line no-console
     console.error('AcuantJavascriptWebSdk is not defined in the global scope');
