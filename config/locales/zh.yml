@@ -494,8 +494,8 @@ doc_auth.errors.alerts.id_not_recognized: 我们无法辨认你的身份证件�
 doc_auth.errors.alerts.id_not_verified: 我们无法验证你的身份证件。可能因为你拍照时身份证件移动了。尝试重拍。
 doc_auth.errors.alerts.issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
 doc_auth.errors.alerts.ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
-doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: 查看更多有关清晰拍摄你本人照片的提示
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: 尝试再拍一张你自己。确保照片中你整个面孔都清楚可见。
 doc_auth.errors.alerts.sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
 doc_auth.errors.alerts.visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
 doc_auth.errors.alerts.visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
@@ -518,7 +518,7 @@ doc_auth.errors.general.multiple_front_id_failures: 我们无法验证你身份�
 doc_auth.errors.general.network_error: 我们这边有技术困难。请稍后再提交你的图像。
 doc_auth.errors.general.no_liveness: 尝试重拍。
 doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
-doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
+doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄清晰照片的提示
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
 doc_auth.errors.glare.top_msg_plural: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍。
@@ -547,14 +547,14 @@ doc_auth.headings.capture_scan_warning_link: 上传新照片
 doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
-doc_auth.headings.document_capture_selfie: 你本人照片
+doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_id: 驾照或州政府颁发的身份证件
 doc_auth.headings.document_capture_subheader_selfie: 你本人照片
 doc_auth.headings.document_capture_with_selfie: 添加你身份证件和本人的照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择你想如何验证身份
 doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
-doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
+doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.no_ssn: 没有社会保障号码？
@@ -591,7 +591,7 @@ doc_auth.info.how_to_verify: 你有在网上验证身份或者到参与邮件亲
 doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
+doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
 doc_auth.info.image_loaded: 图像已加载
 doc_auth.info.image_loading: 图像加载中
 doc_auth.info.image_updated: 图像已上传
@@ -606,11 +606,11 @@ doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
-doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
-doc_auth.info.selfie_capture_status.face_close_to_border: Too close to the frame
-doc_auth.info.selfie_capture_status.face_not_found: Face not found
-doc_auth.info.selfie_capture_status.face_too_small: Face too small
-doc_auth.info.selfie_capture_status.too_many_faces: Too many faces
+doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
+doc_auth.info.selfie_capture_status.face_close_to_border: 距离相框太近
+doc_auth.info.selfie_capture_status.face_not_found: 没找到面孔
+doc_auth.info.selfie_capture_status.face_too_small: 面孔太小
+doc_auth.info.selfie_capture_status.too_many_faces: 太多张面孔
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
 doc_auth.info.tag: 建议
@@ -643,16 +643,16 @@ doc_auth.instructions.text2: 你不需要有卡。
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
-doc_auth.tips.document_capture_id_text1: 使用暗色背景
-doc_auth.tips.document_capture_id_text2: 在平坦平面上拍照。
-doc_auth.tips.document_capture_id_text3: 不要使用相机的闪光灯
+doc_auth.tips.document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
+doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照。
+doc_auth.tips.document_capture_id_text3: 避免身份证件上有炫光或阴影。
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
-doc_auth.tips.document_capture_selfie_id_header_text: 拍出清晰照片的提示
-doc_auth.tips.document_capture_selfie_selfie_text: 拍出清晰照片的提示
-doc_auth.tips.document_capture_selfie_text1: 把设备放在眼睛水平
-doc_auth.tips.document_capture_selfie_text2: 确保你整个面孔都可以看到
-doc_auth.tips.document_capture_selfie_text3: 在光线充沛的地方拍照
-doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄你身份证件的清晰照片
+doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
+doc_auth.tips.document_capture_selfie_text1: 摘掉可能盖住你面部的任何服饰。我们建议你摘掉眼镜和帽子。
+doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照。
+doc_auth.tips.document_capture_selfie_text3: 面部表情保持中性。
+doc_auth.tips.document_capture_selfie_text4: 确保你整个面部都可以在绿色圆圈中看到。
 doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
@@ -686,8 +686,8 @@ errors.doc_auth.phone_step_incomplete: 在继续之前你必须使用手机上�
 errors.doc_auth.rate_limited_heading: 我们无法验证你的身份证件。
 errors.doc_auth.rate_limited_subheading: 尝试再拍照片
 errors.doc_auth.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
-errors.doc_auth.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
+errors.doc_auth.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
+errors.doc_auth.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
 errors.doc_auth.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 errors.enter_code.rate_limited_html: 你输入错误验证码太多次。<strong> %{timeout} 后再试。</strong>
 errors.general: 哎呀，出错了。请再试一次。
