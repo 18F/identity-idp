@@ -98,7 +98,7 @@ module DocAuth
         return false if transaction_status_from_uploaded_file&.downcase == 'failed'
         return false unless id_type_supported?
         return true if transaction_status_from_uploaded_file&.downcase == 'passed' &&
-                       (@selfie_required ? selfie_check_performed? : true)
+                       (@selfie_required ? selfie_check_passed? : true)
         doc_auth_success? && (@selfie_required ? selfie_passed? : true)
       end
 
