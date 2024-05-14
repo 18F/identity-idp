@@ -1078,13 +1078,11 @@ idv.gpo.request_another_letter.learn_more_link: Learn more about verifying your 
 idv.gpo.request_another_letter.title: Request another letter?
 idv.gpo.return_to_profile: Return to your profile
 idv.gpo.title: Enter your verification code
+idv.gpo.will_send_to: 'We’ll mail a letter to:'
 idv.images.come_back_later: Letter with a check mark
 idv.messages.activated_html: Your identity has been verified. If you need to change your verified information, please %{link_html}.
 idv.messages.activated_link: contact us
-idv.messages.come_back_later_html: '<p>Letters take <strong>5 to 10 days</strong> to arrive via USPS First-Class Mail.</p> <p>Once your letter arrives, sign in to %{app_name}, and enter your verification code when prompted.</p>'
-idv.messages.come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
-idv.messages.come_back_later_password_html: '<strong>Don’t forget your password.</strong><br /> If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.'
-idv.messages.come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
+idv.messages.come_back_later_html: '<p>Letters take <strong>5 to 10 days</strong> to arrive. Sign back in to enter your verification code once you get your letter.</p>'
 idv.messages.confirm: We secured your verified information
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Remember your password.</strong> The verification code in your letter won’t work if you reset your password later.'
 idv.messages.enter_password.message: '%{app_name} will encrypt your information with your password. This means that your information is secure and only you will be able to access or change it.'

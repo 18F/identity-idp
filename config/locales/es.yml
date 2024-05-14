@@ -1077,13 +1077,11 @@ idv.gpo.request_another_letter.learn_more_link: Obtenga más información sobre 
 idv.gpo.request_another_letter.title: '¿Solicitar otra carta?'
 idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
+idv.gpo.will_send_to: 'La hemos enviado a:'
 idv.images.come_back_later: Carta con una marca de verificación
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
 idv.messages.activated_link: contáctenos
-idv.messages.come_back_later_html: '<p>Las cartas tardan de <strong>5 a 10 días</strong> en llegar por First-Class Mail del Servicio Postal de los EE. UU. (USPS).</p> <p>Una vez que reciba su carta, inicie sesión en %{app_name} e introduzca su código de verificación cuando se le solicite.</p>'
-idv.messages.come_back_later_no_sp_html: Por ahora, puede volver a su <strong>cuenta de %{app_name}</strong>.
-idv.messages.come_back_later_password_html: '<strong>No olvide su contraseña.</strong><br /> Si restablece su contraseña, el código de verificación de su carta ya no funcionará y tendrá que verificar su identidad de nuevo.'
-idv.messages.come_back_later_sp_html: Por ahora, puede volver a <strong>%{sp}</strong>.
+idv.messages.come_back_later_html: '<p>Las cartas tardan entre <strong>5 y 10 días</strong> en llegar. Vuelva a iniciar sesión para introducir el código de verificación cuando reciba la carta.</p>'
 idv.messages.confirm: Hemos protegido su información verificada
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Recuerde su contraseña.</strong> El código de verificación de su carta no funcionará si restablece su contraseña más adelante.'
 idv.messages.enter_password.message: '%{app_name} cifrará su información con su contraseña. Esto significa que su información está protegida y solo usted puede acceder a ella o modificarla.'

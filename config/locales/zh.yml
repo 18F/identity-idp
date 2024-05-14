@@ -1082,13 +1082,11 @@ idv.gpo.request_another_letter.learn_more_link: 对通过邮件验证你地址�
 idv.gpo.request_another_letter.title: 要求再发一封信？
 idv.gpo.return_to_profile: 返回你的用户资料
 idv.gpo.title: 输入你的验证代码
+idv.gpo.will_send_to: 我们会把信寄发到：
 idv.images.come_back_later: 带有打勾符的信件
 idv.messages.activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
 idv.messages.activated_link: 联系我们
-idv.messages.come_back_later_html: '<p> 美国邮局平信一般需要 <strong> 5 到 10 天</strong> 送达。</p> <p> 你的信件到达后，请登录 %{app_name}，并按照提示输入你的验证码 </p>。'
-idv.messages.come_back_later_no_sp_html: 你目前可以返回你的<strong>%{app_name} 账户</strong> 了。
-idv.messages.come_back_later_password_html: '<strong>请勿忘记密码。</strong><br /> 如果你重设密码，信件中的一次性代码就会失效，你就需要再次验证身份。'
-idv.messages.come_back_later_sp_html: 你目前可以返回 <strong>%{sp}</strong> 了。
+idv.messages.come_back_later_html: '<p>信件需要 <strong>5 - 10 日送到。</strong>收到信后请重新登录来输入你的验证代码。</p>'
 idv.messages.confirm: 我们对你验证过的信息做了安全处理
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>记住你的密码。</strong> 如果你随后重设密码的话，信中的验证码就不会奏效。'
 idv.messages.enter_password.message: '%{app_name}会用你的密码对你的账户加密。加密意味着你的信息很安全，而且只有你能够访问或变更你的信息。'
