@@ -42,8 +42,6 @@ RSpec.describe Reports::AuthenticationReport do
             ['New Users Completed IAL1 Password Setup', '85', '85%'],
             ['New Users Completed IAL1 MFA', '80', '80%'],
             ['New IAL1 Users Consented to Partner', '75', '75%'],
-            ['AAL2 Authentication Requests from Partner', '12', '12%'],
-            ['AAL2 Authenticated Requests', '50', '50%'],
           ],
         ),
       ]
