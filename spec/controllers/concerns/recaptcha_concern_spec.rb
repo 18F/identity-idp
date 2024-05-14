@@ -38,7 +38,7 @@ RSpec.describe RecaptchaConcern, type: :controller do
 
     subject(:response) { get :index }
     let(:processed_links) do
-      response.headers['Link'].split(',').map { |link| link.chomp.split(';').map(&:chomp) }
+      response.headers['Link'].split(',').map { |link| link.split(';').map(&:chomp) }
     end
 
     it 'adds resource hints for recaptcha to response headers' do
