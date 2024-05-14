@@ -139,7 +139,7 @@ class OpenidConnectUserInfoPresenter
 
   def resolved_authn_context_result
     @resolved_authn_context_result ||= AuthnContextResolver.new(
-      service_provider: identity&.service_provider,
+      service_provider: identity&.service_provider_record,
       vtr: (JSON.parse(identity.vtr) if identity.vtr.present?),
       acr_values: identity.acr_values,
     ).resolve
