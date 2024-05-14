@@ -9,10 +9,6 @@ module Idv
         state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
       }.freeze
 
-      ACTIONS = {
-        redo_state_id: Idv::Actions::InPerson::RedoStateIdAction,
-      }.freeze
-
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
         { name: :verify_info },
@@ -31,7 +27,7 @@ module Idv
 
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
-        super(controller, STEPS, ACTIONS, session[name])
+        super(controller, STEPS, session[name])
         @flow_session ||= {}
         @flow_session[:pii_from_user] ||= { uuid: current_user.uuid }
         # there may be data in @idv_session to copy to @flow_session

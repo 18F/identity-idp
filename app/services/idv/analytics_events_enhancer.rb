@@ -58,7 +58,6 @@ module Idv
       idv_in_person_proofing_enrollments_ready_for_status_check_job_ingestion_error
       idv_in_person_proofing_enrollments_ready_for_status_check_job_started
       idv_in_person_proofing_nontransliterable_characters_submitted
-      idv_in_person_proofing_redo_state_id_submitted
       idv_in_person_proofing_residential_address_submitted
       idv_in_person_proofing_state_id_submitted
       idv_in_person_proofing_state_id_visited

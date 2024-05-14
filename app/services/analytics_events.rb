@@ -1931,37 +1931,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] same_address_as_id
-  # User submitted state id on redo state id page
-  def idv_in_person_proofing_redo_state_id_submitted(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing redo_state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
-      **extra,
-    )
-  end
-
   def idv_in_person_proofing_residential_address_submitted(**extra)
     track_event('IdV: in person proofing residential address submitted', **extra)
   end
