@@ -117,10 +117,9 @@ module DocAuth
         return false if transaction_status_from_uploaded_file&.downcase == 'failed'
         return true if transaction_status_from_uploaded_file&.downcase == 'passed'
 
-        (doc_auth_result_from_uploaded_file == 'Passed' ||
+        doc_auth_result_from_uploaded_file == 'Passed' ||
           errors.blank? ||
           attention_with_barcode?
-        )
       end
 
       def selfie_status
