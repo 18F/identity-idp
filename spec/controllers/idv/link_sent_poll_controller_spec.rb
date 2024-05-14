@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::CaptureDocStatusController do
+RSpec.describe Idv::LinkSentPollController do
   let(:user) { build(:user) }
   let(:doc_auth_response) do
     DocAuth::Response.new(
