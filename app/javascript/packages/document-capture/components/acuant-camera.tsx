@@ -206,7 +206,7 @@ interface AcuantDetectedResult {
 }
 
 /**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.9.1#image-from-acuantcameraui-and-acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/?tab=readme-ov-file#image-from-acuantcameraui-and-acuantcamera
  */
 export interface AcuantSuccessResponse {
   /**
@@ -214,7 +214,7 @@ export interface AcuantSuccessResponse {
    */
   image: AcuantImage;
   /**
-   * Document type for Acuant SDK 11.9.1
+   * Document type for Acuant SDK
    */
   cardType: AcuantDocumentType;
   /**
