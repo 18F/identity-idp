@@ -10,6 +10,7 @@ module OpenidConnect
     include BillableEventTrackable
     include ForcedReauthenticationConcern
     include OpenidConnectRedirectConcern
+    include SignInDurationConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :block_biometric_requests_in_production, only: [:index]
@@ -215,13 +216,13 @@ module OpenidConnect
         service_provider: @authorize_form.service_provider,
         user: current_user,
       )
-
       analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
+        sign_in_duration_seconds:,
       )
       track_billing_events
     end
