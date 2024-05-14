@@ -43,7 +43,7 @@ module DocAuth
         #    bar code attention
         def successful_result?
           doc_auth_success? &&
-            (@liveness_checking_enabled ? selfie_check_performed? : true)
+            (@liveness_checking_enabled ? selfie_passed? : true)
         end
 
         # all checks from document perspectives, without considering selfie:
