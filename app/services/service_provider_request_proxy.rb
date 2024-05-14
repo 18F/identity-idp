@@ -34,9 +34,12 @@ class ServiceProviderRequestProxy
     obj = find_by(uuid: uuid)
     return obj if obj
     spr = ServiceProviderRequest.new(
-      uuid: uuid, issuer: nil, url: nil, ial: nil,
-      aal: nil, requested_attributes: nil,
-      biometric_comparison_required: false, acr_values: nil, vtr: nil
+      uuid: uuid,
+      issuer: nil,
+      url: nil,
+      requested_attributes: nil,
+      acr_values: nil,
+      vtr: nil,
     )
 
     yield(spr)
@@ -44,10 +47,7 @@ class ServiceProviderRequestProxy
       uuid: uuid,
       issuer: spr.issuer,
       url: spr.url,
-      ial: spr.ial,
-      aal: spr.aal,
       requested_attributes: spr.requested_attributes,
-      biometric_comparison_required: spr.biometric_comparison_required,
       acr_values: spr.acr_values,
       vtr: spr.vtr,
     )
@@ -58,10 +58,7 @@ class ServiceProviderRequestProxy
     obj = hash.slice(
       :issuer,
       :url,
-      :ial,
-      :aal,
       :requested_attributes,
-      :biometric_comparison_required,
       :vtr,
       :acr_values,
     )
