@@ -8,8 +8,6 @@ RSpec.describe Idv::InPerson::StateIdController do
   let(:enrollment) { InPersonEnrollment.new }
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
-      and_return(true)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(true)
     stub_sign_in(user)
