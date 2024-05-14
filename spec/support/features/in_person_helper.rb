@@ -110,9 +110,12 @@ module InPersonHelper
     # pause for the location list to disappear
     begin
       expect(page).to have_no_css('.location-collection-item')
-    rescue Selenium::WebDriver::Error::StaleElementReferenceError
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError,
+           Selenium::WebDriver::Error::UnknownError => e
       # A StaleElementReferenceError means that the context the element
       # was in has disappeared, which means the element is gone too.
+      raise e if e.is_a?(Selenium::WebDriver::Error::UnknownError) &&
+                 !e.message.include?('Node with given id does not belong to the document')
     end
   end
 
