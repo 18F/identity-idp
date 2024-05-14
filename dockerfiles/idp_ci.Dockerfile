@@ -23,8 +23,6 @@ RUN apt-get update -qq && \
     google-chrome-stable \
     yarn
 
-RUN google-chrome --version
-
 RUN curl -Ss "https://storage.googleapis.com/chrome-for-testing-public/$(google-chrome --version | grep -Po '\d+\.\d+\.\d+\.\d+' | tr -d '\n')/linux64/chromedriver-linux64.zip" > /tmp/chromedriver.zip && \
     unzip /tmp/chromedriver.zip -d /tmp/chromedriver && \
     mv -f /tmp/chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
