@@ -144,7 +144,7 @@ in_person_state_id_controller_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_cron: '0/10 * * * *'
-in_person_enrollments_ready_job_enabled: false
+in_person_enrollments_ready_job_enabled: true
 in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
