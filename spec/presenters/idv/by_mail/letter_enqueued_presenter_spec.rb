@@ -157,7 +157,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
 
       it 'is a return to SP button' do
         expect(presenter.button_destination).to eq(
-          return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later),
+          return_to_sp_cancel_path(step: :verify_address, location: :come_back_later),
         )
       end
     end

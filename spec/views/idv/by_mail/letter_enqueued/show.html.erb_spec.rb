@@ -74,7 +74,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
           city: 'Suburbia',
           state: 'US',
           zipcode: '99999',
-        }
+        },
       )
     end
 
@@ -93,7 +93,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
           city: 'Downtown',
           state: 'US',
           zipcode: '99999',
-        }
+        },
       )
     end
 
