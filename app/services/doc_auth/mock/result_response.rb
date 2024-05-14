@@ -99,7 +99,8 @@ module DocAuth
       end
 
       def attention_with_barcode?
-        parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
+        parsed_alerts&.
+          any? { |alert| alert['name'] == '2D Barcode Read' && alert['result'] == 'Attention' }
       end
 
       def self.create_network_error_response
@@ -119,7 +120,7 @@ module DocAuth
 
         doc_auth_result_from_uploaded_file == 'Passed' ||
           errors.blank? ||
-          attention_with_barcode?
+          (attention_with_barcode? && parsed_alerts.length == 1)
       end
 
       def selfie_status
@@ -226,7 +227,6 @@ module DocAuth
         # no-op, allows falling through to YAML parsing
       end
 
-      ATTENTION_WITH_BARCODE_ALERT = { 'name' => '2D Barcode Read', 'result' => 'Attention' }.freeze
       DEFAULT_FAILED_ALERTS = [{ name: '2D Barcode Read', result: 'Failed' }].freeze
       DEFAULT_IMAGE_METRICS = {
         front: {
