@@ -1862,37 +1862,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] same_address_as_id
-  # User clicked cancel on update state id page
-  def idv_in_person_proofing_cancel_update_state_id(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing cancel_update_state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
-      **extra,
-    )
-  end
-
   # A job to check USPS notifications about in-person enrollment status updates has completed
   # @param [Integer] fetched_items items fetched
   # @param [Integer] processed_items items fetched and processed

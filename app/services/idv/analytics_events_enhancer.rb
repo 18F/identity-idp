@@ -54,7 +54,6 @@ module Idv
       idv_in_person_prepare_submitted
       idv_in_person_prepare_visited
       idv_in_person_proofing_address_visited
-      idv_in_person_proofing_cancel_update_state_id
       idv_in_person_proofing_enrollments_ready_for_status_check_job_completed
       idv_in_person_proofing_enrollments_ready_for_status_check_job_ingestion_error
       idv_in_person_proofing_enrollments_ready_for_status_check_job_started
