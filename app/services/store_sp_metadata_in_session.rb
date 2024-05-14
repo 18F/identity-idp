@@ -18,20 +18,6 @@ class StoreSpMetadataInSession
 
   attr_reader :session, :request_id
 
-  def parsed_vot
-    return nil if !sp_request.vtr && !sp_request.acr_values
-
-    @parsed_vot ||= AuthnContextResolver.new(
-      service_provider: service_provider,
-      vtr: sp_request.vtr,
-      acr_values: sp_request.acr_values,
-    ).resolve
-  end
-
-  def ial_context
-    @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider: service_provider)
-  end
-
   def sp_request
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
@@ -42,7 +28,6 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      biometric_comparison_required: parsed_vot&.biometric_comparison?,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
     }
