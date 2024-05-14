@@ -1,14 +1,17 @@
 module AnalyticsHelper
   def stub_analytics(user: nil)
-    @analytics = FakeAnalytics.new
+    analytics = FakeAnalytics.new
 
-    allow(controller).to receive(:analytics).and_wrap_original do |_original|
-      expect(controller.analytics_user).to eq(user) if user
-      allow(controller).to receive(:analytics).and_call_original
-      controller.analytics = @analytics
+    if user
+      allow(controller).to receive(:analytics) do
+        expect(controller.analytics_user).to eq(user)
+        analytics
+      end
+    else
+      controller.analytics = analytics
     end
 
-    @analytics
+    @analytics = analytics
   end
 
   def unstub_analytics
