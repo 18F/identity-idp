@@ -4,9 +4,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   let(:service_provider) { '🔒🌐💻' }
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO }
 
-  let(:pii_from_doc) do
-    {}
-  end
+  let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
 
   let(:idv_session) do
     idv_session = Idv::Session.new(
@@ -70,12 +68,14 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
 
   context 'when address line 2 is not present' do
     let(:pii_from_doc) do
-      {
-        address1: '123 Identical Ct.',
-        city: 'Suburbia',
-        state: 'US',
-        zipcode: '99999',
-      }
+      super().merge(
+        {
+          address1: '123 Identical Ct.',
+          city: 'Suburbia',
+          state: 'US',
+          zipcode: '99999',
+        }
+      )
     end
 
     it 'renders the correct two-line address' do
@@ -86,13 +86,15 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
 
   context 'when address line 2 is present' do
     let(:pii_from_doc) do
-      {
-        address1: '456 Big Building Blvd',
-        address2: 'Unit 42',
-        city: 'Downtown',
-        state: 'US',
-        zipcode: '99999',
-      }
+      super().merge(
+        {
+          address1: '456 Big Building Blvd',
+          address2: 'Unit 42',
+          city: 'Downtown',
+          state: 'US',
+          zipcode: '99999',
+        }
+      )
     end
 
     it 'renders the correct three-line address' do

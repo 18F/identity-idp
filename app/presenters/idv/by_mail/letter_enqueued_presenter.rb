@@ -17,9 +17,9 @@ module Idv
 
       def address_lines
         [
-          pii[:address1],
-          pii[:address2],
-          "#{pii[:city]}, #{pii[:state]} #{pii[:zipcode]}",
+          pii.address1,
+          pii.address2,
+          "#{pii.city}, #{pii.state} #{pii.zipcode}",
         ].compact
       end
 
@@ -33,7 +33,7 @@ module Idv
 
       def button_destination
         if sp
-          return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later)
+          return_to_sp_cancel_path(step: :verify_address, location: :come_back_later)
         else
           account_path
         end
@@ -58,7 +58,8 @@ module Idv
       end
 
       def pii_from_user_session
-        idv_session.pii_from_user_in_flow_session
+        return nil unless idv_session.has_pii_from_user_in_flow_session?
+        Pii::StateId.new(**idv_session.pii_from_user_in_flow_session.slice(*Pii::StateId.members))
       end
 
       def pii_from_gpo_pending_profile
