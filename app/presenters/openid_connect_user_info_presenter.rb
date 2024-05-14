@@ -27,7 +27,7 @@ class OpenidConnectUserInfoPresenter
       info[:ial] = if identity_proofing_requested_for_verified_user?
                      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
                    else
-                    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+                     Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
                    end
       info[:aal] = identity.requested_aal_value
     else
@@ -129,7 +129,8 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_data
-    @ial2_data ||= out_of_band_session_accessor.load_pii(active_profile.id)
+    @ial2_data ||= out_of_band_session_accessor.load_pii(active_profile.id) ||
+                   Pii::Attributes.new_from_hash({})
   end
 
   def identity_proofing_requested_for_verified_user?
@@ -140,7 +141,7 @@ class OpenidConnectUserInfoPresenter
   def resolved_authn_context_result
     @resolved_authn_context_result ||= AuthnContextResolver.new(
       service_provider: identity&.service_provider_record,
-      vtr: (JSON.parse(identity.vtr) if identity.vtr.present?),
+      vtr: identity.vtr.presence && JSON.parse(identity.vtr),
       acr_values: identity.acr_values,
     ).resolve
   end
