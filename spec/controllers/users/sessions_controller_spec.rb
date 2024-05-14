@@ -631,6 +631,7 @@ RSpec.describe Users::SessionsController, devise: true do
         )
 
         get :new
+        expect(subject.session[:sign_in_page_visited_at]).to_not be(nil)
       end
 
       context 'renders partials' do

@@ -30,6 +30,13 @@ RSpec.describe StylesheetHelper do
           visible: :all,
         )
       end
+
+      it 'adds preload header without nopush attribute' do
+        render_stylesheet_once_tags
+
+        expect(response.headers['link']).to eq('</stylesheets/styles.css>; rel=preload; as=style')
+        expect(response.headers['link']).to_not include('nopush')
+      end
     end
 
     context 'same stylesheet enqueued multiple times' do

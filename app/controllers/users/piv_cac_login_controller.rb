@@ -46,7 +46,6 @@ module Users
 
     def process_piv_cac_login
       result = piv_cac_login_form.submit
-      analytics.piv_cac_login(**result.to_h)
       clear_piv_cac_information
       clear_piv_cac_nonce
       if result.success?
@@ -54,6 +53,7 @@ module Users
       else
         process_invalid_submission
       end
+      analytics.piv_cac_login(**result.to_h)
     end
 
     def piv_cac_login_form
