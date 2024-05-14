@@ -14,13 +14,15 @@ module Reports
       subject = "Drop Off Report - #{report_date.to_date}"
       JSON.parse(configs).each do |config|
         reports = [report_maker(config['issuers']).as_emailable_reports]
-        ReportMailer.tables_report(
-          email: config['email'],
-          subject: subject,
-          message: preamble,
-          reports: reports,
-          attachment_format: :csv,
-        ).deliver_now
+        config['emails'].each do |email|
+          ReportMailer.tables_report(
+            email: email,
+            subject: subject,
+            message: preamble,
+            reports: reports,
+            attachment_format: :csv,
+          ).deliver_now
+        end
       end
     end
 
