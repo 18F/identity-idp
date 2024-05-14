@@ -87,9 +87,8 @@ module DocAuth
         def attention_with_barcode?
           return false unless doc_auth_result_attention?
 
-          parsed_alerts[:failed]&.count.to_i == 1 &&
-            parsed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
-            parsed_alerts.dig(:failed, 0, :result) == 'Attention'
+          parsed_alerts[:failed]&.
+            any?{ |alert| alert[:name] == '2D Barcode Read' && alert[:result] == 'Attention' }
         end
 
         def billed?
