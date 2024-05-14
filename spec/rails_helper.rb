@@ -17,6 +17,7 @@ require 'factory_bot'
 require 'view_component/test_helpers'
 require 'capybara/rspec'
 require 'capybara/webmock'
+require 'capybara/email/rspec'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
