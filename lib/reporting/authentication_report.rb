@@ -201,6 +201,19 @@ module Reporting
             denominator: email_confirmation,
           ),
         ],
+        [
+          'AAL2 Authentication Requests from Partner',
+          oidc_auth_request,
+          format_as_percent(numerator: oidc_auth_request, denominator: oidc_auth_request),
+        ],
+        [
+          'AAL2 Authenticated Requests',
+          sp_redirect_initiated_after_oidc,
+          format_as_percent(
+            numerator: sp_redirect_initiated_after_oidc,
+            denominator: oidc_auth_request,
+          ),
+        ],
       ]
     end
 
