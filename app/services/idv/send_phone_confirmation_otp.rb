@@ -112,6 +112,11 @@ module Idv
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         rate_limit_exceeded: rate_limit_exceeded?,
         telephony_response: @telephony_response,
+        ab_tests: {
+          AbTests::IDV_TEN_DIGIT_OTP.experiment_name => {
+            bucket: bucket,
+          },
+        },
       }
     end
 
