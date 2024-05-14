@@ -10,6 +10,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(@fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
+    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(2)
 
     visit_idp_from_oidc_sp_with_ial2
     sign_in_and_2fa_user(@user)
@@ -107,7 +108,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
       end
 
-      it 'redirects to the rate limited error page' do
+      it 'redirects to the rate limited error page and logs rate limited event' do
         freeze_time do
           attach_and_submit_images
           timeout = distance_of_time_in_words(
@@ -116,20 +117,13 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           message = strip_tags(t('errors.doc_auth.rate_limited_text_html', timeout: timeout))
           expect(page).to have_content(message)
           expect(page).to have_current_path(idv_session_errors_rate_limited_path)
+
+          expect(@fake_analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :idv_doc_auth,
+          )
+          expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
         end
-      end
-
-      it 'logs the rate limited analytics event for doc_auth' do
-        attach_and_submit_images
-        expect(@fake_analytics).to have_logged_event(
-          'Rate Limit Reached',
-          limiter_type: :idv_doc_auth,
-        )
-      end
-
-      it 'logs irs attempts event for rate limiting' do
-        attach_and_submit_images
-        expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
       end
 
       context 'successfully processes image on last attempt' do

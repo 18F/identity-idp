@@ -53,6 +53,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -191,7 +192,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           success: true,
           errors: {},
           submit_attempts: 1,
-          remaining_submit_attempts: 3,
+          remaining_submit_attempts: max_attempts - 1,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -232,7 +233,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           errors: {},
           exception: nil,
           flow_path: anything,
-          remaining_submit_attempts: 3,
+          remaining_submit_attempts: max_attempts - 1,
           state: 'MT',
           state_id_type: 'drivers_license',
           success: true,
@@ -305,7 +306,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             success: true,
             errors: {},
             submit_attempts: 1,
-            remaining_submit_attempts: 3,
+            remaining_submit_attempts: max_attempts - 1,
             user_id: document_capture_session.user.uuid,
             flow_path: anything,
             front_image_fingerprint: an_instance_of(String),
@@ -358,7 +359,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             processed_alerts: nil,
             product_status: nil,
             reference: nil,
-            remaining_submit_attempts: 3,
+            remaining_submit_attempts: max_attempts - 1,
             state: 'MT',
             state_id_type: 'drivers_license',
             success: true,
@@ -436,7 +437,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           success: true,
           errors: {},
           submit_attempts: 1,
-          remaining_submit_attempts: 3,
+          remaining_submit_attempts: max_attempts - 1,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -632,7 +633,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(fake_analytics).to have_logged_event(
           'IdV: failed doc image resubmitted',
           submit_attempts: 1,
-          remaining_submit_attempts: 3,
+          remaining_submit_attempts: max_attempts - 1,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -661,7 +662,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(fake_analytics).to have_logged_event(
             'IdV: failed doc image resubmitted',
             submit_attempts: 1,
-            remaining_submit_attempts: 3,
+            remaining_submit_attempts: max_attempts - 1,
             user_id: document_capture_session.user.uuid,
             flow_path: anything,
             front_image_fingerprint: an_instance_of(String),

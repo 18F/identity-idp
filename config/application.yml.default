@@ -539,7 +539,7 @@ test:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  doc_auth_max_attempts: 4
+  doc_auth_max_attempts: 3
   doc_auth_selfie_capture_enabled: false
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
@@ -551,6 +551,7 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  idv_max_attempts: 3
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
@@ -566,7 +567,7 @@ test:
   otps_per_ip_period: 10
   otps_per_ip_track_only_mode: false
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
-  phone_confirmation_max_attempts: 5
+  phone_confirmation_max_attempts: 4
   phone_confirmation_max_attempt_window_in_minutes: 10
   phone_setups_per_ip_limit: 3
   phone_setups_per_ip_period: 10
@@ -576,12 +577,12 @@ test:
   poll_rate_for_verify_in_seconds: 0
   raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
-  reg_unconfirmed_email_max_attempts: 4
+  reg_unconfirmed_email_max_attempts: 3
   reg_unconfirmed_email_window_in_minutes: 70
   requests_per_ip_cidr_allowlist: '172.16.0.0/12'
   requests_per_ip_limit: 4
   requests_per_ip_period: 60
-  reset_password_email_max_attempts: 5
+  reset_password_email_max_attempts: 3
   reset_password_email_window_in_minutes: 80
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''

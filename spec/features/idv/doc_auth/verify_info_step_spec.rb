@@ -4,6 +4,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
   include IdvStepHelper
   include DocAuthHelper
 
+  let(:max_resolution_attempts) { 3 }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:user) { user_with_2fa }
@@ -26,6 +27,9 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
+    allow(IdentityConfig.store).to receive(:idv_max_attempts).
+      and_return(max_resolution_attempts)
+
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_ssn_step
   end
@@ -129,7 +133,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
       step_name: 'verify_info',
-      remaining_submit_attempts: 5,
+      remaining_submit_attempts: max_resolution_attempts,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
 
@@ -139,11 +143,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
   end
 
   context 'resolution rate limiting' do
-    let(:max_resolution_attempts) { 3 }
     before do
-      allow(IdentityConfig.store).to receive(:idv_max_attempts).
-        and_return(max_resolution_attempts)
-
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
     end
@@ -201,8 +201,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
 
   context 'ssn rate limiting' do
     # Simulates someone trying same SSN with second account
-    let(:max_resolution_attempts) { 4 }
-    let(:max_ssn_attempts) { 3 }
+    let(:max_ssn_attempts) { 2 }
 
     before do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).

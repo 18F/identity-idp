@@ -7,7 +7,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:idv_send_link_max_attempts) { 3 }
+  let(:idv_send_link_max_attempts) { 2 }
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
