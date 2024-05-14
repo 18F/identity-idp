@@ -99,7 +99,7 @@ module DocAuth
       end
 
       def attention_with_barcode?
-        parsed_alerts&.
+        !!parsed_alerts&.
           any? { |alert| alert['name'] == '2D Barcode Read' && alert['result'] == 'Attention' }
       end
 
