@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
+RSpec.describe DocAuthRouter do
   describe '.client' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)

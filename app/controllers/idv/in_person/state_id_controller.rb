@@ -22,16 +22,17 @@ module Idv
 
         pii_from_user = flow_session[:pii_from_user]
         initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
-        Idv::StateIdForm::ATTRIBUTES.each do |attr|
-          pii_from_user[attr] = flow_params[attr]
-        end
+
         form_result = form.submit(flow_params)
 
-        analytics.idv_in_person_proofing_state_id_submitted(
-          **analytics_arguments.merge(**form_result.to_h),
-        )
-
         if form_result.success?
+          Idv::StateIdForm::ATTRIBUTES.each do |attr|
+            pii_from_user[attr] = flow_params[attr]
+          end
+
+          analytics.idv_in_person_proofing_state_id_submitted(
+            **analytics_arguments.merge(**form_result.to_h),
+          )
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
@@ -130,7 +131,7 @@ module Idv
       end
 
       def updating_state_id?
-        pii_from_user.has_key?(:first_name)
+        user_session.dig(:idv, :ssn).present?
       end
 
       def parsed_dob

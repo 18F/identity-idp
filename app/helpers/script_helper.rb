@@ -21,6 +21,7 @@ module ScriptHelper
             **attributes,
             crossorigin: local_crossorigin_sources? ? true : nil,
             integrity: asset_sources.get_integrity(source),
+            nopush: false,
           )
         end
       end

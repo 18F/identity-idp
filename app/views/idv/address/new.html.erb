@@ -23,8 +23,7 @@
 <%= simple_form_for(
       @address_form,
       url: idv_address_path,
-      method: 'POST',
-      html: { autocomplete: 'off', class: 'margin-top-5' },
+      html: { class: 'margin-top-5' },
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,

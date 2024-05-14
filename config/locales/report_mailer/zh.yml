@@ -1,7 +1,0 @@
----
-zh:
-  report_mailer:
-    deleted_accounts_report:
-      issuers: 发放方
-      name: 姓名
-      subject: 已删除账户报告

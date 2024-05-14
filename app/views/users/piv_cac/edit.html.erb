@@ -6,7 +6,6 @@
       @form,
       as: :form,
       method: :put,
-      html: { autocomplete: 'off' },
       url: piv_cac_path(id: @form.configuration.id),
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(

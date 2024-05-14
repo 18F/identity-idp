@@ -47,6 +47,7 @@ RSpec.describe Users::PivCacLoginController do
       end
 
       context 'with a valid token' do
+        let(:user) {}
         let(:service_provider) { create(:service_provider) }
         let(:sp_session) { { ial: 1, issuer: service_provider.issuer, vtr: vtr } }
         let(:nonce) { SecureRandom.base64(20) }
@@ -65,6 +66,7 @@ RSpec.describe Users::PivCacLoginController do
           subject.session[:sp] = sp_session
 
           allow(PivCacService).to receive(:decode_token).with(token) { data }
+          stub_analytics(user:)
           get :new, params: { token: token }
         end
 

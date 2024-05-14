@@ -5,14 +5,12 @@
 <div class="margin-bottom-6">
   <%= simple_form_for(
         @add_user_email_form,
-        html: { autocomplete: 'off' },
         url: add_email_path,
       ) do |f| %>
     <%= render ValidatedFieldComponent.new(
           form: f,
           name: :email,
           label: t('forms.registration.labels.email'),
-          input_html: { autocomplete: 'off' },
           required: true,
         ) %>
     <%= f.submit t('forms.buttons.submit.default') %>

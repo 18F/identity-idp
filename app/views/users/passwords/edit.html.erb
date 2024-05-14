@@ -7,8 +7,9 @@
 </p>
 
 <%= simple_form_for(
-      @update_user_password_form, url: manage_password_path,
-                                  html: { autocomplete: 'off', method: :patch }
+      @update_user_password_form,
+      url: manage_password_path,
+      method: :patch,
     ) do |f| %>
   <%= f.error_notification %>
   <%= render PasswordConfirmationComponent.new(

@@ -73,6 +73,7 @@ class FakeAnalytics < Analytics
 
   module UndocumentedParamsChecker
     mattr_accessor :allowed_extra_analytics
+    mattr_accessor :checked_extra_analytics
     mattr_accessor :asts
     mattr_accessor :docstrings
 
@@ -84,7 +85,7 @@ class FakeAnalytics < Analytics
         [](:method_name)&.
         to_sym
 
-      if method_name && (allowed_extra_analytics & [:*, method_name]).blank?
+      if method_name
         analytics_method = AnalyticsEvents.instance_method(method_name)
 
         param_names = analytics_method.
@@ -94,15 +95,20 @@ class FakeAnalytics < Analytics
 
         extra_keywords = original_attributes.keys \
           - [:pii_like_keypaths, :user_id] \
-          - Array(allowed_extra_analytics) \
           - param_names \
           - option_param_names(analytics_method)
 
         if extra_keywords.present?
-          raise UndocumentedParams, <<~ERROR
-            event :#{method_name} called with undocumented params #{extra_keywords.inspect}
-            (if these params are for specs only, use :allowed_extra_analytics metadata)
-          ERROR
+          @@checked_extra_analytics = checked_extra_analytics.to_a.concat(extra_keywords)
+
+          extra_keywords -= Array(allowed_extra_analytics)
+
+          if extra_keywords.present? && !allowed_extra_analytics.include?(:*)
+            raise UndocumentedParams, <<~ERROR
+              event :#{method_name} called with undocumented params #{extra_keywords.inspect}
+              (if these params are for specs only, use :allowed_extra_analytics metadata)
+            ERROR
+          end
         end
       end
 
@@ -172,11 +178,45 @@ class FakeAnalytics < Analytics
 end
 
 RSpec.configure do |c|
+  groups = []
+
   c.around do |ex|
     keys = Array(ex.metadata[:allowed_extra_analytics])
     FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = keys
     ex.run
+
+    if keys.present?
+      group = ex.example_group
+      group = group.superclass until [nil, RSpec::Core::ExampleGroup].include?(group.superclass)
+      groups << [group, FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics.to_a]
+    end
   ensure
     FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = []
+    FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics = []
+  end
+
+  c.after(:all) do |ex|
+    next if c.world.all_examples.count != c.world.example_count
+
+    groups.group_by(&:first).each do |group, pairs|
+      allowed_extra_analytics = group.metadata[:allowed_extra_analytics]
+      next if allowed_extra_analytics.blank?
+      all_checked_extra_analytics = pairs.map(&:last).flatten.uniq
+      if allowed_extra_analytics.include?(:*)
+        expect(all_checked_extra_analytics).to(
+          be_present,
+          "Unnecessary allowed_extra_analytics on example group #{group} (in #{group.id})",
+        )
+      else
+        unchecked_extra_analytics = allowed_extra_analytics - all_checked_extra_analytics
+        expect(unchecked_extra_analytics).to(
+          be_blank,
+          "Unnecessary allowed_extra_analytics keywords on example group #{group}: " \
+            "#{unchecked_extra_analytics} (in #{group.id})",
+        )
+      end
+    end
+  ensure
+    groups = []
   end
 end
