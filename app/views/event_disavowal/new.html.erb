@@ -5,8 +5,6 @@
 <%= simple_form_for(
       @password_reset_from_disavowal_form,
       url: events_disavowal_url,
-      html: { autocomplete: 'off',
-              method: :post },
     ) do |f| %>
     <%= f.input :disavowal_token, as: :hidden,
                                   input_html: { value: @disavowal_token, name: :disavowal_token } %>

@@ -9,6 +9,8 @@ module OpenidConnect
     include AuthorizationCountConcern
     include BillableEventTrackable
     include ForcedReauthenticationConcern
+    include OpenidConnectRedirectConcern
+    include SignInDurationConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :block_biometric_requests_in_production, only: [:index]
@@ -137,7 +139,11 @@ module OpenidConnect
     end
 
     def secure_headers_override
-      return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
+      return if form_action_csp_disabled_and_not_server_side_redirect?(
+        issuer: @authorize_form.service_provider.issuer,
+        user_uuid: current_user&.uuid,
+      )
+
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
         @authorize_form.service_provider.redirect_uris,
@@ -210,29 +216,19 @@ module OpenidConnect
         service_provider: @authorize_form.service_provider,
         user: current_user,
       )
-
       analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
+        sign_in_duration_seconds:,
       )
       track_billing_events
     end
 
     def redirect_user(redirect_uri, issuer, user_uuid)
-      user_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_uuid_override_map[user_uuid]
-
-      sp_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_issuer_override_map[issuer]
-
-      redirect_method =
-        user_redirect_method_override || sp_redirect_method_override ||
-        IdentityConfig.store.openid_connect_redirect
-
-      case redirect_method
+      case oidc_redirect_method(issuer: issuer, user_uuid: user_uuid)
       when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(

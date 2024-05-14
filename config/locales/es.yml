@@ -868,7 +868,7 @@ forms.webauthn_setup.step_2: Inserte una clave de seguridad en su dispositivo
 forms.webauthn_setup.step_2_image_alt: Una llave de seguridad insertada en el lado derecho de una computadora portátil
 forms.webauthn_setup.step_2_image_mobile_alt: Una llave de seguridad insertada en la parte inferior de un celular
 forms.webauthn_setup.step_3: Configure su clave de seguridad
-forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” (set up security key) más abajo y siga las instrucciones de su navegador.
+forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” más abajo y siga las instrucciones de su navegador.
 headings.account.activity: Actividad
 headings.account.authentication_apps: Aplicaciones de autenticación
 headings.account.connected_accounts: Sus cuentas conectadas
@@ -932,9 +932,9 @@ help_text.requested_attributes.email: Dirección de correo electrónico
 help_text.requested_attributes.full_name: Nombre completo
 help_text.requested_attributes.ial1_consent_reminder_html: Debe dar su consentimiento cada año para divulgar su información a <strong>%{sp}</strong>. Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
 help_text.requested_attributes.ial1_intro_html: Divulgaremos su información a <strong>%{sp}</strong> para conectar su cuenta.
-help_text.requested_attributes.ial2_consent_reminder_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Debe dar su consentimiento cada año para divulgar su información verificada a <strong>%{sp}</strong>. Divulgaremos esta información: '
-help_text.requested_attributes.ial2_intro_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Divulgaremos esta información a %{sp}: '
-help_text.requested_attributes.ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp}: '
+help_text.requested_attributes.ial2_consent_reminder_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Debe dar su consentimiento cada año para divulgar su información verificada a <strong>%{sp}</strong>. Divulgaremos esta información:'
+help_text.requested_attributes.ial2_intro_html: 'Para conectar su cuenta, <strong>%{sp}</strong> necesita saber quién es usted. Divulgaremos esta información a %{sp}:'
+help_text.requested_attributes.ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos su permiso para divulgar esta información a %{sp}:'
 help_text.requested_attributes.phone: Número de teléfono
 help_text.requested_attributes.social_security_number: Número de Seguro Social
 help_text.requested_attributes.verified_at: Actualizado en
@@ -1132,7 +1132,7 @@ idv.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un int
 idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
-idv.warning.state_id.explanation: 'Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.'
+idv.warning.state_id.explanation: Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
 idv.warning.state_id.heading: Estamos trabajando para corregir un error
 idv.warning.state_id.next_steps.items_html:
   - Volver a intentarlo ahora <strong>o</strong>
@@ -1306,7 +1306,7 @@ instructions.password.strength.1: Débil
 instructions.password.strength.2: Promedio
 instructions.password.strength.3: Buena
 instructions.password.strength.4: Muy buena
-instructions.password.strength.intro: 'Seguridad de la contraseña: '
+instructions.password.strength.intro: 'Seguridad de la contraseña:'
 instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
 links.account.reactivate.with_key: Tengo mi clave
@@ -1344,7 +1344,7 @@ mailer.privacy_policy: Política de privacidad
 mailer.sent_at: 'Enviado: %{formatted_timestamp}'
 mfa.account_info: Agregar otro método de autenticación evita que el acceso a su cuenta quede bloqueado si pierde uno de sus métodos.
 mfa.add: Agregar otro método
-mfa.info: Añada una capa adicional de protección a su cuenta de %{app_name} al seleccionar un método de autenticación multifactor.
+mfa.info: Agregue un nivel de seguridad adicional para su cuenta de %{app_name} seleccionando un método de autenticación multifactor.
 mfa.recommendation: Le recomendamos seleccionar al menos dos opciones diferentes en caso de que pierda uno de los métodos.
 mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
@@ -1486,6 +1486,7 @@ time.formats.event_timestamp: '%B %-d, %Y a las %-l:%M %p'
 time.formats.event_timestamp_js: '%{month} %{day}, %{year} a las %{hour}:%{minute} %{day_period}'
 time.formats.event_timestamp_utc: '%B %-d, %Y a las %-l:%M %p UTC'
 time.formats.event_timestamp_with_zone: '%B %-d, %Y a las %-l:%M %p %Z'
+time.formats.full_date: '%B %-d, %Y'
 time.formats.sms_date: '%m/%d/%Y'
 time.pm: p. m.
 titles.account: Cuenta
@@ -1677,7 +1678,7 @@ two_factor_authentication.two_factor_choice_options.phone_info_no_voip: No use s
 two_factor_authentication.two_factor_choice_options.piv_cac: Identificación de empleado gubernamental
 two_factor_authentication.two_factor_choice_options.piv_cac_info: Tarjetas PIV o CAC para empleados gubernamentales y militares. Únicamente computadora de escritorio.
 two_factor_authentication.two_factor_choice_options.webauthn: Clave de seguridad
-two_factor_authentication.two_factor_choice_options.webauthn_info: Conecte su clave de seguridad física a su dispositivo. No necesitará ingresar un código.
+two_factor_authentication.two_factor_choice_options.webauthn_info: Conecte su clave de seguridad física a su dispositivo. No necesita introducir un código.
 two_factor_authentication.two_factor_choice_options.webauthn_platform: Desbloqueo facial o táctil
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: Use su rostro o huella dactilar para acceder a su cuenta sin un código de un solo uso.
 two_factor_authentication.two_factor_hspd12_choice: Se requiere autenticación adicional
@@ -1902,7 +1903,7 @@ vendor_outage.alerts.pinpoint.idv.header: Estamos trabajando para corregir un er
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted.'
 vendor_outage.alerts.pinpoint.idv.options_html:
   - Continuar ahora y verificar por correo, lo cual tarda entre <strong>5 y 10 días</strong>.
-  - Salir de Login.gov e inténtelo de nuevo más tarde.
+  - Salir de %{app_name} e inténtelo de nuevo más tarde.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'Usted puede:'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Lamentablemente, estamos teniendo problemas técnicos. %{link_html} para saber cuando se haya resuelto el error.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Obtenga las actualizaciones en nuestra página de estado

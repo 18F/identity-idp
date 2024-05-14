@@ -55,7 +55,7 @@ Rails.application.routes.draw do
   post '/api/logger' => 'frontend_log#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  get '/openid_connect/logout' => 'openid_connect/logout#index'
+  match '/openid_connect/logout' => 'openid_connect/logout#logout', via: %i[get post]
   delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/robots.txt' => 'robots#index'
@@ -381,7 +381,6 @@ Rails.application.routes.draw do
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
-      get '/exit' => 'cancellations#exit', as: :exit
       get '/address' => 'address#new'
       post '/address' => 'address#update'
       get '/capture_doc' => 'hybrid_mobile/entry#show'

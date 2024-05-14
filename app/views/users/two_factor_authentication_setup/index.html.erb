@@ -33,7 +33,6 @@
 <% end %>
 
 <%= simple_form_for @two_factor_options_form,
-                    html: { autocomplete: 'off' },
                     method: :patch,
                     url: authentication_methods_setup_path do |f| %>
   <div class="margin-bottom-4">

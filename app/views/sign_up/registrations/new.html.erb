@@ -19,7 +19,6 @@
 
 <%= simple_form_for(
       @register_user_email_form,
-      html: { autocomplete: 'off' },
       url: sign_up_register_path,
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(

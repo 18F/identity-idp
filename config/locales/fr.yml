@@ -867,8 +867,8 @@ forms.webauthn_setup.step_1a: Si vous ajoutez plus d’une clé de sécurité, v
 forms.webauthn_setup.step_2: Insérer votre clé de sécurité
 forms.webauthn_setup.step_2_image_alt: Insertion d’une clé de sécurité dans le côté droit d’un ordinateur portable
 forms.webauthn_setup.step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
-forms.webauthn_setup.step_3: Configurer une clé de sécurité
-forms.webauthn_setup.step_3a: Cliquez sur « Configurer votre clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
+forms.webauthn_setup.step_3: Configurer votre clé de sécurité
+forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés
@@ -1133,10 +1133,7 @@ idv.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <st
 idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
-idv.warning.state_id.explanation:
-  'Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
-
-  '
+idv.warning.state_id.explanation: Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
 idv.warning.state_id.heading: Nous travaillons à la résolution d’une erreur
 idv.warning.state_id.next_steps.items_html:
   - Réessayer maintenant <strong>ou</strong>
@@ -1310,7 +1307,7 @@ instructions.password.strength.1: Faible
 instructions.password.strength.2: Moyen
 instructions.password.strength.3: Bonne
 instructions.password.strength.4: Excellente
-instructions.password.strength.intro: 'Force du mot de passe : '
+instructions.password.strength.intro: 'Force du mot de passe :'
 instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
 links.account.reactivate.with_key: J’ai ma clé
@@ -1348,7 +1345,7 @@ mailer.privacy_policy: Politique de confidentialité
 mailer.sent_at: Envoyé à %{formatted_timestamp}
 mfa.account_info: L’ajout d’une autre méthode d’authentification vous évite de vous faire bloquer de votre compte si vous perdez l’une de vos méthodes.
 mfa.add: Ajouter une autre méthode
-mfa.info: Ajoutez une couche de protection supplémentaire à votre compte %{app_name} en sélectionnant une méthode d’authentification à plusieurs facteurs.
+mfa.info: Ajoutez une couche supplémentaire de sécurité à votre compte %{app_name} en sélectionnant une méthode d’authentification multi-facteurs.
 mfa.recommendation: Nous vous recommandons de sélectionner au moins deux options différentes au cas où vous perdriez l’une de vos méthodes.
 mfa.second_method_warning.link: Ajouter une deuxième méthode d’authentification.
 mfa.second_method_warning.text: Vous devrez supprimer votre compte et recommencer si vous perdez votre seule méthode d’authentification.
@@ -1490,6 +1487,7 @@ time.formats.event_timestamp: '%-d %B %Y à %-l h %M %p'
 time.formats.event_timestamp_js: '%{day} %{month} %{year} à %{hour} h %{minute}'
 time.formats.event_timestamp_utc: '%-d %B %Y à %-l h %M %p UTC'
 time.formats.event_timestamp_with_zone: '%-d %B %Y à %-l h %M %p %Z'
+time.formats.full_date: '%-d %B %Y'
 time.formats.sms_date: '%d/%m/%Y'
 time.pm: P.M.
 titles.account: Compte
@@ -1681,7 +1679,7 @@ two_factor_authentication.two_factor_choice_options.phone_info_no_voip: N’util
 two_factor_authentication.two_factor_choice_options.piv_cac: Carte d’employé fédéral
 two_factor_authentication.two_factor_choice_options.piv_cac_info: Cartes PIV/CAC pour les employés fédéraux et militaires. Bureau uniquement.
 two_factor_authentication.two_factor_choice_options.webauthn: Clé de sécurité
-two_factor_authentication.two_factor_choice_options.webauthn_info: Connectez votre clé de sécurité physique à votre appareil. Vous n’aurez pas besoin d’entrer un code.
+two_factor_authentication.two_factor_choice_options.webauthn_info: Connectez votre clé de sécurité physique à votre appareil. Vous n’aurez pas besoin de saisir un code.
 two_factor_authentication.two_factor_choice_options.webauthn_platform: Déverrouillage facial ou tactile
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: Utilisez votre visage ou votre empreinte digitale pour accéder à votre compte sans code à usage unique.
 two_factor_authentication.two_factor_hspd12_choice: Authentification supplémentaire requise
@@ -1906,7 +1904,7 @@ vendor_outage.alerts.pinpoint.idv.header: Nous travaillons à la résolution d�
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.'
 vendor_outage.alerts.pinpoint.idv.options_html:
   - Continuer maintenant et effectuer la vérification par courrier, qui nécessite <strong>5 à 10 jours</strong>.
-  - Quitter Login.gov.
+  - Quitter %{app_name}.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'Vous pouvez :'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Malheureusement, nous rencontrons actuellement des difficultés techniques. %{link_html} pour savoir quand l’erreur est résolue.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.

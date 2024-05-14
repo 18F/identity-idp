@@ -36,16 +36,6 @@ module Idv
       end
     end
 
-    def exit
-      analytics.idv_cancellation_confirmed(step: params[:step])
-      cancel_session
-      if hybrid_session?
-        render :destroy
-      else
-        redirect_to cancelled_redirect_path
-      end
-    end
-
     private
 
     def barcode_step?
