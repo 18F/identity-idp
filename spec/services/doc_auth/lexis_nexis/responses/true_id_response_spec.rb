@@ -15,9 +15,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_failed_to_ocr_dob) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failed_to_ocr_dob)
   end
-  let(:failure_response_face_match_fail) do
-    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
-  end
   let(:failure_response_no_liveness) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_no_liveness)
   end
@@ -598,7 +595,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       it { expect(attention_with_barcode).to eq(false) }
     end
 
-    context 'with single barcode attention error' do
+    context 'with barcode attention error' do
       let(:response) { described_class.new(attention_barcode_read, config) }
 
       it { expect(attention_with_barcode).to eq(true) }
@@ -760,7 +757,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     context 'when selfie check is enabled' do
-      context 'whe missing selfie result in response' do
+      context 'when missing selfie result in response' do
         let(:request_context) do
           {
             workflow: 'selfie_workflow',
@@ -792,7 +789,26 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#successful_result?' do
-    context 'and selfie check is enabled' do
+    context 'selfie check is disabled' do
+      liveness_checking_enabled = false
+
+      context 'when document validation is successful' do
+        let(:response) { described_class.new(success_response, config) }
+        it 'returns true' do
+          expect(response.successful_result?).to eq(true)
+        end
+      end
+
+      it 'returns true no matter what the value of selfie is' do
+        response = described_class.new(
+          doc_auth_success_with_face_match_fail, config, liveness_checking_enabled
+        )
+
+        expect(response.successful_result?).to eq(true)
+      end
+    end
+
+    context 'selfie check is enabled' do
       let(:liveness_checking_enabled) { true }
 
       it 'returns true with a passing selfie' do
@@ -805,7 +821,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       context 'when portrait match fails' do
         it 'returns false with a failing selfie' do
           response = described_class.new(
-            failure_response_face_match_fail, config, liveness_checking_enabled
+            doc_auth_success_with_face_match_fail, config, liveness_checking_enabled
           )
 
           expect(response.successful_result?).to eq(false)
@@ -820,21 +836,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           end
 
           it 'returns false' do
-            expect(response.doc_auth_success?).to eq(false)
+            expect(response.doc_auth_success?).to eq(true)
+            expect(response.selfie_passed?).to eq(false)
             expect(response.successful_result?).to eq(false)
           end
-        end
-      end
-
-      context 'and selfie check is disabled' do
-        liveness_checking_enabled = false
-
-        it 'returns true no matter what the value of selfie is' do
-          response = described_class.new(
-            failure_response_face_match_fail, config, liveness_checking_enabled
-          )
-
-          expect(response.successful_result?).to eq(false)
         end
       end
     end
