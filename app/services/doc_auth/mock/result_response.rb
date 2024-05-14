@@ -95,10 +95,6 @@ module DocAuth
       end
 
       def success?
-        return false if transaction_status_from_uploaded_file&.downcase == 'failed'
-        return false unless id_type_supported?
-        return true if transaction_status_from_uploaded_file&.downcase == 'passed' &&
-                       (@selfie_required ? selfie_check_passed? : true)
         doc_auth_success? && (@selfie_required ? selfie_passed? : true)
       end
 
@@ -117,6 +113,10 @@ module DocAuth
       end
 
       def doc_auth_success?
+        return false unless id_type_supported?
+        return false if transaction_status_from_uploaded_file&.downcase == 'failed'
+        return true if transaction_status_from_uploaded_file&.downcase == 'passed'
+
         (doc_auth_result_from_uploaded_file == 'Passed' ||
           errors.blank? ||
           attention_with_barcode?
