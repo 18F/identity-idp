@@ -2511,7 +2511,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             request_id: sp_request_id,
             request_url: request.original_url,
             requested_attributes: %w[],
-            biometric_comparison_required: false,
             vtr: nil,
           )
         end
@@ -2645,7 +2644,6 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             request_id: sp_request_id,
             request_url: request.original_url,
             requested_attributes: %w[],
-            biometric_comparison_required: false,
             vtr: ['C1'],
           )
         end
