@@ -10,7 +10,6 @@ module Idv
       }.freeze
 
       ACTIONS = {
-        cancel_update_state_id: Idv::Actions::InPerson::CancelUpdateStateIdAction,
         redo_state_id: Idv::Actions::InPerson::RedoStateIdAction,
       }.freeze
 
