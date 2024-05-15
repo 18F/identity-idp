@@ -119,8 +119,9 @@ module DocAuth
 
       def doc_auth_success?
         return false unless id_type_supported?
-        return false if transaction_status_from_uploaded_file&.downcase == 'failed'
-        return true if transaction_status_from_uploaded_file&.downcase == 'passed'
+        return false if transaction_status_from_uploaded_file == 'failed'
+        return true if transaction_status_from_uploaded_file == 'passed'
+        return false if doc_auth_result_from_uploaded_file == 'Failed'
 
         doc_auth_result_from_uploaded_file == 'Passed' ||
           errors.blank? ||
@@ -183,7 +184,7 @@ module DocAuth
       end
 
       def doc_auth_result_from_uploaded_file
-        parsed_data_from_uploaded_file&.[]('doc_auth_result')
+        parsed_data_from_uploaded_file&.[]('doc_auth_result')&.capitalize
       end
 
       def transaction_status
@@ -191,7 +192,7 @@ module DocAuth
       end
 
       def transaction_status_from_uploaded_file
-        parsed_data_from_uploaded_file&.[]('transaction_status')
+        parsed_data_from_uploaded_file&.[]('transaction_status')&.downcase
       end
 
       def portrait_match_results
