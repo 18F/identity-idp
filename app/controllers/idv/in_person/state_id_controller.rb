@@ -6,7 +6,6 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
 
-      before_action :render_404_if_controller_not_enabled
       before_action :redirect_unless_enrollment # confirm previous step is complete
 
       def show
@@ -90,11 +89,6 @@ module Idv
       end
 
       private
-
-      def render_404_if_controller_not_enabled
-        render_not_found unless
-            IdentityConfig.store.in_person_state_id_controller_enabled
-      end
 
       def redirect_unless_enrollment
         redirect_to idv_document_capture_url unless current_user.establishing_in_person_enrollment

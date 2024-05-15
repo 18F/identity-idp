@@ -12,8 +12,6 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
-      and_return(true)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(true)
     stub_sign_in(user)
@@ -27,32 +25,6 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe 'before_actions' do
-    context '#render_404_if_controller_not_enabled' do
-      context 'flag not set' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
-            and_return(nil)
-        end
-        it 'renders a 404' do
-          get :show
-
-          expect(response).to be_not_found
-        end
-      end
-
-      context 'flag not enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_state_id_controller_enabled).
-            and_return(false)
-        end
-        it 'renders a 404' do
-          get :show
-
-          expect(response).to be_not_found
-        end
-      end
-    end
-
     context '#confirm_establishing_enrollment' do
       let(:enrollment) { nil }
       it 'redirects to document capture if not complete' do
