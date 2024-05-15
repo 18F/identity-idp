@@ -66,7 +66,7 @@ module DocAuth
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
-                transaction_status, doc_auth_result, id_type_supported?
+                transaction_status, id_type_supported?
               )
 
               mock_args = {}
@@ -221,8 +221,8 @@ module DocAuth
         end
       end
 
-      def all_doc_capture_values_passing?(transaction_status, doc_auth_result, id_type_supported)
-        (transaction_status == 'passed' || doc_auth_result == 'Passed') &&
+      def all_doc_capture_values_passing?(transaction_status, id_type_supported)
+        transaction_status == 'passed' &&
           id_type_supported &&
           (selfie_check_performed? ? selfie_passed? : true)
       end
