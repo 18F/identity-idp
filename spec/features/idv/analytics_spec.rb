@@ -439,10 +439,10 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id visited' => {
-        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, opted_in_to_in_person_proofing: nil
+        step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false, opted_in_to_in_person_proofing: nil
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false, opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, same_address_as_id: false, opted_in_to_in_person_proofing: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil
