@@ -131,7 +131,7 @@ module DocAuth
     def get_doc_auth_error_messages(response_info)
       errors = Hash.new { |hash, key| hash[key] = Set.new }
 
-      unless doc_auth_passed?(response_info)
+      if response_info[:transaction_status] != 'passed'
         response_info[:processed_alerts][:failed]&.each do |alert|
           alert_msg_hash = ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym]
 
@@ -373,12 +373,8 @@ module DocAuth
       unknown_fail_count
     end
 
-    def doc_auth_passed?(response_info)
-      response_info[:transaction_status] == 'passed'
-    end
-
     def doc_auth_error_count(response_info)
-      return 0 if doc_auth_passed?(response_info)
+      return 0 if response_info[:transaction_status] == 'passed'
 
       response_info[:alert_failure_count]
     end
