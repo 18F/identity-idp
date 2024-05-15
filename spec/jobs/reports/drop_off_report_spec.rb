@@ -48,7 +48,7 @@ RSpec.describe Reports::DropOffReport do
 
       subject.report_date = report_date
 
-      expect(subject.report_maker([]).time_range).to eq(report_date.all_month)
+      expect(subject.report_maker([]).time_range).to eq(report_date.all_week)
     end
   end
 end
