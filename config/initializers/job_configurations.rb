@@ -226,7 +226,7 @@ else
       # Weekly drop of report
       drop_off_report: {
         class: 'Reports::DropOffReport',
-        cron: cron_24h,
+        cron: cron_1w,
         args: -> { [Time.zone.today] },
       },
     }.compact
