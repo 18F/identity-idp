@@ -184,7 +184,7 @@ module DocAuth
       end
 
       def doc_auth_result_from_uploaded_file
-        parsed_data_from_uploaded_file&.[]('doc_auth_result')&.capitalize
+        parsed_data_from_uploaded_file&.[]('doc_auth_result')
       end
 
       def transaction_status
@@ -192,7 +192,7 @@ module DocAuth
       end
 
       def transaction_status_from_uploaded_file
-        parsed_data_from_uploaded_file&.[]('transaction_status')&.downcase
+        parsed_data_from_uploaded_file&.[]('transaction_status')
       end
 
       def portrait_match_results
