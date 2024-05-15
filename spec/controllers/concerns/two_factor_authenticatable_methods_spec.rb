@@ -63,8 +63,10 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
         end
 
         context 'with an existing device' do
+          let(:user) { create(:user, :with_authenticated_device) }
+
           before do
-            controller.user_session[:new_device] = false
+            request.cookies[:device] = user.devices.last.cookie_uuid
           end
 
           it 'does not send an alert' do
@@ -75,10 +77,6 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
         end
 
         context 'with a new device' do
-          before do
-            controller.user_session[:new_device] = true
-          end
-
           it 'sends the new device alert using 2fa event date' do
             expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
               expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
@@ -118,8 +116,10 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
         end
 
         context 'with an existing device' do
+          let(:user) { create(:user, :with_authenticated_device) }
+
           before do
-            controller.user_session[:new_device] = false
+            request.cookies[:device] = user.devices.last.cookie_uuid
           end
 
           it 'does not send an alert' do
@@ -130,10 +130,6 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
         end
 
         context 'with a new device' do
-          before do
-            controller.user_session[:new_device] = true
-          end
-
           it 'sends the new device alert' do
             expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert).
               with(user:, disavowal_event: kind_of(Event), disavowal_token: kind_of(String))
