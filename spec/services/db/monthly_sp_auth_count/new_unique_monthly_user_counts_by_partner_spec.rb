@@ -11,12 +11,22 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
       )
     end
 
-    context 'with no data' do
+    context 'with no data no issuers' do
       let(:partner_key) { 'DHS' }
       let(:partner_range) { 1.year.ago..Time.zone.now }
       let(:issuers) { [] }
 
       it 'is empty with no data issuers' do
+        expect(results).to eq([])
+      end
+    end
+
+    context 'with no data no date range' do
+      let(:partner_key) { 'DHS' }
+      let(:partner_range) { nil...nil }
+      let(:issuers) { ['DFH', 'DFFF'] }
+
+      it 'is empty with no date range' do
         expect(results).to eq([])
       end
     end
