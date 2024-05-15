@@ -223,7 +223,7 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Monthly drop of report
+      # Weekly drop of report
       drop_off_report: {
         class: 'Reports::DropOffReport',
         cron: cron_24h,

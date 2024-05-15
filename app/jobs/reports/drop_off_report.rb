@@ -41,8 +41,8 @@ module Reports
     def report_maker(issuers)
       Reporting::DropOffReport.new(
         issuers: issuers,
-        time_range: report_date.all_month,
-        slice: 1.month,
+        time_range: report_date.all_week,
+        slice: 1.week,
       )
     end
   end
