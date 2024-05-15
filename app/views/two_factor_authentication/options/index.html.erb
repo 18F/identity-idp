@@ -14,12 +14,7 @@
   <% end %>
 <% end %>
 
-<%= simple_form_for(
-      @two_factor_options_form,
-      html: { autocomplete: 'off' },
-      method: :post,
-      url: login_two_factor_options_path,
-    ) do |f| %>
+<%= simple_form_for(@two_factor_options_form, url: login_two_factor_options_path) do |f| %>
   <div role="group" aria-label="<%= @presenter.heading %>">
     <% @presenter.options.each_with_index do |option, index| %>
       <%= render(option) do %>

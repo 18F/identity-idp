@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
-  class CaptureDocStatusController < ApplicationController
+  class LinkSentPollController < ApplicationController
     include Idv::AvailabilityConcern
 
     before_action :confirm_two_factor_authenticated

@@ -817,6 +817,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: Idp::Constants::IAL2,
+          sign_in_duration_seconds: nil,
           billed_ial: Idp::Constants::IAL2,
           sign_in_flow:,
           acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -965,6 +966,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: 0,
+          sign_in_duration_seconds: nil,
           billed_ial: 2,
           sign_in_flow:,
           acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
@@ -1373,7 +1375,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
-          biometric_comparison_required: false,
           vtr: nil,
         )
       end
@@ -1407,7 +1408,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
-          biometric_comparison_required: false,
           vtr: nil,
         )
       end
@@ -2434,6 +2434,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: 1,
+          sign_in_duration_seconds: nil,
           billed_ial: 1,
           sign_in_flow: :sign_in,
           acr_values: [
@@ -2484,6 +2485,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: 1,
+          sign_in_duration_seconds: nil,
           billed_ial: 1,
           sign_in_flow: :sign_in,
           acr_values: [

@@ -23,13 +23,7 @@
   </p>
 <% end %>
 
-<%= simple_form_for(
-      resource,
-      as: resource_name,
-      url: session_path(resource_name),
-      html: { autocomplete: 'off' },
-    ) do |f|
-%>
+<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :email,
@@ -86,12 +80,13 @@
   </p>
 <% end %>
 
-<%= javascript_packs_tag_once('platform-authenticator-available') %>
+<%= javascript_packs_tag_once('platform-authenticator-available', preload_links_header: false) %>
 <% if IdentityConfig.store.participate_in_dap %>
   <!-- <%= t('notices.dap_participation') %> -->
   <%= javascript_packs_tag_once(
         'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA&subagency=TTS',
         async: true,
         id: '_fed_an_ua_tag',
+        preload_links_header: false,
       ) %>
 <% end %>

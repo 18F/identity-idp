@@ -54,10 +54,7 @@
         wait_step_path: idv_phone_path,
         poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
       },
-      html: {
-        autocomplete: 'off',
-        method: :put,
-      },
+      method: :put,
     ) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,

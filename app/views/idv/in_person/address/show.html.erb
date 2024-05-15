@@ -15,10 +15,7 @@
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
 <% end %>
 
-<%= simple_form_for(
-      form, url: url_for, method: 'PUT',
-            html: { autocomplete: 'off' }
-    ) do |f| %>
+<%= simple_form_for(form, url: url_for, method: 'PUT') do |f| %>
   <%= render ValidatedFieldComponent.new(
         collection: us_states_territories,
         form: f,

@@ -13,13 +13,7 @@
   <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
 </p>
 
-<%= simple_form_for(
-      @new_phone_form,
-      method: :post,
-      html: { autocomplete: 'off' },
-      url: phone_setup_path,
-    ) do |f| %>
-
+<%= simple_form_for(@new_phone_form, url: phone_setup_path) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,
         confirmed_phone: false,

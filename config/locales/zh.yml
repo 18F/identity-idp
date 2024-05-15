@@ -569,6 +569,7 @@ doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证你的身份
+doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
 doc_auth.headings.welcome: 开始验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
@@ -587,6 +588,7 @@ doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
 doc_auth.info.how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
+doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
@@ -615,11 +617,15 @@ doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
 doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
 doc_auth.info.verify_at_post_office_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
+doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与邮件去亲身验证身份。
+doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
-doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
+doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
+doc_auth.info.verify_online_instruction: 你将拍自己身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这一流程。
+doc_auth.info.verify_online_instruction_selfie: 使用手机在网上验证你的身份你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 州政府颁发的身份证件
@@ -647,6 +653,7 @@ doc_auth.tips.document_capture_selfie_text1: 把设备放在眼睛水平
 doc_auth.tips.document_capture_selfie_text2: 确保你整个面孔都可以看到
 doc_auth.tips.document_capture_selfie_text3: 在光线充沛的地方拍照
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
 doc_auth.tips.review_issues_id_text2: 是否在平坦平面上拍的照？
@@ -804,6 +811,7 @@ forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: Continue in person
 forms.buttons.continue_remote: Continue online
+forms.buttons.continue_remote_selfie: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑
@@ -861,18 +869,18 @@ forms.webauthn_platform_setup.intro_html:
 forms.webauthn_platform_setup.intro_link_text: 了解关于使用不同设备的更多信息。
 forms.webauthn_platform_setup.nickname: 设备昵称
 forms.webauthn_platform_setup.nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
-forms.webauthn_setup.intro: Use your physical security key to add an additional layer of protection to your %{app_name} account to prevent unauthorized access.
+forms.webauthn_setup.intro: 使用实体安全密钥为您的 %{app_name} 帐户添加了额外一层安全保障，以防止未经授权的访问。了解有关安全密钥的更多信息
 forms.webauthn_setup.learn_more: Learn more about security keys
 forms.webauthn_setup.nickname: 安全密钥昵称
 forms.webauthn_setup.saving: 正在保存你的凭据…
-forms.webauthn_setup.set_up: Set up security key
+forms.webauthn_setup.set_up: 设置安全密钥
 forms.webauthn_setup.step_1: Give it a nickname
 forms.webauthn_setup.step_1a: If you add more than one security key, you’ll know which one is which.
-forms.webauthn_setup.step_2: Insert a security key into your device
+forms.webauthn_setup.step_2: 将安全密钥插入您的设备
 forms.webauthn_setup.step_2_image_alt: A security key being inserted into the right side of a laptop
 forms.webauthn_setup.step_2_image_mobile_alt: A security key being inserted into the bottom of a smart phone
-forms.webauthn_setup.step_3: Set up your security key
-forms.webauthn_setup.step_3a: Click “set up security key” below and follow your browser’s instructions.
+forms.webauthn_setup.step_3: 设置您的安全密钥
+forms.webauthn_setup.step_3a: 点击下面的“设置安全密钥”并按照浏览器的说明进行操作。
 headings.account.activity: 活动
 headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_accounts: 你连接的账户
@@ -928,7 +936,7 @@ headings.verify: 验证你的信息
 headings.verify_email: 检查你的电邮
 headings.verify_personal_key: 验证你的个人密钥
 headings.webauthn_platform_setup.new: 添加人脸或触摸解锁
-headings.webauthn_setup.new: 添加你的安全密钥
+headings.webauthn_setup.new: 插入您的安全密钥
 help_text.requested_attributes.address: 地址
 help_text.requested_attributes.all_emails: 你账户上的电邮地址
 help_text.requested_attributes.birthdate: 生日
@@ -937,10 +945,9 @@ help_text.requested_attributes.full_name: 姓名
 help_text.requested_attributes.ial1_consent_reminder_html: 你每年都必须授权同意与 <strong>%{sp}</strong> 分享信息。我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
 help_text.requested_attributes.ial1_intro_html: 我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
 help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息：
-  "
-help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息： '
-help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。 '
+  ng> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息："
+help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息：'
+help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。'
 help_text.requested_attributes.phone: 电话号码
 help_text.requested_attributes.social_security_number: 社会保障号码
 help_text.requested_attributes.verified_at: 更新是在
@@ -1096,7 +1103,7 @@ idv.messages.gpo.start_over_html: 如果该地址不对，你需要%{start_over_
 idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验证。
 idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong> 的信。
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
-idv.messages.phone.alert_html: '<strong>输入一个这样的电话号码：</strong> '
+idv.messages.phone.alert_html: '<strong>输入一个这样的电话号码：</strong>'
 idv.messages.phone.description: 我们会将该号码与记录核对并给你发个一次性代码。这是为了帮助你验证身份。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong> 号码或者%{link_html}。
@@ -1138,7 +1145,7 @@ idv.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一�
 idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{count} 次 </strong>了 。
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
-idv.warning.state_id.explanation: '遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。'
+idv.warning.state_id.explanation: 遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
 idv.warning.state_id.heading: 我们正在争取解决错误。
 idv.warning.state_id.next_steps.items_html:
   - S现在再试一次<strong>或者</strong>
@@ -1156,7 +1163,7 @@ image_description.info_question: 蓝色问号
 image_description.laptop: 手提电脑
 image_description.laptop_and_phone: 手提电脑和电话
 image_description.personal_key: 个人密钥
-image_description.phone_icon: Image of a phone
+image_description.phone_icon: 电话图像
 image_description.post_office: 邮局
 image_description.totp_qrcode: 身份证实应用程序的二维码（QR）代码
 image_description.us_flag: 美国国旗
@@ -1313,7 +1320,7 @@ instructions.password.strength.1: 弱
 instructions.password.strength.2: 一般
 instructions.password.strength.3: 好
 instructions.password.strength.4: 棒！
-instructions.password.strength.intro: '密码强度： '
+instructions.password.strength.intro: '密码强度：'
 instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
 links.account.reactivate.with_key: 我有密钥
@@ -1351,7 +1358,7 @@ mailer.privacy_policy: 隐私政策
 mailer.sent_at: 在 %{formatted_timestamp}时发出
 mfa.account_info: 添加另外一个身份证实方法可以预防你在失去其他方法后被锁在账户外。
 mfa.add: 添加另外一个方法
-mfa.info: 选择一个多因素身份证实方法来增加更多一层安全防线。我们建议你选择至少两个不同方法，以防你丢失其中一个。
+mfa.info: 通过选择多因素身份证实方法来为您的 %{app_name} 帐户添加额外一层安全保障。
 mfa.recommendation: We recommend you select at least two different options in case you lose one of your methods.
 mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
@@ -1493,6 +1500,7 @@ time.formats.event_timestamp: '%B %-d, %Y at %-l:%M %p'
 time.formats.event_timestamp_js: '%{year} %{month} %{day}, %{hour}:%{minute} %{day_period}'
 time.formats.event_timestamp_utc: '%B %-d, %Y， %-l:%M %p UTC'
 time.formats.event_timestamp_with_zone: '%B %-d, %Y，%-l:%M %p %Z'
+time.formats.full_date: '%Y 年 %B %-d 日'
 time.formats.sms_date: '%Y/%m/%d'
 time.pm: 下午
 titles.account: 账户
@@ -1683,7 +1691,7 @@ two_factor_authentication.two_factor_choice_options.phone_info_no_voip: 请勿�
 two_factor_authentication.two_factor_choice_options.piv_cac: 政府雇员身份证件
 two_factor_authentication.two_factor_choice_options.piv_cac_info: 政府和军队雇员的 PIV/CAC 卡仅限桌面电脑。
 two_factor_authentication.two_factor_choice_options.webauthn: 安全密钥
-two_factor_authentication.two_factor_choice_options.webauthn_info: 一个实体设备，通常形状像一个U盘，可以插入你的设备。
+two_factor_authentication.two_factor_choice_options.webauthn_info: 将您的实体安全密钥连接到您的设备。您无需输入代码。
 two_factor_authentication.two_factor_choice_options.webauthn_platform: 人脸或触摸解锁
 two_factor_authentication.two_factor_choice_options.webauthn_platform_info: 不用一次性代码，而是用你的面孔或指纹来访问你的账户。
 two_factor_authentication.two_factor_hspd12_choice: 要求额外的身份证实
@@ -1784,10 +1792,10 @@ user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮�
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-user_mailer.in_person_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
-user_mailer.in_person_please_call.header: Please give us a call
-user_mailer.in_person_please_call.subject: Call %{app_name} to continue with your identity verification
+user_mailer.in_person_please_call.body.contact_message_html: 请拨打 <strong>%{contact_number}</strong> 向他们提供错误信息 代码 <strong>%{support_code}</strong>。
+user_mailer.in_person_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
+user_mailer.in_person_please_call.header: 请给我们打个电话
+user_mailer.in_person_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_ready_to_verify_reminder.greeting: 你好，
 user_mailer.in_person_ready_to_verify_reminder.heading.one: 你距离亲身验证身份截止日期还有 %{count} 天
 user_mailer.in_person_ready_to_verify_reminder.heading.other: 你距离亲身验证身份截止日期还有 %{count} 天
@@ -1909,7 +1917,7 @@ vendor_outage.alerts.pinpoint.idv.header: 我们正在争取解决错误。
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html}需要确保你是你，而不是别人冒充你。'
 vendor_outage.alerts.pinpoint.idv.options_html:
   - 现在继续并通过普通邮件验证，这需要<strong>5 到 10 天</strong>。
-  - 退出 Login.gov，稍后再试。
+  - 退出 %{app_name}，稍后再试。
 vendor_outage.alerts.pinpoint.idv.options_prompt: 你可以：
 vendor_outage.alerts.pinpoint.idv.status_page_html: 遗憾的是，我们目前遇到技术困难。到 %{link_html} 了解错误何时能解决。
 vendor_outage.alerts.pinpoint.idv.status_page_link: 在我们的状态页面获得最新信息。

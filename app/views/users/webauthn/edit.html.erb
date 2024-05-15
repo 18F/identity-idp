@@ -6,7 +6,6 @@
       @form,
       as: :form,
       method: :put,
-      html: { autocomplete: 'off' },
       url: webauthn_path(id: @form.configuration.id),
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(

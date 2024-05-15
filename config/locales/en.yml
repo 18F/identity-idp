@@ -569,6 +569,7 @@ doc_auth.headings.upload_from_phone: Use your phone to take photos
 doc_auth.headings.verify_at_post_office: Verify your identity at a Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
+doc_auth.headings.verify_online_selfie: Verify your identity online using your phone
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
@@ -587,6 +588,7 @@ doc_auth.info.exit.without_sp: Exit identity verification and go to your account
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
 doc_auth.info.how_to_verify: You have the option to verify your identity online, or in person at a participating Post Office.
+doc_auth.info.how_to_verify_selfie: You have the option to verify your identity online with your phone, or in person at a participating Post Office.
 doc_auth.info.how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
 doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
@@ -615,11 +617,15 @@ doc_auth.info.tag: Recommended
 doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
 doc_auth.info.upload_from_phone: You won’t have to sign in again, and you’ll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
 doc_auth.info.verify_at_post_office_description: This option is better if you don’t have a phone to take photos of your ID.
+doc_auth.info.verify_at_post_office_description_selfie: Choose this option if you don’t have a phone to take pictures.
 doc_auth.info.verify_at_post_office_instruction: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
+doc_auth.info.verify_at_post_office_instruction_selfie: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description: This option is better if you have a phone to take photos of your ID.
+doc_auth.info.verify_online_description_selfie: Choose this option if you have a phone to take pictures.
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online. Most users finish this process in one sitting.
+doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and a photo of yourself using a phone. Most users finish this process in one sitting.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a driver’s license or state ID
@@ -647,6 +653,7 @@ doc_auth.tips.document_capture_selfie_text1: Remove any clothing items or access
 doc_auth.tips.document_capture_selfie_text2: Take your photo in a well-lit place.
 doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral.
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.mobile_phone_required: Mobile Phone Required
 doc_auth.tips.review_issues_id_header_text: 'Review the images of your state‑issued ID:'
 doc_auth.tips.review_issues_id_text1: Did you use a dark background?
 doc_auth.tips.review_issues_id_text2: Did you take the photo on a flat surface?
@@ -737,7 +744,7 @@ errors.messages.wrong_length.one: is the wrong length (should be 1 character)
 errors.messages.wrong_length.other: is the wrong length (should be %{count} characters)
 errors.piv_cac_setup.unique_name: That name is already taken. Please choose a different name.
 errors.registration.terms: Before you can continue, you must give us permission. Please check the box below and then click continue.
-errors.sign_in.bad_password_limit: You have exceeeded the maximum sign in attempts.
+errors.sign_in.bad_password_limit: You have exceeded the maximum sign in attempts.
 errors.two_factor_auth_setup.must_select_additional_option: Select an additional authentication method.
 errors.two_factor_auth_setup.must_select_option: Select an authentication method.
 errors.verify_personal_key.rate_limited: You tried too many times, please try again in %{timeout}.
@@ -804,6 +811,7 @@ forms.buttons.confirm: Confirm
 forms.buttons.continue: Continue
 forms.buttons.continue_ipp: Continue in person
 forms.buttons.continue_remote: Continue online
+forms.buttons.continue_remote_selfie: Continue on your phone
 forms.buttons.delete: Delete
 forms.buttons.disable: Delete
 forms.buttons.edit: Edit
@@ -933,9 +941,9 @@ help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial1_consent_reminder_html: You must consent each year to share your information with <strong>%{sp}</strong>. We’ll share your information with <strong>%{sp}</strong> to connect your account.
 help_text.requested_attributes.ial1_intro_html: We’ll share your information with <strong>%{sp}</strong> to connect your account.
 help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information: "
-help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> needs to know who you are to connect your account. We’ll share this information with %{sp}: '
-help_text.requested_attributes.ial2_reverified_consent_info: 'Because you verified your identity again, we need your permission to share this information with %{sp}: '
+  ng> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:"
+help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> needs to know who you are to connect your account. We’ll share this information with %{sp}:'
+help_text.requested_attributes.ial2_reverified_consent_info: 'Because you verified your identity again, we need your permission to share this information with %{sp}:'
 help_text.requested_attributes.phone: Phone number
 help_text.requested_attributes.social_security_number: Social Security number
 help_text.requested_attributes.verified_at: Updated on
@@ -1133,9 +1141,7 @@ idv.warning.attempts_html.one: For security reasons, you have <strong>one attemp
 idv.warning.attempts_html.other: For security reasons, you have <strong>%{count} attempts</strong> remaining.
 idv.warning.sessions.heading: We couldn’t find records matching your personal information
 idv.warning.state_id.cancel_button: Exit %{app_name}
-idv.warning.state_id.explanation: |
-  Unfortunately, we’re experiencing technical difficulties
-  with IDs from your state and are currently unable to verify your information.
+idv.warning.state_id.explanation: Unfortunately, we’re experiencing technical difficulties with IDs from your state and are currently unable to verify your information.
 idv.warning.state_id.heading: We are working to resolve an error
 idv.warning.state_id.next_steps.items_html:
   - Try again now <strong>or</strong>
@@ -1309,7 +1315,7 @@ instructions.password.strength.1: Weak
 instructions.password.strength.2: Average
 instructions.password.strength.3: Good
 instructions.password.strength.4: Great
-instructions.password.strength.intro: 'Password strength: '
+instructions.password.strength.intro: 'Password strength:'
 instructions.sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to %{app_name}. Please contact %{sp_link} for help.
 instructions.sp_handoff_bounced_with_no_sp: your service provider
 links.account.reactivate.with_key: I have my key
@@ -1489,6 +1495,7 @@ time.formats.event_timestamp: '%B %-d, %Y at %-l:%M %p'
 time.formats.event_timestamp_js: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}'
 time.formats.event_timestamp_utc: '%B %-d, %Y at %-l:%M %p UTC'
 time.formats.event_timestamp_with_zone: '%B %-d, %Y at %-l:%M %p %Z'
+time.formats.full_date: '%B %-d, %Y'
 time.formats.sms_date: '%m/%d/%Y'
 time.pm: PM
 titles.account: Account
@@ -1905,7 +1912,7 @@ vendor_outage.alerts.pinpoint.idv.header: We are working to resolve an error
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html} needs to make sure you are you — not someone pretending to be you.'
 vendor_outage.alerts.pinpoint.idv.options_html:
   - Continue now and verify by mail, which takes <strong>5 to 10 days</strong>.
-  - Exit Login.gov and try again later.
+  - Exit %{app_name} and try again later.
 vendor_outage.alerts.pinpoint.idv.options_prompt: 'You can:'
 vendor_outage.alerts.pinpoint.idv.status_page_html: Unfortunately, we’re having technical difficulties right now. %{link_html} to learn when the error is resolved.
 vendor_outage.alerts.pinpoint.idv.status_page_link: Get updates on our status page

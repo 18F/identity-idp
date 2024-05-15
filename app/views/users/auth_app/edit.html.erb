@@ -6,7 +6,6 @@
       @form,
       as: :form,
       method: :put,
-      html: { autocomplete: 'off' },
       url: auth_app_path(id: @form.configuration.id),
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
