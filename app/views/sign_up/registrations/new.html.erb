@@ -17,10 +17,7 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
 
-<%= simple_form_for(
-      @register_user_email_form,
-      url: sign_up_register_path,
-    ) do |f| %>
+<%= simple_form_for(@register_user_email_form, url: sign_up_register_path) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :email,
