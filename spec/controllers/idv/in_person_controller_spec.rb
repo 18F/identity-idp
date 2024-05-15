@@ -56,7 +56,7 @@ RSpec.describe Idv::InPersonController do
           it 'redirects to the first step' do
             get :index
 
-            expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+            expect(response).to redirect_to idv_in_person_proofing_state_id_url
           end
 
           context 'with associated service provider' do
@@ -77,7 +77,7 @@ RSpec.describe Idv::InPersonController do
               it 'redirects to the first step' do
                 get :index
 
-                expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+                expect(response).to redirect_to idv_in_person_proofing_state_id_url
               end
             end
           end
@@ -96,7 +96,7 @@ RSpec.describe Idv::InPersonController do
             it 'finishes the flow' do
               put :update, params: { step: 'state_id' }
 
-              expect(response).to redirect_to idv_in_person_address_url
+              expect(response).to redirect_to idv_in_person_proofing_state_id_url
             end
           end
         end
