@@ -5,13 +5,11 @@ module Flow
     include Failure
 
     attr_accessor :flow_session
-    attr_reader :steps, :actions, :current_user, :current_sp, :params, :request, :json,
+    attr_reader :current_user, :current_sp, :params, :request, :json,
                 :http_status, :controller
 
-    def initialize(controller, steps, actions, session)
+    def initialize(controller, session)
       @controller = controller
-      @steps = steps.with_indifferent_access
-      @actions = actions.with_indifferent_access
       @redirect = nil
       @json = nil
       @flow_session = session

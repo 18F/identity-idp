@@ -5,10 +5,6 @@ module Idv
     class InPersonFlow < Flow::BaseFlow
       attr_reader :idv_session # this is used by DocAuthBaseStep
 
-      STEPS = {
-        state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
-      }.freeze
-
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
         { name: :verify_info },
@@ -27,7 +23,7 @@ module Idv
 
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
-        super(controller, STEPS, session[name])
+        super(controller, session[name])
         @flow_session ||= {}
         @flow_session[:pii_from_user] ||= { uuid: current_user.uuid }
         # there may be data in @idv_session to copy to @flow_session
