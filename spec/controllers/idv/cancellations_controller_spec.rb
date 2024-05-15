@@ -224,12 +224,10 @@ RSpec.describe Idv::CancellationsController do
 
       context 'with in person enrollment' do
         let(:user) { build(:user, :with_pending_in_person_enrollment) }
-
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           allow(controller).to receive(:user_session).and_return(
-            'idv/in_person' => { 'pii_from_user' => {},
-                                 'Idv::Steps::InPerson::StateIdStep' => true },
+            'idv/in_person' => { 'pii_from_user' => {} },
           )
         end
 
