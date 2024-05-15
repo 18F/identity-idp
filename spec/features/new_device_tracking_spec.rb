@@ -6,11 +6,11 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered) }
 
   context 'user has existing devices and aggregated new device alerts is disabled' do
+    let(:user) { create(:user, :with_authenticated_device) }
     before do
       allow(IdentityConfig.store).to receive(
         :feature_new_device_alert_aggregation_enabled,
       ).and_return(false)
-      create(:device, user: user)
     end
 
     it 'sends a user notification on signin' do
@@ -46,11 +46,11 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
   end
 
   context 'user has existing devices and aggregated new device alerts is enabled' do
+    let(:user) { create(:user, :with_authenticated_device) }
     before do
       allow(IdentityConfig.store).to receive(
         :feature_new_device_alert_aggregation_enabled,
       ).and_return(true)
-      create(:device, user: user)
     end
 
     it 'sends a user notification on signin' do
