@@ -7,7 +7,7 @@ class ServiceProviderRequest
   attr_accessor :uuid, :issuer, :url, :requested_attributes, :acr_values, :vtr
 
   # Deprecated attributes to remove
-  attr_accessor :ial, :aal, :biometric_comparison_required
+  attr_accessor :ial, :aal, :biometric_comparison_required, :enhanced_ipp_required
 
   def initialize(
     uuid: nil,
@@ -20,6 +20,7 @@ class ServiceProviderRequest
     # rubocop:disable Lint/UnusedMethodArgument
     ial: nil,
     aal: nil,
+    enhanced_ipp_required: false,
     biometric_comparison_required: false
     # rubocop:enable Lint/UnusedMethodArgument
   )
@@ -29,6 +30,7 @@ class ServiceProviderRequest
     @requested_attributes = requested_attributes&.map(&:to_s)
     @acr_values = acr_values
     @vtr = vtr
+    @enhanced_ipp_required = enhanced_ipp_required
   end
 
   def ==(other)

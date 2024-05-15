@@ -38,6 +38,7 @@ class ServiceProviderRequestProxy
       issuer: nil,
       url: nil,
       requested_attributes: nil,
+      enhanced_ipp_required: false,
       acr_values: nil,
       vtr: nil,
     )
@@ -50,6 +51,7 @@ class ServiceProviderRequestProxy
       requested_attributes: spr.requested_attributes,
       acr_values: spr.acr_values,
       vtr: spr.vtr,
+      enhanced_ipp_required: spr.enhanced_ipp_required,
     )
   end
 
@@ -61,6 +63,7 @@ class ServiceProviderRequestProxy
       :requested_attributes,
       :vtr,
       :acr_values,
+      :enhanced_ipp_required,
     )
     write(obj, uuid)
     hash_to_spr(obj, uuid)

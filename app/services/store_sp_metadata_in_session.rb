@@ -30,6 +30,7 @@ class StoreSpMetadataInSession
       requested_attributes: sp_request.requested_attributes,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
+      enhanced_ipp_required: parsed_vot&.enhanced_ipp?,
     }
   end
 

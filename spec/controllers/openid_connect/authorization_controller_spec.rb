@@ -524,6 +524,29 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 end
               end
             end
+
+            context 'SP requests enhanced_ipp_required' do
+              let(:vtr) { ['Pe'].to_json }
+
+              before do
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                  and_return('server_side')
+                allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+
+              it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                user.active_profile.idv_level = :enhanced
+
+                action
+
+                expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+              end
+            end
           end
 
           context 'verified non-biometric profile with pending biometric profile' do
@@ -2512,6 +2535,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             request_url: request.original_url,
             requested_attributes: %w[],
             vtr: nil,
+            enhanced_ipp_required: false,
           )
         end
       end
@@ -2645,6 +2669,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             request_url: request.original_url,
             requested_attributes: %w[],
             vtr: ['C1'],
+            enhanced_ipp_required: false,
           )
         end
       end
