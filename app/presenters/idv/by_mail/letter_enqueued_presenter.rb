@@ -59,7 +59,13 @@ module Idv
 
       def pii_from_user_session
         return nil unless idv_session.has_pii_from_user_in_flow_session?
-        Pii::StateId.new(**idv_session.pii_from_user_in_flow_session.slice(*Pii::StateId.members))
+
+        data_hash =
+          Pii::StateId.members.
+            index_with(nil).
+            merge(idv_session.pii_from_user_in_flow_session.symbolize_keys)
+
+        Pii::StateId.new(**data_hash.slice(*Pii::StateId.members))
       end
 
       def pii_from_gpo_pending_profile
