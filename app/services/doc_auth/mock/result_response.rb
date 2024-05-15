@@ -182,7 +182,7 @@ module DocAuth
       end
 
       def doc_auth_result_from_success
-        if success?
+        if doc_auth_success?
           DocAuth::LexisNexis::ResultCodes::PASSED.name
         else
           DocAuth::LexisNexis::ResultCodes::CAUTION.name
@@ -190,7 +190,7 @@ module DocAuth
       end
 
       def transaction_status_from_success
-        if success?
+        if doc_auth_success?
           'passed'
         else
           'failed'
