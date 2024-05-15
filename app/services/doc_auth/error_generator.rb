@@ -131,7 +131,7 @@ module DocAuth
     def get_doc_auth_error_messages(response_info)
       errors = Hash.new { |hash, key| hash[key] = Set.new }
 
-      if response_info[:doc_auth_result] != LexisNexis::ResultCodes::PASSED.name
+      unless doc_auth_passed?(response_info)
         response_info[:processed_alerts][:failed]&.each do |alert|
           alert_msg_hash = ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym]
 
@@ -373,9 +373,14 @@ module DocAuth
       unknown_fail_count
     end
 
+    def doc_auth_passed?(response_info)
+      response_info[:transaction_status] == 'passed'
+    end
+
     def doc_auth_error_count(response_info)
-      response_info[:transaction_status] == 'passed' ? # doc auth passed?
-        0 : response_info[:alert_failure_count]
+      return 0 if doc_auth_passed?(response_info)
+
+      response_info[:alert_failure_count]
     end
   end
 end
