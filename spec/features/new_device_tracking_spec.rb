@@ -72,8 +72,9 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
 
       travel_to 6.minutes.from_now do
         CreateNewDeviceAlert.new.perform(Time.zone.now)
-        open_email(user.email)
-        expect(current_email).to have_css(
+        open_last_email
+        email_page = Capybara::Node::Simple.new(current_email.default_part_body)
+        expect(email_page).to have_css(
           '.usa-table td.font-family-mono',
           count: 1,
           text: t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa'),
@@ -87,12 +88,13 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
 
         expect(current_path).to eq(new_user_session_path)
         sign_in_live_with_2fa(user)
-        open_email(user.email)
-        expect(current_email).to have_css('.usa-table td.font-family-mono', count: 2)
-        expect(current_email).to have_content(
+        open_last_email
+        email_page = Capybara::Node::Simple.new(current_email.default_part_body)
+        expect(email_page).to have_css('.usa-table td.font-family-mono', count: 2)
+        expect(email_page).to have_content(
           t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa'),
         )
-        expect(current_email).to have_content(
+        expect(email_page).to have_content(
           t('user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa'),
         )
       end
