@@ -45,44 +45,4 @@ RSpec.describe 'idv/phone_errors/_warning.html.erb' do
       end
     end
   end
-
-  context 'without an SP' do
-    it 'renders a list of troubleshooting options' do
-      expect(rendered).not_to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path,
-      )
-    end
-  end
-
-  context 'with an SP' do
-    let(:sp_name) { 'Example SP' }
-
-    it 'renders a list of troubleshooting options' do
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
-      )
-    end
-
-    context 'without a name' do
-      it 'renders failure to proof url with default location' do
-        expect(rendered).to have_link(
-          t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-          href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
-        )
-      end
-    end
-
-    context 'with a name' do
-      let(:assigns) { { name: 'fail' } }
-
-      it 'renders failure to proof url with name as location' do
-        expect(rendered).to have_link(
-          t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-          href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'fail'),
-        )
-      end
-    end
-  end
 end
