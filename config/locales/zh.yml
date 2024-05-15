@@ -1120,7 +1120,6 @@ idv.titles.unavailable: 我们正在争取解决错误。
 idv.troubleshooting.headings.need_assistance: 需要立即帮助？以下是如何得到帮助的步骤：
 idv.troubleshooting.options.contact_support: 联系 %{app_name} 支持
 idv.troubleshooting.options.doc_capture_tips: 拍出你身份证件清晰照片的提示。
-idv.troubleshooting.options.get_help_at_sp: 在 %{sp_name}得到帮助
 idv.troubleshooting.options.learn_more_verify_by_mail: 对通过邮件验证你地址获得更多了解
 idv.troubleshooting.options.learn_more_verify_by_phone: 了解有关使用什么号码的更多信息
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: 对验证你的电话号码获得更多了解

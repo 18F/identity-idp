@@ -1116,7 +1116,6 @@ idv.titles.unavailable: We are working to resolve an error
 idv.troubleshooting.headings.need_assistance: 'Need immediate assistance? Here’s how to get help:'
 idv.troubleshooting.options.contact_support: Contact %{app_name} Support
 idv.troubleshooting.options.doc_capture_tips: Tips for taking clear photos of your ID
-idv.troubleshooting.options.get_help_at_sp: Get help at %{sp_name}
 idv.troubleshooting.options.learn_more_verify_by_mail: Learn more about verifying your address by mail
 idv.troubleshooting.options.learn_more_verify_by_phone: Learn more about what phone number to use
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: Learn more about verifying your phone number
