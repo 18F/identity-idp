@@ -55,7 +55,6 @@ RSpec.describe OpenidConnectTokenForm do
       link_identity(
         nonce: nonce,
         rails_session_id: SecureRandom.hex,
-        ial: 1,
         code_challenge: code_challenge,
       )
   end
@@ -381,7 +380,6 @@ RSpec.describe OpenidConnectTokenForm do
           code_digest: Digest::SHA256.hexdigest(code),
           code_verifier_present: false,
           service_provider_pkce: nil,
-          ial: 1,
         )
       end
     end

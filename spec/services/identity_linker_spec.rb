@@ -29,7 +29,6 @@ RSpec.describe IdentityLinker do
     it 'can take an additional optional attributes' do
       rails_session_id = SecureRandom.hex
       nonce = SecureRandom.hex
-      ial = 3
       acr_values = 'http://idmanagement.gov/ns/assurance/aal/1'
       vtr = ['C2.Pb'].to_json
       scope = 'openid profile email'
@@ -39,7 +38,6 @@ RSpec.describe IdentityLinker do
       IdentityLinker.new(user, service_provider).link_identity(
         rails_session_id: rails_session_id,
         nonce: nonce,
-        ial: ial,
         acr_values: acr_values,
         vtr: vtr,
         scope: scope,
@@ -51,7 +49,6 @@ RSpec.describe IdentityLinker do
       last_identity = user.last_identity
       expect(last_identity.nonce).to eq(nonce)
       expect(last_identity.rails_session_id).to eq(rails_session_id)
-      expect(last_identity.ial).to eq(ial)
       expect(last_identity.acr_values).to eq(acr_values)
       expect(last_identity.vtr).to eq(vtr)
       expect(last_identity.scope).to eq(scope)

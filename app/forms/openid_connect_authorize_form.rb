@@ -96,8 +96,6 @@ class OpenidConnectAuthorizeForm
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
-      ial: ial,
-      aal: aal,
       acr_values: acr_values&.join(' '),
       vtr: vtr,
       requested_aal_value: requested_aal_value,

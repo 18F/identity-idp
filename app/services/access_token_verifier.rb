@@ -20,7 +20,6 @@ class AccessTokenVerifier
       errors:,
       extra: {
         client_id: @identity&.service_provider,
-        ial: @identity&.ial,
       },
     )
 

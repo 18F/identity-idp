@@ -743,7 +743,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       before do
         stub_sign_in(user)
         session[:sign_in_flow] = sign_in_flow
-        IdentityLinker.new(user, sp1).link_identity(ial: Idp::Constants::IAL2)
+        IdentityLinker.new(user, sp1).link_identity
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -761,11 +761,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(asserter).to receive(:build).at_least(:once).and_call_original
 
         saml_get_auth(ial2_settings)
-      end
-
-      it 'sets identity ial' do
-        saml_get_auth(ial2_settings)
-        expect(user.identities.last.ial).to eq(Idp::Constants::IAL2)
       end
 
       it 'does not redirect the user to the IdV URL' do
@@ -892,7 +887,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       before do
         stub_sign_in(user)
         session[:sign_in_flow] = sign_in_flow
-        IdentityLinker.new(user, ServiceProvider.find_by(issuer: sp1_issuer)).link_identity(ial: 2)
+        IdentityLinker.new(user, ServiceProvider.find_by(issuer: sp1_issuer)).link_identity
         user.identities.last.update!(
           verified_attributes: %w[email given_name family_name social_security_number address],
         )
@@ -910,11 +905,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(asserter).to receive(:build).at_least(:once).and_call_original
 
         saml_get_auth(ialmax_settings)
-      end
-
-      it 'sets identity ial to 0' do
-        saml_get_auth(ialmax_settings)
-        expect(user.identities.last.ial).to eq(0)
       end
 
       it 'does not redirect the user to the IdV URL' do

@@ -599,13 +599,11 @@ module Features
       nonce
     end
 
-    def link_identity(user, service_provider, ial = nil)
+    def link_identity(user, service_provider)
       IdentityLinker.new(
         user,
         service_provider,
-      ).link_identity(
-        ial: ial,
-      )
+      ).link_identity
     end
 
     def set_new_browser_session

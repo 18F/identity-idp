@@ -6,8 +6,6 @@ class IdentityLinker
   def initialize(user, service_provider)
     @user = user
     @service_provider = service_provider
-    @ial = nil
-    @aal = nil
     @acr_values = nil
     @vtr = nil
     @requested_aal_value = nil
@@ -15,8 +13,6 @@ class IdentityLinker
 
   def link_identity(
     code_challenge: nil,
-    ial: nil,
-    aal: nil,
     acr_values: nil,
     vtr: nil,
     requested_aal_value: nil,
@@ -29,13 +25,9 @@ class IdentityLinker
   )
     return unless user && service_provider.present?
 
-    process_ial(ial)
-
     identity.update!(
       identity_attributes.merge(
         code_challenge: code_challenge,
-        ial: ial,
-        aal: aal,
         acr_values: acr_values,
         vtr: vtr,
         requested_aal_value: requested_aal_value,
@@ -54,26 +46,6 @@ class IdentityLinker
   end
 
   private
-
-  def process_ial(ial)
-    @ial = ial
-    now = Time.zone.now
-    process_ial_at(now)
-    process_verified_at(now)
-  end
-
-  def process_ial_at(now)
-    if @ial == Idp::Constants::IAL2 || (identity.verified_at.present? && @ial&.zero?)
-      identity.last_ial2_authenticated_at = now
-    else
-      identity.last_ial1_authenticated_at = now
-    end
-  end
-
-  def process_verified_at(now)
-    return unless @ial == Idp::Constants::IAL2 && identity.verified_at.nil?
-    identity.verified_at = now
-  end
 
   def identity
     @identity ||= user.identities.create_or_find_by(service_provider: service_provider.issuer)

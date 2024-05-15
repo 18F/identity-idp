@@ -68,7 +68,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         it 'redirects back to the client app with a code if server-side redirect is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
             and_return('server_side')
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
@@ -83,7 +83,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         it 'renders a client-side redirect back to the client app with a code if it is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
             and_return('client_side')
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
@@ -99,7 +99,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
             and_return('client_side_js')
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
@@ -117,7 +117,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             travel_to now + 15.seconds
             stub_analytics
 
-            IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+            IdentityLinker.new(user, service_provider).link_identity
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
             action
@@ -173,7 +173,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             travel_to now + 15.seconds
             stub_analytics
 
-            IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+            IdentityLinker.new(user, service_provider).link_identity
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
             action
@@ -232,7 +232,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('server_side')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -245,7 +245,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             it 'renders a client-side redirect back to the client app immediately if it is enabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('client_side')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -259,7 +259,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             it 'renders a JS client-side redirect back to the client app immediately if it is enabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('client_side_js')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -275,7 +275,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 and_return('client_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'server_side' })
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -290,7 +290,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'client_side' })
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -306,7 +306,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'client_side_js' })
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -325,7 +325,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'client_side_js' })
 
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -342,7 +342,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
                 and_return({ service_provider.issuer => 'client_side_js' })
 
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -354,7 +354,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             end
 
             it 'redirects to the password capture url when pii is locked' do
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -368,7 +368,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               travel_to now + 15.seconds
               stub_analytics
 
-              IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -424,7 +424,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -481,7 +481,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -530,7 +530,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             before do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('server_side')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[birthdate family_name given_name verified_at],
               )
@@ -689,7 +689,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               it 'redirects to the redirect_uri immediately when pii is unlocked if server-side redirect is enabled' do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -703,7 +703,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -718,7 +718,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side_js')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -730,7 +730,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'redirects to the password capture url when pii is locked' do
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -744,7 +744,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 travel_to now + 15.seconds
                 stub_analytics
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -796,7 +796,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               it 'redirects to the redirect_uri immediately without proofing if server-side redirect is enabled' do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -810,7 +810,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -824,7 +824,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side_js')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -838,7 +838,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 travel_to now + 15.seconds
                 stub_analytics
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -892,7 +892,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -906,7 +906,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -920,7 +920,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side_js')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -934,7 +934,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 travel_to now + 15.seconds
                 stub_analytics
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1051,7 +1051,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         it 'redirects back to the client app with a code if server-side redirect is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
             and_return('server_side')
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
@@ -1066,7 +1066,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         it 'renders a client-side redirect back to the client app with a code if it is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
             and_return('client_side')
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
@@ -1082,7 +1082,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect).
             and_return('client_side_js')
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
@@ -1102,7 +1102,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
           it 'tracks IAL1 authentication event' do
             travel_to now + 15.seconds
             stub_analytics
-            IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+            IdentityLinker.new(user, service_provider).link_identity
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
             action
@@ -1160,7 +1160,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             travel_to now + 15.seconds
             stub_analytics
 
-            IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+            IdentityLinker.new(user, service_provider).link_identity
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
             action
@@ -1220,7 +1220,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('server_side')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1233,7 +1233,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             it 'renders a client-side redirect back to the client app immediately if it is enabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('client_side')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1247,7 +1247,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             it 'renders a JS client-side redirect back to the client app immediately if it is enabled' do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('client_side_js')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1263,7 +1263,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 and_return('client_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'server_side' })
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1278,7 +1278,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'client_side' })
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1294,7 +1294,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 and_return('server_side')
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'client_side_js' })
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1313,7 +1313,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
                 and_return({ user.uuid => 'client_side_js' })
 
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1330,7 +1330,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
                 and_return({ service_provider.issuer => 'client_side_js' })
 
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1342,7 +1342,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             end
 
             it 'redirects to the password capture url when pii is locked' do
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1356,7 +1356,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               travel_to now + 15.seconds
               stub_analytics
 
-              IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -1412,7 +1412,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1469,7 +1469,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1518,7 +1518,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
             before do
               allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                 and_return('server_side')
-              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity
               user.identities.last.update!(
                 verified_attributes: %w[birthdate family_name given_name verified_at],
               )
@@ -1679,7 +1679,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               it 'redirects to the redirect_uri immediately when pii is unlocked if server-side redirect is enabled' do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1693,7 +1693,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1708,7 +1708,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side_js')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1720,7 +1720,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               end
 
               it 'redirects to the password capture url when pii is locked' do
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1734,7 +1734,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 travel_to now + 15.seconds
                 stub_analytics
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1786,7 +1786,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               it 'redirects to the redirect_uri immediately without proofing if server-side redirect is enabled' do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1800,7 +1800,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1814,7 +1814,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side_js')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1828,7 +1828,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 travel_to now + 15.seconds
                 stub_analytics
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1882,7 +1882,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1896,7 +1896,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1910,7 +1910,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('client_side_js')
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -1924,7 +1924,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                 travel_to now + 15.seconds
                 stub_analytics
 
-                IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+                IdentityLinker.new(user, service_provider).link_identity
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )

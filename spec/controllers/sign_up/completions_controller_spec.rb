@@ -252,7 +252,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           requested_attributes: ['email'],
         }
         expect(@linker).to receive(:link_identity).with(
-          ial: 1,
           verified_attributes: ['email'],
           last_consented_at: now,
           clear_deleted_at: true,
@@ -352,7 +351,6 @@ RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
           requested_attributes: %w[email first_name verified_at],
         }
         expect(@linker).to receive(:link_identity).with(
-          ial: 2,
           verified_attributes: %w[email first_name verified_at],
           last_consented_at: now,
           clear_deleted_at: true,

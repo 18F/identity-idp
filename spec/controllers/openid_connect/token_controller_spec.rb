@@ -36,7 +36,6 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
     let!(:identity) do
       IdentityLinker.new(user, service_provider).link_identity(
         rails_session_id: SecureRandom.hex,
-        ial: 1,
       )
     end
 
@@ -62,7 +61,6 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
             code_verifier_present: false,
             service_provider_pkce: nil,
             expires_in: 0,
-            ial: 1,
           })
         action
       end
@@ -93,7 +91,6 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
             service_provider_pkce: nil,
             error_details: hash_including(:grant_type),
             expires_in: nil,
-            ial: 1,
           })
 
         action

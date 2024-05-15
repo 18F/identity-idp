@@ -142,10 +142,7 @@ module SamlIdpAuthConcern
   def link_identity_from_session_data
     IdentityLinker.
       new(current_user, saml_request_service_provider).
-      link_identity(
-        ial: resolved_authn_context_int_ial,
-        rails_session_id: session.id,
-      )
+      link_identity(rails_session_id: session.id)
   end
 
   def identity_needs_verification?

@@ -115,7 +115,6 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_ISSUER)
     IdentityLinker.new(user, service_provider).link_identity(
       verified_attributes: %w[email given_name family_name social_security_number address phone],
-      ial: 2,
     )
 
     visit_idp_from_sp_with_ial2(:oidc)

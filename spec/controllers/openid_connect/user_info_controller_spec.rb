@@ -23,7 +23,6 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
           with('OpenID Connect: bearer token authentication',
                success: false,
                client_id: nil,
-               ial: nil,
                errors: hash_including(:access_token),
                error_details: hash_including(:access_token))
 
@@ -47,7 +46,6 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
           with('OpenID Connect: bearer token authentication',
                success: false,
                client_id: nil,
-               ial: nil,
                errors: hash_including(:access_token),
                error_details: hash_including(:access_token))
 
@@ -71,7 +69,6 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
                success: false,
                errors: hash_including(:access_token),
                client_id: nil,
-               ial: nil,
                error_details: hash_including(:access_token))
 
         action
@@ -100,7 +97,6 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
           success: false,
           errors: { access_token: [t('openid_connect.user_info.errors.not_found')] },
           client_id: nil,
-          ial: nil,
           error_details: { access_token: { not_found: true } },
         )
       end
@@ -131,7 +127,6 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
           'OpenID Connect: bearer token authentication',
           success: true,
           client_id: identity.service_provider,
-          ial: identity.ial,
           errors: {},
         )
 
