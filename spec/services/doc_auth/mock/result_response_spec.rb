@@ -132,7 +132,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(nil)
-      expect(response.attention_with_barcode?).to eq(false)
+      expect(response.attention_with_barcode?).to eq(true)
     end
   end
 
