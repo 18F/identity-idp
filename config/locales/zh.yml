@@ -1086,7 +1086,7 @@ idv.gpo.will_send_to: 我们会把信寄发到：
 idv.images.come_back_later: 带有打勾符的信件
 idv.messages.activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
 idv.messages.activated_link: 联系我们
-idv.messages.come_back_later_html: '<p>信件需要 <strong>5 - 10 日送到。</strong>收到信后请重新登录来输入你的验证代码。</p>'
+idv.messages.come_back_later_html: '信件需要 <strong>5 - 10 日送到。</strong>收到信后请重新登录来输入你的验证代码。'
 idv.messages.confirm: 我们对你验证过的信息做了安全处理
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>记住你的密码。</strong> 如果你随后重设密码的话，信中的验证码就不会奏效。'
 idv.messages.enter_password.message: '%{app_name}会用你的密码对你的账户加密。加密意味着你的信息很安全，而且只有你能够访问或变更你的信息。'

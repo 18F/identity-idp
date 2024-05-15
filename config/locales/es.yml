@@ -1081,7 +1081,7 @@ idv.gpo.will_send_to: 'La hemos enviado a:'
 idv.images.come_back_later: Carta con una marca de verificación
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
 idv.messages.activated_link: contáctenos
-idv.messages.come_back_later_html: '<p>Las cartas tardan entre <strong>5 y 10 días</strong> en llegar. Vuelva a iniciar sesión para introducir el código de verificación cuando reciba la carta.</p>'
+idv.messages.come_back_later_html: 'Las cartas tardan entre <strong>5 y 10 días</strong> en llegar. Vuelva a iniciar sesión para introducir el código de verificación cuando reciba la carta.'
 idv.messages.confirm: Hemos protegido su información verificada
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Recuerde su contraseña.</strong> El código de verificación de su carta no funcionará si restablece su contraseña más adelante.'
 idv.messages.enter_password.message: '%{app_name} cifrará su información con su contraseña. Esto significa que su información está protegida y solo usted puede acceder a ella o modificarla.'
