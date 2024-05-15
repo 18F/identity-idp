@@ -55,62 +55,6 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     expect(links[1].target).to.equal('_blank');
   });
 
-  context('with associated service provider', () => {
-    it('renders troubleshooting options', () => {
-      const { getAllByRole } = render(<DocumentCaptureTroubleshootingOptions />, {
-        wrapper: wrappers.helpCenterAndServiceProviderContext,
-      });
-
-      const links = getAllByRole('link') as HTMLAnchorElement[];
-
-      expect(links).to.have.lengthOf(3);
-      expect(links[0].textContent).to.equal(
-        'idv.troubleshooting.options.doc_capture_tipslinks.new_tab',
-      );
-      expect(links[0].getAttribute('href')).to.equal(
-        'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=document_capture_troubleshooting_options',
-      );
-      expect(links[0].target).to.equal('_blank');
-      expect(links[1].textContent).to.equal(
-        'idv.troubleshooting.options.supported_documentslinks.new_tab',
-      );
-      expect(links[1].getAttribute('href')).to.equal(
-        'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=document_capture_troubleshooting_options',
-      );
-      expect(links[1].target).to.equal('_blank');
-      expect(links[2].textContent).to.equal(
-        'idv.troubleshooting.options.get_help_at_splinks.new_tab',
-      );
-      expect(links[2].href).to.equal(
-        'http://example.test/url/to/failure-to-proof?location=document_capture_troubleshooting_options',
-      );
-      expect(links[2].target).to.equal('_blank');
-    });
-
-    context('with location prop', () => {
-      it('appends location to links', () => {
-        const { getAllByRole } = render(
-          <DocumentCaptureTroubleshootingOptions location="custom" />,
-          {
-            wrapper: wrappers.helpCenterAndServiceProviderContext,
-          },
-        );
-
-        const links = getAllByRole('link') as HTMLAnchorElement[];
-
-        expect(links[0].href).to.equal(
-          'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=custom',
-        );
-        expect(links[1].href).to.equal(
-          'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=custom',
-        );
-        expect(links[2].href).to.equal(
-          'http://example.test/url/to/failure-to-proof?location=custom',
-        );
-      });
-    });
-  });
-
   context('with heading prop', () => {
     it('shows heading text', () => {
       const { getByRole } = render(
@@ -174,20 +118,6 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     });
   });
 
-  context('with sp option turned off', () => {
-    it('does not display the SP troubleshooting option', () => {
-      const { queryByRole } = render(
-        <DocumentCaptureTroubleshootingOptions showSPOption={false} />,
-      );
-
-      expect(
-        queryByRole('link', {
-          name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab',
-        }),
-      ).to.not.exist();
-    });
-  });
-
   context('with document tips hidden', () => {
     it('renders nothing', () => {
       const { container } = render(
@@ -195,24 +125,6 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       );
 
       expect(container.innerHTML).to.be.empty();
-    });
-
-    context('with associated service provider', () => {
-      it('renders troubleshooting options', () => {
-        const { getAllByRole } = render(
-          <DocumentCaptureTroubleshootingOptions showDocumentTips={false} />,
-          {
-            wrapper: wrappers.helpCenterAndServiceProviderContext,
-          },
-        );
-
-        const links = getAllByRole('link') as HTMLAnchorElement[];
-
-        expect(links).to.have.lengthOf(1);
-        expect(links[0].getAttribute('href')).to.equal(
-          'http://example.test/url/to/failure-to-proof?location=document_capture_troubleshooting_options',
-        );
-      });
     });
   });
 });
