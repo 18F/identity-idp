@@ -171,7 +171,7 @@ module Flow
       redirect_to send(@final_url)
     end
 
-    def redirect_to_step(step)
+    def redirect_to_step(_step)
       flow_finish and return unless next_step
       redirect_url
     end
