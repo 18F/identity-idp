@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/in_person/state_id.html.erb' do
+RSpec.describe 'idv/in_person/state_id/show.html.erb' do
   let(:pii) { {} }
   let(:form) { Idv::StateIdForm.new(pii) }
   let(:parsed_dob) { Date.new(1970, 1, 1) }
@@ -10,7 +10,7 @@ RSpec.describe 'idv/in_person/state_id.html.erb' do
   end
 
   subject(:render_template) do
-    render template: 'idv/in_person/state_id',
+    render template: 'idv/in_person/state_id/show',
            locals: { updating_state_id: true, form: form, pii: pii, parsed_dob: parsed_dob }
   end
 
