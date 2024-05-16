@@ -48,5 +48,24 @@ RSpec.describe StoreSpMetadataInSession do
         )
       end
     end
+
+    context 'when enhanced in person proofing is requested using a VTR' do
+      let(:request_vtr) { ['Pe'] }
+
+      it 'sets the session[:sp] hash correctly' do
+        expect(app_session[:sp]).to eq(
+          {
+            issuer: issuer,
+            acr_values: request_acr,
+            request_url: request_url,
+            request_id: request_id,
+            requested_attributes: requested_attributes,
+            biometric_comparison_required: false,
+            vtr: request_vtr,
+            enhanced_ipp_required: true,
+          },
+        )
+      end
+    end
   end
 end
