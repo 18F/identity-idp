@@ -4,7 +4,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   let(:service_provider) { '🔒🌐💻' }
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO }
 
-  let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+  let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT }
 
   let(:idv_session) do
     idv_session = Idv::Session.new(
@@ -12,7 +12,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
       current_user: nil,
       service_provider: service_provider,
     )
-    idv_session.pii_from_doc = pii_from_doc
+    idv_session.applicant(Proofing::Aamva::Applicant.from_proofer_applicant(applicant_pii))
     idv_session
   end
 
@@ -67,7 +67,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   end
 
   context 'when address line 2 is not present' do
-    let(:pii_from_doc) do
+    let(:applicant_pii) do
       super().merge(
         {
           address1: '123 Identical Ct.',
@@ -85,7 +85,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   end
 
   context 'when address line 2 is present' do
-    let(:pii_from_doc) do
+    let(:applicant_pii) do
       super().merge(
         {
           address1: '456 Big Building Blvd',
