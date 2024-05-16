@@ -48,24 +48,7 @@ module Idv
       end
 
       def pii
-        @pii ||= pii_from_idv_session ||
-                 pii_from_user_session ||
-                 pii_from_gpo_pending_profile
-      end
-
-      def pii_from_idv_session
-        idv_session.pii_from_doc
-      end
-
-      def pii_from_user_session
-        return nil unless idv_session.has_pii_from_user_in_flow_session?
-
-        data_hash =
-          Pii::StateId.members.
-            index_with(nil).
-            merge(idv_session.pii_from_user_in_flow_session.symbolize_keys)
-
-        Pii::StateId.new(**data_hash.slice(*Pii::StateId.members))
+        @pii ||= idv_session.applicant || pii_from_gpo_pending_profile
       end
 
       def pii_from_gpo_pending_profile

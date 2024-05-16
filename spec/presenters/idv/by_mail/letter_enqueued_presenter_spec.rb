@@ -23,7 +23,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
   let(:current_user) { nil }
   let(:user_session) { {} }
   let(:service_provider) { nil }
-  let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
+  let(:expected_pii) { Idp::Constants::MOCK_IDV_APPLICANT }
 
   describe '#address_lines' do
     let(:current_user) { create(:user, :with_pending_gpo_profile) }
@@ -31,7 +31,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     shared_examples 'retrieves and formats the address correctly' do
       context 'when the address has no address2' do
         let(:pii) do
-          super().merge(
+          expected_pii.merge(
             {
               address1: '123 Some St',
               city: 'Anytown',
@@ -53,7 +53,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
 
       context 'when the address has an address2' do
         let(:pii) do
-          super().merge(
+          expected_pii.merge(
             {
               address1: '456 Cross St',
               address2: 'Apt 3G',
@@ -76,12 +76,11 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
       end
     end
 
-    def add_to_idv_session(pii:)
-      idv_session.pii_from_doc = pii
-    end
+    def add_to_idv_session_applicant(pii:)
+      pii_hash = Pii::StateId.members.index_with(nil).merge(pii)
+      applicant = Proofing::Aamva::Applicant.from_proofer_applicant(pii_hash)
 
-    def add_to_user_session(pii:)
-      user_session['idv/in_person'] = { pii_from_user: pii }
+      idv_session.applicant(applicant)
     end
 
     def add_to_gpo_pending_profile(pii:)
@@ -91,39 +90,26 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
       pii_cacher.save_decrypted_pii(pii, gpo_profile_id)
     end
 
-    context 'with the pii in the idv session' do
-      before { add_to_idv_session(pii:) }
+    context 'with the pii on the applicant in the idv session' do
+      before { add_to_idv_session_applicant(pii:) }
 
       include_examples 'retrieves and formats the address correctly'
     end
 
-    context 'with the pii in the user_session' do
-      before { add_to_user_session(pii:) }
+    context 'with pii on the applicant and different pii in the GPO pending profile' do
+      let(:pii) { expected_pii }
+      let(:wrong_pii) { Pii::StateId.members.index_with('wrong') }
+
+      before do
+        add_to_idv_session_applicant(pii:)
+        add_to_gpo_pending_profile(pii: wrong_pii)
+      end
 
       include_examples 'retrieves and formats the address correctly'
     end
 
     context 'with the pii in the gpo pending profile' do
       before { add_to_gpo_pending_profile(pii:) }
-
-      include_examples 'retrieves and formats the address correctly'
-    end
-
-    context 'with the pii in the idv session, the user session, and the gpo pending profile' do
-      before do
-        add_to_idv_session(pii:)
-        add_to_user_session(pii: { address1: 'bogus user session pii' })
-        add_to_gpo_pending_profile(pii: { address1: 'bogus gpo session pii' })
-      end
-
-      include_examples 'retrieves and formats the address correctly'
-    end
-
-    context 'with the pii in the user session and the gpo pending profile' do
-      before do
-        add_to_user_session(pii:)
-        add_to_gpo_pending_profile(pii: { address1: 'bogus gpo session pii' })
-      end
 
       include_examples 'retrieves and formats the address correctly'
     end
