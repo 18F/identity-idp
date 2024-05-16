@@ -8,6 +8,7 @@ module Proofing
     module Response
       class VerificationResponse
         VERIFICATION_ATTRIBUTES_MAP = {
+          'DriverLicenseIssueDateMatchIndicator' => :state_id_issued,
           'DriverLicenseNumberMatchIndicator' => :state_id_number,
           'DocumentCategoryMatchIndicator' => :state_id_type,
           'PersonBirthDateMatchIndicator' => :dob,

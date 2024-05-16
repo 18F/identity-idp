@@ -13,6 +13,7 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
   end
   let(:verification_results) do
     {
+      state_id_issued: nil,
       state_id_number: true,
       state_id_type: true,
       dob: true,
@@ -201,6 +202,37 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
         expect(subject.verification_results).to eq(expected_result)
       end
     end
+
+    context 'issue date' do
+      context 'when verified' do
+        let(:response_body) do
+          add_match_indicator(
+            AamvaFixtures.verification_response,
+            'DriverLicenseIssueDateMatchIndicator',
+            true,
+          )
+        end
+
+        it 'includes issue date in list of verified attributes' do
+          expected_result = verification_results.merge(state_id_issued: true)
+          expect(subject.verification_results).to eq(expected_result)
+        end
+      end
+      context 'when not verified' do
+        let(:response_body) do
+          add_match_indicator(
+            AamvaFixtures.verification_response,
+            'DriverLicenseIssueDateMatchIndicator',
+            false,
+          )
+        end
+
+        it 'does not include issue date in list of verified attributes' do
+          expected_result = verification_results.merge(state_id_issued: false)
+          expect(subject.verification_results).to eq(expected_result)
+        end
+      end
+    end
   end
 
   describe '#transaction_locator_id' do
@@ -242,6 +274,17 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
         expect(subject.transaction_locator_id).to eq('transaction-locator-id-12345')
       end
     end
+  end
+
+  def add_match_indicator(xml, name, value = true)
+    document = REXML::Document.new(xml)
+
+    el = REXML::Element.new(name)
+    el.text = value ? 'true' : 'false'
+
+    REXML::XPath.first(document, '/dldv:VerifyDriverLicenseDataResponse').add_element(el)
+
+    document.to_s
   end
 
   def modify_match_indicator(xml, name, value)
