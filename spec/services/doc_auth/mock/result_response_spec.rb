@@ -778,6 +778,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
   context 'with a yaml file that includes classification info but missing pii' do
     let(:input) do
       <<~YAML
+        transaction_status: passed
         doc_auth_result: Passed
         document:
           city: Bayside
@@ -812,6 +813,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     describe 'and it is successful' do
       let(:input) do
         <<~YAML
+          transaction_status: passed
           portrait_match_results:
             FaceMatchResult: Pass
             FaceErrorMessage: 'Successful. Liveness: Live'
