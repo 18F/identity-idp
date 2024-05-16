@@ -93,15 +93,29 @@ module OpenidConnect
     end
 
     def link_identity_to_service_provider
-      @authorize_form.link_identity_to_service_provider(current_user, session.id)
+      @authorize_form.link_identity_to_service_provider(
+        current_user: current_user,
+        ial: resolved_authn_context_int_ial,
+        rails_session_id: session.id,
+      )
     end
 
     def ial_context
       IalContext.new(
-        ial: @authorize_form.ial,
+        ial: resolved_authn_context_int_ial,
         service_provider: @authorize_form.service_provider,
         user: current_user,
       )
+    end
+
+    def resolved_authn_context_int_ial
+      if resolved_authn_context_result.ialmax?
+        0
+      elsif resolved_authn_context_result.identity_proofing?
+        2
+      else
+        1
+      end
     end
 
     def handle_successful_handoff
