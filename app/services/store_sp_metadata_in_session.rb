@@ -28,9 +28,10 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
+      biometric_comparison_required: parsed_vot&.biometric_comparison?,
+      enhanced_ipp_required: parsed_vot&.enhanced_ipp?,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
-      enhanced_ipp_required: parsed_vot&.enhanced_ipp?,
     }
   end
 
