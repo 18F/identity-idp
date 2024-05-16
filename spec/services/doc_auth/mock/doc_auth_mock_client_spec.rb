@@ -431,6 +431,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     describe 'when sending a selfie image that is successful (both live and a match)' do
       it 'returns a success response' do
         image = <<~YAML
+          transaction_status: passed
           portrait_match_results:
             FaceMatchResult: Pass
             FaceErrorMessage: 'Successful. Liveness: Live'
