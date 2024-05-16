@@ -1815,7 +1815,7 @@ user_mailer.letter_reminder_14_days.subject: Terminer la vérification de votre 
 user_mailer.letter_reminder.info_html: La lettre que vous êtes sur le point de recevoir contiendra un code de vérification nous permettant de vérifier votre adresse. Vous pouvez terminer le processus de vérification d’identité en vous connectant à %{link_html} et en saisissant le code de vérification.
 user_mailer.letter_reminder.subject: Nous avons posté une lettre à l’adresse que vous avez enregistrée
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: méthodes d’authentification
-user_mailer.new_device_sign_in_after_2fa.info_p1: Votre e-mail et mot de passe %{app_name}  ont été utilisés pour se connecter et s'authentifier sur un nouvel appareil.
+user_mailer.new_device_sign_in_after_2fa.info_p1: Votre e-mail et mot de passe %{app_name} ont été utilisés pour se connecter et s’authentifier sur un nouvel appareil.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.new_device_sign_in_after_2fa.reset_password: réinitialisez votre mot de passe
