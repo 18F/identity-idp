@@ -241,10 +241,12 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           FaceMatchResult: Pass
           FaceErrorMessage: 'Successful. Liveness: Live'
         doc_auth_result: Passed
+        transaction_status: passed
         failed_alerts: []
       YAML
 
       image_no_setting = <<~YAML
+        transaction_status: passed
         doc_auth_result: Passed
         failed_alerts: []
       YAML
@@ -280,6 +282,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
       image = <<~YAML
         doc_auth_result: Passed
+        transaction_status: passed
         failed_alerts: []
       YAML
 
@@ -390,6 +393,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Liveness: NotLive'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
 
@@ -422,6 +426,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Liveness: PoorQuality'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
 
@@ -454,6 +459,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Successful. Liveness: Live'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
           post_images_response = client.post_images(
