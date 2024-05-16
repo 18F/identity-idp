@@ -46,7 +46,7 @@ account.email_language.languages_list: '%{app_name} 允许你以 %{list}接受�
 account.email_language.name.en: 英文
 account.email_language.name.es: 西班牙文
 account.email_language.name.fr: 法文
-account.email_language.name.zh: Chinese
+account.email_language.name.zh: 中文 (简体)
 account.email_language.sentence_connector: 或者
 account.email_language.updated: 你的电邮语言选择已更新。
 account.forget_all_browsers.longer_description: 你选择“忘掉所有浏览器“后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
@@ -957,7 +957,7 @@ i18n.language: 语言
 i18n.locale.en: 英文
 i18n.locale.es: 西班牙文
 i18n.locale.fr: 法文
-i18n.locale.zh: Chinese
+i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: 保护文本安全，从 %{first_number} 开始，到 %{last_number}结束
 idv.buttons.change_address_label: 更新地址
 idv.buttons.change_label: 更新
