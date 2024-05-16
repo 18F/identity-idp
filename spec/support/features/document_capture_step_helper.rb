@@ -3,7 +3,20 @@ module DocumentCaptureStepHelper
     click_on 'Submit'
 
     # Wait for the the loading interstitial to disappear before continuing
-    expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
+
+    begin
+      expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError,
+           Selenium::WebDriver::Error::UnknownError => e
+      # A StaleElementReferenceError means that the context the element
+      # was in has disappeared, which means the element is gone too.
+      #
+      # We sometimes see "UnknownError" with an error message that is similar to a
+      # StaleElementReferenceError, but have not been able to resolve it and are ignoring it
+      # for now.
+      raise e if e.is_a?(Selenium::WebDriver::Error::UnknownError) &&
+                 !e.message.include?('Node with given id does not belong to the document')
+    end
   end
 
   def attach_and_submit_images
