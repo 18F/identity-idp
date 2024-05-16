@@ -48,7 +48,12 @@ module Idv
       end
 
       def pii
-        @pii ||= idv_session.applicant || pii_from_gpo_pending_profile
+        @pii ||= pii_from_session_applicant || pii_from_gpo_pending_profile
+      end
+
+      def pii_from_session_applicant
+        return nil if idv_session&.applicant.nil?
+        Pii::Attributes.new_from_hash(idv_session.applicant)
       end
 
       def pii_from_gpo_pending_profile
