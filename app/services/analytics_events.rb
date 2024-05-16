@@ -2851,6 +2851,7 @@ module AnalyticsEvents
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
+  # @param [Hash, nil] ab_tests data for ongoing A/B tests
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
     success:,
@@ -2864,6 +2865,7 @@ module AnalyticsEvents
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    ab_tests: nil,
     **extra
   )
     track_event(
@@ -2879,6 +2881,7 @@ module AnalyticsEvents
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
+      ab_tests: ab_tests,
       **extra,
     )
   end
@@ -5070,7 +5073,16 @@ module AnalyticsEvents
   # @param [String, nil] sign_in_flow
   # @param [String, nil] vtr
   # @param [String, nil] acr_values
-  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, vtr:, acr_values:, **extra)
+  # @param [Integer] sign_in_duration_seconds
+  def sp_redirect_initiated(
+    ial:,
+    billed_ial:,
+    sign_in_flow:,
+    vtr:,
+    acr_values:,
+    sign_in_duration_seconds:,
+    **extra
+  )
     track_event(
       'SP redirect initiated',
       ial:,
@@ -5078,6 +5090,7 @@ module AnalyticsEvents
       sign_in_flow:,
       vtr: vtr,
       acr_values: acr_values,
+      sign_in_duration_seconds:,
       **extra,
     )
   end

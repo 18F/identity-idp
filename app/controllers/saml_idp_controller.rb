@@ -17,6 +17,7 @@ class SamlIdpController < ApplicationController
   include AuthorizationCountConcern
   include BillableEventTrackable
   include SecureHeadersConcern
+  include SignInDurationConcern
 
   prepend_before_action :skip_session_load, only: [:metadata, :remotelogout]
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
@@ -187,6 +188,7 @@ class SamlIdpController < ApplicationController
       sign_in_flow: session[:sign_in_flow],
       vtr: sp_session[:vtr],
       acr_values: sp_session[:acr_values],
+      sign_in_duration_seconds:,
     )
     track_billing_events
   end

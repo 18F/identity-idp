@@ -13,7 +13,7 @@ module StylesheetHelper
   def render_stylesheet_once_tags(*names)
     stylesheet_tag_once(*names) if names.present?
     return if @stylesheets.blank?
-    safe_join(@stylesheets.map { |stylesheet| stylesheet_link_tag(stylesheet) })
+    safe_join(@stylesheets.map { |stylesheet| stylesheet_link_tag(stylesheet, nopush: false) })
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable

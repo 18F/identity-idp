@@ -55,7 +55,7 @@ Rails.application.routes.draw do
   post '/api/logger' => 'frontend_log#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  get '/openid_connect/logout' => 'openid_connect/logout#index'
+  match '/openid_connect/logout' => 'openid_connect/logout#logout', via: %i[get post]
   delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/robots.txt' => 'robots#index'
@@ -351,7 +351,7 @@ Rails.application.routes.draw do
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
       put '/link_sent' => 'link_sent#update'
-      get '/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
+      get '/link_sent/poll' => 'link_sent_poll#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'

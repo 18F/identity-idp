@@ -46,7 +46,7 @@ account.email_language.languages_list: '%{app_name} 允许你以 %{list}接受�
 account.email_language.name.en: 英文
 account.email_language.name.es: 西班牙文
 account.email_language.name.fr: 法文
-account.email_language.name.zh: Chinese
+account.email_language.name.zh: 中文 (简体)
 account.email_language.sentence_connector: 或者
 account.email_language.updated: 你的电邮语言选择已更新。
 account.forget_all_browsers.longer_description: 你选择“忘掉所有浏览器“后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
@@ -569,6 +569,7 @@ doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证你的身份
+doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
 doc_auth.headings.welcome: 开始验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
@@ -587,6 +588,7 @@ doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
 doc_auth.info.how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
+doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
@@ -615,11 +617,15 @@ doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
 doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
 doc_auth.info.verify_at_post_office_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
+doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与邮件去亲身验证身份。
+doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
-doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
+doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
+doc_auth.info.verify_online_instruction: 你将拍自己身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这一流程。
+doc_auth.info.verify_online_instruction_selfie: 使用手机在网上验证你的身份你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 州政府颁发的身份证件
@@ -647,6 +653,7 @@ doc_auth.tips.document_capture_selfie_text1: 把设备放在眼睛水平
 doc_auth.tips.document_capture_selfie_text2: 确保你整个面孔都可以看到
 doc_auth.tips.document_capture_selfie_text3: 在光线充沛的地方拍照
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
 doc_auth.tips.review_issues_id_text2: 是否在平坦平面上拍的照？
@@ -804,6 +811,7 @@ forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: Continue in person
 forms.buttons.continue_remote: Continue online
+forms.buttons.continue_remote_selfie: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑
@@ -949,7 +957,7 @@ i18n.language: 语言
 i18n.locale.en: 英文
 i18n.locale.es: 西班牙文
 i18n.locale.fr: 法文
-i18n.locale.zh: Chinese
+i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: 保护文本安全，从 %{first_number} 开始，到 %{last_number}结束
 idv.buttons.change_address_label: 更新地址
 idv.buttons.change_label: 更新
@@ -1154,7 +1162,7 @@ image_description.info_question: 蓝色问号
 image_description.laptop: 手提电脑
 image_description.laptop_and_phone: 手提电脑和电话
 image_description.personal_key: 个人密钥
-image_description.phone_icon: Image of a phone
+image_description.phone_icon: 电话图像
 image_description.post_office: 邮局
 image_description.totp_qrcode: 身份证实应用程序的二维码（QR）代码
 image_description.us_flag: 美国国旗
@@ -1491,6 +1499,7 @@ time.formats.event_timestamp: '%B %-d, %Y at %-l:%M %p'
 time.formats.event_timestamp_js: '%{year} %{month} %{day}, %{hour}:%{minute} %{day_period}'
 time.formats.event_timestamp_utc: '%B %-d, %Y， %-l:%M %p UTC'
 time.formats.event_timestamp_with_zone: '%B %-d, %Y，%-l:%M %p %Z'
+time.formats.full_date: '%Y 年 %B %-d 日'
 time.formats.sms_date: '%Y/%m/%d'
 time.pm: 下午
 titles.account: 账户
@@ -1782,10 +1791,10 @@ user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮�
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-user_mailer.in_person_please_call.body.contact_message_html: Call <strong>%{contact_number}</strong> and provide them with the error code <strong>%{support_code}</strong>.
-user_mailer.in_person_please_call.body.intro_html: Call our contact center by <strong>%{date}</strong> to continue verifying your identity.
-user_mailer.in_person_please_call.header: Please give us a call
-user_mailer.in_person_please_call.subject: Call %{app_name} to continue with your identity verification
+user_mailer.in_person_please_call.body.contact_message_html: 请拨打 <strong>%{contact_number}</strong> 向他们提供错误信息 代码 <strong>%{support_code}</strong>。
+user_mailer.in_person_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
+user_mailer.in_person_please_call.header: 请给我们打个电话
+user_mailer.in_person_please_call.subject: 致电 %{app_name} 继续进行身份验证
 user_mailer.in_person_ready_to_verify_reminder.greeting: 你好，
 user_mailer.in_person_ready_to_verify_reminder.heading.one: 你距离亲身验证身份截止日期还有 %{count} 天
 user_mailer.in_person_ready_to_verify_reminder.heading.other: 你距离亲身验证身份截止日期还有 %{count} 天

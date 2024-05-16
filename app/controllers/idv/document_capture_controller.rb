@@ -53,6 +53,7 @@ module Idv
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         skip_doc_auth: idv_session.skip_doc_auth,
+        skip_doc_auth_from_how_to_verify: false,
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         doc_auth_selfie_capture:,

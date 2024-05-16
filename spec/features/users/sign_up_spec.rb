@@ -473,21 +473,25 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   it 'logs expected analytics events for end-to-end sign-up' do
-    analytics = FakeAnalytics.new
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+    freeze_time do
+      analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
 
-    visit_idp_from_sp_with_ial1(:oidc)
-    register_user
-    click_agree_and_continue
+      visit_idp_from_sp_with_ial1(:oidc)
+      travel_to Time.zone.now + 15.seconds
+      register_user
+      click_agree_and_continue
 
-    expect(analytics).to have_logged_event(
-      'SP redirect initiated',
-      ial: 1,
-      billed_ial: 1,
-      sign_in_flow: 'create_account',
-      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      vtr: nil,
-    )
+      expect(analytics).to have_logged_event(
+        'SP redirect initiated',
+        ial: 1,
+        sign_in_duration_seconds: 15,
+        billed_ial: 1,
+        sign_in_flow: 'create_account',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        vtr: nil,
+      )
+    end
   end
 
   describe 'visiting the homepage by clicking the logo image' do

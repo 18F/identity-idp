@@ -105,7 +105,7 @@ module Idv
     end
 
     def extra_analytics_attributes
-      {
+      attributes = {
         otp_delivery_preference: delivery_method,
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
@@ -113,6 +113,15 @@ module Idv
         rate_limit_exceeded: rate_limit_exceeded?,
         telephony_response: @telephony_response,
       }
+      if IdentityConfig.store.ab_testing_idv_ten_digit_otp_enabled
+        attributes[:ab_tests] = {
+          AbTests::IDV_TEN_DIGIT_OTP.experiment_name => {
+            bucket: bucket,
+          },
+        }
+      end
+
+      attributes
     end
 
     def parsed_phone

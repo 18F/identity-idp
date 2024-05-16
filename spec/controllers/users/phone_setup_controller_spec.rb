@@ -292,4 +292,26 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
       end
     end
   end
+
+  describe 'after actions' do
+    before { stub_sign_in }
+
+    it 'does not add recaptcha resource hints' do
+      expect(subject).not_to receive(:add_recaptcha_resource_hints)
+
+      get :index
+    end
+
+    context 'recaptcha enabled' do
+      before do
+        allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
+      end
+
+      it 'adds recaptcha resource hints' do
+        expect(subject).to receive(:add_recaptcha_resource_hints)
+
+        get :index
+      end
+    end
+  end
 end

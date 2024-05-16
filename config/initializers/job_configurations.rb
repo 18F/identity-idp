@@ -4,6 +4,7 @@ cron_5m = '0/5 * * * *'
 cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
+cron_24h_1am = '0 1 * * *' # 1am UTC is 8pm EST/9pm EDT
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_1w = '0 0 * * 0'
 
@@ -57,6 +58,11 @@ else
       combined_invoice_supplement_report: {
         class: 'Reports::CombinedInvoiceSupplementReport',
         cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      combined_invoice_supplement_report_v2: {
+        class: 'Reports::CombinedInvoiceSupplementReportV2',
+        cron: cron_24h_1am,
         args: -> { [Time.zone.today] },
       },
       agreement_summary_report: {
@@ -216,6 +222,12 @@ else
         class: 'Reports::FraudMetricsReport',
         cron: cron_24h,
         args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Weekly drop of report
+      drop_off_report: {
+        class: 'Reports::DropOffReport',
+        cron: cron_1w,
+        args: -> { [Time.zone.today] },
       },
     }.compact
   end

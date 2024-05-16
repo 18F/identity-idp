@@ -9,6 +9,8 @@ module OpenidConnect
     include AuthorizationCountConcern
     include BillableEventTrackable
     include ForcedReauthenticationConcern
+    include OpenidConnectRedirectConcern
+    include SignInDurationConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :block_biometric_requests_in_production, only: [:index]
@@ -26,7 +28,7 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
     def index
-      if @authorize_form.ial2_or_greater?
+      if resolved_authn_context_result.identity_proofing?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
@@ -95,7 +97,11 @@ module OpenidConnect
     end
 
     def ial_context
-      @authorize_form.ial_context
+      IalContext.new(
+        ial: @authorize_form.ial,
+        service_provider: @authorize_form.service_provider,
+        user: current_user,
+      )
     end
 
     def handle_successful_handoff
@@ -120,7 +126,7 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      (@authorize_form.ial2_requested? &&
+      (resolved_authn_context_result.identity_proofing? &&
         (current_user.identity_not_verified? ||
         decorated_sp_session.requested_more_recent_verification?)) ||
         current_user.reproof_for_irs?(service_provider: current_sp)
@@ -137,7 +143,11 @@ module OpenidConnect
     end
 
     def secure_headers_override
-      return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
+      return if form_action_csp_disabled_and_not_server_side_redirect?(
+        issuer: @authorize_form.service_provider.issuer,
+        user_uuid: current_user&.uuid,
+      )
+
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
         @authorize_form.service_provider.redirect_uris,
@@ -205,34 +215,19 @@ module OpenidConnect
     end
 
     def track_events
-      event_ial_context = IalContext.new(
-        ial: @authorize_form.ial,
-        service_provider: @authorize_form.service_provider,
-        user: current_user,
-      )
-
       analytics.sp_redirect_initiated(
-        ial: event_ial_context.ial,
-        billed_ial: event_ial_context.bill_for_ial_1_or_2,
+        ial: ial_context.ial,
+        billed_ial: ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
+        sign_in_duration_seconds:,
       )
       track_billing_events
     end
 
     def redirect_user(redirect_uri, issuer, user_uuid)
-      user_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_uuid_override_map[user_uuid]
-
-      sp_redirect_method_override =
-        IdentityConfig.store.openid_connect_redirect_issuer_override_map[issuer]
-
-      redirect_method =
-        user_redirect_method_override || sp_redirect_method_override ||
-        IdentityConfig.store.openid_connect_redirect
-
-      case redirect_method
+      case oidc_redirect_method(issuer: issuer, user_uuid: user_uuid)
       when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(

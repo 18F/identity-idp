@@ -16,6 +16,8 @@ module Users
     before_action :confirm_recently_authenticated_2fa
     before_action :check_max_phone_numbers_per_account, only: %i[index create]
 
+    after_action :add_recaptcha_resource_hints, if: :recaptcha_enabled?
+
     helper_method :in_multi_mfa_selection_flow?
 
     def index

@@ -1,7 +1,4 @@
-<%= simple_form_for(
-      @gpo_verify_form,
-      url: idv_verify_by_mail_enter_code_path,
-    ) do |f| %>
+<%= simple_form_for(@gpo_verify_form, url: idv_verify_by_mail_enter_code_path) do |f| %>
   <div class="grid-row margin-top-neg-2 margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
       <%= render ValidatedFieldComponent.new(
