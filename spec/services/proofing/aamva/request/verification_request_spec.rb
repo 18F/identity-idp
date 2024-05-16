@@ -71,6 +71,20 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         ],
       )
     end
+
+    it 'includes issue date if present' do
+      applicant.state_id_data.state_id_issued = '2024-05-06'
+      expect(subject.body).to include(
+        '<ns2:DriverLicenseIssueDate>2024-05-06</ns2:DriverLicenseIssueDate>',
+      )
+    end
+
+    it 'includes expiration date if present' do
+      applicant.state_id_data.state_id_expiration = '2030-01-02'
+      expect(subject.body).to include(
+        '<ns2:DriverLicenseExpirationDate>2030-01-02</ns2:DriverLicenseExpirationDate>',
+      )
+    end
   end
 
   describe '#headers' do

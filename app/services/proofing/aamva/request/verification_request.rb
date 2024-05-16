@@ -70,6 +70,20 @@ module Proofing
             after: '//ns1:Address/ns2:AddressDeliveryPointText',
           )
 
+          add_optional_element(
+            'ns2:DriverLicenseIssueDate',
+            value: applicant.state_id_data.state_id_issued,
+            document:,
+            inside: '//ns:verifyDriverLicenseDataRequest',
+          )
+
+          add_optional_element(
+            'ns2:DriverLicenseExpirationDate',
+            value: applicant.state_id_data.state_id_expiration,
+            document:,
+            inside: '//ns:verifyDriverLicenseDataRequest',
+          )
+
           @body = document.to_s
         end
 
