@@ -14,7 +14,6 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
   const serviceProviderContext: ServiceProviderContextType = {
     name: 'Example SP',
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
-    getFailureToProofURL: () => '',
   };
   const wrappers: Record<string, ComponentType> = {
     MarketingSiteContext: ({ children }: { children?: ReactNode }) => (
