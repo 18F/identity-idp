@@ -376,6 +376,78 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
+  describe '.idv_send_issue_and_expiration_dates_to_aamva?' do
+    before do
+      allow(IdentityConfig.store).to receive(:aamva_issue_and_expiration_date_validation).
+        and_return(aamva_issue_and_expiration_date_validation)
+    end
+
+    context ':enabled' do
+      let(:aamva_issue_and_expiration_date_validation) { :enabled }
+      it 'returns true' do
+        expect(FeatureManagement.idv_send_issue_and_expiration_dates_to_aamva?).to eql(true)
+      end
+    end
+
+    context ':disabled' do
+      let(:aamva_issue_and_expiration_date_validation) { :disabled }
+      it 'returns false' do
+        expect(FeatureManagement.idv_send_issue_and_expiration_dates_to_aamva?).to eql(false)
+      end
+    end
+
+    context ':log_only' do
+      let(:aamva_issue_and_expiration_date_validation) { :log_only }
+      it 'returns true' do
+        expect(FeatureManagement.idv_send_issue_and_expiration_dates_to_aamva?).to eql(true)
+      end
+    end
+
+    context 'invalid value' do
+      let(:aamva_issue_and_expiration_date_validation) { :mango }
+      it 'raises' do
+        expect { FeatureManagement.idv_send_issue_and_expiration_dates_to_aamva? }.to raise_error
+      end
+    end
+  end
+
+  describe '.idv_validate_issue_and_expiration_dates_with_aamva?' do
+    before do
+      allow(IdentityConfig.store).to receive(:aamva_issue_and_expiration_date_validation).
+        and_return(aamva_issue_and_expiration_date_validation)
+    end
+
+    context ':enabled' do
+      let(:aamva_issue_and_expiration_date_validation) { :enabled }
+      it 'returns true' do
+        expect(FeatureManagement.idv_validate_issue_and_expiration_dates_with_aamva?).to eql(true)
+      end
+    end
+
+    context ':disabled' do
+      let(:aamva_issue_and_expiration_date_validation) { :disabled }
+      it 'returns false' do
+        expect(FeatureManagement.idv_validate_issue_and_expiration_dates_with_aamva?).to eql(false)
+      end
+    end
+
+    context ':log_only' do
+      let(:aamva_issue_and_expiration_date_validation) { :log_only }
+      it 'returns false' do
+        expect(FeatureManagement.idv_validate_issue_and_expiration_dates_with_aamva?).to eql(false)
+      end
+    end
+
+    context 'invalid value' do
+      let(:aamva_issue_and_expiration_date_validation) { :mango }
+      it 'raises' do
+        expect do
+          FeatureManagement.idv_validate_issue_and_expiration_dates_with_aamva?
+        end.to raise_error
+      end
+    end
+  end
+
   describe '.phone_recaptcha_enabled?' do
     let(:recaptcha_site_key) { '' }
     let(:recaptcha_secret_key) { '' }

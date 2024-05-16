@@ -138,6 +138,24 @@ class FeatureManagement
     end
   end
 
+  def self.idv_send_issue_and_expiration_dates_to_aamva?
+    case IdentityConfig.store.aamva_issue_and_expiration_date_validation
+    when :enabled, :log_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for aamva_issue_and_expiration_date_validation'
+    end
+  end
+
+  def self.idv_validate_issue_and_expiration_dates_with_aamva?
+    case IdentityConfig.store.aamva_issue_and_expiration_date_validation
+    when :enabled then true
+    when :disabled, :log_only then false
+    else
+      raise 'Invalid value for aamva_issue_and_expiration_date_validation'
+    end
+  end
+
   # Whether or not idv hybrid mode is available
   def self.idv_allow_hybrid_flow?
     return false unless IdentityConfig.store.feature_idv_hybrid_flow_enabled
