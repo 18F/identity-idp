@@ -13,6 +13,7 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
   end
   let(:verification_results) do
     {
+      state_id_expiration: nil,
       state_id_issued: nil,
       state_id_number: true,
       state_id_type: true,
@@ -231,6 +232,37 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
           expected_result = verification_results.merge(state_id_issued: false)
           expect(subject.verification_results).to eq(expected_result)
         end
+      end
+    end
+  end
+
+  context 'expiration date' do
+    context 'when verified' do
+      let(:response_body) do
+        add_match_indicator(
+          AamvaFixtures.verification_response,
+          'DriverLicenseExpirationDateMatchIndicator',
+          true,
+        )
+      end
+
+      it 'includes issue date in list of verified attributes' do
+        expected_result = verification_results.merge(state_id_expiration: true)
+        expect(subject.verification_results).to eq(expected_result)
+      end
+    end
+    context 'when not verified' do
+      let(:response_body) do
+        add_match_indicator(
+          AamvaFixtures.verification_response,
+          'DriverLicenseExpirationDateMatchIndicator',
+          false,
+        )
+      end
+
+      it 'does not include issue date in list of verified attributes' do
+        expected_result = verification_results.merge(state_id_expiration: false)
+        expect(subject.verification_results).to eq(expected_result)
       end
     end
   end
