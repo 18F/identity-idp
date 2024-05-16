@@ -97,7 +97,11 @@ module OpenidConnect
     end
 
     def ial_context
-      @authorize_form.ial_context
+      IalContext.new(
+        ial: @authorize_form.ial,
+        service_provider: @authorize_form.service_provider,
+        user: current_user,
+      )
     end
 
     def handle_successful_handoff
@@ -211,14 +215,9 @@ module OpenidConnect
     end
 
     def track_events
-      event_ial_context = IalContext.new(
-        ial: @authorize_form.ial,
-        service_provider: @authorize_form.service_provider,
-        user: current_user,
-      )
       analytics.sp_redirect_initiated(
-        ial: event_ial_context.ial,
-        billed_ial: event_ial_context.bill_for_ial_1_or_2,
+        ial: ial_context.ial,
+        billed_ial: ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
