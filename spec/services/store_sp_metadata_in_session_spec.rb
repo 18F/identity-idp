@@ -60,7 +60,6 @@ RSpec.describe StoreSpMetadataInSession do
             request_url: request_url,
             request_id: request_id,
             requested_attributes: requested_attributes,
-            biometric_comparison_required: false,
             vtr: request_vtr,
             enhanced_ipp_required: true,
           },
