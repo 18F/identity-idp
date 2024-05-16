@@ -175,6 +175,64 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
 
       it { expect(subject.success?).to eq(false) }
     end
+
+    context 'when issue / expiration date is required' do
+      before do
+        allow(IdentityConfig.store).to receive(:aamva_issue_and_expiration_date_validation).
+          and_return(:enabled)
+      end
+
+      context 'and issue date not verified' do
+        let(:response_body) do
+          add_match_indicator(
+            AamvaFixtures.verification_response,
+            'DriverLicenseIssueDateMatchIndicator',
+            false,
+          )
+        end
+        it { expect(subject.success?).to eq(false) }
+
+        context 'but expiry date verified' do
+          let(:response_body) do
+            add_match_indicator(
+              AamvaFixtures.verification_response,
+              ['DriverLicenseIssueDateMatchIndicator', 'DriverLicenseExpirationDateMatchIndicator'],
+              [false, true],
+            )
+          end
+          it { expect(subject.success?).to eq(false) }
+        end
+      end
+
+      context 'and expiration date not verified' do
+        let(:response_body) do
+          add_match_indicator(
+            AamvaFixtures.verification_response,
+            'DriverLicenseExpirationDateMatchIndicator',
+            false,
+          )
+        end
+
+        it { expect(subject.success?).to eq(false) }
+
+        context 'but issue date verified' do
+          let(:response_body) do
+            add_match_indicator(
+              AamvaFixtures.verification_response,
+              ['DriverLicenseIssueDateMatchIndicator', 'DriverLicenseExpirationDateMatchIndicator'],
+              [true, false],
+            )
+          end
+          it { expect(subject.success?).to eq(false) }
+        end
+      end
+
+      context 'and neither present in original request' do
+        it 'passes anyway' do
+          expect(subject.success?).to eq(true)
+        end
+      end
+    end
   end
 
   describe '#verification_results' do
@@ -311,10 +369,15 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
   def add_match_indicator(xml, name, value = true)
     document = REXML::Document.new(xml)
 
-    el = REXML::Element.new(name)
-    el.text = value ? 'true' : 'false'
+    names = name.is_a?(Array) ? name : [name]
+    values = value.is_a?(Array) ? value : [value] * names.length
 
-    REXML::XPath.first(document, '/dldv:VerifyDriverLicenseDataResponse').add_element(el)
+    names.zip(values).each do |name, value|
+      el = REXML::Element.new(name).tap do |el|
+        el.text = value ? 'true' : 'false'
+      end
+      REXML::XPath.first(document, '/dldv:VerifyDriverLicenseDataResponse').add_element(el)
+    end
 
     document.to_s
   end

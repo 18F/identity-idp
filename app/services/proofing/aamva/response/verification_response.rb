@@ -64,6 +64,13 @@ module Proofing
           REQUIRED_VERIFICATION_ATTRIBUTES.each do |verification_attribute|
             return false unless verification_results[verification_attribute]
           end
+
+          if FeatureManagement.idv_validate_issue_and_expiration_dates_with_aamva?
+            either_failed = verification_results[:state_id_issued] == false ||
+                            verification_results[:state_id_expiration] == false
+            return false if either_failed
+          end
+
           true
         end
 
