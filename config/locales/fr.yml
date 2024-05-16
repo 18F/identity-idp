@@ -953,7 +953,7 @@ i18n.language: Langue
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: Chinese
+i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: SMS sécurisé, commençant par %{first_number} et finissant par %{last_number}
 idv.buttons.change_address_label: Mettre à jour votre adresse
 idv.buttons.change_label: Mettre à jour
