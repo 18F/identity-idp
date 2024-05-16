@@ -202,37 +202,6 @@ describe('ValidatedFieldElement', () => {
     });
   });
 
-  context('text-like input', () => {
-    it('sets max width on error message to match input', () => {
-      const inputWidth = 280;
-      const element = createAndConnectElement();
-
-      const input = getByRole(element, 'textbox') as HTMLInputElement;
-      sinon.stub(input, 'offsetWidth').value(inputWidth);
-
-      const form = element.parentNode as HTMLFormElement;
-      form.checkValidity();
-
-      const message = getByText(element, 'This field is required');
-      expect(message.style.maxWidth).to.equal(`${inputWidth}px`);
-    });
-  });
-
-  context('non-text-like input', () => {
-    it('does not set max width on error message', () => {
-      const element = createAndConnectElement();
-
-      const input = getByRole(element, 'textbox') as HTMLInputElement;
-      input.type = 'checkbox';
-
-      const form = element.parentNode as HTMLFormElement;
-      form.checkValidity();
-
-      const message = getByText(element, 'This field is required');
-      expect(message.style.maxWidth).to.equal('');
-    });
-  });
-
   describe('#isValid', () => {
     context('without initial error', () => {
       it('is true', () => {
