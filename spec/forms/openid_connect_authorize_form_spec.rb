@@ -695,4 +695,28 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
   end
+
+  describe '#enhanced_ipp_required?' do
+    it 'returns false by default' do
+      expect(subject.enhanced_ipp_required?).to eql(false)
+    end
+
+    context 'enhanced in person proofing requested via VTR' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['Pe'].to_json }
+
+      it 'returns true' do
+        expect(subject.enhanced_ipp_required?).to eql(true)
+      end
+    end
+
+    context 'enhanced in person proofing not requested' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C1.P1'].to_json }
+
+      it 'returns false' do
+        expect(subject.enhanced_ipp_required?).to eql(false)
+      end
+    end
+  end
 end

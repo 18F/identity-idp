@@ -133,6 +133,10 @@ class OpenidConnectAuthorizeForm
     parsed_vector_of_trust&.biometric_comparison?
   end
 
+  def enhanced_ipp_required?
+    parsed_vector_of_trust&.enhanced_ipp?
+  end
+
   def parsed_vector_of_trust
     return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
 
