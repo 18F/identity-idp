@@ -8,6 +8,7 @@ module Users
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
     include ForcedReauthenticationConcern
+    include NewDeviceConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -112,9 +113,9 @@ module Users
     def handle_valid_authentication
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
-      user_session[:new_device] = !current_user.authenticated_device?(cookie_uuid: cookies[:device])
+      set_new_device_session
       event, = create_user_event(:sign_in_before_2fa)
-      UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if user_session[:new_device]
+      UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
         user_id: current_user.id,
         email: auth_params[:email],
