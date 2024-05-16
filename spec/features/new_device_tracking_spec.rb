@@ -70,6 +70,7 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
 
       sign_in_user(user)
 
+      # Notified after expired delay for successful email password, but incomplete MFA
       travel_to 6.minutes.from_now do
         CreateNewDeviceAlert.new.perform(Time.zone.now)
         open_last_email
@@ -85,7 +86,27 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
 
       travel_to 16.minutes.from_now do
         visit root_url
+        expect(current_path).to eq(new_user_session_path)
+        sign_in_user(user)
+      end
 
+      # Notified after session expired, user returned for another successful email password, no MFA
+      travel_to 22.minutes.from_now do
+        CreateNewDeviceAlert.new.perform(Time.zone.now)
+        open_last_email
+        email_page = Capybara::Node::Simple.new(current_email.default_part_body)
+        expect(email_page).to have_css(
+          '.usa-table td.font-family-mono',
+          count: 1,
+          text: t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa'),
+        )
+      end
+
+      reset_email
+
+      # Notified after session expired, user returned for successful email password and MFA
+      travel_to 38.minutes.from_now do
+        visit root_url
         expect(current_path).to eq(new_user_session_path)
         sign_in_live_with_2fa(user)
         open_last_email
