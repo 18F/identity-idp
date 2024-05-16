@@ -6,10 +6,7 @@
   <%= t('two_factor_authentication.backup_code_prompt') %>
 </p>
 
-<%= simple_form_for(
-      @backup_code_form,
-      url: login_two_factor_backup_code_path,
-    ) do |f| %>
+<%= simple_form_for(@backup_code_form, url: login_two_factor_backup_code_path) do |f| %>
   <%= render 'partials/backup_code/entry_fields', f: f, attribute_name: :backup_code %>
   <%= f.input(
         :remember_device,
