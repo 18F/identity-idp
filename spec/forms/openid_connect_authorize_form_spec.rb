@@ -758,53 +758,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#ial2_requested?' do
-    subject(:ial2_requested?) { form.ial2_requested? }
-
-    context 'with vtr params' do
-      let(:acr_values) { nil }
-
-      context 'when identity proofing is requested' do
-        let(:vtr) { ['P1'].to_json }
-        it { expect(ial2_requested?).to eq(true) }
-      end
-
-      context 'when identity proofing is not requested' do
-        let(:vtr) { ['C1'].to_json }
-        it { expect(ial2_requested?).to eq(false) }
-      end
-    end
-
-    context 'with acr_values param' do
-      let(:vtr) { nil }
-
-      context 'with ial1' do
-        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-        it { expect(ial2_requested?).to eq(false) }
-      end
-
-      context 'with ial2' do
-        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-        it { expect(ial2_requested?).to eq(true) }
-      end
-
-      context 'with ial1 and ial2' do
-        let(:acr_values) do
-          [
-            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-        end
-        it { expect(ial2_requested?).to eq(true) }
-      end
-
-      context 'with a malformed ial' do
-        let(:acr_values) { 'foobarbaz' }
-        it { expect(ial2_requested?).to eq(false) }
-      end
-    end
-  end
-
   describe '#client_id' do
     it 'returns the form client_id' do
       form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')

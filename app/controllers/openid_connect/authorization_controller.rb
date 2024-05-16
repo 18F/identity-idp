@@ -28,7 +28,7 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
     def index
-      if @authorize_form.ial2_or_greater?
+      if resolved_authn_context_result.identity_proofing?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
@@ -122,7 +122,7 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      (@authorize_form.ial2_requested? &&
+      (resolved_authn_context_result.identity_proofing? &&
         (current_user.identity_not_verified? ||
         decorated_sp_session.requested_more_recent_verification?)) ||
         current_user.reproof_for_irs?(service_provider: current_sp)
