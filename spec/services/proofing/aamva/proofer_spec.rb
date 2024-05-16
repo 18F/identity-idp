@@ -130,6 +130,56 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
     end
 
+    context 'when issue / expiration present' do
+      let(:state_id_data) do
+        {
+          state_id_number: '1234567890',
+          state_id_jurisdiction: 'VA',
+          state_id_type: 'drivers_license',
+          state_id_issued: '2023-04-05',
+          state_id_expiration: '2030-01-02',
+
+        }
+      end
+
+      let(:aamva_issue_and_expiration_date_validation) { :enabled }
+
+      before do
+        allow(IdentityConfig.store).to receive(:aamva_issue_and_expiration_date_validation).
+          and_return(aamva_issue_and_expiration_date_validation)
+      end
+
+      context 'when we are supposed to send issue + expiration to aamva' do
+        it 'includes them' do
+          expect(Proofing::Aamva::Request::VerificationRequest).to receive(:new).with(
+            hash_including(
+              applicant: satisfy do |a|
+                expect(a.state_id_data.state_id_issued).to eql('2023-04-05')
+                expect(a.state_id_data.state_id_expiration).to eql('2030-01-02')
+              end,
+            ),
+          )
+          subject.proof(state_id_data)
+        end
+      end
+
+      context 'when we are not supposed to send issue + expiration to aamva' do
+        let(:aamva_issue_and_expiration_date_validation) { :disabled }
+
+        it 'does not include them' do
+          expect(Proofing::Aamva::Request::VerificationRequest).to receive(:new).with(
+            hash_including(
+              applicant: satisfy do |a|
+                expect(a.state_id_data.state_id_issued).to be_nil
+                expect(a.state_id_data.state_id_expiration).to be_nil
+              end,
+            ),
+          )
+          subject.proof(state_id_data)
+        end
+      end
+    end
+
     context 'when AAMVA throws an exception' do
       let(:exception) { RuntimeError.new }
 

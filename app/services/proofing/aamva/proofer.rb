@@ -31,6 +31,12 @@ module Proofing
       def proof(applicant)
         aamva_applicant =
           Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
+
+        if !FeatureManagement.idv_send_issue_and_expiration_dates_to_aamva?
+          aamva_applicant.state_id_data.state_id_issued = nil
+          aamva_applicant.state_id_data.state_id_expiration = nil
+        end
+
         response = Aamva::VerificationClient.new(
           config,
         ).send_verification_request(
