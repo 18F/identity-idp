@@ -38,4 +38,14 @@ class StoreSpMetadataInSession
     return @service_provider if defined?(@service_provider)
     @service_provider = ServiceProvider.find_by(issuer: sp_request.issuer)
   end
+
+  def parsed_vot
+    return nil if !sp_request.vtr && !sp_request.acr_values
+
+    @parsed_vot ||= AuthnContextResolver.new(
+      service_provider: service_provider,
+      vtr: sp_request.vtr,
+      acr_values: sp_request.acr_values,
+    ).resolve
+  end
 end
