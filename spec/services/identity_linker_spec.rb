@@ -155,5 +155,97 @@ RSpec.describe IdentityLinker do
       IdentityLinker.new(user, service_provider1).link_identity(rails_session_id: rails_session_id)
       IdentityLinker.new(user, service_provider2).link_identity(rails_session_id: rails_session_id)
     end
+
+    context 'identity.last_ial2_authenticated_at' do
+      context 'the request includes identity proofing' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(
+            user.last_identity.last_ial2_authenticated_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+
+      context 'the request does not include identity proofing' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+
+          expect(user.last_identity.last_ial2_authenticated_at).to be_nil
+        end
+      end
+
+      context 'the request is IALMax and verified_at is null' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 0)
+
+          expect(user.last_identity.last_ial2_authenticated_at).to be_nil
+        end
+      end
+
+      context 'the request is IALMax and verified_at is not null' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+          IdentityLinker.new(user, service_provider).link_identity(ial: 0)
+
+          expect(
+            user.last_identity.last_ial2_authenticated_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+    end
+
+    context 'identity.last_ial1_authenticated_at' do
+      context 'the request includes identity proofing' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(user.last_identity.last_ial1_authenticated_at).to be_nil
+        end
+      end
+
+      context 'the request does not include identity proofing' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+
+          expect(
+            user.last_identity.last_ial1_authenticated_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+    end
+
+    context 'identity.verified_at' do
+      context 'the request is includes identity proofing and verified_at is null' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(
+            user.last_identity.verified_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+
+      context 'the request is includes identity proofing and verified_at is not null' do
+        it 'does not set the timestamp' do
+          travel_to 1.week.ago do
+            IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+          end
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(
+            user.last_identity.verified_at,
+          ).to be_within(1.second).of(1.week.ago)
+        end
+      end
+
+      context 'the request does not include identity proofing' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+
+          expect(user.last_identity.verified_at).to be_nil
+        end
+      end
+    end
   end
 end
