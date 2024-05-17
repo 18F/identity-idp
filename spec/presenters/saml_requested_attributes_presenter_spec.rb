@@ -22,7 +22,6 @@ RSpec.describe SamlRequestedAttributesPresenter do
       )
     end
 
-
     context 'with identity proofing requested with VTR' do
       let(:authn_request_attribute_bundle) { %w[email first_name dob fake_extra_attribute] }
       let(:vtr) { ['C1.C2', 'C1.C2.P1'] }
