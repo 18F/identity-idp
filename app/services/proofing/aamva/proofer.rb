@@ -21,6 +21,18 @@ module Proofing
         ],
       ).freeze
 
+      ADDRESS_ATTRIBUTES = [
+        :address1,
+        :address2,
+        :city,
+        :state,
+        :zipcode,
+      ].to_set.freeze
+
+      OPTIONAL_ADDRESS_ATTRIBUTES = [:address2].freeze
+
+      REQUIRED_ADDRESS_ATTRIBUTES = (ADDRESS_ATTRIBUTES - OPTIONAL_ADDRESS_ATTRIBUTES).freeze
+
       attr_reader :config
 
       # Instance methods
@@ -80,29 +92,20 @@ module Proofing
       end
 
       def verified_attributes(verification_response)
-        attributes = Set.new
-        results = verification_response.verification_results
+        attributes = verification_response.
+          verification_results.filter { |_, verified| verified }.
+          keys.
+          to_set
 
-        attributes.add :address if address_verified?(results)
-
-        results.delete :address1
-        results.delete :address2
-        results.delete :city
-        results.delete :state
-        results.delete :zipcode
-
-        results.each do |attribute, verified|
-          attributes.add attribute if verified
-        end
-
-        attributes
+        normalize_address_attributes(attributes)
       end
 
-      def address_verified?(results)
-        results[:address1] &&
-          results[:city] &&
-          results[:state] &&
-          results[:zipcode]
+      def normalize_address_attributes(attribute_set)
+        all_present = REQUIRED_ADDRESS_ATTRIBUTES & attribute_set == REQUIRED_ADDRESS_ATTRIBUTES
+
+        (attribute_set - ADDRESS_ATTRIBUTES).tap do |result|
+          result.add(:address) if all_present
+        end
       end
 
       def send_to_new_relic(result)
