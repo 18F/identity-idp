@@ -36,7 +36,7 @@ module IdentityConfig
     config.add(
       :aamva_issue_and_expiration_date_validation,
       type: :symbol,
-      enum: [:log_only, :enabled, :disabled],
+      enum: [:log_only, :disabled],
     )
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)

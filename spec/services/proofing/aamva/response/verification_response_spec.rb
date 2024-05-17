@@ -175,64 +175,6 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
 
       it { expect(subject.success?).to eq(false) }
     end
-
-    context 'when issue / expiration date is required' do
-      before do
-        allow(IdentityConfig.store).to receive(:aamva_issue_and_expiration_date_validation).
-          and_return(:enabled)
-      end
-
-      context 'and issue date not verified' do
-        let(:response_body) do
-          add_match_indicator(
-            AamvaFixtures.verification_response,
-            'DriverLicenseIssueDateMatchIndicator',
-            false,
-          )
-        end
-        it { expect(subject.success?).to eq(false) }
-
-        context 'but expiry date verified' do
-          let(:response_body) do
-            add_match_indicator(
-              AamvaFixtures.verification_response,
-              ['DriverLicenseIssueDateMatchIndicator', 'DriverLicenseExpirationDateMatchIndicator'],
-              [false, true],
-            )
-          end
-          it { expect(subject.success?).to eq(false) }
-        end
-      end
-
-      context 'and expiration date not verified' do
-        let(:response_body) do
-          add_match_indicator(
-            AamvaFixtures.verification_response,
-            'DriverLicenseExpirationDateMatchIndicator',
-            false,
-          )
-        end
-
-        it { expect(subject.success?).to eq(false) }
-
-        context 'but issue date verified' do
-          let(:response_body) do
-            add_match_indicator(
-              AamvaFixtures.verification_response,
-              ['DriverLicenseIssueDateMatchIndicator', 'DriverLicenseExpirationDateMatchIndicator'],
-              [true, false],
-            )
-          end
-          it { expect(subject.success?).to eq(false) }
-        end
-      end
-
-      context 'and neither present in original request' do
-        it 'passes anyway' do
-          expect(subject.success?).to eq(true)
-        end
-      end
-    end
   end
 
   describe '#verification_results' do
@@ -258,68 +200,6 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
       it 'returns a hash of values that were verified and values that were not' do
         expected_result = verification_results.merge(dob: false, first_name: nil)
 
-        expect(subject.verification_results).to eq(expected_result)
-      end
-    end
-
-    context 'issue date' do
-      context 'when verified' do
-        let(:response_body) do
-          add_match_indicator(
-            AamvaFixtures.verification_response,
-            'DriverLicenseIssueDateMatchIndicator',
-            true,
-          )
-        end
-
-        it 'includes issue date in list of verified attributes' do
-          expected_result = verification_results.merge(state_id_issued: true)
-          expect(subject.verification_results).to eq(expected_result)
-        end
-      end
-      context 'when not verified' do
-        let(:response_body) do
-          add_match_indicator(
-            AamvaFixtures.verification_response,
-            'DriverLicenseIssueDateMatchIndicator',
-            false,
-          )
-        end
-
-        it 'does not include issue date in list of verified attributes' do
-          expected_result = verification_results.merge(state_id_issued: false)
-          expect(subject.verification_results).to eq(expected_result)
-        end
-      end
-    end
-  end
-
-  context 'expiration date' do
-    context 'when verified' do
-      let(:response_body) do
-        add_match_indicator(
-          AamvaFixtures.verification_response,
-          'DriverLicenseExpirationDateMatchIndicator',
-          true,
-        )
-      end
-
-      it 'includes issue date in list of verified attributes' do
-        expected_result = verification_results.merge(state_id_expiration: true)
-        expect(subject.verification_results).to eq(expected_result)
-      end
-    end
-    context 'when not verified' do
-      let(:response_body) do
-        add_match_indicator(
-          AamvaFixtures.verification_response,
-          'DriverLicenseExpirationDateMatchIndicator',
-          false,
-        )
-      end
-
-      it 'does not include issue date in list of verified attributes' do
-        expected_result = verification_results.merge(state_id_expiration: false)
         expect(subject.verification_results).to eq(expected_result)
       end
     end
@@ -364,22 +244,6 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
         expect(subject.transaction_locator_id).to eq('transaction-locator-id-12345')
       end
     end
-  end
-
-  def add_match_indicator(xml, name, value = true)
-    document = REXML::Document.new(xml)
-
-    names = name.is_a?(Array) ? name : [name]
-    values = value.is_a?(Array) ? value : [value] * names.length
-
-    names.zip(values).each do |name, value|
-      el = REXML::Element.new(name).tap do |el|
-        el.text = value ? 'true' : 'false'
-      end
-      REXML::XPath.first(document, '/dldv:VerifyDriverLicenseDataResponse').add_element(el)
-    end
-
-    document.to_s
   end
 
   def modify_match_indicator(xml, name, value)

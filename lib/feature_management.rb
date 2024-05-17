@@ -140,17 +140,8 @@ class FeatureManagement
 
   def self.idv_send_issue_and_expiration_dates_to_aamva?
     case IdentityConfig.store.aamva_issue_and_expiration_date_validation
-    when :enabled, :log_only then true
+    when :log_only then true
     when :disabled then false
-    else
-      raise 'Invalid value for aamva_issue_and_expiration_date_validation'
-    end
-  end
-
-  def self.idv_validate_issue_and_expiration_dates_with_aamva?
-    case IdentityConfig.store.aamva_issue_and_expiration_date_validation
-    when :enabled then true
-    when :disabled, :log_only then false
     else
       raise 'Invalid value for aamva_issue_and_expiration_date_validation'
     end
