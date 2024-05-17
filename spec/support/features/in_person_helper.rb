@@ -125,7 +125,7 @@ module InPersonHelper
 
   def complete_state_id_step(_user = nil, same_address_as_id: true)
     # Wait for page to load before attempting to fill out form
-    expect(page).to have_current_path(idv_in_person_proofing_state_id_url, wait: 10)
+    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
     fill_out_state_id_form_ok(same_address_as_id: same_address_as_id)
     click_idv_continue
     unless same_address_as_id
@@ -155,7 +155,7 @@ module InPersonHelper
     complete_prepare_step
     complete_location_step
 
-    expect(page).to have_current_path(idv_in_person_proofing_state_id_url, wait: 10)
+    expect(page).to have_current_path(idv_in_person_proofing_state_id_path, wait: 10)
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa, tmx_status = nil,
