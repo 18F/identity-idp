@@ -1821,7 +1821,7 @@ user_mailer.new_device_sign_in_after_2fa.subject: Nouvelle connexion et authenti
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Signé avec deuxième facteur
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Connecté avec mot de passe
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Échec de l’authentification
-user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement située à %{location}
+user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement localisée à %{location}
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué %{count} reprises</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
