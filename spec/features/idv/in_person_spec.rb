@@ -58,8 +58,10 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
-    click_button t('idv.buttons.change_state_id_label')
+    click_link t('idv.buttons.change_state_id_label')
+
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+
     choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
@@ -396,7 +398,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       expect(page).to have_text('new address different from state address1').once
 
       # click update state id address
-      click_button t('idv.buttons.change_state_id_label')
+      click_link t('idv.buttons.change_state_id_label')
 
       # check that the "No, I live at a different address" is checked
       expect(page).to have_checked_field(
