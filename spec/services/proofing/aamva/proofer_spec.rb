@@ -67,6 +67,20 @@ RSpec.describe Proofing::Aamva::Proofer do
           ].to_set,
         )
       end
+
+      it 'includes requested_attributes' do
+        result = subject.proof(state_id_data)
+        expect(result.requested_attributes).to eq(
+          %i[
+            dob
+            state_id_number
+            state_id_type
+            last_name
+            first_name
+            address
+          ].to_set,
+        )
+      end
     end
 
     context 'when verification is unsuccessful' do
@@ -98,6 +112,20 @@ RSpec.describe Proofing::Aamva::Proofer do
           ].to_set,
         )
       end
+
+      it 'includes requested_attributes' do
+        result = subject.proof(state_id_data)
+        expect(result.requested_attributes).to eq(
+          %i[
+            dob
+            state_id_number
+            state_id_type
+            last_name
+            first_name
+            address
+          ].to_set,
+        )
+      end
     end
 
     context 'when verification attributes are missing' do
@@ -119,6 +147,19 @@ RSpec.describe Proofing::Aamva::Proofer do
         expect(result.timed_out?).to eq(false)
 
         expect(result.verified_attributes).to eq(
+          %i[
+            state_id_number
+            state_id_type
+            last_name
+            first_name
+            address
+          ].to_set,
+        )
+      end
+
+      it 'includes requested_attributes' do
+        result = subject.proof(state_id_data)
+        expect(result.requested_attributes).to eq(
           %i[
             state_id_number
             state_id_type

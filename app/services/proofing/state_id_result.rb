@@ -11,6 +11,7 @@ module Proofing
                 :success,
                 :vendor_name,
                 :transaction_id,
+                :requested_attributes,
                 :verified_attributes
 
     def initialize(
@@ -19,6 +20,7 @@ module Proofing
       exception: nil,
       vendor_name: nil,
       transaction_id: '',
+      requested_attributes: [],
       verified_attributes: []
     )
       @success = success
@@ -26,6 +28,7 @@ module Proofing
       @exception = exception
       @vendor_name = vendor_name
       @transaction_id = transaction_id
+      @requested_attributes = requested_attributes
       @verified_attributes = verified_attributes
     end
 

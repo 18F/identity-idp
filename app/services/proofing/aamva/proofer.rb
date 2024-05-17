@@ -73,6 +73,7 @@ module Proofing
           exception: nil,
           vendor_name: 'aamva:state_id',
           transaction_id: verification_response.transaction_locator_id,
+          requested_attributes: requested_attributes(verification_response),
           verified_attributes: verified_attributes(verification_response),
         )
       end
@@ -89,6 +90,15 @@ module Proofing
           errors[attribute_key] << 'MISSING' if v_result.nil?
         end
         errors
+      end
+
+      def requested_attributes(verification_response)
+        attributes = verification_response.
+          verification_results.filter { |_, verified| !verified.nil? }.
+          keys.
+          to_set
+
+        normalize_address_attributes(attributes)
       end
 
       def verified_attributes(verification_response)
