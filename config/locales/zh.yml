@@ -1139,8 +1139,6 @@ idv.unavailable.idv_explanation.without_sp: 你试图访问的机构需要确保
 idv.unavailable.next_steps_html: '%{status_page_link_html} 或者退出 %{app_name}，稍后再试。'
 idv.unavailable.status_page_link: 在我们的状态页面获得最新信息。
 idv.unavailable.technical_difficulties: 很遗憾，我们这边现在遇到技术困难，目前无法验证你的身份。
-idv.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
-idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{count} 次 </strong>了 。
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation: 遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。

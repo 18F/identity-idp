@@ -1135,8 +1135,6 @@ idv.unavailable.idv_explanation.without_sp: L’organisme auquel vous essayez d�
 idv.unavailable.next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et réessayez plus tard.'
 idv.unavailable.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
 idv.unavailable.technical_difficulties: Malheureusement, nous rencontrons des difficultés techniques et ne pouvons pas vérifier votre identité pour le moment.
-idv.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
-idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation: Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
