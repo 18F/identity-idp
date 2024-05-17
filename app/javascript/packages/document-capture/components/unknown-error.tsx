@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 import { useContext } from 'react';
-import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepError } from '@18f/identity-form-steps';
 import { Link } from '@18f/identity-components';
 import formatHTML from '@18f/identity-react-i18n/format-html';
@@ -11,7 +11,6 @@ interface UnknownErrorProps extends ComponentProps<'p'> {
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
-  remainingSubmitAttempts: number;
   altFailedDocTypeMsg?: string | null;
   altIsFailedSelfieDontIncludeAttempts?: boolean;
   hasDismissed: boolean;
@@ -46,7 +45,6 @@ function UnknownError({
   isFailedDocType = false,
   isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
-  remainingSubmitAttempts,
   altFailedDocTypeMsg = null,
   altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
@@ -73,14 +71,7 @@ function UnknownError({
     );
   }
   if (isFailedDocType && err) {
-    return (
-      <p key={`${err.message}-${remainingSubmitAttempts}`}>
-        {err.message}{' '}
-        <HtmlTextWithStrongNoWrap
-          text={t('idv.warning.attempts_html', { count: remainingSubmitAttempts })}
-        />
-      </p>
-    );
+    return <p key={`${err.message}`}>{err.message} </p>;
   }
   if ((isFailedSelfieLivenessOrQuality || isFailedSelfie) && err) {
     let selfieHelpCenterLinkText = t('doc_auth.errors.general.selfie_failure_help_link_text');
@@ -90,23 +81,14 @@ function UnknownError({
       selfieHelpCenterLinkText = t('doc_auth.errors.alerts.selfie_not_live_help_link_text');
     }
     return (
-      <>
-        <p>
-          {err.message}{' '}
-          {altIsFailedSelfieDontIncludeAttempts && (
-            <Link isExternal isNewTab href={helpCenterURL.toString()}>
-              {selfieHelpCenterLinkText}
-            </Link>
-          )}
-        </p>
-        <p>
-          {!altIsFailedSelfieDontIncludeAttempts && (
-            <HtmlTextWithStrongNoWrap
-              text={t('idv.warning.attempts_html', { count: remainingSubmitAttempts })}
-            />
-          )}
-        </p>
-      </>
+      <p>
+        {err.message}{' '}
+        {altIsFailedSelfieDontIncludeAttempts && (
+          <Link isExternal isNewTab href={helpCenterURL.toString()}>
+            {selfieHelpCenterLinkText}
+          </Link>
+        )}
+      </p>
     );
   }
   if (err && !hasDismissed) {

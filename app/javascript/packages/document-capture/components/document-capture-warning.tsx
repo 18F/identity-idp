@@ -22,8 +22,6 @@ interface DocumentCaptureWarningProps {
   hasDismissed: boolean;
 }
 
-const DISPLAY_ATTEMPTS = 3;
-
 type GetHeadingArguments = {
   isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
@@ -130,24 +128,17 @@ function DocumentCaptureWarning({
         <div ref={errorMessageDisplayedRef}>
           <UnknownError
             unknownFieldErrors={unknownFieldErrors}
-            remainingSubmitAttempts={remainingSubmitAttempts}
             isFailedDocType={isFailedDocType}
             isFailedSelfie={isFailedSelfie}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
           />
         </div>
-
-        {!isFailedDocType &&
-          !isFailedSelfie &&
-          !isFailedSelfieLivenessOrQuality &&
-          remainingSubmitAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <HtmlTextWithStrongNoWrap
-                text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
-              />
-            </p>
-          )}
+        <p>
+          <HtmlTextWithStrongNoWrap
+            text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
+          />
+        </p>
       </Warning>
       {nonIppOrFailedResult && <Cancel />}
     </>

@@ -268,9 +268,9 @@ describe('document-capture/components/review-issues-step', () => {
           value={
             new I18n({
               strings: {
-                'idv.warning.attempts_html': {
-                  one: '<strong>One attempt</strong> remaining',
-                  other: '<strong>%{count} attempts</strong> remaining',
+                'idv.failure.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining to add your ID online',
+                  other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
                 'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
                 'doc_auth.errors.doc.wrong_id_type_html':
@@ -323,9 +323,9 @@ describe('document-capture/components/review-issues-step', () => {
           value={
             new I18n({
               strings: {
-                'idv.warning.attempts_html': {
-                  one: '<strong>One attempt</strong> remaining',
-                  other: '<strong>%{count} attempts</strong> remaining',
+                'idv.failure.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining to add your ID online',
+                  other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
                 'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
                 'doc_auth.errors.doc.wrong_id_type_html':
