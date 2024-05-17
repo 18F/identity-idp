@@ -53,18 +53,8 @@ function getHeading({
   return t('errors.doc_auth.rate_limited_heading');
 }
 
-function getSubheading({
-  nonIppOrFailedResult,
-  isFailedDocType,
-  isFailedSelfieLivenessOrQuality,
-  isFailedSelfie,
-  t,
-}) {
-  const showSubheading =
-    !nonIppOrFailedResult &&
-    !isFailedDocType &&
-    !isFailedSelfieLivenessOrQuality &&
-    !isFailedSelfie;
+function getSubheading({ nonIppOrFailedResult, t }) {
+  const showSubheading = !nonIppOrFailedResult;
 
   if (showSubheading) {
     return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
@@ -101,9 +91,6 @@ function DocumentCaptureWarning({
     : t('idv.failure.button.try_online');
   const subheading = getSubheading({
     nonIppOrFailedResult,
-    isFailedDocType,
-    isFailedSelfieLivenessOrQuality,
-    isFailedSelfie,
     t,
   });
   const subheadingRef = useRef<HTMLDivElement>(null);
