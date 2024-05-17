@@ -41,7 +41,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allowed_extra_analytics: [:*
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
-    click_button t('idv.buttons.change_state_id_label')
+    click_link t('idv.buttons.change_state_id_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
     fill_in t('in_person_proofing.form.state_id.first_name'), with: 'bad first name'
     click_doc_auth_back_link
@@ -101,7 +101,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allowed_extra_analytics: [:*
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
-    click_button t('idv.buttons.change_state_id_label')
+    click_link t('idv.buttons.change_state_id_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
     fill_in t('in_person_proofing.form.state_id.first_name'), with: 'Natalya'
     click_button t('forms.buttons.submit.update')
