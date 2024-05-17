@@ -1830,7 +1830,7 @@ user_mailer.new_device_sign_in_attempts.new_sign_in_from: New sign-in potentiall
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate %{count} times</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
+user_mailer.new_device_sign_in_before_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: 双重身份验证保护你账户不受未经授权的访问。如果不是你，请马上 %{reset_password_link_html}.
 user_mailer.new_device_sign_in_before_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新的登录
