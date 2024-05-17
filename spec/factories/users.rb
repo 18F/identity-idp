@@ -169,14 +169,6 @@ FactoryBot.define do
       end
     end
 
-    trait :admin do
-      role { :admin }
-    end
-
-    trait :tech_support do
-      role { :tech }
-    end
-
     trait :fully_registered do
       with_phone
 

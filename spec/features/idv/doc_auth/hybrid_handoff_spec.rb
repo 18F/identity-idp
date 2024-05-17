@@ -380,10 +380,12 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
         context 'when sp ipp is available' do
           before do
             expect(page).to have_current_path(idv_how_to_verify_path)
-            click_on t('forms.buttons.continue_remote')
           end
           context 'when selfie is enabled system wide' do
             describe 'when selfie is required by sp' do
+              before do
+                click_on t('forms.buttons.continue_remote_selfie')
+              end
               it 'shows selfie version of top content and ipp option section' do
                 verify_handoff_page_selfie_version_content(page)
                 verify_handoff_page_ipp_section_and_link(page)
@@ -392,6 +394,9 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
             end
             describe 'when selfie is not required by sp' do
               let(:biometric_comparison_required) { false }
+              before do
+                click_on t('forms.buttons.continue_remote')
+              end
               it 'shows non selfie version of top content and upload section,
                   no ipp option section' do
                 verify_handoff_page_non_selfie_version_content(page)
@@ -403,6 +408,9 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true,
           context 'when selfie is disabled system wide' do
             describe 'when selfie is not required by sp' do
               let(:biometric_comparison_required) { false }
+              before do
+                click_on t('forms.buttons.continue_remote')
+              end
               it 'shows non selfie version of top content and upload section,
                   no ipp option section' do
                 verify_handoff_page_non_selfie_version_content(page)

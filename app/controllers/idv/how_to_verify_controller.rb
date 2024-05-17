@@ -7,6 +7,7 @@ module Idv
     include RenderConditionConcern
 
     before_action :confirm_step_allowed
+    before_action :set_how_to_verify_presenter
 
     check_or_render_not_found -> { self.class.enabled? }
 
@@ -89,6 +90,11 @@ module Idv
       params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
     rescue ActionController::ParameterMissing
       ActionController::Parameters.new(selection: [])
+    end
+
+    def set_how_to_verify_presenter
+      @selfie_required = idv_session.selfie_check_required
+      @presenter = Idv::HowToVerifyPresenter.new(selfie_check_required: @selfie_required)
     end
   end
 end

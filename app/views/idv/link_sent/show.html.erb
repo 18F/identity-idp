@@ -42,7 +42,7 @@
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>
   <%= content_tag 'script', '', data: {
-        status_endpoint: idv_capture_doc_status_url,
+        status_endpoint: idv_link_sent_poll_url,
       } %>
   <%= javascript_packs_tag_once 'doc-capture-polling' %>
 <% end %>

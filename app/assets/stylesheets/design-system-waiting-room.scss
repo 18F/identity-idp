@@ -1,5 +1,7 @@
 // To be removed once design system incorporates styles included below.
 
+@use 'uswds-core' as *;
+
 // basscss-base-typography
 // ------------------------------------------------
 h1,
@@ -28,4 +30,10 @@ ul {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.usa-input--wide {
+  @include at-media('tablet') {
+    max-width: 14rem;
+  }
 }

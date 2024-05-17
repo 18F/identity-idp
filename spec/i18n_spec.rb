@@ -66,6 +66,7 @@ module I18n
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
+        { key: 'i18n.locale.zh', locales: %i[es fr zh] },
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
@@ -77,8 +78,7 @@ module I18n
         { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         # need to be fixed
-        { key: 'i18n.locale.zh', locales: %i[es fr zh] },
-        { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr] },
         { key: 'account_reset.pending.canceled', locales: %i[zh] },
         { key: 'account_reset.recovery_options.check_saved_credential', locales: %i[zh] },
         { key: 'account_reset.recovery_options.use_same_device', locales: %i[zh] },

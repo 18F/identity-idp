@@ -20,6 +20,22 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
       expect(results).to eq([])
     end
 
+    context 'missing data' do
+      let(:iaa_range) { nil...nil }
+      let(:iaa) do
+        {
+          key: key,
+          start_date: iaa_range.begin,
+          end_date: iaa_range.end,
+          issuers: ['DHS', 'DHF'],
+        }
+      end
+
+      it 'is empty with data no date range' do
+        expect(results).to eq([])
+      end
+    end
+
     context 'with data' do
       let(:iaa) do
         {
