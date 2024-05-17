@@ -31,8 +31,11 @@ module FederatedProtocols
     end
 
     def requested_attributes
-      @requested_attributes ||= SamlRequestPresenter.new(
-        request: request, service_provider: current_service_provider,
+      @requested_attributes ||= SamlRequestedAttributesPresenter.new(
+        service_provider: current_service_provider,
+        ial: ial,
+        vtr: vtr,
+        authn_request_attribute_bundle: SamlRequestParser.new(request).requested_attributes,
       ).requested_attributes
     end
 
