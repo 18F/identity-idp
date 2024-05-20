@@ -64,6 +64,6 @@ class GpoConfirmationMaker
   end
 
   def update_proofing_cost
-    Db::SpCost::AddSpCost.call(service_provider, 2, :gpo_letter)
+    Db::SpCost::AddSpCost.call(service_provider, :gpo_letter)
   end
 end
