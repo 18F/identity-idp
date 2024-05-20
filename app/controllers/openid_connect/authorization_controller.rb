@@ -152,10 +152,6 @@ module OpenidConnect
         !current_user.identity_verified_with_biometric_comparison?
     end
 
-    def enhanced_ipp_required?
-      @authorize_form.parsed_vector_of_trust&.enhanced_ipp_required?
-    end
-
     def build_authorize_form_from_params
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
     end

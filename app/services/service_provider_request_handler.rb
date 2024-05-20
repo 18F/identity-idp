@@ -68,7 +68,6 @@ class ServiceProviderRequestHandler
       requested_attributes: protocol.requested_attributes,
       uuid: request_id,
       url: url,
-      enhanced_ipp_required: protocol.enhanced_ipp_required?,
     }
   end
 

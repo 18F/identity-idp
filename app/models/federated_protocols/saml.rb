@@ -47,10 +47,6 @@ module FederatedProtocols
       false
     end
 
-    def enhanced_ipp_required?
-      false
-    end
-
     private
 
     attr_reader :request

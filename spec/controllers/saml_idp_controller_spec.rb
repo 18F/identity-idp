@@ -1376,7 +1376,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           request_id: sp_request_id,
           requested_attributes: ['email'],
           vtr: nil,
-          enhanced_ipp_required: false,
         )
       end
 
@@ -1410,7 +1409,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           request_id: sp_request_id,
           requested_attributes: ['email'],
           vtr: nil,
-          enhanced_ipp_required: false,
         )
       end
 

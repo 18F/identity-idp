@@ -38,10 +38,6 @@ module FederatedProtocols
       request.service_provider
     end
 
-    def enhanced_ipp_required?
-      request.enhanced_ipp_required?
-    end
-
     private
 
     attr_reader :request

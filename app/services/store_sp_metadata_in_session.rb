@@ -28,7 +28,6 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      enhanced_ipp_required: parsed_vot&.enhanced_ipp?,
       acr_values: sp_request.acr_values,
       vtr: sp_request.vtr,
     }
@@ -37,15 +36,5 @@ class StoreSpMetadataInSession
   def service_provider
     return @service_provider if defined?(@service_provider)
     @service_provider = ServiceProvider.find_by(issuer: sp_request.issuer)
-  end
-
-  def parsed_vot
-    return nil if !sp_request.vtr && !sp_request.acr_values
-
-    @parsed_vot ||= AuthnContextResolver.new(
-      service_provider: service_provider,
-      vtr: sp_request.vtr,
-      acr_values: sp_request.acr_values,
-    ).resolve
   end
 end
