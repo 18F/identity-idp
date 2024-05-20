@@ -115,13 +115,12 @@ module DocAuth
       return if known_error_count < 1
 
       doc_auth_error_messages = get_doc_auth_error_messages(response_info)
-      liveness_enabled = response_info[:liveness_enabled]
 
       if known_error_count == 1
         process_single_doc_auth_error(doc_auth_error_messages)
       else
         # Simplify multiple errors into a single error for the user
-        consolidate_multiple_doc_auth_errors(doc_auth_error_messages, liveness_enabled)
+        consolidate_multiple_doc_auth_errors(doc_auth_error_messages)
       end
     end
 
@@ -147,20 +146,20 @@ module DocAuth
       ErrorResult.new(error, side)
     end
 
-    def consolidate_multiple_doc_auth_errors(alert_errors, liveness_enabled)
+    def consolidate_multiple_doc_auth_errors(alert_errors)
       error_fields = alert_errors.keys
       if error_fields.length == 1
         side = error_fields.first
         case side
         when ErrorGenerator::ID
-          error = ErrorGenerator.general_error(liveness_enabled)
+          error = ErrorGenerator.general_error
         when ErrorGenerator::FRONT
           error = Errors::MULTIPLE_FRONT_ID_FAILURES
         when ErrorGenerator::BACK
           error = Errors::MULTIPLE_BACK_ID_FAILURES
         end
       elsif error_fields.length > 1
-        error = ErrorGenerator.general_error(liveness_enabled)
+        error = ErrorGenerator.general_error
         side = ErrorGenerator::ID
       end
       ErrorResult.new(error, side)
@@ -239,8 +238,7 @@ module DocAuth
         response_info: response_info,
       )
 
-      liveness_enabled = response_info[:liveness_enabled]
-      error = ErrorGenerator.general_error(liveness_enabled)
+      error = ErrorGenerator.general_error
       side = ErrorGenerator::ID
       ErrorResult.new(error, side)
     end
@@ -339,12 +337,12 @@ module DocAuth
       unknown_error_handler.handle(response_info).to_h
     end
 
-    def self.general_error(_liveness_enabled)
+    def self.general_error
       Errors::GENERAL_ERROR
     end
 
-    def self.wrapped_general_error(liveness_enabled)
-      { general: [ErrorGenerator.general_error(liveness_enabled)], hints: true }
+    def self.wrapped_general_error
+      { general: [ErrorGenerator.general_error], hints: true }
     end
 
     private
