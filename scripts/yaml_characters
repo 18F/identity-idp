@@ -12,22 +12,8 @@ def sanitize(string)
   Nokogiri::HTML5(string).content.gsub(/%{.+?}/, '').gsub(/[\n\r]/, '')
 end
 
-def hash_values(hash, all_values: [])
-  hash.each do |key, value|
-    if value.is_a?(Hash)
-      hash_values(value, all_values:)
-    elsif value.is_a?(Array)
-      value.each { |item| all_values << item }
-    else
-      all_values << value
-    end
-  end
-
-  all_values
-end
-
 characters = ARGV.flat_map do |file|
-  strings = hash_values(YAML.load_file(file))
+  strings = YAML.load_file(file).values.flatten
   joined_string = strings.join('')
   sanitized_string = sanitize(joined_string)
   sanitized_string.chars.to_a
