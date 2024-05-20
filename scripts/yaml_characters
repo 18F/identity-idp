@@ -1,21 +1,37 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env bin/rails runner
 # frozen_string_literal: true
 
-require 'yaml'
-
-if ARGV.empty?
-  raise 'Pass YAML files as arguments. Example: `scripts/yaml_characters path/to/example.yml`'
-end
+excluded_locales = []
+OptionParser.new do |opts|
+  opts.on('--exclude-locale=LOCALE', 'Disregard characters from the given locale') do |locale|
+    excluded_locales << locale.to_sym
+  end
+end.parse!(ARGV)
 
 def sanitize(string)
-  string.gsub(/<.+?>/, '').gsub(/%{.+?}/, '').gsub(/[\n\r]/, '')
+  string.gsub(/<.+?>/, '').gsub(/%{.+?}/, '').gsub(/[\n\r\t]/, '')
 end
 
-characters = ARGV.flat_map do |file|
-  strings = YAML.load_file(file).values.flatten
-  joined_string = strings.join('')
-  sanitized_string = sanitize(joined_string)
-  sanitized_string.chars.to_a
-end.uniq.sort.join('')
+def hash_values(hash, all_values: [])
+  hash.each do |key, value|
+    if value.is_a?(Hash)
+      hash_values(value, all_values:)
+    elsif value.is_a?(Array)
+      value.each { |item| all_values << item }
+    else
+      all_values << value
+    end
+  end
+
+  all_values
+end
+
+I18n.backend.eager_load!
+
+data = I18n.backend.translations.slice(*I18n.available_locales - excluded_locales)
+strings = hash_values(data)
+joined_string = strings.join('')
+sanitized_string = sanitize(joined_string)
+characters = sanitized_string.chars.to_a.uniq.sort.join('')
 
 STDOUT.puts characters
