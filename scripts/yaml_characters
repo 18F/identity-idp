@@ -2,9 +2,14 @@
 # frozen_string_literal: true
 
 excluded_locales = []
+excluded_gem_paths = []
 OptionParser.new do |opts|
   opts.on('--exclude-locale=LOCALE', 'Disregard characters from the given locale') do |locale|
     excluded_locales << locale.to_sym
+  end
+
+  opts.on('--exclude-gem-path=GEM', 'Disregard characters loaded by the given gem') do |gem|
+    excluded_gem_paths << Gem.loaded_specs[gem].full_gem_path
   end
 end.parse!(ARGV)
 
@@ -22,6 +27,10 @@ def hash_values(hash)
       [value]
     end
   end
+end
+
+I18n.load_path.reject! do |load_path|
+  excluded_gem_paths.any? { |gem_path| load_path.start_with?(gem_path) }
 end
 
 I18n.backend.eager_load!

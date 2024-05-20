@@ -114,7 +114,12 @@ lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
 
 lint_font_glyphs: ## Lints to validate content glyphs match expectations from fonts
-	scripts/yaml_characters --exclude-locale=zh > app/assets/fonts/glyphs.txt
+	scripts/yaml_characters \
+		--exclude-locale=zh \
+		--exclude-gem-path=faker \
+		--exclude-gem-path=good_job \
+		--exclude-gem-path=i18n-tasks \
+		> app/assets/fonts/glyphs.txt
 	(! git diff --name-only | grep "glyphs\.txt$$") || (echo "Error: New character data found. Follow 'Fonts' instructions in 'docs/frontend.md' to regenerate fonts."; exit 1)
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
