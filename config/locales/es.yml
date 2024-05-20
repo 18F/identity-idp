@@ -1133,8 +1133,6 @@ idv.unavailable.idv_explanation.without_sp: La agencia a la que está intentando
 idv.unavailable.next_steps_html: '%{status_page_link_html} o salga de %{app_name} y vuelva a intentarlo más tarde.'
 idv.unavailable.status_page_link: Obtenga las actualizaciones en nuestra página de estado
 idv.unavailable.technical_difficulties: Lamentablemente, tenemos problemas técnicos y no podemos verificar su identidad en este momento.
-idv.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un intento</strong>.
-idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
 idv.warning.state_id.explanation: Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.

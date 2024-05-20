@@ -22,8 +22,6 @@ interface DocumentCaptureWarningProps {
   hasDismissed: boolean;
 }
 
-const DISPLAY_ATTEMPTS = 3;
-
 type GetHeadingArguments = {
   isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
@@ -53,18 +51,8 @@ function getHeading({
   return t('errors.doc_auth.rate_limited_heading');
 }
 
-function getSubheading({
-  nonIppOrFailedResult,
-  isFailedDocType,
-  isFailedSelfieLivenessOrQuality,
-  isFailedSelfie,
-  t,
-}) {
-  const showSubheading =
-    !nonIppOrFailedResult &&
-    !isFailedDocType &&
-    !isFailedSelfieLivenessOrQuality &&
-    !isFailedSelfie;
+function getSubheading({ nonIppOrFailedResult, t }) {
+  const showSubheading = !nonIppOrFailedResult;
 
   if (showSubheading) {
     return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
@@ -101,9 +89,6 @@ function DocumentCaptureWarning({
     : t('idv.failure.button.try_online');
   const subheading = getSubheading({
     nonIppOrFailedResult,
-    isFailedDocType,
-    isFailedSelfieLivenessOrQuality,
-    isFailedSelfie,
     t,
   });
   const subheadingRef = useRef<HTMLDivElement>(null);
@@ -142,24 +127,17 @@ function DocumentCaptureWarning({
         <div ref={errorMessageDisplayedRef}>
           <UnknownError
             unknownFieldErrors={unknownFieldErrors}
-            remainingSubmitAttempts={remainingSubmitAttempts}
             isFailedDocType={isFailedDocType}
             isFailedSelfie={isFailedSelfie}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
           />
         </div>
-
-        {!isFailedDocType &&
-          !isFailedSelfie &&
-          !isFailedSelfieLivenessOrQuality &&
-          remainingSubmitAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <HtmlTextWithStrongNoWrap
-                text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
-              />
-            </p>
-          )}
+        <p>
+          <HtmlTextWithStrongNoWrap
+            text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
+          />
+        </p>
       </Warning>
       {nonIppOrFailedResult && <Cancel />}
     </>
