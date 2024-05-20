@@ -1,5 +1,4 @@
 import { createContext, useMemo } from 'react';
-import { addSearchParams } from '@18f/identity-url';
 import type { ReactNode } from 'react';
 
 export interface ServiceProviderContextType {
@@ -11,17 +10,11 @@ export interface ServiceProviderContextType {
    * URL to redirect user on failure to proof.
    */
   failureToProofURL: string;
-  /**
-   * Returns failure to proof URL for a
-   * specific location within the step.
-   */
-  getFailureToProofURL: (location: string) => string;
 }
 
 const ServiceProviderContext = createContext<ServiceProviderContextType>({
   name: null,
   failureToProofURL: '',
-  getFailureToProofURL: () => '',
 });
 
 ServiceProviderContext.displayName = 'ServiceProviderContext';
@@ -35,8 +28,6 @@ function ServiceProviderContextProvider({ value, children }: ServiceProviderCont
   const mergedValue = useMemo(
     () => ({
       ...value,
-      getFailureToProofURL: (location: string) =>
-        addSearchParams(value.failureToProofURL, { location }),
     }),
     [value],
   );
