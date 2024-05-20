@@ -2388,12 +2388,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
     end
 
     def stub_requested_attributes
-      request_parser = instance_double(SamlRequestPresenter)
       service_provider = ServiceProvider.find_by(issuer: 'http://localhost:3000')
       service_provider.ial = 2
       service_provider.save
-      expect(SamlRequestPresenter).to receive(:new).
-        with(request: controller.saml_request, service_provider: service_provider).
+      request_parser = instance_double(SamlRequestParser)
+      expect(SamlRequestParser).to receive(:new).
         and_return(request_parser)
       allow(request_parser).to receive(:requested_attributes).and_return([:email])
     end

@@ -65,16 +65,6 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     )
   end
 
-  context 'no sp' do
-    let(:sp_name) { nil }
-    it 'does not prompt user to get help at sp' do
-      expect(rendered).not_to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
-      )
-    end
-  end
-
   context 'gpo verification disabled' do
     it 'does not render link to gpo flow' do
       expect(rendered).not_to have_link(

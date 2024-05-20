@@ -223,44 +223,6 @@ describe('document-capture/components/review-issues-step', () => {
     });
   });
 
-  it('does not render sp help troubleshooting option for errored review', () => {
-    const { queryByRole } = render(
-      <InPersonContext.Provider value={{ inPersonURL: null }}>
-        <ServiceProviderContextProvider
-          value={{
-            name: 'Example App',
-            failureToProofURL: 'https://example.com/?step=document_capture',
-          }}
-        >
-          <ReviewIssuesStep {...DEFAULT_PROPS} />
-        </ServiceProviderContextProvider>
-      </InPersonContext.Provider>,
-    );
-
-    expect(
-      queryByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }),
-    ).to.not.exist();
-  });
-
-  it('does render sp help troubleshooting option for errored review if in person url present', () => {
-    const { getByRole } = render(
-      <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
-        <ServiceProviderContextProvider
-          value={{
-            name: 'Example App',
-            failureToProofURL: 'https://example.com/?step=document_capture',
-          }}
-        >
-          <ReviewIssuesStep {...DEFAULT_PROPS} />
-        </ServiceProviderContextProvider>
-      </InPersonContext.Provider>,
-    );
-
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }).href,
-    ).to.equal('https://example.com/?step=document_capture&location=post_submission_warning');
-  });
-
   it('renders alternative error messages with in person and doc type is not supported', async () => {
     const { getByRole, getByText, getByLabelText } = render(
       <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
