@@ -1,4 +1,4 @@
-#!/usr/bin/env bin/rails runner
+#!/usr/bin/env rails runner
 # frozen_string_literal: true
 
 excluded_locales = []
