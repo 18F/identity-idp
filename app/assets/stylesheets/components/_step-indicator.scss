@@ -130,14 +130,3 @@ lg-step-indicator {
 .step-indicator__step--current .step-indicator__step-title {
   font-weight: bold;
 }
-
-.step-indicator__step-subtitle {
-  @include at-media-max('tablet') {
-    @include sr-only;
-  }
-
-  @include at-media('tablet') {
-    display: block;
-    font-style: italic;
-  }
-}
