@@ -1,15 +1,33 @@
 #!/usr/bin/env rails runner
 # frozen_string_literal: true
 
+require 'pathname'
+
 excluded_locales = []
 excluded_gem_paths = []
 OptionParser.new do |opts|
+  opts.banner = <<~TXT
+    Usage
+    =======================
+
+      #{Pathname.new($PROGRAM_NAME).relative_path_from(Dir.pwd)} [OPTIONS]
+
+      Prints all unique characters from Rails loaded I18n data, which can be used in combination
+      with font subsetting to optimize font sizes.
+
+  TXT
+
   opts.on('--exclude-locale=LOCALE', 'Disregard characters from the given locale') do |locale|
     excluded_locales << locale.to_sym
   end
 
   opts.on('--exclude-gem-path=GEM', 'Disregard characters loaded by the given gem') do |gem|
     excluded_gem_paths << Gem.loaded_specs[gem].full_gem_path
+  end
+
+  opts.on('-h', '--help', 'Prints this help') do
+    STDOUT.puts opts
+    exit
   end
 end.parse!(ARGV)
 
