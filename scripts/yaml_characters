@@ -19,9 +19,10 @@ end
 
 def hash_values(hash)
   hash.values.flat_map do |value|
-    if value.is_a?(Hash)
+    case value
+    when Hash
       hash_values(value)
-    elsif value.is_a?(Array)
+    when Array
       value
     else
       [value]
