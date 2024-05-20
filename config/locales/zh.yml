@@ -954,9 +954,9 @@ help_text.requested_attributes.verified_at: 更新是在
 help_text.requested_attributes.x509_issuer: PIV/CAC 发放方
 help_text.requested_attributes.x509_subject: PIV/CAC 身份
 i18n.language: 语言
-i18n.locale.en: 英文
-i18n.locale.es: 西班牙文
-i18n.locale.fr: 法文
+i18n.locale.en: English
+i18n.locale.es: Español
+i18n.locale.fr: Français
 i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: 保护文本安全，从 %{first_number} 开始，到 %{last_number}结束
 idv.buttons.change_address_label: 更新地址
