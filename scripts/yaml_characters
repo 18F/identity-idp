@@ -12,18 +12,16 @@ def sanitize(string)
   string.gsub(/<.+?>/, '').gsub(/%{.+?}/, '').gsub(/[\n\r\t]/, '')
 end
 
-def hash_values(hash, all_values: [])
-  hash.each do |key, value|
+def hash_values(hash)
+  hash.values.flat_map do |value|
     if value.is_a?(Hash)
-      hash_values(value, all_values:)
+      hash_values(value)
     elsif value.is_a?(Array)
-      value.each { |item| all_values << item }
+      value
     else
-      all_values << value
+      [value]
     end
   end
-
-  all_values
 end
 
 I18n.backend.eager_load!
