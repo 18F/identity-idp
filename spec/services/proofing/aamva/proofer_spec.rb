@@ -183,41 +183,16 @@ RSpec.describe Proofing::Aamva::Proofer do
         }
       end
 
-      let(:aamva_issue_and_expiration_date_validation) { :enabled }
-
-      before do
-        allow(IdentityConfig.store).to receive(:aamva_issue_and_expiration_date_validation).
-          and_return(aamva_issue_and_expiration_date_validation)
-      end
-
-      context 'when we are supposed to send issue + expiration to aamva' do
-        it 'includes them' do
-          expect(Proofing::Aamva::Request::VerificationRequest).to receive(:new).with(
-            hash_including(
-              applicant: satisfy do |a|
-                expect(a.state_id_data.state_id_issued).to eql('2023-04-05')
-                expect(a.state_id_data.state_id_expiration).to eql('2030-01-02')
-              end,
-            ),
-          )
-          subject.proof(state_id_data)
-        end
-      end
-
-      context 'when we are not supposed to send issue + expiration to aamva' do
-        let(:aamva_issue_and_expiration_date_validation) { :disabled }
-
-        it 'does not include them' do
-          expect(Proofing::Aamva::Request::VerificationRequest).to receive(:new).with(
-            hash_including(
-              applicant: satisfy do |a|
-                expect(a.state_id_data.state_id_issued).to be_nil
-                expect(a.state_id_data.state_id_expiration).to be_nil
-              end,
-            ),
-          )
-          subject.proof(state_id_data)
-        end
+      it 'includes them' do
+        expect(Proofing::Aamva::Request::VerificationRequest).to receive(:new).with(
+          hash_including(
+            applicant: satisfy do |a|
+              expect(a.state_id_data.state_id_issued).to eql('2023-04-05')
+              expect(a.state_id_data.state_id_expiration).to eql('2030-01-02')
+            end,
+          ),
+        )
+        subject.proof(state_id_data)
       end
     end
 

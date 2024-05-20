@@ -33,11 +33,6 @@ module IdentityConfig
     config.add(:aamva_private_key, type: :string)
     config.add(:aamva_public_key, type: :string)
     config.add(:aamva_supported_jurisdictions, type: :json)
-    config.add(
-      :aamva_issue_and_expiration_date_validation,
-      type: :symbol,
-      enum: [:log_only, :disabled],
-    )
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
     config.add(:ab_testing_idv_ten_digit_otp_enabled, type: :boolean)
