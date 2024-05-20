@@ -71,7 +71,7 @@ function UnknownError({
     );
   }
   if (isFailedDocType && err) {
-    return <p key={`${err.message}`}>{err.message} </p>;
+    return <p key={err.message}>{err.message}</p>;
   }
   if ((isFailedSelfieLivenessOrQuality || isFailedSelfie) && err) {
     let selfieHelpCenterLinkText = t('doc_auth.errors.general.selfie_failure_help_link_text');

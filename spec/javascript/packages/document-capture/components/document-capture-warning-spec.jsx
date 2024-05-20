@@ -240,7 +240,7 @@ describe('DocumentCaptureWarning', () => {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.doc_type_not_supported_heading',
         subheading: '',
-        error_message_displayed: 'general error ',
+        error_message_displayed: 'general error',
         remaining_submit_attempts: 2,
         liveness_checking_required: false,
       });
