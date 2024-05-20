@@ -26,6 +26,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_analytics_events_sorted \
 	lint_country_dialing_codes \
 	lint_erb \
+	lint_font_glyphs \
 	lint_lockfiles \
 	lint_new_typescript_files \
 	lint_optimized_assets \
@@ -87,6 +88,8 @@ endif
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
+	@echo "--- lint font glyphs ---"
+	make lint_font_glyphs
 	@echo "--- lint Yarn workspaces ---"
 	make lint_yarn_workspaces
 	@echo "--- lint new TypeScript files ---"
@@ -109,6 +112,10 @@ lint_erb: ## Lints ERB files
 
 lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+
+lint_font_glyphs: ## Lints to validate content glyphs match expectations from fonts
+	ls config/locales/*.yml | grep --invert-match "/zh.yml$$" | xargs ./scripts/yaml_characters > app/assets/fonts/glyphs.txt
+	(! git diff --name-only | grep "glyphs\.txt$$") || (echo "Error: New character data found. Follow 'Fonts' instructions in 'docs/frontend.md' to regenerate fonts."; exit 1)
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.mjs
