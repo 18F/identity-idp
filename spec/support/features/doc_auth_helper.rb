@@ -93,12 +93,17 @@ module DocAuthHelper
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
+  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true,
+                                                       biometric_comparison_required: false)
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
     if remote
-      click_on t('forms.buttons.continue_remote')
+      if biometric_comparison_required
+        click_on t('forms.buttons.continue_remote_selfie')
+      else
+        click_on t('forms.buttons.continue_remote')
+      end
     else
       click_on t('forms.buttons.continue_ipp')
     end

@@ -19,7 +19,7 @@ module Db
     attr_reader :service_provider, :user_id, :liveness_checking_enabled
 
     def add_cost(token)
-      Db::SpCost::AddSpCost.call(service_provider, 2, token)
+      Db::SpCost::AddSpCost.call(service_provider, token)
     end
   end
 end

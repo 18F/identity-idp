@@ -164,7 +164,6 @@ module I18n
         { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_attempts.new_sign_in_from', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.one', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.other', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero', locales: %i[zh] },

@@ -1,5 +1,3 @@
-import { I18n } from '@18f/identity-i18n';
-import { I18nContext } from '@18f/identity-react-i18n';
 import UnknownError from '@18f/identity-document-capture/components/unknown-error';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { within } from '@testing-library/dom';
@@ -9,11 +7,7 @@ describe('UnknownError', () => {
   context('there is no doc type failure', () => {
     it('render an empty paragraph when no errors', () => {
       const { container } = render(
-        <UnknownError
-          unknownFieldErrors={[]}
-          isFailedDocType={false}
-          remainingSubmitAttempts={10}
-        />,
+        <UnknownError unknownFieldErrors={[]} isFailedDocType={false} />,
       );
       expect(container.querySelector('p')).to.be.ok();
     });
@@ -29,7 +23,6 @@ describe('UnknownError', () => {
               },
             ]}
             isFailedDocType={false}
-            remainingSubmitAttempts={10}
             hasDismissed
           />,
         );
@@ -51,7 +44,6 @@ describe('UnknownError', () => {
               },
             ]}
             isFailedDocType={false}
-            remainingSubmitAttempts={10}
             hasDismissed={false}
           />,
         );
@@ -70,63 +62,32 @@ describe('UnknownError', () => {
   context('there is a doc type failure', () => {
     it('renders error message with errors and is a doc type failure', () => {
       const { container } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'idv.warning.attempts_html': {
-                  one: 'You have <strong>One attempt</strong> remaining',
-                  other: 'You have<strong>%{count} attempts</strong> remaining',
-                },
-                'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
-              },
-            })
-          }
-        >
-          <UnknownError
-            unknownFieldErrors={[
-              {
-                field: 'general',
-                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
-              },
-            ]}
-            remainingSubmitAttempts={2}
-            isFailedDocType
-          />
-        </I18nContext.Provider>,
+        <UnknownError
+          unknownFieldErrors={[
+            {
+              field: 'general',
+              error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+            },
+          ]}
+          isFailedDocType
+        />,
       );
       const paragraph = container.querySelector('p');
       expect(within(paragraph).getByText(/An unknown error occurred/)).to.be.ok();
-      expect(within(paragraph).getByText(/2 attempts/)).to.be.ok();
-      expect(within(paragraph).getByText(/remaining/)).to.be.ok();
     });
 
     it('renders alternative error message with errors and is a doc type failure', () => {
       const { container } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'idv.warning.attempts_html': {
-                  one: 'You have <strong>One attempt</strong> remaining',
-                  other: 'You have <strong>%{count} attempts</strong> remaining',
-                },
-              },
-            })
-          }
-        >
-          <UnknownError
-            unknownFieldErrors={[
-              {
-                field: 'general',
-                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
-              },
-            ]}
-            remainingAttempts={2}
-            isFailedDocType
-            altFailedDocTypeMsg="alternative message"
-          />
-        </I18nContext.Provider>,
+        <UnknownError
+          unknownFieldErrors={[
+            {
+              field: 'general',
+              error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+            },
+          ]}
+          isFailedDocType
+          altFailedDocTypeMsg="alternative message"
+        />,
       );
       const paragraph = container.querySelector('p');
       expect(within(paragraph).getByText(/alternative message/)).to.be.ok();
@@ -136,132 +97,66 @@ describe('UnknownError', () => {
   context('there is a selfie quality/liveness failure', () => {
     it('renders error message with errors', () => {
       const { container } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'idv.warning.attempts_html': {
-                  one: 'You have <strong>One attempt</strong> remaining',
-                  other: 'You have<strong>%{count} attempts</strong> remaining',
-                },
-              },
-            })
-          }
-        >
-          <UnknownError
-            unknownFieldErrors={[
-              {
-                field: 'general',
-                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
-              },
-            ]}
-            remainingSubmitAttempts={2}
-            isFailedSelfieLivenessOrQuality
-          />
-        </I18nContext.Provider>,
+        <UnknownError
+          unknownFieldErrors={[
+            {
+              field: 'general',
+              error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+            },
+          ]}
+          isFailedSelfieLivenessOrQuality
+        />,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
-      // Expect that the "2 attempts remaining" text appears
-      expect(within(container).getByText(/2 attempts/)).to.be.ok();
-      expect(within(container).getByText(/remaining/)).to.be.ok();
     });
 
     it('renders alternative error message without retry information', () => {
       const { container } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'idv.warning.attempts_html': {
-                  one: 'You have <strong>One attempt</strong> remaining',
-                  other: 'You have <strong>%{count} attempts</strong> remaining',
-                },
-              },
-            })
-          }
-        >
-          <UnknownError
-            unknownFieldErrors={[
-              {
-                field: 'general',
-                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
-              },
-            ]}
-            remainingAttempts={2}
-            isFailedSelfieLivenessOrQuality
-            altIsFailedSelfieDontIncludeAttempts
-          />
-        </I18nContext.Provider>,
+        <UnknownError
+          unknownFieldErrors={[
+            {
+              field: 'general',
+              error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+            },
+          ]}
+          isFailedSelfieLivenessOrQuality
+          altIsFailedSelfieDontIncludeAttempts
+        />,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
-      // Don't expect that the "2 attempts remaining" text appears
-      expect(within(container).queryByText(/2 attempts/)).to.be.null();
     });
   });
 
   context('there is a selfie facematch failure', () => {
     it('renders error message with errors', () => {
       const { container } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'idv.warning.attempts_html': {
-                  one: 'You have <strong>One attempt</strong> remaining',
-                  other: 'You have<strong>%{count} attempts</strong> remaining',
-                },
-              },
-            })
-          }
-        >
-          <UnknownError
-            unknownFieldErrors={[
-              {
-                field: 'general',
-                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
-              },
-            ]}
-            remainingSubmitAttempts={2}
-            isFailedSelfie
-          />
-        </I18nContext.Provider>,
+        <UnknownError
+          unknownFieldErrors={[
+            {
+              field: 'general',
+              error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+            },
+          ]}
+          isFailedSelfie
+        />,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
-      // Expect that the "2 attempts remaining" text appears
-      expect(within(container).getByText(/2 attempts/)).to.be.ok();
-      expect(within(container).getByText(/remaining/)).to.be.ok();
     });
 
     it('renders alternative error message without retry information', () => {
       const { container } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'idv.warning.attempts_html': {
-                  one: 'You have <strong>One attempt</strong> remaining',
-                  other: 'You have <strong>%{count} attempts</strong> remaining',
-                },
-              },
-            })
-          }
-        >
-          <UnknownError
-            unknownFieldErrors={[
-              {
-                field: 'general',
-                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
-              },
-            ]}
-            remainingAttempts={2}
-            isFailedSelfie
-            altIsFailedSelfieDontIncludeAttempts
-          />
-        </I18nContext.Provider>,
+        <UnknownError
+          unknownFieldErrors={[
+            {
+              field: 'general',
+              error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+            },
+          ]}
+          isFailedSelfie
+          altIsFailedSelfieDontIncludeAttempts
+        />,
       );
       expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
-      // Don't expect that the "2 attempts remaining" text appears
-      expect(within(container).queryByText(/2 attempts/)).to.be.null();
     });
   });
 });

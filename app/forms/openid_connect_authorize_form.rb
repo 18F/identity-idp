@@ -91,13 +91,16 @@ class OpenidConnectAuthorizeForm
     @service_provider = ServiceProvider.find_by(issuer: client_id)
   end
 
-  def link_identity_to_service_provider(current_user, rails_session_id)
+  def link_identity_to_service_provider(
+    current_user:,
+    ial:,
+    rails_session_id:
+  )
     identity_linker = IdentityLinker.new(current_user, service_provider)
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
       ial: ial,
-      aal: aal,
       acr_values: acr_values&.join(' '),
       vtr: vtr,
       requested_aal_value: requested_aal_value,
@@ -117,28 +120,8 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| acr.include?('ial') || acr.include?('loa') }
   end
 
-  def ial
-    if parsed_vector_of_trust&.identity_proofing?
-      2
-    elsif parsed_vector_of_trust.present?
-      1
-    else
-      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
-    end
-  end
-
   def aal_values
     acr_values.filter { |acr| acr.include?('aal') }
-  end
-
-  def aal
-    if parsed_vector_of_trust&.aal2?
-      2
-    elsif parsed_vector_of_trust.present?
-      1
-    else
-      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
-    end
   end
 
   def requested_aal_value
@@ -336,7 +319,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def identity_proofing_requested?
-    ial == 2
+    if parsed_vector_of_trust.present?
+      parsed_vector_of_trust.identity_proofing?
+    else
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 2
+    end
   end
 
   def identity_proofing_service_provider?
@@ -348,7 +335,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ialmax_requested?
-    ial == 0
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
   end
 
   def highest_level_aal(aal_values)

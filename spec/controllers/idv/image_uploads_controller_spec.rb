@@ -478,6 +478,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
           classification_info: a_kind_of(Hash),
+          id_issued_status: 'present',
+          id_expiration_status: 'present',
         )
 
         expect_funnel_update_counts(user, 1)
@@ -669,6 +671,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
               ),
+              id_issued_status: 'missing',
+              id_expiration_status: 'missing',
             )
           end
         end
@@ -780,6 +784,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
               ),
+              id_issued_status: 'missing',
+              id_expiration_status: 'missing',
             )
           end
         end
@@ -888,6 +894,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
+              id_issued_status: 'missing',
+              id_expiration_status: 'missing',
             )
           end
         end
@@ -996,6 +1004,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
+              id_issued_status: 'missing',
+              id_expiration_status: 'missing',
             )
           end
         end

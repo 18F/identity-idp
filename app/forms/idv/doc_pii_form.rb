@@ -43,6 +43,8 @@ module Idv
         extra: {
           pii_like_keypaths: self.class.pii_like_keypaths,
           attention_with_barcode: attention_with_barcode?,
+          id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
+          id_expiration_status: pii_from_doc[:state_id_expiration].present? ? 'present' : 'missing',
         },
       )
       response.pii_from_doc = pii_from_doc

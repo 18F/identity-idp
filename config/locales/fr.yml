@@ -1122,7 +1122,6 @@ idv.titles.unavailable: Nous travaillons à la résolution d’une erreur
 idv.troubleshooting.headings.need_assistance: 'Vous avez besoin d’une assistance immédiate ? Voici comment obtenir de l’aide :'
 idv.troubleshooting.options.contact_support: Contacter le service d’assistance de %{app_name}
 idv.troubleshooting.options.doc_capture_tips: Conseils pour prendre des photos nettes de votre pièce d’identité
-idv.troubleshooting.options.get_help_at_sp: Obtenir de l’aide sur %{sp_name}
 idv.troubleshooting.options.learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
 idv.troubleshooting.options.learn_more_verify_by_phone: En savoir plus sur quel numéro de téléphone utiliser
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone
@@ -1135,8 +1134,6 @@ idv.unavailable.idv_explanation.without_sp: L’organisme auquel vous essayez d�
 idv.unavailable.next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et réessayez plus tard.'
 idv.unavailable.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
 idv.unavailable.technical_difficulties: Malheureusement, nous rencontrons des difficultés techniques et ne pouvons pas vérifier votre identité pour le moment.
-idv.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
-idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation: Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
@@ -1821,7 +1818,7 @@ user_mailer.new_device_sign_in_after_2fa.subject: Nouvelle connexion et authenti
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Signé avec deuxième facteur
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Connecté avec mot de passe
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Échec de l’authentification
-user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement située à %{location}
+user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement localisée à %{location}
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Votre e-mail et mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Votre e-mail et mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué %{count} reprises</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Votre e-mail et mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.

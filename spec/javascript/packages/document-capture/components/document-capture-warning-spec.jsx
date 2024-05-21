@@ -100,7 +100,7 @@ describe('DocumentCaptureWarning', () => {
     context('not failed result from vendor', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
-        const { getByRole, getByText, queryByText } = renderContent({
+        const { getByRole, getByText } = renderContent({
           isFailedDocType: false,
           isFailedResult,
           inPersonUrl,
@@ -109,7 +109,6 @@ describe('DocumentCaptureWarning', () => {
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, true);
         expect(getByText('general error')).to.be.ok();
-        expect(queryByText('idv.warning.attempts_html')).to.be.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
         // ipp section
@@ -127,10 +126,9 @@ describe('DocumentCaptureWarning', () => {
         });
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
-        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+        validateHeader('errors.doc_auth.rate_limited_subheading', 2, true);
         expect(getByText(/general error/)).to.be.ok();
-        expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
-        expect(queryByText('idv.failure.attempts_html')).to.null();
+        expect(queryByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
         // ipp section
         validateIppSection(true);
@@ -143,7 +141,7 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText, queryByText } = renderContent({
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
@@ -153,7 +151,6 @@ describe('DocumentCaptureWarning', () => {
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText('general error')).to.be.ok();
-        expect(queryByText('idv.warning.attempts_html')).to.be.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // the ipp section isn't displayed with isFailedResult=true
@@ -174,8 +171,7 @@ describe('DocumentCaptureWarning', () => {
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
-        expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
-        expect(queryByText('idv.failure.attempts_html')).to.null();
+        expect(queryByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not existing
         validateIppSection(false);
@@ -197,10 +193,9 @@ describe('DocumentCaptureWarning', () => {
 
       // error message section
       validateHeader('errors.doc_auth.selfie_fail_heading', 1, true);
-      validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+      validateHeader('errors.doc_auth.rate_limited_subheading', 2, true);
       expect(getByText('general error')).to.be.ok();
-      expect(getByText('idv.warning.attempts_html')).to.be.ok();
-      expect(queryByText('idv.failure.attempts_html')).to.null();
+      expect(queryByText('idv.failure.attempts_html')).to.be.ok();
       expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
       // ipp section should exist
       validateIppSection(true);
@@ -221,10 +216,9 @@ describe('DocumentCaptureWarning', () => {
 
       // error message section
       validateHeader('errors.doc_auth.selfie_not_live_or_poor_quality_heading', 1, true);
-      validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+      validateHeader('errors.doc_auth.rate_limited_subheading', 2, true);
       expect(getByText('general error')).to.be.ok();
-      expect(getByText('idv.warning.attempts_html')).to.be.ok();
-      expect(queryByText('idv.failure.attempts_html')).to.null();
+      expect(queryByText('idv.failure.attempts_html')).to.be.ok();
       expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
       // ipp section exists
       validateIppSection(true);
@@ -246,7 +240,7 @@ describe('DocumentCaptureWarning', () => {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.doc_type_not_supported_heading',
         subheading: '',
-        error_message_displayed: 'general error idv.warning.attempts_html',
+        error_message_displayed: 'general error',
         remaining_submit_attempts: 2,
         liveness_checking_required: false,
       });
@@ -256,7 +250,7 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText, queryByText } = renderContent({
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
@@ -266,7 +260,6 @@ describe('DocumentCaptureWarning', () => {
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText('general error')).to.be.ok();
-        expect(queryByText('idv.warning.attempts_html')).to.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not displayed for non ipp
@@ -287,8 +280,7 @@ describe('DocumentCaptureWarning', () => {
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
-        expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
-        expect(queryByText('idv.failure.attempts_html')).to.null();
+        expect(queryByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not displayed for non ipp
         validateIppSection(false);
@@ -301,7 +293,7 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText, queryByText } = renderContent({
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
@@ -311,7 +303,6 @@ describe('DocumentCaptureWarning', () => {
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText('general error')).to.be.ok();
-        expect(queryByText('idv.warning.attempts_html')).to.be.null();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // the ipp section isn't displayed with isFailedResult=true
@@ -331,8 +322,7 @@ describe('DocumentCaptureWarning', () => {
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
-        expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
-        expect(queryByText('idv.failure.attempts_html')).to.null();
+        expect(queryByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
         // ipp section not existing
         validateIppSection(false);

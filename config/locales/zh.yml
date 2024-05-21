@@ -954,9 +954,9 @@ help_text.requested_attributes.verified_at: 更新是在
 help_text.requested_attributes.x509_issuer: PIV/CAC 发放方
 help_text.requested_attributes.x509_subject: PIV/CAC 身份
 i18n.language: 语言
-i18n.locale.en: 英文
-i18n.locale.es: 西班牙文
-i18n.locale.fr: 法文
+i18n.locale.en: English
+i18n.locale.es: Español
+i18n.locale.fr: Français
 i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: 保护文本安全，从 %{first_number} 开始，到 %{last_number}结束
 idv.buttons.change_address_label: 更新地址
@@ -1126,7 +1126,6 @@ idv.titles.unavailable: 我们正在争取解决错误。
 idv.troubleshooting.headings.need_assistance: 需要立即帮助？以下是如何得到帮助的步骤：
 idv.troubleshooting.options.contact_support: 联系 %{app_name} 支持
 idv.troubleshooting.options.doc_capture_tips: 拍出你身份证件清晰照片的提示。
-idv.troubleshooting.options.get_help_at_sp: 在 %{sp_name}得到帮助
 idv.troubleshooting.options.learn_more_verify_by_mail: 对通过邮件验证你地址获得更多了解
 idv.troubleshooting.options.learn_more_verify_by_phone: 了解有关使用什么号码的更多信息
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: 对验证你的电话号码获得更多了解
@@ -1139,8 +1138,6 @@ idv.unavailable.idv_explanation.without_sp: 你试图访问的机构需要确保
 idv.unavailable.next_steps_html: '%{status_page_link_html} 或者退出 %{app_name}，稍后再试。'
 idv.unavailable.status_page_link: 在我们的状态页面获得最新信息。
 idv.unavailable.technical_difficulties: 很遗憾，我们这边现在遇到技术困难，目前无法验证你的身份。
-idv.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
-idv.warning.attempts_html.other: 出于安全考虑，你只能再试 <strong>%{count} 次 </strong>了 。
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation: 遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
@@ -1742,7 +1739,7 @@ user_mailer.account_reset_request.intro_html: '作为安全措施, %{app_name} �
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
 user_mailer.account_verified.contact_link: 联系我们
-user_mailer.account_verified.intro_html: 你于 %{date} 使用 %{app_name} 在 %{sp_name}}成功验证了身份。如果你没有采取这一行动，请 %{contact_link_html} 并登录 %{change_password_link_html}。
+user_mailer.account_verified.intro_html: 你于 %{date} 使用 %{app_name} 在 %{sp_name}成功验证了身份。如果你没有采取这一行动，请 %{contact_link_html} 并登录 %{change_password_link_html}。
 user_mailer.account_verified.subject: 你在 %{sp_name} 验证了身份。
 user_mailer.add_email_associated_with_another_account.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.add_email_associated_with_another_account.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能把它加到另外一个账户上。你必须首先将其从与之相关的账户中删除或去掉。要做到这一点，点击以下链接并用该电邮地址登录。如果你没有试图将此电邮地址加到一个账户，可忽略这一信息。
@@ -1826,7 +1823,7 @@ user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的�
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authenticated
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Signed in with password
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Failed to authenticate
-user_mailer.new_device_sign_in_attempts.new_sign_in_from: New sign-in potentially located in %{location}
+user_mailer.new_device_sign_in_attempts.new_sign_in_from: 新登录可能是在 %{location}
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate %{count} times</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.

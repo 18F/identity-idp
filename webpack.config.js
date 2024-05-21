@@ -88,7 +88,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       writeToDisk: true,
       integrity: isProductionEnv,
-      integrityHashes: ['sha512'],
+      integrityHashes: ['sha256'],
       output: 'manifest.json',
       transform(manifest) {
         const srcIntegrity = {};

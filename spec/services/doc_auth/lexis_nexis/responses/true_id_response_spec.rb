@@ -409,10 +409,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           success: false,
           exception: nil,
           errors: {
-            general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
+            general: [DocAuth::Errors::GENERAL_ERROR],
             front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
             back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
-            hints: false,
+            hints: true,
           },
           attention_with_barcode: false,
           doc_type_supported: true,

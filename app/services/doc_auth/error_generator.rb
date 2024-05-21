@@ -339,8 +339,8 @@ module DocAuth
       unknown_error_handler.handle(response_info).to_h
     end
 
-    def self.general_error(liveness_enabled)
-      liveness_enabled ? Errors::GENERAL_ERROR_LIVENESS : Errors::GENERAL_ERROR
+    def self.general_error(_liveness_enabled)
+      Errors::GENERAL_ERROR
     end
 
     def self.wrapped_general_error(liveness_enabled)
