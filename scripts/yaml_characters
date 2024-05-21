@@ -2,8 +2,7 @@
 # frozen_string_literal: true
 
 require 'pathname'
-
-exec('bin/rails', 'runner', $0, *ARGV) unless defined?(Rails)
+require_relative '../config/environment.rb'
 
 excluded_locales = []
 excluded_gem_paths = []
@@ -12,7 +11,7 @@ OptionParser.new do |opts|
     Usage
     =======================
 
-      #{Pathname.new($PROGRAM_NAME).relative_path_from(Dir.pwd)} [OPTIONS]
+      #{$PROGRAM_NAME} [OPTIONS]
 
       Prints all unique characters from Rails loaded I18n data, which can be used in combination
       with font subsetting to optimize font sizes.
