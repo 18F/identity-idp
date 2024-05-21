@@ -1823,7 +1823,7 @@ user_mailer.new_device_sign_in_after_2fa.subject: New sign-in and authentication
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authenticated
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Signed in with password
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Failed to authenticate
-user_mailer.new_device_sign_in_attempts.new_sign_in_from: New sign-in potentially located in %{location}
+user_mailer.new_device_sign_in_attempts.new_sign_in_from: 新登录可能是在 %{location}
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate %{count} times</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
