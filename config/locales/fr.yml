@@ -786,7 +786,7 @@ event_types.piv_cac_disabled: Carte PIV/CAC désassociée
 event_types.piv_cac_enabled: Carte PIV/CAC associée
 event_types.sign_in_after_2fa: Connecté avec deuxième facteur
 event_types.sign_in_before_2fa: Connecté avec mot de passe
-event_types.sign_in_notification_timeframe_expired: Délai de notification pour la connexion à partir d’un nouveau dispositif expiré
+event_types.sign_in_notification_timeframe_expired: Expiration du délai de notification autorisé pour se connecter à partir d’un nouvel appareil
 event_types.sign_in_unsuccessful_2fa: Échec de l’authentification
 event_types.webauthn_key_added: Clé de sécurité physique ajoutée
 event_types.webauthn_key_removed: Clé de sécurité physique supprimée
@@ -1815,12 +1815,12 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette act
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.new_device_sign_in_after_2fa.reset_password: réinitialisez votre mot de passe
 user_mailer.new_device_sign_in_after_2fa.subject: Nouvelle connexion et authentification avec votre compte %{app_name}
-user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Signé avec deuxième facteur
+user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authentification réussie
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Connecté avec mot de passe
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Échec de l’authentification
-user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement située à %{location}
+user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement localisée à %{location}
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué %{count} reprises</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>échec de l’authentification %{count} fois</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
 user_mailer.new_device_sign_in_before_2fa.info_p3_html: L’authentification à deux facteurs protège votre compte contre tout accès non autorisé. Si ce n’est pas vous, %{reset_password_link_html}.
