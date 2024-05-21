@@ -113,8 +113,6 @@ module I18n
         { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] },
         { key: 'event_types.sign_in_notification_timeframe_expired', locales: %i[zh] },
         { key: 'event_types.sign_in_unsuccessful_2fa', locales: %i[zh] },
-        { key: 'forms.buttons.continue_ipp', locales: %i[zh] },
-        { key: 'forms.buttons.continue_remote', locales: %i[zh] },
         { key: 'forms.webauthn_setup.learn_more', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_1', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_1a', locales: %i[zh] },
