@@ -605,7 +605,7 @@ doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Con
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
-doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede acceder a su información o modificarla. 
+doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede acceder a su información o modificarla.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
 doc_auth.info.selfie_capture_status.face_close_to_border: Demasiado cerca del marco
 doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
