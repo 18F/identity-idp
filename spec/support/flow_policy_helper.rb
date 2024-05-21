@@ -15,6 +15,7 @@ module FlowPolicyHelper
       idv_session.idv_consent_given = true
     when :how_to_verify
       idv_session.skip_doc_auth = false
+      idv_session.skip_doc_auth_from_how_to_verify = false
     when :hybrid_handoff
       idv_session.flow_path = 'standard'
     when :link_sent
