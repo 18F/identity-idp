@@ -167,7 +167,6 @@ module I18n
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.one', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.other', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_before_2fa.info_p2', locales: %i[zh] },
         { key: 'openid_connect.authorization.errors.bad_client_id', locales: %i[zh] },
         { key: 'openid_connect.authorization.errors.invalid_verified_within_duration.one', locales: %i[zh] },
         { key: 'openid_connect.authorization.errors.invalid_verified_within_duration.other', locales: %i[zh] },
