@@ -498,13 +498,13 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 attach_images(
                   Rails.root.join(
                     'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_selfie_pass.yml'
+                    'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml'
                   ),
                 )
                 attach_selfie(
                   Rails.root.join(
                     'spec', 'fixtures',
-                    'ial2_test_credential_doc_auth_fail_selfie_pass.yml'
+                    'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml'
                   ),
                 )
 
@@ -513,8 +513,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 h1_error_message = strip_tags(t('errors.doc_auth.rate_limited_heading'))
                 expect(page).to have_content(h1_error_message)
 
-                body_error_message = strip_tags(t('doc_auth.errors.dpi.top_msg'))
-                expect(page).to have_content(body_error_message)
+                review_issues_body_message = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
+                )
+                expect(page).to have_content(review_issues_body_message)
 
                 review_issues_rate_limit_warning = strip_tags(
                   t(
@@ -534,7 +536,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 back_inline_error = strip_tags(
                   t('doc_auth.errors.general.multiple_back_id_failures'),
                 )
-                expect(page).to have_content(back_inline_error).once
+                expect(page).not_to have_content(back_inline_error).once
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -617,9 +619,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 front_inline_error = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
-                expect(page).to have_content(front_inline_error).once
+                expect(page).not_to have_content(front_inline_error).once
                 back_inline_error = strip_tags(
-                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                  t('doc_auth.errors.dpi.failed_short'),
                 )
                 expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
@@ -661,9 +663,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 front_inline_error = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
-                expect(page).to have_content(front_inline_error).once
+                expect(page).not_to have_content(front_inline_error).once
                 back_inline_error = strip_tags(
-                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                  t('doc_auth.errors.dpi.failed_short'),
                 )
                 expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
@@ -731,7 +733,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 h1_error_message = strip_tags(t('errors.doc_auth.rate_limited_heading'))
                 expect(page).to have_content(h1_error_message)
 
-                body_error_message = strip_tags(t('doc_auth.errors.alerts.barcode_content_check'))
+                body_error_message = strip_tags(t('doc_auth.errors.alerts.id_not_verified'))
                 expect(page).to have_content(body_error_message)
 
                 review_issues_rate_limit_warning = strip_tags(
