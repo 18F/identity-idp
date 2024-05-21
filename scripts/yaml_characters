@@ -1,7 +1,9 @@
-#!/usr/bin/env bundle exec rails runner
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'pathname'
+
+exec('bin/rails', 'runner', $0, *ARGV) unless defined?(Rails)
 
 excluded_locales = []
 excluded_gem_paths = []
