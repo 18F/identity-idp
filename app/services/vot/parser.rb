@@ -12,7 +12,7 @@ module Vot
       :identity_proofing?,
       :biometric_comparison?,
       :ialmax?,
-      :enhanced_ipp?
+      :enhanced_ipp?,
     ) do
       def self.no_sp_result
         self.new(
@@ -23,7 +23,7 @@ module Vot
           identity_proofing?: false,
           biometric_comparison?: false,
           ialmax?: false,
-          enhanced_ipp?: false
+          enhanced_ipp?: false,
         )
       end
 
@@ -88,7 +88,7 @@ module Vot
         identity_proofing?: requirement_list.include?(:identity_proofing),
         biometric_comparison?: requirement_list.include?(:biometric_comparison),
         ialmax?: requirement_list.include?(:ialmax),
-        enhanced_ipp?: requirement_list.include?(:enhanced_ipp)
+        enhanced_ipp?: requirement_list.include?(:enhanced_ipp),
       )
     end
 
