@@ -68,7 +68,7 @@ module Proofing
           exception: nil,
           vendor_name: 'aamva:state_id',
           transaction_id: verification_response.transaction_locator_id,
-          requested_attributes: requested_attributes(verification_response),
+          requested_attributes: requested_attributes(verification_response).index_with(1),
           verified_attributes: verified_attributes(verification_response),
         )
       end

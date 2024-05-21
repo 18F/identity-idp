@@ -71,14 +71,14 @@ RSpec.describe Proofing::Aamva::Proofer do
       it 'includes requested_attributes' do
         result = subject.proof(state_id_data)
         expect(result.requested_attributes).to eq(
-          %i[
-            dob
-            state_id_number
-            state_id_type
-            last_name
-            first_name
-            address
-          ].to_set,
+          {
+            dob: 1,
+            state_id_number: 1,
+            state_id_type: 1,
+            last_name: 1,
+            first_name: 1,
+            address: 1,
+          },
         )
       end
     end
@@ -116,14 +116,14 @@ RSpec.describe Proofing::Aamva::Proofer do
       it 'includes requested_attributes' do
         result = subject.proof(state_id_data)
         expect(result.requested_attributes).to eq(
-          %i[
-            dob
-            state_id_number
-            state_id_type
-            last_name
-            first_name
-            address
-          ].to_set,
+          {
+            dob: 1,
+            state_id_number: 1,
+            state_id_type: 1,
+            last_name: 1,
+            first_name: 1,
+            address: 1,
+          },
         )
       end
     end
@@ -160,13 +160,13 @@ RSpec.describe Proofing::Aamva::Proofer do
       it 'includes requested_attributes' do
         result = subject.proof(state_id_data)
         expect(result.requested_attributes).to eq(
-          %i[
-            state_id_number
-            state_id_type
-            last_name
-            first_name
-            address
-          ].to_set,
+          {
+            state_id_number: 1,
+            state_id_type: 1,
+            last_name: 1,
+            first_name: 1,
+            address: 1,
+          },
         )
       end
     end
