@@ -64,21 +64,21 @@ module Proofing
           end
 
           add_optional_element(
-            'ns2:AddressDeliveryPointText',
+            'nc:AddressDeliveryPointText',
             value: applicant.address2,
             document:,
-            after: '//ns1:Address/ns2:AddressDeliveryPointText',
+            after: '//aa:Address/nc:AddressDeliveryPointText',
           )
 
           add_optional_element(
-            'ns2:DriverLicenseIssueDate',
+            'aa:DriverLicenseIssueDate',
             value: applicant.state_id_data.state_id_issued,
             document:,
             inside: '//ns:verifyDriverLicenseDataRequest',
           )
 
           add_optional_element(
-            'ns2:DriverLicenseExpirationDate',
+            'aa:DriverLicenseExpirationDate',
             value: applicant.state_id_data.state_id_expiration,
             document:,
             inside: '//ns:verifyDriverLicenseDataRequest',
@@ -142,15 +142,15 @@ module Proofing
 
         def user_provided_data_map
           {
-            '//ns2:IdentificationID' => state_id_number,
-            '//ns1:MessageDestinationId' => message_destination_id,
-            '//ns2:PersonGivenName' => applicant.first_name,
-            '//ns2:PersonSurName' => applicant.last_name,
-            '//ns1:PersonBirthDate' => applicant.dob,
-            '//ns2:AddressDeliveryPointText' => applicant.address1,
-            '//ns2:LocationCityName' => applicant.city,
-            '//ns2:LocationStateUsPostalServiceCode' => applicant.state,
-            '//ns2:LocationPostalCode' => applicant.zipcode,
+            '//nc:IdentificationID' => state_id_number,
+            '//aa:MessageDestinationId' => message_destination_id,
+            '//nc:PersonGivenName' => applicant.first_name,
+            '//nc:PersonSurName' => applicant.last_name,
+            '//aa:PersonBirthDate' => applicant.dob,
+            '//nc:AddressDeliveryPointText' => applicant.address1,
+            '//nc:LocationCityName' => applicant.city,
+            '//nc:LocationStateUsPostalServiceCode' => applicant.state,
+            '//nc:LocationPostalCode' => applicant.zipcode,
           }
         end
 
