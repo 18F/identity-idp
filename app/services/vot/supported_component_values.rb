@@ -38,6 +38,12 @@ module Vot
       implied_component_values: [P1],
       requirements: [:biometric_comparison],
     ).freeze
+    Pe = ComponentValue.new(
+      name: 'Pe',
+      description: 'Enhanced In Person Proofing is required',
+      implied_component_values: [P1],
+      requirements: [:enhanced_ipp],
+    ).freeze
 
     NAME_HASH = constants.map do |constant|
       component_value = const_get(constant)
