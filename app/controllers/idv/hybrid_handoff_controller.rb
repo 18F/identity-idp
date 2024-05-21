@@ -51,9 +51,11 @@ module Idv
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
          idv_session.service_provider&.in_person_proofing_enabled
-        idv_session.skip_doc_auth == false
+        idv_session.skip_doc_auth
+        idv_session.skip_doc_auth_from_how_to_verify == false
       else
         idv_session.skip_doc_auth.nil? || idv_session.skip_doc_auth == false
+        idv_session.skip_doc_auth.nil? || idv_session.skip_doc_auth_from_how_to_verify == false
       end
     end
 
