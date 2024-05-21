@@ -28,7 +28,7 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
     def index
-      if @authorize_form.ial2_or_greater?
+      if resolved_authn_context_result.identity_proofing?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
@@ -93,11 +93,29 @@ module OpenidConnect
     end
 
     def link_identity_to_service_provider
-      @authorize_form.link_identity_to_service_provider(current_user, session.id)
+      @authorize_form.link_identity_to_service_provider(
+        current_user: current_user,
+        ial: resolved_authn_context_int_ial,
+        rails_session_id: session.id,
+      )
     end
 
     def ial_context
-      @authorize_form.ial_context
+      IalContext.new(
+        ial: resolved_authn_context_int_ial,
+        service_provider: @authorize_form.service_provider,
+        user: current_user,
+      )
+    end
+
+    def resolved_authn_context_int_ial
+      if resolved_authn_context_result.ialmax?
+        0
+      elsif resolved_authn_context_result.identity_proofing?
+        2
+      else
+        1
+      end
     end
 
     def handle_successful_handoff
@@ -122,7 +140,7 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      (@authorize_form.ial2_requested? &&
+      (resolved_authn_context_result.identity_proofing? &&
         (current_user.identity_not_verified? ||
         decorated_sp_session.requested_more_recent_verification?)) ||
         current_user.reproof_for_irs?(service_provider: current_sp)
@@ -211,14 +229,9 @@ module OpenidConnect
     end
 
     def track_events
-      event_ial_context = IalContext.new(
-        ial: @authorize_form.ial,
-        service_provider: @authorize_form.service_provider,
-        user: current_user,
-      )
       analytics.sp_redirect_initiated(
-        ial: event_ial_context.ial,
-        billed_ial: event_ial_context.bill_for_ial_1_or_2,
+        ial: ial_context.ial,
+        billed_ial: ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],

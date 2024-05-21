@@ -66,6 +66,7 @@ module I18n
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
+        { key: 'i18n.locale.zh', locales: %i[es fr zh] },
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
@@ -77,8 +78,7 @@ module I18n
         { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         # need to be fixed
-        { key: 'i18n.locale.zh', locales: %i[es fr zh] },
-        { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr] },
         { key: 'account_reset.pending.canceled', locales: %i[zh] },
         { key: 'account_reset.recovery_options.check_saved_credential', locales: %i[zh] },
         { key: 'account_reset.recovery_options.use_same_device', locales: %i[zh] },
@@ -100,8 +100,6 @@ module I18n
         { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] },
         { key: 'event_types.sign_in_notification_timeframe_expired', locales: %i[zh] },
         { key: 'event_types.sign_in_unsuccessful_2fa', locales: %i[zh] },
-        { key: 'forms.buttons.continue_ipp', locales: %i[zh] },
-        { key: 'forms.buttons.continue_remote', locales: %i[zh] },
         { key: 'forms.webauthn_setup.learn_more', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_1', locales: %i[zh] },
         { key: 'forms.webauthn_setup.step_1a', locales: %i[zh] },
@@ -154,7 +152,6 @@ module I18n
         { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_attempts.new_sign_in_from', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.one', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.other', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero', locales: %i[zh] },

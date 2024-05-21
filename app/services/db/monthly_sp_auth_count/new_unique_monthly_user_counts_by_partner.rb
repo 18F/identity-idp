@@ -13,7 +13,7 @@ module Db
       # @param [Date] end_date iaa end date
       # @return [PG::Result, Array]
       def call(partner:, issuers:, start_date:, end_date:)
-        date_range = start_date...end_date
+        date_range = start_date...end_date if start_date.present? && end_date.present?
 
         return [] if !date_range || issuers.blank?
 

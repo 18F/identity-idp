@@ -211,6 +211,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       and_return(reprocess_delay_minutes)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
       and_return(in_person_proofing_enforce_tmx)
+    allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled).
+      and_return(false)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
       request_delay_ms / GetUspsProofingResultsJob::MILLISECONDS_PER_SECOND,

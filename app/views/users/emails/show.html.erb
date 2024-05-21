@@ -3,10 +3,7 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.add_email')) %>
 
 <div class="margin-bottom-6">
-  <%= simple_form_for(
-        @add_user_email_form,
-        url: add_email_path,
-      ) do |f| %>
+  <%= simple_form_for(@add_user_email_form, url: add_email_path) do |f| %>
     <%= render ValidatedFieldComponent.new(
           form: f,
           name: :email,

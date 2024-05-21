@@ -20,8 +20,8 @@ RSpec.describe StoreSpMetadataInSession do
       let(:issuer) { 'issuer' }
       let(:request_url) { 'http://issuer.gov' }
       let(:requested_attributes) { %w[email] }
-      let(:request_acr) { nil }
-      let(:request_vtr) { nil }
+      let(:request_acr) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+      let(:request_vtr) { 'C1.C2' }
       let(:sp_request) do
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = issuer
@@ -32,232 +32,19 @@ RSpec.describe StoreSpMetadataInSession do
         end
       end
 
-      before do
+      it 'copies the attributes on the ServiceProviderRequest into the session[:sp] hash' do
         instance.call(service_provider_request: sp_request)
-      end
 
-      context 'IAL1 is requested with ACRs' do
-        let(:request_acr) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when IAL2 and AAL3 are requested with ACRs' do
-        let(:request_acr) do
-          [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF].join(' ')
-        end
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when IAL2 and phishing-resistant are requested with ACRs' do
-        let(:request_acr) do
-          [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-           Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF].join(' ')
-        end
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when MFA is requested using a VTR' do
-        let(:request_vtr) { ['C1'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when MFA and biometric comparison are requested using a VTR' do
-        context 'using VTR' do
-          let(:request_vtr) { ['C1.Pb'] }
-
-          it 'sets the session[:sp] hash correctly' do
-            expect(app_session[:sp]).to eq(
-              {
-                issuer: issuer,
-                acr_values: request_acr,
-                request_url: request_url,
-                request_id: request_id,
-                requested_attributes: requested_attributes,
-                biometric_comparison_required: true,
-                vtr: request_vtr,
-              },
-            )
-          end
-        end
-      end
-
-      context 'when AAL2 and proofing are requested using a VTR' do
-        let(:request_vtr) { ['C2.P1'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when AAL2 and biometric comparison are requested using a VTR' do
-        let(:request_vtr) { ['C2.Pb'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: true,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when phishing resistant ID and proofing are requested using a VTR' do
-        let(:request_vtr) { ['Ca.P1'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when phishing resistant and ID biometric comparison are requested using a VTR' do
-        let(:request_vtr) { ['Ca.Pb'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: true,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when PIV/CAC and proofing are requested using a VTR' do
-        let(:request_vtr) { ['Cb.P1'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: false,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'when PIV/CAC and biometric comparison are requested using a VTR' do
-        let(:request_vtr) { ['Cb.Pb'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: true,
-              vtr: request_vtr,
-            },
-          )
-        end
-      end
-
-      context 'IAL2 proofing requested with no authentication requirement using a VTR' do
-        let(:request_vtr) { ['Pb'] }
-
-        it 'sets the session[:sp] hash correctly' do
-          expect(app_session[:sp]).to eq(
-            {
-              issuer: issuer,
-              acr_values: request_acr,
-              request_url: request_url,
-              request_id: request_id,
-              requested_attributes: requested_attributes,
-              biometric_comparison_required: true,
-              vtr: request_vtr,
-            },
-          )
-        end
+        expect(app_session[:sp]).to eq(
+          {
+            issuer: issuer,
+            acr_values: request_acr,
+            request_url: request_url,
+            request_id: request_id,
+            requested_attributes: requested_attributes,
+            vtr: request_vtr,
+          },
+        )
       end
     end
   end

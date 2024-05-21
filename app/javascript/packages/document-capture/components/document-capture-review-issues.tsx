@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
-import { useI18n } from '@18f/identity-react-i18n';
+import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
@@ -55,7 +55,6 @@ function DocumentCaptureReviewIssues({
       )}
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
-        remainingSubmitAttempts={remainingSubmitAttempts}
         isFailedDocType={isFailedDocType}
         isFailedSelfie={isFailedSelfie}
         isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
@@ -63,6 +62,11 @@ function DocumentCaptureReviewIssues({
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
         hasDismissed={hasDismissed}
       />
+      <p>
+        <HtmlTextWithStrongNoWrap
+          text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
+        />
+      </p>
       {!isFailedDocType && captureHints && (
         <TipList
           titleClassName="margin-bottom-0 margin-top-2"

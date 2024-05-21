@@ -130,6 +130,7 @@ module IdentityConfig
     config.add(:doc_auth_vendor_randomize_percent, type: :integer)
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
+    config.add(:drop_off_report_config, type: :json)
     config.add(:domain_name, type: :string)
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)

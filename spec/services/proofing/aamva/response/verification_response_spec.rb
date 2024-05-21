@@ -13,6 +13,8 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
   end
   let(:verification_results) do
     {
+      state_id_expiration: nil,
+      state_id_issued: nil,
       state_id_number: true,
       state_id_type: true,
       dob: true,

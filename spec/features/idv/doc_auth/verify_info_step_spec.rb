@@ -164,7 +164,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
       expect(page).to have_current_path(idv_session_errors_warning_path)
       expect(page).to have_content(
         strip_tags(
-          t('idv.warning.attempts_html.one'),
+          t('idv.failure.attempts_html.one'),
         ),
       )
       click_try_again

@@ -330,10 +330,10 @@ RSpec.describe DocAuth::ErrorGenerator do
         with(hash_including(:response_info, :message)).twice
       output = described_class.new(config).generate_doc_auth_errors(error_info)
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
-      expect(output[:hints]).to eq(false)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with known alert and specific selfie no liveness error' do

@@ -587,9 +587,9 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.how_to_verify: Tiene la opción de verificar su identidad en línea o en persona en una oficina de correos participante.
+doc_auth.info.how_to_verify: Tiene la opción de verificar su identidad en línea, o en persona en una oficina de correos participante.
 doc_auth.info.how_to_verify_selfie: Tiene la opción de verificar su identidad en línea con su teléfono, o en persona en una oficina de correos participante.
-doc_auth.info.how_to_verify_troubleshooting_options_header: '¿Desea obtener más información sobre cómo verificar su identidad?'
+doc_auth.info.how_to_verify_troubleshooting_options_header: ¿Desea obtener más información sobre cómo verificar su identidad?
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación emitida por el estado.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
 doc_auth.info.image_loaded: Imagen cargada
@@ -618,7 +618,7 @@ doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su
 doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
 doc_auth.info.verify_at_post_office_description: Esta opción es mejor si no tiene un teléfono para tomar fotografías de su identificación.
 doc_auth.info.verify_at_post_office_description_selfie: Elija esta opción si no tiene un teléfono para tomar fotografías.
-doc_auth.info.verify_at_post_office_instruction: Ingresará la información de su identificación en línea y verificará su identidad en persona en una oficina de correos participante.
+doc_auth.info.verify_at_post_office_instruction: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_instruction_selfie: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
@@ -952,7 +952,7 @@ i18n.language: Idioma
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: Chinese
+i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: texto seguro, a partir de %{first_number} y hasta %{last_number}
 idv.buttons.change_address_label: Actualizar dirección
 idv.buttons.change_label: Actualizar
@@ -1077,13 +1077,11 @@ idv.gpo.request_another_letter.learn_more_link: Obtenga más información sobre 
 idv.gpo.request_another_letter.title: '¿Solicitar otra carta?'
 idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
+idv.gpo.will_send_to: 'La hemos enviado a:'
 idv.images.come_back_later: Carta con una marca de verificación
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
 idv.messages.activated_link: contáctenos
-idv.messages.come_back_later_html: '<p>Las cartas tardan de <strong>5 a 10 días</strong> en llegar por First-Class Mail del Servicio Postal de los EE. UU. (USPS).</p> <p>Una vez que reciba su carta, inicie sesión en %{app_name} e introduzca su código de verificación cuando se le solicite.</p>'
-idv.messages.come_back_later_no_sp_html: Por ahora, puede volver a su <strong>cuenta de %{app_name}</strong>.
-idv.messages.come_back_later_password_html: '<strong>No olvide su contraseña.</strong><br /> Si restablece su contraseña, el código de verificación de su carta ya no funcionará y tendrá que verificar su identidad de nuevo.'
-idv.messages.come_back_later_sp_html: Por ahora, puede volver a <strong>%{sp}</strong>.
+idv.messages.come_back_later_html: 'Las cartas tardan entre <strong>5 y 10 días</strong> en llegar. Vuelva a iniciar sesión para introducir el código de verificación cuando reciba la carta.'
 idv.messages.confirm: Hemos protegido su información verificada
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Recuerde su contraseña.</strong> El código de verificación de su carta no funcionará si restablece su contraseña más adelante.'
 idv.messages.enter_password.message: '%{app_name} cifrará su información con su contraseña. Esto significa que su información está protegida y solo usted puede acceder a ella o modificarla.'
@@ -1123,7 +1121,6 @@ idv.titles.unavailable: Estamos trabajando para corregir un error
 idv.troubleshooting.headings.need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
 idv.troubleshooting.options.contact_support: Contacte con el servicio de asistencia de %{app_name}
 idv.troubleshooting.options.doc_capture_tips: Consejos para tomar fotos nítidas de su identificación
-idv.troubleshooting.options.get_help_at_sp: Obtenga ayuda en %{sp_name}
 idv.troubleshooting.options.learn_more_verify_by_mail: Obtenga más información sobre la verificación de su dirección por correo
 idv.troubleshooting.options.learn_more_verify_by_phone: Obtenga más información sobre el número de teléfono que debe usar
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: Obtenga más información sobre la verificación de su número de teléfono
@@ -1136,8 +1133,6 @@ idv.unavailable.idv_explanation.without_sp: La agencia a la que está intentando
 idv.unavailable.next_steps_html: '%{status_page_link_html} o salga de %{app_name} y vuelva a intentarlo más tarde.'
 idv.unavailable.status_page_link: Obtenga las actualizaciones en nuestra página de estado
 idv.unavailable.technical_difficulties: Lamentablemente, tenemos problemas técnicos y no podemos verificar su identidad en este momento.
-idv.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un intento</strong>.
-idv.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
 idv.warning.state_id.explanation: Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
@@ -1822,7 +1817,7 @@ user_mailer.new_device_sign_in_after_2fa.subject: Nuevo inicio de sesión y aute
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Autenticado
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Inicia sesión con contraseña
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Error al autenticar
-user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nuevo inicio de sesión potencialmente ubicado en %{location}
+user_mailer.new_device_sign_in_attempts.new_sign_in_from: El nuevo inicio de sesión se encuentra potencialmente en %{location}
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio error</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>error al autenticar %{count} veces</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio error</strong>.

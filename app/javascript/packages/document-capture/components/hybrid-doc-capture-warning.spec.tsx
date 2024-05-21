@@ -19,9 +19,7 @@ describe('HybridDocCaptureWarning', () => {
   describe('basic rendering', () => {
     it('renders a warning alert', () => {
       const { getByRole } = render(
-        <ServiceProviderContextProvider
-          value={{ name: null, failureToProofURL: '', getFailureToProofURL: () => '' }}
-        >
+        <ServiceProviderContextProvider value={{ name: null, failureToProofURL: '' }}>
           <HybridDocCaptureWarning />
         </ServiceProviderContextProvider>,
       );
@@ -34,9 +32,7 @@ describe('HybridDocCaptureWarning', () => {
   describe('without SP', () => {
     it('renders correct warning title', () => {
       const { getByRole } = render(
-        <ServiceProviderContextProvider
-          value={{ name: null, failureToProofURL: '', getFailureToProofURL: () => '' }}
-        >
+        <ServiceProviderContextProvider value={{ name: null, failureToProofURL: '' }}>
           <HybridDocCaptureWarning />
         </ServiceProviderContextProvider>,
       );
@@ -49,9 +45,7 @@ describe('HybridDocCaptureWarning', () => {
 
     it('does not render a third list item pertaining to SP services', () => {
       const { getByRole } = render(
-        <ServiceProviderContextProvider
-          value={{ name: null, failureToProofURL: '', getFailureToProofURL: () => '' }}
-        >
+        <ServiceProviderContextProvider value={{ name: null, failureToProofURL: '' }}>
           <HybridDocCaptureWarning />
         </ServiceProviderContextProvider>,
       );
@@ -67,9 +61,7 @@ describe('HybridDocCaptureWarning', () => {
   describe('with SP', () => {
     it('renders the correct warning title', () => {
       const { getByRole } = render(
-        <ServiceProviderContextProvider
-          value={{ name: SP_NAME, failureToProofURL: '', getFailureToProofURL: () => '' }}
-        >
+        <ServiceProviderContextProvider value={{ name: SP_NAME, failureToProofURL: '' }}>
           <HybridDocCaptureWarning />
         </ServiceProviderContextProvider>,
       );
@@ -83,9 +75,7 @@ describe('HybridDocCaptureWarning', () => {
     });
     it('renders a third list item pertaining to SP services', () => {
       const { getByRole } = render(
-        <ServiceProviderContextProvider
-          value={{ name: SP_NAME, failureToProofURL: '', getFailureToProofURL: () => '' }}
-        >
+        <ServiceProviderContextProvider value={{ name: SP_NAME, failureToProofURL: '' }}>
           <HybridDocCaptureWarning />
         </ServiceProviderContextProvider>,
       );
