@@ -469,7 +469,7 @@ trigger_devops:
     - >-
       helm upgrade --install --namespace review-apps
       --debug
-      --set env="reviewapps"
+      --set env="reviewapps-$CI_ENVIRONMENT_SLUG"
       --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set idp.image.tag="${CI_COMMIT_SHA}"
       --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
