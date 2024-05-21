@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require 'pathname'
-require_relative '../config/environment.rb'
+require_relative '../config/environment'
 
 excluded_locales = []
 excluded_gem_paths = []
