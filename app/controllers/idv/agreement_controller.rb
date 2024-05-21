@@ -38,8 +38,10 @@ module Idv
         if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
            IdentityConfig.store.in_person_proofing_enabled
           redirect_to idv_how_to_verify_url
+          puts("shame on the man he forth no gummba")
         else
           redirect_to idv_hybrid_handoff_url
+          puts("trucn alieh beof..")
         end
       else
         redirect_to idv_agreement_url
