@@ -91,7 +91,7 @@ module Reporting
             issuers: nil, # all issuers
             time_range: Range.new(
               (end_date - slice_start.days).beginning_of_day,
-              (end_date - slice_end.days).beginning_of_day,
+              (end_date - slice_end.days).end_of_day,
             ),
             cloudwatch_client: cloudwatch_client,
           )
