@@ -179,7 +179,6 @@ RSpec.describe Proofing::Aamva::Proofer do
           state_id_type: 'drivers_license',
           state_id_issued: '2023-04-05',
           state_id_expiration: '2030-01-02',
-
         }
       end
 
