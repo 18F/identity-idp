@@ -79,6 +79,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         expect(page).to have_current_path(idv_document_capture_path)
 
         click_try_again
+        front_inline_error = strip_tags(t('doc_auth.errors.general.multiple_front_id_failures'))
+        expect(page).to have_content(front_inline_error).once
+        back_inline_error = strip_tags(t('doc_auth.errors.general.multiple_back_id_failures'))
+        expect(page).to have_content(back_inline_error).once
         attach_images
         submit_images
         expect(page).to have_current_path(idv_ssn_path)
