@@ -152,14 +152,14 @@ module DocAuth
         side = error_fields.first
         case side
         when ErrorGenerator::ID
-          error = ErrorGenerator.general_error
+          error = Errors::GENERAL_ERROR
         when ErrorGenerator::FRONT
           error = Errors::MULTIPLE_FRONT_ID_FAILURES
         when ErrorGenerator::BACK
           error = Errors::MULTIPLE_BACK_ID_FAILURES
         end
       elsif error_fields.length > 1
-        error = ErrorGenerator.general_error
+        error = Errors::GENERAL_ERROR
         side = ErrorGenerator::ID
       end
       ErrorResult.new(error, side)
@@ -238,7 +238,7 @@ module DocAuth
         response_info: response_info,
       )
 
-      error = ErrorGenerator.general_error
+      error = Errors::GENERAL_ERROR
       side = ErrorGenerator::ID
       ErrorResult.new(error, side)
     end
@@ -335,10 +335,6 @@ module DocAuth
       # catch all route, technically should not happen
       unknown_error_handler = UnknownErrorHandler.new(config: config)
       unknown_error_handler.handle(response_info).to_h
-    end
-
-    def self.general_error
-      Errors::GENERAL_ERROR
     end
 
     def self.wrapped_general_error
