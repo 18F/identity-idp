@@ -953,7 +953,7 @@ i18n.language: Langue
 i18n.locale.en: English
 i18n.locale.es: Español
 i18n.locale.fr: Français
-i18n.locale.zh: Chinese
+i18n.locale.zh: 中文 (简体)
 idv.accessible_labels.masked_ssn: SMS sécurisé, commençant par %{first_number} et finissant par %{last_number}
 idv.buttons.change_address_label: Mettre à jour votre adresse
 idv.buttons.change_label: Mettre à jour
@@ -1078,13 +1078,11 @@ idv.gpo.request_another_letter.learn_more_link: En savoir plus sur la vérificat
 idv.gpo.request_another_letter.title: Vous voulez demander une autre lettre ?
 idv.gpo.return_to_profile: Retourner à votre profil
 idv.gpo.title: Saisir votre code de vérification
+idv.gpo.will_send_to: 'Nous vous enverrons un courrier à :'
 idv.images.come_back_later: Lettre avec une coche
 idv.messages.activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier les informations qui ont été vérifiées, veuillez %{link_html}.
 idv.messages.activated_link: nous contacter
-idv.messages.come_back_later_html: '<p>Les lettres mettent <strong>5 à 10 jours</strong> pour arriver par courrier prioritaire via USPS.</p> <p>Une fois votre lettre arrivée, connectez-vous à %{app_name} et saisissez votre code de vérification lorsque vous y êtes invité.</p>'
-idv.messages.come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte %{app_name}</strong> pour le moment.
-idv.messages.come_back_later_password_html: '<strong>N’oubliez pas votre mot de passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code de vérification figurant dans votre lettre ne fonctionnera plus et vous serez obligé de vérifier à nouveau votre identité.'
-idv.messages.come_back_later_sp_html: Vous pouvez retourner à <strong>%{sp}</strong> pour le moment.
+idv.messages.come_back_later_html: 'Les lettres mettent de <strong>5 à 10 jours</strong> pour arriver. Veuillez vous reconnecter après avoir reçu le courrier pour saisir votre code de vérification.'
 idv.messages.confirm: Nous avons sécurisé vos informations vérifiées
 idv.messages.enter_password.by_mail_password_reminder_html: '<strong>Mémorisez votre mot de passe.</strong> Le code de vérification contenu dans votre lettre ne fonctionnera pas si vous réinitialisez votre mot de passe par la suite.'
 idv.messages.enter_password.message: '%{app_name} chiffre vos informations avec votre mot de passe. Cela signifie que vos informations sont sécurisées et que vous seul pourrez y accéder ou les modifier.'
@@ -1124,7 +1122,6 @@ idv.titles.unavailable: Nous travaillons à la résolution d’une erreur
 idv.troubleshooting.headings.need_assistance: 'Vous avez besoin d’une assistance immédiate ? Voici comment obtenir de l’aide :'
 idv.troubleshooting.options.contact_support: Contacter le service d’assistance de %{app_name}
 idv.troubleshooting.options.doc_capture_tips: Conseils pour prendre des photos nettes de votre pièce d’identité
-idv.troubleshooting.options.get_help_at_sp: Obtenir de l’aide sur %{sp_name}
 idv.troubleshooting.options.learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
 idv.troubleshooting.options.learn_more_verify_by_phone: En savoir plus sur quel numéro de téléphone utiliser
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone
@@ -1137,8 +1134,6 @@ idv.unavailable.idv_explanation.without_sp: L’organisme auquel vous essayez d�
 idv.unavailable.next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et réessayez plus tard.'
 idv.unavailable.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
 idv.unavailable.technical_difficulties: Malheureusement, nous rencontrons des difficultés techniques et ne pouvons pas vérifier votre identité pour le moment.
-idv.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
-idv.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation: Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.

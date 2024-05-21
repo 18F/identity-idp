@@ -336,7 +336,7 @@ module Idv
     end
 
     def add_cost(token, transaction_id: nil)
-      Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
+      Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
     end
   end
 end
