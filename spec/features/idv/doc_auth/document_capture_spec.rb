@@ -362,10 +362,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 resubmit_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
                 expect(page).to have_content(resubmit_page_body_copy)
 
-                resubmit_page_inline_error_messages = strip_tags(
-                  t('doc_auth.errors.general.fallback_field_level'),
+                front_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
-                expect(page).to have_content(resubmit_page_inline_error_messages).twice
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -413,10 +417,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(resubmit_page_body_copy)
 
-                resubmit_page_inline_error_messages = strip_tags(
-                  t('doc_auth.errors.general.fallback_field_level'),
+                front_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
-                expect(page).to have_content(resubmit_page_inline_error_messages).once
+                expect(page).to have_content(front_inline_error).once
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -464,10 +468,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 )
                 expect(page).to have_content(resubmit_page_body_copy)
 
-                resubmit_page_inline_error_messages = strip_tags(
-                  t('doc_auth.errors.general.fallback_field_level'),
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
                 )
-                expect(page).to have_content(resubmit_page_inline_error_messages).once
+                expect(page).to have_content(back_inline_error).once
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -523,8 +527,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
-                expect(page).to have_content(inline_error_message)
+                front_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
+                )
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
 
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
@@ -604,8 +614,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
-                expect(page).to have_content(inline_error_message)
+                front_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
+                )
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
                 )
@@ -642,8 +658,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(t('doc_auth.errors.dpi.failed_short'))
-                expect(page).to have_content(inline_error_message)
+                front_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
+                )
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
                 )
@@ -720,8 +742,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
-                expect(page).to have_content(inline_error_message)
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
                 )
@@ -758,8 +782,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
-                expect(page).to have_content(inline_error_message)
+                front_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
+                )
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
                 )
@@ -796,8 +826,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(t('doc_auth.errors.general.fallback_field_level'))
-                expect(page).to have_content(inline_error_message)
+                front_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_front_id_failures'),
+                )
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
                 )
@@ -874,10 +910,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(
+                front_inline_error = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
-                expect(page).to have_content(inline_error_message)
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
                 )
@@ -914,10 +954,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 click_try_again
                 expect(page).to have_current_path(idv_document_capture_path)
 
-                inline_error_message = strip_tags(
+                front_inline_error = strip_tags(
                   t('doc_auth.errors.general.multiple_front_id_failures'),
                 )
-                expect(page).to have_content(inline_error_message)
+                expect(page).to have_content(front_inline_error).once
+                back_inline_error = strip_tags(
+                  t('doc_auth.errors.general.multiple_back_id_failures'),
+                )
+                expect(page).to have_content(back_inline_error).once
                 resubmit_page_inline_selfie_error_message = strip_tags(
                   t('doc_auth.errors.general.selfie_failure'),
                 )
