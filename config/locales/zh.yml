@@ -620,7 +620,7 @@ doc_auth.info.verify_at_post_office_description: 如果你没有手机拍身份�
 doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
-doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解。
+doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
 doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。

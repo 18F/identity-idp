@@ -620,13 +620,13 @@ doc_auth.info.verify_at_post_office_description: Esta opción es mejor si no tie
 doc_auth.info.verify_at_post_office_description_selfie: Elija esta opción si no tiene un teléfono para tomar fotografías.
 doc_auth.info.verify_at_post_office_instruction: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_instruction_selfie: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
-doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona.
+doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description: Esta opción es mejor si tiene un teléfono para tomar fotografías de su identificación.
 doc_auth.info.verify_online_description_selfie: Elija esta opción si tiene un teléfono para tomar fotografías.
 doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
 doc_auth.info.verify_online_instruction_selfie: Tomará con un teléfono fotos de su identificación y una foto de usted. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
-doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea.
+doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener una licencia de conducir o una tarjeta de identificación estatal
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
