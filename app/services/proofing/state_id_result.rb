@@ -20,7 +20,7 @@ module Proofing
       exception: nil,
       vendor_name: nil,
       transaction_id: '',
-      requested_attributes: [],
+      requested_attributes: {},
       verified_attributes: []
     )
       @success = success
