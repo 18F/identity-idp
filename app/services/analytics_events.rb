@@ -1177,6 +1177,7 @@ module AnalyticsEvents
     portrait_match_results: nil,
     image_metrics: nil,
     address_line2_present: nil,
+    zip_code: nil,
     **extra
   )
     track_event(
@@ -1215,6 +1216,7 @@ module AnalyticsEvents
       image_metrics:,
       address_line2_present:,
       liveness_checking_required:,
+      zip_code:,
       **extra,
     )
   end
