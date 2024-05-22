@@ -133,27 +133,12 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           )
           controller.current_user.webauthn_configurations.first
         end
-        let(:result) do
-          {
-            context: 'authentication',
-            multi_factor_auth_method: 'webauthn',
-            success: true,
-            webauthn_configuration_id: webauthn_configuration.id,
-            multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
-            new_device: true,
-          }
-        end
 
         before do
           allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         end
 
         it 'tracks a valid submission' do
-          expect(@analytics).to receive(:track_mfa_submit_event).
-            with(result)
-          expect(@analytics).to receive(:track_event).
-            with('User marked authenticated', authentication_type: :valid_2fa)
-
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
             :mfa_login_webauthn_roaming,
             success: true,
@@ -173,6 +158,20 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             )
             expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
           end
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            context: 'authentication',
+            multi_factor_auth_method: 'webauthn',
+            success: true,
+            webauthn_configuration_id: webauthn_configuration.id,
+            multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
+            new_device: true,
+          )
+          expect(@analytics).to have_logged_event(
+            'User marked authenticated',
+            authentication_type: :valid_2fa,
+          )
         end
 
         context 'with existing device' do
@@ -183,10 +182,12 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           it 'tracks new device value' do
             stub_analytics
 
-            expect(@analytics).to receive(:track_mfa_submit_event).
-              with(hash_including(new_device: false))
-
             patch :confirm, params: params
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              hash_including(new_device: false),
+            )
           end
         end
 
@@ -201,14 +202,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             )
             controller.current_user.webauthn_configurations.first
           end
-          let(:result) { super().merge(multi_factor_auth_method: 'webauthn_platform') }
 
           it 'tracks a valid submission' do
-            expect(@analytics).to receive(:track_mfa_submit_event).
-              with(result)
-            expect(@analytics).to receive(:track_event).
-              with('User marked authenticated', authentication_type: :valid_2fa)
-
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :mfa_login_webauthn_platform,
               success: true,
@@ -226,6 +221,21 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
                 false,
               )
             end
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              context: 'authentication',
+              multi_factor_auth_method: 'webauthn_platform',
+              success: true,
+              webauthn_configuration_id: webauthn_configuration.id,
+              multi_factor_auth_method_created_at: webauthn_configuration.created_at.
+                strftime('%s%L'),
+              new_device: true,
+            )
+            expect(@analytics).to have_logged_event(
+              'User marked authenticated',
+              authentication_type: :valid_2fa,
+            )
           end
         end
       end
@@ -238,19 +248,20 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           credential_public_key: credential_public_key,
         )
         webauthn_configuration = controller.current_user.webauthn_configurations.first
-        result = { context: 'authentication',
-                   multi_factor_auth_method: 'webauthn',
-                   success: false,
-                   error_details: { authenticator_data: { invalid_authenticator_data: true } },
-                   webauthn_configuration_id: webauthn_configuration.id,
-                   multi_factor_auth_method_created_at: webauthn_configuration.created_at.
-                     strftime('%s%L'),
-                   new_device: true }
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(result)
         expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
 
         patch :confirm, params: params
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          context: 'authentication',
+          multi_factor_auth_method: 'webauthn',
+          success: false,
+          error_details: { authenticator_data: { invalid_authenticator_data: true } },
+          webauthn_configuration_id: webauthn_configuration.id,
+          multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
+          new_device: true,
+        )
       end
 
       context 'webauthn_platform returns an error from frontend API' do
@@ -297,7 +308,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         it 'logs an event with error details' do
-          expect(@analytics).to receive(:track_mfa_submit_event).with(
+          patch :confirm, params: params
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
             success: false,
             error_details: {
               authenticator_data: { blank: true },
@@ -311,11 +325,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             new_device: true,
-            webauthn_configuration_id: nil,
             frontend_error: webauthn_error,
           )
-
-          patch :confirm, params: params
         end
       end
     end

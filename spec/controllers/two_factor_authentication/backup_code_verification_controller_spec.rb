@@ -27,16 +27,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           sign_in_before_2fa(user)
           stub_analytics
           stub_attempts_tracker
-          analytics_hash = {
-            success: true,
-            errors: {},
-            multi_factor_auth_method: 'backup_code',
-            multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
-            new_device: true,
-          }
-
-          expect(@analytics).to receive(:track_mfa_submit_event).
-            with(analytics_hash)
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).
             with(:mfa_login_backup_code, success: true)
@@ -46,6 +36,15 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             and_call_original
 
           post :create, params: payload
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: true,
+            errors: {},
+            multi_factor_auth_method: 'backup_code',
+            multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
+            new_device: true,
+          )
 
           expect(subject.user_session[:auth_events]).to eq(
             [
@@ -93,22 +92,23 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           stub_analytics
           stub_attempts_tracker
 
-          expect(@analytics).to receive(:track_mfa_submit_event).
-            with({
-              success: true,
-              errors: {},
-              multi_factor_auth_method: 'backup_code',
-              multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
-              new_device: true,
-            })
-
           expect(@irs_attempts_api_tracker).to receive(:track_event).
             with(:mfa_login_backup_code, success: true)
 
-          expect(@analytics).to receive(:track_event).
-            with('User marked authenticated', authentication_type: :valid_2fa)
-
           post :create, params: payload
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: true,
+            errors: {},
+            multi_factor_auth_method: 'backup_code',
+            multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
+            new_device: true,
+          )
+          expect(@analytics).to have_logged_event(
+            'User marked authenticated',
+            authentication_type: :valid_2fa,
+          )
         end
       end
     end
@@ -122,10 +122,12 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         stub_analytics
         stub_sign_in_before_2fa(user)
 
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(hash_including(new_device: false))
-
         post :create, params: payload
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          hash_including(new_device: false),
+        )
       end
     end
 
@@ -171,25 +173,12 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         user.second_factor_attempts_count =
           IdentityConfig.store.login_otp_confirmation_max_attempts - 1
         user.save
-        properties = {
-          success: false,
-          errors: {},
-          multi_factor_auth_method: 'backup_code',
-          multi_factor_auth_method_created_at: nil,
-          new_device: true,
-        }
 
         stub_analytics
         stub_attempts_tracker
 
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties)
-
         expect(@irs_attempts_api_tracker).to receive(:track_event).
           with(:mfa_login_backup_code, success: false)
-
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: max attempts reached')
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
           with(mfa_device_type: 'backup_code')
@@ -198,6 +187,15 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: payload
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: false,
+          errors: {},
+          multi_factor_auth_method: 'backup_code',
+          new_device: true,
+        )
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
 
       it 'records unsuccessful 2fa event' do
