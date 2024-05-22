@@ -81,6 +81,7 @@ RSpec.describe Reporting::TotalUserCountReport do
         user2 = create(:user)
         create(:profile, :active, :verified, user: user1)
         # MW: The :verified trait doesn't set active: true. This feels confusing.
+        # user2 active profile but unverified
         create(:profile, :active, :verified, user: user2)
         user2.profiles.first.update!(
           active: false,
