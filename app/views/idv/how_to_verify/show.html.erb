@@ -3,11 +3,11 @@
 
 <% if defined?(error) %>
   <%= render AlertComponent.new(
-    type: :error,
-    class: 'margin-bottom-4',
-    text_tag: 'div',
-    ) do %>
-  <%= error %>
+        type: :error,
+        class: 'margin-bottom-4',
+        text_tag: 'div',
+      ) do %>
+    <%= error %>
   <% end %>
 <% end %>
 
