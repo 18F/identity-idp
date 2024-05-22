@@ -61,17 +61,20 @@ RSpec.describe Users::PivCacLoginController do
           }.with_indifferent_access
         end
 
+        subject(:response) { get :new, params: { token: } }
+
         before do
-          subject.piv_session[:piv_cac_nonce] = nonce
-          subject.session[:sp] = sp_session
+          controller.piv_session[:piv_cac_nonce] = nonce
+          controller.session[:sp] = sp_session
 
           allow(PivCacService).to receive(:decode_token).with(token) { data }
           stub_analytics(user:)
-          get :new, params: { token: token }
         end
 
         context 'without a valid user' do
-          before do
+          it 'calls decode_token twice' do
+            response
+
             # valid_token? is being called twice, once to determine if it's a valid submission
             # and once to set the session variable in process_invalid_submission
             # good opportunity for a refactor
@@ -79,6 +82,8 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'tracks the login attempt' do
+            response
+
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
               errors: {
@@ -90,7 +95,9 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'sets the session variable' do
-            expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to be true
+            response
+
+            expect(controller.session[:needs_to_setup_piv_cac_after_sign_in]).to be true
           end
 
           it 'redirects to the error url' do
@@ -110,12 +117,15 @@ RSpec.describe Users::PivCacLoginController do
             }.with_indifferent_access
           end
 
-          before do
+          it 'calls decode_token' do
+            response
+
             expect(PivCacService).to have_received(:decode_token).with(token) { data }
-            sign_in user
           end
 
           it 'tracks the login attempt' do
+            response
+
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
               errors: {},
@@ -125,10 +135,10 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'sets the session correctly' do
-            expect(controller.user_session[:new_device]).to eq(true)
+            response
+
             expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
               to eq false
-
             expect(controller.auth_methods_session.auth_events).to match(
               [
                 {
@@ -139,7 +149,15 @@ RSpec.describe Users::PivCacLoginController do
             )
           end
 
+          it 'sets new device session value' do
+            expect(controller).to receive(:set_new_device_session)
+
+            response
+          end
+
           it 'tracks the user_marked_authed event' do
+            response
+
             expect(@analytics).to have_logged_event(
               'User marked authenticated',
               authentication_type: :valid_2fa,
@@ -147,22 +165,14 @@ RSpec.describe Users::PivCacLoginController do
           end
 
           it 'saves the piv_cac session information' do
+            response
+
             session_info = {
               subject: data[:subject],
               issuer: data[:issuer],
               presented: true,
             }
             expect(controller.user_session[:decrypted_x509]).to eq session_info.to_json
-          end
-
-          context 'from existing device' do
-            before do
-              allow(user).to receive(:new_device?).and_return(false)
-            end
-
-            it 'sets the session correctly' do
-              expect(controller.user_session[:new_device]).to eq(true)
-            end
           end
 
           context 'when the user has not accepted the most recent terms of use' do
@@ -177,6 +187,8 @@ RSpec.describe Users::PivCacLoginController do
 
           describe 'it handles the otp_context' do
             it 'tracks the user_marked_authed event' do
+              response
+
               expect(@analytics).to have_logged_event(
                 'User marked authenticated',
                 authentication_type: :valid_2fa,

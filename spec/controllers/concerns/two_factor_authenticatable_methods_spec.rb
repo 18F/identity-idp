@@ -64,7 +64,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
         context 'with an existing device' do
           before do
-            controller.user_session[:new_device] = false
+            allow(controller).to receive(:new_device?).and_return(false)
           end
 
           it 'does not send an alert' do
@@ -76,7 +76,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
         context 'with a new device' do
           before do
-            controller.user_session[:new_device] = true
+            allow(controller).to receive(:new_device?).and_return(true)
           end
 
           it 'sends the new device alert using 2fa event date' do
@@ -119,7 +119,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
         context 'with an existing device' do
           before do
-            controller.user_session[:new_device] = false
+            allow(controller).to receive(:new_device?).and_return(false)
           end
 
           it 'does not send an alert' do
@@ -131,7 +131,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
         context 'with a new device' do
           before do
-            controller.user_session[:new_device] = true
+            allow(controller).to receive(:new_device?).and_return(true)
           end
 
           it 'sends the new device alert' do

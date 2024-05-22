@@ -4,6 +4,7 @@ module TwoFactorAuthentication
   class PivCacVerificationController < ApplicationController
     include TwoFactorAuthenticatable
     include PivCacConcern
+    include NewDeviceConcern
 
     before_action :confirm_piv_cac_enabled, only: :show
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
@@ -105,7 +106,7 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: 'piv_cac',
         piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
-        new_device: user_session[:new_device],
+        new_device: new_device?,
       }
     end
   end

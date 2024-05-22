@@ -390,6 +390,24 @@ Debugging these stack traces can be difficult, since files in production are min
 
 The output of the `sourcemap-lookup` command should include "Original Position" and "Code Section" of the code which triggered the error.
 
+## Fonts
+
+Font files are optimized to remove unused character data. If a new character is added to content, the font files must be regenerated:
+
+1. [Download Public Sans](https://public-sans.digital.gov/) and extract it to your project's `tmp/` directory
+2. Install [glyphhanger](https://github.com/zachleat/glyphhanger) and its dependencies:
+   1. `npm install -g glyphhanger`
+   2. `pip install fonttools brotli`
+3. Scrape content for character data:
+   1. `make lint_font_glyphs`
+4. Subset the original Public Sans fonts to include only used character data:
+   1. `glyphhanger app/assets/fonts/glyphs.txt --formats=woff2 --subset="tmp/public-sans-v2/fonts/ttf/PublicSans-*.ttf"`
+5. Replace font files with new subset fonts:
+   1. `cd tmp/public-sans-v2/fonts/ttf`
+   2. `find . -name "*-subset.woff2" -exec sh -c 'cp $1 "../../../../app/assets/fonts/public-sans/${1%-subset.woff2}.woff2"' _ {} \;`
+
+At this point, your working directory should reflect changes to all of the files within `app/assets/fonts/public-sans`.
+
 ## Devices
 
 The application should support:

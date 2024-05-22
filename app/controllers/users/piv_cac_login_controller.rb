@@ -5,6 +5,7 @@ module Users
     include PivCacConcern
     include VerifySpAttributesConcern
     include TwoFactorAuthenticatableMethods
+    include NewDeviceConcern
 
     def new
       if params.key?(:token)
@@ -74,7 +75,7 @@ module Users
         presented: true,
       )
 
-      user_session[:new_device] = current_user.new_device?(cookie_uuid: cookies[:device])
+      set_new_device_session
       handle_valid_verification_for_authentication_context(
         auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
