@@ -62,6 +62,7 @@ module Proofing
         errors: errors,
         exception: exception,
         mva_exception: mva_exception?,
+        requested_attributes: requested_attributes,
         timed_out: timed_out?,
         transaction_id: transaction_id,
         vendor_name: vendor_name,
