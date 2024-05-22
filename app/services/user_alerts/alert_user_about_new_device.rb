@@ -3,24 +3,26 @@
 module UserAlerts
   class AlertUserAboutNewDevice
     def self.call(event:, device:, disavowal_token:)
-      if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
-        event.user.sign_in_new_device_at ||= event.created_at
-        event.user.save
-      else
-        device_decorator = DeviceDecorator.new(device)
-        login_location = device_decorator.last_sign_in_location_and_ip
-        device_name = device_decorator.nice_name
+      return if IdentityConfig.store.feature_new_device_alert_aggregation_enabled
+      device_decorator = DeviceDecorator.new(device)
+      login_location = device_decorator.last_sign_in_location_and_ip
+      device_name = device_decorator.nice_name
 
-        event.user.confirmed_email_addresses.each do |email_address|
-          UserMailer.with(user: event.user, email_address: email_address).new_device_sign_in(
-            date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-              strftime('%B %-d, %Y %H:%M Eastern Time'),
-            location: login_location,
-            device_name: device_name,
-            disavowal_token: disavowal_token,
-          ).deliver_now_or_later
-        end
+      event.user.confirmed_email_addresses.each do |email_address|
+        UserMailer.with(user: event.user, email_address: email_address).new_device_sign_in(
+          date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
+            strftime('%B %-d, %Y %H:%M Eastern Time'),
+          location: login_location,
+          device_name: device_name,
+          disavowal_token: disavowal_token,
+        ).deliver_now_or_later
       end
+    end
+
+    def self.schedule_alert(event:)
+      return if !IdentityConfig.store.feature_new_device_alert_aggregation_enabled ||
+                event.user.sign_in_new_device_at.present?
+      event.user.update(sign_in_new_device_at: event.created_at)
     end
 
     def self.send_alert(user:, disavowal_event:, disavowal_token:)

@@ -177,6 +177,13 @@ FactoryBot.define do
       end
     end
 
+    trait :with_authenticated_device do
+      fully_registered
+      after(:create) do |user|
+        user.devices << create(:device, :authenticated, user:)
+      end
+    end
+
     trait :unconfirmed do
       confirmed_at { nil }
       password { nil }
