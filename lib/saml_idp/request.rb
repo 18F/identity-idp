@@ -102,10 +102,10 @@ module SamlIdp
       end.first
     end
 
-    def requested_vtr_authn_context
+    def requested_vtr_authn_contexts
       requested_authn_contexts.select do |classref|
         VTR_REGEXP.match?(classref)
-      end.first
+      end
     end
 
     def acs_url
