@@ -63,8 +63,12 @@ module Reports
       )
     end
 
-    def combine_by_iaa_month(by_iaa_results:, by_issuer_results:,
-                             by_partner_results:, by_issuer_profile_age_results:)
+    def combine_by_iaa_month(
+      by_iaa_results:,
+      by_issuer_results:,
+      by_partner_results:,
+      by_issuer_profile_age_results:
+    )
       by_iaa_and_year_month = by_iaa_results.group_by do |result|
         [result[:key], result[:year_month]]
       end
