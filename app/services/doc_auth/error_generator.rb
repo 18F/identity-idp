@@ -338,7 +338,7 @@ module DocAuth
     end
 
     def self.wrapped_general_error
-      { general: [ErrorGenerator.general_error], hints: true }
+      { general: [Errors::GENERAL_ERROR], hints: true }
     end
 
     private
