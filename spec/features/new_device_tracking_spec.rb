@@ -6,11 +6,11 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered) }
 
   context 'user has existing devices and aggregated new device alerts is disabled' do
+    let(:user) { create(:user, :with_authenticated_device) }
     before do
       allow(IdentityConfig.store).to receive(
         :feature_new_device_alert_aggregation_enabled,
       ).and_return(false)
-      create(:device, user: user)
     end
 
     it 'sends a user notification on signin' do
@@ -46,11 +46,11 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
   end
 
   context 'user has existing devices and aggregated new device alerts is enabled' do
+    let(:user) { create(:user, :with_authenticated_device) }
     before do
       allow(IdentityConfig.store).to receive(
         :feature_new_device_alert_aggregation_enabled,
       ).and_return(true)
-      create(:device, user: user)
     end
 
     it 'sends a user notification on signin' do
@@ -62,6 +62,63 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
         to: [user.email_addresses.first.email],
         subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
       )
+    end
+
+    it 'sends all notifications for an expired sign-in session' do
+      allow(IdentityConfig.store).to receive(:new_device_alert_delay_in_minutes).and_return(5)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).and_return(15)
+
+      sign_in_user(user)
+
+      # Notified after expired delay for successful email password, but incomplete MFA
+      travel_to 6.minutes.from_now do
+        CreateNewDeviceAlert.new.perform(Time.zone.now)
+        open_last_email
+        email_page = Capybara::Node::Simple.new(current_email.default_part_body)
+        expect(email_page).to have_css(
+          '.usa-table td.font-family-mono',
+          count: 1,
+          text: t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa'),
+        )
+      end
+
+      reset_email
+
+      travel_to 16.minutes.from_now do
+        visit root_url
+        expect(current_path).to eq(new_user_session_path)
+        sign_in_user(user)
+      end
+
+      # Notified after session expired, user returned for another successful email password, no MFA
+      travel_to 22.minutes.from_now do
+        CreateNewDeviceAlert.new.perform(Time.zone.now)
+        open_last_email
+        email_page = Capybara::Node::Simple.new(current_email.default_part_body)
+        expect(email_page).to have_css(
+          '.usa-table td.font-family-mono',
+          count: 1,
+          text: t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa'),
+        )
+      end
+
+      reset_email
+
+      # Notified after session expired, user returned for successful email password and MFA
+      travel_to 38.minutes.from_now do
+        visit root_url
+        expect(current_path).to eq(new_user_session_path)
+        sign_in_live_with_2fa(user)
+        open_last_email
+        email_page = Capybara::Node::Simple.new(current_email.default_part_body)
+        expect(email_page).to have_css('.usa-table td.font-family-mono', count: 2)
+        expect(email_page).to have_content(
+          t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa'),
+        )
+        expect(email_page).to have_content(
+          t('user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa'),
+        )
+      end
     end
 
     context 'from existing device' do

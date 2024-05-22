@@ -32,7 +32,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             errors: {},
             multi_factor_auth_method: 'backup_code',
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
-            new_device: nil,
+            new_device: true,
           }
 
           expect(@analytics).to receive(:track_mfa_submit_event).
@@ -99,7 +99,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
               errors: {},
               multi_factor_auth_method: 'backup_code',
               multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
-              new_device: nil,
+              new_device: true,
             })
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).
@@ -113,37 +113,19 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       end
     end
 
-    context 'with new device session value' do
+    context 'with existing device' do
+      before do
+        allow(controller).to receive(:new_device?).and_return(false)
+      end
+
       it 'tracks new device value' do
-        freeze_time do
-          sign_in_before_2fa(user)
-          subject.user_session[:new_device] = false
-          stub_analytics
-          stub_attempts_tracker
-          analytics_hash = {
-            success: true,
-            errors: {},
-            multi_factor_auth_method: 'backup_code',
-            multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
-            new_device: false,
-          }
+        stub_analytics
+        stub_sign_in_before_2fa(user)
 
-          expect(@analytics).to receive(:track_mfa_submit_event).
-            with(analytics_hash)
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(hash_including(new_device: false))
 
-          expect(@irs_attempts_api_tracker).to receive(:track_event).
-            with(:mfa_login_backup_code, success: true)
-
-          post :create, params: payload
-
-          expect(subject.user_session[:auth_events]).to eq(
-            [
-              auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
-              at: Time.zone.now,
-            ],
-          )
-          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
-        end
+        post :create, params: payload
       end
     end
 
@@ -194,7 +176,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           errors: {},
           multi_factor_auth_method: 'backup_code',
           multi_factor_auth_method_created_at: nil,
-          new_device: nil,
+          new_device: true,
         }
 
         stub_analytics

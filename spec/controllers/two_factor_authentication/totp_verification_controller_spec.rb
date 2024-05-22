@@ -50,7 +50,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
-          new_device: nil,
+          new_device: true,
           auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -66,23 +66,16 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         post :create, params: { code: generate_totp_code(@secret) }
       end
 
-      context 'with new device session value' do
+      context 'with existing device' do
         before do
-          subject.user_session[:new_device] = false
+          allow(controller).to receive(:new_device?).and_return(false)
         end
-        it 'tracks new device value' do
-          cfg = controller.current_user.auth_app_configurations.first
 
-          attributes = {
-            success: true,
-            errors: {},
-            multi_factor_auth_method: 'totp',
-            multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
-            new_device: false,
-            auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
-          }
+        it 'tracks new device value' do
+          stub_analytics
+
           expect(@analytics).to receive(:track_mfa_submit_event).
-            with(attributes)
+            with(hash_including(new_device: false))
 
           post :create, params: { code: generate_totp_code(@secret) }
         end
@@ -167,7 +160,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: nil,
-          new_device: nil,
+          new_device: true,
           auth_app_configuration_id: nil,
         }
 
