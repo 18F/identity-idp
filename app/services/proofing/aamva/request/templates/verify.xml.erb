@@ -1,37 +1,41 @@
-<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:ns="http://aamva.org/dldv/wsdl/2.1" xmlns:ns1="http://aamva.org/niem/extensions/1.0" xmlns:ns2="http://niem.gov/niem/niem-core/2.0">
+<soap:Envelope
+  xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+  xmlns:dldv="http://aamva.org/dldv/wsdl/2.1"
+  xmlns:aa="http://aamva.org/niem/extensions/1.0"
+  xmlns:nc="http://niem.gov/niem/niem-core/2.0">
   <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
     <wsa:Action>http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData</wsa:Action>
   </soap:Header>
   <soap:Body>
-    <ns:VerifyDriverLicenseData>
-      <ns:token>
+    <dldv:VerifyDriverLicenseData>
+      <dldv:token>
         <%= auth_token %>
-      </ns:token>
-      <ns:verifyDriverLicenseDataRequest>
-        <ns1:ControlData>
-          <ns1:MessageAddress>
-            <ns1:TransactionLocatorId>
+      </dldv:token>
+      <dldv:verifyDriverLicenseDataRequest>
+        <aa:ControlData>
+          <aa:MessageAddress>
+            <aa:TransactionLocatorId>
               <%= transaction_locator_id %>
-            </ns1:TransactionLocatorId>
-            <ns1:MessageOriginatorId>GSA</ns1:MessageOriginatorId>
-            <ns1:MessageDestinationId></ns1:MessageDestinationId>
-          </ns1:MessageAddress>
-        </ns1:ControlData>
-        <ns2:DriverLicenseIdentification>
-          <ns2:IdentificationID xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:PersonNameTextType"></ns2:IdentificationID>
-        </ns2:DriverLicenseIdentification>
-        <ns1:PersonBirthDate></ns1:PersonBirthDate>
-        <ns2:PersonName>
-          <ns2:PersonGivenName></ns2:PersonGivenName>
-          <ns2:PersonSurName></ns2:PersonSurName>
-        </ns2:PersonName>
-        <ns1:Address>
-          <ns2:AddressDeliveryPointText></ns2:AddressDeliveryPointText>
-          <ns2:LocationCityName></ns2:LocationCityName>
-          <ns2:LocationStateUsPostalServiceCode></ns2:LocationStateUsPostalServiceCode>
-          <ns2:LocationPostalCode></ns2:LocationPostalCode>
-        </ns1:Address>
-      </ns:verifyDriverLicenseDataRequest>
-    </ns:VerifyDriverLicenseData>
+            </aa:TransactionLocatorId>
+            <aa:MessageOriginatorId>GSA</aa:MessageOriginatorId>
+            <aa:MessageDestinationId></aa:MessageDestinationId>
+          </aa:MessageAddress>
+        </aa:ControlData>
+        <nc:DriverLicenseIdentification>
+          <nc:IdentificationID xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="nc:PersonNameTextType"></nc:IdentificationID>
+        </nc:DriverLicenseIdentification>
+        <aa:PersonBirthDate></aa:PersonBirthDate>
+        <nc:PersonName>
+          <nc:PersonGivenName></nc:PersonGivenName>
+          <nc:PersonSurName></nc:PersonSurName>
+        </nc:PersonName>
+        <aa:Address>
+          <nc:AddressDeliveryPointText></nc:AddressDeliveryPointText>
+          <nc:LocationCityName></nc:LocationCityName>
+          <nc:LocationStateUsPostalServiceCode></nc:LocationStateUsPostalServiceCode>
+          <nc:LocationPostalCode></nc:LocationPostalCode>
+        </aa:Address>
+      </dldv:verifyDriverLicenseDataRequest>
+    </dldv:VerifyDriverLicenseData>
   </soap:Body>
 </soap:Envelope>
