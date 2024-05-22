@@ -7,11 +7,13 @@ module OpenidConnect
     include OpenidConnectRedirectConcern
 
     before_action :set_devise_failure_redirect_for_concurrent_session_logout,
-                  only: [:logout]
+                  only: [:show, :create]
     before_action :confirm_two_factor_authenticated, only: [:delete]
+    skip_before_action :verify_authenticity_token, only: [:create]
 
-    # Handle logout (with confirmation if initiated by relying partner)
-    def logout
+    # +GET+ Handle logout (with confirmation if initiated by relying partner)
+    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout]
+    def show
       @logout_form = build_logout_form
       result = @logout_form.submit
       redirect_uri = result.extra[:redirect_uri]
@@ -24,6 +26,35 @@ module OpenidConnect
         render :error
       end
     end
+
+    # rubocop:disable Layout/LineLength
+
+    # +POST+ Handle logout request (with confirmation if initiated by relying partner)
+    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout]
+    # @note Response status code is <tt>307 Temporary Redirect</tt>
+    #   to preserve the method and body of the request
+    #   and to prevent non-conformant browsers from automatically
+    #   redirecting this route to {OpenidConnectLogoutForm#redirect_uri}
+    #   and skipping over the render of the logout confirmation page
+    def create
+      @logout_form = build_logout_form
+      # @type [FormResponse]
+      result = @logout_form.submit
+      redirect_uri = result.extra[:redirect_uri]
+      analytics.oidc_logout_requested(**to_event(result))
+
+      if result.success? && redirect_uri
+        apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
+        if require_logout_confirmation?
+          handle_successful_logout_request(result, redirect_uri, status: :temporary_redirect)
+        else
+          handle_logout(result, redirect_uri)
+        end
+      else
+        render :error
+      end
+    end
+    # rubocop:enable Layout/LineLength
 
     # Sign out without confirmation
     def delete
@@ -96,7 +127,9 @@ module OpenidConnect
       )
     end
 
-    def handle_successful_logout_request(result, redirect_uri)
+    # @param result [FormResponse] Response from submitting @logout_form
+    # @param redirect_uri [String] The URL to redirect the user to after logout
+    def handle_successful_logout_request(result, redirect_uri, **render_opts)
       apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
       if require_logout_confirmation?
         analytics.oidc_logout_visited(**to_event(result))
@@ -109,7 +142,7 @@ module OpenidConnect
         @service_provider_name = @logout_form.service_provider&.friendly_name
         delete_branded_experience(logout: true)
 
-        render :confirm_logout
+        render :confirm_logout, **render_opts
       else
         handle_logout(result, redirect_uri)
       end
