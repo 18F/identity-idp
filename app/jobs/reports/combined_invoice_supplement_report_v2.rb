@@ -44,14 +44,27 @@ module Reports
         )
       end
 
+      by_issuer_profile_age_results = iaas.flat_map do |iaa|
+        iaa.issuers.flat_map do |issuer|
+          Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
+            partner: issuer, # just a label
+            issuers: [issuer],
+            start_date: iaa.start_date,
+            end_date: iaa.end_date,
+          )
+        end
+      end
+
       combine_by_iaa_month(
         by_iaa_results: by_iaa_results,
         by_issuer_results: by_issuer_results,
         by_partner_results: by_partner_results,
+        by_issuer_profile_age_results: by_issuer_profile_age_results,
       )
     end
 
-    def combine_by_iaa_month(by_iaa_results:, by_issuer_results:, by_partner_results:)
+    def combine_by_iaa_month(by_iaa_results:, by_issuer_results:,
+                             by_partner_results:, by_issuer_profile_age_results:)
       by_iaa_and_year_month = by_iaa_results.group_by do |result|
         [result[:key], result[:year_month]]
       end
@@ -95,7 +108,13 @@ module Reports
           'issuer_ial1_unique_users',
           'issuer_ial2_unique_users',
           'issuer_ial1_plus_2_unique_users',
-          'issuer_ial2_new_unique_users',
+          'issuer_ial2_new_unique_users_year1',
+          'issuer_ial2_new_unique_users_year2',
+          'issuer_ial2_new_unique_users_year3',
+          'issuer_ial2_new_unique_users_year4',
+          'issuer_ial2_new_unique_users_year5',
+          'issuer_ial2_new_unique_users_year_greater_than_5',
+          'issuer_ial2_new_unique_users_year_unknown',
         ]
         by_issuer_iaa_issuer_year_months.each do |iaa_key, issuer_year_months|
           issuer_year_months.each do |issuer, year_months_data|
@@ -112,6 +131,11 @@ module Reports
               partner_results = by_partner_results.find do |result|
                 result[:year_month] == year_month && result[:issuers]&.include?(issuer)
               end || {}
+
+              issuer_profile_age_results = by_issuer_profile_age_results.find do |result|
+                result[:year_month] == year_month && result[:issuers]&.include?(issuer)
+              end || {}
+
               csv << [
                 iaa_key,
                 partner_results[:partner],
@@ -142,7 +166,14 @@ module Reports
                 (issuer_ial1_unique_users = extract(issuer_results, :unique_users, ial: 1)),
                 (issuer_ial2_unique_users = extract(issuer_results, :unique_users, ial: 2)),
                 issuer_ial1_unique_users + issuer_ial2_unique_users,
-                extract(issuer_results, :new_unique_users, ial: 2),
+                # extract(issuer_results, :new_unique_users, ial: 2),
+                issuer_profile_age_results[:partner_ial2_new_unique_users_year1] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_users_year2] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_users_year3] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_users_year4] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_users_year5] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_users_year_greater_than_5] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_users_year_unknown] || 0,
               ]
             end
           end
