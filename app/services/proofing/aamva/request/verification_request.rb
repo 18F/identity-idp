@@ -74,14 +74,14 @@ module Proofing
             'aa:DriverLicenseIssueDate',
             value: applicant.state_id_data.state_id_issued,
             document:,
-            inside: '//ns:verifyDriverLicenseDataRequest',
+            inside: '//dldv:verifyDriverLicenseDataRequest',
           )
 
           add_optional_element(
             'aa:DriverLicenseExpirationDate',
             value: applicant.state_id_data.state_id_expiration,
             document:,
-            inside: '//ns:verifyDriverLicenseDataRequest',
+            inside: '//dldv:verifyDriverLicenseDataRequest',
           )
 
           @body = document.to_s

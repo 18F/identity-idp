@@ -47,7 +47,10 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       applicant.address2 = 'Apt 1'
 
       document = REXML::Document.new(subject.body)
-      address_node = REXML::XPath.first(document, '//ns:verifyDriverLicenseDataRequest/aa:Address')
+      address_node = REXML::XPath.first(
+        document,
+        '//dldv:verifyDriverLicenseDataRequest/aa:Address',
+      )
 
       address_node_element_names = address_node.elements.map(&:name)
       address_node_element_values = address_node.elements.map(&:text)
