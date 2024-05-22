@@ -4918,7 +4918,7 @@ module AnalyticsEvents
   # @param [Integer] requested_ial
   # @param [Array] authn_context
   # @param [String, nil] requested_aal_authn_context
-  # @param [String, nil] requested_vtr_authn_context
+  # @param [String, nil] requested_vtr_authn_contexts
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
@@ -4928,7 +4928,7 @@ module AnalyticsEvents
     requested_ial:,
     authn_context:,
     requested_aal_authn_context:,
-    requested_vtr_authn_context:,
+    requested_vtr_authn_contexts:,
     force_authn:,
     final_auth_request:,
     service_provider:,
@@ -4941,7 +4941,7 @@ module AnalyticsEvents
         requested_ial: requested_ial,
         authn_context: authn_context,
         requested_aal_authn_context: requested_aal_authn_context,
-        requested_vtr_authn_context: requested_vtr_authn_context,
+        requested_vtr_authn_contexts: requested_vtr_authn_contexts,
         force_authn: force_authn,
         final_auth_request: final_auth_request,
         service_provider: service_provider,
