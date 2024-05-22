@@ -166,7 +166,6 @@ module Reports
                 (issuer_ial1_unique_users = extract(issuer_results, :unique_users, ial: 1)),
                 (issuer_ial2_unique_users = extract(issuer_results, :unique_users, ial: 2)),
                 issuer_ial1_unique_users + issuer_ial2_unique_users,
-                # extract(issuer_results, :new_unique_users, ial: 2),
                 issuer_profile_age_results[:partner_ial2_new_unique_users_year1] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_users_year2] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_users_year3] || 0,
