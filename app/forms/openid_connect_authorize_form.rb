@@ -129,16 +129,16 @@ class OpenidConnectAuthorizeForm
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
-  def biometric_comparison_required?
-    parsed_vector_of_trust&.biometric_comparison?
+  def biometric_comparison_requested?
+    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
   end
 
-  def parsed_vector_of_trust
-    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
+  def parsed_vectors_of_trust
+    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
 
-    @parsed_vector_of_trust = begin
+    @parsed_vectors_of_trust = begin
       if vtr.is_a?(Array) && !vtr.empty?
-        Vot::Parser.new(vector_of_trust: vtr.first).parse
+        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
       end
     rescue Vot::Parser::ParseException
       nil
@@ -192,7 +192,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_vtr
     return if vtr.blank?
-    return if parsed_vector_of_trust.present?
+    return if parsed_vectors_of_trust.present?
     errors.add(
       :vtr, t('openid_connect.authorization.errors.no_valid_vtr'),
       type: :no_valid_vtr
@@ -319,8 +319,8 @@ class OpenidConnectAuthorizeForm
   end
 
   def identity_proofing_requested?
-    if parsed_vector_of_trust.present?
-      parsed_vector_of_trust.identity_proofing?
+    if parsed_vectors_of_trust.present?
+      parsed_vectors_of_trust.any?(&:identity_proofing?)
     else
       Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 2
     end
