@@ -39,7 +39,6 @@ class AttributeAsserter
     add_bundle(attrs) if should_add_proofed_attributes?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
     if authn_request.requested_vtr_authn_contexts.present?
-      # TODO
       add_vot(attrs)
     else
       add_aal(attrs)
