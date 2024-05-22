@@ -176,6 +176,31 @@ RSpec.describe Idv::HowToVerifyController do
       end
     end
 
+    context 'an invalid selection is submitted' do
+      # (This should only be possible if someone alters the form)
+      let(:selection) { 'carrier_pigeon' }
+
+      let(:analytics_args) do
+        {
+          step: 'how_to_verify',
+          analytics_id: 'Doc Auth',
+          skip_hybrid_handoff: nil,
+          'selection' => selection,
+          irs_reproofing: false,
+          error_details: { selection: { inclusion: true } },
+          errors: { selection: ['Select a way to verify your identity.'] },
+          success: false,
+        }.merge(ab_test_args)
+      end
+
+      it 'logs the invalid value and re-renders the page' do
+        put :update, params: params
+
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(response).to render_template :show
+      end
+    end
+
     context 'remote' do
       let(:selection) { 'remote' }
       let(:analytics_args) do
@@ -229,16 +254,6 @@ RSpec.describe Idv::HowToVerifyController do
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end
-
-    context 'undo/back' do
-      it 'sets skip_doc_auth to nil and does not redirect' do
-        put :update, params: { undo_step: true }
-
-        expect(subject.idv_session.skip_doc_auth).to be_nil
-        expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
-        expect(response).to redirect_to(idv_how_to_verify_url)
-      end
-    end
   end
 
   context 'form submission error' do
@@ -251,10 +266,10 @@ RSpec.describe Idv::HowToVerifyController do
     it 'redirects to how to verify when a form submission error is encountered' do
       put :update, params: invalid_params
 
-      expect(flash[:error]).to be_present
+      expect(flash[:error]).not_to be_present
       expect(subject.idv_session.skip_doc_auth).to be_nil
       expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
-      expect(response).to redirect_to(idv_how_to_verify_url)
+      expect(response).to render_template :show
     end
   end
 
