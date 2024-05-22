@@ -25,7 +25,7 @@ RSpec.describe Reporting::ProofingRateReport do
             successfully_verified_users: 1,
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 0,
-            time_range: (end_date.beginning_of_day - 30.days)..end_date,
+            time_range: (end_date - 30.days).beginning_of_day..end_date,
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
@@ -39,7 +39,7 @@ RSpec.describe Reporting::ProofingRateReport do
             successfully_verified_users: 2,
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 1,
-            time_range: (end_date.beginning_of_day - 60.days)..end_date,
+            time_range: (end_date - 60.days).beginning_of_day..end_date,
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
@@ -53,7 +53,7 @@ RSpec.describe Reporting::ProofingRateReport do
             successfully_verified_users: 3,
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 2,
-            time_range: (end_date.beginning_of_day - 90.days)..end_date,
+            time_range: (end_date - 90.days).beginning_of_day..end_date,
           ),
         ],
       )
@@ -135,26 +135,26 @@ RSpec.describe Reporting::ProofingRateReport do
           allow(Reporting::IdentityVerificationReport).to receive(:new).and_call_original
           expect(report.reports.map(&:time_range)).to eq(
             [
-              (end_date.beginning_of_day - 30.days)..end_date,
-              (end_date.beginning_of_day - 60.days)..end_date,
-              (end_date.beginning_of_day - 90.days)..end_date,
+              (end_date - 30.days).beginning_of_day..end_date,
+              (end_date - 60.days).beginning_of_day..end_date,
+              (end_date - 90.days).beginning_of_day..end_date,
             ],
           )
 
           expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-            time_range: (end_date.beginning_of_day - 30.days)..end_date,
+            time_range: (end_date - 30.days).beginning_of_day..end_date,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
           ).once
 
           expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-            time_range: (end_date.beginning_of_day - 60.days)..(end_date.end_of_day - 30.days),
+            time_range: (end_date - 60.days).beginning_of_day..(end_date - 30.days).end_of_day,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
           ).once
 
           expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-            time_range: (end_date.beginning_of_day - 90.days)..(end_date.end_of_day - 60.days),
+            time_range: (end_date - 90.days).beginning_of_day..(end_date - 60.days).end_of_day,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
           ).once
