@@ -41,52 +41,83 @@ RSpec.describe Users::SessionsController, devise: true do
   describe 'POST /' do
     include AccountResetHelper
 
-    it 'tracks the successful authentication for existing user' do
-      user = create(:user, :fully_registered)
+    context 'successful authentication' do
+      let(:user) { create(:user, :fully_registered) }
 
-      stub_analytics
-      stub_attempts_tracker
-      analytics_hash = {
-        success: true,
-        user_id: user.uuid,
-        user_locked_out: false,
-        bad_password_count: 0,
-        sp_request_url_present: false,
-        remember_device: false,
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('Email and Password Authentication', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:login_email_and_password_auth).
-        with(email: user.email, success: true)
-
-      post :create, params: { user: { email: user.email, password: user.password } }
-      expect(subject.session[:sign_in_flow]).to eq(:sign_in)
-    end
-
-    it 'saves and refreshes cookie for device for successful authentication' do
-      user = create(:user, :fully_registered)
-
-      first_expires = nil
-
-      freeze_time do
+      subject(:response) do
         post :create, params: { user: { email: user.email, password: user.password } }
-
-        device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
-        first_expires = CGI::Cookie.parse(device_cookie)['expires'].first
-        expect(Time.zone.parse(first_expires)).to be >= 20.years.from_now
       end
 
-      sign_out(user)
-      expect(cookies[:device]).to be_present
+      it 'tracks the successful authentication for existing user' do
+        stub_analytics
+        stub_attempts_tracker
 
-      travel_to 10.minutes.from_now do
-        post :create, params: { user: { email: user.email, password: user.password } }
+        response
 
-        device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
-        second_expires = CGI::Cookie.parse(device_cookie)['expires'].first
-        expect(Time.zone.parse(second_expires)).to be >= Time.zone.parse(first_expires) + 10.minutes
+        expect(@analytics).to have_logged_event(
+          'Email and Password Authentication',
+          success: true,
+          user_id: user.uuid,
+          user_locked_out: false,
+          bad_password_count: 0,
+          sp_request_url_present: false,
+          remember_device: false,
+        )
+      end
+
+      it 'assigns sign_in_flow session value' do
+        response
+
+        expect(controller.session[:sign_in_flow]).to eq(:sign_in)
+      end
+
+      it 'sets new device session value' do
+        expect(controller).to receive(:set_new_device_session)
+
+        response
+      end
+
+      it 'schedules new device alert' do
+        expect(UserAlerts::AlertUserAboutNewDevice).to receive(:schedule_alert) do |event:|
+          expect(event).to eq(user.events.where(event_type: :sign_in_before_2fa).last)
+        end
+
+        response
+      end
+
+      it 'saves and refreshes cookie for device for successful authentication' do
+        first_expires = nil
+
+        freeze_time do
+          device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
+          first_expires = Time.zone.parse(CGI::Cookie.parse(device_cookie)['expires'].first)
+          expect(first_expires).to be >= 20.years.from_now
+        end
+
+        sign_out(user)
+        expect(cookies[:device]).to be_present
+
+        travel_to 10.minutes.from_now do
+          response = post :create, params: { user: { email: user.email, password: user.password } }
+
+          device_cookie = response.headers['set-cookie'].find { |c| c.start_with?('device=') }
+          second_expires = Time.zone.parse(CGI::Cookie.parse(device_cookie)['expires'].first)
+          expect(second_expires).to be >= first_expires + 10.minutes
+        end
+      end
+
+      context 'with authenticated device' do
+        let(:user) { create(:user, :with_authenticated_device) }
+
+        before do
+          request.cookies[:device] = user.devices.last.cookie_uuid
+        end
+
+        it 'does not schedule new device alert' do
+          expect(UserAlerts::AlertUserAboutNewDevice).not_to receive(:schedule_alert)
+
+          response
+        end
       end
     end
 

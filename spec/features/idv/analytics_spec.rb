@@ -78,7 +78,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}
+        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
@@ -204,7 +204,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'hybrid', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}
+        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, flow_path: 'hybrid', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
@@ -327,7 +327,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}
+        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
@@ -575,7 +575,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}
+        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: true

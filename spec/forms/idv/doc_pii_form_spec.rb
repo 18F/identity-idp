@@ -19,6 +19,8 @@ RSpec.describe Idv::DocPiiForm do
       state: Faker::Address.state_abbr,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
+      state_id_issued: '2024-01-01',
+      state_id_expiration: '2024-01-01',
     }
   end
   let(:name_errors_pii) do
@@ -138,6 +140,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'present',
+          id_expiration_status: 'present',
         )
       end
     end
@@ -154,6 +158,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'missing',
         )
       end
     end
@@ -176,6 +182,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'missing',
         )
       end
     end
@@ -194,6 +202,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'missing',
         )
       end
     end
@@ -212,6 +222,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'missing',
         )
       end
     end
@@ -230,6 +242,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'missing',
         )
       end
     end
@@ -256,6 +270,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'missing',
         )
       end
     end

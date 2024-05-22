@@ -111,6 +111,7 @@ class ApplicationController < ActionController::Base
       @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
+        user: current_user,
         service_provider: service_provider,
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],

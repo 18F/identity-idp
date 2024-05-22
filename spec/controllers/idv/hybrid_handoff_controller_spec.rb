@@ -218,6 +218,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
             and_return(false)
           subject.idv_session.skip_doc_auth = nil
+          subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
         it 'redirects to how to verify' do
@@ -241,6 +242,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).
             and_return(false)
           subject.idv_session.skip_doc_auth = true
+          subject.idv_session.skip_doc_auth_from_how_to_verify = true
           subject.idv_session.skip_hybrid_handoff = true
         end
 
@@ -255,6 +257,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         before do
           subject.idv_session.service_provider.in_person_proofing_enabled = false
           subject.idv_session.skip_doc_auth = nil
+          subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
         it 'renders the show template' do

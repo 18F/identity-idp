@@ -128,6 +128,7 @@ class Analytics
     service_provider = ServiceProvider.find_by(issuer: sp)
 
     @resolved_authn_context_result = AuthnContextResolver.new(
+      user: user,
       service_provider:,
       vtr: session[:sp][:vtr],
       acr_values: session[:sp][:acr_values],

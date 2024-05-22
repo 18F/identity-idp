@@ -22,6 +22,7 @@ RSpec.describe Vot::Parser do
         expect(result.identity_proofing?).to eq(false)
         expect(result.biometric_comparison?).to eq(false)
         expect(result.ialmax?).to eq(false)
+        expect(result.enhanced_ipp?).to eq(false)
       end
     end
 
@@ -38,6 +39,22 @@ RSpec.describe Vot::Parser do
         expect(result.identity_proofing?).to eq(true)
         expect(result.biometric_comparison?).to eq(true)
         expect(result.ialmax?).to eq(false)
+        expect(result.enhanced_ipp?).to eq(false)
+      end
+
+      it 'adds the Enhanced In Person Proofing components' do
+        vector_of_trust = 'Pe'
+
+        result = Vot::Parser.new(vector_of_trust:).parse
+
+        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pe')
+        expect(result.aal2?).to eq(true)
+        expect(result.phishing_resistant?).to eq(false)
+        expect(result.hspd12?).to eq(false)
+        expect(result.identity_proofing?).to eq(true)
+        expect(result.biometric_comparison?).to eq(false)
+        expect(result.ialmax?).to eq(false)
+        expect(result.enhanced_ipp?).to eq(true)
       end
     end
 
@@ -77,6 +94,7 @@ RSpec.describe Vot::Parser do
           expect(result.identity_proofing?).to eq(true)
           expect(result.biometric_comparison?).to eq(false)
           expect(result.ialmax?).to eq(false)
+          expect(result.enhanced_ipp?).to eq(false)
         end
       end
     end

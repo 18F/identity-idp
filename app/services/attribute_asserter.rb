@@ -71,6 +71,7 @@ class AttributeAsserter
     @resolved_authn_context_result ||= begin
       saml = FederatedProtocols::Saml.new(authn_request)
       AuthnContextResolver.new(
+        user: user,
         service_provider: service_provider,
         vtr: saml.vtr,
         acr_values: saml.acr_values,

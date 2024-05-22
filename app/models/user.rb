@@ -432,6 +432,11 @@ class User < ApplicationRecord
     !cookie_uuid || !devices.exists?(cookie_uuid:)
   end
 
+  def authenticated_device?(cookie_uuid:)
+    return false if cookie_uuid.blank?
+    devices.joins(:events).exists?(cookie_uuid:, events: { event_type: :sign_in_after_2fa })
+  end
+
   # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`
   # event.
   #

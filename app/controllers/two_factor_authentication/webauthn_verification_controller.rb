@@ -4,6 +4,7 @@ module TwoFactorAuthentication
   # The WebauthnVerificationController class is responsible webauthn verification at sign in
   class WebauthnVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include NewDeviceConcern
 
     before_action :check_sp_required_mfa
     before_action :check_if_device_supports_platform_auth, only: :show
@@ -22,7 +23,7 @@ module TwoFactorAuthentication
         **analytics_properties,
         multi_factor_auth_method_created_at:
           webauthn_configuration_or_latest.created_at.strftime('%s%L'),
-        new_device: user_session[:new_device],
+        new_device: new_device?,
       )
 
       if analytics_properties[:multi_factor_auth_method] == 'webauthn_platform'

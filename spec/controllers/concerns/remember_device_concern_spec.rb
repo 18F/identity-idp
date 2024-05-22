@@ -3,20 +3,22 @@ require 'rails_helper'
 RSpec.describe RememberDeviceConcern do
   let(:sp) { nil }
   let(:raw_session) { {} }
+  let(:current_user) { build(:user) }
 
   subject(:test_controller) do
     test_controller_class =
       Class.new(ApplicationController) do
         include(RememberDeviceConcern)
 
-        attr_reader :sp, :raw_session, :request
+        attr_reader :sp, :raw_session, :request, :current_user
         alias :sp_from_sp_session :sp
         alias :sp_session :raw_session
 
-        def initialize(sp, raw_session, request)
+        def initialize(sp, raw_session, request, current_user)
           @sp = sp
           @raw_session = raw_session
           @request = request
+          @current_user = current_user
         end
       end
 
@@ -27,7 +29,7 @@ RSpec.describe RememberDeviceConcern do
       filtered_parameters: {},
     )
 
-    test_controller_class.new(sp, raw_session, test_request)
+    test_controller_class.new(sp, raw_session, test_request, current_user)
   end
 
   describe '#mfa_expiration_interval' do

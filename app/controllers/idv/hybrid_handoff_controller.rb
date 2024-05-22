@@ -53,7 +53,8 @@ module Idv
          idv_session.service_provider&.in_person_proofing_enabled
         idv_session.skip_doc_auth == false
       else
-        idv_session.skip_doc_auth.nil? || idv_session.skip_doc_auth == false
+        idv_session.skip_doc_auth.nil? ||
+          idv_session.skip_doc_auth == false
       end
     end
 
