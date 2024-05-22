@@ -156,7 +156,7 @@ module DocAuth
       end
 
       def doc_auth_result
-        doc_auth_result_from_uploaded_file || doc_auth_result_from_success
+        doc_auth_result_from_uploaded_file
       end
 
       def doc_auth_result_from_uploaded_file
@@ -180,14 +180,6 @@ module DocAuth
       def classification_info
         info = parsed_data_from_uploaded_file&.[]('classification_info') || {}
         info.to_h.symbolize_keys
-      end
-
-      def doc_auth_result_from_success
-        if doc_auth_success?
-          DocAuth::LexisNexis::ResultCodes::PASSED.name
-        else
-          DocAuth::LexisNexis::ResultCodes::CAUTION.name
-        end
       end
 
       def transaction_status_from_success
