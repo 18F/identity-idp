@@ -11,6 +11,8 @@ variables:
   IDP_CI_SHA: 'sha256:756a1d450b422720dee36cb9a6217687bcad1e40b780219d360989861ce94212'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
+  LG_PROJECT_NAME: 'idp'                                                    #Used for EKS Pipeline from identity-eks-pipeline
+  EKS_DOCKERFILE: "${CI_PROJECT_DIR}/dockerfiles/idp_review_app.Dockerfile" #Used for EKS Pipeline from identity-eks-pipeline
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -550,6 +552,9 @@ include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
+  - project: 'lg-public/identity-eks-pipeline'
+    ref: 'cmccarthy/initial'
+    file: '.eks_release_pipeline.yml'
 
 secret_detection:
   allow_failure: false
@@ -746,173 +751,3 @@ ecr-scan-ci:
   stage: scan
   variables:
     ecr_repo: idp/ci
-
-############################################
-# EKS Container Lifecycle Pipelines
-############################################
-
-.eks_trigger_rules:
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/
-    - when: never
-
-.eks_deploy:
-  image:
-    name: dtzar/helm-kubectl:latest
-  before_script:
-    - apk add git yq
-    - curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
-    - git config --global user.email "login-team-mary@login.gov"
-    - git config --global user.name "GitLab"
-  script:
-    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/')
-    - git clone -b cmccarthy/lifecycle-checks --single-branch https://${HELM_CHART_REPO_ACCESS_USER}:${HELM_CHART_REPO_ACCESS_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - cd $CI_PROJECT_DIR/identity-idp-helm-chart && git checkout -b ${gitBranch}
-    - yqFilter=".idp.image.repository=\"${rcRepoName}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-    - yqFilter=".idp.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-    - yqFilter=".worker.image.repository=\"${rcRepoName}\"";  yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-    - yqFilter=".worker.image.tag=\"${rcTag}\""; yq -i ${yqFilter} ./environments/${testEnvironment}.yaml
-    - git add ./environments/${testEnvironment}.yaml && git commit -m "Deploy IDP ${rcTag} image to ${testEnvironment}"
-    - git push -o merge_request.create -o merge_request.target="${gitMRTarget}" -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.title="${gitMRTitle}" -o merge_request.description="${gitMRDescription}" origin "${gitBranch}"
-    - kubectl config get-contexts
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | grep "${eksClusterName}" | awk '{print $1}' | head -1)
-    - kubectl config use-context "$CONTEXT"
-    - kubectl port-forward svc/argo-cd-argocd-server -n argocd 8080:443 &
-    - sleep 5
-    - argocd login localhost:8080 --insecure --username admin --password $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-    - |-
-      updateComplete=0
-      timeoutCounter=0
-      while [ "$updateComplete" -lt 1 ] && [ "$timeoutCounter" -lt 60 ]; do
-        sleep 10
-        imageArray=($(argocd app manifests "${testEnvironment}"-logingov | yq -NM '.spec.template.spec.containers.[].image' | grep identity-idp))
-        #Checks for two items in the array because IDP and Worker images are the same. Ensure both are updated.
-        if [ "${imageArray[0]}" == "${rcRepoName}:${rcTag}" ] && [ "${imageArray[1]}" == "${rcRepoName}:${rcTag}" ]; then
-          updateComplete=1
-          echo "Image updated in manifest"
-        else
-          ((timeoutCounter+=1))
-          echo "Awaiting image to update in manifest. Timeout Counter: ${timeoutCounter}"
-        fi
-      done
-    - argocd app wait "${testEnvironment}"-logingov --timeout 600
-    - argocd logout localhost:8080
-
-# Build the RC container on RC Branch creation
-build-rc-container:
-  extends:
-    - .eks_trigger_rules
-  stage: eks_release
-  needs: []
-  environment:
-    name: $CI_COMMIT_BRANCH
-  interruptible: true
-  variables:
-  tags:
-    - build-pool
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: ['']
-  artifacts:
-    paths:
-      - imageDigest.tmp
-  script:
-    - mkdir -p /kaniko/.docker
-    - rcTag=$(echo $CI_COMMIT_BRANCH | sed -E 's/^.*\/(.*)/\1/') 
-    - |-
-      KANIKOCFG="\"credsStore\":\"ecr-login\""
-      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
-        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
-      fi
-      KANIKOCFG="{ ${KANIKOCFG} }"
-      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_review_app.Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-idp/rc:${rcTag}"
-      --cache-repo="${ECR_REGISTRY}/identity-idp/rc/cache"
-      --cache-ttl=168h
-      --digest-file=imageDigest.tmp
-      --cache=true
-      --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}"
-      --build-arg "https_proxy=${https_proxy}"
-      --build-arg "no_proxy=${no_proxy}"
-      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
-      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
-      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
-
-# Deploy RC Container to testing environment. Requires updating identity-idp-helm-chart, creating and merging an MR.
-test-deployment:
-  extends:
-    - .eks_trigger_rules
-    - .eks_deploy
-  stage: eks_release
-  needs:
-    - job: build-rc-container
-  environment:
-    name: $CI_COMMIT_BRANCH
-  variables:
-    eksClusterName: 'sandbox'
-    testEnvironment: 'ekstest'
-    gitBranch: 'cmccarthy/deploy-idp-${CI_COMMIT_BRANCH}-to-${testEnvironment}'
-    gitMRTarget: 'cmccarthy/lifecycle-checks'
-    gitMRTitle: "Deploy IDP ${CI_COMMIT_BRANCH} to ${testEnvironment}"
-    gitMRDescription: "Updates the IDP container image tag to ${CI_COMMIT_BRANCH} for the ${testEnvironment} environment"
-    rcRepoName: "${ECR_REGISTRY}/identity-idp/rc"  
-  interruptible: true
-  tags:
-    - build-pool
- 
-# Testing step for test environment
-integration-tests:
-  extends:
-    - .eks_trigger_rules
-  stage: eks_release
-  needs:
-    - job: test-deployment
-  environment:
-    name: $CI_COMMIT_BRANCH
-  interruptible: true
-  tags:
-    - test-pool
-  script:
-    - echo "This is where integrations tests should execute on the test environment if/when they exist"
-
-# Sign RC image. Signed images go to new ECR?
-sign-image:
-  extends:
-    - .eks_trigger_rules
-  stage: eks_release
-  needs:
-    - job: integration-tests
-    - job: build-rc-container
-  environment:
-    name: $CI_COMMIT_BRANCH
-  interruptible: true
-  tags:
-    - build-pool
-  image:
-    name: bitnami/aws-cli:latest
-    entrypoint: ['']
-    docker:
-      user: root
-  before_script:
-    - |-
-      apt-get update && apt-get install -y curl docker.io
-      LATEST_VERSION=$(curl https://api.github.com/repos/sigstore/cosign/releases/latest | grep tag_name | cut -d : -f2 | tr -d "v\", ")
-      curl -O -L "https://github.com/sigstore/cosign/releases/latest/download/cosign_${LATEST_VERSION}_amd64.deb"
-      dpkg -i cosign_${LATEST_VERSION}_amd64.deb
-  script:
-    - rcDigest=$(cat ${CI_PROJECT_DIR}/imageDigest.tmp)
-    - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
-    - cosign sign --tlog-upload=false -y --key awskms:///${KMS_SIGNING_KEY} ${ECR_REGISTRY}/identity-idp/rc@${rcDigest}
-
-# Deploy signed image to next environment
-
-# Prod approval gate
-
-# Create Gitlab Release?
-
-# Deploy to prod
