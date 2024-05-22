@@ -1,6 +1,5 @@
 import AcuantSelfieCaptureCanvas from '@18f/identity-document-capture/components/acuant-selfie-capture-canvas';
 import { AcuantContext, DeviceContext } from '@18f/identity-document-capture';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { render } from '../../../support/document-capture';
 
 it('shows the loading spinner when the script hasnt loaded', () => {
