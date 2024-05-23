@@ -70,33 +70,6 @@ RSpec.describe Users::BackupCodeSetupController do
 
       it_behaves_like 'valid backup codes creation'
     end
-
-    context 'backup code confirm setup feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:backup_code_confirm_setup_screen_enabled).
-          and_return(false)
-      end
-
-      it 'redirects to root url' do
-        expect(response).to redirect_to(root_url)
-      end
-
-      context 'in multi mfa setup flow' do
-        before do
-          allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
-        end
-
-        it_behaves_like 'valid backup codes creation'
-      end
-
-      context 'adding backup codes from account dashboard' do
-        before do
-          controller.user_session[:account_redirect_path] = account_path
-        end
-
-        it_behaves_like 'valid backup codes creation'
-      end
-    end
   end
 
   describe '#create' do
