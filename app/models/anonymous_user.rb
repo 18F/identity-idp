@@ -48,4 +48,12 @@ class AnonymousUser
   def locked_out?
     second_factor_locked_at.present? && !lockout_period_expired?
   end
+
+  def identity_verified_with_biometric_comparison?
+    false
+  end
+
+  def identity_verified?
+    false
+  end
 end

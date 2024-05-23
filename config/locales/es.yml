@@ -587,9 +587,9 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.how_to_verify: Tiene la opción de verificar su identidad en línea o en persona en una oficina de correos participante.
+doc_auth.info.how_to_verify: Tiene la opción de verificar su identidad en línea, o en persona en una oficina de correos participante.
 doc_auth.info.how_to_verify_selfie: Tiene la opción de verificar su identidad en línea con su teléfono, o en persona en una oficina de correos participante.
-doc_auth.info.how_to_verify_troubleshooting_options_header: '¿Desea obtener más información sobre cómo verificar su identidad?'
+doc_auth.info.how_to_verify_troubleshooting_options_header: ¿Desea obtener más información sobre cómo verificar su identidad?
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación emitida por el estado.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
 doc_auth.info.image_loaded: Imagen cargada
@@ -605,7 +605,7 @@ doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Con
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
-doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a introducir su contraseña. La encriptación significa que sus datos están protegidos y solo usted podrá acceder o modificar su información.
+doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede acceder a su información o modificarla.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
 doc_auth.info.selfie_capture_status.face_close_to_border: Demasiado cerca del marco
 doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
@@ -618,7 +618,7 @@ doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su
 doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
 doc_auth.info.verify_at_post_office_description: Esta opción es mejor si no tiene un teléfono para tomar fotografías de su identificación.
 doc_auth.info.verify_at_post_office_description_selfie: Elija esta opción si no tiene un teléfono para tomar fotografías.
-doc_auth.info.verify_at_post_office_instruction: Ingresará la información de su identificación en línea y verificará su identidad en persona en una oficina de correos participante.
+doc_auth.info.verify_at_post_office_instruction: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_instruction_selfie: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
@@ -1579,6 +1579,10 @@ two_factor_authentication.backup_code_prompt: Puede utilizar este código de rec
 two_factor_authentication.backup_codes.instructions: Si no tiene acceso a otro dispositivo, proteja sus códigos de recuperación. Si los pierde, no podrá iniciar sesión en %{app_name}.
 two_factor_authentication.backup_codes.warning_html: '<strong>Solo ha configurado códigos de recuperación en su cuenta. </strong>Si tiene acceso a otro dispositivo, como un teléfono, proteja su cuenta con otro método de autenticación.'
 two_factor_authentication.choose_another_option: '‹ Elija otro método de autenticación'
+two_factor_authentication.confirm_backup_code_setup_content_html:
+  - '<strong>Los códigos de recuperación son el método de autenticación menos utilizado,</strong> ya que se pueden perder con facilidad. Pruebe una opción más segura, como una aplicación de autenticación o una clave de seguridad.'
+  - Le enviaremos 10 códigos que puede descargar, imprimir, copiar o anotar. Ingresará un código cada vez que inicie sesión.
+two_factor_authentication.confirm_backup_code_setup_title: ¿Está seguro de que desea usar códigos de recuperación?
 two_factor_authentication.form_legend: Elija sus métodos de autenticación
 two_factor_authentication.header_text: Introduzca su código de un solo uso
 two_factor_authentication.important_alert_icon: icono importante de alerta
@@ -1809,21 +1813,21 @@ user_mailer.letter_reminder_14_days.subject: Termine de verificar su identidad
 user_mailer.letter_reminder.info_html: La carta que recibirá próximamente contiene un código de verificación que nos ayudará a verificar su dirección. Para completar el proceso de verificación de identidad, inicie sesión en %{link_html} e ingrese el código de verificación.
 user_mailer.letter_reminder.subject: Enviamos una carta a la dirección de su expediente
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: métodos de autenticación
-user_mailer.new_device_sign_in_after_2fa.info_p1: Su correo electrónico y su contraseña de %{app_name} se usaron para iniciar sesión y para la autenticación desde un nuevo dispositivo.
+user_mailer.new_device_sign_in_after_2fa.info_p1: Su correo electrónico y contraseña de %{app_name} se usaron para iniciar sesión y hacer la autenticación en un dispositivo nuevo.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si reconoce esta actividad, no tiene que hacer nada.
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si no fue usted, %{reset_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
 user_mailer.new_device_sign_in_after_2fa.reset_password: restablezca la contraseña
 user_mailer.new_device_sign_in_after_2fa.subject: Nuevo inicio de sesión y autenticación con su cuenta de %{app_name}
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Autenticado
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Inicia sesión con contraseña
-user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: No se pudo autenticar
+user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Error al autenticar
 user_mailer.new_device_sign_in_attempts.new_sign_in_from: El nuevo inicio de sesión se encuentra potencialmente en %{location}
-user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio error</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>no se pudo autenticar %{count} veces</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>la autenticación dio error</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>no se logró la autenticación</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>error al autenticar %{count} veces</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Su correo electrónico y su contraseña de %{app_name} se usaron para ingresar desde un nuevo dispositivo, pero <strong>no se logró la autenticación</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p2: Si reconoce esta actividad, no tiene que hacer nada.
-user_mailer.new_device_sign_in_before_2fa.info_p3_html: La autenticación de dos factores protege su cuenta de accesos no autorizados. Si no fue usted, %{reset_password_link_html} inmediatamente.
-user_mailer.new_device_sign_in_before_2fa.reset_password: restablezca la contraseña
+user_mailer.new_device_sign_in_before_2fa.info_p3_html: La autenticación de dos factores protege su cuenta contra un acceso no autorizado. Si no fue usted, %{reset_password_link_html}.
+user_mailer.new_device_sign_in_before_2fa.reset_password: restablezca de inmediato su contraseña.
 user_mailer.new_device_sign_in_before_2fa.subject: Nuevo inicio de sesión con su cuenta de %{app_name}
 user_mailer.new_device_sign_in.disavowal_link: restablezca su contraseña
 user_mailer.new_device_sign_in.help_html: Si usted no hizo este cambio, %{disavowal_link_html}. Para obtener más ayuda, visite %{app_name_html} %{help_link_html} o %{contact_link_html}.

@@ -4,6 +4,7 @@ module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
     include MfaSetupConcern
+    include NewDeviceConcern
 
     before_action :check_sp_required_mfa
     before_action :confirm_multiple_factors_enabled
@@ -132,7 +133,7 @@ module TwoFactorAuthentication
     end
 
     def post_analytics(result)
-      properties = result.to_h.merge(analytics_properties, new_device: user_session[:new_device])
+      properties = result.to_h.merge(analytics_properties, new_device: new_device?)
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
       analytics.track_mfa_submit_event(properties)

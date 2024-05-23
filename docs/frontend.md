@@ -376,9 +376,9 @@ Note that NewRelic creates links in stack traces which are invalid, since they i
 Debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
 
 1. Download the minified JavaScript file referenced in the stack trace
-   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js
+   - Example: https://secure.login.gov/packs/document-capture-e41c853e.digested.js
 2. Download the sourcemap file for the JavaScript by appending `.map` to the previous URL
-   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js.map
+   - Example: https://secure.login.gov/packs/document-capture-e41c853e.digested.js.map
 3. Install the [`sourcemap-lookup` npm package](https://www.npmjs.com/package/sourcemap-lookup)
    - `npm i -g sourcemap-lookup`
 4. Open a terminal window to the directory where you downloaded the files in steps 1 and 2
@@ -389,6 +389,24 @@ Debugging these stack traces can be difficult, since files in production are min
    - Example: `sourcemap-lookup document-capture-e41c853e.digested.js:2:172098 --source-path=/path/to/identity-idp/`
 
 The output of the `sourcemap-lookup` command should include "Original Position" and "Code Section" of the code which triggered the error.
+
+## Fonts
+
+Font files are optimized to remove unused character data. If a new character is added to content, the font files must be regenerated:
+
+1. [Download Public Sans](https://public-sans.digital.gov/) and extract it to your project's `tmp/` directory
+2. Install [glyphhanger](https://github.com/zachleat/glyphhanger) and its dependencies:
+   1. `npm install -g glyphhanger`
+   2. `pip install fonttools brotli`
+3. Scrape content for character data:
+   1. `make lint_font_glyphs`
+4. Subset the original Public Sans fonts to include only used character data:
+   1. `glyphhanger app/assets/fonts/glyphs.txt --formats=woff2 --subset="tmp/public-sans-v2/fonts/ttf/PublicSans-*.ttf"`
+5. Replace font files with new subset fonts:
+   1. `cd tmp/public-sans-v2/fonts/ttf`
+   2. `find . -name "*-subset.woff2" -exec sh -c 'cp $1 "../../../../app/assets/fonts/public-sans/${1%-subset.woff2}.woff2"' _ {} \;`
+
+At this point, your working directory should reflect changes to all of the files within `app/assets/fonts/public-sans`.
 
 ## Devices
 

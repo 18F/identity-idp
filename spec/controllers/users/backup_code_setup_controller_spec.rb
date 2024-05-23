@@ -9,45 +9,106 @@ RSpec.describe Users::BackupCodeSetupController do
         :confirm_user_authenticated_for_2fa_setup,
         :apply_secure_headers_override,
         [:confirm_recently_authenticated_2fa, except: ['reminder', 'continue']],
-        :validate_internal_referrer?,
+        :validate_multi_mfa_selection,
       )
     end
   end
 
-  it 'creates backup codes and logs expected events' do
-    user = create(:user, :fully_registered)
-    stub_sign_in(user)
-    analytics = stub_analytics
-    stub_attempts_tracker
-    allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+  shared_examples 'valid backup codes creation' do
+    it 'creates backup codes and logs expected events' do
+      stub_analytics
+      stub_attempts_tracker
+      allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
 
-    Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
-    expect(PushNotification::HttpPush).to receive(:deliver).
-      with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-    expect(@analytics).to receive(:track_event).
-      with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
-    expect(@analytics).to receive(:track_event).
-      with('Backup Code Setup Visited', {
+      Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+      response
+
+      expect(@analytics).to have_logged_event(
+        'User marked authenticated',
+        authentication_type: :valid_2fa_confirmation,
+      )
+      expect(@analytics).to have_logged_event(
+        'Backup Code Setup Visited',
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
         error_details: nil,
         enabled_mfa_methods_count: 1,
         in_account_creation_flow: false,
-      })
-    expect(@analytics).to receive(:track_event).
-      with('Backup Code Created', {
+      )
+      expect(@analytics).to have_logged_event(
+        'Backup Code Created',
         enabled_mfa_methods_count: 2,
         in_account_creation_flow: false,
-      })
-    expect(@irs_attempts_api_tracker).to receive(:track_event).
-      with(:mfa_enroll_backup_code, success: true)
+      )
 
-    get :index
+      expect(response).to render_template(:create)
+      expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
+    end
+  end
 
-    expect(response).to render_template('index')
-    expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
+  describe '#index' do
+    let(:user) { create(:user, :fully_registered) }
+
+    subject(:response) { get :index }
+
+    before do
+      stub_sign_in(user)
+    end
+
+    it 'redirects to setup confirmation screen' do
+      expect(response).to redirect_to(backup_code_confirm_setup_url)
+    end
+
+    context 'in multi mfa setup flow' do
+      before do
+        allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+      end
+
+      it_behaves_like 'valid backup codes creation'
+    end
+
+    context 'backup code confirm setup feature disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:backup_code_confirm_setup_screen_enabled).
+          and_return(false)
+      end
+
+      it 'redirects to root url' do
+        expect(response).to redirect_to(root_url)
+      end
+
+      context 'in multi mfa setup flow' do
+        before do
+          allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+        end
+
+        it_behaves_like 'valid backup codes creation'
+      end
+
+      context 'adding backup codes from account dashboard' do
+        before do
+          controller.user_session[:account_redirect_path] = account_path
+        end
+
+        it_behaves_like 'valid backup codes creation'
+      end
+    end
+  end
+
+  describe '#create' do
+    let(:user) { create(:user, :fully_registered) }
+
+    subject(:response) { post :create }
+
+    before do
+      stub_sign_in(user)
+    end
+
+    it_behaves_like 'valid backup codes creation'
   end
 
   context 'without existing backup codes' do
@@ -115,14 +176,14 @@ RSpec.describe Users::BackupCodeSetupController do
   describe 'multiple MFA handling' do
     let(:mfa_selections) { ['backup_code', 'voice'] }
     before do
-      @user = build(:user)
+      @user = create(:user)
       stub_sign_in(@user)
       controller.user_session[:mfa_selections] = mfa_selections
     end
 
     context 'when user selects multiple mfas on account creation' do
       it 'redirects to Phone Url Page after page' do
-        codes = BackupCodeGenerator.new(@user).create
+        codes = BackupCodeGenerator.new(@user).delete_and_regenerate
         controller.user_session[:backup_codes] = codes
         post :continue
 
@@ -133,7 +194,7 @@ RSpec.describe Users::BackupCodeSetupController do
     context 'when user only selects backup code on account creation' do
       let(:mfa_selections) { ['backup_code'] }
       it 'redirects to Suggest 2nd MFA page' do
-        codes = BackupCodeGenerator.new(@user).create
+        codes = BackupCodeGenerator.new(@user).delete_and_regenerate
         controller.user_session[:backup_codes] = codes
         post :continue
         expect(response).to redirect_to(auth_method_confirmation_url)
@@ -143,9 +204,9 @@ RSpec.describe Users::BackupCodeSetupController do
 
   context 'with multiple MFA selection turned off' do
     it 'redirects to account page' do
-      user = build(:user, :fully_registered)
+      user = create(:user, :fully_registered)
       stub_sign_in(user)
-      codes = BackupCodeGenerator.new(user).create
+      codes = BackupCodeGenerator.new(user).delete_and_regenerate
       controller.user_session[:backup_codes] = codes
       post :continue
       expect(response).to redirect_to(account_url)
@@ -176,15 +237,6 @@ RSpec.describe Users::BackupCodeSetupController do
         'Backup Code Regenerate Visited',
         hash_including(in_account_creation_flow: false),
       )
-    end
-  end
-
-  context 'invalid referrer to create Backup codes page' do
-    it 'redirects to site root' do
-      user = create(:user, :fully_registered)
-      stub_sign_in(user)
-      get :index
-      expect(response).to redirect_to(root_url)
     end
   end
 end

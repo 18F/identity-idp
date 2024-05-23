@@ -494,8 +494,8 @@ doc_auth.errors.alerts.id_not_recognized: 我们无法辨认你的身份证件�
 doc_auth.errors.alerts.id_not_verified: 我们无法验证你的身份证件。可能因为你拍照时身份证件移动了。尝试重拍。
 doc_auth.errors.alerts.issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
 doc_auth.errors.alerts.ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
-doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: 查看更多有关清晰拍摄你本人照片的提示
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: 尝试再拍一张你自己。确保照片中你整个面孔都清楚可见。
 doc_auth.errors.alerts.sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
 doc_auth.errors.alerts.visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
 doc_auth.errors.alerts.visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
@@ -518,7 +518,7 @@ doc_auth.errors.general.multiple_front_id_failures: 我们无法验证你身份�
 doc_auth.errors.general.network_error: 我们这边有技术困难。请稍后再提交你的图像。
 doc_auth.errors.general.no_liveness: 尝试重拍。
 doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
-doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
+doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄清晰照片的提示
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
 doc_auth.errors.glare.top_msg_plural: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍。
@@ -547,14 +547,14 @@ doc_auth.headings.capture_scan_warning_link: 上传新照片
 doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
-doc_auth.headings.document_capture_selfie: 你本人照片
+doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_id: 驾照或州政府颁发的身份证件
 doc_auth.headings.document_capture_subheader_selfie: 你本人照片
 doc_auth.headings.document_capture_with_selfie: 添加你身份证件和本人的照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择你想如何验证身份
 doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
-doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
+doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.no_ssn: 没有社会保障号码？
@@ -568,7 +568,7 @@ doc_auth.headings.upload_from_computer: 在这台电脑上继续
 doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
-doc_auth.headings.verify_online: 在网上验证你的身份
+doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
 doc_auth.headings.welcome: 开始验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
@@ -587,11 +587,11 @@ doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{app_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.how_to_verify: 你有在网上验证身份或者到参与邮件亲身验证身份的选择
+doc_auth.info.how_to_verify: 你可以选择在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
+doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
 doc_auth.info.image_loaded: 图像已加载
 doc_auth.info.image_loading: 图像加载中
 doc_auth.info.image_updated: 图像已上传
@@ -606,25 +606,25 @@ doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
-doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
-doc_auth.info.selfie_capture_status.face_close_to_border: Too close to the frame
-doc_auth.info.selfie_capture_status.face_not_found: Face not found
-doc_auth.info.selfie_capture_status.face_too_small: Face too small
-doc_auth.info.selfie_capture_status.too_many_faces: Too many faces
+doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
+doc_auth.info.selfie_capture_status.face_close_to_border: 距离相框太近
+doc_auth.info.selfie_capture_status.face_not_found: 没找到面孔
+doc_auth.info.selfie_capture_status.face_too_small: 面孔太小
+doc_auth.info.selfie_capture_status.too_many_faces: 太多张面孔
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
 doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
 doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
-doc_auth.info.verify_at_post_office_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
+doc_auth.info.verify_at_post_office_description: 如果你没有手机拍身份证件照片，这一选项更好。
 doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可以拍照，请选择该选项
-doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与邮件去亲身验证身份。
+doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
 doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
-doc_auth.info.verify_online_instruction: 你将拍自己身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这一流程。
+doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
 doc_auth.info.verify_online_instruction_selfie: 使用手机在网上验证你的身份你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
@@ -643,16 +643,16 @@ doc_auth.instructions.text2: 你不需要有卡。
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
-doc_auth.tips.document_capture_id_text1: 使用暗色背景
-doc_auth.tips.document_capture_id_text2: 在平坦平面上拍照。
-doc_auth.tips.document_capture_id_text3: 不要使用相机的闪光灯
+doc_auth.tips.document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
+doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照。
+doc_auth.tips.document_capture_id_text3: 避免身份证件上有炫光或阴影。
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
-doc_auth.tips.document_capture_selfie_id_header_text: 拍出清晰照片的提示
-doc_auth.tips.document_capture_selfie_selfie_text: 拍出清晰照片的提示
-doc_auth.tips.document_capture_selfie_text1: 把设备放在眼睛水平
-doc_auth.tips.document_capture_selfie_text2: 确保你整个面孔都可以看到
-doc_auth.tips.document_capture_selfie_text3: 在光线充沛的地方拍照
-doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle.
+doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄你身份证件的清晰照片
+doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
+doc_auth.tips.document_capture_selfie_text1: 摘掉可能盖住你面部的任何服饰。我们建议你摘掉眼镜和帽子。
+doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照。
+doc_auth.tips.document_capture_selfie_text3: 面部表情保持中性。
+doc_auth.tips.document_capture_selfie_text4: 确保你整个面部都可以在绿色圆圈中看到。
 doc_auth.tips.mobile_phone_required: 要求有手机
 doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
 doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
@@ -686,8 +686,8 @@ errors.doc_auth.phone_step_incomplete: 在继续之前你必须使用手机上�
 errors.doc_auth.rate_limited_heading: 我们无法验证你的身份证件。
 errors.doc_auth.rate_limited_subheading: 尝试再拍照片
 errors.doc_auth.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
-errors.doc_auth.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
+errors.doc_auth.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
+errors.doc_auth.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
 errors.doc_auth.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 errors.enter_code.rate_limited_html: 你输入错误验证码太多次。<strong> %{timeout} 后再试。</strong>
 errors.general: 哎呀，出错了。请再试一次。
@@ -809,8 +809,8 @@ forms.buttons.back: 返回
 forms.buttons.cancel: 是的，取消
 forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
-forms.buttons.continue_ipp: Continue in person
-forms.buttons.continue_remote: Continue online
+forms.buttons.continue_ipp: 继续亲身验证
+forms.buttons.continue_remote: 继续在网上验证
 forms.buttons.continue_remote_selfie: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
@@ -1584,6 +1584,10 @@ two_factor_authentication.backup_code_prompt: 该安全代码可使用一次。�
 two_factor_authentication.backup_codes.instructions: 如果你无法使用另一个设备，请将安全代码存放好。万一丢失备用代码，你就无法登录%{app_name}。
 two_factor_authentication.backup_codes.warning_html: '<strong>你只在自己账户上设置了备用代码。</strong>如果你可以使用另一个设备，比如手机，请用另一种身份证实方法来保护你的账户。'
 two_factor_authentication.choose_another_option: '‹ 选择另一个身份证实方法'
+two_factor_authentication.confirm_backup_code_setup_content_html:
+  - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
+  - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+two_factor_authentication.confirm_backup_code_setup_title: 你确定要使用备用代码吗？
 two_factor_authentication.form_legend: 选择你的身份证实方法
 two_factor_authentication.header_text: 输入一次性代码
 two_factor_authentication.important_alert_icon: 重要警告标志
@@ -1815,11 +1819,11 @@ user_mailer.letter_reminder_14_days.subject: 完成验证你的身份
 user_mailer.letter_reminder.info_html: 你将收到的信件会含有帮助我们验证你地址的一次性代码。你可以登入 %{link_html} 并输入该一次性代码来完成身份验证流i程。
 user_mailer.letter_reminder.subject: 我们已向你存档地址发送了一封信。
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: authentication methods
-user_mailer.new_device_sign_in_after_2fa.info_p1: Your %{app_name} email and password were used to sign-in and authenticate on a new device.
-user_mailer.new_device_sign_in_after_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
+user_mailer.new_device_sign_in_after_2fa.info_p1: 你的 %{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。
+user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
 user_mailer.new_device_sign_in_after_2fa.reset_password: reset your password
-user_mailer.new_device_sign_in_after_2fa.subject: New sign-in and authentication with your %{app_name} account
+user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的登录和身份验证'
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: 身份已证实
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Signed in with password
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: 身份证实失败
@@ -1827,10 +1831,10 @@ user_mailer.new_device_sign_in_attempts.new_sign_in_from: 新登录可能是在 
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate %{count} times</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
-user_mailer.new_device_sign_in_before_2fa.info_p3_html: Two-factor authentication protects your account from unauthorized access. If this wasn’t you, %{reset_password_link_html} immediately.
-user_mailer.new_device_sign_in_before_2fa.reset_password: reset your password
-user_mailer.new_device_sign_in_before_2fa.subject: New sign-in with your %{app_name} account
+user_mailer.new_device_sign_in_before_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
+user_mailer.new_device_sign_in_before_2fa.info_p3_html: 双重身份验证保护你账户不受未经授权的访问。如果不是你，请马上 %{reset_password_link_html}.
+user_mailer.new_device_sign_in_before_2fa.reset_password: 重设密码
+user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新的登录
 user_mailer.new_device_sign_in.disavowal_link: 重设你的密码
 user_mailer.new_device_sign_in.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.new_device_sign_in.info: ''

@@ -108,7 +108,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          new_device: nil,
+          new_device: true,
           piv_cac_configuration_id: nil,
         }
 
@@ -120,7 +120,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          new_device: nil,
+          new_device: true,
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           piv_cac_configuration_id: cfg.id,
           piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
@@ -144,27 +144,17 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         get :show, params: { token: 'good-token' }
       end
 
-      context 'with new device session value' do
+      context 'with existing device' do
         before do
-          subject.user_session[:new_device] = false
+          allow(controller).to receive(:new_device?).and_return(false)
         end
+
         it 'tracks new device value' do
           stub_analytics
-          cfg = controller.current_user.piv_cac_configurations.first
+          stub_sign_in_before_2fa(user)
 
-          submit_attributes = {
-            success: true,
-            errors: {},
-            context: 'authentication',
-            multi_factor_auth_method: 'piv_cac',
-            new_device: false,
-            multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
-            piv_cac_configuration_id: cfg.id,
-            piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
-            key_id: 'foo',
-          }
           expect(@analytics).to receive(:track_mfa_submit_event).
-            with(submit_attributes)
+            with(hash_including(new_device: false))
 
           get :show, params: { token: 'good-token' }
         end
@@ -253,7 +243,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          new_device: nil,
+          new_device: true,
           piv_cac_configuration_id: nil,
         }
 
@@ -271,7 +261,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
-          new_device: nil,
+          new_device: true,
           key_id: 'foo',
           piv_cac_configuration_dn_uuid: 'bad-uuid',
           piv_cac_configuration_id: nil,

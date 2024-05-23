@@ -99,10 +99,7 @@ class UserSeeder
     EmailAddress.create!(user: user, email: ee.decrypted, confirmed_at: Time.zone.now)
     user.reset_password(PASSWORD, PASSWORD)
     Event.create(user_id: user.id, event_type: :account_created)
-    generator = BackupCodeGenerator.new(user)
-    generator.generate.tap do |codes|
-      generator.save(codes)
-    end
+    BackupCodeGenerator.new(user).delete_and_regenerate
   end
 
   def create_profile(user:, row:)

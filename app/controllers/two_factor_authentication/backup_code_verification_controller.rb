@@ -3,6 +3,7 @@
 module TwoFactorAuthentication
   class BackupCodeVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include NewDeviceConcern
 
     prepend_before_action :authenticate_user
     before_action :check_sp_required_mfa
@@ -22,7 +23,7 @@ module TwoFactorAuthentication
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
       result = @backup_code_form.submit(backup_code_params)
       analytics.track_mfa_submit_event(
-        result.to_h.merge(new_device: user_session[:new_device]),
+        result.to_h.merge(new_device: new_device?),
       )
       irs_attempts_api_tracker.mfa_login_backup_code(success: result.success?)
       handle_result(result)
@@ -36,9 +37,7 @@ module TwoFactorAuthentication
 
     def handle_last_code
       generator = BackupCodeGenerator.new(current_user)
-      generator.delete_existing_codes
-      user_session[:backup_codes] = generator.generate
-      generator.save(user_session[:backup_codes])
+      user_session[:backup_codes] = generator.delete_and_regenerate
       flash[:info] = t('forms.backup_code.last_code')
       redirect_to backup_code_refreshed_url
     end

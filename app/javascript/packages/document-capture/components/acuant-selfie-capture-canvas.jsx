@@ -21,6 +21,16 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
   // The Acuant SDK script AcuantPassiveLiveness attaches to whatever element has
   // this id. It then uses that element as the root for the full screen selfie capture
   const acuantCaptureContainerId = 'acuant-face-capture-container';
+
+  // This solves a fairly nasty bug for screenreader users where the screenreader focus would jump away
+  // from the capture button (added by Acuant SDK) to the button in this component. Specifically we
+  // need to detect when Acuant actually hydrates in their capture screen and hide the button.
+  // See PR 10668 for more information.
+  const elementInShadow = document
+    ?.getElementById('acuant-face-capture-camera')
+    ?.shadowRoot?.getElementById('cameraContainer');
+  const loadedAcuantCamera = !!elementInShadow;
+
   return (
     <>
       {!isReady && <LoadingSpinner />}
@@ -31,9 +41,11 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
           )}
         </p>
       </div>
-      <button type="button" onClick={onSelfieCaptureClosed} className="usa-sr-only">
-        {t('doc_auth.buttons.close')}
-      </button>
+      {!loadedAcuantCamera && (
+        <button type="button" onClick={onSelfieCaptureClosed} className="usa-sr-only">
+          {t('doc_auth.buttons.close')}
+        </button>
+      )}
     </>
   );
 }

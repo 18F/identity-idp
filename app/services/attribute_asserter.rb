@@ -38,7 +38,7 @@ class AttributeAsserter
     add_all_emails(attrs) if bundle.include? :all_emails
     add_bundle(attrs) if should_add_proofed_attributes?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
-    if authn_request.requested_vtr_authn_context.present?
+    if authn_request.requested_vtr_authn_contexts.present?
       add_vot(attrs)
     else
       add_aal(attrs)
@@ -71,6 +71,7 @@ class AttributeAsserter
     @resolved_authn_context_result ||= begin
       saml = FederatedProtocols::Saml.new(authn_request)
       AuthnContextResolver.new(
+        user: user,
         service_provider: service_provider,
         vtr: saml.vtr,
         acr_values: saml.acr_values,

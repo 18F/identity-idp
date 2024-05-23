@@ -16,6 +16,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
 
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth) { false }
+  let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
   let(:opted_in_to_in_person_proofing) { false }
 
@@ -48,7 +49,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_version: acuant_version,
       doc_auth_selfie_capture: selfie_capture_enabled,
       skip_doc_auth: skip_doc_auth,
-      skip_doc_auth_from_how_to_verify: false,
+      skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
     }
