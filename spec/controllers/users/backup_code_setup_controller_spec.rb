@@ -176,14 +176,14 @@ RSpec.describe Users::BackupCodeSetupController do
   describe 'multiple MFA handling' do
     let(:mfa_selections) { ['backup_code', 'voice'] }
     before do
-      @user = build(:user)
+      @user = create(:user)
       stub_sign_in(@user)
       controller.user_session[:mfa_selections] = mfa_selections
     end
 
     context 'when user selects multiple mfas on account creation' do
       it 'redirects to Phone Url Page after page' do
-        codes = BackupCodeGenerator.new(@user).create
+        codes = BackupCodeGenerator.new(@user).delete_and_regenerate
         controller.user_session[:backup_codes] = codes
         post :continue
 
@@ -194,7 +194,7 @@ RSpec.describe Users::BackupCodeSetupController do
     context 'when user only selects backup code on account creation' do
       let(:mfa_selections) { ['backup_code'] }
       it 'redirects to Suggest 2nd MFA page' do
-        codes = BackupCodeGenerator.new(@user).create
+        codes = BackupCodeGenerator.new(@user).delete_and_regenerate
         controller.user_session[:backup_codes] = codes
         post :continue
         expect(response).to redirect_to(auth_method_confirmation_url)
@@ -204,9 +204,9 @@ RSpec.describe Users::BackupCodeSetupController do
 
   context 'with multiple MFA selection turned off' do
     it 'redirects to account page' do
-      user = build(:user, :fully_registered)
+      user = create(:user, :fully_registered)
       stub_sign_in(user)
-      codes = BackupCodeGenerator.new(user).create
+      codes = BackupCodeGenerator.new(user).delete_and_regenerate
       controller.user_session[:backup_codes] = codes
       post :continue
       expect(response).to redirect_to(account_url)

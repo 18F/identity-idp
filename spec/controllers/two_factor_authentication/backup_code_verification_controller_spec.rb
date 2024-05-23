@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
   let(:user) { create(:user) }
   let(:backup_codes) do
-    BackupCodeGenerator.new(user).create
+    BackupCodeGenerator.new(user).delete_and_regenerate
   end
   let(:payload) { { backup_code_verification_form: { backup_code: backup_codes.first } } }
 
