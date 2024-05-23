@@ -157,7 +157,8 @@ FactoryBot.define do
 
     trait :with_backup_code do
       after :build do |user|
-        BackupCodeGenerator.new(user).create
+        user.save
+        BackupCodeGenerator.new(user).delete_and_regenerate
       end
     end
 

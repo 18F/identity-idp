@@ -47,28 +47,10 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
       let(:payload) { { personal_key_form: personal_key } }
       it 'tracks the valid authentication event' do
         personal_key
+        multi_factor_auth_method_created_at = user.reload.
+          encrypted_recovery_code_digest_generated_at.strftime('%s%L')
         sign_in_before_2fa(user)
         stub_analytics
-
-        analytics_hash = {
-          success: true,
-          errors: {},
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: user.reload.
-            encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
-          new_device: true,
-        }
-
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash)
-
-        expect(@analytics).to receive(:track_event).with(
-          'Personal key: Alert user about sign in',
-          hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
-        )
-
-        expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context).
           with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY).
@@ -85,6 +67,23 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           )
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
         end
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: true,
+          errors: {},
+          multi_factor_auth_method: 'personal-key',
+          multi_factor_auth_method_created_at:,
+          new_device: true,
+        )
+        expect(@analytics).to have_logged_event(
+          'Personal key: Alert user about sign in',
+          hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
+        )
+        expect(@analytics).to have_logged_event(
+          'User marked authenticated',
+          authentication_type: :valid_2fa,
+        )
       end
 
       context 'with enable_additional_mfa_redirect_for_personal_key_mfa? set to true' do
@@ -122,10 +121,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           stub_analytics
           stub_sign_in_before_2fa(user)
 
-          expect(@analytics).to receive(:track_mfa_submit_event).
-            with(hash_including(new_device: false))
-
           post :create, params: payload
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            hash_including(new_device: false),
+          )
         end
       end
     end
@@ -203,20 +204,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
         stub_analytics
         stub_attempts_tracker
 
-        properties = {
-          success: false,
-          errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
-          error_details: { personal_key: { personal_key_incorrect: true } },
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
-          new_device: true,
-        }
-
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties)
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: max attempts reached')
-
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
           with(mfa_device_type: 'personal_key')
 
@@ -224,6 +211,17 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: payload
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication',
+          success: false,
+          errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
+          error_details: { personal_key: { personal_key_incorrect: true } },
+          multi_factor_auth_method: 'personal-key',
+          multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+          new_device: true,
+        )
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
 
       it 'records unsuccessful 2fa event' do

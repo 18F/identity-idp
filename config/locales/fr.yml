@@ -1580,6 +1580,10 @@ two_factor_authentication.backup_code_prompt: Vous pouvez utiliser ce code de sa
 two_factor_authentication.backup_codes.instructions: Si vous n’avez pas accès à un autre appareil, conservez vos codes de sauvegarde en lieu sûr. Si vous perdez vos codes de sauvegarde, vous ne pourrez plus vous connecter à %{app_name}.
 two_factor_authentication.backup_codes.warning_html: '<strong>Vous n’avez configuré que des codes de sauvegarde sur votre compte. </strong>Si vous avez accès à un autre appareil, tel qu’un téléphone, protégez votre compte à l’aide d’une autre méthode d’authentification.'
 two_factor_authentication.choose_another_option: '‹ Choisir une autre méthode d’authentification'
+two_factor_authentication.confirm_backup_code_setup_content_html:
+  - <strong>Les codes de sauvegarde sont la méthode d’authentification la moins recommandée,</strong> car les codes peuvent facilement se perdre. Essayez une option plus sûre, comme une application d’authentification ou une clé de sécurité.
+  - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
+two_factor_authentication.confirm_backup_code_setup_title: 'Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?'
 two_factor_authentication.form_legend: Choisissez vos méthodes d’authentification
 two_factor_authentication.header_text: Saisissez votre code à usage unique
 two_factor_authentication.important_alert_icon: icône d’alerte importante
@@ -1810,7 +1814,7 @@ user_mailer.letter_reminder_14_days.subject: Terminer la vérification de votre 
 user_mailer.letter_reminder.info_html: La lettre que vous êtes sur le point de recevoir contiendra un code de vérification nous permettant de vérifier votre adresse. Vous pouvez terminer le processus de vérification d’identité en vous connectant à %{link_html} et en saisissant le code de vérification.
 user_mailer.letter_reminder.subject: Nous avons posté une lettre à l’adresse que vous avez enregistrée
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: méthodes d’authentification
-user_mailer.new_device_sign_in_after_2fa.info_p1: Votre adresse e-mail et votre mot de passe %{app_name} ont été utilisés pour se connecter et s’authentifier sur un nouvel appareil.
+user_mailer.new_device_sign_in_after_2fa.info_p1: Votre e-mail et mot de passe %{app_name} ont été utilisés pour se connecter et s’authentifier sur un nouvel appareil.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.new_device_sign_in_after_2fa.reset_password: réinitialisez votre mot de passe
@@ -1819,12 +1823,12 @@ user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Signé avec de
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Connecté avec mot de passe
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Échec de l’authentification
 user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement localisée à %{location}
-user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué %{count} reprises</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Votre adresse électronique et votre mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Votre e-mail et mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Votre e-mail et mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué %{count} reprises</strong>.
+user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Votre e-mail et mot de passe %{app_name} ont été utilisés pour vous connecter à partir d’un nouvel appareil, mais <strong>l’authentification a échoué</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
-user_mailer.new_device_sign_in_before_2fa.info_p3_html: L’authentification à deux facteurs protège votre compte contre tout accès non autorisé. Si ce n’est pas vous, %{reset_password_link_html}.
-user_mailer.new_device_sign_in_before_2fa.reset_password: réinitialisez immédiatement votre mot de passe
+user_mailer.new_device_sign_in_before_2fa.info_p3_html: L’authentification à deux facteurs protège votre compte des accès non autorisés. Si vous n’êtes pas à l’origine de cette action, %{reset_password_link_html}.
+user_mailer.new_device_sign_in_before_2fa.reset_password: veuillez réinitialiser immédiatement votre mot de passe.
 user_mailer.new_device_sign_in_before_2fa.subject: Nouvelle connexion avec votre compte %{app_name}
 user_mailer.new_device_sign_in.disavowal_link: réinitialisez votre mot de passe
 user_mailer.new_device_sign_in.help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}. Pour plus d’aide, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.

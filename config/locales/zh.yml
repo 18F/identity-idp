@@ -1584,6 +1584,10 @@ two_factor_authentication.backup_code_prompt: 该安全代码可使用一次。�
 two_factor_authentication.backup_codes.instructions: 如果你无法使用另一个设备，请将安全代码存放好。万一丢失备用代码，你就无法登录%{app_name}。
 two_factor_authentication.backup_codes.warning_html: '<strong>你只在自己账户上设置了备用代码。</strong>如果你可以使用另一个设备，比如手机，请用另一种身份证实方法来保护你的账户。'
 two_factor_authentication.choose_another_option: '‹ 选择另一个身份证实方法'
+two_factor_authentication.confirm_backup_code_setup_content_html:
+  - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
+  - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+two_factor_authentication.confirm_backup_code_setup_title: 你确定要使用备用代码吗？
 two_factor_authentication.form_legend: 选择你的身份证实方法
 two_factor_authentication.header_text: 输入一次性代码
 two_factor_authentication.important_alert_icon: 重要警告标志
@@ -1815,11 +1819,11 @@ user_mailer.letter_reminder_14_days.subject: 完成验证你的身份
 user_mailer.letter_reminder.info_html: 你将收到的信件会含有帮助我们验证你地址的一次性代码。你可以登入 %{link_html} 并输入该一次性代码来完成身份验证流i程。
 user_mailer.letter_reminder.subject: 我们已向你存档地址发送了一封信。
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: authentication methods
-user_mailer.new_device_sign_in_after_2fa.info_p1: Your %{app_name} email and password were used to sign-in and authenticate on a new device.
-user_mailer.new_device_sign_in_after_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
+user_mailer.new_device_sign_in_after_2fa.info_p1: 你的 %{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。
+user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
 user_mailer.new_device_sign_in_after_2fa.reset_password: reset your password
-user_mailer.new_device_sign_in_after_2fa.subject: New sign-in and authentication with your %{app_name} account
+user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的登录和身份验证'
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authenticated
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Signed in with password
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Failed to authenticate
@@ -1827,10 +1831,10 @@ user_mailer.new_device_sign_in_attempts.new_sign_in_from: 新登录可能是在 
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate %{count} times</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.zero: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
-user_mailer.new_device_sign_in_before_2fa.info_p2: If you recognize this activity, you don’t need to do anything.
-user_mailer.new_device_sign_in_before_2fa.info_p3_html: Two-factor authentication protects your account from unauthorized access. If this wasn’t you, %{reset_password_link_html} immediately.
-user_mailer.new_device_sign_in_before_2fa.reset_password: reset your password
-user_mailer.new_device_sign_in_before_2fa.subject: New sign-in with your %{app_name} account
+user_mailer.new_device_sign_in_before_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
+user_mailer.new_device_sign_in_before_2fa.info_p3_html: 双重身份验证保护你账户不受未经授权的访问。如果不是你，请马上 %{reset_password_link_html}.
+user_mailer.new_device_sign_in_before_2fa.reset_password: 重设密码
+user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新的登录
 user_mailer.new_device_sign_in.disavowal_link: 重设你的密码
 user_mailer.new_device_sign_in.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.new_device_sign_in.info: ''

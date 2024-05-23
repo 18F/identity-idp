@@ -3730,6 +3730,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # @param [String] context
   # @param [Boolean] new_device
   # @param [String] multi_factor_auth_method
@@ -3748,6 +3749,7 @@ module AnalyticsEvents
   def multi_factor_auth(
     success:,
     errors: nil,
+    error_details: nil,
     context: nil,
     new_device: nil,
     multi_factor_auth_method: nil,
@@ -3767,24 +3769,27 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication',
-      success: success,
-      errors: errors,
-      context: context,
-      new_device: new_device,
-      multi_factor_auth_method: multi_factor_auth_method,
-      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
-      auth_app_configuration_id: auth_app_configuration_id,
-      piv_cac_configuration_id: piv_cac_configuration_id,
-      key_id: key_id,
-      webauthn_configuration_id: webauthn_configuration_id,
-      confirmation_for_add_phone: confirmation_for_add_phone,
-      phone_configuration_id: phone_configuration_id,
-      pii_like_keypaths: pii_like_keypaths,
-      area_code: area_code,
-      country_code: country_code,
-      phone_fingerprint: phone_fingerprint,
-      frontend_error:,
-      **extra,
+      {
+        success: success,
+        errors: errors,
+        error_details: error_details,
+        context: context,
+        new_device: new_device,
+        multi_factor_auth_method: multi_factor_auth_method,
+        multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
+        auth_app_configuration_id: auth_app_configuration_id,
+        piv_cac_configuration_id: piv_cac_configuration_id,
+        key_id: key_id,
+        webauthn_configuration_id: webauthn_configuration_id,
+        confirmation_for_add_phone: confirmation_for_add_phone,
+        phone_configuration_id: phone_configuration_id,
+        pii_like_keypaths: pii_like_keypaths,
+        area_code: area_code,
+        country_code: country_code,
+        phone_fingerprint: phone_fingerprint,
+        frontend_error:,
+        **extra,
+      }.compact,
     )
   end
 
@@ -4918,7 +4923,7 @@ module AnalyticsEvents
   # @param [Integer] requested_ial
   # @param [Array] authn_context
   # @param [String, nil] requested_aal_authn_context
-  # @param [String, nil] requested_vtr_authn_context
+  # @param [String, nil] requested_vtr_authn_contexts
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
@@ -4928,7 +4933,7 @@ module AnalyticsEvents
     requested_ial:,
     authn_context:,
     requested_aal_authn_context:,
-    requested_vtr_authn_context:,
+    requested_vtr_authn_contexts:,
     force_authn:,
     final_auth_request:,
     service_provider:,
@@ -4941,7 +4946,7 @@ module AnalyticsEvents
         requested_ial: requested_ial,
         authn_context: authn_context,
         requested_aal_authn_context: requested_aal_authn_context,
-        requested_vtr_authn_context: requested_vtr_authn_context,
+        requested_vtr_authn_contexts: requested_vtr_authn_contexts,
         force_authn: force_authn,
         final_auth_request: final_auth_request,
         service_provider: service_provider,

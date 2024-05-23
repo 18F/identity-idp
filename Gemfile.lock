@@ -35,10 +35,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: dd8643b16c8214f7b791763538180d043af7ef65
-  tag: 0.20.2-18f
+  revision: 33275d69f7609e448942d6e3ce5c27779920995f
+  tag: 0.21.0-18f
   specs:
-    saml_idp (0.20.2.pre.18f)
+    saml_idp (0.21.0.pre.18f)
       activesupport
       builder
       faraday
@@ -865,7 +865,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.9)
 
 RUBY VERSION
-   ruby 3.3.0p0
+   ruby 3.3.1p55
 
 BUNDLED WITH
    2.5.6

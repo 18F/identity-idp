@@ -47,7 +47,10 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       applicant.address2 = 'Apt 1'
 
       document = REXML::Document.new(subject.body)
-      address_node = REXML::XPath.first(document, '//ns:verifyDriverLicenseDataRequest/ns1:Address')
+      address_node = REXML::XPath.first(
+        document,
+        '//dldv:verifyDriverLicenseDataRequest/aa:Address',
+      )
 
       address_node_element_names = address_node.elements.map(&:name)
       address_node_element_values = address_node.elements.map(&:text)
@@ -75,14 +78,14 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     it 'includes issue date if present' do
       applicant.state_id_data.state_id_issued = '2024-05-06'
       expect(subject.body).to include(
-        '<ns2:DriverLicenseIssueDate>2024-05-06</ns2:DriverLicenseIssueDate>',
+        '<aa:DriverLicenseIssueDate>2024-05-06</aa:DriverLicenseIssueDate>',
       )
     end
 
     it 'includes expiration date if present' do
       applicant.state_id_data.state_id_expiration = '2030-01-02'
       expect(subject.body).to include(
-        '<ns2:DriverLicenseExpirationDate>2030-01-02</ns2:DriverLicenseExpirationDate>',
+        '<aa:DriverLicenseExpirationDate>2030-01-02</aa:DriverLicenseExpirationDate>',
       )
     end
   end
@@ -156,7 +159,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     let(:state_id_jurisdiction) { 'SC' }
     let(:rendered_state_id_number) do
       body = REXML::Document.new(subject.body)
-      REXML::XPath.first(body, '//ns2:IdentificationID')&.text
+      REXML::XPath.first(body, '//nc:IdentificationID')&.text
     end
 
     context 'id is greater than 8 digits' do

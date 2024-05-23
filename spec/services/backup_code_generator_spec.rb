@@ -6,7 +6,7 @@ RSpec.describe BackupCodeGenerator do
   subject(:generator) { BackupCodeGenerator.new(user) }
 
   it 'should generate backup codes and be able to verify them' do
-    codes = generator.create
+    codes = generator.delete_and_regenerate
 
     codes.each do |code|
       expect(generator.verify(code)).to eq(true)
@@ -17,7 +17,7 @@ RSpec.describe BackupCodeGenerator do
     expect(Base32::Crockford).to receive(:encode).
       and_call_original.at_least(BackupCodeGenerator::NUMBER_OF_CODES).times
 
-    codes = generator.create
+    codes = generator.delete_and_regenerate
 
     codes.each do |code|
       expect(code).to match(/\A[a-z0-9]{12}\Z/i)
@@ -25,7 +25,7 @@ RSpec.describe BackupCodeGenerator do
   end
 
   it 'should reject invalid codes' do
-    generator.generate
+    generator.delete_and_regenerate
 
     success = generator.verify 'This is a string which will never result from code generation'
     expect(success).to eq false
@@ -37,7 +37,7 @@ RSpec.describe BackupCodeGenerator do
   end
 
   it 'creates codes with the same salt for that batch' do
-    generator.create
+    generator.delete_and_regenerate
 
     salts = user.backup_code_configurations.map(&:code_salt).uniq
     expect(salts.size).to eq(1)
@@ -52,7 +52,7 @@ RSpec.describe BackupCodeGenerator do
     user1 = create(:user)
     user2 = create(:user)
 
-    [user1, user2].each { |user| BackupCodeGenerator.new(user).create }
+    [user1, user2].each { |user| BackupCodeGenerator.new(user).delete_and_regenerate }
 
     user1_salt = user1.backup_code_configurations.map(&:code_salt).uniq.first
     user2_salt = user2.backup_code_configurations.map(&:code_salt).uniq.first
