@@ -87,14 +87,25 @@ module Reporting
     def reports
       @reports ||= begin
         sub_reports = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
-          Reporting::IdentityVerificationReport.new(
-            issuers: nil, # all issuers
-            time_range: Range.new(
-              (end_date - slice_start.days).beginning_of_day,
-              (end_date - slice_end.days).beginning_of_day,
-            ),
-            cloudwatch_client: cloudwatch_client,
-          )
+          if slice_end.zero?
+            Reporting::IdentityVerificationReport.new(
+              issuers: nil, # all issuers
+              time_range: Range.new(
+                (end_date - slice_start.days).beginning_of_day,
+                (end_date - slice_end.days).end_of_day,
+              ),
+              cloudwatch_client: cloudwatch_client,
+            )
+          else
+            Reporting::IdentityVerificationReport.new(
+              issuers: nil, # all issuers
+              time_range: Range.new(
+                (end_date - slice_start.days).beginning_of_day,
+                (end_date - slice_end.days).end_of_day - 1.day,
+              ),
+              cloudwatch_client: cloudwatch_client,
+            )
+          end
         end
 
         reports = if parallel?
