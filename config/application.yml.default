@@ -58,6 +58,7 @@ aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
 aws_kms_session_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
+backup_code_confirm_setup_screen_enabled: true
 backup_code_cost: '2000$8$1$'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
@@ -454,6 +455,7 @@ production:
   attribute_encryption_key_queue: '[]'
   available_locales: 'en,es,fr'
   aws_logo_bucket: ''
+  backup_code_confirm_setup_screen_enabled: false
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''

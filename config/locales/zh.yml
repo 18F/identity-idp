@@ -1584,6 +1584,10 @@ two_factor_authentication.backup_code_prompt: 该安全代码可使用一次。�
 two_factor_authentication.backup_codes.instructions: 如果你无法使用另一个设备，请将安全代码存放好。万一丢失备用代码，你就无法登录%{app_name}。
 two_factor_authentication.backup_codes.warning_html: '<strong>你只在自己账户上设置了备用代码。</strong>如果你可以使用另一个设备，比如手机，请用另一种身份证实方法来保护你的账户。'
 two_factor_authentication.choose_another_option: '‹ 选择另一个身份证实方法'
+two_factor_authentication.confirm_backup_code_setup_content_html:
+  - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
+  - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+two_factor_authentication.confirm_backup_code_setup_title: 你确定要使用备用代码吗？
 two_factor_authentication.form_legend: 选择你的身份证实方法
 two_factor_authentication.header_text: 输入一次性代码
 two_factor_authentication.important_alert_icon: 重要警告标志
