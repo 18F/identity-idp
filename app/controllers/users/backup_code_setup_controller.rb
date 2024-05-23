@@ -14,11 +14,25 @@ module Users
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
     before_action :confirm_recently_authenticated_2fa, except: [:reminder, :continue]
-    before_action :validate_internal_referrer?, only: [:index]
+    before_action :validate_multi_mfa_selection, only: [:index]
 
     helper_method :in_multi_mfa_selection_flow?
 
     def index
+      generate_codes
+      result = BackupCodeSetupForm.new(current_user).submit
+      visit_result = result.to_h.merge(analytics_properties_for_visit)
+      analytics.backup_code_setup_visit(**visit_result)
+      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
+
+      save_backup_codes
+      track_backup_codes_created
+      render :create
+    end
+
+    def new; end
+
+    def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       visit_result = result.to_h.merge(analytics_properties_for_visit)
@@ -43,7 +57,7 @@ module Users
 
     def refreshed
       @codes = user_session[:backup_codes]
-      render 'index'
+      render :create
     end
 
     def delete
@@ -67,8 +81,12 @@ module Users
 
     private
 
-    def validate_internal_referrer?
-      redirect_to root_url unless internal_referrer?
+    def validate_multi_mfa_selection
+      if IdentityConfig.store.backup_code_confirm_setup_screen_enabled
+        redirect_to backup_code_confirm_setup_url unless in_multi_mfa_selection_flow?
+      else
+        redirect_to root_url unless internal_referrer?
+      end
     end
 
     def internal_referrer?

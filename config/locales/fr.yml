@@ -1580,6 +1580,10 @@ two_factor_authentication.backup_code_prompt: Vous pouvez utiliser ce code de sa
 two_factor_authentication.backup_codes.instructions: Si vous n’avez pas accès à un autre appareil, conservez vos codes de sauvegarde en lieu sûr. Si vous perdez vos codes de sauvegarde, vous ne pourrez plus vous connecter à %{app_name}.
 two_factor_authentication.backup_codes.warning_html: '<strong>Vous n’avez configuré que des codes de sauvegarde sur votre compte. </strong>Si vous avez accès à un autre appareil, tel qu’un téléphone, protégez votre compte à l’aide d’une autre méthode d’authentification.'
 two_factor_authentication.choose_another_option: '‹ Choisir une autre méthode d’authentification'
+two_factor_authentication.confirm_backup_code_setup_content_html:
+  - <strong>Les codes de sauvegarde sont la méthode d’authentification la moins recommandée,</strong> car les codes peuvent facilement se perdre. Essayez une option plus sûre, comme une application d’authentification ou une clé de sécurité.
+  - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
+two_factor_authentication.confirm_backup_code_setup_title: 'Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?'
 two_factor_authentication.form_legend: Choisissez vos méthodes d’authentification
 two_factor_authentication.header_text: Saisissez votre code à usage unique
 two_factor_authentication.important_alert_icon: icône d’alerte importante
