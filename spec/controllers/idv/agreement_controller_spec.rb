@@ -228,9 +228,9 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
         }.compact
       end
 
-      it 'redirects to idv agreement' do
+      it 'renders the form again' do
         put :update, params: params
-        expect(response).to redirect_to(idv_agreement_url)
+        expect(response).to render_template('idv/agreement/show')
       end
     end
   end

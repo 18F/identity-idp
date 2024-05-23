@@ -26,7 +26,10 @@ module Idv
       clear_future_steps!
       skip_to_capture if params[:skip_hybrid_handoff]
 
-      result = Idv::ConsentForm.new.submit(consent_form_params)
+      @consent_form = Idv::ConsentForm.new(
+        idv_consent_given: idv_session.idv_consent_given,
+      )
+      result = @consent_form.submit(consent_form_params)
 
       analytics.idv_doc_auth_agreement_submitted(
         **analytics_arguments.merge(result.to_h),
@@ -42,7 +45,7 @@ module Idv
           redirect_to idv_hybrid_handoff_url
         end
       else
-        redirect_to idv_agreement_url
+        render :show
       end
     end
 

@@ -416,160 +416,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#ial' do
-    context 'with vtr param' do
-      let(:acr_values) { nil }
-
-      context 'when proofing is requested' do
-        let(:vtr) { ['C1.P1'].to_json }
-
-        it { expect(form.ial).to eq(2) }
-      end
-
-      context 'when proofing is not requested' do
-        let(:vtr) { ['C1'].to_json }
-
-        it { expect(form.ial).to eq(1) }
-      end
-    end
-
-    context 'with acr_values param' do
-      let(:vtr) { nil }
-
-      context 'when IAL1 passed' do
-        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 1' do
-          expect(form.ial).to eq(1)
-        end
-      end
-
-      context 'when IAL2 passed' do
-        let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.ial).to eq(2)
-        end
-      end
-
-      context 'when IALMAX passed' do
-        let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 0' do
-          expect(form.ial).to eq(0)
-        end
-      end
-
-      context 'when LOA1 passed' do
-        let(:acr_values) { Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 1' do
-          expect(form.ial).to eq(1)
-        end
-      end
-
-      context 'when LOA3 passed' do
-        let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.ial).to eq(2)
-        end
-      end
-    end
-  end
-
-  describe '#aal' do
-    context 'with vtr param' do
-      let(:acr_values) { nil }
-
-      context 'when AAL2 is requested' do
-        let(:vtr) { ['C2'].to_json }
-
-        it { expect(form.aal).to eq(2) }
-      end
-
-      context 'when AAL2 is not requested' do
-        let(:vtr) { ['C1'].to_json }
-
-        it { expect(form.aal).to eq(1) }
-      end
-    end
-
-    context 'with acr_values param' do
-      let(:vtr) { nil }
-
-      context 'when no AAL passed' do
-        let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 0' do
-          expect(form.aal).to eq(0)
-        end
-      end
-
-      context 'when DEFAULT_AAL passed' do
-        let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 0' do
-          expect(form.aal).to eq(0)
-        end
-      end
-
-      context 'when AAL2 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.aal).to eq(2)
-        end
-      end
-
-      context 'when AAL2_PHISHING_RESISTANT passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.aal).to eq(2)
-        end
-      end
-
-      context 'when AAL2_HSPD12 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 2' do
-          expect(form.aal).to eq(2)
-        end
-      end
-
-      context 'when AAL3 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 3' do
-          expect(form.aal).to eq(3)
-        end
-      end
-
-      context 'when AAL3_HSPD12 passed' do
-        let(:acr_values) { Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF }
-
-        it 'returns 3' do
-          expect(form.aal).to eq(3)
-        end
-      end
-
-      context 'when IAL and AAL passed' do
-        aal2 = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-        ial2 = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-
-        let(:acr_values) do
-          "#{aal2} #{ial2}"
-        end
-
-        it 'returns ial and aal' do
-          expect(form.aal).to eq(2)
-          expect(form.ial).to eq(2)
-        end
-      end
-    end
-  end
-
   describe '#requested_aal_value' do
     context 'with ACR values' do
       let(:vtr) { nil }
@@ -775,7 +621,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:code_challenge_method) { 'S256' }
 
       it 'records the code_challenge on the identity' do
-        form.link_identity_to_service_provider(user, rails_session_id)
+        form.link_identity_to_service_provider(
+          current_user: user,
+          ial: 1,
+          rails_session_id: rails_session_id,
+        )
 
         identity = user.identities.where(service_provider: client_id).first
 
@@ -794,7 +644,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when the identity has been linked' do
       before do
-        form.link_identity_to_service_provider(user, rails_session_id)
+        form.link_identity_to_service_provider(
+          current_user: user,
+          ial: 1,
+          rails_session_id: rails_session_id,
+        )
       end
 
       it 'returns a redirect URI with the code from the identity session_uuid' do
@@ -818,9 +672,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#biometric_comparison_required?' do
+  describe '#biometric_comparison_requested?' do
     it 'returns false by default' do
-      expect(subject.biometric_comparison_required?).to eql(false)
+      expect(subject.biometric_comparison_requested?).to eql(false)
     end
 
     context 'biometric requested via VTR' do
@@ -828,7 +682,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:vtr) { ['C1.P1.Pb'].to_json }
 
       it 'returns true' do
-        expect(subject.biometric_comparison_required?).to eql(true)
+        expect(subject.biometric_comparison_requested?).to eql(true)
       end
     end
 
@@ -837,7 +691,16 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:vtr) { ['C1.P1'].to_json }
 
       it 'returns false' do
-        expect(subject.biometric_comparison_required?).to eql(false)
+        expect(subject.biometric_comparison_requested?).to eql(false)
+      end
+    end
+
+    context 'multiple VTR including biometric comparison' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['C1.P1', 'C1.P1.Pb'].to_json }
+
+      it 'returns false' do
+        expect(subject.biometric_comparison_requested?).to eql(true)
       end
     end
   end

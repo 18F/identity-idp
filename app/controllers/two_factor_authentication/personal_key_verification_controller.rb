@@ -3,6 +3,7 @@
 module TwoFactorAuthentication
   class PersonalKeyVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include NewDeviceConcern
 
     prepend_before_action :authenticate_user
     before_action :check_personal_key_enabled
@@ -28,7 +29,7 @@ module TwoFactorAuthentication
       analytics_hash = result.to_h.merge(
         multi_factor_auth_method: 'personal-key',
         multi_factor_auth_method_created_at: mfa_created_at&.strftime('%s%L'),
-        new_device: user_session[:new_device],
+        new_device: new_device?,
       )
 
       analytics.track_mfa_submit_event(analytics_hash)

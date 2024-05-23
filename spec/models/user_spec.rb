@@ -1589,6 +1589,42 @@ RSpec.describe User do
     end
   end
 
+  describe '#authenticated_device?' do
+    let(:user) { create(:user, :fully_registered) }
+    let(:device) { create(:device, user:) }
+    let(:cookie_uuid) { device.cookie_uuid }
+    subject(:result) { user.authenticated_device?(cookie_uuid:) }
+
+    context 'with blank cookie uuid' do
+      let(:cookie_uuid) { nil }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with cookie uuid not matching user device' do
+      let(:cookie_uuid) { 'invalid' }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with existing device without sign_in_after_2fa event' do
+      before do
+        create(:event, device:, event_type: :sign_in_before_2fa)
+      end
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with existing device with sign_in_after_2fa event' do
+      before do
+        create(:event, device:, event_type: :sign_in_before_2fa)
+        create(:event, device:, event_type: :sign_in_after_2fa)
+      end
+
+      it { expect(result).to eq(true) }
+    end
+  end
+
   describe '#password_reset_profile' do
     let(:user) { create(:user) }
 

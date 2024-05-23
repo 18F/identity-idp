@@ -3,6 +3,7 @@
 module TwoFactorAuthentication
   class TotpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include NewDeviceConcern
 
     before_action :check_sp_required_mfa
     before_action :confirm_totp_enabled
@@ -20,7 +21,7 @@ module TwoFactorAuthentication
 
     def create
       result = TotpVerificationForm.new(current_user, params.require(:code).strip).submit
-      analytics.track_mfa_submit_event(result.to_h.merge(new_device: user_session[:new_device]))
+      analytics.track_mfa_submit_event(result.to_h.merge(new_device: new_device?))
       irs_attempts_api_tracker.mfa_login_totp(success: result.success?)
 
       if result.success?

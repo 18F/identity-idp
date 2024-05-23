@@ -62,34 +62,43 @@ module Proofing
           user_provided_data_map.each do |xpath, data|
             REXML::XPath.first(document, xpath).add_text(data)
           end
-          add_street_address_line_2_to_rexml_document(document) if applicant.address2.present?
+
+          add_optional_element(
+            'nc:AddressDeliveryPointText',
+            value: applicant.address2,
+            document:,
+            after: '//aa:Address/nc:AddressDeliveryPointText',
+          )
+
+          add_optional_element(
+            'aa:DriverLicenseIssueDate',
+            value: applicant.state_id_data.state_id_issued,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_optional_element(
+            'aa:DriverLicenseExpirationDate',
+            value: applicant.state_id_data.state_id_expiration,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
           @body = document.to_s
         end
 
-        def add_street_address_line_2_to_rexml_document(document)
-          old_address_node = document.delete_element('//ns1:Address')
-          new_address_node = old_address_node.clone
-          old_address_node.children.each do |child_node|
-            next unless child_node.node_type == :element
+        def add_optional_element(name, value:, document:, inside: nil, after: nil)
+          return if value.blank?
 
-            new_element = child_node.clone
-            new_element.add_text(child_node.text)
-            new_address_node.add_element(new_element)
+          el = REXML::Element.new(name)
+          el.text = value
 
-            if child_node.name == 'AddressDeliveryPointText'
-              new_address_node.add_element(address_line_2_element)
-            end
+          if inside
+            REXML::XPath.first(document, inside).add_element(el)
+          elsif after
+            sibling = REXML::XPath.first(document, after)
+            sibling.parent.insert_after(sibling, el)
           end
-          REXML::XPath.first(
-            document,
-            '//ns:verifyDriverLicenseDataRequest',
-          ).add_element(new_address_node)
-        end
-
-        def address_line_2_element
-          element = REXML::Element.new('ns2:AddressDeliveryPointText')
-          element.add_text(applicant.address2)
-          element
         end
 
         def build_request_body
@@ -133,15 +142,15 @@ module Proofing
 
         def user_provided_data_map
           {
-            '//ns2:IdentificationID' => state_id_number,
-            '//ns1:MessageDestinationId' => message_destination_id,
-            '//ns2:PersonGivenName' => applicant.first_name,
-            '//ns2:PersonSurName' => applicant.last_name,
-            '//ns1:PersonBirthDate' => applicant.dob,
-            '//ns2:AddressDeliveryPointText' => applicant.address1,
-            '//ns2:LocationCityName' => applicant.city,
-            '//ns2:LocationStateUsPostalServiceCode' => applicant.state,
-            '//ns2:LocationPostalCode' => applicant.zipcode,
+            '//nc:IdentificationID' => state_id_number,
+            '//aa:MessageDestinationId' => message_destination_id,
+            '//nc:PersonGivenName' => applicant.first_name,
+            '//nc:PersonSurName' => applicant.last_name,
+            '//aa:PersonBirthDate' => applicant.dob,
+            '//nc:AddressDeliveryPointText' => applicant.address1,
+            '//nc:LocationCityName' => applicant.city,
+            '//nc:LocationStateUsPostalServiceCode' => applicant.state,
+            '//nc:LocationPostalCode' => applicant.zipcode,
           }
         end
 

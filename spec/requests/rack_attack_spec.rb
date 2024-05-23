@@ -66,7 +66,7 @@ RSpec.describe 'throttling requests' do
     end
 
     context 'when the request is for a pack' do
-      let(:pack_url) { '/packs/js/application.js' }
+      let(:pack_url) { '/packs/application.js' }
       let(:pack_path) { Rails.public_path.join(pack_url.sub(/^\//, '')) }
 
       before do

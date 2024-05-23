@@ -157,7 +157,8 @@ FactoryBot.define do
 
     trait :with_backup_code do
       after :build do |user|
-        BackupCodeGenerator.new(user).create
+        user.save
+        BackupCodeGenerator.new(user).delete_and_regenerate
       end
     end
 
@@ -177,6 +178,13 @@ FactoryBot.define do
       end
     end
 
+    trait :with_authenticated_device do
+      fully_registered
+      after(:create) do |user|
+        user.devices << create(:device, :authenticated, user:)
+      end
+    end
+
     trait :unconfirmed do
       confirmed_at { nil }
       password { nil }
@@ -187,6 +195,21 @@ FactoryBot.define do
 
       after :build do |user|
         create(:profile, :active, :verified, :with_pii, user: user)
+      end
+    end
+
+    trait :proofed_with_selfie do
+      fully_registered
+
+      after :build do |user|
+        create(
+          :profile,
+          :active,
+          :verified,
+          :with_pii,
+          idv_level: :unsupervised_with_selfie,
+          user: user,
+        )
       end
     end
 

@@ -43,7 +43,7 @@ RSpec.describe AamvaTest do
 
       expect(WebMock).to(
         have_requested(:post, verification_url).with do |req|
-          expect(Nokogiri::XML(req.body).at_xpath('//ns1:MessageDestinationId').text).
+          expect(Nokogiri::XML(req.body).at_xpath('//aa:MessageDestinationId').text).
             to eq('P6'), 'it sends a request with the designated fake state'
         end,
       )

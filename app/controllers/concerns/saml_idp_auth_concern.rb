@@ -23,7 +23,7 @@ module SamlIdpAuthConcern
   private
 
   def block_biometric_requests_in_production
-    if @saml_request_validator.parsed_vector_of_trust&.biometric_comparison? &&
+    if @saml_request_validator.biometric_comparison_requested? &&
        !FeatureManagement.idv_allow_selfie_check?
       render_not_acceptable
     end
@@ -130,9 +130,12 @@ module SamlIdpAuthConcern
   end
 
   def response_authn_context
-    saml_request.requested_vtr_authn_context ||
+    if saml_request.requested_vtr_authn_contexts.present?
+      resolved_authn_context_result.expanded_component_values
+    else
       saml_request.requested_aal_authn_context ||
-      default_aal_context
+        default_aal_context
+    end
   end
 
   def requested_ial_authn_context

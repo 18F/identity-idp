@@ -93,6 +93,7 @@ class IdTokenBuilder
 
   def resolved_authn_context_result
     @resolved_authn_context_result ||= AuthnContextResolver.new(
+      user: identity.user,
       service_provider: identity.service_provider_record,
       vtr: parsed_vtr_value,
       acr_values: identity.acr_values,

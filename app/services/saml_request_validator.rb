@@ -22,14 +22,8 @@ class SamlRequestValidator
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end
 
-  def parsed_vector_of_trust
-    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
-
-    @parsed_vector_of_trust = begin
-      Vot::Parser.new(vector_of_trust: vtr.first).parse if !vtr.blank?
-    rescue Vot::Parser::ParseException
-      nil
-    end
+  def biometric_comparison_requested?
+    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
   end
 
   private
@@ -43,6 +37,18 @@ class SamlRequestValidator
       authn_context_comparison: authn_context_comparison,
       service_provider: service_provider&.issuer,
     }
+  end
+
+  def parsed_vectors_of_trust
+    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
+
+    @parsed_vectors_of_trust = begin
+      if vtr.is_a?(Array) && !vtr.empty?
+        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+      end
+    rescue Vot::Parser::ParseException
+      nil
+    end
   end
 
   # This checks that the SP matches something in the database
@@ -65,7 +71,7 @@ class SamlRequestValidator
   end
 
   def parsable_vtr
-    if !vtr.blank? && parsed_vector_of_trust.blank?
+    if !vtr.blank? && parsed_vectors_of_trust.blank?
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
@@ -95,7 +101,7 @@ class SamlRequestValidator
   end
 
   def identity_proofing_requested?
-    return true if parsed_vector_of_trust&.identity_proofing?
+    return true if parsed_vectors_of_trust&.any?(&:identity_proofing?)
 
     authn_context.each do |classref|
       return true if Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)

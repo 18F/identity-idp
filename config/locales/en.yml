@@ -1580,6 +1580,10 @@ two_factor_authentication.backup_code_prompt: You can use this backup code once.
 two_factor_authentication.backup_codes.instructions: If you don’t have access to another device, keep your backup codes safe. If you lose your backup codes, you won’t be able to sign into %{app_name}.
 two_factor_authentication.backup_codes.warning_html: '<strong>You’ve only set up backup codes on your account. </strong>If you have access to another device, such as a phone, protect your account with another authentication method.'
 two_factor_authentication.choose_another_option: '‹ Choose another authentication method'
+two_factor_authentication.confirm_backup_code_setup_content_html:
+  - '<strong>Backup codes are the least preferred authentication method</strong> because the codes can easily be lost. Try a safer option, like an authentication application or a security key.'
+  - We’ll give you 10 codes that you can download, print, copy or write down. You’ll enter one code every time you sign in.
+two_factor_authentication.confirm_backup_code_setup_title: Are you sure you want to use backup codes?
 two_factor_authentication.form_legend: Choose your authentication methods
 two_factor_authentication.header_text: Enter your one-time code
 two_factor_authentication.important_alert_icon: important alert icon

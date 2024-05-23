@@ -45,9 +45,12 @@ class OpenidConnectUserInfoPresenter
   private
 
   def vot_values
-    vot = JSON.parse(identity.vtr).first
-    parsed_vot = Vot::Parser.new(vector_of_trust: vot).parse
-    parsed_vot.expanded_component_values
+    AuthnContextResolver.new(
+      user: identity.user,
+      vtr: JSON.parse(identity.vtr),
+      service_provider: identity&.service_provider_record,
+      acr_values: nil,
+    ).resolve.expanded_component_values
   end
 
   def uuid_from_sp_identity(identity)
@@ -140,6 +143,7 @@ class OpenidConnectUserInfoPresenter
 
   def resolved_authn_context_result
     @resolved_authn_context_result ||= AuthnContextResolver.new(
+      user: identity.user,
       service_provider: identity&.service_provider_record,
       vtr: identity.vtr.presence && JSON.parse(identity.vtr),
       acr_values: identity.acr_values,

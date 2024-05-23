@@ -21,6 +21,8 @@ module Proofing
         :state_id_number,
         :state_id_jurisdiction,
         :state_id_type,
+        :state_id_issued,
+        :state_id_expiration,
         keyword_init: true,
       ).freeze
 
@@ -64,6 +66,8 @@ module Proofing
           state_id_number: applicant.dig(:state_id_number)&.gsub(/[^\w\d]/, ''),
           state_id_jurisdiction: applicant[:state_id_jurisdiction],
           state_id_type: applicant[:state_id_type],
+          state_id_issued: applicant[:state_id_issued],
+          state_id_expiration: applicant[:state_id_expiration],
         )
       end
     end.freeze

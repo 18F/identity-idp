@@ -529,7 +529,6 @@ function AcuantCapture(
     });
 
     setImageCaptureText('');
-    setIsCapturingEnvironment(true);
   }
 
   function onSelfieCaptureClosed() {

@@ -56,7 +56,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: user.reload.
             encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
-          new_device: nil,
+          new_device: true,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -112,31 +112,19 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           expect(response).to redirect_to(account_path)
         end
       end
-    end
 
-    context 'with new device session value' do
-      let(:user) { create(:user, :with_phone) }
-      let(:personal_key) { { personal_key: PersonalKeyGenerator.new(user).create } }
-      let(:payload) { { personal_key_form: personal_key } }
+      context 'with existing device' do
+        before do
+          allow(controller).to receive(:new_device?).and_return(false)
+        end
 
-      it 'tracks new device value' do
-        personal_key
-        sign_in_before_2fa(user)
-        stub_analytics
-        subject.user_session[:new_device] = false
-        analytics_hash = {
-          success: true,
-          errors: {},
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: user.reload.
-            encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
-          new_device: false,
-        }
+        it 'tracks new device value' do
+          stub_analytics
+          stub_sign_in_before_2fa(user)
 
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash)
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with(hash_including(new_device: false))
 
-        freeze_time do
           post :create, params: payload
         end
       end
@@ -221,7 +209,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
           error_details: { personal_key: { personal_key_incorrect: true } },
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
-          new_device: nil,
+          new_device: true,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
