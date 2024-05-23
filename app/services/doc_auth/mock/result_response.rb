@@ -22,7 +22,6 @@ module DocAuth
           selfie_quality_good: selfie_quality_good?,
           selfie_status: selfie_status,
           extra: {
-            transaction_status: transaction_status,
             doc_auth_result: doc_auth_result,
             portrait_match_results: portrait_match_results,
             billed: true,
@@ -40,7 +39,6 @@ module DocAuth
           if file_data.blank?
             {}
           else
-            transaction_status = file_data.dig('transaction_status')
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
             failed = file_data.dig('failed_alerts')&.dup
@@ -49,7 +47,6 @@ module DocAuth
             classification_info = file_data.dig('classification_info')
             # Pass and doc type is ok
             has_fields = [
-              transaction_status,
               doc_auth_result,
               image_metrics,
               failed,
@@ -62,11 +59,10 @@ module DocAuth
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
-                transaction_status, id_type_supported?
+                doc_auth_result, id_type_supported?
               )
 
               mock_args = {}
-              mock_args[:transaction_status] = transaction_status if transaction_status.present?
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
               mock_args[:failed] = failed.map!(&:symbolize_keys) unless failed.nil?
@@ -95,8 +91,7 @@ module DocAuth
       end
 
       def attention_with_barcode?
-        !!parsed_alerts&.
-          any? { |alert| alert['name'] == '2D Barcode Read' && alert['result'] == 'Attention' }
+        parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
       end
 
       def self.create_network_error_response
@@ -110,14 +105,10 @@ module DocAuth
       end
 
       def doc_auth_success?
-        return false unless id_type_supported?
-        return false if transaction_status_from_uploaded_file == 'failed'
-        return true if transaction_status_from_uploaded_file == 'passed'
-        return false if doc_auth_result_from_uploaded_file == 'Failed'
-
-        doc_auth_result_from_uploaded_file == 'Passed' ||
+        (doc_auth_result_from_uploaded_file == 'Passed' ||
           errors.blank? ||
-          (attention_with_barcode? && parsed_alerts.length == 1)
+          attention_with_barcode?
+        ) && id_type_supported?
       end
 
       def selfie_status
@@ -163,14 +154,6 @@ module DocAuth
         parsed_data_from_uploaded_file&.[]('doc_auth_result')
       end
 
-      def transaction_status
-        transaction_status_from_uploaded_file || transaction_status_from_success
-      end
-
-      def transaction_status_from_uploaded_file
-        parsed_data_from_uploaded_file&.[]('transaction_status')
-      end
-
       def portrait_match_results
         parsed_data_from_uploaded_file.dig('portrait_match_results')&.
           transform_keys! { |key| key.to_s.camelize }&.
@@ -183,23 +166,15 @@ module DocAuth
       end
 
       def doc_auth_result_from_success
-        if doc_auth_success?
+        if success?
           DocAuth::LexisNexis::ResultCodes::PASSED.name
         else
           DocAuth::LexisNexis::ResultCodes::CAUTION.name
         end
       end
 
-      def transaction_status_from_success
-        if doc_auth_success?
-          'passed'
-        else
-          'failed'
-        end
-      end
-
-      def all_doc_capture_values_passing?(transaction_status, id_type_supported)
-        transaction_status == 'passed' &&
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
+        doc_auth_result == 'Passed' &&
           id_type_supported &&
           (selfie_check_performed? ? selfie_passed? : true)
       end
@@ -219,6 +194,7 @@ module DocAuth
         # no-op, allows falling through to YAML parsing
       end
 
+      ATTENTION_WITH_BARCODE_ALERT = { 'name' => '2D Barcode Read', 'result' => 'Attention' }.freeze
       DEFAULT_FAILED_ALERTS = [{ name: '2D Barcode Read', result: 'Failed' }].freeze
       DEFAULT_IMAGE_METRICS = {
         front: {
@@ -236,7 +212,6 @@ module DocAuth
       }.freeze
 
       def create_response_info(
-        transaction_status: 'failed',
         doc_auth_result: 'Failed',
         passed: [],
         failed: DEFAULT_FAILED_ALERTS,
@@ -247,7 +222,6 @@ module DocAuth
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
         {
           vendor: 'Mock',
-          transaction_status: transaction_status,
           doc_auth_result: doc_auth_result,
           processed_alerts: {
             passed: passed,
