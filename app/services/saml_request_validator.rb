@@ -43,7 +43,7 @@ class SamlRequestValidator
     return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
 
     @parsed_vectors_of_trust = begin
-      if vtr.blank?
+      if vtr.present?
         vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
       end
     rescue Vot::Parser::ParseException
