@@ -26,17 +26,33 @@ class BackupCodeGenerator
 
   # @return [Boolean]
   def verify(plaintext_code)
-    if_valid_consume_code_return_config(plaintext_code).present?
+    if_valid_consume_code_return_config_created_at(plaintext_code).present?
   end
 
   # @return [BackupCodeConfiguration, nil]
-  def if_valid_consume_code_return_config(plaintext_code)
+  def if_valid_consume_code_return_config_created_at(plaintext_code)
     return unless plaintext_code.present?
     backup_code = RandomPhrase.normalize(plaintext_code)
-    config = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
-    return unless code_usable?(config)
-    config.update!(used_at: Time.zone.now)
-    config
+    return nil unless backup_code
+
+    salted_fingerprints =
+      BackupCodeConfiguration.salted_fingerprints(code: backup_code, user_id: @user.id)
+
+    query_result = BackupCodeConfiguration.transaction do
+      sql = <<~SQL
+        UPDATE backup_code_configurations
+        SET
+          used_at = NOW()
+        WHERE user_id = ? AND salted_code_fingerprint IN (?) AND used_at IS NULL
+        RETURNING created_at;
+      SQL
+      query = BackupCodeConfiguration.sanitize_sql_array(
+        [sql, @user.id, salted_fingerprints],
+      )
+      BackupCodeConfiguration.connection.execute(query).first
+    end
+
+    query_result['created_at'] if query_result
   end
 
   def delete_existing_codes
