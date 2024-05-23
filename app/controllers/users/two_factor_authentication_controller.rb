@@ -324,7 +324,7 @@ module Users
       configured_length = TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
       if configured_length == 6
         I18n.t('telephony.format_length.six')
-      elsif Tconfigured_length == 10
+      elsif configured_length == 10
         I18n.t('telephony.format_length.ten')
       else
         raise "Missing translation for OTP length: #{configured_length}"
