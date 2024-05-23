@@ -326,7 +326,13 @@ module Users
       elsif TwoFactorAuthenticatable::DIRECT_OTP_LENGTH == 10
         I18n.t('telephony.format_length.ten')
       else
-        raise ArgumentError, "Invalid OTP length: #{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}"
+        raise(
+          ArgumentError,
+          [
+            'Missing translation for OTP length:,',
+            TwoFactorAuthenticatable::DIRECT_OTP_LENGTH.to_s,
+          ].join(' '),
+        )
       end
     end
 
