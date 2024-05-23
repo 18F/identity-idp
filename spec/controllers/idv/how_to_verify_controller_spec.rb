@@ -261,6 +261,7 @@ RSpec.describe Idv::HowToVerifyController do
 
       expect(flash[:error]).to be_present
       expect(subject.idv_session.skip_doc_auth).to be_nil
+      expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be_nil
       expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
       expect(response).to redirect_to(idv_how_to_verify_url)
     end
