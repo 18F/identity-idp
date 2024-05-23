@@ -52,13 +52,6 @@ class Analytics
     session[:first_event]
   end
 
-  def track_mfa_submit_event(attributes)
-    multi_factor_auth(
-      **attributes,
-      pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-    )
-  end
-
   def request_attributes
     attributes = {
       user_ip: request.remote_ip,
