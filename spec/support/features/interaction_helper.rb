@@ -6,7 +6,7 @@ module InteractionHelper
     end
   end
 
-  def wait_for_content_to_disappear do
+  def wait_for_content_to_disappear
     yield
   rescue Selenium::WebDriver::Error::StaleElementReferenceError
     # A StaleElementReferenceError means that the context the element
