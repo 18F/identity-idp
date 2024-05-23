@@ -12,9 +12,9 @@ module Idv
     check_or_render_not_found -> { self.class.enabled? }
 
     def show
-      @selection = if idv_session.skip_doc_auth == false
+      @selection = if idv_session.skip_doc_auth_from_how_to_verify == false
                      Idv::HowToVerifyForm::REMOTE
-      elsif idv_session.skip_doc_auth == true
+      elsif idv_session.skip_doc_auth_from_how_to_verify == true
         Idv::HowToVerifyForm::IPP
       end
 
