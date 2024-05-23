@@ -29,7 +29,7 @@ module UserAlerts
       return false unless user.sign_in_new_device_at
 
       events = user.events.where(
-        created_at: sign_in_events_start_time(user:)..,
+        created_at: sign_in_events_start_time..,
         event_type: [
           'sign_in_before_2fa',
           'sign_in_unsuccessful_2fa',
@@ -52,7 +52,7 @@ module UserAlerts
       true
     end
 
-    def self.sign_in_events_start_time(user:)
+    def self.sign_in_events_start_time
       # Avoid scenarios where stale events may be reflected in the time since sign in:
       #
       # 1. The feature is enabled for a short time in a deployed environment before being disabled
@@ -61,10 +61,7 @@ module UserAlerts
       # Typically, it's guaranteed that even in the worst-case of a sign-in occurring immediately
       # after a scheduled job run, it should take no longer than twice the scheduled delay. A small
       # buffer is added to account for delays of the job run or within the job itself.
-      [
-        user.sign_in_new_device_at,
-        (IdentityConfig.store.new_device_alert_delay_in_minutes * 3).minutes.ago,
-      ].min
+      (IdentityConfig.store.new_device_alert_delay_in_minutes * 1.5).minutes.ago
     end
   end
 end

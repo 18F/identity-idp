@@ -118,7 +118,7 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
         create(:event, user:, event_type: :sign_in_after_2fa, created_at: 16.minutes.ago)
 
         # 2. Exclude events outside the timeframe, e.g. previous sign-in
-        # create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.minutes.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 10.minutes.ago)
 
         # 3. Include authentication events inside the timeframe, inclusive
 
@@ -167,7 +167,7 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
         create(:event, user:, event_type: :sign_in_after_2fa, created_at: 16.minutes.ago)
 
         # 2. Exclude events outside the timeframe, e.g. previous sign-in
-        # create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.minutes.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 9.minutes.ago)
 
         # 3. Include authentication events inside the timeframe, inclusive
 
