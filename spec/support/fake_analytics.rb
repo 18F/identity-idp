@@ -25,7 +25,6 @@ class FakeAnalytics < Analytics
         :first_name,
         :last_name,
         :address1,
-        :zipcode,
         :dob,
         :state_id_number,
       ).each do |key, default_pii_value|
