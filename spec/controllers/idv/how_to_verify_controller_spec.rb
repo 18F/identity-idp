@@ -238,7 +238,7 @@ RSpec.describe Idv::HowToVerifyController do
     end
 
     context 'undo/back' do
-      it 'sets skip_doc_auth to nil and does not redirect' do
+      it 'sets skip_doc_auth_from_how_to_verify to nil and does not redirect' do
         put :update, params: { undo_step: true }
 
         expect(subject.idv_session.skip_doc_auth).to be_nil
