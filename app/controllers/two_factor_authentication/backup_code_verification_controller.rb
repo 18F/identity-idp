@@ -37,9 +37,7 @@ module TwoFactorAuthentication
 
     def handle_last_code
       generator = BackupCodeGenerator.new(current_user)
-      generator.delete_existing_codes
-      user_session[:backup_codes] = generator.generate
-      generator.save(user_session[:backup_codes])
+      user_session[:backup_codes] = generator.delete_and_regenerate
       flash[:info] = t('forms.backup_code.last_code')
       redirect_to backup_code_refreshed_url
     end

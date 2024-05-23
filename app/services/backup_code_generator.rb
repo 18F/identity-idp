@@ -12,16 +12,15 @@ class BackupCodeGenerator
     @user = user
   end
 
-  # @return [Array<String>]
-  def generate
-    delete_existing_codes
-    generate_new_codes
-  end
+  def delete_and_regenerate(salt: SecureRandom.hex(32))
+    codes = generate_new_codes
 
-  # @return [Array<String>]
-  def create
-    @user.save
-    save(generate)
+    BackupCodeConfiguration.transaction do
+      @user.backup_code_configurations.destroy_all
+      codes.each { |code| save_code(code: code, salt: salt) }
+    end
+
+    codes
   end
 
   # @return [Boolean]
@@ -37,16 +36,6 @@ class BackupCodeGenerator
     return unless code_usable?(config)
     config.update!(used_at: Time.zone.now)
     config
-  end
-
-  def delete_existing_codes
-    @user.backup_code_configurations.destroy_all
-  end
-
-  # @return [Array<String>]
-  def save(codes, salt: SecureRandom.hex(32))
-    delete_existing_codes
-    codes.each { |code| save_code(code: code, salt: salt) }
   end
 
   private

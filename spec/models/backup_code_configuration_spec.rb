@@ -24,7 +24,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     it 'is truthy if there is a backup code configuration event' do
       user = User.new
       user.save
-      BackupCodeGenerator.new(user).create
+      BackupCodeGenerator.new(user).delete_and_regenerate
 
       user.backup_code_configurations.each do |backup_code_config|
         expect(backup_code_config.mfa_enabled?).to be_truthy
@@ -69,21 +69,21 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     let(:user) { create(:user) }
 
     it 'returns the code' do
-      codes = BackupCodeGenerator.new(user).create
+      codes = BackupCodeGenerator.new(user).delete_and_regenerate
       first_code = codes.first
 
       expect(BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)).to be
     end
 
     it 'does not return the code with a wrong user id' do
-      codes = BackupCodeGenerator.new(user).create
+      codes = BackupCodeGenerator.new(user).delete_and_regenerate
       first_code = codes.first
 
       expect(BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)).to be_nil
     end
 
     it 'finds codes via salted_code_fingerprint' do
-      codes = BackupCodeGenerator.new(user).create
+      codes = BackupCodeGenerator.new(user).delete_and_regenerate
       first_code = codes.first
 
       backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)

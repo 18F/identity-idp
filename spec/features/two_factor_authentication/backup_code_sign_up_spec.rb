@@ -42,7 +42,7 @@ RSpec.feature 'sign up with backup code', allowed_extra_analytics: [:*] do
   it 'works for each code and refreshes the codes on the last one' do
     user = create(:user, :fully_registered, :with_authentication_app)
 
-    codes = BackupCodeGenerator.new(user).create
+    codes = BackupCodeGenerator.new(user).delete_and_regenerate
 
     BackupCodeGenerator::NUMBER_OF_CODES.times do |index|
       signin(user.email, user.password)
