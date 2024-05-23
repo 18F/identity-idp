@@ -1127,6 +1127,7 @@ module AnalyticsEvents
   # @param [Hash] portrait_match_results
   # @param [Hash] image_metrics
   # @param [Boolean] address_line2_present
+  # @param [String] zip_code
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
@@ -1177,6 +1178,7 @@ module AnalyticsEvents
     portrait_match_results: nil,
     image_metrics: nil,
     address_line2_present: nil,
+    zip_code: nil,
     **extra
   )
     track_event(
@@ -1215,6 +1217,7 @@ module AnalyticsEvents
       image_metrics:,
       address_line2_present:,
       liveness_checking_required:,
+      zip_code:,
       **extra,
     )
   end
