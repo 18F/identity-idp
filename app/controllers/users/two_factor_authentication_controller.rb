@@ -321,9 +321,13 @@ module Users
     end
 
     def otp_length
-      bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
-      length = bucket == :ten_digit_otp ? 'ten' : 'six'
-      I18n.t("telephony.format_length.#{length}")
+      if TwoFactorAuthenticatable::DIRECT_OTP_LENGTH == 6
+        I18n.t('telephony.format_length.six')
+      elsif TwoFactorAuthenticatable::DIRECT_OTP_LENGTH == 10
+        I18n.t('telephony.format_length.ten')
+      else
+        raise ArgumentError, "Invalid OTP length: #{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}"
+      end
     end
 
     def user_selected_default_number

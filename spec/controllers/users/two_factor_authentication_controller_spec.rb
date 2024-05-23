@@ -595,6 +595,38 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         )
       end
 
+      it 'sends a 6-digit OTP when the idv_ten_digit_otp A/B test is in progress' do
+        stub_const(
+          'AbTests::IDV_TEN_DIGIT_OTP',
+          FakeAbTestBucket.new.tap { |ab| ab.assign(@user.uuid => :ten_digit_otp) },
+        )
+
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+        parsed_phone = Phonelib.parse(@unconfirmed_phone)
+
+        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
+
+        get :send_code, params: otp_delivery_form_sms
+
+        expect(Telephony).to have_received(:send_confirmation_otp).with(
+          otp: subject.current_user.direct_otp,
+          to: @unconfirmed_phone,
+          expiration: 10,
+          channel: :sms,
+          otp_format: 'digit',
+          otp_length: '6',
+          domain: IdentityConfig.store.domain_name,
+          country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
+        )
+      end
+
       it 'tracks the enrollment attempt event' do
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
