@@ -648,6 +648,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: 1938,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -761,6 +762,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: 1938,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -874,6 +876,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: 1938,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -984,6 +987,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: nil,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -1103,6 +1107,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           transaction_status: nil,
           vendor: nil,
           birth_year: nil,
+          zip_code: nil,
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1195,6 +1200,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           vendor: nil,
           workflow: an_instance_of(String),
           birth_year: nil,
+          zip_code: nil,
         )
 
         expect_funnel_update_counts(user, 1)
