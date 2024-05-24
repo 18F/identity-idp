@@ -7,6 +7,7 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-performance
+  - rubocop-sqlfluff
   - ./lib/linters/analytics_event_name_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
   - ./lib/linters/image_size_linter.rb
@@ -1018,6 +1019,14 @@ Security/Open:
 Security/YAMLLoad:
   Enabled: true
   SafeAutoCorrect: false
+
+Sqlfluff/Heredoc:
+  Enabled: true
+  StringIds:
+    - SQL
+  Dialect: postgres
+  ConfigFile: .sqlfluff
+  VirtualEnvPath: env
 
 Style/AndOr:
   Description: Use &&/|| instead of and/or.

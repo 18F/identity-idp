@@ -76,6 +76,7 @@ Vagrantfile
 /vendor/bundle
 .yardoc
 /doc/
+env
 
 package-lock.json
 browsers.json

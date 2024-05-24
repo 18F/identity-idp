@@ -103,17 +103,17 @@ module Db
           format(<<~SQL, params)
             SELECT
               sp_return_logs.user_id
-            , %{year_month} AS year_month
-            , COUNT(sp_return_logs.id) AS auth_count
-            , sp_return_logs.ial
+              , %{year_month} AS year_month -- noqa: RF04
+              , sp_return_logs.ial
+              , COUNT(sp_return_logs.id) AS auth_count
             FROM sp_return_logs
             WHERE
-                  sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
+              sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.issuer IN %{issuers}
               AND sp_return_logs.billable = true
             GROUP BY
               sp_return_logs.user_id
-            , sp_return_logs.ial
+              , sp_return_logs.ial
           SQL
         end
       end

@@ -40,18 +40,18 @@ module Reports
         finish: finish,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
 
-      sql = format(<<-SQL, params)
+      sql = format(<<~SQL, params)
         SELECT
-          COUNT(*)
-        , sp_return_logs.ial
-        , sp_return_logs.issuer
-        , service_providers.iaa
-        , MAX(service_providers.friendly_name) AS friendly_name
-        , MAX(agencies.name) AS agency
+          sp_return_logs.ial
+          , sp_return_logs.issuer
+          , service_providers.iaa
+          , COUNT(*) AS count
+          , MAX(service_providers.friendly_name) AS friendly_name
+          , MAX(agencies.name) AS agency
         FROM
           sp_return_logs
         LEFT JOIN
-          service_providers ON service_providers.issuer = sp_return_logs.issuer
+          service_providers ON sp_return_logs.issuer = service_providers.issuer
         LEFT JOIN
           agencies ON service_providers.agency_id = agencies.id
         WHERE
@@ -59,8 +59,8 @@ module Reports
           AND sp_return_logs.billable = true
         GROUP BY
           sp_return_logs.ial
-        , sp_return_logs.issuer
-        , service_providers.iaa
+          , sp_return_logs.issuer
+          , service_providers.iaa
       SQL
 
       results = transaction_with_timeout do

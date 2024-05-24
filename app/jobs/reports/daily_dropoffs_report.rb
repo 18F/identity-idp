@@ -82,67 +82,67 @@ module Reports
         finish: finish,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
 
-      sql = format(<<-SQL, params)
+      sql = format(<<~SQL, params)
         SELECT
           NULLIF(doc_auth_logs.issuer, '') AS issuer
-        , MAX(service_providers.iaa) AS iaa
-        , MAX(service_providers.friendly_name) AS friendly_name
-        , MAX(agencies.name) AS agency
-        , COUNT(doc_auth_logs.welcome_view_at) AS welcome
-        , COUNT(doc_auth_logs.agreement_view_at) AS agreement
-        , COUNT(doc_auth_logs.upload_view_at) AS upload_option
-        , COUNT(
+          , MAX(service_providers.iaa) AS iaa
+          , MAX(service_providers.friendly_name) AS friendly_name
+          , MAX(agencies.name) AS agency
+          , COUNT(doc_auth_logs.welcome_view_at) AS welcome
+          , COUNT(doc_auth_logs.agreement_view_at) AS agreement
+          , COUNT(doc_auth_logs.upload_view_at) AS upload_option
+          , COUNT(
             COALESCE(
               doc_auth_logs.back_image_view_at
-            , doc_auth_logs.mobile_back_image_view_at
-            , doc_auth_logs.capture_mobile_back_image_view_at
-            , doc_auth_logs.present_cac_view_at
-            , doc_auth_logs.document_capture_view_at
+              , doc_auth_logs.mobile_back_image_view_at
+              , doc_auth_logs.capture_mobile_back_image_view_at
+              , doc_auth_logs.present_cac_view_at
+              , doc_auth_logs.document_capture_view_at
             )
           ) AS capture_document
-        , COUNT(
+          , COUNT(
             COALESCE(
-              CASE WHEN doc_auth_logs.document_capture_submit_count > 0 THEN 1 else null END
-            , CASE WHEN doc_auth_logs.back_image_submit_count > 0 THEN 1 else null END
-            , CASE WHEN doc_auth_logs.capture_mobile_back_image_submit_count > 0 THEN 1 else null END
-            , CASE WHEN doc_auth_logs.mobile_back_image_submit_count > 0 THEN 1 else null END
+              CASE WHEN doc_auth_logs.document_capture_submit_count > 0 THEN 1 END
+              , CASE WHEN doc_auth_logs.back_image_submit_count > 0 THEN 1 END
+              , CASE WHEN doc_auth_logs.capture_mobile_back_image_submit_count > 0 THEN 1 END
+              , CASE WHEN doc_auth_logs.mobile_back_image_submit_count > 0 THEN 1 END
             )
           ) AS cap_doc_submit
-        , COUNT(
+          , COUNT(
             COALESCE(
               doc_auth_logs.ssn_view_at
-            , doc_auth_logs.enter_info_view_at
+              , doc_auth_logs.enter_info_view_at
             )
           ) AS ssn
-        , COUNT(doc_auth_logs.verify_view_at) AS verify_info
-        , COUNT(
-            COALESCE(CASE WHEN doc_auth_logs.verify_submit_count > 0 THEN 1 else null END)
+          , COUNT(doc_auth_logs.verify_view_at) AS verify_info
+          , COUNT(
+            COALESCE(CASE WHEN doc_auth_logs.verify_submit_count > 0 THEN 1 END)
           ) AS verify_submit
-        , COUNT(doc_auth_logs.verify_phone_view_at) AS phone
-        , COUNT(
-            COALESCE(CASE WHEN doc_auth_logs.verify_phone_submit_count > 0 THEN 1 else null END)
+          , COUNT(doc_auth_logs.verify_phone_view_at) AS phone
+          , COUNT(
+            COALESCE(CASE WHEN doc_auth_logs.verify_phone_submit_count > 0 THEN 1 END)
           ) AS phone_submit
-        , COUNT(doc_auth_logs.encrypt_view_at) AS encrypt
-        , COUNT(doc_auth_logs.verified_view_at) AS personal_key
-        , COUNT(profiles.id) AS verified
+          , COUNT(doc_auth_logs.encrypt_view_at) AS encrypt
+          , COUNT(doc_auth_logs.verified_view_at) AS personal_key
+          , COUNT(profiles.id) AS verified
         FROM doc_auth_logs
         LEFT JOIN
-          service_providers ON service_providers.issuer = doc_auth_logs.issuer
+          service_providers ON doc_auth_logs.issuer = service_providers.issuer
         LEFT JOIN
           agencies ON service_providers.agency_id = agencies.id
         LEFT JOIN
-          profiles ON profiles.user_id = doc_auth_logs.user_id
+          profiles
+          ON
+            profiles.user_id
             AND profiles.verified_at IS NOT NULL
             AND %{start} <= profiles.verified_at
             AND profiles.verified_at <= %{finish}
             AND profiles.active = TRUE
-
         WHERE
           %{start} <= doc_auth_logs.welcome_view_at
-        AND doc_auth_logs.welcome_view_at <= %{finish}
-
+          AND doc_auth_logs.welcome_view_at <= %{finish}
         GROUP BY
-          doc_auth_logs.issuer
+          doc_auth_logs.issue
       SQL
 
       transaction_with_timeout do
