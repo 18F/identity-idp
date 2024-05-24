@@ -12,7 +12,7 @@ module OpenidConnect
     skip_before_action :verify_authenticity_token, only: [:create]
 
     # +GET+ Handle logout (with confirmation if initiated by relying partner)
-    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout]
+    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout]  # rubocop:disable Layout/LineLength
     def show
       @logout_form = build_logout_form
       result = @logout_form.submit
@@ -27,10 +27,8 @@ module OpenidConnect
       end
     end
 
-    # rubocop:disable Layout/LineLength
-
     # +POST+ Handle logout request (with confirmation if initiated by relying partner)
-    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout]
+    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout] # rubocop:disable Layout/LineLength
     # @note Response status code is <tt>307 Temporary Redirect</tt>
     #   to preserve the method and body of the request
     #   and to prevent non-conformant browsers from automatically
@@ -54,7 +52,6 @@ module OpenidConnect
         render :error
       end
     end
-    # rubocop:enable Layout/LineLength
 
     # Sign out without confirmation
     def delete
