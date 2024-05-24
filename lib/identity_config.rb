@@ -74,7 +74,6 @@ module IdentityConfig
     config.add(:aws_kms_session_key_id, type: :string)
     config.add(:aws_logo_bucket, type: :string)
     config.add(:aws_region, type: :string)
-    config.add(:backup_code_confirm_setup_screen_enabled, type: :boolean)
     config.add(:backup_code_cost, type: :string)
     config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:broken_personal_key_window_start, type: :timestamp)

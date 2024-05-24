@@ -321,9 +321,14 @@ module Users
     end
 
     def otp_length
-      bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid)
-      length = bucket == :ten_digit_otp ? 'ten' : 'six'
-      I18n.t("telephony.format_length.#{length}")
+      configured_length = TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
+      if configured_length == 6
+        I18n.t('telephony.format_length.six')
+      elsif configured_length == 10
+        I18n.t('telephony.format_length.ten')
+      else
+        raise "Missing translation for OTP length: #{configured_length}"
+      end
     end
 
     def user_selected_default_number
