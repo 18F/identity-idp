@@ -116,7 +116,7 @@ group :development, :test do
   gem 'rubocop-performance', '~> 1.20.2', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'rubocop-rspec', require: false
-  gem 'rubocop-sqlfluff', require: false, github: 'zachmargolis/rubocop-sqlfluff'
+  gem 'rubocop-sqlfluff', require: false, github: 'zachmargolis/rubocop-sqlfluff', branch: 'main'
 end
 
 group :test do

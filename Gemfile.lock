@@ -78,7 +78,8 @@ GIT
 
 GIT
   remote: https://github.com/zachmargolis/rubocop-sqlfluff.git
-  revision: 7251642cae9079e35442a911f2a305ba059710cc
+  revision: bf4b69ffd389be26ad91f1d2d907f5b605596d79
+  branch: main
   specs:
     rubocop-sqlfluff (0.1.0)
       pycall (>= 1.5.2)

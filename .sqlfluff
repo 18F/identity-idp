@@ -1,6 +1,7 @@
 [sqlfluff]
 templater = python
-exclude_rules = layout.end_of_file, layout.long_lines
+exclude_rules = layout.end_of_file, layout.long_lines, references.keywords
+# GOAL: allow references.keywords (RF04)
 
 [sqlfluff:indentation]
 tab_space_size = 2
@@ -16,12 +17,14 @@ capitalisation_policy = upper
 capitalisation_policy = upper
 
 [sqlfluff:templater:python:context]
-start = '2024-01-01'
-start_time = '2024-01-01'
+end_time = '2024-01-01'
 finish = '2024-01-01'
 issuer = 'a'
 issuers = ('a', 'b')
+month_start = '2024-01-01'
 query_date = '2024-01-01'
-year_month = '202401'
-range_start = '2024-01-01'
 range_end = '2024-01-01'
+range_start = '2024-01-01'
+start = '2024-01-01'
+start_time = '2024-01-01'
+year_month = '202401'

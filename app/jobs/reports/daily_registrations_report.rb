@@ -57,13 +57,12 @@ module Reports
         finish: finish,
       }.transform_values { |v| quote(v) }
 
-      sql = format(<<-SQL, params)
+      sql = format(<<~SQL, params)
         SELECT
-          COUNT(*) AS total_users
-        , user_and_deleted_users.date AS date
-        FROM
-        (
-          SELECT created_at::date AS date
+          user_and_deleted_users.date
+          , COUNT(*) AS total_users
+        FROM (
+          SELECT users.created_at::date AS date
           FROM users
           WHERE users.created_at <= %{finish}
 
@@ -72,9 +71,9 @@ module Reports
           SELECT deleted_users.user_created_at::date AS date
           FROM deleted_users
           WHERE
-              deleted_users.deleted_at <= %{finish}
-          AND deleted_users.user_created_at <= %{finish}
-        ) user_and_deleted_users
+            deleted_users.deleted_at <= %{finish}
+            AND deleted_users.user_created_at <= %{finish}
+        ) AS user_and_deleted_users
         GROUP BY user_and_deleted_users.date
       SQL
 
@@ -88,10 +87,10 @@ module Reports
         finish: finish,
       }.transform_values { |v| quote(v) }
 
-      sql = format(<<-SQL, params)
+      sql = format(<<~SQL, params)
         SELECT
-          COUNT(*) AS fully_registered_users
-        , registered_at::date AS date
+          registered_at::date AS date
+          , COUNT(*) AS fully_registered_users
         FROM registration_logs
         WHERE
           registered_at <= %{finish}
@@ -110,16 +109,16 @@ module Reports
         finish: finish,
       }.transform_values { |v| quote(v) }
 
-      sql = format(<<-SQL, params)
+      sql = format(<<~SQL, params)
         SELECT
-          COUNT(*) AS deleted_users
-        , deleted_at::date AS date
+          deleted_users.deleted_at::date AS date
+          , COUNT(*) AS deleted_users
         FROM deleted_users
         WHERE
-            deleted_at <= %{finish}
-        AND deleted_users.user_created_at <= %{finish}
+          deleted_users.deleted_at <= %{finish}
+          AND deleted_users.user_created_at <= %{finish}
         GROUP BY
-          deleted_at::date
+          deleted_users.deleted_at::date
       SQL
 
       transaction_with_timeout do
