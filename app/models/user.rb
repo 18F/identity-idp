@@ -428,10 +428,6 @@ class User < ApplicationRecord
     !recent_devices.empty?
   end
 
-  def new_device?(cookie_uuid:)
-    !cookie_uuid || !devices.exists?(cookie_uuid:)
-  end
-
   def authenticated_device?(cookie_uuid:)
     return false if cookie_uuid.blank?
     devices.joins(:events).exists?(cookie_uuid:, events: { event_type: :sign_in_after_2fa })
