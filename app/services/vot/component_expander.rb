@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Vot
   class ComponentExpander
     attr_reader :initial_components, :component_map, :expanded_components
