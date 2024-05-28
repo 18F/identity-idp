@@ -56,7 +56,8 @@ Rails.application.routes.draw do
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#show'
-  post '/openid_connect/logout' => 'openid_connect/logout#create'
+  # post '/openid_connect/logout' => 'openid_connect/logout#create'
+  match '/openid_connect/logout' => 'openid_connect/logout#show', via: %w[get post]
   delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/robots.txt' => 'robots#index'
