@@ -67,11 +67,13 @@ module Vot
     private
 
     def initial_components
+      return @initial_components if defined?(@initial_components)
+
       component_string = vector_of_trust.presence || acr_values || ''
-      component_string.split(component_separator).map do |component_value_name|
-        component_map.fetch(component_value_name)
+      @initial_components ||= component_string.split(component_separator).map do |component_name|
+        component_map.fetch(component_name)
       rescue KeyError
-        raise_unsupported_component_exception(component_value_name)
+        raise_unsupported_component_exception(component_name)
       end
     end
 
