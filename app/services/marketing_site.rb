@@ -17,6 +17,7 @@ class MarketingSite
     verify-your-identity/phone-number
     verify-your-identity/verify-your-address-by-mail
     verify-your-identity/how-to-verify-your-identity
+    verify-your-identity/overview
   ].to_set.freeze
 
   def self.locale_segment
