@@ -26,7 +26,7 @@ RSpec.feature 'welcome step', allowed_extra_analytics: [:*] do
       flow: 'idv',
       redirect_url: MarketingSite.help_center_article_url(
         category: 'verify-your-identity',
-        article: 'how-to-verify-your-identity',
+        article: 'overview',
       ),
     )
   end
