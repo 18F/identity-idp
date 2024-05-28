@@ -17,11 +17,10 @@ module OpenidConnect
       @logout_form = build_logout_form
       result = @logout_form.submit
       redirect_uri = result.extra[:redirect_uri]
-      extra_event_props = session[:event] || {}
       analytics.oidc_logout_requested(
         **to_event(result),
         method: request.method.to_s,
-        **extra_event_props,
+        original_method: session[:original_method],
       )
 
       if result.success? && redirect_uri
@@ -34,9 +33,7 @@ module OpenidConnect
     # +POST+ Handle logout request (with confirmation if initiated by relying partner)
     # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout] # rubocop:disable Layout/LineLength
     def create
-      session[:event] = {
-        original_method: request.method.to_s,
-      }
+      session[:original_method] = request.method.to_s
       redirect_to action: :show, **logout_params
     end
 
