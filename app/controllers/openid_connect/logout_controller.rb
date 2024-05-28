@@ -35,8 +35,8 @@ module OpenidConnect
     #   redirecting this route to {OpenidConnectLogoutForm#redirect_uri}
     #   and skipping over the render of the logout confirmation page
     def create
+      # @type [OpenidConnectLogoutForm]
       @logout_form = build_logout_form
-      # @type [FormResponse]
       result = @logout_form.submit
       redirect_uri = result.extra[:redirect_uri]
       analytics.oidc_logout_requested(**to_event(result))
@@ -117,6 +117,7 @@ module OpenidConnect
         current_user
     end
 
+    # @return [OpenidConnectLogoutForm]
     def build_logout_form
       OpenidConnectLogoutForm.new(
         params: logout_params,
