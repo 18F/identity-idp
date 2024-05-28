@@ -61,6 +61,13 @@ module Idv
     end
 
     def send_otp
+      length, format = case delivery_method
+                       when :voice
+                         ['ten', 'digit']
+                       else
+                         ['six', 'character']
+                       end
+
       idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp
       @telephony_response = Telephony.send_confirmation_otp(
         otp: code,
@@ -80,24 +87,6 @@ module Idv
       otp_sent_response
     end
 
-    def bucket
-      @bucket ||= AbTests::IDV_TEN_DIGIT_OTP.bucket(
-        idv_session.user_phone_confirmation_session.user.uuid,
-      )
-    end
-
-    def format
-      return 'digit' if delivery_method == :voice && bucket == :ten_digit_otp
-
-      'character'
-    end
-
-    def length
-      return 'ten' if delivery_method == :voice && bucket == :ten_digit_otp
-
-      'six'
-    end
-
     def otp_sent_response
       FormResponse.new(
         success: telephony_response.success?, extra: extra_analytics_attributes,
@@ -105,7 +94,7 @@ module Idv
     end
 
     def extra_analytics_attributes
-      attributes = {
+      {
         otp_delivery_preference: delivery_method,
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
@@ -113,15 +102,6 @@ module Idv
         rate_limit_exceeded: rate_limit_exceeded?,
         telephony_response: @telephony_response,
       }
-      if IdentityConfig.store.ab_testing_idv_ten_digit_otp_enabled
-        attributes[:ab_tests] = {
-          AbTests::IDV_TEN_DIGIT_OTP.experiment_name => {
-            bucket: bucket,
-          },
-        }
-      end
-
-      attributes
     end
 
     def parsed_phone
