@@ -14,7 +14,7 @@
 
   @include at-media('tablet') {
     @include u-padding-x(10);
-    @include u-margin-bottom(4);
+    @include u-margin-bottom(8);
     border-radius: 5px;
 
     &-wide {
