@@ -282,15 +282,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
     context 'when sending client_id' do
       subject(:action) do
-        # args = request_builder(
-        #   req_method,
-        #   {
-        #     client_id: service_provider.issuer,
-        #     post_logout_redirect_uri: post_logout_redirect_uri,
-        #     state: state,
-        #   },
-        # )
-        # process(req_action, **args)
         process req_action,
                 method: req_method,
                 params: {
