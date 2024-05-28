@@ -32,10 +32,7 @@ module TwoFactorAuthentication
         new_device: new_device?,
       )
 
-      analytics.multi_factor_auth(
-        **analytics_hash,
-        pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-      )
+      analytics.track_mfa_submit_event(analytics_hash)
     end
 
     def check_personal_key_enabled

@@ -168,6 +168,10 @@ class FakeAnalytics < Analytics
     nil
   end
 
+  def track_mfa_submit_event(_attributes)
+    # no-op
+  end
+
   def browser_attributes
     {}
   end

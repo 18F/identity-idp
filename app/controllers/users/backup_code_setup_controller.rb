@@ -80,7 +80,16 @@ module Users
     private
 
     def validate_multi_mfa_selection
-      redirect_to backup_code_confirm_setup_url unless in_multi_mfa_selection_flow?
+      if IdentityConfig.store.backup_code_confirm_setup_screen_enabled
+        redirect_to backup_code_confirm_setup_url unless in_multi_mfa_selection_flow?
+      else
+        redirect_to root_url unless internal_referrer?
+      end
+    end
+
+    def internal_referrer?
+      UserSessionContext.reauthentication_context?(context) ||
+        session[:account_redirect_path] || in_multi_mfa_selection_flow?
     end
 
     def analytics_properties_for_visit

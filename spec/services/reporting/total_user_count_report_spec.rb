@@ -77,13 +77,10 @@ RSpec.describe Reporting::TotalUserCountReport do
 
     context 'with one verified and one non-verified user' do
       before do
-        user1 = create(:user)
+        create(:user)
         user2 = create(:user)
-        create(:profile, :active, :verified, user: user1)
         # MW: The :verified trait doesn't set active: true. This feels confusing.
-        # user2 active profile but unverified
-        create(:profile, :active, :verified, user: user2)
-        user2.profiles.first.deactivate(:password_reset)
+        create(:profile, :active, user: user2)
       end
       let(:expected_total_count) { 2 }
       let(:expected_verified_count) { 1 }
