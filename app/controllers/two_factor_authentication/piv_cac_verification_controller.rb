@@ -30,7 +30,9 @@ module TwoFactorAuthentication
 
     def process_token
       result = piv_cac_verification_form.submit
-      analytics.multi_factor_auth(**result.to_h.merge(analytics_properties))
+      analytics.track_mfa_submit_event(
+        result.to_h.merge(analytics_properties),
+      )
       irs_attempts_api_tracker.mfa_login_piv_cac(
         success: result.success?,
         subject_dn: piv_cac_verification_form.x509_dn,

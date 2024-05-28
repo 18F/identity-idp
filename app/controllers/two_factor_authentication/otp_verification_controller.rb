@@ -136,7 +136,7 @@ module TwoFactorAuthentication
       properties = result.to_h.merge(analytics_properties, new_device: new_device?)
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
-      analytics.multi_factor_auth(**properties)
+      analytics.track_mfa_submit_event(properties)
 
       if UserSessionContext.reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_submitted(

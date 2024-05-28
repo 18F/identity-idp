@@ -105,26 +105,17 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         stub_attempts_tracker
         cfg = controller.current_user.piv_cac_configurations.first
 
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
-          success: true,
-          subject_dn: x509_subject,
-        )
-
-        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
-          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC).
-          and_call_original
-
-        get :show, params: { token: 'good-token' }
-
-        expect(@analytics).to have_logged_event(
-          :multi_factor_auth_enter_piv_cac,
+        attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           new_device: true,
           piv_cac_configuration_id: nil,
-        )
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(:multi_factor_auth_enter_piv_cac, attributes)
+
+        submit_attributes = {
           success: true,
           errors: {},
           context: 'authentication',
@@ -134,11 +125,23 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
           piv_cac_configuration_id: cfg.id,
           piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
           key_id: 'foo',
+        }
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(submit_attributes)
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
+          success: true,
+          subject_dn: x509_subject,
         )
-        expect(@analytics).to have_logged_event(
-          'User marked authenticated',
-          authentication_type: :valid_2fa,
-        )
+
+        expect(@analytics).to receive(:track_event).
+          with('User marked authenticated', authentication_type: :valid_2fa)
+
+        expect(controller).to receive(:handle_valid_verification_for_authentication_context).
+          with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC).
+          and_call_original
+
+        get :show, params: { token: 'good-token' }
       end
 
       context 'with existing device' do
@@ -150,12 +153,10 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
           stub_analytics
           stub_sign_in_before_2fa(user)
 
-          get :show, params: { token: 'good-token' }
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with(hash_including(new_device: false))
 
-          expect(@analytics).to have_logged_event(
-            'Multi-Factor Authentication',
-            hash_including(new_device: false),
-          )
+          get :show, params: { token: 'good-token' }
         end
       end
     end
@@ -239,39 +240,46 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         stub_analytics
         stub_attempts_tracker
 
+        attributes = {
+          context: 'authentication',
+          multi_factor_auth_method: 'piv_cac',
+          new_device: true,
+          piv_cac_configuration_id: nil,
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(:multi_factor_auth_enter_piv_cac, attributes)
+
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
           with(mfa_device_type: 'piv_cac')
 
         piv_cac_mismatch = { type: 'user.piv_cac_mismatch' }
+
+        submit_attributes = {
+          success: false,
+          errors: piv_cac_mismatch,
+          context: 'authentication',
+          multi_factor_auth_method: 'piv_cac',
+          multi_factor_auth_method_created_at: nil,
+          new_device: true,
+          key_id: 'foo',
+          piv_cac_configuration_dn_uuid: 'bad-uuid',
+          piv_cac_configuration_id: nil,
+        }
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(submit_attributes)
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
           success: false,
           subject_dn: bad_dn,
         )
 
+        expect(@analytics).to receive(:track_event).
+          with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         get :show, params: { token: 'bad-token' }
-
-        expect(@analytics).to have_logged_event(
-          :multi_factor_auth_enter_piv_cac,
-          context: 'authentication',
-          multi_factor_auth_method: 'piv_cac',
-          new_device: true,
-          piv_cac_configuration_id: nil,
-        )
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          errors: piv_cac_mismatch,
-          context: 'authentication',
-          multi_factor_auth_method: 'piv_cac',
-          new_device: true,
-          key_id: 'foo',
-          piv_cac_configuration_dn_uuid: 'bad-uuid',
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
       end
     end
 

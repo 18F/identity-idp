@@ -12,15 +12,19 @@ module Idv
     check_or_render_not_found -> { self.class.enabled? }
 
     def show
+      @selection = if idv_session.skip_doc_auth == false
+                     Idv::HowToVerifyForm::REMOTE
+      elsif idv_session.skip_doc_auth == true
+        Idv::HowToVerifyForm::IPP
+      end
+
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
-      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new(selection: @selection)
     end
 
     def update
       clear_future_steps!
-      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
-      result = @idv_how_to_verify_form.submit(how_to_verify_form_params)
-
+      result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
       if how_to_verify_form_params[:selection] == []
         sendable_form_params = {}
       else
@@ -44,8 +48,10 @@ module Idv
           idv_session.skip_doc_auth_from_how_to_verify = true
           redirect_to idv_document_capture_url
         end
+
       else
-        render :show, locals: { error: result.first_error_message }
+        flash[:error] = result.first_error_message
+        redirect_to idv_how_to_verify_url
       end
     end
 

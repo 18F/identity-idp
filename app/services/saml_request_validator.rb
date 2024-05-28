@@ -7,7 +7,7 @@ class SamlRequestValidator
   validate :authorized_service_provider
   validate :authorized_authn_context
   validate :parsable_vtr
-  validate :authorized_nameid_format
+  validate :authorized_email_nameid_format
 
   def initialize(blank_cert: false)
     @blank_cert = blank_cert
@@ -43,7 +43,7 @@ class SamlRequestValidator
     return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
 
     @parsed_vectors_of_trust = begin
-      if vtr.present?
+      if vtr.is_a?(Array) && !vtr.empty?
         vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
       end
     rescue Vot::Parser::ParseException
@@ -119,24 +119,17 @@ class SamlRequestValidator
     Array(authn_context).include?(Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF)
   end
 
-  def authorized_nameid_format
-    return if satisfiable_nameid_format?
-    return if email_nameid_format? && service_provider&.email_nameid_format_allowed
-    return if legacy_name_id_behavior_needed?
+  def authorized_email_nameid_format
+    return unless email_nameid_format?
+    return if service_provider&.email_nameid_format_allowed
 
     errors.add(:nameid_format, :unauthorized_nameid_format, type: :unauthorized_nameid_format)
   end
 
-  def satisfiable_nameid_format?
-    nameid_format.nil? || [Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-                           Saml::Idp::Constants::NAME_ID_FORMAT_UNSPECIFIED].include?(nameid_format)
-  end
-
-  def legacy_name_id_behavior_needed?
-    service_provider&.use_legacy_name_id_behavior && !email_nameid_format?
-  end
-
   def email_nameid_format?
-    nameid_format == Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
+    [
+      'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+      'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
+    ].include?(nameid_format)
   end
 end

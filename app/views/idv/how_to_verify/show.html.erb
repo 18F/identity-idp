@@ -1,16 +1,5 @@
 <% self.title = t('doc_auth.headings.how_to_verify') %>
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.how_to_verify')) %>
-
-<% if defined?(error) %>
-  <%= render AlertComponent.new(
-        type: :error,
-        class: 'margin-bottom-4',
-        text_tag: 'div',
-      ) do %>
-    <%= error %>
-  <% end %>
-<% end %>
-
 <p id='how-to-verify-info'><%= @presenter.how_to_verify_info %></p>
   <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
     <div class="grid-col-12 tablet:grid-col-auto">
