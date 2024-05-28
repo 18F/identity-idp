@@ -29,21 +29,8 @@ module OpenidConnect
 
     # +POST+ Handle logout request (with confirmation if initiated by relying partner)
     # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout] # rubocop:disable Layout/LineLength
-    # @note This action is identical to #show, but attempting to use the same action for both
-    #   methods results in the confirmation page not getting rendered and is not recommended by the
-    #   Rails team (source: {Rails Routing - HTTP Verb Constraints}[https://guides.rubyonrails.org/routing.html#http-verb-constraints]).  # rubocop:disable Layout/LineLength
     def create
-      @logout_form = build_logout_form
-      result = @logout_form.submit
-      redirect_uri = result.extra[:redirect_uri]
-
-      analytics.oidc_logout_requested(**to_event(result))
-
-      if result.success? && redirect_uri
-        handle_successful_logout_request(result, redirect_uri)
-      else
-        render :error
-      end
+      redirect_to action: :show, **logout_params
     end
 
     # Sign out without confirmation

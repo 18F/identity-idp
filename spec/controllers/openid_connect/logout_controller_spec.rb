@@ -590,10 +590,6 @@ RSpec.describe OpenidConnect::LogoutController do
       it_behaves_like 'logout allows id_token_hint', :show, 'GET'
     end
 
-    describe '#create' do
-      it_behaves_like 'logout allows id_token_hint', :create, 'POST'
-    end
-
     describe '#delete' do
       context 'when sending client_id' do
         subject(:action) do
@@ -747,10 +743,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
     describe '#show' do
       it_behaves_like 'logout rejects id_token_hint', :show, 'GET'
-    end
-
-    describe '#create' do
-      it_behaves_like 'logout rejects id_token_hint', :create, 'POST'
     end
 
     describe '#delete' do
