@@ -173,13 +173,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def x509_presented
-    if IdentityConfig.store.x509_presented_hash_attribute_requested_issuers.include?(
-      identity&.service_provider,
-    )
-      x509_data.presented
-    else
-      !!x509_data.presented.raw
-    end
+    !!x509_data.presented.raw
   end
 
   def active_profile
