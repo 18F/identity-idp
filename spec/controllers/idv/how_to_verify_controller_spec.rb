@@ -155,6 +155,29 @@ RSpec.describe Idv::HowToVerifyController do
     end
     let(:analytics_name) { :idv_doc_auth_how_to_verify_submitted }
 
+    shared_examples_for 'invalid form submissions' do
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update
+      end
+
+      it 'logs the invalid value and re-renders the page' do
+        put :update, params: params
+
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(response).to render_template :show
+      end
+
+      it 'redirects to how_to_verify' do
+        put :update, params: params
+
+        expect(flash[:error]).not_to be_present
+        expect(subject.idv_session.skip_doc_auth).to be_nil
+        expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
+      end
+    end
+
     context 'no selection made' do
       let(:analytics_args) do
         {
@@ -168,17 +191,29 @@ RSpec.describe Idv::HowToVerifyController do
         }.merge(ab_test_args)
       end
 
-      it 'invalidates future steps' do
-        expect(subject).to receive(:clear_future_steps!)
+      let(:params) { nil }
 
-        put :update
+      it_behaves_like 'invalid form submissions'
+    end
+
+    context 'an invalid selection is submitted' do
+      # (This should only be possible if someone alters the form)
+      let(:selection) { 'carrier_pigeon' }
+
+      let(:analytics_args) do
+        {
+          step: 'how_to_verify',
+          analytics_id: 'Doc Auth',
+          skip_hybrid_handoff: nil,
+          'selection' => selection,
+          irs_reproofing: false,
+          error_details: { selection: { inclusion: true } },
+          errors: { selection: ['Select a way to verify your identity.'] },
+          success: false,
+        }.merge(ab_test_args)
       end
 
-      it 'sends analytics_submitted event when nothing is selected' do
-        put :update
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
+      it_behaves_like 'invalid form submissions'
     end
 
     context 'remote' do
@@ -235,34 +270,6 @@ RSpec.describe Idv::HowToVerifyController do
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
-    end
-
-    context 'undo/back' do
-      it 'sets skip_doc_auth to nil and does not redirect' do
-        put :update, params: { undo_step: true }
-
-        expect(subject.idv_session.skip_doc_auth).to be_nil
-        expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be_nil
-        expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
-        expect(response).to redirect_to(idv_how_to_verify_url)
-      end
-    end
-  end
-
-  context 'form submission error' do
-    let(:invalid_params) do
-      {
-        idv_how_to_verify_form: { selection: '' },
-      }
-    end
-
-    it 'redirects to how to verify when a form submission error is encountered' do
-      put :update, params: invalid_params
-
-      expect(flash[:error]).to be_present
-      expect(subject.idv_session.skip_doc_auth).to be_nil
-      expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
-      expect(response).to redirect_to(idv_how_to_verify_url)
     end
   end
 

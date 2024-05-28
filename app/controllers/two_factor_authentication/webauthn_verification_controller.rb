@@ -18,7 +18,7 @@ module TwoFactorAuthentication
 
     def confirm
       result = form.submit
-      analytics.track_mfa_submit_event(
+      analytics.multi_factor_auth(
         **result.to_h,
         **analytics_properties,
         multi_factor_auth_method_created_at:
