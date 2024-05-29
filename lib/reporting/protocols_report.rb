@@ -86,15 +86,35 @@ module Reporting
 
     def protocol_data
       @protocol_data ||= begin
-        protocol_counts = Hash.new(0)
-        cloudwatch_client.fetch(
+        results = cloudwatch_client.fetch(
           query: protocol_query,
           from: time_range.begin,
           to: time_range.end,
-        ).each do |row|
-          protocol_counts[row['protocol']] += row['request_count'].to_i
-        end
-        protocol_counts
+        )
+        {
+          saml: {
+            request_count: results.
+              select { |slice| slice['protocol'] == SAML_AUTH_EVENT }.
+              map { |slice| slice['request_count'].to_i }.
+              sum,
+            issuer_count: results.
+              select { |slice| slice['protocol'] == SAML_AUTH_EVENT }.
+              map { |slice| slice['issuer'] }.
+              uniq.
+              count,
+          },
+          oidc: {
+            request_count: results.
+              select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }.
+              map { |slice| slice['request_count'].to_i }.
+              sum,
+            issuer_count: results.
+              select { |slice| slice['protocol'] == OIDC_AUTH_EVENT }.
+              map { |slice| slice['issuer'] }.
+              uniq.
+              count,
+          },
+        }
       end
     end
 
@@ -125,12 +145,13 @@ module Reporting
 
       format(<<~QUERY, params)
         fields
-          name AS protocol
-        | filter name IN %{event}
+          name AS protocol,
+          coalesce(properties.event_properties.service_provider, properties.event_properties.client_id) as issuer
+        | filter name IN %{event} AND properties.event_properties.success= 1
         | stats
-          count(*) AS request_count
+            count(*) AS request_count
           BY
-          protocol
+          protocol, issuer
       QUERY
     end
 
@@ -176,32 +197,42 @@ module Reporting
     end
 
     def saml_count
-      protocol_data[SAML_AUTH_EVENT]
+      protocol_data[:saml][:request_count]
     end
 
     def oidc_count
-      protocol_data[OIDC_AUTH_EVENT]
+      protocol_data[:oidc][:request_count]
+    end
+
+    def saml_issuer_count
+      protocol_data[:saml][:issuer_count]
+    end
+
+    def oidc_issuer_count
+      protocol_data[:oidc][:issuer_count]
     end
 
     def protocols_table
       [
-        ['Authentication Protocol', '% of attempts', 'Total number'],
+        ['Authentication Protocol', '% of requests', 'Total requests', 'Count of issuers'],
         [
           'SAML',
           to_percent(saml_count, saml_count + oidc_count),
           saml_count,
+          saml_issuer_count,
         ],
         [
           'OIDC',
           to_percent(oidc_count, saml_count + oidc_count),
           oidc_count,
+          oidc_issuer_count,
         ],
       ]
     end
 
     def saml_signature_issues_table
       [
-        ['Issue', 'Count of integrations with the issue', 'List of issuers with the issue'],
+        ['Issue', 'Count of issuers with the issue', 'List of issuers with the issue'],
         [
           'Not signing SAML authentication requests',
           saml_signature_data[:unsigned].length,
@@ -217,7 +248,7 @@ module Reporting
 
     def loa_acr_requests_table
       [
-        ['Count of integrations using LOA', 'List of issuers with the issue'],
+        ['Count of issuers using LOA', 'List of issuers with the issue'],
         [
           loa_issuers_data.length,
           loa_issuers_data.join(', '),
