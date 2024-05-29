@@ -63,8 +63,6 @@ body {
 }
 
 .footer__language-picker {
-  @include u-margin-y(0.5);
-
   @include at-media-max('tablet') {
     &.language-picker {
       width: 100%;
