@@ -1312,6 +1312,7 @@ instructions.password.strength.4: Muy buena
 instructions.password.strength.intro: 'Seguridad de la contraseña:'
 instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
+links.accessibility_statement: Declaración de accesibilidad
 links.account.reactivate.with_key: Tengo mi clave
 links.account.reactivate.without_key: No tengo mi clave
 links.back_to_sp: Volver a %{sp}
