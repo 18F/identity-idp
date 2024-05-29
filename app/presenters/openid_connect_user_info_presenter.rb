@@ -85,7 +85,7 @@ class OpenidConnectUserInfoPresenter
     {
       x509_subject: stringify_attr(x509_data.subject),
       x509_issuer: stringify_attr(x509_data.issuer),
-      x509_presented:,
+      x509_presented: !!x509_data.presented.raw,
     }
   end
 
@@ -170,10 +170,6 @@ class OpenidConnectUserInfoPresenter
 
   def x509_session?
     identity.piv_cac_enabled?
-  end
-
-  def x509_presented
-    !!x509_data.presented.raw
   end
 
   def active_profile
