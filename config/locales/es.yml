@@ -786,8 +786,8 @@ event_types.piv_cac_disabled: Tarjeta PIV o CAC no asociada
 event_types.piv_cac_enabled: Tarjeta PIV o CAC asociada
 event_types.sign_in_after_2fa: Inicio de sesión con un segundo factor
 event_types.sign_in_before_2fa: Inicio de sesión con contraseña
-event_types.sign_in_notification_timeframe_expired: Plazo de notificación expirado para el inicio de sesión desde un nuevo dispositivo
-event_types.sign_in_unsuccessful_2fa: Error al autenticar
+event_types.sign_in_notification_timeframe_expired: Venció el tiempo del mensaje para iniciar sesión en un dispositivo nuevo
+event_types.sign_in_unsuccessful_2fa: No se pudo autenticar
 event_types.webauthn_key_added: Clave de seguridad de hardware añadida
 event_types.webauthn_key_removed: Clave de seguridad de hardware eliminada
 forms.backup_code_regenerate.caution: Si vuelve a generar sus códigos de recuperación, recibirá un conjunto nuevo de códigos. Sus códigos de recuperación originales ya no serán válidos.

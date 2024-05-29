@@ -786,8 +786,8 @@ event_types.piv_cac_disabled: PIV/CAC 卡无关联
 event_types.piv_cac_enabled: PIV/CAC 卡已关联
 event_types.sign_in_after_2fa: 已使用第二个因素登录
 event_types.sign_in_before_2fa: 已使用密码登录
-event_types.sign_in_notification_timeframe_expired: Expired notification timeframe for sign-in from new device
-event_types.sign_in_unsuccessful_2fa: Failed to authenticate
+event_types.sign_in_notification_timeframe_expired: 从新设备登录的通知时间窗口已过
+event_types.sign_in_unsuccessful_2fa: 身份证实失败
 event_types.webauthn_key_added: 硬件安全密钥已添加
 event_types.webauthn_key_removed: 硬件安全密钥已去掉
 forms.backup_code_regenerate.caution: 如果你重新生成备用代码，会收到新的一套备用代码。你原来的备用代码就会失效。
@@ -1824,9 +1824,9 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
 user_mailer.new_device_sign_in_after_2fa.reset_password: reset your password
 user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的登录和身份验证'
-user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authenticated
+user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: 身份已证实
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Signed in with password
-user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Failed to authenticate
+user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: 身份证实失败
 user_mailer.new_device_sign_in_attempts.new_sign_in_from: 新登录可能是在 %{location}
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.one: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate</strong>.
 user_mailer.new_device_sign_in_before_2fa.info_p1_html.other: Your %{app_name} email and password were used to sign in from a new device but <strong>failed to authenticate %{count} times</strong>.
