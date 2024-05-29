@@ -342,6 +342,7 @@ module Idv
       add_costs(client_response)
       update_funnel(client_response)
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
+      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
@@ -349,6 +350,7 @@ module Idv
           async: false,
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
+          zip_code: zip_code,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )

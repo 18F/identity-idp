@@ -10,7 +10,7 @@ document:
   state_id_jurisdiction: ND
   state_id_number: '1111111111111'
   state_id_type: 'drivers_license'
-  zipcode: '59010'
+  zipcode: '59010-1234'
 doc_auth_result: Passed
 failed_alerts: []
 portrait_match_results:
