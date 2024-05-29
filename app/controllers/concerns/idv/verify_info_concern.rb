@@ -336,6 +336,8 @@ module Idv
     end
 
     def add_proofing_costs(results)
+      return if results[:context][:sp_costs_added]
+
       results[:context][:stages].each do |stage, hash|
         if stage == :resolution
           # transaction_id comes from ConversationId

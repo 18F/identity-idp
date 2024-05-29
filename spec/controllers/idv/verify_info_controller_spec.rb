@@ -481,4 +481,43 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
       end
     end
   end
+
+  describe '#add_proofing_costs' do
+    let(:sp_costs_added) { nil }
+    let(:result) do
+      {
+        context: {
+          sp_costs_added:,
+          stages: {
+            resolution: {
+              transaction_id: 'ABCD1234',
+            },
+            residential_address: {
+              vendor_name: 'ResidentialAddressNotRequired',
+            },
+            state_id: {
+              transaction_id: 'EFGH5678',
+            },
+            threatmetrix: {
+              transaction_id: 'IJKL9012',
+            },
+          },
+        },
+      }
+    end
+
+    it 'adds proofing costs' do
+      expect(subject).to receive(:add_cost).exactly(3).times
+      subject.send(:add_proofing_costs, result)
+    end
+
+    context 'when proofing costs have already been added' do
+      let(:sp_costs_added) { true }
+
+      it 'does not add proofing costs' do
+        expect(subject).not_to receive(:add_cost)
+        subject.send(:add_proofing_costs, result)
+      end
+    end
+  end
 end
