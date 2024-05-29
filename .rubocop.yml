@@ -1019,6 +1019,10 @@ Security/YAMLLoad:
   Enabled: true
   SafeAutoCorrect: false
 
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method
+
 Style/AndOr:
   Description: Use &&/|| instead of and/or.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or

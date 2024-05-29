@@ -21,8 +21,8 @@ module Rack
       end
     end
 
-    alias call_without_excludes call
-    alias call call_with_excludes
+    alias_method :call_without_excludes, :call
+    alias_method :call, :call_with_excludes
   end
 end
 
