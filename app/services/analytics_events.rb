@@ -4040,6 +4040,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] method
+  # @param [String] original_method Method of referring request
   # OIDC Logout Requested
   def oidc_logout_requested(
     success: nil,
@@ -4052,6 +4053,7 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     method: nil,
+    original_method: nil,
     **extra
   )
     track_event(
@@ -4066,6 +4068,7 @@ module AnalyticsEvents
       oidc: oidc,
       saml_request_valid: saml_request_valid,
       method: method,
+      original_method: original_method,
       **extra,
     )
   end
