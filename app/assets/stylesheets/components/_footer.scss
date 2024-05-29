@@ -99,7 +99,11 @@ body {
   }
 
   a:not(:last-child) {
-    @include u-margin-right(2);
+    @include u-margin-right(1);
+
+    @include at-media('tablet') {
+      @include u-margin-right(2);
+    }
   }
 
   .footer__agency-logo {
