@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpHandoffBouncer
   attr_reader :sp_session
 
