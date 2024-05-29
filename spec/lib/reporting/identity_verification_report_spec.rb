@@ -39,7 +39,8 @@ RSpec.describe Reporting::IdentityVerificationReport do
         { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
 
         # Success through address confirmation user
-        { 'user_id' => 'user3', 'name' => 'IdV: GPO verification submitted' },
+        { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
+        { 'user_id' => 'user4', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
 
         # Success through in-person verification, failed doc auth (rejected)
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
@@ -78,15 +79,15 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - In-Person Pending', 1],
         ['Workflow completed - Fraud Review Pending', 1],
         [],
-        ['Successfully Verified', 3],
+        ['Successfully Verified', 4],
         ['Successfully Verified - With phone number', 1],
         ['Successfully Verified - With mailed code', 1],
         ['Successfully Verified - In Person', 1],
-        ['Successfully Verified - Passed fraud review', 1],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 0.6],
-        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 0.6],
-        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 0.6],
-        ['Industry Proofing Rate (Verified minus IDV Rejected)', 0.75],
+        ['Successfully Verified - Passed fraud review', 2],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 0.8],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 0.8],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 0.8],
+        ['Industry Proofing Rate (Verified minus IDV Rejected)', 0.8],
       ]
       # rubocop:enable Layout/LineLength
 
@@ -120,15 +121,15 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - In-Person Pending', '1'],
         ['Workflow completed - Fraud Review Pending', '1'],
         [],
-        ['Successfully Verified', '3'],
+        ['Successfully Verified', '4'],
         ['Successfully Verified - With phone number', '1'],
         ['Successfully Verified - With mailed code', '1'],
         ['Successfully Verified - In Person', '1'],
-        ['Successfully Verified - Passed fraud review', '1'],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', '0.6'],
-        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', '0.6'],
-        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', '0.6'],
-        ['Industry Proofing Rate (Verified minus IDV Rejected)', '0.75'],
+        ['Successfully Verified - Passed fraud review', '2'],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', '0.8'],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', '0.8'],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', '0.8'],
+        ['Industry Proofing Rate (Verified minus IDV Rejected)', '0.8'],
       ]
 
       aggregate_failures do
@@ -160,7 +161,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV Reject: Doc Auth' => 3,
         'IdV Reject: Phone Finder' => 1,
         'IdV Reject: Verify' => 1,
-        'Fraud: Profile review passed' => 1,
+        'Fraud: Profile review passed' => 2,
       )
     end
   end
