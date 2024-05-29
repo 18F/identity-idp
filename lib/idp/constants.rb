@@ -105,7 +105,7 @@ module Idp
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
       state_id_type: 'drivers_license',
-      zipcode: '59010',
+      zipcode: '59010-1234',
       issuing_country_code: 'US',
     }.freeze
 
@@ -116,7 +116,7 @@ module Idp
       identity_doc_address1: '123 Way St',
       identity_doc_address2: '2nd Address Line',
       identity_doc_city: 'Best City',
-      identity_doc_zipcode: '12345',
+      identity_doc_zipcode: '12345-4321',
       state_id_jurisdiction: 'Virginia',
       identity_doc_address_state: 'VA',
       state_id_number: '1111111111111',
@@ -133,7 +133,7 @@ module Idp
       identity_doc_address1: '123 Way St',
       identity_doc_address2: '2nd Address Line',
       identity_doc_city: 'Best City',
-      identity_doc_zipcode: '12345',
+      identity_doc_zipcode: '12345-4321',
       identity_doc_address_state: 'VA',
       same_address_as_id: 'false',
     ).freeze

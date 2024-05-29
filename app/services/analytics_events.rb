@@ -1127,6 +1127,7 @@ module AnalyticsEvents
   # @param [Hash] portrait_match_results
   # @param [Hash] image_metrics
   # @param [Boolean] address_line2_present
+  # @param [String] zip_code
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
@@ -1177,6 +1178,7 @@ module AnalyticsEvents
     portrait_match_results: nil,
     image_metrics: nil,
     address_line2_present: nil,
+    zip_code: nil,
     **extra
   )
     track_event(
@@ -1215,6 +1217,7 @@ module AnalyticsEvents
       image_metrics:,
       address_line2_present:,
       liveness_checking_required:,
+      zip_code:,
       **extra,
     )
   end
@@ -3730,6 +3733,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # @param [String] context
   # @param [Boolean] new_device
   # @param [String] multi_factor_auth_method
@@ -3748,6 +3752,7 @@ module AnalyticsEvents
   def multi_factor_auth(
     success:,
     errors: nil,
+    error_details: nil,
     context: nil,
     new_device: nil,
     multi_factor_auth_method: nil,
@@ -3767,24 +3772,27 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication',
-      success: success,
-      errors: errors,
-      context: context,
-      new_device: new_device,
-      multi_factor_auth_method: multi_factor_auth_method,
-      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
-      auth_app_configuration_id: auth_app_configuration_id,
-      piv_cac_configuration_id: piv_cac_configuration_id,
-      key_id: key_id,
-      webauthn_configuration_id: webauthn_configuration_id,
-      confirmation_for_add_phone: confirmation_for_add_phone,
-      phone_configuration_id: phone_configuration_id,
-      pii_like_keypaths: pii_like_keypaths,
-      area_code: area_code,
-      country_code: country_code,
-      phone_fingerprint: phone_fingerprint,
-      frontend_error:,
-      **extra,
+      {
+        success: success,
+        errors: errors,
+        error_details: error_details,
+        context: context,
+        new_device: new_device,
+        multi_factor_auth_method: multi_factor_auth_method,
+        multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
+        auth_app_configuration_id: auth_app_configuration_id,
+        piv_cac_configuration_id: piv_cac_configuration_id,
+        key_id: key_id,
+        webauthn_configuration_id: webauthn_configuration_id,
+        confirmation_for_add_phone: confirmation_for_add_phone,
+        phone_configuration_id: phone_configuration_id,
+        pii_like_keypaths: pii_like_keypaths,
+        area_code: area_code,
+        country_code: country_code,
+        phone_fingerprint: phone_fingerprint,
+        frontend_error:,
+        **extra,
+      }.compact,
     )
   end
 

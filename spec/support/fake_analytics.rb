@@ -25,7 +25,6 @@ class FakeAnalytics < Analytics
         :first_name,
         :last_name,
         :address1,
-        :zipcode,
         :dob,
         :state_id_number,
       ).each do |key, default_pii_value|
@@ -166,10 +165,6 @@ class FakeAnalytics < Analytics
     events[event] ||= []
     events[event] << attributes
     nil
-  end
-
-  def track_mfa_submit_event(_attributes)
-    # no-op
   end
 
   def browser_attributes
