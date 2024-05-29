@@ -34,8 +34,17 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
       result
     end
 
+    before do
+      create(
+        :event,
+        user:,
+        event_type: :sign_in_notification_timeframe_expired,
+        created_at: Time.zone.now,
+      )
+    end
+
     it 'creates a new user event with disavowal' do
-      expect { result }.to change { user.reload.events.count }.from(0).to(1)
+      expect { result }.to change { user.reload.events.count }.from(1).to(2)
       expect(user.events.last.event_type).to eq('sign_in_after_2fa')
       expect(user.events.last.disavowal_token_fingerprint).to be_present
     end
@@ -77,6 +86,16 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
         context 'with a new device' do
           before do
             allow(controller).to receive(:new_device?).and_return(true)
+            create(
+              :event,
+              user:,
+              event_type: :sign_in_notification_timeframe_expired,
+              created_at: Time.zone.now,
+            )
+          end
+
+          around do |ex|
+            freeze_time { ex.run }
           end
 
           it 'sends the new device alert using 2fa event date' do
