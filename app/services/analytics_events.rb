@@ -2601,28 +2601,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks whether the user's device appears to be mobile device with a camera attached.
-  # @param [Boolean] is_camera_capable_mobile Whether we think the device _could_ have a camera.
-  # @param [Boolean,nil] camera_present Whether the user's device _actually_ has a camera available.
-  # @param [Integer,nil] grace_time Extra time allowed for browser to report camera availability.
-  # @param [Integer,nil] duration Time taken for browser to report camera availability.
-  def idv_mobile_device_and_camera_check(
-    is_camera_capable_mobile:,
-    camera_present: nil,
-    grace_time: nil,
-    duration: nil,
-    **extra
-  )
-    track_event(
-      'IdV: Mobile device and camera check',
-      is_camera_capable_mobile: is_camera_capable_mobile,
-      camera_present: camera_present,
-      grace_time: grace_time,
-      duration: duration,
-      **extra,
-    )
-  end
-
   # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
   # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field
@@ -3062,57 +3040,6 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone of record visited',
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
-      **extra,
-    )
-  end
-
-  # @param ["sms", "voice"] otp_delivery_preference
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
-  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
-  def idv_phone_otp_delivery_selection_submitted(
-    success:,
-    otp_delivery_preference:,
-    proofing_components: nil,
-    errors: nil,
-    error_details: nil,
-    active_profile_idv_level: nil,
-    pending_profile_idv_level: nil,
-    **extra
-  )
-    track_event(
-      'IdV: Phone OTP Delivery Selection Submitted',
-      {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        otp_delivery_preference: otp_delivery_preference,
-        proofing_components: proofing_components,
-        **extra,
-      }.compact,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
-  # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
-  # User visited idv phone OTP delivery selection
-  def idv_phone_otp_delivery_selection_visit(
-    proofing_components: nil,
-    active_profile_idv_level: nil,
-    pending_profile_idv_level: nil,
-    **extra
-  )
-    track_event(
-      'IdV: Phone OTP delivery Selection Visited',
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
@@ -3665,28 +3592,6 @@ module AnalyticsEvents
       'Invalid Authenticity Token',
       controller: controller,
       user_signed_in: user_signed_in,
-      **extra,
-    )
-  end
-
-  # @param [Integer] rendered_event_count how many events were rendered in the API response
-  # @param [Boolean] authenticated whether the request was successfully authenticated
-  # @param [Float] elapsed_time the amount of time the function took to run
-  # @param [Boolean] success
-  # An IRS Attempt API client has requested events
-  def irs_attempts_api_events(
-    rendered_event_count:,
-    authenticated:,
-    elapsed_time:,
-    success:,
-    **extra
-  )
-    track_event(
-      'IRS Attempt API: Events submitted',
-      rendered_event_count: rendered_event_count,
-      authenticated: authenticated,
-      elapsed_time: elapsed_time,
-      success: success,
       **extra,
     )
   end
@@ -4640,13 +4545,6 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_address_result_missing
     track_event('Proofing Address Result Missing')
-  end
-
-  # @identity.idp.previous_event_name Proofing Document Timeout
-  # The job for document authentication did not record a result in the expected
-  # place during the expected time frame
-  def proofing_document_result_missing
-    track_event('Proofing Document Result Missing')
   end
 
   # Tracks when a user triggered a rate limiter
