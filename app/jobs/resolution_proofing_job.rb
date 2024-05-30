@@ -23,7 +23,7 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     ipp_enrollment_in_progress:,
     user_id: nil,
-    service_provider_issuer: nil, # rubocop:disable Lint/UnusedMethodArgument
+    service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
     instant_verify_ab_test_discriminator: nil # rubocop:disable Lint/UnusedMethodArgument
@@ -37,9 +37,12 @@ class ResolutionProofingJob < ApplicationJob
       symbolize_names: true,
     )
 
-    applicant_pii = decrypted_args[:applicant_pii]
-
     user = User.find_by(id: user_id)
+    current_sp = ServiceProvider.find_by(issuer: service_provider_issuer)
+
+    applicant_pii = decrypted_args[:applicant_pii]
+    applicant_pii[:uuid_prefix] = current_sp&.app_id
+    applicant_pii[:uuid] = user&.uuid
 
     callback_log_data = make_vendor_proofing_requests(
       timer: timer,

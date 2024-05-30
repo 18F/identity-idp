@@ -13,6 +13,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:should_proof_state_id) { true }
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { create(:user, :fully_registered) }
+  let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:proofing_device_profiling) { :enabled }
@@ -38,6 +39,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         user_id: user.id,
+        service_provider_issuer: service_provider.issuer,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
@@ -496,6 +498,24 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
       end
+    end
+
+    it 'determines the UUID and UUID prefix and passes it to the downstream proofing vendors' do
+      uuid_info = {
+        uuid_prefix: service_provider.app_id,
+        uuid: user.uuid,
+      }
+
+      stub_vendor_requests
+
+      expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).
+        with(hash_including(uuid_info)).and_call_original
+
+      expect_any_instance_of(Proofing::Aamva::Proofer).to receive(:proof).with(
+        hash_including(uuid_info),
+      ).and_call_original
+
+      perform
     end
 
     def stub_vendor_requests(
