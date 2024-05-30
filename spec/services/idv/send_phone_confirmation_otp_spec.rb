@@ -94,8 +94,8 @@ RSpec.describe Idv::SendPhoneConfirmationOtp do
           to: phone,
           expiration: 10,
           channel: :voice,
-          otp_format: 'character',
-          otp_length: '6',
+          otp_format: 'digit',
+          otp_length: '10',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
           extra_metadata: {

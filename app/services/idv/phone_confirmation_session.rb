@@ -4,13 +4,14 @@ module Idv
   class PhoneConfirmationSession
     attr_reader :code, :phone, :sent_at, :delivery_method, :user
 
-    def self.generate_code(user:, delivery_method:)
-      bucket = AbTests::IDV_TEN_DIGIT_OTP.bucket(user&.uuid)
-      if delivery_method == :voice && bucket == :ten_digit_otp
-        OtpCodeGenerator.generate_digits(10)
-      else # original, bucket defaults to :six_alphanumeric_otp
+    def self.generate_code(delivery_method:)
+      if delivery_method == :voice
+        OtpCodeGenerator.generate_digits(
+          TwoFactorAuthenticatable::PROOFING_VOICE_DIRECT_OTP_LENGTH,
+        )
+      else
         OtpCodeGenerator.generate_alphanumeric_digits(
-          TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
+          TwoFactorAuthenticatable::PROOFING_SMS_DIRECT_OTP_LENGTH,
         )
       end
     end
@@ -25,7 +26,7 @@ module Idv
 
     def self.start(phone:, delivery_method:, user:)
       new(
-        code: generate_code(user: user, delivery_method: delivery_method),
+        code: generate_code(delivery_method: delivery_method),
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
@@ -33,19 +34,9 @@ module Idv
       )
     end
 
-    def ab_test_analytics_args
-      return {} unless IdentityConfig.store.ab_testing_idv_ten_digit_otp_enabled
-
-      {
-        AbTests::IDV_TEN_DIGIT_OTP.experiment_name => {
-          bucket: AbTests::IDV_TEN_DIGIT_OTP.bucket(user.uuid),
-        },
-      }
-    end
-
     def regenerate_otp
       self.class.new(
-        code: self.class.generate_code(user: user, delivery_method: delivery_method),
+        code: self.class.generate_code(delivery_method: delivery_method),
         phone: phone,
         sent_at: Time.zone.now,
         delivery_method: delivery_method,
