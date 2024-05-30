@@ -1318,7 +1318,7 @@ instructions.password.strength.4: 棒！
 instructions.password.strength.intro: '密码强度：'
 instructions.sp_handoff_bounced: 你登录成功了，但 %{sp_name} 将你送回到 %{app_name}。请联系 %{sp_link} 寻求帮助。
 instructions.sp_handoff_bounced_with_no_sp: 你的服务提供商
-links.accessibility_statement: Accessibility statement
+links.accessibility_statement: 无障碍声明
 links.account.reactivate.with_key: 我有密钥
 links.account.reactivate.without_key: 我没有密钥
 links.back_to_sp: 返回 %{sp}

@@ -1313,7 +1313,7 @@ instructions.password.strength.4: Excellente
 instructions.password.strength.intro: 'Force du mot de passe :'
 instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
-links.accessibility_statement: Accessibilité
+links.accessibility_statement: Déclaration sur l'accessibilité
 links.account.reactivate.with_key: J’ai ma clé
 links.account.reactivate.without_key: Je n’ai pas ma clé
 links.back_to_sp: Retour à %{sp}
