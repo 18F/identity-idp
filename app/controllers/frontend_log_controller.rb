@@ -30,7 +30,6 @@ class FrontendLogController < ApplicationController
     'IdV: Link sent capture doc polling started' => :idv_link_sent_capture_doc_polling_started,
     'IdV: location submitted' => :idv_in_person_location_submitted,
     'IdV: location visited' => :idv_in_person_location_visited,
-    'IdV: Mobile device and camera check' => :idv_mobile_device_and_camera_check,
     'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
     'IdV: prepare submitted' => :idv_in_person_prepare_submitted,

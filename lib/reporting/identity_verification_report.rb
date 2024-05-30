@@ -194,8 +194,13 @@ module Reporting
     end
 
     def successfully_verified_users
-      idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated +
-        fraud_review_passed
+      @successfully_verified_users ||= (
+        data[Results::IDV_FINAL_RESOLUTION_VERIFIED] +
+        data[Events::USPS_ENROLLMENT_STATUS_UPDATED] +
+        data[Events::FRAUD_REVIEW_PASSED] +
+        data[Events::GPO_VERIFICATION_SUBMITTED] +
+        data[Events::GPO_VERIFICATION_SUBMITTED_OLD]
+      ).count
     end
 
     def idv_started
