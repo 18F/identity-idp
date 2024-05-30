@@ -171,6 +171,9 @@ module Idv
 
     def async_state_done(current_async_state)
       add_proofing_costs(current_async_state.result)
+
+      log_irs_threatmetrix_fraud_check_event(current_async_state.result)
+
       form_response = idv_result_to_form_response(
         result: current_async_state.result,
         state: pii[:state],
@@ -297,6 +300,26 @@ module Idv
       )
     end
 
+    def log_irs_threatmetrix_fraud_check_event(result)
+      return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+
+      threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
+      return unless threatmetrix_result
+
+      success = threatmetrix_result[:review_status] == 'pass'
+
+      if !success
+        FraudReviewRequest.create(
+          user: current_user,
+          login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
+        )
+      end
+
+      irs_attempts_api_tracker.idv_tmx_fraud_check(
+        success: success,
+      )
+    end
+
     def move_applicant_to_idv_session
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
@@ -319,10 +342,12 @@ module Idv
           add_cost(:aamva, transaction_id: hash[:transaction_id])
           track_aamva
         elsif stage == :threatmetrix
-          # transaction_id comes from request_id
-          tmx_id = hash[:transaction_id]
-          log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
-          add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
+          if hash[:transaction_id]
+            add_cost(
+              :threatmetrix,
+              transaction_id: hash[:transaction_id],
+            )
+          end
         end
       end
     end
