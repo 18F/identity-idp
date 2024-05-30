@@ -27,6 +27,14 @@ RSpec.describe NewDeviceConcern, type: :controller do
 
         expect(user_session[:new_device]).to eq(true)
       end
+
+      context 'with explicitly false parameter value' do
+        it 'sets user session value to the value provided' do
+          instance.set_new_device_session(false)
+
+          expect(user_session[:new_device]).to eq(false)
+        end
+      end
     end
 
     context 'with authenticated device' do
@@ -37,6 +45,14 @@ RSpec.describe NewDeviceConcern, type: :controller do
         instance.set_new_device_session
 
         expect(user_session[:new_device]).to eq(false)
+      end
+
+      context 'with explicitly true parameter value' do
+        it 'sets user session value to the value provided' do
+          instance.set_new_device_session(true)
+
+          expect(user_session[:new_device]).to eq(true)
+        end
       end
     end
   end
