@@ -159,7 +159,7 @@ Rails.application.routes.draw do
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
 
         get '/oidc/login' => 'oidc_test#index'
-        get '/oidc' => 'oidc_test#start'
+        get '/oidc' => redirect('/test/oidc/auth_request', status: 302)
         get '/oidc/auth_request' => 'oidc_test#auth_request'
         get '/oidc/auth_result' => 'oidc_test#auth_result'
         get '/oidc/logout' => 'oidc_test#logout'
