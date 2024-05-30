@@ -23,6 +23,7 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     ipp_enrollment_in_progress:,
     user_id: nil,
+    service_provider_issuer: nil, # rubocop:disable Lint/UnusedMethodArgument
     threatmetrix_session_id: nil,
     request_ip: nil,
     instant_verify_ab_test_discriminator: nil
