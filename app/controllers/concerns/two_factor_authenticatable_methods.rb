@@ -17,11 +17,15 @@ module TwoFactorAuthenticatableMethods
 
     if IdentityConfig.store.feature_new_device_alert_aggregation_enabled && new_device?
       if current_user.sign_in_new_device_at.blank?
-        current_user.update(
-          sign_in_new_device_at: current_user.events.where(
-            event_type: 'sign_in_notification_timeframe_expired',
-          ).last.created_at,
-        )
+        if current_user.events.where(event_type: 'sign_in_notification_timeframe_expired').present?
+          current_user.update(
+            sign_in_new_device_at: current_user.events.where(
+              event_type: 'sign_in_notification_timeframe_expired',
+            ).order(created_at: :desc).limit(2).pluck(:created_at).last,
+          )
+        else
+          current_user.update(sign_in_new_device_at: disavowal_event.created_at)
+        end
       end
 
       UserAlerts::AlertUserAboutNewDevice.send_alert(
