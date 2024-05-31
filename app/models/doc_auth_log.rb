@@ -11,6 +11,7 @@ class DocAuthLog < ApplicationRecord
 
   # rubocop:disable Rails/UnusedIgnoredColumns
   self.ignored_columns = [
+    :aamva,
     :email_sent_view_at,
     :email_sent_view_count,
     :send_link_view_at,

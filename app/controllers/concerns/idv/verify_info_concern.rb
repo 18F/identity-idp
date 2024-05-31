@@ -349,7 +349,6 @@ module Idv
           next if hash[:vendor_name] == 'UnsupportedJurisdiction'
           # transaction_id comes from TransactionLocatorId
           add_cost(:aamva, transaction_id: hash[:transaction_id])
-          track_aamva
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           if hash[:transaction_id]
@@ -360,14 +359,6 @@ module Idv
           end
         end
       end
-    end
-
-    def track_aamva
-      return unless IdentityConfig.store.state_tracking_enabled
-      doc_auth_log = DocAuthLog.find_by(user_id: current_user.id)
-      return unless doc_auth_log
-      doc_auth_log.aamva = true
-      doc_auth_log.save!
     end
 
     def add_cost(token, transaction_id: nil)
