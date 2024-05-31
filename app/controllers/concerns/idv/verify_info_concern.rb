@@ -342,6 +342,7 @@ module Idv
           add_cost(:aamva, transaction_id: hash[:transaction_id])
           track_aamva
         elsif stage == :threatmetrix
+          # transaction_id comes from request_id
           if hash[:transaction_id]
             add_cost(
               :threatmetrix,
