@@ -124,8 +124,6 @@ RUN git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.login.gov/lg-public/i
     cp idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/ && \
     cp idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/ && \
     cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/ && \
-    ls -l idp-large-files && \
-    sleep 6 && \
     rm -r idp-large-files
 RUN mkdir -p /usr/local/share/aws && \
     curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem
