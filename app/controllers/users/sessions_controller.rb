@@ -113,7 +113,7 @@ module Users
     def handle_valid_authentication
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
-      set_new_device_session
+      set_new_device_session(nil)
       event, = create_user_event(:sign_in_before_2fa)
       UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(

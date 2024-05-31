@@ -27,6 +27,7 @@ module TwoFactorAuthenticatableMethods
       )
     end
 
+    set_new_device_session(false)
     reset_second_factor_attempts_count
   end
 

@@ -89,7 +89,6 @@ module Idv
       idv_link_sent_capture_doc_polling_complete
       idv_link_sent_capture_doc_polling_started
       idv_mail_only_warning_visited
-      idv_mobile_device_and_camera_check
       idv_native_camera_forced
       idv_not_verified_visited
       idv_phone_use_different

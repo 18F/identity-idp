@@ -38,63 +38,16 @@ RSpec.describe Idv::PhoneConfirmationSession do
   end
 
   describe '.generate_code' do
-    let(:ab_test_enabled) { false }
-    before do
-      allow(IdentityConfig.store).to receive(:ab_testing_idv_ten_digit_otp_enabled).
-        and_return(ab_test_enabled)
+    it 'generates a six-character alphanumeric code for sms' do
+      code = described_class.generate_code(delivery_method: :sms)
+
+      expect(code).to match(six_char_alphanumeric)
     end
 
-    context 'A/B test not enabled' do
-      it 'generates a six-character alphanumeric code' do
-        code = described_class.generate_code(user: user, delivery_method: :voice)
+    it 'generates a ten-digit numeric code for voice' do
+      code = described_class.generate_code(delivery_method: :voice)
 
-        expect(code).to match(six_char_alphanumeric)
-      end
-    end
-    context '10-digit A/B test enabled' do
-      let(:ab_test_enabled) { true }
-
-      context '10-digit A/B test puts user in :six_alphanumeric_otp bucket' do
-        before do
-          stub_const(
-            'AbTests::IDV_TEN_DIGIT_OTP',
-            FakeAbTestBucket.new.tap { |ab| ab.assign(user.uuid => :six_alphanumeric_otp) },
-          )
-        end
-
-        it 'generates a six-character alphanumeric code for sms' do
-          code = described_class.generate_code(user: user, delivery_method: :sms)
-
-          expect(code).to match(six_char_alphanumeric)
-        end
-
-        it 'generates a six-character alphanumeric code for voice' do
-          code = described_class.generate_code(user: user, delivery_method: :voice)
-
-          expect(code).to match(six_char_alphanumeric)
-        end
-      end
-
-      context '10-digit A/B test puts user in :ten_digit_otp bucket' do
-        before do
-          stub_const(
-            'AbTests::IDV_TEN_DIGIT_OTP',
-            FakeAbTestBucket.new.tap { |ab| ab.assign(user.uuid => :ten_digit_otp) },
-          )
-        end
-
-        it 'generates a six-character alphanumeric code for sms' do
-          code = described_class.generate_code(user: user, delivery_method: :sms)
-
-          expect(code).to match(six_char_alphanumeric)
-        end
-
-        it 'generates a ten-digit numeric code for voice' do
-          code = described_class.generate_code(user: user, delivery_method: :voice)
-
-          expect(code).to match(ten_digit_numeric)
-        end
-      end
+      expect(code).to match(ten_digit_numeric)
     end
   end
 

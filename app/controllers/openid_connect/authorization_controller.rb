@@ -74,7 +74,7 @@ module OpenidConnect
     end
 
     def check_sp_handoff_bounced
-      return unless SpHandoffBounce::IsBounced.call(sp_session)
+      return unless sp_handoff_bouncer.bounced?
       analytics.sp_handoff_bounced_detected
       redirect_to bounced_url
       true
@@ -120,7 +120,7 @@ module OpenidConnect
 
     def handle_successful_handoff
       track_events
-      SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
+      sp_handoff_bouncer.add_handoff_time!
 
       redirect_user(
         @authorize_form.success_redirect_uri,
@@ -260,6 +260,10 @@ module OpenidConnect
           allow_other_host: true,
         )
       end
+    end
+
+    def sp_handoff_bouncer
+      @sp_handoff_bouncer ||= SpHandoffBouncer.new(sp_session)
     end
   end
 end

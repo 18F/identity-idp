@@ -135,6 +135,24 @@ RSpec.describe MarketingSite do
     end
   end
 
+  describe '.accessibility_statement_url' do
+    subject(:url) { MarketingSite.accessibility_statement_url }
+
+    it_behaves_like 'a marketing site URL'
+
+    it 'points to the accessibility statement' do
+      expect(url).to eq('https://www.login.gov/accessibility/')
+    end
+
+    context 'when the user has set their locale to :es' do
+      before { I18n.locale = :es }
+
+      it 'points to the accessibility statement with the locale appended' do
+        expect(url).to eq('https://www.login.gov/es/accessibility/')
+      end
+    end
+  end
+
   describe '.help_center_article_url' do
     let(:category) {}
     let(:article) {}

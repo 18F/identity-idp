@@ -7,22 +7,34 @@ module OpenidConnect
     include OpenidConnectRedirectConcern
 
     before_action :set_devise_failure_redirect_for_concurrent_session_logout,
-                  only: [:logout]
+                  only: [:show, :create]
     before_action :confirm_two_factor_authenticated, only: [:delete]
+    skip_before_action :verify_authenticity_token, only: [:create]
 
-    # Handle logout (with confirmation if initiated by relying partner)
-    def logout
+    # +GET+ Handle logout (with confirmation if initiated by relying partner)
+    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout]  # rubocop:disable Layout/LineLength
+    def show
       @logout_form = build_logout_form
       result = @logout_form.submit
       redirect_uri = result.extra[:redirect_uri]
-
-      analytics.oidc_logout_requested(**to_event(result))
+      analytics.oidc_logout_requested(
+        **to_event(result),
+        method: request.method.to_s,
+        original_method: session[:original_method],
+      )
 
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
         render :error
       end
+    end
+
+    # +POST+ Handle logout request (with confirmation if initiated by relying partner)
+    # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout] # rubocop:disable Layout/LineLength
+    def create
+      session[:original_method] = request.method.to_s
+      redirect_to action: :show, **logout_params
     end
 
     # Sign out without confirmation
@@ -89,6 +101,7 @@ module OpenidConnect
         current_user
     end
 
+    # @return [OpenidConnectLogoutForm]
     def build_logout_form
       OpenidConnectLogoutForm.new(
         params: logout_params,
@@ -96,6 +109,8 @@ module OpenidConnect
       )
     end
 
+    # @param result [FormResponse] Response from submitting @logout_form
+    # @param redirect_uri [String] The URL to redirect the user to after logout
     def handle_successful_logout_request(result, redirect_uri)
       apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
       if require_logout_confirmation?
