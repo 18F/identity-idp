@@ -24,8 +24,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
   before do
     stub_analytics
     stub_sign_in(user)
-    stub_attempts_tracker
-    allow(@irs_attempts_api_tracker).to receive(:track_event)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.welcome_visited = true
@@ -102,13 +100,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       it 'redirects to new' do
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
         expect(response).to redirect_to idv_enter_password_path
-      end
-
-      it 'tracks irs password entered event (idv_password_entered)' do
-        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-          :idv_password_entered,
-          success: false,
-        )
       end
     end
 
@@ -320,15 +311,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       allow_any_instance_of(User).to receive(:active_profile).and_return(true)
       get :new
       expect(response).to redirect_to idv_personal_key_path
-    end
-
-    it 'tracks irs password entered event (idv_password_entered)' do
-      put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :idv_password_entered,
-        success: true,
-      )
     end
 
     it 'creates Profile with applicant attributes' do

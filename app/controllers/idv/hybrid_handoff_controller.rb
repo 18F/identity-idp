@@ -36,9 +36,6 @@ module Idv
 
     def update
       clear_future_steps!
-      irs_attempts_api_tracker.idv_document_upload_method_selected(
-        upload_method: params[:type],
-      )
 
       if params[:type] == 'mobile'
         handle_phone_submission
@@ -87,10 +84,6 @@ module Idv
       if !telephony_result.success?
         failure(telephony_form_response.errors[:message])
       end
-      irs_attempts_api_tracker.idv_phone_upload_link_sent(
-        success: telephony_result.success?,
-        phone_number: formatted_destination_phone,
-      )
 
       if telephony_result.success?
         redirect_to idv_link_sent_url
@@ -182,7 +175,6 @@ module Idv
       {
         step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
-        irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         selfie_check_required: idv_session.selfie_check_required,
@@ -211,10 +203,6 @@ module Idv
           [rate_limiter.expires_at, Time.zone.now].compact.max,
           except: :seconds,
         ),
-      )
-
-      irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
-        phone_number: formatted_destination_phone,
       )
 
       failure(message)

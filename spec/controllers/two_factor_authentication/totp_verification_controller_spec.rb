@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::TotpVerificationController do
   before do
     stub_analytics
-    stub_attempts_tracker
   end
 
   describe '#create' do
@@ -45,8 +44,6 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       it 'tracks the valid authentication event' do
         cfg = controller.current_user.auth_app_configurations.first
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_login_totp, success: true)
         expect(controller).to receive(:handle_valid_verification_for_authentication_context).
           with(auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP).
           and_call_original
@@ -166,12 +163,6 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa(user)
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_login_totp, success: false)
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(mfa_device_type: 'totp')
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))

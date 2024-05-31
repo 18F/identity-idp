@@ -132,7 +132,6 @@ module OpenidConnect
 
     def handle_logout(result, redirect_uri)
       analytics.logout_initiated(**to_event(result))
-      irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
       sign_out
 

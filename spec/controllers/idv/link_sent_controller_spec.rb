@@ -13,7 +13,6 @@ RSpec.describe Idv::LinkSentController do
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
-    stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -53,7 +52,6 @@ RSpec.describe Idv::LinkSentController do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
-        irs_reproofing: false,
         step: 'link_sent',
       }.merge(ab_test_args)
     end
@@ -116,7 +114,6 @@ RSpec.describe Idv::LinkSentController do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
-        irs_reproofing: false,
         step: 'link_sent',
       }.merge(ab_test_args)
     end

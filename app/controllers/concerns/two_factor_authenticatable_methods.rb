@@ -37,37 +37,15 @@ module TwoFactorAuthenticatableMethods
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type:, context: nil)
+  def handle_second_factor_locked_user(type:)
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
-
-    if context && type
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_rate_limited(mfa_device_type: type)
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_rate_limited(mfa_device_type: type)
-      end
-    end
-
     handle_max_attempts(type + '_login_attempts')
   end
 
-  def handle_too_many_otp_sends(phone: nil, context: nil)
+  def handle_too_many_otp_sends
     analytics.multi_factor_auth_max_sends
-
-    if context && phone
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
-          phone_number: phone,
-        )
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(
-          phone_number: phone,
-        )
-      end
-    end
-
     handle_max_attempts('otp_requests')
   end
 
@@ -127,7 +105,7 @@ module TwoFactorAuthenticatableMethods
     flash.now[:error] = invalid_otp_error(type)
 
     if current_user.locked_out?
-      handle_second_factor_locked_user(context: context, type: type)
+      handle_second_factor_locked_user(type:)
     else
       render_show_after_invalid
     end

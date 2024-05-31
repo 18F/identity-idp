@@ -190,9 +190,6 @@ module Flow
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
         analytics_id: @analytics_id,
-        irs_reproofing: current_user&.reproof_for_irs?(
-          service_provider: current_sp,
-        ).present?,
       }.merge(flow.extra_analytics_properties).
         merge(**opt_in_analytics_properties)
     end

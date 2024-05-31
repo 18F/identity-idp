@@ -44,28 +44,28 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: nil
       },
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: consent checkbox toggled' => {
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
+        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'Frontend: IdV: front image added' => {
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
@@ -81,22 +81,22 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
+        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth ssn visited' => {
-        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify visited' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify submitted' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, irs_reproofing: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
@@ -170,28 +170,28 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: nil
       },
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: consent checkbox toggled' => {
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: hash_including(message: nil), destination: :link_sent, flow_path: 'hybrid', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, telephony_response: hash_including(errors: {}, message_id: 'fake-message-id', request_id: 'fake-message-request-id', success: true), selfie_check_required: boolean
+        success: true, errors: hash_including(message: nil), destination: :link_sent, flow_path: 'hybrid', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, telephony_response: hash_including(errors: {}, message_id: 'fake-message-id', request_id: 'fake-message-request-id', success: true), selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'hybrid', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
+        flow_path: 'hybrid', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'Frontend: IdV: front image added' => {
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
@@ -207,22 +207,22 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'hybrid', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
+        success: true, errors: {}, flow_path: 'hybrid', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth ssn visited' => {
-        flow_path: 'hybrid', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'hybrid', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'hybrid', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        success: true, errors: {}, flow_path: 'hybrid', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify visited' => {
-        flow_path: 'hybrid', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'hybrid', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify submitted' => {
-        flow_path: 'hybrid', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'hybrid', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, irs_reproofing: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
@@ -296,25 +296,25 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: nil
       },
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
+        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'Frontend: IdV: front image added' => {
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
@@ -330,22 +330,22 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
+        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth ssn visited' => {
-        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify visited' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify submitted' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, irs_reproofing: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
@@ -393,25 +393,25 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
   let(:in_person_path_events) do
     {
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: boolean
+        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'Frontend: IdV: front image added' => {
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
@@ -439,31 +439,31 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id visited' => {
-        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, opted_in_to_in_person_proofing: nil
+        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false, opted_in_to_in_person_proofing: nil
+        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing address visited' => {
-        step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, same_address_as_id: false, opted_in_to_in_person_proofing: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', same_address_as_id: false, opted_in_to_in_person_proofing: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: doc auth ssn visited' => {
-        analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
+        analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
       },
       'IdV: doc auth ssn submitted' => {
-        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', irs_reproofing: false, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
+        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
       },
       'IdV: doc auth verify visited' => {
-        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: doc auth verify submitted' => {
-        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, irs_reproofing: false, same_address_as_id: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, same_address_as_id: false, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: 'aaa-bbb-ccc', success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone confirmation form' => {
@@ -541,28 +541,28 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: nil
       },
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: anything
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: anything
+        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: consent checkbox toggled' => {
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything, acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, selfie_check_required: boolean
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: true
+        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true
       },
       'Frontend: IdV: front image added' => {
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
@@ -578,25 +578,25 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, selfie_check_required: boolean, liveness_checking_required: true
+        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true
       },
       :idv_selfie_image_added => {
         acuant_version: kind_of(String), captureAttempts: 1, failedImageResubmission: nil, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284, liveness_checking_required: boolean, selfie_attempts: 0
       },
       'IdV: doc auth ssn visited' => {
-        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth', irs_reproofing: false
+        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify visited' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify submitted' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, irs_reproofing: false, skip_hybrid_handoff: anything,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {

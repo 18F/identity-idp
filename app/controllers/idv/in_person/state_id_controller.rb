@@ -109,7 +109,6 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'state_id',
           analytics_id: 'In Person Proofing',
-          irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
           merge(extra_analytics_properties)
       end

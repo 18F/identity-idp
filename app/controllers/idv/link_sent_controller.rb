@@ -61,7 +61,6 @@ module Idv
         step: 'link_sent',
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
-        irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
 

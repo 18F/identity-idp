@@ -176,11 +176,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 ),
               )
 
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: true,
-              )
             action
           end
         end
@@ -819,11 +814,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 oidc: true,
                 method: nil,
                 saml_request_valid: nil,
-              )
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: true,
               )
 
             action

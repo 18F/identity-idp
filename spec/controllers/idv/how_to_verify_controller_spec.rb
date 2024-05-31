@@ -116,7 +116,6 @@ RSpec.describe Idv::HowToVerifyController do
         step: 'how_to_verify',
         analytics_id: 'Doc Auth',
         skip_hybrid_handoff: nil,
-        irs_reproofing: false,
       }.merge(ab_test_args)
     end
 
@@ -184,7 +183,6 @@ RSpec.describe Idv::HowToVerifyController do
           step: 'how_to_verify',
           analytics_id: 'Doc Auth',
           skip_hybrid_handoff: nil,
-          irs_reproofing: false,
           error_details: { selection: { blank: true } },
           errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
@@ -206,7 +204,6 @@ RSpec.describe Idv::HowToVerifyController do
           analytics_id: 'Doc Auth',
           skip_hybrid_handoff: nil,
           'selection' => selection,
-          irs_reproofing: false,
           error_details: { selection: { inclusion: true } },
           errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
@@ -223,7 +220,6 @@ RSpec.describe Idv::HowToVerifyController do
           analytics_id: 'Doc Auth',
           skip_hybrid_handoff: nil,
           step: 'how_to_verify',
-          irs_reproofing: false,
           errors: {},
           success: true,
           'selection' => selection,
@@ -251,7 +247,6 @@ RSpec.describe Idv::HowToVerifyController do
           analytics_id: 'Doc Auth',
           skip_hybrid_handoff: nil,
           step: 'how_to_verify',
-          irs_reproofing: false,
           errors: {},
           success: true,
           'selection' => selection,

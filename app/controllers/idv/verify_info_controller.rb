@@ -74,7 +74,6 @@ module Idv
         flow_path: flow_path,
         step: 'verify',
         analytics_id: 'Doc Auth',
-        irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
 

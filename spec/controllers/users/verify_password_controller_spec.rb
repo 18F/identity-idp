@@ -64,11 +64,6 @@ RSpec.describe Users::VerifyPasswordController do
         let(:user_params) { { user: { password: user.password } } }
 
         before do
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(
-            :logged_in_profile_change_reauthentication_submitted,
-          )
-          allow(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
           expect(controller).to receive(:verify_password_form).and_return(form)
         end
 
@@ -85,13 +80,6 @@ RSpec.describe Users::VerifyPasswordController do
               :reactivate_account_verify_password_submitted,
               success: true,
             )
-          end
-
-          it 'tracks the appropriate attempts api events' do
-            expect(@irs_attempts_api_tracker).to have_received(
-              :logged_in_profile_change_reauthentication_submitted,
-            ).with({ success: true })
-            expect(@irs_attempts_api_tracker).to have_received(:idv_personal_key_generated)
           end
 
           it 'redirects to the manage personal key page' do
@@ -119,13 +107,6 @@ RSpec.describe Users::VerifyPasswordController do
               :reactivate_account_verify_password_submitted,
               success: false,
             )
-          end
-
-          it 'tracks the appropriate attempts api event' do
-            expect(@irs_attempts_api_tracker).to have_received(
-              :logged_in_profile_change_reauthentication_submitted,
-            ).with({ success: false })
-            expect(@irs_attempts_api_tracker).not_to have_received(:idv_personal_key_generated)
           end
 
           it 'renders the new template' do

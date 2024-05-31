@@ -1843,14 +1843,12 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # address page visited
   def idv_in_person_proofing_address_visited(
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
   )
@@ -1859,7 +1857,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
@@ -1868,7 +1865,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean] same_address_as_id
@@ -1877,7 +1873,6 @@ module AnalyticsEvents
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     success: nil,
     errors: nil,
     same_address_as_id: nil,
@@ -1888,7 +1883,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
@@ -1968,7 +1962,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean] same_address_as_id
@@ -1977,7 +1970,6 @@ module AnalyticsEvents
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     success: nil,
     errors: nil,
     same_address_as_id: nil,
@@ -1988,7 +1980,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
@@ -2003,7 +1994,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean, nil] same_address_as_id
@@ -2013,7 +2003,6 @@ module AnalyticsEvents
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     success: nil,
     errors: nil,
     same_address_as_id: nil,
@@ -2025,7 +2014,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
@@ -2037,14 +2025,12 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
   )
@@ -2053,7 +2039,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )

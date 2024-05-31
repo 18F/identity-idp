@@ -45,9 +45,6 @@ module RateLimitConcern
 
   def track_rate_limited_event(rate_limit_type)
     analytics_args = { limiter_type: rate_limit_type }
-    limiter_context = rate_limit_type == :proof_ssn ? 'multi-session' : 'single-session'
-
-    irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: limiter_context)
     analytics.rate_limit_reached(**analytics_args)
   end
 

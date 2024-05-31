@@ -386,11 +386,6 @@ RSpec.describe SignUp::CompletionsController do
     context 'when the user goes through reproofing' do
       let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
 
-      before do
-        stub_attempts_tracker
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
-      end
-
       xit 'does not log a reproofing event during initial proofing' do
         stub_sign_in(user)
         subject.session[:sp] = {

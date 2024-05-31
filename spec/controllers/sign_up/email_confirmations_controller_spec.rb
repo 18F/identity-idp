@@ -10,25 +10,14 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user_id: nil,
       }
     end
-    let(:attempts_tracker_error_hash) do
-      {
-        email: nil,
-        success: false,
-      }
-    end
 
     before do
       stub_analytics
-      stub_attempts_tracker
     end
 
     it 'tracks nil email confirmation token' do
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_token_error_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_hash,
-      )
 
       get :create, params: { confirmation_token: nil }
 
@@ -40,10 +29,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_token_error_hash)
 
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_hash,
-      )
-
       get :create, params: { confirmation_token: '' }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
@@ -54,10 +39,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_token_error_hash)
 
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_hash,
-      )
-
       get :create, params: { confirmation_token: "''" }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
@@ -67,10 +48,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a double-quoted empty string' do
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_token_error_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        **attempts_tracker_error_hash,
-      )
 
       get :create, params: { confirmation_token: '""' }
 
@@ -90,11 +67,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        email: email_address.email,
-        success: false,
-      )
 
       get :create, params: { confirmation_token: 'foo' }
     end
@@ -119,11 +91,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        email: email_address.email,
-        success: false,
-      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -150,11 +117,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        email: email_address.email,
-        success: false,
-      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -213,7 +175,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       user = email_address.user
 
       stub_analytics
-      stub_attempts_tracker
 
       analytics_hash = {
         success: true,
@@ -224,11 +185,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        email: email_address.email,
-        success: true,
-      )
 
       get :create, params: { confirmation_token: 'foo' }
     end

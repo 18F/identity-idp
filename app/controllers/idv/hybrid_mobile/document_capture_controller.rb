@@ -63,7 +63,6 @@ module Idv
           flow_path: 'hybrid',
           step: 'document_capture',
           analytics_id: 'Doc Auth',
-          irs_reproofing: irs_reproofing?,
           liveness_checking_required: biometric_comparison_required,
           selfie_check_required: biometric_comparison_required,
         }.merge(

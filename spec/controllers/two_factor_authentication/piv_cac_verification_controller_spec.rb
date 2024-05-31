@@ -102,13 +102,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        stub_attempts_tracker
         cfg = controller.current_user.piv_cac_configurations.first
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
-          success: true,
-          subject_dn: x509_subject,
-        )
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context).
           with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC).
@@ -237,17 +231,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         stub_sign_in_before_2fa(user)
 
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(mfa_device_type: 'piv_cac')
 
         piv_cac_mismatch = { type: 'user.piv_cac_mismatch' }
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
-          success: false,
-          subject_dn: bad_dn,
-        )
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))

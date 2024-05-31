@@ -31,7 +31,6 @@ module Idv
 
     def create
       clear_future_steps!
-      irs_attempts_api_tracker.idv_password_entered(success: true)
 
       init_profile
 
@@ -115,7 +114,6 @@ module Idv
         fraud_rejection: fraud_rejection?,
         **ab_test_analytics_buckets,
       )
-      irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')
       redirect_to idv_enter_password_url

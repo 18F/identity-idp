@@ -42,9 +42,6 @@ module SignUp
 
     def track_analytics(result)
       analytics.password_creation(**result.to_h)
-      irs_attempts_api_tracker.user_registration_password_submitted(
-        success: result.success?,
-      )
     end
 
     def permitted_params

@@ -4,7 +4,6 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true,
                                                         allowed_extra_analytics: [:*] do
   include PushNotificationsHelper
   include OidcAuthHelper
-  include IrsAttemptsApiTrackingHelper
 
   let(:user) { create(:user, :fully_registered) }
   let(:user_email) { user.email_addresses.first.email }
@@ -16,7 +15,6 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true,
       active: true,
       redirect_uris: ['http://localhost:7654/auth/result'],
       ial: 2,
-      irs_attempts_api_enabled: true,
     )
   end
 
