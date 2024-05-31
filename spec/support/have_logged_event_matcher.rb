@@ -32,7 +32,11 @@ class HaveLoggedEventMatcher
         events[expected_event_name] || []
       else
         (events[expected_event_name] || []).filter do |actual_attributes|
-          values_match?(expected_attributes, actual_attributes)
+          compacted_actual_attributes = actual_attributes.select do |key, value|
+            true if !value.nil? || expected_attributes.key?(key)
+          end
+
+          values_match?(expected_attributes, compacted_actual_attributes)
         end
       end
 
