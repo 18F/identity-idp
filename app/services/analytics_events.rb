@@ -3849,6 +3849,11 @@ module AnalyticsEvents
     )
   end
 
+  # Max multi factor auth attempts met
+  def multi_factor_auth_max_attempts
+    track_event('Multi-Factor Authentication: max attempts reached')
+  end
+
   # Max multi factor max otp sends reached
   def multi_factor_auth_max_sends
     track_event('Multi-Factor Authentication: max otp sends reached')
