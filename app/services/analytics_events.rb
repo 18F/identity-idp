@@ -1363,8 +1363,8 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
-  # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
-  # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
+  # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verification
+  # @param [Boolean] in_person_verification_pending Profile is awaiting in person verification
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.

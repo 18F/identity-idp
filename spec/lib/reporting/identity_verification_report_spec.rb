@@ -14,7 +14,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
     cloudwatch_client = double(
       'Reporting::CloudwatchClient',
       fetch: [
-        # Online verification user (failed each vendor once, then suceeded once)
+        # Online verification user (failed each vendor once, then succeeded once)
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
@@ -37,6 +37,13 @@ RSpec.describe Reporting::IdentityVerificationReport do
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
         { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
         { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
+
+        # Fraud review user (rejected)
+        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted' },
+        { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
+        { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
+        { 'user_id' => 'user3', 'name' => 'Fraud: Profile review rejected', 'success' => '1' },
 
         # Success through address confirmation user
         { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
@@ -79,6 +86,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - In-Person Pending', 1],
         ['Workflow completed - Fraud Review Pending', 1],
         [],
+        ['Users who did not pass fraud review', 1],
         ['Successfully Verified', 4],
         ['Successfully Verified - With phone number', 1],
         ['Successfully Verified - With mailed code', 1],
@@ -121,6 +129,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - In-Person Pending', '1'],
         ['Workflow completed - Fraud Review Pending', '1'],
         [],
+        ['Users who did not pass fraud review', '1'],
         ['Successfully Verified', '4'],
         ['Successfully Verified - With phone number', '1'],
         ['Successfully Verified - With mailed code', '1'],
@@ -162,6 +171,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV Reject: Phone Finder' => 1,
         'IdV Reject: Verify' => 1,
         'Fraud: Profile review passed' => 2,
+        'Fraud: Profile review rejected' => 1,
       )
     end
   end
