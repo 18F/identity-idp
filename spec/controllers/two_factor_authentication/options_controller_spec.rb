@@ -80,16 +80,14 @@ RSpec.describe TwoFactorAuthentication::OptionsController, allowed_extra_analyti
       stub_sign_in_before_2fa
       stub_analytics
 
-      result = {
+      post :create, params: { two_factor_options_form: { selection: 'sms' } }
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: option list',
         selection: 'sms',
         success: true,
         errors: {},
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: option list', result)
-
-      post :create, params: { two_factor_options_form: { selection: 'sms' } }
+      )
     end
   end
 end
