@@ -72,7 +72,7 @@ RSpec.describe Users::SessionsController, devise: true do
       end
 
       it 'sets new device session value' do
-        expect(controller).to receive(:set_new_device_session)
+        expect(controller).to receive(:set_new_device_session).with(nil)
 
         response
       end
