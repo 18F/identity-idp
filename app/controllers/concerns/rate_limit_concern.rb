@@ -37,15 +37,10 @@ module RateLimitConcern
 
   def rate_limit_redirect!(rate_limit_type)
     if idv_attempter_rate_limited?(rate_limit_type)
-      track_rate_limited_event(rate_limit_type)
+      analytics.rate_limit_reached(limiter_type: rate_limit_type)
       rate_limited_redirect(rate_limit_type)
       return true
     end
-  end
-
-  def track_rate_limited_event(rate_limit_type)
-    analytics_args = { limiter_type: rate_limit_type }
-    analytics.rate_limit_reached(**analytics_args)
   end
 
   def rate_limited_redirect(rate_limit_type)
