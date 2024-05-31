@@ -16,7 +16,7 @@ module AccountReset
     private
 
     def account_reset_request
-      FindPendingRequestForUser.new(user).call
+      AccountResetRequest.pending_request_for(user)
     end
   end
 end
