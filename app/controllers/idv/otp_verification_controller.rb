@@ -100,16 +100,11 @@ module Idv
     end
 
     def code_length
-      if ten_digit_otp?
-        10
+      if idv_session.user_phone_confirmation_session.delivery_method == :voice
+        TwoFactorAuthenticatable::PROOFING_VOICE_DIRECT_OTP_LENGTH
       else
-        TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
+        TwoFactorAuthenticatable::PROOFING_SMS_DIRECT_OTP_LENGTH
       end
-    end
-
-    def ten_digit_otp?
-      AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid) == :ten_digit_otp &&
-        idv_session.user_phone_confirmation_session.delivery_method == :voice
     end
   end
 end

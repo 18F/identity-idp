@@ -20,8 +20,6 @@ aamva_cert_enabled: true
 aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
-ab_testing_idv_ten_digit_otp_enabled: false
-ab_testing_idv_ten_digit_otp_percent: 0
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
@@ -30,19 +28,9 @@ account_reset_token_valid_for_days: 1
 account_reset_fraud_user_wait_period_days:
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
-acuant_assure_id_password: ''
-acuant_assure_id_subscription_id: ''
-acuant_assure_id_url: ''
-acuant_assure_id_username: ''
-acuant_facial_match_url: ''
-acuant_passlive_url: ''
 # These are publicly available credentials used to initialize the client-side Acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
-acuant_timeout: 45.0
-acuant_upload_image_timeout: 1.0
-acuant_get_results_timeout: 1.0
-acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
 asset_host: ''
@@ -84,8 +72,6 @@ doc_capture_polling_enabled: true
 doc_auth_check_failed_image_resubmission_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
-doc_auth_custom_ui_enabled: false
-doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
@@ -94,7 +80,6 @@ doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_selfie_capture_enabled: false
 doc_auth_selfie_desktop_test_mode: false
-doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers":"urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"}]'
@@ -176,9 +161,6 @@ lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_instant_verify_timeout: 1.0
 lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
-lexisnexis_instant_verify_workflow_ab_testing_enabled: false
-lexisnexis_instant_verify_workflow_ab_testing_percent: 5
-lexisnexis_instant_verify_workflow_alternate: gsa2.chk14.test.wf
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
@@ -334,7 +316,6 @@ unauthorized_scope_enabled: false
 usps_upload_enabled: false
 usps_upload_sftp_timeout: 5
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
-vendor_status_acuant: 'operational'
 vendor_status_lexisnexis_instant_verify: 'operational'
 vendor_status_lexisnexis_phone_finder: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
@@ -521,9 +502,6 @@ test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_fraud_user_wait_period_days: 30
-  acuant_assure_id_url: https://example.com
-  acuant_facial_match_url: https://facial_match.example.com
-  acuant_passlive_url: https://liveness.example.com
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
