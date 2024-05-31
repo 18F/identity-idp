@@ -29,7 +29,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
   let(:dcs_uuid) { SecureRandom.uuid }
   let(:instance) do
-    instance = described_class.new(instant_verify_ab_test_discriminator: dcs_uuid)
+    instance = described_class.new
     allow(instance).to receive(:user_can_pass_after_state_id_check?).and_call_original
     instance
   end
@@ -72,16 +72,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     }
   end
 
-  let(:ab_test_variables) { {} }
-
-  let(:lniv) do
-    instance_double(
-      Idv::LexisNexisInstantVerify,
-      dcs_uuid,
-      workflow_ab_testing_variables: ab_test_variables,
-    )
-  end
-
   let(:resolution_result) do
     instance_double(Proofing::Resolution::Result, success?: true, errors: nil)
   end
@@ -101,14 +91,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   before do
-    # Remove the next two lines and un-comment the following line when
-    # the LexiNexis Instant Verify A/B test is ended
-    allow(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:new).
-      and_return(instant_verify_proofer)
-    allow(Idv::LexisNexisInstantVerify).to receive(:new).and_return(lniv)
-    # uncomment after removing the above
-    # allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-
+    allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
     allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
     allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
 
@@ -197,44 +180,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(device_profiling_result.success).to be(true)
           expect(device_profiling_result.client).to eq('tmx_disabled')
           expect(device_profiling_result.review_status).to eq('pass')
-        end
-      end
-
-      # Remove the mocks:
-      #   `Proofing::LexisNexis::InstantVerify::Proofer#new`
-      #   `Proofing::LexisNexis::InstantVerify#new`
-      # in the outermost `before` block after removing this context.
-      context 'LexisNexis Instant Verify A/B test enabled' do
-        let(:ab_test_variables) do
-          {
-            ab_testing_enabled: true,
-            use_alternate_workflow: true,
-            instant_verify_workflow: 'equitable_workflow',
-          }
-        end
-
-        before { proof }
-
-        it 'uses the selected workflow' do
-          expect(Proofing::LexisNexis::InstantVerify::Proofer).to(
-            have_received(:new).with(
-              hash_including(
-                instant_verify_workflow: 'equitable_workflow',
-              ),
-            ),
-          )
-        end
-      end
-
-      context 'remote flow does not augment pii' do
-        it 'proofs with untransformed pii' do
-          proof
-
-          expect(aamva_proofer).to have_received(:proof).with(applicant_pii)
-          expect(proof.same_address_as_id).to eq(nil)
-          expect(proof.ipp_enrollment_in_progress).to eq(false)
-          expect(proof.residential_resolution_result.vendor_name).
-            to eq('ResidentialAddressNotRequired')
         end
       end
     end
