@@ -34,7 +34,7 @@ module OpenidConnect
     # @see {OpenID Connect RP-Initiated Logout 1.0 Specification}[https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout] # rubocop:disable Layout/LineLength
     def create
       session[:original_method] = request.method.to_s
-      redirect_to action: :show, **logout_params
+      redirect_to action: :show, status: :see_other, **logout_params
     end
 
     # Sign out without confirmation
