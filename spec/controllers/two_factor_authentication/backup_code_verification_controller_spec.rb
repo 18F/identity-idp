@@ -93,6 +93,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             'Multi-Factor Authentication',
             success: true,
             errors: {},
+            error_details: nil,
             multi_factor_auth_method: 'backup_code',
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             new_device: true,
@@ -171,6 +172,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           'Multi-Factor Authentication',
           success: false,
           errors: {},
+          error_details: nil,
           multi_factor_auth_method: 'backup_code',
           new_device: true,
         )

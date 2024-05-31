@@ -24,6 +24,7 @@ RSpec.describe SignUp::PasswordsController do
         {
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
         }
       end
