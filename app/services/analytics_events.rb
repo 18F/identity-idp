@@ -5219,7 +5219,6 @@ module AnalyticsEvents
   # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
   # reason for the consent screen being shown
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
-  # @param [Array] sp_request_requested_attributes Attributes requested by the service provider
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   def user_registration_agency_handoff_page_visit(
       ial2:,
@@ -5228,7 +5227,6 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       in_account_creation_flow:,
       sp_session_requested_attributes:,
-      sp_request_requested_attributes: nil,
       ialmax: nil,
       **extra
     )
@@ -5240,7 +5238,6 @@ module AnalyticsEvents
       page_occurence:,
       needs_completion_screen_reason:,
       in_account_creation_flow:,
-      sp_request_requested_attributes:,
       sp_session_requested_attributes:,
       **extra,
     )
@@ -5263,7 +5260,6 @@ module AnalyticsEvents
   # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
   # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
   # reason for the consent screen being shown
-  # @param [Array] sp_request_requested_attributes Attributes requested by the service provider
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration
@@ -5274,7 +5270,6 @@ module AnalyticsEvents
     in_account_creation_flow:,
     needs_completion_screen_reason:,
     sp_session_requested_attributes:,
-    sp_request_requested_attributes: nil,
     ialmax: nil,
     disposable_email_domain: nil,
     **extra
@@ -5287,7 +5282,6 @@ module AnalyticsEvents
       page_occurence:,
       in_account_creation_flow:,
       needs_completion_screen_reason:,
-      sp_request_requested_attributes:,
       sp_session_requested_attributes:,
       disposable_email_domain:,
       **extra,

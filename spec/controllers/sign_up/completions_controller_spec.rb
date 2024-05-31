@@ -47,7 +47,6 @@ RSpec.describe SignUp::CompletionsController do
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
-            sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
             in_account_creation_flow: false,
           )
@@ -85,7 +84,6 @@ RSpec.describe SignUp::CompletionsController do
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
-            sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
             in_account_creation_flow: false,
           )
@@ -132,7 +130,6 @@ RSpec.describe SignUp::CompletionsController do
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
-            sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
             in_account_creation_flow: false,
           )
@@ -236,7 +233,6 @@ RSpec.describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
-          sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
           in_account_creation_flow: true,
           disposable_email_domain: nil,
@@ -297,7 +293,6 @@ RSpec.describe SignUp::CompletionsController do
             service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: 'agency-page',
             needs_completion_screen_reason: :new_sp,
-            sp_request_requested_attributes: nil,
             sp_session_requested_attributes: nil,
             in_account_creation_flow: true,
             disposable_email_domain: 'temporary.com',
@@ -334,7 +329,6 @@ RSpec.describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
-          sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
           in_account_creation_flow: true,
           disposable_email_domain: 'temporary.com',
