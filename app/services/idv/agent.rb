@@ -28,6 +28,7 @@ module Idv
         result_id: document_capture_session.result_id,
         instant_verify_ab_test_discriminator: document_capture_session.uuid,
         user_id: user_id,
+        service_provider_issuer: document_capture_session.issuer,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
