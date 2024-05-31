@@ -3849,11 +3849,6 @@ module AnalyticsEvents
     )
   end
 
-  # Max multi factor auth attempts met
-  def multi_factor_auth_max_attempts
-    track_event('Multi-Factor Authentication: max attempts reached')
-  end
-
   # Max multi factor max otp sends reached
   def multi_factor_auth_max_sends
     track_event('Multi-Factor Authentication: max otp sends reached')
@@ -4927,6 +4922,11 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
+  end
+
+  # User events missing sign_in_notification_timeframe_expired
+  def sign_in_notification_timeframe_expired_absent
+    track_event(:sign_in_notification_timeframe_expired_absent)
   end
 
   # @param [String] flash
