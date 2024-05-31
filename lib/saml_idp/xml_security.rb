@@ -46,8 +46,8 @@ module SamlIdp
       def validate(idp_cert_fingerprint, soft = true, options = {})
         log 'Validate the fingerprint'
         base64_cert = find_base64_cert(options)
-        cert_text   = Base64.decode64(base64_cert)
-        cert        =
+        cert_text = Base64.decode64(base64_cert)
+        cert =
           begin
             OpenSSL::X509::Certificate.new(cert_text)
           rescue OpenSSL::X509::CertificateError => e
@@ -130,13 +130,16 @@ module SamlIdp
 
       def validate_doc_params_signature(base64_cert, soft = true, params)
         document_type = request? ? :SAMLRequest : :SAMLResponse
+
         canon_string = build_query(
           type: document_type,
           data: params[document_type.to_sym],
           relay_state: params[:RelayState],
           sig_alg: params[:SigAlg]
         )
+
         log '***** validate_doc_params_signature: verify_signature:'
+
         verify_signature(
           base64_cert,
           params[:SigAlg],
@@ -149,7 +152,6 @@ module SamlIdp
       def validate_doc_embedded_signature(base64_cert, soft = true)
         # check for inclusive namespaces
         inclusive_namespaces = extract_inclusive_namespaces
-
         document = Nokogiri.parse(to_s)
 
         # create a working copy so we don't modify the original
@@ -193,38 +195,54 @@ module SamlIdp
 
         # check digests
         REXML::XPath.each(@sig_element, '//ds:Reference', sig_namespace_hash) do |ref|
-          uri                           = ref.attributes.get_attribute('URI').value
+          uri = ref.attributes.get_attribute('URI').value
 
-          hashed_element                = document.at_xpath("//*[@ID='#{uri[1..-1]}']")
-          canon_algorithm               = canon_algorithm REXML::XPath.first(ref,
-                                                                             '//ds:CanonicalizationMethod', sig_namespace_hash)
-          canon_hashed_element          = hashed_element.canonicalize(canon_algorithm,
-                                                                      inclusive_namespaces)
+          hashed_element = document.at_xpath("//*[@ID='#{uri[1..-1]}']")
+          canon_algorithm = canon_algorithm REXML::XPath.first(
+            ref,
+            '//ds:CanonicalizationMethod',
+            sig_namespace_hash
+          )
 
-          digest_algorithm              = algorithm(REXML::XPath.first(ref, '//ds:DigestMethod'))
+          canon_hashed_element = hashed_element.canonicalize(
+            canon_algorithm,
+            inclusive_namespaces
+          )
 
-          hash                          = digest_algorithm.digest(canon_hashed_element)
-          digest_value                  = Base64.decode64(REXML::XPath.first(ref,
-                                                                             '//ds:DigestValue', sig_namespace_hash).text)
+          digest_algorithm = algorithm(REXML::XPath.first(ref, '//ds:DigestMethod'))
+
+          hash = digest_algorithm.digest(canon_hashed_element)
+          digest_value = Base64.decode64(REXML::XPath.first(
+            ref,
+            '//ds:DigestValue',
+            sig_namespace_hash
+          ).text)
 
           unless digests_match?(hash, digest_value)
             return soft ? false : (raise ValidationError.new('Digest mismatch'))
           end
         end
 
-        base64_signature        = REXML::XPath.first(@sig_element, '//ds:SignatureValue',
-                                                     sig_namespace_hash).text
-        signature               = Base64.decode64(base64_signature)
-        sig_alg                 = REXML::XPath.first(signed_info_element, '//ds:SignatureMethod',
-                                                     sig_namespace_hash)
+        base64_signature = REXML::XPath.first(
+          @sig_element,
+          '//ds:SignatureValue',
+          sig_namespace_hash
+        ).text
+
+        signature = Base64.decode64(base64_signature)
+        sig_alg = REXML::XPath.first(
+          signed_info_element,
+          '//ds:SignatureMethod',
+          sig_namespace_hash
+        )
 
         log '***** validate_doc_embedded_signature: verify_signature:'
         verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
       end
 
       def verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
-        cert_text           = Base64.decode64(base64_cert)
-        cert                = OpenSSL::X509::Certificate.new(cert_text)
+        cert_text = Base64.decode64(base64_cert)
+        cert = OpenSSL::X509::Certificate.new(cert_text)
         signature_algorithm = algorithm(sig_alg)
 
         unless cert.public_key.verify(signature_algorithm.new, signature, canon_string)
