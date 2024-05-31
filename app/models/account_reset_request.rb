@@ -23,6 +23,11 @@ class AccountResetRequest < ApplicationRecord
     ).order(requested_at: :asc).first
   end
 
+  def cancel!(now: Time.zone.now)
+    update(cancelled_at: now)
+    AccountReset::NotifyUserOfRequestCancellation.new(user).call
+  end
+
   def granted_token_valid?
     granted_token.present? && !granted_token_expired?
   end
