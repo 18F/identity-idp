@@ -110,6 +110,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
@@ -142,6 +143,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: true,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
@@ -175,6 +177,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
@@ -242,6 +245,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
@@ -276,6 +280,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             result = {
               success: true,
               errors: {},
+              error_details: nil,
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
@@ -298,6 +303,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             result = {
               success: true,
               errors: {},
+              error_details: nil,
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
@@ -329,6 +335,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: false,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,

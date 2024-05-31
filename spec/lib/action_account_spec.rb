@@ -169,6 +169,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review rejected',
           success: true,
           errors: nil,
+          error_details: nil,
           exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
         )
@@ -176,6 +177,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review rejected',
           success: false,
           errors: { message: 'Error: User does not have a pending fraud review' },
+          error_details: nil,
           exception: nil,
           profile_fraud_review_pending_at: nil,
         )
@@ -183,6 +185,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review rejected',
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
+          error_details: nil,
           exception: nil,
           profile_fraud_review_pending_at: nil,
         )
@@ -229,6 +232,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review passed',
           success: true,
           errors: nil,
+          error_details: nil,
           exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
         )
@@ -236,6 +240,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review passed',
           success: false,
           errors: { message: 'Error: User does not have a pending fraud review' },
+          error_details: nil,
           exception: nil,
           profile_fraud_review_pending_at: nil,
         )
@@ -243,6 +248,7 @@ RSpec.describe ActionAccount do
           'Fraud: Profile review passed',
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
+          error_details: nil,
           exception: nil,
           profile_fraud_review_pending_at: nil,
         )

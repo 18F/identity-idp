@@ -791,6 +791,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           with('SAML Auth', {
             success: true,
             errors: {},
+            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             authn_context_comparison: 'exact',
@@ -940,6 +941,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           with('SAML Auth', {
             success: true,
             errors: {},
+            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
             authn_context_comparison: 'minimum',
@@ -1515,6 +1517,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -1644,6 +1647,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
           authn_context_comparison: 'exact',
@@ -1681,6 +1685,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -1716,6 +1721,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -1793,6 +1799,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -1825,6 +1832,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -1857,6 +1865,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -2341,6 +2350,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -2396,6 +2406,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -2447,6 +2458,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
