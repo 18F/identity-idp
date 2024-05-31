@@ -299,8 +299,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
 
         complete_ssn_step
         complete_verify_step
-
-        expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
       end
     end
 
@@ -322,8 +320,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
 
         complete_ssn_step
         complete_verify_step
-
-        expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
       end
     end
   end

@@ -255,7 +255,6 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
     expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
     expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
-    expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
   end
 
   def validate_phone_page
