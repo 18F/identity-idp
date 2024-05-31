@@ -3640,7 +3640,7 @@ module AnalyticsEvents
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # @param ["authentication","reauthentication","confirmation"] context User session context
-  # @param [Boolean] new_device Whether the user is authenticating from a new d evice
+  # @param [Boolean] new_device Whether the user is authenticating from a new device
   # @param [String] multi_factor_auth_method Authentication method used
   # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
@@ -3650,7 +3650,7 @@ module AnalyticsEvents
   # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
   # @param [String] area_code Area code of phone number
-  # @param [String] country_code Country code associated with phonoe number
+  # @param [String] country_code Country code associated with phone number
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [String] frontend_error Name of error that occurred in frontend during submission
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
@@ -3775,7 +3775,7 @@ module AnalyticsEvents
   # @param [Boolean] confirmation_for_add_phone
   # @param [Integer] phone_configuration_id
   # @param [String] area_code Area code of phone number
-  # @param [String] country_code Abbreviated country code associated with phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint Fingerprint hash of phone number
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user
@@ -4192,7 +4192,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param ["authentication","reauthentication","confirmation"] context User session context
   # @param [String] otp_delivery_preference (sms or voice)
-  # @param [Boolean] resend Whether the user requested another code
+  # @param [Boolean] resend True if the user re-requested a code
   # @param [String] country_code Country code associated with phone number
   # @param [String] area_code Area code of phone number
   def otp_delivery_selection(
