@@ -61,7 +61,7 @@ module SamlIdp
 
     describe '#validate' do
       describe 'errors' do
-        it 'raises invalid certificates when the document ceritficate is invalid' do
+        it 'raises invalid certificates when the document certificate is invalid' do
           expect { document_with_invalid_certificate.validate('no:fi:ng:er:pr:in:t', false) }.to(
             raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError,
                         'Invalid certificate')
@@ -91,6 +91,37 @@ module SamlIdp
               'Certificate element present in response (ds:X509Certificate) but evaluating to nil'
             )
           )
+        end
+      end
+
+      describe '#digest_method_algorithm' do
+        let(:document) do
+          XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace, false))
+        end
+        let(:sig_namespace_hash) { { 'ds' => 'http://www.w3.org/2000/09/xmldsig#' } }
+
+        let(:el) do
+          REXML::XPath.first(
+            document,
+            '//ds:Signature',
+            sig_namespace_hash
+          )
+        end
+
+        let(:sig_element) do
+          REXML::XPath.first(el, '//ds:Reference', sig_namespace_hash)
+        end
+
+        let(:ref) do
+          REXML::XPath.first(sig_element, '//ds:Reference', sig_namespace_hash)
+        end
+
+        it 'returns the value in the DigestMethod node' do
+          expect(document.send(
+            :digest_method_algorithm,
+            ref,
+            sig_namespace_hash
+          )).to eq OpenSSL::Digest::SHA256
         end
       end
 

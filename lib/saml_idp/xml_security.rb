@@ -209,7 +209,7 @@ module SamlIdp
             inclusive_namespaces
           )
 
-          digest_algorithm = algorithm(REXML::XPath.first(ref, '//ds:DigestMethod'))
+          digest_algorithm = digest_method_algorithm(ref, sig_namespace_hash)
 
           hash = digest_algorithm.digest(canon_hashed_element)
           digest_value = Base64.decode64(REXML::XPath.first(
@@ -238,6 +238,10 @@ module SamlIdp
 
         log '***** validate_doc_embedded_signature: verify_signature:'
         verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
+      end
+
+      def digest_method_algorithm(ref, hash)
+        algorithm(REXML::XPath.first(ref, '//ds:DigestMethod', hash))
       end
 
       def verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
