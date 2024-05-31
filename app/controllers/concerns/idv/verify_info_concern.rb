@@ -172,7 +172,9 @@ module Idv
     def async_state_done(current_async_state)
       add_proofing_costs(current_async_state.result)
 
-      log_irs_threatmetrix_fraud_check_event(current_async_state.result)
+      create_fraud_review_request_if_needed(current_async_state.result)
+
+      track_attempts_api_fraud_check_event_if_needed(current_async_state.result)
 
       form_response = idv_result_to_form_response(
         result: current_async_state.result,
@@ -300,20 +302,27 @@ module Idv
       )
     end
 
-    def log_irs_threatmetrix_fraud_check_event(result)
+    def create_fraud_review_request_if_needed(result)
+      return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+
+      threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
+      return unless threatmetrix_result
+
+      return if threatmetrix_result[:review_status] == 'pass'
+
+      FraudReviewRequest.create(
+        user: current_user,
+        login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
+      )
+    end
+
+    def track_attempts_api_fraud_check_event_if_needed(result)
       return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
       threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
       return unless threatmetrix_result
 
       success = threatmetrix_result[:review_status] == 'pass'
-
-      if !success
-        FraudReviewRequest.create(
-          user: current_user,
-          login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
-        )
-      end
 
       irs_attempts_api_tracker.idv_tmx_fraud_check(
         success: success,
