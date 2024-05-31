@@ -23,7 +23,7 @@ RSpec.describe NewDeviceConcern, type: :controller do
   describe '#set_new_device_session' do
     context 'with new device' do
       it 'sets user session value to true' do
-        instance.set_new_device_session
+        instance.set_new_device_session(nil)
 
         expect(user_session[:new_device]).to eq(true)
       end
@@ -42,7 +42,7 @@ RSpec.describe NewDeviceConcern, type: :controller do
       let(:cookies) { { device: current_user.devices.last.cookie_uuid } }
 
       it 'sets user session value to false' do
-        instance.set_new_device_session
+        instance.set_new_device_session(nil)
 
         expect(user_session[:new_device]).to eq(false)
       end
