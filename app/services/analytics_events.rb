@@ -4012,7 +4012,7 @@ module AnalyticsEvents
     multi_factor_auth_method:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
-    errors:,
+    errors: nil,
     error_details: nil,
     **extra
   )
