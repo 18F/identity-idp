@@ -74,14 +74,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           zip_code_5: '20815' },
       ]
     end
-    let(:pilot_locations) do
-      [
-        { name: 'Location 1' },
-        { name: 'Location 2' },
-        { name: 'Location 3' },
-        { name: 'Location 4' },
-      ]
-    end
     subject(:response) do
       post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
                                         city: 'Washington',
@@ -91,6 +83,22 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
 
     before do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
+    end
+
+    context 'with EIPP enabled' do
+      let(:vector_of_trust) { ['C1.P1.Pe'] }
+      let(:vtr) { ['C1.P1.Pe'] }
+      let(:eipp_sp_session) { { 'vtr' => vtr, 'acr_values' => nil } }
+
+      before do
+        allow(controller).to receive(:sp_session).and_return(eipp_sp_session)
+      end
+
+      it 'sends the proofer the correct vector of trust' do
+        expect(proofer).to receive(:request_facilities).with(address, vector_of_trust)
+
+        subject
+      end
     end
 
     context 'with a nil address in params' do
@@ -114,7 +122,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
 
     context 'no addresses found by usps' do
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_return(empty_locations)
+        allow(proofer).to receive(:request_facilities).with(address, nil).
+          and_return(empty_locations)
       end
 
       it 'logs analytics with error when successful response is empty' do
@@ -133,7 +142,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
 
     context 'with successful fetch' do
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
+        allow(proofer).to receive(:request_facilities).with(address, nil).and_return(locations)
       end
 
       it 'returns a successful response' do
@@ -156,7 +165,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       let(:timeout_error) { Faraday::TimeoutError.new }
 
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_raise(timeout_error)
+        allow(proofer).to receive(:request_facilities).with(address, nil).and_raise(timeout_error)
       end
 
       it 'returns an unprocessible entity client error' do
@@ -181,7 +190,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       let(:server_error) { Faraday::ServerError.new }
 
       before do
-        allow(proofer).to receive(:request_facilities).with(address).and_raise(server_error)
+        allow(proofer).to receive(:request_facilities).with(address, nil).and_raise(server_error)
       end
 
       it 'returns an unprocessible entity client error' do
@@ -213,7 +222,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       end
 
       before do
-        allow(proofer).to receive(:request_facilities).with(fake_address).and_raise(exception)
+        allow(proofer).to receive(:request_facilities).with(fake_address, nil).and_raise(exception)
       end
 
       it 'returns no locations' do

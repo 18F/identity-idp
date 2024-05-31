@@ -5,14 +5,19 @@ module UspsInPersonProofing
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
     # Automatically refresh our auth token if it is within this many minutes of expiring
     AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES = 1.minute.freeze
+    # Sponsor ID to use for enhanced in-person proofing
+    USPS_EIPP_SPONSOR_ID = 36
+    # Assurance Level to use for enhanced in-person proofing
+    USPS_EIPP_ASSURANCE_LEVEL = '2.0'
 
     # Makes HTTP request to get nearby in-person proofing facilities
-    # Requires address, city, state and zip code.
+    # Requires address, city, state, zip code and vector of trust.
     # The PostOffice objects have a subset of the fields
     # returned by the API.
     # @param location [Object]
+    # @param vector_of_trust [Array<String>]
     # @return [Array<PostOffice>] Facility locations
-    def request_facilities(location)
+    def request_facilities(location:, vector_of_trust: nil)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList"
       body = {
         sponsorID: sponsor_id,
@@ -20,8 +25,14 @@ module UspsInPersonProofing
         city: location.city,
         state: location.state,
         zipCode: location.zip_code,
-      }.to_json
+      }
 
+      if vector_of_trust&.first&.include?('Pe')
+        body[:IPPAssuranceLevel] = USPS_EIPP_ASSURANCE_LEVEL
+        body[:sponsorID] = USPS_EIPP_SPONSOR_ID
+      end
+
+      body = body.to_json
       response = faraday.post(url, body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_facilities' }
       end.body

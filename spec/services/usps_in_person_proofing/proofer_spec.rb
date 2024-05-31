@@ -18,6 +18,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
   let(:subject) { UspsInPersonProofing::Proofer.new }
   let(:root_url) { 'http://my.root.url' }
   let(:usps_ipp_sponsor_id) { 1 }
+  let(:ipp_assurance_level) { '1.5' }
+  let(:vector_of_trust) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:usps_ipp_root_url).and_return(root_url)
@@ -167,21 +169,37 @@ RSpec.describe UspsInPersonProofing::Proofer do
         zip_code: Faker::Address.zip_code,
       )
     end
+    let(:request_url) { "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList" }
 
     before do
       stub_request_token
+      allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return(usps_ipp_sponsor_id)
+    end
+
+    it 'uses the sponsor id set in the environment config' do
+      stub_request_facilities
+      subject.request_facilities(location:, vector_of_trust:)
+
+      expect(WebMock).to have_requested(:post, request_url).
+        with(
+          body: hash_including(
+            {
+              sponsorID: usps_ipp_sponsor_id,
+            },
+          ),
+        )
     end
 
     it 'returns facilities' do
       stub_request_facilities
-      facilities = subject.request_facilities(location)
+      facilities = subject.request_facilities(location:, vector_of_trust:)
 
       expect_facility_fields_to_be_present(facilities[0])
     end
 
     it 'returns facilities sorted by ascending distance' do
       stub_request_facilities_with_unordered_distance
-      facilities = subject.request_facilities(location)
+      facilities = subject.request_facilities(location:, vector_of_trust:)
 
       expect(facilities.count).to be > 1
       facilities.each_cons(2) do |facility_a, facility_b|
@@ -191,7 +209,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     it 'does not return duplicates' do
       stub_request_facilities_with_duplicates
-      facilities = subject.request_facilities(location)
+      facilities = subject.request_facilities(location:, vector_of_trust:)
 
       expect(facilities.length).to eq(9)
       expect(
@@ -199,6 +217,27 @@ RSpec.describe UspsInPersonProofing::Proofer do
           post_office.address == '3775 INDUSTRIAL BLVD'
         end,
       ).to eq(1)
+    end
+
+    context 'when the user is going through EIPP' do
+      let(:usps_eipp_sponsor_id) { 36 }
+      let(:ipp_assurance_level) { '2.0' }
+      let(:vector_of_trust) { ['C1.P1.Pe'] }
+
+      it 'uses the EIPP usps_ipp_sponsor_id and ipp_assurance_level in calls to the USPS API' do
+        stub_request_EIPP_facilities
+        subject.request_facilities(location:, vector_of_trust:)
+
+        expect(WebMock).to have_requested(:post, request_url).
+          with(
+            body: hash_including(
+              {
+                sponsorID: usps_eipp_sponsor_id,
+                IPPAssuranceLevel: ipp_assurance_level,
+              },
+            ),
+          )
+      end
     end
 
     context 'when the auth token is expired' do
@@ -217,7 +256,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       it 'refreshes the auth token before making the request' do
         facilities = nil
         travel_to(expires_at) do
-          facilities = subject.request_facilities(location)
+          facilities = subject.request_facilities(location:, vector_of_trust:)
         end
 
         expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
