@@ -153,6 +153,40 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
         expect_delivered_email_count(1)
       end
     end
+
+    context 'authenticating with piv' do
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+      it 'sends a user notification on signin' do
+        visit new_user_session_path
+        click_on t('account.login.piv_cac')
+        fill_in_piv_cac_credentials_and_submit(user)
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+        )
+      end
+
+      context 'when reauthenticating' do
+        it 'does not send a second user notification' do
+          visit new_user_session_path
+          click_on t('account.login.piv_cac')
+          fill_in_piv_cac_credentials_and_submit(user)
+
+          expire_reauthn_window
+
+          within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+          expect(page).to have_current_path(login_two_factor_options_path)
+          click_on t('forms.buttons.continue')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect_delivered_email_count(1)
+        end
+      end
+    end
   end
 
   context 'user does not have existing devices' do
