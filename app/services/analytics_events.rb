@@ -1844,7 +1844,6 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Integer] result_total
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] exception_class
   # @param [String] exception_message
   # @param [Integer] response_status_code
@@ -1853,7 +1852,6 @@ module AnalyticsEvents
     success:,
     errors:,
     result_total: 0,
-    error_details: nil,
     exception_class: nil,
     exception_message: nil,
     response_status_code: nil,
@@ -1864,7 +1862,6 @@ module AnalyticsEvents
       success:,
       result_total:,
       errors:,
-      error_details:,
       exception_class:,
       exception_message:,
       response_status_code:,
