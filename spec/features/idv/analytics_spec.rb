@@ -62,7 +62,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, error_details: nil, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean, liveness_checking_required: boolean
@@ -74,20 +74,20 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, error_details: nil, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
+        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, error_details: nil, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
+        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, error_details: nil, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean, liveness_checking_required: boolean
+        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, error_details: nil, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
+        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
@@ -96,7 +96,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, error_details: nil, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
@@ -124,7 +124,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, error_details: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
+        success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
@@ -200,11 +200,11 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, error_details: nil, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
+        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'hybrid', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, error_details: nil, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
+        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, error_details: nil, flow_path: 'hybrid', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -222,7 +222,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'hybrid', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, error_details: nil, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
@@ -323,11 +323,11 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, error_details: nil, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
+        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, error_details: nil, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
+        success: true, errors: {}, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, error_details: nil, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -345,7 +345,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, error_details: nil, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
@@ -420,7 +420,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, errors: {}, error_details: nil, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
+        success: true, errors: {}, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: nil, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean),
       'IdV: verify in person troubleshooting option clicked' => {
@@ -463,7 +463,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, error_details: nil, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, same_address_as_id: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, same_address_as_id: false, skip_hybrid_handoff: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: 'aaa-bbb-ccc', success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone confirmation form' => {
@@ -596,7 +596,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, error_details: nil, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {

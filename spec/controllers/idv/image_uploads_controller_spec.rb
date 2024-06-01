@@ -444,7 +444,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             response: DocAuth::Response.new(
               success: true,
               errors: {},
-              error_details: nil,
               extra: {
                 doc_auth_result: 'Passed',
                 billed: true,
