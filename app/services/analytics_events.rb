@@ -3664,14 +3664,14 @@ module AnalyticsEvents
   # @param [String] method
   # Logout Initiated
   def logout_initiated(
-    success:,
-    errors:,
+    success: nil,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
+    errors: nil,
     error_details: nil,
     method: nil,
     **extra
