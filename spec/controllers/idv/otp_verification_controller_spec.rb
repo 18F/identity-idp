@@ -163,7 +163,7 @@ RSpec.describe Idv::OtpVerificationController,
       expected_result = {
         success: true,
         errors: {},
-        error_details: nil,
+        error_details: {},
         code_expired: false,
         code_matches: true,
         otp_delivery_preference: :sms,

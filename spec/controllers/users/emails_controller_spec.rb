@@ -59,7 +59,7 @@ RSpec.describe Users::EmailsController do
           'Add Email Requested',
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           user_id: user.uuid,
           domain_name: email.split('@').last,
         )

@@ -107,7 +107,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
           errors: {},
-          error_details: nil,
+          error_details: {},
           success: true,
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once

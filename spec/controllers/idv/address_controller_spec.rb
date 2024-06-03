@@ -92,7 +92,7 @@ RSpec.describe Idv::AddressController do
         { success: true,
           errors: {},
           address_edited: true,
-          error_details: nil },
+          error_details: {} },
       )
     end
 

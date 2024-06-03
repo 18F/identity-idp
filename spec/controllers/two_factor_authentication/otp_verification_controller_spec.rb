@@ -469,7 +469,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
             properties = {
               success: true,
               errors: nil,
-              error_details: nil,
+              error_details: {},
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
@@ -621,7 +621,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
             properties = {
               success: true,
               errors: nil,
-              error_details: nil,
+              error_details: {},
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               multi_factor_auth_method_created_at: nil,

@@ -105,7 +105,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           multi_factor_auth_method: 'webauthn',
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           in_account_creation_flow: false,
           authenticator_data_flags: {
             up: true,
@@ -245,7 +245,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
             {
               enabled_mfa_methods_count: 1,
               errors: {},
-              error_details: nil,
+              error_details: {},
               in_account_creation_flow: true,
               mfa_method_counts: { webauthn: 1 },
               multi_factor_auth_method: 'webauthn',
@@ -313,7 +313,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
             {
               enabled_mfa_methods_count: 1,
               errors: {},
-              error_details: nil,
+              error_details: {},
               in_account_creation_flow: true,
               mfa_method_counts: { webauthn_platform: 1 },
               multi_factor_auth_method: 'webauthn_platform',

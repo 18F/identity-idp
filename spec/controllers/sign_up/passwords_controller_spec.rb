@@ -24,7 +24,7 @@ RSpec.describe SignUp::PasswordsController do
         {
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           user_id: user.uuid,
         }
       end
@@ -36,7 +36,7 @@ RSpec.describe SignUp::PasswordsController do
       it 'tracks analytics' do
         expect(@analytics).to receive(:track_event).with(
           'User Registration: Email Confirmation',
-          analytics_hash.merge({ error_details: nil }),
+          analytics_hash.merge({ error_details: {} }),
         )
         expect(@analytics).to receive(:track_event).with(
           'Password Creation',
@@ -72,7 +72,7 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'User Registration: Email Confirmation',
             errors: {},
-            error_details: nil,
+            error_details: {},
             success: true,
             user_id: user.uuid,
           )
@@ -107,7 +107,7 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'User Registration: Email Confirmation',
             errors: {},
-            error_details: nil,
+            error_details: {},
             success: true,
             user_id: user.uuid,
           )

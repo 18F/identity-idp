@@ -133,7 +133,7 @@ RSpec.describe OpenidConnect::UserInfoController do
           client_id: identity.service_provider,
           ial: identity.ial,
           errors: {},
-          error_details: nil,
+          error_details: {},
         )
 
         action

@@ -55,7 +55,7 @@ module AnalyticsEvents
     user_id:,
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -85,7 +85,7 @@ module AnalyticsEvents
     account_confirmed_at:,
     mfa_method_counts:,
     errors:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -110,7 +110,7 @@ module AnalyticsEvents
   def account_reset_granted_token_validation(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     user_id: nil,
     **extra
   )
@@ -191,7 +191,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks request for adding new emails to an account
-  def add_email_request(success:, errors:, error_details: nil, **extra)
+  def add_email_request(success:, errors:, error_details:, **extra)
     track_event(
       'Add Email Requested',
       success:,
@@ -221,7 +221,7 @@ module AnalyticsEvents
   def auth_app_delete_submitted(
     success:,
     configuration_id:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -241,7 +241,7 @@ module AnalyticsEvents
   def auth_app_update_name_submitted(
     success:,
     configuration_id:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -311,7 +311,7 @@ module AnalyticsEvents
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     errors:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -429,7 +429,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks request for deletion of email address
-  def email_deletion_request(success:, errors:, error_details: nil, **extra)
+  def email_deletion_request(success:, errors:, error_details:, **extra)
     track_event(
       'Email Deletion Requested',
       success:,
@@ -443,7 +443,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks if Email Language is updated
-  def email_language_updated(success:, errors:, error_details: nil, **extra)
+  def email_language_updated(success:, errors:, error_details:, **extra)
     track_event(
       'Email Language: Updated',
       success:,
@@ -486,7 +486,7 @@ module AnalyticsEvents
   def event_disavowal(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -526,7 +526,7 @@ module AnalyticsEvents
   def event_disavowal_password_reset(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -566,7 +566,7 @@ module AnalyticsEvents
   def event_disavowal_token_invalid(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -701,17 +701,17 @@ module AnalyticsEvents
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Boolean] address_edited
-  # @param [Hash] pii_like_keypaths
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] address_edited
+  # @param [Hash] pii_like_keypaths
   # User submitted an idv address
   def idv_address_submitted(
     success:,
     errors:,
+    error_details:,
     address_edited: nil,
     pii_like_keypaths: nil,
-    error_details: nil,
     **extra
   )
     track_event(
@@ -1111,7 +1111,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     flow_path:,
     liveness_checking_required:,
-    error_details: nil,
+    error_details:,
     submit_attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
@@ -1282,7 +1282,7 @@ module AnalyticsEvents
     pii_like_keypaths:,
     flow_path:,
     liveness_checking_required:,
-    error_details: nil,
+    error_details:,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
@@ -1906,21 +1906,21 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [String] analytics_id
   # @param [Boolean] same_address_as_id
   # User clicked cancel on update state id page
   def idv_in_person_proofing_cancel_update_state_id(
     success:,
     errors:,
+    error_details:,
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    error_details: nil,
     same_address_as_id: nil,
     **extra
   )
@@ -2017,7 +2017,7 @@ module AnalyticsEvents
   def idv_in_person_proofing_redo_state_id_submitted(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     flow_path: nil,
     step: nil,
     analytics_id: nil,
@@ -2053,7 +2053,7 @@ module AnalyticsEvents
   def idv_in_person_proofing_state_id_submitted(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     flow_path: nil,
     step: nil,
     analytics_id: nil,
@@ -2786,7 +2786,7 @@ module AnalyticsEvents
     success:,
     otp_delivery_preference:,
     errors:,
-    error_details: nil,
+    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2885,7 +2885,7 @@ module AnalyticsEvents
     rate_limit_exceeded:,
     telephony_response:,
     phone_fingerprint:,
-    error_details: nil,
+    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2935,7 +2935,7 @@ module AnalyticsEvents
     phone_fingerprint:,
     telephony_response:,
     adapter:,
-    error_details: nil,
+    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2980,7 +2980,7 @@ module AnalyticsEvents
     otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
-    error_details: nil,
+    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -3032,7 +3032,7 @@ module AnalyticsEvents
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -3523,7 +3523,7 @@ module AnalyticsEvents
     submit_attempts:,
     pending_in_person_enrollment:,
     fraud_check_failed:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -3935,7 +3935,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
-  def multi_factor_auth_option_list(success:, errors:, selection:, error_details: nil, **extra)
+  def multi_factor_auth_option_list(success:, errors:, selection:, error_details:, **extra)
     track_event(
       'Multi-Factor Authentication: option list',
       success:,
@@ -3970,7 +3970,7 @@ module AnalyticsEvents
       country_code:,
       phone_type:,
       types:,
-      error_details: nil,
+      error_details:,
       **extra
     )
     track_event(
@@ -4037,7 +4037,7 @@ module AnalyticsEvents
   def oidc_logout_requested(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
@@ -4173,7 +4173,7 @@ module AnalyticsEvents
   # @param [String] client_id Service Provider issuer
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details: nil, **extra)
+  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details:, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
@@ -4216,7 +4216,7 @@ module AnalyticsEvents
     vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -4275,7 +4275,7 @@ module AnalyticsEvents
     resend:,
     country_code:,
     area_code:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -4313,7 +4313,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # The user updated their password
-  def password_changed(success:, errors:, error_details: nil, **extra)
+  def password_changed(success:, errors:, error_details:, **extra)
     track_event('Password Changed', success:, errors:, error_details:, **extra)
   end
 
@@ -4328,7 +4328,7 @@ module AnalyticsEvents
     errors:,
     user_id:,
     request_id_present:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -4410,7 +4410,7 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id UUID of the user to receive password token
   # A password token has been sent for user
-  def password_reset_token(success:, errors:, user_id:, error_details: nil, **extra)
+  def password_reset_token(success:, errors:, user_id:, error_details:, **extra)
     track_event(
       'Password Reset: Token Submitted',
       success:,
@@ -4440,7 +4440,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Alert user if a personal key was used to sign in
-  def personal_key_alert_about_sign_in(success:, errors:, error_details: nil, **extra)
+  def personal_key_alert_about_sign_in(success:, errors:, error_details:, **extra)
     track_event(
       'Personal key: Alert user about sign in',
       success:,
@@ -4464,7 +4464,7 @@ module AnalyticsEvents
     success:,
     errors:,
     pii_like_keypaths:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -4505,7 +4505,7 @@ module AnalyticsEvents
     delivery_preference:,
     phone_configuration_id:,
     make_default_number:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -4553,7 +4553,7 @@ module AnalyticsEvents
   def piv_cac_delete_submitted(
     success:,
     configuration_id:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -4618,7 +4618,7 @@ module AnalyticsEvents
   def piv_cac_update_name_submitted(
       success:,
       configuration_id:,
-      error_details: nil,
+      error_details:,
       **extra
     )
     track_event(
@@ -4901,7 +4901,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def rules_of_use_submitted(success:, errors:, error_details: nil, **extra)
+  def rules_of_use_submitted(success:, errors:, error_details:, **extra)
     track_event(
       'Rules of Use Submitted',
       success:,
@@ -4945,7 +4945,7 @@ module AnalyticsEvents
     requested_ial:,
     request_signed:,
     matching_cert_serial:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -5017,17 +5017,17 @@ module AnalyticsEvents
 
   # Tracks when security event is received
   # @param [Boolean] success Whether form validation was successful
-  # @param [String] error_code
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] error_code
   # @param [String] jti
   # @param [String] user_id
   # @param [String] client_id
   def security_event_received(
     success:,
     errors:,
+    error_details:,
     error_code: nil,
-    error_details: nil,
     jti: nil,
     user_id: nil,
     client_id: nil,
@@ -5300,7 +5300,7 @@ module AnalyticsEvents
   def user_registration_2fa_setup(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
     selection: nil,
@@ -5425,7 +5425,7 @@ module AnalyticsEvents
     success:,
     rate_limited:,
     errors:,
-    error_details: nil,
+    error_details:,
     user_id: nil,
     email_already_exists: nil,
     domain_name: nil,
@@ -5454,7 +5454,7 @@ module AnalyticsEvents
   def user_registration_email_confirmation(
     success:,
     errors:,
-    error_details: nil,
+    error_details:,
     user_id: nil,
     **extra
   )
@@ -5632,7 +5632,7 @@ module AnalyticsEvents
     success:,
     configuration_id:,
     platform_authenticator:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(
@@ -5680,7 +5680,7 @@ module AnalyticsEvents
     success:,
     configuration_id:,
     platform_authenticator:,
-    error_details: nil,
+    error_details:,
     **extra
   )
     track_event(

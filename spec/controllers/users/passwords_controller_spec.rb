@@ -30,7 +30,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
           'Password Changed',
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           pending_profile_present: false,
           active_profile_present: false,
           user_id: subject.current_user.uuid,

@@ -773,24 +773,22 @@ RSpec.describe SamlIdpController do
             user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).
-          with(
-            'SAML Auth',
-            hash_including(
-              success: true,
-              errors: {},
-              error_details: nil,
-              nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-              authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
-              authn_context_comparison: 'exact',
-              requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-              service_provider: sp1_issuer,
-              endpoint: "/api/saml/auth#{path_year}",
-              idv: false,
-              finish_profile: false,
-              request_signed: true,
-              matching_cert_serial: saml_test_sp_cert_serial,
-            ),
-          )
+          with('SAML Auth', {
+            success: true,
+            errors: {},
+            error_details: {},
+            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
+            authn_context_comparison: 'exact',
+            requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            requested_nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+            service_provider: sp1_issuer,
+            endpoint: "/api/saml/auth#{path_year}",
+            idv: false,
+            finish_profile: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
+          })
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: Idp::Constants::IAL2,
@@ -926,24 +924,22 @@ RSpec.describe SamlIdpController do
             user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).
-          with(
-            'SAML Auth',
-            hash_including(
-              success: true,
-              errors: {},
-              error_details: nil,
-              nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-              authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
-              authn_context_comparison: 'minimum',
-              requested_ial: 'ialmax',
-              service_provider: sp1_issuer,
-              endpoint: "/api/saml/auth#{path_year}",
-              idv: false,
-              finish_profile: false,
-              request_signed: true,
-              matching_cert_serial: saml_test_sp_cert_serial,
-            ),
-          )
+          with('SAML Auth', {
+            success: true,
+            errors: {},
+            error_details: {},
+            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
+            authn_context_comparison: 'minimum',
+            requested_ial: 'ialmax',
+            requested_nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+            service_provider: sp1_issuer,
+            endpoint: "/api/saml/auth#{path_year}",
+            idv: false,
+            finish_profile: false,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
+          })
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
           ial: 0,
@@ -1462,7 +1458,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -1592,7 +1588,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
           authn_context_comparison: 'exact',
@@ -2249,7 +2245,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -2305,7 +2301,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -2360,7 +2356,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
+          error_details: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',

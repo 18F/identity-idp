@@ -144,12 +144,13 @@ RSpec.describe FormResponse do
 
   describe '#to_h' do
     context 'when the extra argument is nil' do
-      it 'returns a hash with success and errors keys' do
+      it 'returns a hash with success, errors, and error_details keys' do
         errors = { foo: 'bar' }
         response = FormResponse.new(success: true, errors: errors)
         response_hash = {
           success: true,
           errors: errors,
+          error_details: {},
         }
 
         expect(response.to_h).to eq response_hash
@@ -157,13 +158,14 @@ RSpec.describe FormResponse do
     end
 
     context 'when the extra argument is present' do
-      it 'returns a hash with success and errors keys, and any keys from the extra hash' do
+      it 'returns a hash with success, errors, error_details, and any keys from the extra hash' do
         errors = { foo: 'bar' }
         extra = { user_id: 1, context: 'confirmation' }
         response = FormResponse.new(success: true, errors: errors, extra: extra)
         response_hash = {
           success: true,
           errors: errors,
+          error_details: {},
           user_id: 1,
           context: 'confirmation',
         }
@@ -215,6 +217,7 @@ RSpec.describe FormResponse do
         response_hash = {
           success: true,
           errors: {},
+          error_details: {},
         }
 
         expect(response.to_h).to eq response_hash
@@ -228,6 +231,7 @@ RSpec.describe FormResponse do
         response_hash = {
           success: true,
           errors: {},
+          error_details: {},
         }
 
         expect(combined_response.to_h).to eq response_hash

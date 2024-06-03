@@ -122,7 +122,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
         'Multi-Factor Authentication Setup',
         success: true,
         errors: nil,
-        error_details: nil,
+        error_details: {},
         multi_factor_auth_method: 'backup_codes',
         in_account_creation_flow: true,
         enabled_mfa_methods_count: 2,
