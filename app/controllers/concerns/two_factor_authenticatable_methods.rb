@@ -19,9 +19,9 @@ module TwoFactorAuthenticatableMethods
       if current_user.sign_in_new_device_at.blank?
         timeframe_expired_at = current_user.events.where(
           event_type: 'sign_in_notification_timeframe_expired',
-        ).order(created_at: :desc).limit(2)
+        ).last
         if timeframe_expired_at.present?
-          current_user.update(sign_in_new_device_at: timeframe_expired_at.pluck(:created_at).last)
+          current_user.update(sign_in_new_device_at: timeframe_expired_at.created_at)
         else
           current_user.update(sign_in_new_device_at: disavowal_event.created_at)
           analytics.sign_in_notification_timeframe_expired_absent
