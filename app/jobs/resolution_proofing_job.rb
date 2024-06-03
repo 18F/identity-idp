@@ -42,7 +42,7 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
     applicant_pii[:uuid_prefix] = current_sp&.app_id
-    applicant_pii[:uuid] = user&.uuid
+    applicant_pii[:uuid] = user.uuid
 
     callback_log_data = make_vendor_proofing_requests(
       timer: timer,
@@ -82,7 +82,7 @@ class ResolutionProofingJob < ApplicationJob
   )
     result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
-      user_email: user&.confirmed_email_addresses&.first&.email,
+      user_email: user.confirmed_email_addresses.first.email,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
@@ -105,7 +105,7 @@ class ResolutionProofingJob < ApplicationJob
   def log_threatmetrix_info(threatmetrix_result, user)
     logger_info_hash(
       name: 'ThreatMetrix',
-      user_id: user&.uuid,
+      user_id: user.uuid,
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,
     )
