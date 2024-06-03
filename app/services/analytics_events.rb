@@ -1843,12 +1843,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Integer] result_total
+  # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception_class
   # @param [String] exception_message
   # @param [Integer] response_status_code
   # User submitted a search on the location search page and response received
   def idv_in_person_locations_searched(
     success:,
+    errors: nil,
     result_total: 0,
     exception_class: nil,
     exception_message: nil,
@@ -1859,6 +1861,7 @@ module AnalyticsEvents
       'IdV: in person proofing location search submitted',
       success:,
       result_total:,
+      errors:,
       exception_class:,
       exception_message:,
       response_status_code:,
