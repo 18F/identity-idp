@@ -104,7 +104,6 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
           context 'sign_in_notification_timeframe_expired present' do
             before do
-              allow(controller).to receive(:new_device?).and_return(true)
               create(
                 :event,
                 user:,
