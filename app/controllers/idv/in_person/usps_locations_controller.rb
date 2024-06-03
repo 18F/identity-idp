@@ -26,7 +26,7 @@ module Idv
           city: search_params['city'], state: search_params['state'],
           zip_code: search_params['zip_code']
         )
-        vector_of_trust = sp_session['vtr']
+        vector_of_trust = UspsInPersonProofing::EippHelper.extract_vector_of_trust(sp_session)
         response = proofer.request_facilities(candidate, vector_of_trust)
         if response.length > 0
           analytics.idv_in_person_locations_searched(

@@ -27,7 +27,7 @@ module UspsInPersonProofing
         zipCode: location.zip_code,
       }
 
-      if vector_of_trust&.first&.include?('Pe')
+      if UspsInPersonProofing::EippHelper.is_eipp?(vector_of_trust)
         body[:IPPAssuranceLevel] = USPS_EIPP_ASSURANCE_LEVEL
         body[:sponsorID] = USPS_EIPP_SPONSOR_ID
       end
