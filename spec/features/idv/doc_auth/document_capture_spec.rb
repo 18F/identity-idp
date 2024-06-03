@@ -86,12 +86,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
 
     context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
-      let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do
-        allow_any_instance_of(ApplicationController).to receive(
-          :irs_attempts_api_tracker,
-        ).and_return(fake_attempts_tracker)
-        allow(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
         allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
         DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
@@ -125,11 +120,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           'Rate Limit Reached',
           limiter_type: :idv_doc_auth,
         )
-      end
-
-      it 'logs irs attempts event for rate limiting' do
-        attach_and_submit_images
-        expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
       end
 
       context 'successfully processes image on last attempt' do

@@ -46,7 +46,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
       it 'tracks page visit' do
         stub_sign_in
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).
           with(
@@ -56,7 +55,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
             in_account_creation_flow: false,
           )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event)
         expect(controller.send(:mobile?)).to be false
 
         get :new
@@ -149,7 +147,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
 
     before do
       stub_analytics
-      stub_attempts_tracker
       stub_sign_in(user)
       allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
       request.host = 'localhost:3000'
@@ -263,10 +260,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
               success: true,
             )
 
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_roaming, success: true
-          )
-
           patch :confirm, params: params
         end
       end
@@ -326,10 +319,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
             },
           )
 
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: true
-          )
-
           patch :confirm, params: params
         end
 
@@ -374,10 +363,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
               success: false,
             },
-          )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: false
           )
 
           patch :confirm, params: params

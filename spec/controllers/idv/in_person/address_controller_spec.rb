@@ -68,7 +68,6 @@ RSpec.describe Idv::InPerson::AddressController do
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
-        irs_reproofing: false,
         opted_in_to_in_person_proofing: nil,
         step: 'address',
         pii_like_keypaths: [[:same_address_as_id],
@@ -136,7 +135,6 @@ RSpec.describe Idv::InPerson::AddressController do
           errors: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'address',
           pii_like_keypaths: [[:same_address_as_id],
                               [:proofing_results, :context, :stages, :state_id,
@@ -224,7 +222,6 @@ RSpec.describe Idv::InPerson::AddressController do
           errors: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'address',
           pii_like_keypaths: [[:same_address_as_id],
                               [:proofing_results, :context, :stages, :state_id,

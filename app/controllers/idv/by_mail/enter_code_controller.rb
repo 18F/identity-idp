@@ -47,9 +47,6 @@ module Idv
 
         result = @gpo_verify_form.submit
         analytics.idv_verify_by_mail_enter_code_submitted(**result.to_h)
-        irs_attempts_api_tracker.idv_gpo_verification_submitted(
-          success: result.success?,
-        )
 
         if !result.success?
           if rate_limiter.limited?

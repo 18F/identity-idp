@@ -23,7 +23,6 @@ module Idv
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
         liveness_checking_required: resolved_authn_context_result.biometric_comparison?,
       )
     end

@@ -140,10 +140,9 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      (resolved_authn_context_result.identity_proofing? &&
+      resolved_authn_context_result.identity_proofing? &&
         (current_user.identity_not_verified? ||
-        decorated_sp_session.requested_more_recent_verification?)) ||
-        current_user.reproof_for_irs?(service_provider: current_sp)
+        decorated_sp_session.requested_more_recent_verification?)
     end
 
     def biometric_comparison_needed?

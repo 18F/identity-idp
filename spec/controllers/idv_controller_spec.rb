@@ -89,14 +89,6 @@ RSpec.describe IdvController do
 
         expect(response).to redirect_to idv_session_errors_failure_url
       end
-
-      it 'logs appropriate attempts event' do
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with({ limiter_context: 'single-session' })
-
-        get :index
-      end
     end
 
     context 'if number of document capture attempts has been exceeded' do

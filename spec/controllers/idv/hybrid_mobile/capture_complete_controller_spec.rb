@@ -49,7 +49,6 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
-        irs_reproofing: false,
         step: 'capture_complete',
         liveness_checking_required: false,
       }.merge(ab_test_args)
