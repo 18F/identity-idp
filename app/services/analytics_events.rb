@@ -1232,8 +1232,8 @@ module AnalyticsEvents
       state:,
       state_id_type:,
       async:,
-      submit_attempts:,
-      remaining_submit_attempts:,
+      submit_attempts: submit_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       client_image_metrics:,
       flow_path:,
       vendor_request_time_in_ms:,
@@ -1841,8 +1841,8 @@ module AnalyticsEvents
   # User submitted a search on the location search page and response received
   def idv_in_person_locations_searched(
     success:,
-    errors: nil,
     result_total: 0,
+    errors: nil,
     exception_class: nil,
     exception_message: nil,
     response_status_code: nil,
@@ -1850,12 +1850,12 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing location search submitted',
-      success:,
-      result_total:,
-      errors:,
-      exception_class:,
-      exception_message:,
-      response_status_code:,
+      success: success,
+      result_total: result_total,
+      errors: errors,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_status_code: response_status_code,
       **extra,
     )
   end
@@ -5641,17 +5641,12 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash, nil] errors
   # Tracks whether or not Webauthn setup was successful
-  def webauthn_setup_submitted(
-    platform_authenticator:,
-    success:,
-    errors: nil,
-    **extra
-  )
+  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
     track_event(
       :webauthn_setup_submitted,
-      platform_authenticator:,
-      success:,
-      errors:,
+      platform_authenticator: platform_authenticator,
+      success: success,
+      errors: errors,
       **extra,
     )
   end
