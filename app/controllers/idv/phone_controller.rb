@@ -51,10 +51,6 @@ module Idv
         call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result.to_h, **ab_test_analytics_buckets)
-      irs_attempts_api_tracker.idv_phone_submitted(
-        success: result.success?,
-        phone_number: step_params[:phone],
-      )
       if result.success?
         submit_proofing_attempt
         redirect_to idv_phone_path
@@ -115,12 +111,6 @@ module Idv
       analytics.idv_phone_confirmation_otp_sent(
         **result.to_h.merge(adapter: Telephony.config.adapter),
       )
-
-      irs_attempts_api_tracker.idv_phone_otp_sent(
-        phone_number: @idv_phone,
-        success: result.success?,
-        otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
-      )
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -149,7 +139,6 @@ module Idv
         idv_session: idv_session,
         trace_id: amzn_trace_id,
         analytics: analytics,
-        attempts_tracker: irs_attempts_api_tracker,
       )
     end
 

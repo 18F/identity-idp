@@ -149,8 +149,9 @@ RSpec.describe Users::PivCacLoginController do
             )
           end
 
-          it 'sets new device session value' do
-            expect(controller).to receive(:set_new_device_session)
+          it 'sets and then unsets new device session value' do
+            expect(controller).to receive(:set_new_device_session).with(nil).ordered
+            expect(controller).to receive(:set_new_device_session).with(false).ordered
 
             response
           end

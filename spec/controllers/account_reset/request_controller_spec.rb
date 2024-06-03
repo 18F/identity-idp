@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AccountReset::RequestController, allowed_extra_analytics: [:*] do
+RSpec.describe AccountReset::RequestController do
   include ActionView::Helpers::DateHelper
   let(:user) { create(:user, :with_authentication_app) }
   describe '#show' do
@@ -147,17 +147,6 @@ RSpec.describe AccountReset::RequestController, allowed_extra_analytics: [:*] do
       expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
 
       post :create
-    end
-
-    it 'logs the visit to attempts api' do
-      user = create(:user, :with_piv_or_cac, :with_backup_code)
-      stub_sign_in_before_2fa(user)
-      stub_attempts_tracker
-
-      expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:account_reset_request_submitted, success: true)
-
-      get :create
     end
 
     it 'redirects to root if user not signed in' do

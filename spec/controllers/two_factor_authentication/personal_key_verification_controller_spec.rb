@@ -202,10 +202,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
         personal_key_generated_at = controller.current_user.
           encrypted_recovery_code_digest_generated_at
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(mfa_device_type: 'personal_key')
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))

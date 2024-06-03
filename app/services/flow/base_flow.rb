@@ -82,6 +82,6 @@ module Flow
     end
 
     delegate :flash, :session, :current_user, :current_sp, :params, :request,
-             :poll_with_meta_refresh, :analytics, :irs_attempts_api_tracker, to: :@controller
+             :poll_with_meta_refresh, :analytics, to: :@controller
   end
 end

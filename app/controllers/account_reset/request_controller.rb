@@ -23,9 +23,6 @@ module AccountReset
 
     def create_account_reset_request
       response = AccountReset::CreateRequest.new(current_user, sp_session[:issuer]).call
-      irs_attempts_api_tracker.account_reset_request_submitted(
-        success: response.success?,
-      )
       analytics.account_reset_request(**response.to_h, **analytics_attributes)
     end
 

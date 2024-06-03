@@ -45,13 +45,10 @@ RSpec.describe Users::DeleteController do
 
       it 'logs a failed submit' do
         stub_analytics
-        stub_attempts_tracker
         stub_signed_in_user
 
         expect(@analytics).to receive(:track_event).
           with('Account Delete submitted', success: false)
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:logged_in_account_purged, success: false)
 
         delete
       end
@@ -86,13 +83,10 @@ RSpec.describe Users::DeleteController do
 
     it 'logs a succesful submit' do
       stub_analytics
-      stub_attempts_tracker
       stub_signed_in_user
 
       expect(@analytics).to receive(:track_event).
         with('Account Delete submitted', success: true)
-      expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:logged_in_account_purged, success: true)
 
       delete
     end

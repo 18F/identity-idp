@@ -15,12 +15,6 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
     )
   end
   let(:max_attempts) { 2 }
-  let(:irs_attempts_api_tracker) do
-    instance_double(
-      IrsAttemptsApi::Tracker,
-      idv_phone_otp_submitted_rate_limited: true,
-    )
-  end
 
   before do
     allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
@@ -32,7 +26,6 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
       described_class.new(
         user: user,
         user_phone_confirmation_session: user_phone_confirmation_session,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
       ).submit(code: code)
     end
 
@@ -79,10 +72,6 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
     context 'when the code is expired' do
       let(:phone_confirmation_otp_sent_at) { 11.minutes.ago }
 
-      before do
-        allow(IrsAttemptsApi::Tracker).to receive(:new).and_return(irs_attempts_api_tracker)
-      end
-
       it 'returns an unsuccessful result' do
         result = try_submit(phone_confirmation_otp_code)
 
@@ -103,8 +92,6 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
 
         expect(user.second_factor_attempts_count).to eq(max_attempts)
         expect(user.second_factor_locked_at).to be_within(1.second).of(Time.zone.now)
-        expect(irs_attempts_api_tracker).to have_received(:idv_phone_otp_submitted_rate_limited).
-          with({ phone_number: phone })
       end
     end
 

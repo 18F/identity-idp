@@ -25,7 +25,6 @@ RSpec.describe Idv::OtpVerificationController,
 
   before do
     stub_analytics
-    stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     sign_in(user)
@@ -176,48 +175,6 @@ RSpec.describe Idv::OtpVerificationController,
         'IdV: phone confirmation otp submitted',
         hash_including(expected_result),
       )
-    end
-
-    describe 'track irs analytics event' do
-      let(:phone_property) { { phone_number: phone } }
-      context 'when the phone otp code is valid' do
-        it 'captures success event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: true,
-            **phone_property,
-          )
-
-          put :update, params: otp_code_param
-        end
-      end
-
-      context 'when the phone otp code is invalid' do
-        let(:invalid_otp_code_param) { { code: '000' } }
-        it 'captures failure event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: false,
-            **phone_property,
-          )
-
-          put :update, params: invalid_otp_code_param
-        end
-      end
-
-      context 'when the phone otp code has expired' do
-        let(:phone_confirmation_otp_sent_at) do
-          # Set time to a long time ago
-          Time.zone.now - 900000000
-        end
-
-        it 'captures failure event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: false,
-            **phone_property,
-          )
-
-          put :update, params: otp_code_param
-        end
-      end
     end
   end
 end
