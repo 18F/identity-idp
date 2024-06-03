@@ -138,14 +138,14 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
   end
 
-  context 'For IPP (not enhanced IPP aka eipp)' do
+  context 'For IPP (Not Enhanced IPP)' do
     let(:eipp_required) { false }
     before do
       @eipp_required = false
     end
 
     context 'template displays modified content' do
-      it 'conditionally renders content in the what to expect section not applicable to eipp' do
+      it 'conditionally renders content in the what to expect section applicable to IPP' do
         render
 
         expect(rendered).to have_content(t('in_person_proofing.headings.barcode'))
@@ -167,15 +167,32 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       ).once 
     end
 
-    # TO DO: UPDATE TEST TO ENSURE EIPP CONTENT IS NOT DISPLAYED
-    # it 'template does not displays EIPP specific content' do
-    #   render
+    it 'template does not displays EIPP specific content' do
+      render
   
-    #   expect(rendered).to have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
-    # end
+      expect(rendered).to_not have_content(t('in_person_proofing.headings.barcode_eipp'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.state_id.heading_eipp'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.state_id.info_eipp'))
+      expect(rendered).to_not have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
+      expect(rendered).to_not have_content(t('in_person_proofing.body.barcode.what_to_bring'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_bring_id.heading'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_bring_id.info'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_what_to_bring.heading'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_what_to_bring.info'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_state_id_passport.heading'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_state_id_passport.info'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_state_id_military_id.heading'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_state_id_military_id.info'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_state_id_supporting_docs.info'))
+
+      t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+        expect(rendered).to_not have_content(strip_tags(item))
+      end
+    end
   end
 
-  context 'For Enhanced IPP (eipp)' do
+  context 'For Enhanced IPP (EIPP)' do
     let(:eipp_required) { true }
   
     before do
@@ -183,7 +200,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
 
     context 'template displays modified content' do
-      it 'conditionally renders content in the what to expect section applicable to eipp' do
+      it 'conditionally renders content in the what to expect section applicable to EIPP' do
         render
 
         expect(rendered).to have_content(t('in_person_proofing.headings.barcode_eipp'))
@@ -202,7 +219,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
           category: 'verify-your-identity',
           article: 'verify-your-identity-in-person',
         ),
-      ).once 
+      ).once
     end
 
     context 'template displays additional (EIPP specific) content' do
