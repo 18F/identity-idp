@@ -1142,7 +1142,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] exception
   # @param [Boolean] billed
   # @param [String] doc_auth_result
@@ -1203,7 +1202,6 @@ module AnalyticsEvents
     client_image_metrics:,
     flow_path:,
     liveness_checking_required:,
-    error_details: nil,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
@@ -1234,7 +1232,6 @@ module AnalyticsEvents
       'IdV: doc auth image upload vendor submitted',
       success:,
       errors:,
-      error_details:,
       exception:,
       billed:,
       doc_auth_result:,
