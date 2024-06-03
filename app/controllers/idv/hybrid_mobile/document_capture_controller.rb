@@ -39,8 +39,7 @@ module Idv
       end
 
       def extra_view_variables
-        doc_auth_selfie_capture = FeatureManagement.idv_allow_selfie_check? &&
-                                  resolved_authn_context_result.biometric_comparison?
+        doc_auth_selfie_capture = resolved_authn_context_result.biometric_comparison?
 
         {
           flow_path: 'hybrid',
@@ -55,9 +54,7 @@ module Idv
       private
 
       def analytics_arguments
-        biometric_comparison_required =
-          FeatureManagement.idv_allow_selfie_check? &&
-          resolved_authn_context_result.biometric_comparison?
+        biometric_comparison_required = resolved_authn_context_result.biometric_comparison?
 
         {
           flow_path: 'hybrid',

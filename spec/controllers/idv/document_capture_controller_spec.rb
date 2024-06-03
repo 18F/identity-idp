@@ -21,7 +21,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
   end
 
   # selfie related test flags
-  let(:doc_auth_selfie_capture_enabled) { false }
   let(:sp_selfie_enabled) { false }
   let(:flow_path) { 'standard' }
 
@@ -31,11 +30,8 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     stub_analytics
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
 
-    vot = (doc_auth_selfie_capture_enabled && sp_selfie_enabled) ? 'Pb' : 'P1'
+    vot = sp_selfie_enabled ? 'Pb' : 'P1'
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
-
-    allow(FeatureManagement).to receive(:idv_allow_selfie_check?).
-      and_return(doc_auth_selfie_capture_enabled)
 
     allow(controller).to receive(:resolved_authn_context_result).
       and_return(resolved_authn_context)
@@ -49,8 +45,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     end
 
     context 'when selfie feature is enabled system wide' do
-      let(:doc_auth_selfie_capture_enabled) { true }
-
       describe 'with sp selfie disabled' do
         let(:sp_selfie_enabled) { false }
 
@@ -109,7 +103,7 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         skip_hybrid_handoff: nil,
         step: 'document_capture',
         liveness_checking_required: false,
-        selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
+        selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
     end
 
@@ -128,7 +122,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
     end
 
     context 'when a selfie is requested' do
-      let(:doc_auth_selfie_capture_enabled) { true }
       let(:sp_selfie_enabled) { true }
       let(:desktop_selfie_enabled) { false }
       before do
@@ -270,7 +263,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
 
     context 'ipp disabled for sp' do
       let(:sp_selfie_enabled) { true }
-      let(:doc_auth_selfie_capture_enabled) { true }
 
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
@@ -300,7 +292,7 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         skip_hybrid_handoff: nil,
         step: 'document_capture',
         liveness_checking_required: false,
-        selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
+        selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
     end
     let(:result) { { success: true, errors: {} } }

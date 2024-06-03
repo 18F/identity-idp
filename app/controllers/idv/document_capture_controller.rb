@@ -43,9 +43,7 @@ module Idv
     end
 
     def extra_view_variables
-      doc_auth_selfie_capture =
-        FeatureManagement.idv_allow_selfie_check? &&
-        resolved_authn_context_result.biometric_comparison?
+      doc_auth_selfie_capture = resolved_authn_context_result.biometric_comparison?
 
       {
         document_capture_session_uuid: document_capture_session_uuid,
@@ -96,9 +94,7 @@ module Idv
     end
 
     def analytics_arguments
-      liveness_checking_required =
-        FeatureManagement.idv_allow_selfie_check? &&
-        resolved_authn_context_result.biometric_comparison?
+      liveness_checking_required = resolved_authn_context_result.biometric_comparison?
 
       {
         flow_path: flow_path,

@@ -6,10 +6,6 @@ RSpec.feature 'Sign in with multiple vectors of trust', allowed_extra_analytics:
   include IdvHelper
   include DocAuthHelper
 
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-  end
-
   context 'with OIDC' do
     context 'biometric and non-biometric proofing is acceptable' do
       scenario 'identity proofing is not required if user is proofed with biometric' do

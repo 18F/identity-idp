@@ -106,7 +106,6 @@ module IdentityConfig
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
-    config.add(:doc_auth_selfie_capture_enabled, type: :boolean)
     config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
