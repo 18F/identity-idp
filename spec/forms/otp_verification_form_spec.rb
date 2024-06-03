@@ -25,6 +25,7 @@ RSpec.describe OtpVerificationForm do
       it 'returns a successful response' do
         expect(result.to_h).to eq(
           success: true,
+          error_details: {},
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
         )
       end

@@ -107,6 +107,7 @@ RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
       {
         success: true,
         errors: {},
+        error_details: {},
         step: 'agreement',
         analytics_id: 'Doc Auth',
         skip_hybrid_handoff: nil,

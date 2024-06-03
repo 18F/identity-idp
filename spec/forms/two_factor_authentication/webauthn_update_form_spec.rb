@@ -15,6 +15,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
       expect(result.success?).to eq(true)
       expect(result.to_h).to eq(
         success: true,
+        error_details: {},
         configuration_id:,
         platform_authenticator: false,
       )

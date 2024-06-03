@@ -22,6 +22,7 @@ RSpec.describe BackupCodeVerificationForm do
         {
           success: true,
           errors: {},
+          error_details: {},
           multi_factor_auth_method: 'backup_code',
           multi_factor_auth_method_created_at: backup_code_config.created_at.strftime('%s%L'),
         }
@@ -44,6 +45,7 @@ RSpec.describe BackupCodeVerificationForm do
         {
           success: false,
           errors: {},
+          error_details: {},
           multi_factor_auth_method: 'backup_code',
           multi_factor_auth_method_created_at: nil,
         }

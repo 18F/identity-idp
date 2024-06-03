@@ -23,6 +23,7 @@ RSpec.describe WebauthnVisitForm do
       expect(subject.submit(params).to_h).to eq(
         success: true,
         errors: {},
+        error_details: {},
         platform_authenticator: false,
         enabled_mfa_methods_count: 0,
       )
@@ -35,6 +36,7 @@ RSpec.describe WebauthnVisitForm do
         expect(subject.submit(params).to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           platform_authenticator: true,
           enabled_mfa_methods_count: 0,
         )

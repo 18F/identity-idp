@@ -109,7 +109,12 @@ RSpec.describe RegisterUserEmailForm do
       it 'sets success to true to prevent revealing account existence' do
         expect(
           subject.submit(email: variation_of_preexisting_email, terms_accepted: '1').to_h,
-        ).to eq(success: true, errors: {}, **extra_params)
+        ).to eq(
+          success: true,
+          errors: {},
+          error_details: {},
+          **extra_params,
+        )
         expect(subject.email).to eq registered_email_address
         expect_delivered_email_count(1)
         expect_delivered_email(
@@ -162,6 +167,7 @@ RSpec.describe RegisterUserEmailForm do
         expect(result).to eq(
           success: true,
           errors: {},
+          error_details: {},
           **extra_params,
         )
       end
@@ -235,6 +241,7 @@ RSpec.describe RegisterUserEmailForm do
         expect(submit_form.to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           **extra,
         )
       end
@@ -359,6 +366,7 @@ RSpec.describe RegisterUserEmailForm do
         expect(result.to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           email_already_exists: false,
           rate_limited: false,
           user_id: User.find_with_email(unregistered_email_address).uuid,
@@ -424,6 +432,7 @@ RSpec.describe RegisterUserEmailForm do
         expect(submit_form.to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           **extra,
         )
 
@@ -450,6 +459,7 @@ RSpec.describe RegisterUserEmailForm do
         expect(submit_form.to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           **extra,
         )
       end

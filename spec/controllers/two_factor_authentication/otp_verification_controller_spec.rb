@@ -294,6 +294,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: true,
+          error_details: {},
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',

@@ -133,6 +133,7 @@ RSpec.describe Idv::InPerson::AddressController do
         {
           success: true,
           errors: {},
+          error_details: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',
@@ -220,6 +221,7 @@ RSpec.describe Idv::InPerson::AddressController do
         {
           success: false,
           errors: {},
+          error_details: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',

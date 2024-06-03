@@ -221,6 +221,7 @@ RSpec.describe Idv::HowToVerifyController do
           skip_hybrid_handoff: nil,
           step: 'how_to_verify',
           errors: {},
+          error_details: {},
           success: true,
           'selection' => selection,
         }.merge(ab_test_args)
@@ -248,6 +249,7 @@ RSpec.describe Idv::HowToVerifyController do
           skip_hybrid_handoff: nil,
           step: 'how_to_verify',
           errors: {},
+          error_details: {},
           success: true,
           'selection' => selection,
         }.merge(ab_test_args)

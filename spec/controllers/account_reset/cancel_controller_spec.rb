@@ -14,6 +14,7 @@ RSpec.describe AccountReset::CancelController, allowed_extra_analytics: [:*] do
       analytics_hash = {
         success: true,
         errors: {},
+        error_details: {},
         user_id: user.uuid,
         message_id: 'fake-message-id',
         request_id: 'fake-message-request-id',

@@ -44,6 +44,7 @@ RSpec.describe WebauthnSetupForm do
         expect(subject.submit(protocol, params).to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           **extra_attributes,
         )
 
@@ -132,6 +133,7 @@ RSpec.describe WebauthnSetupForm do
           expect(result.to_h).to eq(
             success: true,
             errors: {},
+            error_details: {},
             enabled_mfa_methods_count: 1,
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',

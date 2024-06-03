@@ -558,6 +558,7 @@ RSpec.describe FakeAnalytics do
         analytics.idv_phone_confirmation_otp_submitted(
           success: true,
           errors: true,
+          error_details: true,
           code_expired: true,
           code_matches: true,
           otp_delivery_preference: :sms,
@@ -574,6 +575,7 @@ RSpec.describe FakeAnalytics do
       analytics.idv_phone_confirmation_otp_submitted(
         success: true,
         errors: true,
+        error_details: true,
         code_expired: true,
         code_matches: true,
         otp_delivery_preference: :sms,
@@ -593,6 +595,7 @@ RSpec.describe FakeAnalytics do
       analytics.idv_phone_confirmation_otp_submitted(
         success: true,
         errors: true,
+        error_details: true,
         code_expired: true,
         code_matches: true,
         otp_delivery_preference: :sms,

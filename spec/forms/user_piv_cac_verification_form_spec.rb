@@ -31,6 +31,7 @@ RSpec.describe UserPivCacVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             errors: { type: 'user.no_piv_cac_associated' },
+            error_details: {},
             multi_factor_auth_method: 'piv_cac',
             piv_cac_configuration_id: nil,
             multi_factor_auth_method_created_at: nil,
@@ -51,6 +52,7 @@ RSpec.describe UserPivCacVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             errors: { type: 'user.piv_cac_mismatch' },
+            error_details: {},
             multi_factor_auth_method: 'piv_cac',
             multi_factor_auth_method_created_at: nil,
             piv_cac_configuration_id: nil,
@@ -72,6 +74,7 @@ RSpec.describe UserPivCacVerificationForm do
           expect(result.to_h).to eq(
             success: true,
             errors: {},
+            error_details: {},
             multi_factor_auth_method: 'piv_cac',
             piv_cac_configuration_id: piv_cac_configuration.id,
             multi_factor_auth_method_created_at: piv_cac_configuration.created_at.strftime('%s%L'),
@@ -90,6 +93,7 @@ RSpec.describe UserPivCacVerificationForm do
             expect(result.to_h).to eq(
               success: false,
               errors: { type: 'token.invalid' },
+              error_details: {},
               multi_factor_auth_method: 'piv_cac',
               piv_cac_configuration_id: nil,
               multi_factor_auth_method_created_at: nil,
@@ -117,6 +121,7 @@ RSpec.describe UserPivCacVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           errors: { type: 'token.bad' },
+          error_details: {},
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
           piv_cac_configuration_dn_uuid: nil,
@@ -136,6 +141,7 @@ RSpec.describe UserPivCacVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           errors: {},
+          error_details: {},
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
           piv_cac_configuration_id: nil,

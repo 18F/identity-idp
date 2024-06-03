@@ -114,6 +114,7 @@ RSpec.describe PasswordForm, type: :model do
         {
           success: true,
           errors: {},
+          error_details: {},
           user_id: user.uuid,
           request_id_present: true,
         }
@@ -135,6 +136,7 @@ RSpec.describe PasswordForm, type: :model do
           {
             success: true,
             errors: {},
+            error_details: {},
             user_id: user.uuid,
             request_id_present: true,
           }

@@ -176,6 +176,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
         {
           success: true,
           errors: {},
+          error_details: {},
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
           step: 'document_capture',

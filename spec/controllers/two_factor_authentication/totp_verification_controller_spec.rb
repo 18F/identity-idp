@@ -54,6 +54,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           'Multi-Factor Authentication',
           success: true,
           errors: {},
+          error_details: {},
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           new_device: true,
@@ -173,6 +174,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           'Multi-Factor Authentication',
           success: false,
           errors: {},
+          error_details: {},
           multi_factor_auth_method: 'totp',
           new_device: true,
         )

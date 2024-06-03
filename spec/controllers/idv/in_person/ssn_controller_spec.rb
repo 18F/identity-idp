@@ -122,6 +122,7 @@ RSpec.describe Idv::InPerson::SsnController do
           step: 'ssn',
           success: true,
           errors: {},
+          error_details: {},
           same_address_as_id: true,
           pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)

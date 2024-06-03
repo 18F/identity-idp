@@ -158,6 +158,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             context: 'authentication',
             multi_factor_auth_method: 'webauthn',
             success: true,
+            error_details: {},
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
             new_device: true,
@@ -216,6 +217,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               context: 'authentication',
               multi_factor_auth_method: 'webauthn_platform',
               success: true,
+              error_details: {},
               webauthn_configuration_id: webauthn_configuration.id,
               multi_factor_auth_method_created_at: webauthn_configuration.created_at.
                 strftime('%s%L'),

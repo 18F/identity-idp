@@ -48,6 +48,7 @@ RSpec.describe WebauthnVerificationForm do
       it 'returns successful result' do
         expect(result.to_h).to eq(
           success: true,
+          error_details: {},
           multi_factor_auth_method: 'webauthn',
           webauthn_configuration_id: webauthn_configuration.id,
         )
@@ -59,6 +60,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns successful result' do
           expect(result.to_h).to eq(
             success: true,
+            error_details: {},
             multi_factor_auth_method: 'webauthn_platform',
             webauthn_configuration_id: webauthn_configuration.id,
           )
@@ -71,6 +73,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns successful result excluding frontend_error' do
           expect(result.to_h).to eq(
             success: true,
+            error_details: {},
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )

@@ -118,6 +118,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         'User Registration: 2FA Setup',
         success: true,
         errors: {},
+        error_details: {},
         enabled_mfa_methods_count: 0,
         selected_mfa_count: 1,
         selection: ['voice'],
@@ -132,6 +133,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         enabled_mfa_methods_count: 0,
         selection: ['voice', 'auth_app'],
         success: true,
+        error_details: {},
         selected_mfa_count: 2,
         errors: {},
       }

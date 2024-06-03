@@ -20,6 +20,7 @@ RSpec.describe TotpSetupForm do
         expect(form.submit.to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           **extra,
         )
         expect(user.auth_app_configurations.any?).to eq true

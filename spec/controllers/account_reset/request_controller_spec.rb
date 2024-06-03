@@ -105,6 +105,7 @@ RSpec.describe AccountReset::RequestController do
         piv_cac: false,
         email_addresses: 1,
         errors: {},
+        error_details: {},
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
 
@@ -125,6 +126,7 @@ RSpec.describe AccountReset::RequestController do
         request_id: 'fake-message-request-id',
         message_id: 'fake-message-id',
         errors: {},
+        error_details: {},
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
 
@@ -143,6 +145,7 @@ RSpec.describe AccountReset::RequestController do
         piv_cac: true,
         email_addresses: 1,
         errors: {},
+        error_details: {},
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
 

@@ -296,6 +296,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         {
           success: true,
           errors: { message: nil },
+          error_details: {},
           destination: :link_sent,
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
@@ -354,6 +355,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         {
           success: true,
           errors: {},
+          error_details: {},
           destination: :document_capture,
           flow_path: 'standard',
           step: 'hybrid_handoff',

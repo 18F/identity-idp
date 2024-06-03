@@ -54,6 +54,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         expect(subject.submit(params).to_h).to eq(
           success: true,
           errors: {},
+          error_details: {},
           active_profile_present: false,
           pending_profile_present: false,
           user_id: user.uuid,
