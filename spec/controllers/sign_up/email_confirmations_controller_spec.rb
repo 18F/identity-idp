@@ -61,7 +61,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: false,
         errors: { email: [t('errors.messages.already_confirmed')] },
-        error_details: {},
+        error_details: nil,
         user_id: email_address.user.uuid,
       }
 

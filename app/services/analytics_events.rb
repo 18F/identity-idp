@@ -5454,7 +5454,7 @@ module AnalyticsEvents
   def user_registration_email_confirmation(
     success:,
     errors:,
-    error_details:,
+    error_details: nil,
     user_id: nil,
     **extra
   )
