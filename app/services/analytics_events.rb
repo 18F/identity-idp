@@ -625,7 +625,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] exception
   # @param [String] profile_fraud_review_pending_at
   # The user was passed by manual fraud review
@@ -634,23 +633,20 @@ module AnalyticsEvents
     errors:,
     exception:,
     profile_fraud_review_pending_at:,
-    error_details: nil,
     **extra
   )
     track_event(
       'Fraud: Profile review passed',
-      success:,
-      errors:,
-      error_details:,
-      exception:,
-      profile_fraud_review_pending_at:,
+      success: success,
+      errors: errors,
+      exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       **extra,
     )
   end
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] exception
   # @param [String] profile_fraud_review_pending_at
   # The user was rejected by manual fraud review
@@ -659,16 +655,14 @@ module AnalyticsEvents
     errors:,
     exception:,
     profile_fraud_review_pending_at:,
-    error_details: nil,
     **extra
   )
     track_event(
       'Fraud: Profile review rejected',
-      success:,
-      errors:,
-      error_details:,
-      exception:,
-      profile_fraud_review_pending_at:,
+      success: success,
+      errors: errors,
+      exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       **extra,
     )
   end
