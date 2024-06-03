@@ -1,8 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.feature 'Accessibility on pages that require authentication', :js,
-              allowed_extra_analytics: [:*] do
+RSpec.feature 'Accessibility on pages that require authentication', :js do
   scenario 'user registration page' do
     email = 'test@example.com'
     sign_up_with(email)
