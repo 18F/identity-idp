@@ -3664,14 +3664,14 @@ module AnalyticsEvents
   # @param [String] method
   # Logout Initiated
   def logout_initiated(
-    success: nil,
+    success:,
+    errors:,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
-    errors: nil,
     error_details: nil,
     method: nil,
     **extra
@@ -4035,15 +4035,15 @@ module AnalyticsEvents
   # @param [String] original_method Method of referring request
   # OIDC Logout Requested
   def oidc_logout_requested(
-    success: nil,
+    success:,
+    errors:,
+    error_details: nil,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
-    errors: nil,
-    error_details: nil,
     method: nil,
     original_method: nil,
     **extra
@@ -4117,14 +4117,14 @@ module AnalyticsEvents
   # @param [String] method
   # OIDC Logout Visited
   def oidc_logout_visited(
-    success: nil,
+    success:,
+    errors:,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
-    errors: nil,
     error_details: nil,
     method: nil,
     **extra
