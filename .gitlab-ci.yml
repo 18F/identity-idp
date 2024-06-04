@@ -1,5 +1,5 @@
-# Jobs defined here use the idp/ci docker image from ECR by default. To find
-# other available images:
+# Jobs defined here use the idp/ci docker image from ECR by default. To
+# find other available images:
 #   aws ecr describe-repositories | jq '.repositories[].repositoryUri'
 # Images are built via the identity-devops GitLab pipeline.
 
