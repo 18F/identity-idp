@@ -13,6 +13,10 @@ import AcuantContext from '../context/acuant';
  * @param {(nextValue: any) => void} onChangeCallback Callback to trigger on change.
  */
 export function defineObservableProperty(object, property, onChangeCallback) {
+  if (Object.hasOwn(object, property)) {
+    return;
+  }
+
   let currentValue;
 
   Object.defineProperty(object, property, {
