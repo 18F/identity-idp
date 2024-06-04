@@ -117,11 +117,11 @@ COPY ./.browserslistrc ./.browserslistrc
 COPY keys.example $RAILS_ROOT/keys
 
 # Copy big files
-ARG CI_JOB_TOKEN
+ARG LARGE_FILES_USER
+ARG LARGE_FILES_TOKEN
 RUN mkdir -p $RAILS_ROOT/geo_data && chmod 755 $RAILS_ROOT/geo_data
 RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_passwords
-RUN echo token is $CI_JOB_TOKEN ; echo $CI_JOB_TOKEN | tr 'A-Za-z' 'N-ZA-Mn-za-m'
-RUN git clone --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git && \
+RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git && \
     cp idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/ && \
     cp idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/ && \
     cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/ && \
