@@ -46,9 +46,6 @@ module Idv
       analytics.idv_doc_auth_ssn_submitted(
         **analytics_arguments.merge(form_response.to_h),
       )
-      irs_attempts_api_tracker.idv_ssn_submitted(
-        ssn: params[:doc_auth][:ssn],
-      )
 
       if form_response.success?
         idv_session.ssn = params[:doc_auth][:ssn]
@@ -87,7 +84,6 @@ module Idv
         flow_path: idv_session.flow_path,
         step: 'ssn',
         analytics_id: 'Doc Auth',
-        irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
   end

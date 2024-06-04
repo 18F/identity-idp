@@ -26,7 +26,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
     before do
       stub_analytics
-      stub_attempts_tracker
       sign_in_before_2fa(user)
     end
 
@@ -41,7 +40,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
         before do
           allow(@analytics).to receive(:track_event)
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
         end
 
         it 'tracks an analytics event' do
@@ -139,10 +137,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         it 'tracks a valid submission' do
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_login_webauthn_roaming,
-            success: true,
-          )
           expect(controller).to receive(:handle_valid_verification_for_authentication_context).
             with(auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN).
             and_call_original
@@ -204,11 +198,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           end
 
           it 'tracks a valid submission' do
-            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-              :mfa_login_webauthn_platform,
-              success: true,
-            )
-
             freeze_time do
               patch :confirm, params: params
               expect(subject.user_session[:auth_events]).to eq(

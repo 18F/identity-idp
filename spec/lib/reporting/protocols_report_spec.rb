@@ -10,19 +10,28 @@ RSpec.describe Reporting::ProtocolsReport do
     protocol_query_response = [
       {
         'protocol' => 'SAML Auth',
+        'issuer' => 'Issuer 1',
         'request_count' => '8',
       },
       {
         'protocol' => 'SAML Auth',
+        'issuer' => 'Issuer 1',
         'request_count' => '2',
       },
       {
         'protocol' => 'SAML Auth',
+        'issuer' => 'Issuer 2',
         'request_count' => '10',
       },
       {
         'protocol' => 'OpenID Connect: authorization request',
-        'request_count' => '80',
+        'issuer' => 'Issuer 3',
+        'request_count' => '60',
+      },
+      {
+        'protocol' => 'OpenID Connect: authorization request',
+        'issuer' => 'Issuer 4',
+        'request_count' => '20',
       },
     ]
     saml_signature_query_response = [
@@ -183,17 +192,19 @@ RSpec.describe Reporting::ProtocolsReport do
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
       ],
       [
-        ['Authentication Protocol', '% of attempts', 'Total number'],
-        ['SAML', string_or_num(strings, 20.0), string_or_num(strings, 20)],
-        ['OIDC', string_or_num(strings, 80.0), string_or_num(strings, 80)],
+        ['Authentication Protocol', '% of requests', 'Total requests', 'Count of issuers'],
+        ['SAML', string_or_num(strings, 20.0), string_or_num(strings, 20),
+         string_or_num(strings, 2)],
+        ['OIDC', string_or_num(strings, 80.0), string_or_num(strings, 80),
+         string_or_num(strings, 2)],
       ],
       [
-        ['Issue', 'Count of integrations with the issue', 'List of issuers with the issue'],
+        ['Issue', 'Count of issuers with the issue', 'List of issuers with the issue'],
         ['Not signing SAML authentication requests', string_or_num(strings, 2), 'Issuer1, Issuer3'],
         ['Incorrectly signing SAML authentication requests', string_or_num(strings, 1), 'Issuer1'],
       ],
       [
-        ['Count of integrations using LOA', 'List of issuers with the issue'],
+        ['Count of issuers using LOA', 'List of issuers with the issue'],
         [
           string_or_num(strings, 3),
           'Issuer1, Issuer2, Issuer3',

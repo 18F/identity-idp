@@ -5,14 +5,9 @@ import './countdown-element';
 describe('CountdownAlertElement', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
 
-  function createElement({
-    showAtRemaining,
-    redirectURL,
-  }: { showAtRemaining?: number; redirectURL?: string } = {}) {
+  function createElement({ showAtRemaining }: { showAtRemaining?: number } = {}) {
     document.body.innerHTML = `
-      <lg-countdown-alert
-        ${showAtRemaining ? `show-at-remaining="${showAtRemaining}"` : ''}
-        ${redirectURL ? `redirect-url="${redirectURL}"` : ''}>
+      <lg-countdown-alert ${showAtRemaining ? `show-at-remaining="${showAtRemaining}"` : ''}>
         <div class="usa-alert usa-alert--info margin-bottom-4 usa-alert--info-time" role="status">
           <div class="usa-alert__body">
             <p class="usa-alert__text">
@@ -45,14 +40,5 @@ describe('CountdownAlertElement', () => {
       sandbox.clock.tick(1000);
       expect(element.show).to.have.been.called();
     });
-  });
-
-  it('redirects when time has expired', () => {
-    createElement({ redirectURL: '#teapot' });
-
-    sandbox.clock.tick(91000);
-    expect(window.location.hash).to.equal('');
-    sandbox.clock.tick(1000);
-    expect(window.location.hash).to.equal('#teapot');
   });
 });

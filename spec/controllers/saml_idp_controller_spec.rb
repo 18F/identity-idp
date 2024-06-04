@@ -16,13 +16,9 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
     it 'tracks the event when idp initiated' do
       stub_analytics
-      stub_attempts_tracker
 
       result = { sp_initiated: false, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
 
       delete :logout, params: { path_year: path_year }
     end
@@ -30,26 +26,18 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
     it 'tracks the event when sp initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlLogoutRequest.new)
       stub_analytics
-      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
 
       delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     it 'tracks the event when the saml request is invalid' do
       stub_analytics
-      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
 
       delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
@@ -133,7 +121,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
       let(:blank_cert_element_req) do
-        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+        <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
           <?xml version="1.0"?>
           <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2024" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
@@ -803,6 +791,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           with('SAML Auth', {
             success: true,
             errors: {},
+            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             authn_context_comparison: 'exact',
@@ -952,6 +941,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           with('SAML Auth', {
             success: true,
             errors: {},
+            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
             authn_context_comparison: 'minimum',
@@ -1451,6 +1441,52 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       end
     end
 
+    context 'service provider uses email NameID format and is allowed to use email' do
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        settings = saml_settings(
+          overrides: {
+            issuer: sp1_issuer,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          },
+        )
+        ServiceProvider.
+          find_by(issuer: settings.issuer).
+          update!(email_nameid_format_allowed: true)
+        generate_saml_response(user, settings)
+      end
+
+      # Testing the <saml:Subject> element when the SP is configured to use a
+      # NameID format of emailAddress rather than the default persistent UUID.
+      context 'Subject' do
+        let(:subject) do
+          xmldoc.subject_nodeset[0]
+        end
+
+        it 'has a saml:Subject element' do
+          expect(subject).to_not be_nil
+        end
+
+        context 'NameID' do
+          let(:name_id) { subject.at('//ds:NameID', ds: Saml::XML::Namespaces::ASSERTION) }
+
+          it 'has a saml:NameID element' do
+            expect(name_id).to_not be_nil
+          end
+
+          it 'has a format attribute defining the NameID to be email' do
+            expect(name_id.attributes['Format'].value).
+              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
+          end
+
+          it 'has NameID value of the email address of the user making the AuthN Request' do
+            expect(name_id.children.first.to_s).to eq(user.email)
+          end
+        end
+      end
+    end
+
     context 'no matching cert from the SAML request' do
       let(:user) { create(:user, :fully_registered) }
 
@@ -1481,6 +1517,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -1513,7 +1550,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
       let(:blank_cert_element_req) do
-        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+        <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
           <?xml version="1.0"?>
           <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2024" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
@@ -1610,6 +1647,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
           authn_context_comparison: 'exact',
@@ -1627,143 +1665,222 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       end
     end
 
-    describe 'NameID format' do
+    context 'nameid_format is missing' do
       let(:user) { create(:user, :fully_registered) }
-      let(:subject_element) { xmldoc.subject_nodeset[0] }
-      let(:name_id) { subject_element.at('//ds:NameID', ds: Saml::XML::Namespaces::ASSERTION) }
-      let(:auth_settings) { saml_settings(overrides: { name_identifier_format: }) }
-      let(:name_identifier_format) { nil }
-      let(:email_allowed) { nil }
-      let(:use_legacy_name_id_behavior) { nil }
 
       before do
         stub_analytics
-        service_provider = ServiceProvider.find_by(issuer: auth_settings.issuer)
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'defaults to persistent' do
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
         IdentityLinker.new(user, service_provider).link_identity
-        service_provider.update!(
-          use_legacy_name_id_behavior:,
-          email_nameid_format_allowed: email_allowed,
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          error_details: nil,
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'http://localhost:3000',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+
+      it 'defaults to email when added to issuers_with_email_nameid_format' do
+        auth_settings = saml_settings(
+          overrides: {
+            issuer: sp1_issuer,
+            name_identifier_format: nil,
+          },
         )
+        ServiceProvider.
+          find_by(issuer: auth_settings.issuer).
+          update!(email_nameid_format_allowed: true)
+        IdentityLinker.new(user, sp1).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          error_details: nil,
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: auth_settings.issuer,
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+    end
+
+    context 'service provider uses email NameID format but is not allowed to use email' do
+      it 'returns an error' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        auth_settings = saml_settings(
+          overrides: { name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL },
+        )
+        saml_get_auth(auth_settings)
+
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.unauthorized_nameid_format'))
+
+        analytics_hash = {
+          success: false,
+          errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
+          error_details: { nameid_format: { unauthorized_nameid_format: true } },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          service_provider: 'http://localhost:3000',
+          request_signed: true,
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          matching_cert_serial: saml_test_sp_cert_serial,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+    end
+
+    context 'service provider sends unsupported NameID format' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
+      let(:subject) { xmldoc.subject_nodeset[0] }
+      let(:name_id) { subject.at('//ds:NameID', ds: Saml::XML::Namespaces::ASSERTION) }
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
       end
 
-      shared_examples_for 'sends the UUID' do
-        it 'sends the UUID' do
-          generate_saml_response(user, auth_settings)
+      it 'sends the appropriate identifier for non-email NameID SPs' do
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
+        auth_settings.name_identifier_format =
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
 
-          expect(response.status).to eq(200)
+        expect(response.status).to eq(200)
 
-          expect(name_id.attributes['Format'].value).
-            to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
+        analytics_hash = {
+          success: true,
+          errors: {},
+          error_details: nil,
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'http://localhost:3000',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
+        }
 
-          expect(name_id.children.first.to_s).to eq(user.last_identity.uuid)
-        end
+        expect(name_id.children.first.to_s).to eq(user.agency_identities.last.uuid)
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
       end
 
-      shared_examples_for 'sends the email' do
-        it 'sends the email' do
-          generate_saml_response(user, auth_settings)
+      it 'sends the appropriate identifier for email NameID SPs' do
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
+        auth_settings.name_identifier_format =
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        service_provider = ServiceProvider.find_by(issuer: auth_settings.issuer)
+        service_provider.update!(email_nameid_format_allowed: true)
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
 
-          expect(response.status).to eq(200)
+        expect(response.status).to eq(200)
 
-          expect(name_id.attributes['Format'].value).
-            to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
+        analytics_hash = {
+          success: true,
+          errors: {},
+          error_details: nil,
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: auth_settings.issuer,
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
+        }
 
-          expect(name_id.children.first.to_s).to eq(user.email)
-        end
+        expect(name_id.children.first.to_s).to eq(user.email_addresses.first.email)
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
       end
 
-      shared_examples_for 'returns an unauthorized nameid error' do
-        it 'returns an error' do
-          generate_saml_response(user, auth_settings)
+      it 'sends the old user ID for legacy SPS' do
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
+        auth_settings.name_identifier_format =
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        service_provider = ServiceProvider.find_by(issuer: auth_settings.issuer)
+        service_provider.update!(use_legacy_name_id_behavior: true)
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
 
-          expect(controller).to render_template('saml_idp/auth/error')
-          expect(response.status).to eq(400)
-          expect(response.body).to include(t('errors.messages.unauthorized_nameid_format'))
-        end
-      end
+        expect(response.status).to eq(200)
 
-      context 'when the NameID format has the value "unspecified"' do
-        let(:name_identifier_format) { Saml::Idp::Constants::NAME_ID_FORMAT_UNSPECIFIED }
+        analytics_hash = {
+          success: true,
+          errors: {},
+          error_details: nil,
+          nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
+          authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'http://localhost:3000',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          request_signed: true,
+          matching_cert_serial: saml_test_sp_cert_serial,
+        }
 
-        context 'when the service provider is not configured with use_legacy_name_id_behavior' do
-          let(:use_legacy_name_id_behavior) { false }
-
-          it_behaves_like 'sends the UUID'
-        end
-        context 'when the service provider is configured with use_legacy_name_id_behavior' do
-          let(:use_legacy_name_id_behavior) { true }
-          it 'sends the id, not the UUID' do
-            generate_saml_response(user, auth_settings)
-
-            expect(response.status).to eq(200)
-
-            expect(name_id.attributes['Format'].value).
-              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
-
-            expect(name_id.children.first.to_s).to eq(user.id.to_s)
-          end
-        end
-      end
-
-      context 'when the NameID format is missing' do
-        let(:name_identifier_format) { nil }
-
-        context 'when the service provider is not configured with use_legacy_name_id_behavior' do
-          let(:use_legacy_name_id_behavior) { false }
-
-          it_behaves_like 'sends the UUID'
-        end
-        context 'when the service provider is configured with use_legacy_name_id_behavior' do
-          let(:use_legacy_name_id_behavior) { true }
-          it_behaves_like 'sends the UUID'
-        end
-      end
-
-      context 'when the NameID format is "persistent"' do
-        let(:name_identifier_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
-
-        it_behaves_like 'sends the UUID'
-      end
-
-      context 'when the NameID format is "email"' do
-        let(:name_identifier_format) { Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL }
-
-        context 'when the service provider is not allowed to use email' do
-          let(:email_allowed) { false }
-
-          it_behaves_like 'returns an unauthorized nameid error'
-        end
-
-        context 'when the service provider is allowed to use email' do
-          let(:email_allowed) { true }
-          it_behaves_like 'sends the email'
-        end
-      end
-
-      context 'when the NameID format is an unsupported value' do
-        let(:name_identifier_format) { 'urn:oasis:names:tc:SAML:1.1:nameid-format:transient' }
-        let(:use_legacy_name_id_behavior) { nil }
-
-        context 'when the service provider is not configured with use_legacy_name_id_behavior' do
-          let(:use_legacy_name_id_behavior) { false }
-
-          it_behaves_like 'returns an unauthorized nameid error'
-        end
-
-        context 'when the service provider is configured with use_legacy_name_id_behavior' do
-          let(:use_legacy_name_id_behavior) { true }
-
-          it 'sends the id, not the UUID' do
-            generate_saml_response(user, auth_settings)
-
-            expect(response.status).to eq(200)
-
-            expect(name_id.attributes['Format'].value).
-              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
-
-            expect(name_id.children.first.to_s).to eq(user.id.to_s)
-          end
-        end
+        expect(name_id.children.first.to_s).to eq(user.id.to_s)
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -2233,6 +2350,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -2288,6 +2406,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -2339,6 +2458,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',

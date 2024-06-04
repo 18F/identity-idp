@@ -37,9 +37,6 @@ module Users
             [:error_details, :personal_key, :personal_key],
           ],
         )
-        irs_attempts_api_tracker.personal_key_reactivation_submitted(
-          success: result.success?,
-        )
         if result.success?
           handle_success(decrypted_pii: personal_key_form.decrypted_pii)
         else
@@ -61,8 +58,6 @@ module Users
       analytics.rate_limit_reached(
         limiter_type: :verify_personal_key,
       )
-
-      irs_attempts_api_tracker.personal_key_reactivation_rate_limited
 
       @expires_at = rate_limiter.expires_at
       render :rate_limited

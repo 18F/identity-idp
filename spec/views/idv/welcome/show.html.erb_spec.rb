@@ -45,7 +45,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
         t('doc_auth.info.getting_started_learn_more'),
         href: help_center_redirect_path(
           category: 'verify-your-identity',
-          article: 'how-to-verify-your-identity',
+          article: 'overview',
           flow: :idv,
           step: :welcome,
           location: 'intro_paragraph',
@@ -63,7 +63,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
         t('doc_auth.info.getting_started_learn_more'),
         href: help_center_redirect_path(
           category: 'verify-your-identity',
-          article: 'how-to-verify-your-identity',
+          article: 'overview',
           flow: :idv,
           step: :welcome,
           location: 'intro_paragraph',

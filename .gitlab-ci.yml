@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:0cea6ebf8fa4d693177f46ae9a8c24e6030245f3c795753269b7910178d5cfdd'
+  IDP_CI_SHA: 'sha256:756a1d450b422720dee36cb9a6217687bcad1e40b780219d360989861ce94212'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
 
@@ -413,7 +413,7 @@ trigger_devops:
     name: dtzar/helm-kubectl:latest
   script:
     - kubectl config get-contexts
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep review-apps | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - |-
       export IDP_CONFIG=$(cat <<EOF
@@ -431,7 +431,6 @@ trigger_devops:
         },
         "railsOffline": "true",
         "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },
@@ -464,7 +463,6 @@ trigger_devops:
         },
         "railsOffline": "true",
         "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },
@@ -570,7 +568,7 @@ review-app:
 stop-review-app:
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   script:
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep review-apps | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
   stage: review

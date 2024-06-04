@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SAML logout', allowed_extra_analytics: [:*] do
+RSpec.feature 'SAML logout' do
   include SamlAuthHelper
 
   let(:user) { create(:user, :fully_registered) }

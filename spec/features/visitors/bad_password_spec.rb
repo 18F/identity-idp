@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Visitor signs in with bad passwords and gets locked out',
-              allowed_extra_analytics: [:*] do
+RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
   let(:user) { create(:user, :fully_registered) }
   let(:bad_password) { 'badpassword' }
 

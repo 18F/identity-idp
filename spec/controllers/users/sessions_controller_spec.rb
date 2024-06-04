@@ -18,7 +18,6 @@ RSpec.describe Users::SessionsController, devise: true do
   describe 'DELETE /logout' do
     it 'tracks a logout event' do
       stub_analytics
-      stub_attempts_tracker
       expect(@analytics).to receive(:track_event).with(
         'Logout Initiated',
         hash_including(
@@ -28,10 +27,6 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       sign_in_as_user
-
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
 
       delete :destroy
       expect(controller.current_user).to be nil
@@ -50,7 +45,6 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'tracks the successful authentication for existing user' do
         stub_analytics
-        stub_attempts_tracker
 
         response
 
@@ -72,7 +66,7 @@ RSpec.describe Users::SessionsController, devise: true do
       end
 
       it 'sets new device session value' do
-        expect(controller).to receive(:set_new_device_session)
+        expect(controller).to receive(:set_new_device_session).with(nil)
 
         response
       end
@@ -163,13 +157,6 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks unsuccessful authentication for too many auth failures' do
       allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
       mock_email_parameter = { email: 'bob@example.com' }
-
-      stub_attempts_tracker
-
-      expect(@irs_attempts_api_tracker).to receive(:login_email_and_password_auth).
-        with({ **mock_email_parameter, success: false })
-      expect(@irs_attempts_api_tracker).to receive(:login_rate_limited).
-        with(mock_email_parameter)
 
       post :create, params: { user: { **mock_email_parameter, password: 'eatCake!' } }
     end

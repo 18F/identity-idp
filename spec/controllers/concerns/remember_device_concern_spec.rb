@@ -11,8 +11,8 @@ RSpec.describe RememberDeviceConcern do
         include(RememberDeviceConcern)
 
         attr_reader :sp, :raw_session, :request, :current_user
-        alias :sp_from_sp_session :sp
-        alias :sp_session :raw_session
+        alias_method :sp_from_sp_session, :sp
+        alias_method :sp_session, :raw_session
 
         def initialize(sp, raw_session, request, current_user)
           @sp = sp

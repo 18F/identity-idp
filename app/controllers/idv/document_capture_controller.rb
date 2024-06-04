@@ -104,7 +104,6 @@ module Idv
         flow_path: flow_path,
         step: 'document_capture',
         analytics_id: 'Doc Auth',
-        irs_reproofing: irs_reproofing?,
         redo_document_capture: idv_session.redo_document_capture,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         liveness_checking_required:,

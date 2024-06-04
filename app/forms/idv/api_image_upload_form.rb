@@ -14,15 +14,18 @@ module Idv
     validate :validate_duplicate_images, if: :image_resubmission_check?
     validate :limit_if_rate_limited
 
-    def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil,
-                   liveness_checking_required: false)
+    def initialize(
+      params,
+      service_provider:,
+      analytics: nil,
+      uuid_prefix: nil,
+      liveness_checking_required: false
+    )
       @params = params
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
-      @irs_attempts_api_tracker = irs_attempts_api_tracker
       @liveness_checking_required = liveness_checking_required
     end
 
@@ -48,14 +51,13 @@ module Idv
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
-      track_event(response)
       response
     end
 
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :irs_attempts_api_tracker, :liveness_checking_required
+                :liveness_checking_required
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -301,7 +303,6 @@ module Idv
 
     def track_rate_limited
       analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
-      irs_attempts_api_tracker.idv_document_upload_rate_limited
     end
 
     def document_capture_session_uuid
@@ -342,6 +343,7 @@ module Idv
       add_costs(client_response)
       update_funnel(client_response)
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
+      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
@@ -349,6 +351,7 @@ module Idv
           async: false,
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
+          zip_code: zip_code,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data),
       )
@@ -431,25 +434,6 @@ module Idv
 
     def rate_limited?
       rate_limiter.limited? if document_capture_session
-    end
-
-    def track_event(response)
-      pii_from_doc = response.pii_from_doc.to_h || {}
-
-      irs_attempts_api_tracker.idv_document_upload_submitted(
-        success: response.success?,
-        document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
-        document_front_image_filename: nil,
-        document_back_image_filename: nil,
-        document_image_encryption_key: nil,
-        first_name: pii_from_doc[:first_name],
-        last_name: pii_from_doc[:last_name],
-        date_of_birth: pii_from_doc[:dob],
-        address: pii_from_doc[:address1],
-      )
     end
 
     ##

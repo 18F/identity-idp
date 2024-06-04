@@ -46,7 +46,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
       it 'tracks page visit' do
         stub_sign_in
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).
           with(
@@ -56,7 +55,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
             in_account_creation_flow: false,
           )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event)
         expect(controller.send(:mobile?)).to be false
 
         get :new
@@ -107,6 +105,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           multi_factor_auth_method: 'webauthn',
           success: true,
           errors: {},
+          error_details: nil,
           in_account_creation_flow: false,
           authenticator_data_flags: {
             up: true,
@@ -149,7 +148,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
 
     before do
       stub_analytics
-      stub_attempts_tracker
       stub_sign_in(user)
       allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
       request.host = 'localhost:3000'
@@ -247,6 +245,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
             {
               enabled_mfa_methods_count: 1,
               errors: {},
+              error_details: nil,
               in_account_creation_flow: true,
               mfa_method_counts: { webauthn: 1 },
               multi_factor_auth_method: 'webauthn',
@@ -262,10 +261,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
               platform_authenticator: false,
               success: true,
             )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_roaming, success: true
-          )
 
           patch :confirm, params: params
         end
@@ -318,16 +313,13 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
             {
               enabled_mfa_methods_count: 1,
               errors: {},
+              error_details: nil,
               in_account_creation_flow: true,
               mfa_method_counts: { webauthn_platform: 1 },
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
               success: true,
             },
-          )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: true
           )
 
           patch :confirm, params: params
@@ -374,10 +366,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
               success: false,
             },
-          )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: false
           )
 
           patch :confirm, params: params

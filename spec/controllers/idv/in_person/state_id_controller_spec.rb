@@ -69,7 +69,6 @@ RSpec.describe Idv::InPerson::StateIdController do
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
-        irs_reproofing: false,
         opted_in_to_in_person_proofing: nil,
         step: 'state_id',
         pii_like_keypaths: [[:same_address_as_id],
@@ -167,9 +166,9 @@ RSpec.describe Idv::InPerson::StateIdController do
         {
           success: true,
           errors: {},
+          error_details: nil,
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'state_id',
           opted_in_to_in_person_proofing: nil,
           pii_like_keypaths: [[:same_address_as_id],

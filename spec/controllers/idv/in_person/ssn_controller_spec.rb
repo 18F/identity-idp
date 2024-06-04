@@ -19,7 +19,6 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_sign_in(user)
     subject.user_session['idv/in_person'] = flow_session
     stub_analytics
-    stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.flow_path = 'standard'
@@ -48,7 +47,6 @@ RSpec.describe Idv::InPerson::SsnController do
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
-        irs_reproofing: false,
         step: 'ssn',
         same_address_as_id: true,
         pii_like_keypaths: [
@@ -121,7 +119,6 @@ RSpec.describe Idv::InPerson::SsnController do
         {
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'ssn',
           success: true,
           errors: {},
@@ -134,14 +131,6 @@ RSpec.describe Idv::InPerson::SsnController do
         put :update, params: params
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'logs attempts api event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
-          ssn: ssn,
-        )
-
-        put :update, params: params
       end
 
       it 'adds ssn to idv_session' do
@@ -172,7 +161,6 @@ RSpec.describe Idv::InPerson::SsnController do
         {
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'ssn',
           success: false,
           errors: {

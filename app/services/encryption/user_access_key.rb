@@ -53,7 +53,7 @@ module Encryption
     def unlocked?
       cek.present?
     end
-    alias built? unlocked?
+    alias_method :built?, :unlocked?
 
     def encryption_key
       Base64.strict_encode64(masked_ciphertext)

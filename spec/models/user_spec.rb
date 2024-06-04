@@ -1540,55 +1540,6 @@ RSpec.describe User do
     end
   end
 
-  describe '#new_device?' do
-    let(:user_agent) { 'A computer on the internet' }
-    let(:ip_address) { '4.4.4.4' }
-    let(:existing_device_cookie) { 'existing_device_cookie' }
-    let(:cookie_jar) do
-      {
-        device: existing_device_cookie,
-      }.with_indifferent_access.tap do |cookie_jar|
-        allow(cookie_jar).to receive(:permanent).and_return({})
-      end
-    end
-    let(:request) do
-      double(
-        remote_ip: ip_address,
-        user_agent: user_agent,
-        cookie_jar: cookie_jar,
-      )
-    end
-    let(:user) { create(:user, :fully_registered) }
-    let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
-
-    context 'with existing device' do
-      before do
-        # Memoize user and device before specs run
-        user
-        device
-      end
-      it 'does not expect a device to be new' do
-        cookies = request.cookie_jar
-        device_present = user.new_device?(cookie_uuid: cookies[:device])
-        expect(device_present).to eq(false)
-      end
-    end
-
-    context 'with new device' do
-      let(:device) { create(:device, user: user, cookie_uuid: 'non_existing_device_cookie') }
-      before do
-        # Memoize user and device before specs run
-        user
-        device
-      end
-      it 'expects a new device' do
-        cookies = request.cookie_jar
-        device_present = user.new_device?(cookie_uuid: cookies[:device])
-        expect(device_present).to eq(true)
-      end
-    end
-  end
-
   describe '#authenticated_device?' do
     let(:user) { create(:user, :fully_registered) }
     let(:device) { create(:device, user:) }
@@ -1714,40 +1665,6 @@ RSpec.describe User do
       _event3 = create(:event, user: user, event_type: 'sign_in_after_2fa')
 
       expect(user.second_last_signed_in_at).to eq(event2.reload.created_at)
-    end
-  end
-
-  describe '#reproof_for_irs?' do
-    let(:service_provider) { create(:service_provider) }
-
-    it 'returns false if the service provider is not an attempts API service provider' do
-      user = create(:user, :proofed)
-
-      expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
-    end
-
-    context 'an attempts API service provider' do
-      let(:service_provider) { create(:service_provider, :irs) }
-
-      it 'returns false if the user has not proofed before' do
-        user = create(:user)
-
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
-      end
-
-      it 'returns false if the active profile initiating SP was an attempts API SP' do
-        user = create(:user, :proofed)
-
-        user.active_profile.update!(initiating_service_provider: service_provider)
-
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
-      end
-
-      it 'returns true if the active profile initiating SP was not an attempts API SP' do
-        user = create(:user, :proofed)
-
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_truthy
-      end
     end
   end
 end

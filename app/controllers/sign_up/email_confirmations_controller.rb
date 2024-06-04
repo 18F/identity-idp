@@ -25,10 +25,6 @@ module SignUp
 
     def process_successful_confirmation
       process_valid_confirmation_token
-      irs_attempts_api_tracker.user_registration_email_confirmation(
-        email: @email_address&.email,
-        success: true,
-      )
       redirect_to sign_up_enter_password_url(confirmation_token: @confirmation_token)
     end
 

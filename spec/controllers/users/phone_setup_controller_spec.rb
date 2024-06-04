@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::PhoneSetupController do
   let(:mfa_selections) { ['voice'] }
   before do
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
@@ -151,6 +151,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
         result = {
           success: true,
           errors: {},
+          error_details: nil,
           otp_delivery_preference: 'voice',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
@@ -191,6 +192,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
         result = {
           success: true,
           errors: {},
+          error_details: nil,
           otp_delivery_preference: 'sms',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
@@ -230,6 +232,7 @@ RSpec.describe Users::PhoneSetupController, allowed_extra_analytics: [:*] do
         result = {
           success: true,
           errors: {},
+          error_details: nil,
           otp_delivery_preference: 'sms',
           area_code: '703',
           carrier: 'Test Mobile Carrier',

@@ -366,18 +366,12 @@ class User < ApplicationRecord
     !identity_verified?
   end
 
-  def identity_verified?(service_provider: nil)
-    active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+  def identity_verified?
+    active_profile.present?
   end
 
   def identity_verified_with_biometric_comparison?
     BIOMETRIC_COMPARISON_IDV_LEVELS.include?(active_profile&.idv_level)
-  end
-
-  def reproof_for_irs?(service_provider:)
-    return false unless service_provider&.irs_attempts_api_enabled
-    return false unless active_profile.present?
-    !active_profile.initiating_service_provider&.irs_attempts_api_enabled
   end
 
   # This user's most recently activated profile that has also been deactivated
@@ -426,10 +420,6 @@ class User < ApplicationRecord
 
   def has_devices?
     !recent_devices.empty?
-  end
-
-  def new_device?(cookie_uuid:)
-    !cookie_uuid || !devices.exists?(cookie_uuid:)
   end
 
   def authenticated_device?(cookie_uuid:)

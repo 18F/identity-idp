@@ -10,13 +10,11 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
 
   before do
     stub_analytics
-    stub_attempts_tracker
     stub_sign_in(user)
 
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
     allow(pii_cacher).to receive(:fetch).and_call_original
     allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
-    allow(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
     allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
@@ -199,13 +197,11 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
       it 'redirects to the sign_up/completions page' do
         action
 
-        expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
-          with(success_properties)
-
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
           success: true,
           errors: {},
+          error_details: nil,
           pending_in_person_enrollment: false,
           fraud_check_failed: false,
           enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -244,13 +240,11 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
         it 'redirects to personal key page' do
           action
 
-          expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
-            with(success_properties)
-
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code submitted',
             success: true,
             errors: {},
+            error_details: nil,
             pending_in_person_enrollment: true,
             fraud_check_failed: false,
             enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -275,13 +269,11 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           it 'redirects to the sign_up/completions page' do
             action
 
-            expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
-              with(success_properties)
-
             expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
+              error_details: nil,
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -310,6 +302,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
+              error_details: nil,
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -343,6 +336,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
+              error_details: nil,
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -366,9 +360,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
 
       it 'renders to the index page to show errors' do
         action
-
-        expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
-          with(success: false)
 
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
@@ -440,9 +431,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
 
         it 'redirects to personal key page' do
           post(:create, params: { gpo_verify_form: { otp: good_otp } })
-
-          expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
-            exactly(max_attempts).times
 
           failed_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted'].

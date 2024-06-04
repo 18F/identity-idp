@@ -96,8 +96,8 @@ module IdvStepHelper
     complete_enter_password_step(user)
   end
 
-  alias complete_idv_steps_before_enter_password_step
-        complete_idv_steps_with_phone_before_enter_password_step
+  alias_method :complete_idv_steps_before_enter_password_step,
+               :complete_idv_steps_with_phone_before_enter_password_step
 
   def complete_idv_steps_with_gpo_before_enter_password_step(user = user_with_2fa)
     complete_idv_steps_before_gpo_step(user)

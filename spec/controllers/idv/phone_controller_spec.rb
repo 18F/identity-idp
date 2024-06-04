@@ -52,7 +52,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
     stub_sign_in(user)
     stub_up_to(:verify_info, idv_session: subject.idv_session)
     stub_analytics
-    stub_attempts_tracker
   end
 
   describe '#new' do
@@ -293,11 +292,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
       it 'tracks form error events and does not make a vendor API call' do
         expect_any_instance_of(Idv::Agent).to_not receive(:proof_address)
 
-        expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
-          success: false,
-          phone_number: improbable_phone_number,
-        )
-
         put :create, params: improbable_phone_form
 
         result = {
@@ -349,16 +343,12 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
       end
 
       it 'tracks events with valid phone' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
-          success: true,
-          phone_number: good_phone,
-        )
-
         put :create, params: phone_params
 
         result = {
           success: true,
           errors: {},
+          error_details: nil,
           area_code: '703',
           country_code: 'US',
           carrier: 'Test Mobile Carrier',
@@ -455,6 +445,7 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           new_phone_added: true,
           hybrid_handoff_phone_used: false,
           errors: {},
+          error_details: nil,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
           country_code: proofing_phone.country,
           area_code: proofing_phone.area_code,

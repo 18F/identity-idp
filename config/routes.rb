@@ -55,7 +55,8 @@ Rails.application.routes.draw do
   post '/api/logger' => 'frontend_log#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  match '/openid_connect/logout' => 'openid_connect/logout#logout', via: %i[get post]
+  get '/openid_connect/logout' => 'openid_connect/logout#show'
+  post '/openid_connect/logout' => 'openid_connect/logout#create'
   delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/robots.txt' => 'robots#index'
@@ -159,7 +160,7 @@ Rails.application.routes.draw do
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
 
         get '/oidc/login' => 'oidc_test#index'
-        get '/oidc' => 'oidc_test#start'
+        get '/oidc' => redirect('/test/oidc/auth_request', status: 302)
         get '/oidc/auth_request' => 'oidc_test#auth_request'
         get '/oidc/auth_result' => 'oidc_test#auth_result'
         get '/oidc/logout' => 'oidc_test#logout'

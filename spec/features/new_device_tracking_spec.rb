@@ -108,12 +108,22 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
       travel_to 38.minutes.from_now do
         visit root_url
         expect(current_path).to eq(new_user_session_path)
-        sign_in_live_with_2fa(user)
+
+        # Regression: LG-13221: Ensure that the successful authentication email lists failed MFA.
+        sign_in_user(user)
+        fill_in t('components.one_time_code_input.label'), with: '000000'
+        click_submit_default
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
         open_last_email
         email_page = Capybara::Node::Simple.new(current_email.default_part_body)
-        expect(email_page).to have_css('.usa-table td.font-family-mono', count: 2)
+        expect(email_page).to have_css('.usa-table td.font-family-mono', count: 3)
         expect(email_page).to have_content(
           t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa'),
+        )
+        expect(email_page).to have_content(
+          t('user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa'),
         )
         expect(email_page).to have_content(
           t('user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa'),
@@ -132,6 +142,59 @@ RSpec.describe 'New device tracking', allowed_extra_analytics: [:*] do
 
         expect(user.reload.devices.length).to eq 1
         expect_delivered_email_count(0)
+      end
+    end
+
+    context 'when reauthenticating' do
+      it 'does not send a second user notification' do
+        # Regression: LG-13419: Reset new-device session value after fully authenticating, so that
+        # reauthentication doesn't consider the device as new and send another notification.
+        sign_in_live_with_2fa(user)
+        expect_delivered_email_count(1)
+
+        expire_reauthn_window
+
+        within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+        expect(page).to have_current_path(login_two_factor_options_path)
+        click_on t('forms.buttons.continue')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        expect_delivered_email_count(1)
+      end
+    end
+
+    context 'authenticating with piv' do
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+      it 'sends a user notification on signin' do
+        visit new_user_session_path
+        click_on t('account.login.piv_cac')
+        fill_in_piv_cac_credentials_and_submit(user)
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+        )
+      end
+
+      context 'when reauthenticating' do
+        it 'does not send a second user notification' do
+          visit new_user_session_path
+          click_on t('account.login.piv_cac')
+          fill_in_piv_cac_credentials_and_submit(user)
+
+          expire_reauthn_window
+
+          within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+          expect(page).to have_current_path(login_two_factor_options_path)
+          click_on t('forms.buttons.continue')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect_delivered_email_count(1)
+        end
       end
     end
   end

@@ -84,7 +84,6 @@ module SignUp
         ialmax: resolved_authn_context_result.ialmax?,
         service_provider_name: decorated_sp_session.sp_name,
         sp_session_requested_attributes: sp_session[:requested_attributes],
-        sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         needs_completion_screen_reason: needs_completion_screen_reason,

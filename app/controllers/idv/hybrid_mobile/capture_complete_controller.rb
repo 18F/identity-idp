@@ -28,7 +28,6 @@ module Idv
           flow_path: 'hybrid',
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
-          irs_reproofing: irs_reproofing?,
           liveness_checking_required:,
         }.merge(ab_test_analytics_buckets)
       end

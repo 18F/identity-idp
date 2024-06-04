@@ -786,7 +786,7 @@ event_types.piv_cac_disabled: Carte PIV/CAC désassociée
 event_types.piv_cac_enabled: Carte PIV/CAC associée
 event_types.sign_in_after_2fa: Connecté avec deuxième facteur
 event_types.sign_in_before_2fa: Connecté avec mot de passe
-event_types.sign_in_notification_timeframe_expired: Délai de notification pour la connexion à partir d’un nouveau dispositif expiré
+event_types.sign_in_notification_timeframe_expired: Expiration du délai de notification autorisé pour se connecter à partir d’un nouvel appareil
 event_types.sign_in_unsuccessful_2fa: Échec de l’authentification
 event_types.webauthn_key_added: Clé de sécurité physique ajoutée
 event_types.webauthn_key_removed: Clé de sécurité physique supprimée
@@ -1313,6 +1313,7 @@ instructions.password.strength.4: Excellente
 instructions.password.strength.intro: 'Force du mot de passe :'
 instructions.sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
 instructions.sp_handoff_bounced_with_no_sp: votre fournisseur de service
+links.accessibility_statement: Déclaration sur l’accessibilité
 links.account.reactivate.with_key: J’ai ma clé
 links.account.reactivate.without_key: Je n’ai pas ma clé
 links.back_to_sp: Retour à %{sp}
@@ -1819,7 +1820,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette act
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.new_device_sign_in_after_2fa.reset_password: réinitialisez votre mot de passe
 user_mailer.new_device_sign_in_after_2fa.subject: Nouvelle connexion et authentification avec votre compte %{app_name}
-user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Signé avec deuxième facteur
+user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authentification réussie
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Connecté avec mot de passe
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Échec de l’authentification
 user_mailer.new_device_sign_in_attempts.new_sign_in_from: Nouvelle connexion potentiellement localisée à %{location}

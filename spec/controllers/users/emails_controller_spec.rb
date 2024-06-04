@@ -57,7 +57,11 @@ RSpec.describe Users::EmailsController do
 
         expect(@analytics).to receive(:track_event).with(
           'Add Email Requested',
-          { success: true, errors: {}, user_id: user.uuid, domain_name: email.split('@').last },
+          success: true,
+          errors: {},
+          error_details: nil,
+          user_id: user.uuid,
+          domain_name: email.split('@').last,
         )
 
         expect(@analytics).to receive(:track_event).with(

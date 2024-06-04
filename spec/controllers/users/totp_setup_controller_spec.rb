@@ -97,8 +97,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -112,6 +110,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
@@ -122,9 +121,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -135,8 +131,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
@@ -149,6 +143,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: true,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
@@ -159,9 +154,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:mfa_enroll_totp, success: true)
         end
       end
 
@@ -172,8 +164,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name }
@@ -187,6 +177,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
@@ -197,9 +188,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -210,8 +198,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_sign_in(user)
           stub_analytics
           allow(@analytics).to receive(:track_event)
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { code: generate_totp_code(secret) }
@@ -236,9 +222,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:mfa_enroll_totp, success: false)
         end
       end
     end
@@ -249,8 +232,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -264,6 +245,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
@@ -273,9 +255,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           }
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -286,8 +265,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
           subject.user_session[:in_account_creation_flow] = true
@@ -303,6 +280,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             result = {
               success: true,
               errors: {},
+              error_details: nil,
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
@@ -313,9 +291,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', result)
-
-            expect(@irs_attempts_api_tracker).to have_received(:track_event).
-              with(:mfa_enroll_totp, success: true)
           end
         end
 
@@ -328,6 +303,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             result = {
               success: true,
               errors: {},
+              error_details: nil,
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
@@ -338,9 +314,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', result)
-
-            expect(@irs_attempts_api_tracker).to have_received(:track_event).
-              with(:mfa_enroll_totp, success: true)
           end
         end
       end
@@ -350,8 +323,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
-          stub_attempts_tracker
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
 
           patch :confirm, params: { name: name, code: 123 }
         end
@@ -364,6 +335,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           result = {
             success: false,
             errors: {},
+            error_details: nil,
             totp_secret_present: false,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
@@ -374,9 +346,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-
-          expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:mfa_enroll_totp, success: false)
         end
       end
     end
