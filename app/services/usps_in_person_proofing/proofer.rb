@@ -9,7 +9,7 @@ module UspsInPersonProofing
     USPS_EIPP_ASSURANCE_LEVEL = '2.0'
 
     # Makes HTTP request to get nearby in-person proofing facilities
-    # Requires address, city, state, zip code and vector of trust.
+    # Requires address, city, state, zip code, and is_enhanced_ipp.
     # The PostOffice objects have a subset of the fields
     # returned by the API.
     # @param location [Object]

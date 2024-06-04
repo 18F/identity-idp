@@ -220,7 +220,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
     end
 
     context 'when the user is going through EIPP' do
-      let(:usps_eipp_sponsor_id) { 'fake-fake' }
+      let(:usps_eipp_sponsor_id) { '314159265359' }
       let(:ipp_assurance_level) { '2.0' }
       let(:is_enhanced_ipp) { true }
       before do
@@ -228,7 +228,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
           and_return(usps_eipp_sponsor_id)
       end
       it 'uses the EIPP usps_ipp_sponsor_id and ipp_assurance_level in calls to the USPS API' do
-        stub_request_EIPP_facilities
+        stub_request_eipp_facilities
         subject.request_facilities(location, is_enhanced_ipp)
 
         expect(WebMock).to have_requested(:post, request_url).
