@@ -23,7 +23,7 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
-          byebug
+          JSON.parse(http_response.body)
         end
 
         def method
