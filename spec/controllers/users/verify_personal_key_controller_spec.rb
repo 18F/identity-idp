@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::VerifyPersonalKeyController do
   let(:user) { create(:user, personal_key: personal_key) }
   let!(:profiles) { [] }
   let(:personal_key) { 'key' }
@@ -107,6 +107,7 @@ RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*]
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
           errors: {},
+          error_details: nil,
           success: true,
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once

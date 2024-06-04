@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] do
+RSpec.describe OpenidConnect::UserInfoController do
   let(:json_response) { JSON.parse(response.body).with_indifferent_access }
 
   describe '#show' do
@@ -133,6 +133,7 @@ RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] 
           client_id: identity.service_provider,
           ial: identity.ial,
           errors: {},
+          error_details: nil,
         )
 
         action

@@ -47,25 +47,36 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Validates the token used for cancelling an account reset
-  def account_reset_cancel_token_validation(user_id:, errors: nil, **extra)
+  def account_reset_cancel_token_validation(
+    user_id:,
+    success:,
+    errors:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Account Reset: cancel token validation',
-      user_id: user_id,
-      errors: errors,
+      user_id:,
+      success:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
 
   # @identity.idp.previous_event_name Account Reset
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [String] user_id
   # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
   # @param [Time] account_confirmed_at date that account creation was confirmed
   # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts
-  # @param [Hash] errors
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # An account has been deleted through the account reset flow
   def account_reset_delete(
     success:,
@@ -73,30 +84,42 @@ module AnalyticsEvents
     account_age_in_days:,
     account_confirmed_at:,
     mfa_method_counts:,
-    errors: nil,
+    errors:,
+    error_details: nil,
     **extra
   )
     track_event(
       'Account Reset: delete',
-      success: success,
-      user_id: user_id,
-      account_age_in_days: account_age_in_days,
-      account_confirmed_at: account_confirmed_at,
-      mfa_method_counts: mfa_method_counts,
-      errors: errors,
+      success:,
+      user_id:,
+      account_age_in_days:,
+      account_confirmed_at:,
+      mfa_method_counts:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
 
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Validates the granted token for account reset
-  def account_reset_granted_token_validation(user_id: nil, errors: nil, **extra)
+  def account_reset_granted_token_validation(
+    success:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    **extra
+  )
     track_event(
       'Account Reset: granted token validation',
-      user_id: user_id,
-      errors: errors,
+      success:,
+      errors:,
+      error_details:,
+      user_id:,
       **extra,
     )
   end
@@ -164,14 +187,16 @@ module AnalyticsEvents
     track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra)
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks request for adding new emails to an account
-  def add_email_request(success:, errors:, **extra)
+  def add_email_request(success:, errors:, error_details: nil, **extra)
     track_event(
       'Add Email Requested',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
@@ -191,7 +216,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name TOTP: User Disabled
   # Tracks when a user deletes their auth app from account
   # @param [Boolean] success
-  # @param [Hash] error_details
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] configuration_id
   def auth_app_delete_submitted(
     success:,
@@ -210,7 +235,7 @@ module AnalyticsEvents
 
   # When a user updates name for auth app
   # @param [Boolean] success
-  # @param [Hash] error_details
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] configuration_id
   # Tracks when user submits a name change for an Auth App configuration
   def auth_app_update_name_submitted(
@@ -274,18 +299,18 @@ module AnalyticsEvents
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Number] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether page is visited as part of account creation
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   def backup_code_setup_visit(
     success:,
     mfa_method_counts:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
-    errors: nil,
+    errors:,
     error_details: nil,
     **extra
   )
@@ -400,26 +425,30 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks request for deletion of email address
-  def email_deletion_request(success:, errors:, **extra)
+  def email_deletion_request(success:, errors:, error_details: nil, **extra)
     track_event(
       'Email Deletion Requested',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks if Email Language is updated
-  def email_language_updated(success:, errors:, **extra)
+  def email_language_updated(success:, errors:, error_details: nil, **extra)
     track_event(
       'Email Language: Updated',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
@@ -443,8 +472,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
   # @param [String, nil] disavowed_device_user_agent
@@ -456,6 +486,7 @@ module AnalyticsEvents
   def event_disavowal(
     success:,
     errors:,
+    error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -467,21 +498,23 @@ module AnalyticsEvents
   )
     track_event(
       'Event disavowal visited',
-      success: success,
-      errors: errors,
-      event_created_at: event_created_at,
-      disavowed_device_last_used_at: disavowed_device_last_used_at,
-      disavowed_device_user_agent: disavowed_device_user_agent,
-      disavowed_device_last_ip: disavowed_device_last_ip,
-      event_id: event_id,
-      event_type: event_type,
-      event_ip: event_ip,
+      success:,
+      errors:,
+      error_details:,
+      event_created_at:,
+      disavowed_device_last_used_at:,
+      disavowed_device_user_agent:,
+      disavowed_device_last_ip:,
+      event_id:,
+      event_type:,
+      event_ip:,
       **extra,
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
   # @param [String, nil] disavowed_device_user_agent
@@ -493,6 +526,7 @@ module AnalyticsEvents
   def event_disavowal_password_reset(
     success:,
     errors:,
+    error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -504,21 +538,23 @@ module AnalyticsEvents
   )
     track_event(
       'Event disavowal password reset',
-      success: success,
-      errors: errors,
-      event_created_at: event_created_at,
-      disavowed_device_last_used_at: disavowed_device_last_used_at,
-      disavowed_device_user_agent: disavowed_device_user_agent,
-      disavowed_device_last_ip: disavowed_device_last_ip,
-      event_id: event_id,
-      event_type: event_type,
-      event_ip: event_ip,
+      success:,
+      errors:,
+      error_details:,
+      event_created_at:,
+      disavowed_device_last_used_at:,
+      disavowed_device_user_agent:,
+      disavowed_device_last_ip:,
+      event_id:,
+      event_type:,
+      event_ip:,
       **extra,
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
   # @param [String, nil] disavowed_device_user_agent
@@ -530,6 +566,7 @@ module AnalyticsEvents
   def event_disavowal_token_invalid(
     success:,
     errors:,
+    error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -541,15 +578,16 @@ module AnalyticsEvents
   )
     track_event(
       'Event disavowal token invalid',
-      success: success,
-      errors: errors,
-      event_created_at: event_created_at,
-      disavowed_device_last_used_at: disavowed_device_last_used_at,
-      disavowed_device_user_agent: disavowed_device_user_agent,
-      disavowed_device_last_ip: disavowed_device_last_ip,
-      event_id: event_id,
-      event_type: event_type,
-      event_ip: event_ip,
+      success:,
+      errors:,
+      error_details:,
+      event_created_at:,
+      disavowed_device_last_used_at:,
+      disavowed_device_user_agent:,
+      disavowed_device_last_ip:,
+      event_id:,
+      event_type:,
+      event_ip:,
       **extra,
     )
   end
@@ -585,8 +623,8 @@ module AnalyticsEvents
     track_event('Forget All Browsers Visited')
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [String] profile_fraud_review_pending_at
   # The user was passed by manual fraud review
@@ -607,8 +645,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [String] profile_fraud_review_pending_at
   # The user was rejected by manual fraud review
@@ -662,11 +700,11 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [Boolean] address_edited
   # @param [Hash] pii_like_keypaths
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # User submitted an idv address
   def idv_address_submitted(
     success:,
@@ -1056,8 +1094,9 @@ module AnalyticsEvents
     track_event('IdV: doc auth ssn visited', **extra)
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] submit_attempts (previously called "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
@@ -1072,6 +1111,7 @@ module AnalyticsEvents
     remaining_submit_attempts:,
     flow_path:,
     liveness_checking_required:,
+    error_details: nil,
     submit_attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
@@ -1080,21 +1120,22 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth image upload form submitted',
-      success: success,
-      errors: errors,
-      submit_attempts: submit_attempts,
-      remaining_submit_attempts: remaining_submit_attempts,
-      user_id: user_id,
-      flow_path: flow_path,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
-      liveness_checking_required: liveness_checking_required,
+      success:,
+      errors:,
+      error_details:,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      user_id:,
+      flow_path:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      liveness_checking_required:,
       **extra,
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [Boolean] billed
   # @param [String] doc_auth_result
@@ -1222,8 +1263,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] pii_like_keypaths
@@ -1240,6 +1282,7 @@ module AnalyticsEvents
     pii_like_keypaths:,
     flow_path:,
     liveness_checking_required:,
+    error_details: nil,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
@@ -1248,16 +1291,17 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth image upload vendor pii validation',
-      success: success,
-      errors: errors,
-      user_id: user_id,
-      remaining_submit_attempts: remaining_submit_attempts,
-      pii_like_keypaths: pii_like_keypaths,
-      flow_path: flow_path,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
-      classification_info: classification_info,
-      liveness_checking_required: liveness_checking_required,
+      success:,
+      errors:,
+      error_details:,
+      user_id:,
+      remaining_submit_attempts:,
+      pii_like_keypaths:,
+      flow_path:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      classification_info:,
+      liveness_checking_required:,
       **extra,
     )
   end
@@ -1788,9 +1832,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [Integer] result_total
-  # @param [String] errors
+  # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception_class
   # @param [String] exception_message
   # @param [Integer] response_status_code
@@ -1865,27 +1909,30 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] same_address_as_id
   # User clicked cancel on update state id page
   def idv_in_person_proofing_cancel_update_state_id(
+    success:,
+    errors:,
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    success: nil,
-    errors: nil,
+    error_details: nil,
     same_address_as_id: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing cancel_update_state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      flow_path:,
+      step:,
+      analytics_id:,
+      success:,
+      errors:,
+      error_details:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1962,27 +2009,30 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] same_address_as_id
   # User submitted state id on redo state id page
   def idv_in_person_proofing_redo_state_id_submitted(
+    success:,
+    errors:,
+    error_details: nil,
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    success: nil,
-    errors: nil,
     same_address_as_id: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing redo_state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      flow_path:,
+      step:,
+      analytics_id:,
+      success:,
+      errors:,
+      error_details:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1994,30 +2044,33 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean, nil] same_address_as_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
+    success:,
+    errors:,
+    error_details: nil,
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    success: nil,
-    errors: nil,
     same_address_as_id: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
-      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+      flow_path:,
+      step:,
+      analytics_id:,
+      success:,
+      errors:,
+      error_details:,
+      same_address_as_id:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -2721,8 +2774,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
@@ -2732,6 +2786,7 @@ module AnalyticsEvents
     success:,
     otp_delivery_preference:,
     errors:,
+    error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2739,12 +2794,13 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation form',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      success:,
+      errors:,
+      error_details:,
+      otp_delivery_preference:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -2806,8 +2862,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
@@ -2828,6 +2885,7 @@ module AnalyticsEvents
     rate_limit_exceeded:,
     telephony_response:,
     phone_fingerprint:,
+    error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2836,24 +2894,26 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation otp resent',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      country_code: country_code,
-      area_code: area_code,
-      rate_limit_exceeded: rate_limit_exceeded,
-      telephony_response: telephony_response,
-      phone_fingerprint: phone_fingerprint,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
-      ab_tests: ab_tests,
+      success:,
+      errors:,
+      error_details:,
+      otp_delivery_preference:,
+      country_code:,
+      area_code:,
+      rate_limit_exceeded:,
+      telephony_response:,
+      phone_fingerprint:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      ab_tests:,
       **extra,
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
@@ -2875,6 +2935,7 @@ module AnalyticsEvents
     phone_fingerprint:,
     telephony_response:,
     adapter:,
+    error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2882,24 +2943,26 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation otp sent',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      country_code: country_code,
-      area_code: area_code,
-      rate_limit_exceeded: rate_limit_exceeded,
-      phone_fingerprint: phone_fingerprint,
-      telephony_response: telephony_response,
-      adapter: adapter,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      success:,
+      errors:,
+      error_details:,
+      otp_delivery_preference:,
+      country_code:,
+      area_code:,
+      rate_limit_exceeded:,
+      phone_fingerprint:,
+      telephony_response:,
+      adapter:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
   # @param [:sms,:voice] otp_delivery_preference
@@ -2917,6 +2980,7 @@ module AnalyticsEvents
     otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
+    error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2924,16 +2988,17 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation otp submitted',
-      success: success,
-      errors: errors,
-      code_expired: code_expired,
-      code_matches: code_matches,
-      otp_delivery_preference: otp_delivery_preference,
-      second_factor_attempts_count: second_factor_attempts_count,
-      second_factor_locked_at: second_factor_locked_at,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      success:,
+      errors:,
+      error_details:,
+      code_expired:,
+      code_matches:,
+      otp_delivery_preference:,
+      second_factor_attempts_count:,
+      second_factor_locked_at:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -2957,8 +3022,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -2966,6 +3032,7 @@ module AnalyticsEvents
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
+    error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2973,11 +3040,12 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation vendor',
-      success: success,
-      errors: errors,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      success:,
+      errors:,
+      error_details:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -3431,8 +3499,9 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account verification submitted
   # @identity.idp.previous_event_name IdV: GPO verification submitted
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Hash] pii_like_keypaths
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
@@ -3454,19 +3523,21 @@ module AnalyticsEvents
     submit_attempts:,
     pending_in_person_enrollment:,
     fraud_check_failed:,
+    error_details: nil,
     **extra
   )
     track_event(
       'IdV: enter verify by mail code submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
-      enqueued_at: enqueued_at,
-      which_letter: which_letter,
-      letter_count: letter_count,
-      submit_attempts: submit_attempts,
-      pending_in_person_enrollment: pending_in_person_enrollment,
-      fraud_check_failed: fraud_check_failed,
+      success:,
+      errors:,
+      error_details:,
+      pii_like_keypaths:,
+      enqueued_at:,
+      which_letter:,
+      letter_count:,
+      submit_attempts:,
+      pending_in_person_enrollment:,
+      fraud_check_failed:,
       **extra,
     )
   end
@@ -3581,15 +3652,15 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [String] client_id
   # @param [Boolean] client_id_parameter_present
   # @param [Boolean] id_token_hint_parameter_present
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # Logout Initiated
   def logout_initiated(
@@ -3623,7 +3694,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["authentication","reauthentication","confirmation"] context User session context
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # @param [String] multi_factor_auth_method Authentication method used
@@ -3860,15 +3931,17 @@ module AnalyticsEvents
   end
 
   # Multi factor selected from auth options list
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
-  def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
+  def multi_factor_auth_option_list(success:, errors:, selection:, error_details: nil, **extra)
     track_event(
       'Multi-Factor Authentication: option list',
-      success: success,
-      errors: errors,
-      selection: selection,
+      success:,
+      errors:,
+      error_details:,
+      selection:,
       **extra,
     )
   end
@@ -3879,33 +3952,38 @@ module AnalyticsEvents
   end
 
   # Multi factor auth phone setup
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] otp_delivery_preference
   # @param [String] area_code
   # @param [String] carrier
   # @param [String] country_code
   # @param [String] phone_type
   # @param [Hash] types
-  def multi_factor_auth_phone_setup(success:,
-                                    errors:,
-                                    otp_delivery_preference:,
-                                    area_code:,
-                                    carrier:,
-                                    country_code:,
-                                    phone_type:,
-                                    types:,
-                                    **extra)
+  def multi_factor_auth_phone_setup(
+      success:,
+      errors:,
+      otp_delivery_preference:,
+      area_code:,
+      carrier:,
+      country_code:,
+      phone_type:,
+      types:,
+      error_details: nil,
+      **extra
+    )
     track_event(
       'Multi-Factor Authentication: phone setup',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      area_code: area_code,
-      carrier: carrier,
-      country_code: country_code,
-      phone_type: phone_type,
-      types: types,
+      success:,
+      errors:,
+      error_details:,
+      otp_delivery_preference:,
+      area_code:,
+      carrier:,
+      country_code:,
+      phone_type:,
+      types:,
       **extra,
     )
   end
@@ -3913,6 +3991,7 @@ module AnalyticsEvents
   # Tracks when a user sets up a multi factor auth method
   # @param [Boolean] success Whether authenticator setup was successful
   # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
   # @param [integer] enabled_mfa_methods_count
@@ -3922,15 +4001,17 @@ module AnalyticsEvents
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     errors: nil,
+    error_details: nil,
     **extra
   )
     track_event(
       'Multi-Factor Authentication Setup',
-      success: success,
-      errors: errors,
-      multi_factor_auth_method: multi_factor_auth_method,
-      in_account_creation_flow: in_account_creation_flow,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      success:,
+      errors:,
+      error_details:,
+      multi_factor_auth_method:,
+      in_account_creation_flow:,
+      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -3941,28 +4022,28 @@ module AnalyticsEvents
     track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
   end
 
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [String] client_id
   # @param [Boolean] client_id_parameter_present
   # @param [Boolean] id_token_hint_parameter_present
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # @param [String] original_method Method of referring request
   # OIDC Logout Requested
   def oidc_logout_requested(
-    success: nil,
+    success:,
+    errors:,
+    error_details: nil,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
-    errors: nil,
-    error_details: nil,
     method: nil,
     original_method: nil,
     **extra
@@ -3984,15 +4065,15 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [String] client_id
   # @param [Boolean] client_id_parameter_present
   # @param [Boolean] id_token_hint_parameter_present
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # OIDC Logout Submitted
   def oidc_logout_submitted(
@@ -4024,26 +4105,26 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [String] client_id
   # @param [Boolean] client_id_parameter_present
   # @param [Boolean] id_token_hint_parameter_present
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # OIDC Logout Visited
   def oidc_logout_visited(
-    success: nil,
+    success:,
+    errors:,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
-    errors: nil,
     error_details: nil,
     method: nil,
     **extra
@@ -4087,17 +4168,19 @@ module AnalyticsEvents
   end
 
   # Tracks when an openid connect bearer token authentication request is made
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
-  # @param [Hash] errors
-  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details: nil, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
-      success: success,
-      ial: ial,
-      client_id: client_id,
-      errors: errors,
+      success:,
+      ial:,
+      client_id:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
@@ -4105,6 +4188,7 @@ module AnalyticsEvents
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] prompt OIDC prompt parameter
   # @param [Boolean] allow_prompt_login Whether service provider is configured to allow prompt=login
   # @param [Boolean] code_challenge_present Whether code challenge is present
@@ -4132,12 +4216,14 @@ module AnalyticsEvents
     vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
+    error_details: nil,
     **extra
   )
     track_event(
       'OpenID Connect: authorization request',
       success:,
       errors:,
+      error_details:,
       prompt:,
       allow_prompt_login:,
       code_challenge_present:,
@@ -4175,6 +4261,7 @@ module AnalyticsEvents
   # Tracks when user makes an otp delivery selection
   # @param [Boolean] success Whether the form was submitted successfully.
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["authentication","reauthentication","confirmation"] context User session context
   # @param [String] otp_delivery_preference (sms or voice)
   # @param [Boolean] resend True if the user re-requested a code
@@ -4188,12 +4275,14 @@ module AnalyticsEvents
     resend:,
     country_code:,
     area_code:,
+    error_details: nil,
     **extra
   )
     track_event(
       'OTP: Delivery Selection',
       success:,
       errors:,
+      error_details:,
       context:,
       otp_delivery_preference:,
       resend:,
@@ -4220,20 +4309,37 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # The user updated their password
-  def password_changed(success:, errors:, **extra)
-    track_event('Password Changed', success: success, errors: errors, **extra)
+  def password_changed(success:, errors:, error_details: nil, **extra)
+    track_event('Password Changed', success:, errors:, error_details:, **extra)
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id UUID of the user
   # @param [Boolean] request_id_present Whether request_id URL parameter is present
   # The user added a password after verifying their email for account creation
-  def password_creation(success:, errors:, user_id:, request_id_present:, **extra)
-    track_event('Password Creation', success:, errors:, user_id:, request_id_present:, **extra)
+  def password_creation(
+    success:,
+    errors:,
+    user_id:,
+    request_id_present:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Password Creation',
+      success:,
+      errors:,
+      error_details:,
+      user_id:,
+      request_id_present:,
+      **extra,
+    )
   end
 
   # The user got their password incorrect the max number of times, their session was terminated
@@ -4241,13 +4347,13 @@ module AnalyticsEvents
     track_event('Password Max Attempts Reached')
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
   # confirmed email
   # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
   # active proofed profile
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # The user entered an email address to request a password reset
   def password_reset_email(
     success:,
@@ -4268,15 +4374,15 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
   # (the user will need to use their personal key to reactivate their profile)
   # @param [Boolean] pending_profile_invalidated Whether a pending profile was invalidated as a
   # result of the password reset
   # @param [String] pending_profile_pending_reasons Comma-separated list of the pending states
   # associated with the associated profile.
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
     success:,
@@ -4299,16 +4405,18 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id UUID of the user to receive password token
   # A password token has been sent for user
-  def password_reset_token(success:, errors:, user_id:, **extra)
+  def password_reset_token(success:, errors:, user_id:, error_details: nil, **extra)
     track_event(
       'Password Reset: Token Submitted',
-      success: success,
-      errors: errors,
-      user_id: user_id,
+      success:,
+      errors:,
+      error_details:,
+      user_id:,
       **extra,
     )
   end
@@ -4328,14 +4436,16 @@ module AnalyticsEvents
     track_event('Pending account reset visited')
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Alert user if a personal key was used to sign in
-  def personal_key_alert_about_sign_in(success:, errors:, **extra)
+  def personal_key_alert_about_sign_in(success:, errors:, error_details: nil, **extra)
     track_event(
       'Personal key: Alert user about sign in',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
@@ -4345,16 +4455,24 @@ module AnalyticsEvents
     track_event('Personal key reactivation: Account reactivated with personal key')
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Hash] pii_like_keypaths
   # Personal key form submitted
-  def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
+  def personal_key_reactivation_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Personal key reactivation: Personal key form submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
+      success:,
+      errors:,
+      error_details:,
+      pii_like_keypaths:,
       **extra,
     )
   end
@@ -4374,8 +4492,9 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] delivery_preference
   # @param [Integer] phone_configuration_id
   # @param [Boolean] make_default_number
@@ -4386,15 +4505,17 @@ module AnalyticsEvents
     delivery_preference:,
     phone_configuration_id:,
     make_default_number:,
+    error_details: nil,
     **extra
   )
     track_event(
       'Phone Number Change: Form submitted',
-      success: success,
-      errors: errors,
-      delivery_preference: delivery_preference,
-      phone_configuration_id: phone_configuration_id,
-      make_default_number: make_default_number,
+      success:,
+      errors:,
+      error_details:,
+      delivery_preference:,
+      phone_configuration_id:,
+      make_default_number:,
       **extra,
     )
   end
@@ -4426,7 +4547,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV CAC disabled
   # @identity.idp.previous_event_name piv_cac_disabled
   # @param [Boolean] success
-  # @param [Hash] error_details
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] configuration_id
   # Tracks when user attempts to delete a PIV/CAC configuraton
   def piv_cac_delete_submitted(
@@ -4445,8 +4566,8 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name PIV/CAC login
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
   # @param [String,nil] key_id
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, key_id:, **extra)
@@ -4490,8 +4611,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] error_details
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] configuration_id
   # Tracks when user submits a name change for a PIV/CAC configuraton
   def piv_cac_update_name_submitted(
@@ -4777,13 +4898,15 @@ module AnalyticsEvents
   end
 
   # Tracks when rules of use is submitted with a success or failure
-  # @param [Boolean] success
-  # @param [Hash] errors
-  def rules_of_use_submitted(success: nil, errors: nil, **extra)
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def rules_of_use_submitted(success:, errors:, error_details: nil, **extra)
     track_event(
       'Rules of Use Submitted',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
@@ -4794,8 +4917,9 @@ module AnalyticsEvents
   end
 
   # Record SAML authentication payload Hash
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] nameid_format
   # @param [Array] authn_context
   # @param [String] authn_context_comparison
@@ -4819,22 +4943,24 @@ module AnalyticsEvents
     requested_ial:,
     request_signed:,
     matching_cert_serial:,
+    error_details: nil,
     **extra
   )
     track_event(
       'SAML Auth',
-      success: success,
-      errors: errors,
-      nameid_format: nameid_format,
-      authn_context: authn_context,
-      authn_context_comparison: authn_context_comparison,
-      service_provider: service_provider,
-      endpoint: endpoint,
-      idv: idv,
-      finish_profile: finish_profile,
-      requested_ial: requested_ial,
-      request_signed: request_signed,
-      matching_cert_serial: matching_cert_serial,
+      success:,
+      errors:,
+      error_details:,
+      nameid_format:,
+      authn_context:,
+      authn_context_comparison:,
+      service_provider:,
+      endpoint:,
+      idv:,
+      finish_profile:,
+      requested_ial:,
+      request_signed:,
+      matching_cert_serial:,
       **extra,
     )
   end
@@ -4887,16 +5013,18 @@ module AnalyticsEvents
   end
 
   # Tracks when security event is received
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [String] error_code
-  # @param [Hash] errors
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] jti
   # @param [String] user_id
   # @param [String] client_id
   def security_event_received(
     success:,
+    errors:,
     error_code: nil,
-    errors: nil,
+    error_details: nil,
     jti: nil,
     user_id: nil,
     client_id: nil,
@@ -4904,12 +5032,13 @@ module AnalyticsEvents
   )
     track_event(
       'RISC: Security event received',
-      success: success,
-      error_code: error_code,
-      errors: errors,
-      jti: jti,
-      user_id: user_id,
-      client_id: client_id,
+      success:,
+      errors:,
+      error_details:,
+      error_code:,
+      jti:,
+      user_id:,
+      client_id:,
       **extra,
     )
   end
@@ -5153,15 +5282,17 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] enabled_mfa_methods_count
   # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
     success:,
-    errors: nil,
+    errors:,
+    error_details: nil,
     selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
     selection: nil,
@@ -5170,11 +5301,12 @@ module AnalyticsEvents
     track_event(
       'User Registration: 2FA Setup',
       {
-        success: success,
-        errors: errors,
-        selected_mfa_count: selected_mfa_count,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        selection: selection,
+        success:,
+        errors:,
+        error_details:,
+        selected_mfa_count:,
+        enabled_mfa_methods_count:,
+        selection:,
         **extra,
       }.compact,
     )
@@ -5274,10 +5406,10 @@ module AnalyticsEvents
   end
 
   # Tracks when user submits registration email
-  # @param [Boolean] success
+  # @param [Boolean] success Whether form validation was successful
   # @param [Boolean] rate_limited
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
   # @param [Boolean] email_already_exists
   # @param [String] domain_name
@@ -5307,9 +5439,9 @@ module AnalyticsEvents
   end
 
   # Tracks when user confirms registration email
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
   def user_registration_email_confirmation(
     success:,
@@ -5485,7 +5617,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the submission was successful
   # @param [Integer] configuration_id Database ID for the configuration
   # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks when user attempts to delete a WebAuthn configuration
   # @identity.idp.previous_event_name WebAuthn Deleted
   def webauthn_delete_submitted(
@@ -5534,7 +5666,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the submission was successful
   # @param [Integer] configuration_id Database ID for the configuration
   # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
-  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks when user submits a name change for a WebAuthn configuration
   def webauthn_update_name_submitted(
     success:,
