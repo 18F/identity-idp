@@ -48,8 +48,11 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :view, true)
 
-      # make api requests
-      render :show_socure, locals: extra_view_variables
+      doc_req = DocAuth::Socure::Requests::DocumentRequest.new
+      doc_resp = doc_req.fetch
+
+      @url = doc_resp['url']
+      @msg = doc_resp['msg']
     end
 
     def extra_view_variables
