@@ -172,6 +172,6 @@ EXPOSE 3000
 # Set user
 USER app
 
-# Start the application!
+# Start the application
 CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:3000?key=/app/keys/localhost.key&cert=/app/keys/localhost.crt"]
 
