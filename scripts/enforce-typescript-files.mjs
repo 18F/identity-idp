@@ -61,7 +61,6 @@ const LEGACY_FILE_EXCEPTIONS = [
   'spec/javascript/packages/document-capture/context/acuant-spec.jsx',
   'spec/javascript/packages/document-capture/context/device-spec.jsx',
   'spec/javascript/packages/document-capture/context/failed-capture-attempts-spec.jsx',
-  'spec/javascript/packages/document-capture/context/feature-flag-spec.jsx',
   'spec/javascript/packages/document-capture/context/file-base64-cache-spec.js',
   'spec/javascript/packages/document-capture/context/index-spec.js',
   'spec/javascript/packages/document-capture/context/selfie-capture-spec.jsx',
@@ -83,15 +82,24 @@ const packagesWithEntrypoints = await glob('app/javascript/packages/*/package.js
 
 const jsFiles = await glob(
   ['app/{javascript/packages,components}/**/*.{js,jsx}', 'spec/javascript/*/**/*.{js,jsx}'],
-  {
-    ignore: [...packagesWithEntrypoints.map((path) => join(path, '**')), ...LEGACY_FILE_EXCEPTIONS],
-  },
+  { ignore: [...packagesWithEntrypoints.map((path) => join(path, '**'))] },
 );
 
+const invalidExceptions = LEGACY_FILE_EXCEPTIONS.filter((file) => !jsFiles.includes(file));
+
 assert(
-  !jsFiles.length,
+  !invalidExceptions.length,
+  `Unnecessary exception should be removed from LEGACY_FILE_EXCEPTIONS allowlist.
+
+Found ${JSON.stringify(invalidExceptions)}`,
+);
+
+const unexpectedJSFiles = jsFiles.filter((file) => !LEGACY_FILE_EXCEPTIONS.includes(file));
+
+assert(
+  !unexpectedJSFiles.length,
   `All new JavaScript files should be written with TypeScript extensions (.ts, .tsx).
 
-Found ${JSON.stringify(jsFiles)}
+Found ${JSON.stringify(unexpectedJSFiles)}
 `,
 );
