@@ -17,8 +17,10 @@ module TwoFactorAuthenticatableMethods
 
     if IdentityConfig.store.feature_new_device_alert_aggregation_enabled && new_device?
       if current_user.sign_in_new_device_at.blank?
-        if timeframe_expired_event.present?
-          current_user.update(sign_in_new_device_at: timeframe_expired_event.created_at)
+        if sign_in_notification_timeframe_expired_event.present?
+          current_user.update(
+            sign_in_new_device_at: sign_in_notification_timeframe_expired_event.created_at,
+          )
         else
           current_user.update(sign_in_new_device_at: disavowal_event.created_at)
           analytics.sign_in_notification_timeframe_expired_absent
@@ -92,9 +94,11 @@ module TwoFactorAuthenticatableMethods
     )
   end
 
-  def timeframe_expired_event
-    return @timeframe_expired_event if defined?(@timeframe_expired_event)
-    @timeframe_expired_event = current_user.events.where(
+  def sign_in_notification_timeframe_expired_event
+    return @sign_in_notification_timeframe_expired_event if defined?(
+      @sign_in_notification_timeframe_expired_event
+    )
+    @sign_in_notification_timeframe_expired_event = current_user.events.where(
       event_type: 'sign_in_notification_timeframe_expired',
     ).order(created_at: :desc).limit(1).take
   end
