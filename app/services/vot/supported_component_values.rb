@@ -34,7 +34,7 @@ module Vot
     ).freeze
     Pb = ComponentValue.new(
       name: 'Pb',
-      description: 'A biometric comparison is required as part of identity proofing',
+      description: 'IAL2 features are enabled (experimental)',
       implied_component_values: ['P1'],
       requirements: [:biometric_comparison],
     ).freeze
