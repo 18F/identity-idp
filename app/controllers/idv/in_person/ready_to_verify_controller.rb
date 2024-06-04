@@ -17,8 +17,7 @@ module Idv
       before_action :confirm_in_person_session
 
       def show
-        # TO DO: WORK OUT LOGIC TO GET FROM VECTOR OF TRUST
-        @eipp_required = false
+        @eipp_required = sp_session.key?("vtr") && sp_session["vtr"].first&.include?('Pe')
         analytics.idv_in_person_ready_to_verify_visit(**opt_in_analytics_properties)
         @presenter = ReadyToVerifyPresenter.new(enrollment: enrollment, eipp_required: @eipp_required)
       end
