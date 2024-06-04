@@ -29,7 +29,7 @@ module UspsInPersonProofing
         Response::RequestEnrollResponse.new(res)
       end
 
-      def request_facilities(_location, _vector_of_trust)
+      def request_facilities(_location, _is_enhanced_ipp)
         parse_facilities(JSON.parse(Fixtures.request_facilities_response))
       end
 

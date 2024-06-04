@@ -38,7 +38,7 @@ module UspsIppHelper
   def stub_request_EIPP_facilities
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
       status: 200,
-      body: UspsInPersonProofing::Mock::Fixtures.request_EIPP_facilities_response,
+      body: UspsInPersonProofing::Mock::Fixtures.request_eipp_facilities_response,
       headers: { 'content-type' => 'application/json' },
     )
   end

@@ -16,7 +16,7 @@ module Idv
             city: search_params['city'], state: search_params['state'],
             zip_code: search_params['zip_code']
           )
-          locations = proofer.request_facilities(candidate, nil)
+          locations = proofer.request_facilities(candidate)
 
           render json: locations.to_json
         end
