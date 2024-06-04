@@ -30,6 +30,7 @@ RSpec.describe Users::PivCacLoginController do
           expect(@analytics).to have_logged_event(
             :piv_cac_login,
             errors: {},
+            error_details: {},
             key_id: nil,
             success: false,
           )
@@ -89,6 +90,7 @@ RSpec.describe Users::PivCacLoginController do
               errors: {
                 type: 'user.not_found',
               },
+              error_details: {},
               key_id: nil,
               success: false,
             )
@@ -129,6 +131,7 @@ RSpec.describe Users::PivCacLoginController do
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
               errors: {},
+              error_details: {},
               key_id: nil,
               success: true,
             )
