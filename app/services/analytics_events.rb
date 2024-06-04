@@ -1053,22 +1053,8 @@ module AnalyticsEvents
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
   # @identity.idp.previous_event_name IdV: doc auth upload submitted
-  # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def idv_doc_auth_hybrid_handoff_submitted(
-    success:,
-    errors:,
-    error_details:,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth hybrid handoff submitted',
-      success:,
-      errors:,
-      error_details:,
-      **extra,
-    )
+  def idv_doc_auth_hybrid_handoff_submitted(**extra)
+    track_event('IdV: doc auth hybrid handoff submitted', **extra)
   end
 
   # Desktop user has reached the above "hybrid handoff" view
@@ -2927,7 +2913,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
@@ -2949,7 +2934,6 @@ module AnalyticsEvents
     phone_fingerprint:,
     telephony_response:,
     adapter:,
-    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -2959,7 +2943,6 @@ module AnalyticsEvents
       'IdV: phone confirmation otp sent',
       success:,
       errors:,
-      error_details:,
       otp_delivery_preference:,
       country_code:,
       area_code:,
@@ -2976,7 +2959,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
   # @param [:sms,:voice] otp_delivery_preference
@@ -2994,7 +2976,6 @@ module AnalyticsEvents
     otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
-    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -3004,7 +2985,6 @@ module AnalyticsEvents
       'IdV: phone confirmation otp submitted',
       success:,
       errors:,
-      error_details:,
       code_expired:,
       code_matches:,
       otp_delivery_preference:,
@@ -3038,7 +3018,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -3046,7 +3025,6 @@ module AnalyticsEvents
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
-    error_details:,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -3056,7 +3034,6 @@ module AnalyticsEvents
       'IdV: phone confirmation vendor',
       success:,
       errors:,
-      error_details:,
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
@@ -4582,15 +4559,13 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String,nil] key_id
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id:, error_details:, **extra)
+  def piv_cac_login(success:, errors:, key_id:, **extra)
     track_event(
       :piv_cac_login,
       success:,
       errors:,
-      error_details:,
       key_id:,
       **extra,
     )

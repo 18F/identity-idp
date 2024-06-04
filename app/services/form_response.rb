@@ -20,7 +20,7 @@ class FormResponse
   def to_h
     hash = { success: success }
     hash[:errors] = errors if !serialize_error_details_only?
-    hash[:error_details] = flatten_details(error_details)
+    hash[:error_details] = flatten_details(error_details) if !error_details.nil?
     hash.merge!(extra)
     hash
   end
@@ -58,7 +58,7 @@ class FormResponse
   end
 
   def flatten_details(details)
-    details.to_h.transform_values do |errors|
+    details.transform_values do |errors|
       errors.map { |error| error[:type] || error[:error] }.index_with(true)
     end
   end
