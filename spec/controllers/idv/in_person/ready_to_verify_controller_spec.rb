@@ -4,7 +4,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
   let(:user) { create(:user) }
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enforce_tmx) { false }
-  let(:sp_session) { }
+  let(:sp_session) {}
 
   before do
     stub_analytics
@@ -44,7 +44,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
         context 'Evaluates if In-person Proofing is enhanced (EIPP)' do
           context 'when there is no sp_session' do
-            let(:eipp_sp_session) { { } }
+            let(:eipp_sp_session) { {} }
 
             before do
               allow(controller).to receive(:sp_session).and_return(eipp_sp_session)

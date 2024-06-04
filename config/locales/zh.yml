@@ -1271,15 +1271,16 @@ in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
 in_person_proofing.process.eipp_bring_id.heading: 携带REAL身份证件
-in_person_proofing.process.eipp_bring_id.info: '如果你出示一个州的REAL身份证件或驾照，则无需出示支持性文件'
 in_person_proofing.process.eipp_bring_id.image_alt_text: REAL身份证件
-in_person_proofing.process.eipp_state_id_passport.heading: A.州身份证件+护照
-in_person_proofing.process.eipp_state_id_passport.info: 出示州的普通身份证件或驾照，以及护照或护照卡
-in_person_proofing.process.eipp_state_id_passport.image_alt_text: 州身份证件和护照
+in_person_proofing.process.eipp_bring_id.info: '如果你出示一个州的REAL身份证件或驾照，则无需出示支持性文件'
 in_person_proofing.process.eipp_state_id_military_id.heading: B.州身份证件+军人证件
-in_person_proofing.process.eipp_state_id_military_id.info: 出示州的普通身份证件或驾照，以及军人证件。
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: 州身份证和军人证件
+in_person_proofing.process.eipp_state_id_military_id.info: 出示州的普通身份证件或驾照，以及军人证件。
+in_person_proofing.process.eipp_state_id_passport.heading: A.州身份证件+护照
+in_person_proofing.process.eipp_state_id_passport.image_alt_text: 州身份证件和护照
+in_person_proofing.process.eipp_state_id_passport.info: 出示州的普通身份证件或驾照，以及护照或护照卡
 in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州身份证件+两种支持文件
+in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: 州身份证件和两份证明文件
 in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示州的普通身份证件或驾照，以及以下清单中两个支持性文件：'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 租约
@@ -1289,7 +1290,6 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 车辆登记卡
   - 房屋保险单
   - 车辆保险单
-in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: 州身份证件和两份证明文件
 in_person_proofing.process.eipp_what_to_bring.heading: 选项2：携带州颁发的普通身份证件或驾照以及支持性文件
 in_person_proofing.process.eipp_what_to_bring.info: '你可以出示州颁发的普通身份证件或驾照以及下列A、B或C选项中的支持性文件。你只需选择下列选项之一：'
 in_person_proofing.process.state_id.heading: 出示你州驾照或州非驾照身份卡。

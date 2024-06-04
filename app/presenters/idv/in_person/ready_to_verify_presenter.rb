@@ -91,7 +91,7 @@ module Idv
           t('in_person_proofing.process.state_id.info')
         end
       end
-  
+
       private
 
       attr_reader :enrollment
