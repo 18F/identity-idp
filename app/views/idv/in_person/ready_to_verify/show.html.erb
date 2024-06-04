@@ -33,7 +33,7 @@
   <p><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
 <% end %>
 
-<% if @eipp_required %>
+<% if @is_eipp %>
   <section class="border-1px rounded-xl border-primary-light padding-4 margin-bottom-4">
     <%# What to bring to the Post Office %>
     <h2 class="margin-top-0 margin-bottom-2"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
@@ -142,7 +142,7 @@
       <p><%= @presenter.state_id_info %></p>
     <% end %>
   <% end %>
-  <% if !@eipp_required %>
+  <% if !@is_eipp %>
     <p class="margin-bottom-0">
       <%= t('in_person_proofing.body.barcode.questions') %>
       <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>

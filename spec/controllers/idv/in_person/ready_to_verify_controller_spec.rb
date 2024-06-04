@@ -54,7 +54,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
               response
 
               # TO DO: ASSIGNS IS DEPRECATED
-              expect(assigns(:eipp_required)).to be false
+              expect(assigns(:is_eipp)).to be false
             end
           end
 
@@ -70,7 +70,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             it 'is not EIPP' do
               response
 
-              expect(assigns(:eipp_required)).to be false
+              expect(assigns(:is_eipp)).to be false
             end
           end
 
@@ -86,7 +86,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             it 'is EIPP' do
               response
 
-              expect(assigns(:eipp_required)).to be true
+              expect(assigns(:is_eipp)).to be true
             end
           end
         end

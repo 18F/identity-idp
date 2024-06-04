@@ -12,11 +12,11 @@ module Idv
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, eipp_required: nil)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_eipp: nil)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
         @sp_name = sp_name
-        @eipp_required = eipp_required
+        @is_eipp = is_eipp
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
@@ -69,7 +69,7 @@ module Idv
       end
 
       def barcode_heading_text
-        if @eipp_required
+        if @is_eipp
           t('in_person_proofing.headings.barcode_eipp')
         else
           t('in_person_proofing.headings.barcode')
@@ -77,7 +77,7 @@ module Idv
       end
 
       def state_id_heading_text
-        if @eipp_required
+        if @is_eipp
           t('in_person_proofing.process.state_id.heading_eipp')
         else
           t('in_person_proofing.process.state_id.heading')
@@ -85,7 +85,7 @@ module Idv
       end
 
       def state_id_info
-        if @eipp_required
+        if @is_eipp
           t('in_person_proofing.process.state_id.info_eipp')
         else
           t('in_person_proofing.process.state_id.info')
