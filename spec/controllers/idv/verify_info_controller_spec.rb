@@ -359,8 +359,8 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
 
       expect(Idv::Agent).to receive(:new).with(
         hash_including(
-          uuid_prefix: app_id,
-          uuid: user.uuid,
+          ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
+          **Idp::Constants::MOCK_IDV_APPLICANT,
         ),
       ).and_call_original
 
