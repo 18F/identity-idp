@@ -5058,6 +5058,11 @@ module AnalyticsEvents
     track_event('User Maximum Session Length Exceeded')
   end
 
+  # User events missing sign_in_notification_timeframe_expired
+  def sign_in_notification_timeframe_expired_absent
+    track_event(:sign_in_notification_timeframe_expired_absent)
+  end
+
   # @param [String] flash
   # tracks when a user visits the sign in page
   def sign_in_page_visit(flash:, **extra)
