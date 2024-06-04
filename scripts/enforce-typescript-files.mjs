@@ -82,7 +82,7 @@ const packagesWithEntrypoints = await glob('app/javascript/packages/*/package.js
 
 const jsFiles = await glob(
   ['app/{javascript/packages,components}/**/*.{js,jsx}', 'spec/javascript/*/**/*.{js,jsx}'],
-  { ignore: [...packagesWithEntrypoints.map((path) => join(path, '**'))] },
+  { ignore: packagesWithEntrypoints.map((path) => join(path, '**')) },
 );
 
 const invalidExceptions = LEGACY_FILE_EXCEPTIONS.filter((file) => !jsFiles.includes(file));
