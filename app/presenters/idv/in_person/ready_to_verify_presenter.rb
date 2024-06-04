@@ -12,7 +12,7 @@ module Idv
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_eipp: nil)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_eipp: false)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
         @sp_name = sp_name
