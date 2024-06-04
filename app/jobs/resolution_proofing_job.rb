@@ -23,10 +23,9 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     ipp_enrollment_in_progress:,
     user_id: nil,
-    service_provider_issuer: nil, # rubocop:disable Lint/UnusedMethodArgument
+    service_provider_issuer: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil,
-    instant_verify_ab_test_discriminator: nil # rubocop:disable Lint/UnusedMethodArgument
+    request_ip: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -37,9 +36,12 @@ class ResolutionProofingJob < ApplicationJob
       symbolize_names: true,
     )
 
-    applicant_pii = decrypted_args[:applicant_pii]
-
     user = User.find_by(id: user_id)
+    current_sp = ServiceProvider.find_by(issuer: service_provider_issuer)
+
+    applicant_pii = decrypted_args[:applicant_pii]
+    applicant_pii[:uuid_prefix] = current_sp&.app_id
+    applicant_pii[:uuid] = user.uuid
 
     callback_log_data = make_vendor_proofing_requests(
       timer: timer,
@@ -79,7 +81,7 @@ class ResolutionProofingJob < ApplicationJob
   )
     result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
-      user_email: user&.confirmed_email_addresses&.first&.email,
+      user_email: user.confirmed_email_addresses.first.email,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
@@ -102,7 +104,7 @@ class ResolutionProofingJob < ApplicationJob
   def log_threatmetrix_info(threatmetrix_result, user)
     logger_info_hash(
       name: 'ThreatMetrix',
-      user_id: user&.uuid,
+      user_id: user.uuid,
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,
     )

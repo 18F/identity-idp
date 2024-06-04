@@ -348,6 +348,7 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         result = {
           success: true,
           errors: {},
+          error_details: nil,
           area_code: '703',
           country_code: 'US',
           carrier: 'Test Mobile Carrier',
@@ -444,6 +445,7 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           new_phone_added: true,
           hybrid_handoff_phone_used: false,
           errors: {},
+          error_details: nil,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
           country_code: proofing_phone.country,
           area_code: proofing_phone.area_code,

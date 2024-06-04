@@ -88,8 +88,47 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
               expect(args[:disavowal_event]).to be_kind_of(Event)
               expect(args[:disavowal_token]).to be_kind_of(String)
             end
-
             result
+          end
+
+          context 'sign_in_notification_timeframe_expired missing' do
+            it 'tracks analytics event for missing timeframe_expired' do
+              stub_analytics
+              result
+
+              expect(@analytics).to have_logged_event(
+                :sign_in_notification_timeframe_expired_absent,
+              )
+            end
+          end
+
+          context 'sign_in_notification_timeframe_expired present' do
+            before do
+              create(
+                :event,
+                user:,
+                event_type: :sign_in_notification_timeframe_expired,
+                created_at: 10.minutes.ago,
+              )
+            end
+
+            around do |ex|
+              freeze_time { ex.run }
+            end
+
+            it 'creates a new user event with disavowal' do
+              expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**args|
+                expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
+                  10.minutes.ago,
+                )
+              end
+              stub_analytics
+              result
+
+              expect(@analytics).to_not have_logged_event(
+                :sign_in_notification_timeframe_expired_absent,
+              )
+            end
           end
         end
       end
