@@ -57,6 +57,32 @@ module SamlIdp
           )
         end
       end
+
+      describe 'options[:digest_method_fix_enabled]' do
+        let(:raw_xml) do
+          SamlIdp::Request.from_deflated_request(
+            signed_auth_request
+          ).raw_xml
+        end
+
+        let(:document) { XMLSecurity::SignedDocument.new(raw_xml) }
+        let(:digest_method_fix_enabled) { true }
+        let(:options) { { digest_method_fix_enabled: } }
+
+        context 'digest_method_fix_enabled is set to true' do
+          it 'validates the doc successfully' do
+            expect(document.validate_doc(base64cert, true, options)).to be true
+          end
+        end
+
+        context 'digest_method_fix_enabled is set to false' do
+          let(:digest_method_fix_enabled) { false }
+
+          it 'validates the doc successfully' do
+            expect(document.validate_doc(base64cert, true, options)).to be true
+          end
+        end
+      end
     end
 
     describe '#validate' do
@@ -95,9 +121,6 @@ module SamlIdp
       end
 
       describe '#digest_method_algorithm' do
-        let(:document) do
-          XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace, false))
-        end
         let(:sig_namespace_hash) { { 'ds' => 'http://www.w3.org/2000/09/xmldsig#' } }
 
         let(:el) do
@@ -116,12 +139,125 @@ module SamlIdp
           REXML::XPath.first(sig_element, '//ds:Reference', sig_namespace_hash)
         end
 
-        it 'returns the value in the DigestMethod node' do
-          expect(document.send(
-            :digest_method_algorithm,
-            ref,
-            sig_namespace_hash
-          )).to eq OpenSSL::Digest::SHA256
+        context 'digest_method_fix_enabled is true' do
+          let(:digest_method_fix_enabled) { true }
+
+          context 'document does not have ds namespace for Signature elements' do
+            let(:document) do
+              XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace, false))
+            end
+
+            it 'returns the value in the DigestMethod node' do
+              expect(document.send(
+                       :digest_method_algorithm,
+                       ref,
+                       sig_namespace_hash,
+                       digest_method_fix_enabled
+                     )).to eq OpenSSL::Digest::SHA256
+            end
+
+            describe 'when the namespace hash is not defined' do
+              it 'returns the default algorithm type' do
+                expect(document.send(
+                         :digest_method_algorithm,
+                         ref,
+                         {},
+                         digest_method_fix_enabled
+                       )).to eq OpenSSL::Digest::SHA1
+              end
+            end
+          end
+
+          context 'document does have ds namespace for Signature elements' do
+            let(:raw_xml) do
+              SamlIdp::Request.from_deflated_request(
+                signed_auth_request
+              ).raw_xml
+            end
+
+            let(:document) { XMLSecurity::SignedDocument.new(raw_xml) }
+
+            it 'returns the value in the DigestMethod node' do
+              expect(document.send(
+                       :digest_method_algorithm,
+                       ref,
+                       sig_namespace_hash,
+                       digest_method_fix_enabled
+                     )).to eq OpenSSL::Digest::SHA256
+            end
+
+            describe 'when the namespace hash is not defined' do
+              it 'returns the default algorithm type' do
+                expect(document.send(
+                         :digest_method_algorithm,
+                         ref,
+                         {},
+                         digest_method_fix_enabled
+                       )).to eq OpenSSL::Digest::SHA1
+              end
+            end
+          end
+        end
+
+        context 'digest_method_fix_enabled is false' do
+          let(:digest_method_fix_enabled) { false }
+
+          context 'document does not have ds namespace for Signature elements' do
+            let(:document) do
+              XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace, false))
+            end
+
+            it 'returns the default algorithm type' do
+              expect(document.send(
+                       :digest_method_algorithm,
+                       ref,
+                       sig_namespace_hash,
+                       digest_method_fix_enabled
+                     )).to eq OpenSSL::Digest::SHA1
+            end
+
+            describe 'when the namespace hash is not defined' do
+              it 'returns the default algorithm type' do
+                expect(document.send(
+                         :digest_method_algorithm,
+                         ref,
+                         {},
+                         digest_method_fix_enabled
+                       )).to eq OpenSSL::Digest::SHA1
+              end
+            end
+          end
+
+          context 'document does have ds namespace for Signature elements' do
+            let(:raw_xml) do
+              SamlIdp::Request.from_deflated_request(
+                signed_auth_request
+              ).raw_xml
+            end
+
+            let(:document) { XMLSecurity::SignedDocument.new(raw_xml) }
+
+            it 'returns the value in the DigestMethod node' do
+              expect(document.send(
+                       :digest_method_algorithm,
+                       ref,
+                       sig_namespace_hash,
+                       digest_method_fix_enabled
+                     )).to eq OpenSSL::Digest::SHA256
+            end
+
+            describe 'when the namespace hash is not defined' do
+              it 'returns the value in the DigestMethod node' do
+                # in this scenario, the undefined namespace hash is ignored
+                expect(document.send(
+                         :digest_method_algorithm,
+                         ref,
+                         {},
+                         digest_method_fix_enabled
+                       )).to eq OpenSSL::Digest::SHA256
+              end
+            end
+          end
         end
       end
 

@@ -70,7 +70,11 @@ module SamlIdp
         if options[:get_params] && options[:get_params][:Signature]
           validate_doc_params_signature(base64_cert, soft, options[:get_params])
         else
-          validate_doc_embedded_signature(base64_cert, soft)
+          validate_doc_embedded_signature(
+            base64_cert,
+            soft,
+            digest_method_fix_enabled: options[:digest_method_fix_enabled]
+          )
         end
       end
 
@@ -149,7 +153,11 @@ module SamlIdp
         )
       end
 
-      def validate_doc_embedded_signature(base64_cert, soft = true)
+      def validate_doc_embedded_signature(
+        base64_cert,
+        soft = true,
+        digest_method_fix_enabled: false
+      )
         # check for inclusive namespaces
         inclusive_namespaces = extract_inclusive_namespaces
         document = Nokogiri.parse(to_s)
@@ -168,12 +176,12 @@ module SamlIdp
         end
 
         sig_namespace_hash = if REXML::XPath.first(
-            @sig_element,
-            '//ds:SignedInfo',
-            { 'ds' => DSIG }
-          )
-              { 'ds' => DSIG }
-          end
+          @sig_element,
+          '//ds:SignedInfo',
+          { 'ds' => DSIG }
+        )
+          { 'ds' => DSIG }
+        end
 
         # verify signature
         signed_info_element = REXML::XPath.first(
@@ -209,7 +217,11 @@ module SamlIdp
             inclusive_namespaces
           )
 
-          digest_algorithm = digest_method_algorithm(ref, sig_namespace_hash)
+          digest_algorithm = digest_method_algorithm(
+            ref,
+            sig_namespace_hash,
+            digest_method_fix_enabled
+          )
 
           hash = digest_algorithm.digest(canon_hashed_element)
           digest_value = Base64.decode64(REXML::XPath.first(
@@ -240,8 +252,12 @@ module SamlIdp
         verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
       end
 
-      def digest_method_algorithm(ref, hash)
-        algorithm(REXML::XPath.first(ref, '//ds:DigestMethod', hash))
+      def digest_method_algorithm(ref, hash, digest_method_fix_enabled)
+        if digest_method_fix_enabled
+          algorithm(REXML::XPath.first(ref, '//ds:DigestMethod', hash))
+        else
+          algorithm(REXML::XPath.first(ref, '//ds:DigestMethod'))
+        end
       end
 
       def verify_signature(base64_cert, sig_alg, signature, canon_string, soft)

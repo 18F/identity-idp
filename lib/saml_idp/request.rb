@@ -171,7 +171,7 @@ module SamlIdp
       Array(service_provider.certs).find do |cert|
         document.valid_signature?(
           OpenSSL::Digest::SHA256.new(cert.to_der).hexdigest,
-          options.merge(cert:)
+          options.merge(cert:, digest_method_fix_enabled: true)
         )
       end
     end
