@@ -39,13 +39,11 @@ module Idv
       end
 
       def extra_view_variables
-        doc_auth_selfie_capture = resolved_authn_context_result.biometric_comparison?
-
         {
           flow_path: 'hybrid',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-          doc_auth_selfie_capture:,
+          doc_auth_selfie_capture: resolved_authn_context_result.biometric_comparison?,
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
         )
@@ -54,14 +52,12 @@ module Idv
       private
 
       def analytics_arguments
-        biometric_comparison_required = resolved_authn_context_result.biometric_comparison?
-
         {
           flow_path: 'hybrid',
           step: 'document_capture',
           analytics_id: 'Doc Auth',
-          liveness_checking_required: biometric_comparison_required,
-          selfie_check_required: biometric_comparison_required,
+          liveness_checking_required: resolved_authn_context_result.biometric_comparison?,
+          selfie_check_required: resolved_authn_context_result.biometric_comparison?,
         }.merge(
           ab_test_analytics_buckets,
         )
