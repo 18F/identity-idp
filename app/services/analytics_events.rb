@@ -1053,8 +1053,22 @@ module AnalyticsEvents
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
   # @identity.idp.previous_event_name IdV: doc auth upload submitted
-  def idv_doc_auth_hybrid_handoff_submitted(**extra)
-    track_event('IdV: doc auth hybrid handoff submitted', **extra)
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def idv_doc_auth_hybrid_handoff_submitted(
+    success:,
+    errors:,
+    error_details:,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth hybrid handoff submitted',
+      success:,
+      errors:,
+      error_details:,
+      **extra,
+    )
   end
 
   # Desktop user has reached the above "hybrid handoff" view
@@ -4568,13 +4582,15 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String,nil] key_id
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id:, **extra)
+  def piv_cac_login(success:, errors:, key_id:, error_details:, **extra)
     track_event(
       :piv_cac_login,
       success:,
       errors:,
+      error_details:,
       key_id:,
       **extra,
     )
