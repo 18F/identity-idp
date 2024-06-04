@@ -23,7 +23,6 @@ module TwoFactorAuthentication
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
       result = @backup_code_form.submit(backup_code_params)
       analytics.multi_factor_auth(**result.to_h.merge(new_device: new_device?))
-      irs_attempts_api_tracker.mfa_login_backup_code(success: result.success?)
       handle_result(result)
     end
 
@@ -55,7 +54,7 @@ module TwoFactorAuthentication
       flash.now[:error] = t('two_factor_authentication.invalid_backup_code')
 
       if current_user.locked_out?
-        handle_second_factor_locked_user(context: context, type: 'backup_code')
+        handle_second_factor_locked_user(type: 'backup_code')
       else
         render_show_after_invalid
       end

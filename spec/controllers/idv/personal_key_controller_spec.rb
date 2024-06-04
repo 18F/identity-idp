@@ -50,7 +50,6 @@ RSpec.describe Idv::PersonalKeyController do
 
   before do
     stub_analytics
-    stub_attempts_tracker
 
     stub_sign_in(user)
 
@@ -294,11 +293,6 @@ RSpec.describe Idv::PersonalKeyController do
       expect(idv_session.profile.recover_pii(normalize_personal_key(code))).to eq(
         Pii::Attributes.new_from_hash(applicant),
       )
-    end
-
-    it 'logs when user generates personal key' do
-      expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
-      get :show
     end
 
     context 'user selected gpo verification' do

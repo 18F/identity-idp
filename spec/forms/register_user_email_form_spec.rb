@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RegisterUserEmailForm do
   let(:analytics) { FakeAnalytics.new }
-  let(:attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  subject { RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker) }
+  subject { RegisterUserEmailForm.new(analytics:) }
 
   it_behaves_like 'email validation'
 
@@ -120,9 +119,6 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'creates rate_limiter events after reaching rate_limiter limit' do
-        expect(attempts_tracker).to receive(:user_registration_email_submission_rate_limited).
-          with(email: registered_email_address, email_already_registered: true)
-
         IdentityConfig.store.reg_confirmed_email_max_attempts.times do
           subject.submit(email: variation_of_preexisting_email, terms_accepted: '1')
         end
@@ -177,12 +173,6 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'creates rate_limiter events after reaching rate_limiter limit' do
-        expect(attempts_tracker).to receive(
-          :user_registration_email_submission_rate_limited,
-        ).with(
-          email: registered_email_address, email_already_registered: false,
-        )
-
         IdentityConfig.store.reg_unconfirmed_email_max_attempts.times do
           subject.submit(email: registered_email_address, terms_accepted: '1')
         end
@@ -197,14 +187,8 @@ RSpec.describe RegisterUserEmailForm do
         let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
 
         it 'creates rate_limiter events after reaching rate_limiter limit' do
-          expect(attempts_tracker).to receive(
-            :user_registration_email_submission_rate_limited,
-          ).with(
-            email: "taken+#{rate_limit}@gmail.com", email_already_registered: false,
-          )
-
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker).
+            RegisterUserEmailForm.new(analytics:).
               submit(
                 email: "taken+#{i}@gmail.com", terms_accepted: '1',
               )
@@ -256,7 +240,7 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'saves the user email_language for a valid form' do
-        form = RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker)
+        form = RegisterUserEmailForm.new(analytics:)
 
         response = form.submit(
           email: unregistered_email_address, email_language: 'fr', terms_accepted: '1',
@@ -270,14 +254,8 @@ RSpec.describe RegisterUserEmailForm do
         let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
 
         it 'creates rate_limiter events after reaching rate_limiter limit' do
-          expect(attempts_tracker).to receive(
-            :user_registration_email_submission_rate_limited,
-          ).with(
-            email: "taken+#{rate_limit}@gmail.com", email_already_registered: false,
-          )
-
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker).
+            RegisterUserEmailForm.new(analytics:).
               submit(
                 email: "taken+#{i}@gmail.com", terms_accepted: '1',
               )

@@ -75,10 +75,6 @@ class ApplicationController < ActionController::Base
     current_user || AnonymousUser.new
   end
 
-  def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new
-  end
-
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end

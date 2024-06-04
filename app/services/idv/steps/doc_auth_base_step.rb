@@ -36,7 +36,6 @@ module Idv
         @flow.analytics.rate_limit_reached(
           limiter_type: :idv_doc_auth,
         )
-        @flow.irs_attempts_api_tracker.idv_document_upload_rate_limited
         redirect_to rate_limited_url
         DocAuth::Response.new(
           success: false,

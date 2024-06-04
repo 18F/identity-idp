@@ -152,9 +152,7 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    resolved_authn_context_result.identity_proofing? &&
-      (current_user.identity_not_verified? ||
-       current_user.reproof_for_irs?(service_provider: current_sp))
+    resolved_authn_context_result.identity_proofing? && current_user.identity_not_verified?
   end
 
   def active_identity

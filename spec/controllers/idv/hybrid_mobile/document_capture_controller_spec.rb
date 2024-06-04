@@ -22,7 +22,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
 
   before do
     stub_analytics
-    stub_attempts_tracker
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
@@ -56,7 +55,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
         {
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
-          irs_reproofing: false,
           step: 'document_capture',
           selfie_check_required: false,
           liveness_checking_required: boolean,
@@ -182,7 +180,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
           errors: {},
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
-          irs_reproofing: false,
           step: 'document_capture',
           liveness_checking_required: false,
           selfie_check_required: boolean,

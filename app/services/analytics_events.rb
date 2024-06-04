@@ -1363,8 +1363,8 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
-  # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
-  # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
+  # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verification
+  # @param [Boolean] in_person_verification_pending Profile is awaiting in person verification
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -1843,14 +1843,12 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # address page visited
   def idv_in_person_proofing_address_visited(
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
   )
@@ -1859,7 +1857,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
@@ -1868,7 +1865,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean] same_address_as_id
@@ -1877,7 +1873,6 @@ module AnalyticsEvents
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     success: nil,
     errors: nil,
     same_address_as_id: nil,
@@ -1888,7 +1883,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
@@ -1968,7 +1962,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean] same_address_as_id
@@ -1977,7 +1970,6 @@ module AnalyticsEvents
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     success: nil,
     errors: nil,
     same_address_as_id: nil,
@@ -1988,7 +1980,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
@@ -2003,7 +1994,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean, nil] same_address_as_id
@@ -2013,7 +2003,6 @@ module AnalyticsEvents
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     success: nil,
     errors: nil,
     same_address_as_id: nil,
@@ -2025,7 +2014,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
@@ -2037,14 +2025,12 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] step
   # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
     step: nil,
     analytics_id: nil,
-    irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
   )
@@ -2053,7 +2039,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       step: step,
       analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
@@ -3639,20 +3624,22 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [Hash] error_details Details for error that occurred in unsuccessful submission
-  # @param [String] context
-  # @param [Boolean] new_device
-  # @param [String] multi_factor_auth_method
+  # @param ["authentication","reauthentication","confirmation"] context User session context
+  # @param [Boolean] new_device Whether the user is authenticating from a new device
+  # @param [String] multi_factor_auth_method Authentication method used
   # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
-  # @param [Integer] auth_app_configuration_id
-  # @param [Integer] piv_cac_configuration_id
-  # @param [Integer] key_id
-  # @param [Integer] webauthn_configuration_id
-  # @param [Integer] phone_configuration_id
-  # @param [Boolean] confirmation_for_add_phone
-  # @param [String] area_code
-  # @param [String] country_code
+  # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
+  # @param [Integer] piv_cac_configuration_id Database ID of PIV/CAC configuration
+  # @param [Integer] key_id PIV/CAC key_id
+  # @param [Integer] webauthn_configuration_id Database ID of WebAuthn configuration
+  # @param [Integer] phone_configuration_id Database ID of phone configuration
+  # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
+  # @param [String] area_code Area code of phone number
+  # @param [String] country_code Country code associated with phone number
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [String] frontend_error Name of error that occurred in frontend during submission
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
+  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -3673,6 +3660,8 @@ module AnalyticsEvents
     country_code: nil,
     phone_fingerprint: nil,
     frontend_error: nil,
+    in_account_creation_flow: nil,
+    enabled_mfa_methods_count: nil,
     **extra
   )
     track_event(
@@ -3696,6 +3685,8 @@ module AnalyticsEvents
         country_code: country_code,
         phone_fingerprint: phone_fingerprint,
         frontend_error:,
+        in_account_creation_flow:,
+        enabled_mfa_methods_count:,
         **extra,
       }.compact,
     )
@@ -3764,24 +3755,39 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] context
+  # @param ["authentication","reauthentication","confirmation"] context User session context
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
   # @param [Integer] phone_configuration_id
+  # @param [String] area_code Area code of phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
+  # @param [String] phone_fingerprint Fingerprint hash of phone number
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
+  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
     multi_factor_auth_method:,
     confirmation_for_add_phone:,
     phone_configuration_id:,
+    area_code:,
+    country_code:,
+    phone_fingerprint:,
+    in_account_creation_flow:,
+    enabled_mfa_methods_count:,
     **extra
   )
     track_event(
       'Multi-Factor Authentication: enter OTP visited',
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      confirmation_for_add_phone: confirmation_for_add_phone,
-      phone_configuration_id: phone_configuration_id,
+      context:,
+      multi_factor_auth_method:,
+      confirmation_for_add_phone:,
+      phone_configuration_id:,
+      area_code:,
+      country_code:,
+      phone_fingerprint:,
+      in_account_creation_flow:,
+      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -3945,6 +3951,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] method
+  # @param [String] original_method Method of referring request
   # OIDC Logout Requested
   def oidc_logout_requested(
     success: nil,
@@ -3957,6 +3964,7 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     method: nil,
+    original_method: nil,
     **extra
   )
     track_event(
@@ -3971,6 +3979,7 @@ module AnalyticsEvents
       oidc: oidc,
       saml_request_valid: saml_request_valid,
       method: method,
+      original_method: original_method,
       **extra,
     )
   end
@@ -4056,17 +4065,23 @@ module AnalyticsEvents
   end
 
   # Tracks when a sucessful openid authorization request is returned
+  # @param [Boolean] success Whether form validations were succcessful
+  # @param [Boolean] user_sp_authorized Whether user granted consent during this authorization
   # @param [String] client_id
   # @param [String] code_digest hash of returned "code" param
   def openid_connect_authorization_handoff(
+    success:,
+    user_sp_authorized:,
     client_id:,
     code_digest:,
     **extra
   )
     track_event(
       'OpenID Connect: authorization request handoff',
-      client_id: client_id,
-      code_digest: code_digest,
+      success:,
+      user_sp_authorized:,
+      client_id:,
+      code_digest:,
       **extra,
     )
   end
@@ -4158,29 +4173,32 @@ module AnalyticsEvents
   end
 
   # Tracks when user makes an otp delivery selection
+  # @param [Boolean] success Whether the form was submitted successfully.
+  # @param [Hash] errors Errors resulting from form validation
+  # @param ["authentication","reauthentication","confirmation"] context User session context
   # @param [String] otp_delivery_preference (sms or voice)
-  # @param [Boolean] resend
-  # @param [String] country_code
-  # @param [String] area_code
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  # @param [Hash] pii_like_keypaths
+  # @param [Boolean] resend True if the user re-requested a code
+  # @param [String] country_code Country code associated with phone number
+  # @param [String] area_code Area code of phone number
   def otp_delivery_selection(
+    success:,
+    errors:,
+    context:,
     otp_delivery_preference:,
     resend:,
     country_code:,
     area_code:,
-    context:,
-    pii_like_keypaths:,
     **extra
   )
     track_event(
       'OTP: Delivery Selection',
-      otp_delivery_preference: otp_delivery_preference,
-      resend: resend,
-      country_code: country_code,
-      area_code: area_code,
-      context: context,
-      pii_like_keypaths: pii_like_keypaths,
+      success:,
+      errors:,
+      context:,
+      otp_delivery_preference:,
+      resend:,
+      country_code:,
+      area_code:,
       **extra,
     )
   end
@@ -5179,14 +5197,14 @@ module AnalyticsEvents
   end
 
   # User registration has been handed off to agency page
-  # @param [Boolean] ial2
-  # @param [Integer] ialmax
-  # @param [String] service_provider_name
-  # @param [String] page_occurence
-  # @param [String] needs_completion_screen_reason
+  # @param [Boolean] ial2 Whether the user registration was for a verified identity
+  # @param [Integer] ialmax Whether the user registration was for an IALMax request
+  # @param [String] service_provider_name The friendly name of the service provider
+  # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
+  # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
+  # reason for the consent screen being shown
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
-  # @param [Array] sp_request_requested_attributes
-  # @param [Array] sp_session_requested_attributes
+  # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   def user_registration_agency_handoff_page_visit(
       ial2:,
       service_provider_name:,
@@ -5194,7 +5212,6 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       in_account_creation_flow:,
       sp_session_requested_attributes:,
-      sp_request_requested_attributes: nil,
       ialmax: nil,
       **extra
     )
@@ -5206,7 +5223,6 @@ module AnalyticsEvents
       page_occurence:,
       needs_completion_screen_reason:,
       in_account_creation_flow:,
-      sp_request_requested_attributes:,
       sp_session_requested_attributes:,
       **extra,
     )
@@ -5223,35 +5239,36 @@ module AnalyticsEvents
   end
 
   # Tracks when user completes registration
-  # @param [Boolean] ial2
-  # @param [Boolean] ialmax
-  # @param [String] service_provider_name
-  # @param [String] page_occurence
-  # @param [String] needs_completion_screen_reason
-  # @param [Array] sp_request_requested_attributes
-  # @param [Array] sp_session_requested_attributes
+  # @param [Boolean] ial2 Whether the user registration was for a verified identity
+  # @param [Boolean] ialmax Whether the user registration was for an IALMax request
+  # @param [String] service_provider_name The friendly name of the service provider
+  # @param ['account-page','agency-page'] page_occurence Where the user concluded registration
+  # @param ['new_sp','new_attributes','reverified_after_consent'] needs_completion_screen_reason The
+  # reason for the consent screen being shown
+  # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   def user_registration_complete(
     ial2:,
     service_provider_name:,
     page_occurence:,
+    in_account_creation_flow:,
     needs_completion_screen_reason:,
     sp_session_requested_attributes:,
-    sp_request_requested_attributes: nil,
     ialmax: nil,
     disposable_email_domain: nil,
     **extra
   )
     track_event(
       'User registration: complete',
-      ial2: ial2,
-      ialmax: ialmax,
-      service_provider_name: service_provider_name,
-      page_occurence: page_occurence,
-      needs_completion_screen_reason: needs_completion_screen_reason,
-      sp_request_requested_attributes: sp_request_requested_attributes,
-      sp_session_requested_attributes: sp_session_requested_attributes,
-      disposable_email_domain: disposable_email_domain,
+      ial2:,
+      ialmax:,
+      service_provider_name:,
+      page_occurence:,
+      in_account_creation_flow:,
+      needs_completion_screen_reason:,
+      sp_session_requested_attributes:,
+      disposable_email_domain:,
       **extra,
     )
   end

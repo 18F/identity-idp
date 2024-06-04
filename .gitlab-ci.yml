@@ -381,7 +381,6 @@ trigger_devops:
         },
         "railsOffline": "true",
         "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },
@@ -414,7 +413,6 @@ trigger_devops:
         },
         "railsOffline": "true",
         "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },

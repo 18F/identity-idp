@@ -26,10 +26,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         freeze_time do
           sign_in_before_2fa(user)
           stub_analytics
-          stub_attempts_tracker
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).
-            with(:mfa_login_backup_code, success: true)
 
           expect(controller).to receive(:handle_valid_verification_for_authentication_context).
             with(auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE).
@@ -90,10 +86,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         freeze_time do
           stub_sign_in_before_2fa(user)
           stub_analytics
-          stub_attempts_tracker
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).
-            with(:mfa_login_backup_code, success: true)
 
           post :create, params: payload
 
@@ -140,9 +132,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       end
 
       it 'renders the show page' do
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_login_backup_code, success: false)
         post :create, params: payload
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_backup_code')
@@ -158,9 +147,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       end
 
       it 're-renders the backup code entry screen' do
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_login_backup_code, success: false)
         post :create, params: payload
 
         expect(response).to render_template(:show)
@@ -175,13 +161,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         user.save
 
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_login_backup_code, success: false)
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(mfa_device_type: 'backup_code')
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))

@@ -107,6 +107,7 @@ module Reporting
       csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
       csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
       csv << []
+      csv << ['Fraud review rejected', idv_fraud_rejected]
       csv << ['Successfully Verified', successfully_verified_users]
       csv << ['Successfully Verified - With phone number', idv_final_resolution_verified]
       csv << ['Successfully Verified - With mailed code', gpo_verification_submitted]

@@ -30,7 +30,6 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_lockfiles \
 	lint_new_typescript_files \
 	lint_optimized_assets \
-	lint_tracker_events \
 	lint_yaml \
 	lint_yarn_workspaces \
 	lint_asset_bundle_size \
@@ -72,7 +71,6 @@ else
 endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
-	make lint_tracker_events
 	make lint_analytics_events_sorted
 	@echo "--- brakeman ---"
 	make brakeman
@@ -290,14 +288,11 @@ lint_analytics_events_sorted:
 	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
 		|| (echo '\033[1;31mError: methods in analytics_events.rb are not sorted alphabetically\033[0m' && exit 1)
 
-lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
-
 public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --json $< > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb app/services/irs_attempts_api/tracker_events.rb
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
 	bundle exec yard doc \
 		--fail-on-warning \
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \

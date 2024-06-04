@@ -138,8 +138,6 @@ class Profile < ApplicationRecord
       )
       activate
     end
-
-    track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
   def activate_after_fraud_review_unnecessary
@@ -229,9 +227,6 @@ class Profile < ApplicationRecord
       fraud_review_pending_at: nil,
       fraud_rejection_at: Time.zone.now,
     )
-    track_fraud_review_adjudication(
-      decision: notify_user ? 'manual_reject' : 'automatic_reject',
-    )
     UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end
 
@@ -299,23 +294,10 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new
-  end
-
   private
 
   def confirm_that_profile_can_be_activated!
     raise reason_not_to_activate if reason_not_to_activate
-  end
-
-  def track_fraud_review_adjudication(decision:)
-    fraud_review_request = user.fraud_review_requests.last
-    irs_attempts_api_tracker.fraud_review_adjudicated(
-      decision: decision,
-      cached_irs_session_id: fraud_review_request&.irs_session_id,
-      cached_login_session_id: fraud_review_request&.login_session_id,
-    )
   end
 
   def personal_key_generator

@@ -17,7 +17,6 @@ RSpec.describe Users::BackupCodeSetupController do
   shared_examples 'valid backup codes creation' do
     it 'creates backup codes and logs expected events' do
       stub_analytics
-      stub_attempts_tracker
       allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
 
       Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)

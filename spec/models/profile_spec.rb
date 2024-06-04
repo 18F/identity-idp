@@ -874,36 +874,6 @@ RSpec.describe Profile do
       expect(profile.fraud_review_pending_at).to_not eq nil
       expect(profile).to_not be_active
     end
-
-    context 'when the initiating_sp is the IRS' do
-      let(:sp) { create(:service_provider, :irs) }
-      let(:profile) do
-        create(
-          :profile,
-          user: user,
-          active: false,
-          fraud_review_pending_at: 1.day.ago,
-          initiating_service_provider: sp,
-        )
-      end
-
-      context 'when the feature flag is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
-            and_return(true)
-        end
-
-        it 'logs an attempt event' do
-          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
-
-          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
-            with(
-              hash_including(decision: 'pass'),
-            )
-          profile.activate_after_passing_review
-        end
-      end
-    end
   end
 
   describe '#activate_after_fraud_review_unnecessary' do
@@ -1113,46 +1083,6 @@ RSpec.describe Profile do
         expect(profile).to_not be_active
 
         expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
-      end
-    end
-
-    context 'when the SP is the IRS' do
-      let(:sp) { create(:service_provider, :irs) }
-      let(:profile) do
-        create(:profile, :fraud_review_pending, active: false, initiating_service_provider: sp)
-      end
-
-      context 'and notify_user is true' do
-        it 'logs an event with manual_reject' do
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
-            and_return(true)
-
-          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
-
-          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
-            with(
-              hash_including(decision: 'manual_reject'),
-            )
-
-          profile.reject_for_fraud(notify_user: true)
-        end
-      end
-
-      context 'and notify_user is false' do
-        it 'logs an event with automatic_reject' do
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
-            and_return(true)
-
-          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
-
-          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
-            with(
-              hash_including(decision: 'automatic_reject'),
-            )
-
-          profile.reject_for_fraud(notify_user: false)
-        end
       end
     end
   end

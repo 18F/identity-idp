@@ -74,7 +74,6 @@ module Idv
           phone_step_attempts: gpo_mail_service.phone_step_attempts,
           **ab_test_analytics_buckets,
         )
-        irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
         create_user_event(:gpo_mail_sent, current_user)
 
         ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')

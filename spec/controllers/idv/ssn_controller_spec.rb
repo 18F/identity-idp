@@ -15,7 +15,6 @@ RSpec.describe Idv::SsnController do
     stub_sign_in(user)
     stub_up_to(:document_capture, idv_session: subject.idv_session)
     stub_analytics
-    stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -55,7 +54,6 @@ RSpec.describe Idv::SsnController do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        irs_reproofing: false,
         step: 'ssn',
       }.merge(ab_test_args)
     end
@@ -131,7 +129,6 @@ RSpec.describe Idv::SsnController do
         {
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'ssn',
           success: true,
           errors: {},
@@ -169,13 +166,6 @@ RSpec.describe Idv::SsnController do
         put :update, params: params
       end
 
-      it 'logs attempts api event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
-          ssn: ssn,
-        )
-        put :update, params: params
-      end
-
       context 'with existing session applicant' do
         it 'clears applicant' do
           subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
@@ -195,7 +185,6 @@ RSpec.describe Idv::SsnController do
         {
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
-          irs_reproofing: false,
           step: 'ssn',
           success: false,
           errors: {

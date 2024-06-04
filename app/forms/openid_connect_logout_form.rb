@@ -46,6 +46,7 @@ class OpenidConnectLogoutForm
     @identity = load_identity
   end
 
+  # @return [FormResponse]
   def submit
     @success = valid?
 

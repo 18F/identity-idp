@@ -52,7 +52,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
 
   before do
     stub_analytics
-    stub_attempts_tracker
   end
 
   describe '#show' do
@@ -61,7 +60,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
-        irs_reproofing: false,
         step: 'verify',
       }.merge(ab_test_args)
     end

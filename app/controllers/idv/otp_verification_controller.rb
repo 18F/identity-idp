@@ -24,11 +24,6 @@ module Idv
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
       analytics.idv_phone_confirmation_otp_submitted(**result.to_h, **ab_test_analytics_buckets)
 
-      irs_attempts_api_tracker.idv_phone_otp_submitted(
-        success: result.success?,
-        phone_number: idv_session.user_phone_confirmation_session.phone,
-      )
-
       if result.success?
         idv_session.mark_phone_step_complete!
         save_in_person_notification_phone
@@ -95,21 +90,15 @@ module Idv
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,
         user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
       )
     end
 
     def code_length
-      if ten_digit_otp?
-        10
+      if idv_session.user_phone_confirmation_session.delivery_method == :voice
+        TwoFactorAuthenticatable::PROOFING_VOICE_DIRECT_OTP_LENGTH
       else
-        TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH
+        TwoFactorAuthenticatable::PROOFING_SMS_DIRECT_OTP_LENGTH
       end
-    end
-
-    def ten_digit_otp?
-      AbTests::IDV_TEN_DIGIT_OTP.bucket(current_user.uuid) == :ten_digit_otp &&
-        idv_session.user_phone_confirmation_session.delivery_method == :voice
     end
   end
 end
