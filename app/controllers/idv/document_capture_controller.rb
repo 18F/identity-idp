@@ -54,6 +54,7 @@ module Idv
 
       @url = doc_resp['url']
       @msg = doc_resp['msg']
+      @reference_id = doc_resp['referenceId']
     end
 
     def extra_view_variables
