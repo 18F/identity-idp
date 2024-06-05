@@ -141,7 +141,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
             issuer: iaa2_sp2.issuer,
             requested_at: inside_iaa2,
             returned_at: inside_iaa2,
-            profile_verified_at: '2019-01-01 00:00:00',
+            profile_verified_at: DateTime.new(2019, 1, 1).utc,
             billable: true,
           )
         end
@@ -167,7 +167,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
             issuer: iaa1_sp.issuer,
             requested_at: inside_iaa1,
             returned_at: inside_iaa1,
-            profile_verified_at: '2018-06-01 00:00:00',
+            profile_verified_at: DateTime.new(2018, 6, 1).utc,
             billable: true,
           )
         end
