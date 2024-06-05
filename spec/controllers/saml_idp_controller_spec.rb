@@ -16,13 +16,9 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
     it 'tracks the event when idp initiated' do
       stub_analytics
-      stub_attempts_tracker
 
       result = { sp_initiated: false, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
 
       delete :logout, params: { path_year: path_year }
     end
@@ -30,26 +26,18 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
     it 'tracks the event when sp initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlLogoutRequest.new)
       stub_analytics
-      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
 
       delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     it 'tracks the event when the saml request is invalid' do
       stub_analytics
-      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
 
       delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
@@ -803,6 +791,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           with('SAML Auth', {
             success: true,
             errors: {},
+            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             authn_context_comparison: 'exact',
@@ -952,6 +941,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           with('SAML Auth', {
             success: true,
             errors: {},
+            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
             authn_context_comparison: 'minimum',
@@ -1481,6 +1471,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -1610,6 +1601,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
           authn_context_comparison: 'exact',
@@ -1651,11 +1643,15 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           generate_saml_response(user, auth_settings)
 
           expect(response.status).to eq(200)
-
           expect(name_id.attributes['Format'].value).
             to eq(Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT)
-
           expect(name_id.children.first.to_s).to eq(user.last_identity.uuid)
+          expect(@analytics).to have_logged_event(
+            'SAML Auth',
+            hash_including(
+              { nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT, success: true },
+            ),
+          )
         end
       end
 
@@ -1664,21 +1660,31 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           generate_saml_response(user, auth_settings)
 
           expect(response.status).to eq(200)
-
           expect(name_id.attributes['Format'].value).
             to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
-
           expect(name_id.children.first.to_s).to eq(user.email)
+          expect(@analytics).to have_logged_event(
+            'SAML Auth',
+            hash_including(
+              { nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL, success: true },
+            ),
+          )
         end
       end
 
-      shared_examples_for 'returns an unauthorized nameid error' do
+      shared_examples_for 'returns an unauthorized nameid error' do |invalid_format|
         it 'returns an error' do
           generate_saml_response(user, auth_settings)
 
           expect(controller).to render_template('saml_idp/auth/error')
           expect(response.status).to eq(400)
           expect(response.body).to include(t('errors.messages.unauthorized_nameid_format'))
+          expect(@analytics).to have_logged_event(
+            'SAML Auth',
+            hash_including(
+              { nameid_format: invalid_format, success: false },
+            ),
+          )
         end
       end
 
@@ -1731,7 +1737,8 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         context 'when the service provider is not allowed to use email' do
           let(:email_allowed) { false }
 
-          it_behaves_like 'returns an unauthorized nameid error'
+          it_behaves_like 'returns an unauthorized nameid error',
+                          Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
         end
 
         context 'when the service provider is allowed to use email' do
@@ -1745,9 +1752,21 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         let(:use_legacy_name_id_behavior) { nil }
 
         context 'when the service provider is not configured with use_legacy_name_id_behavior' do
+          # This should always return an error. An aborted attempt was made to fix this
+          # with 30cb0f374
           let(:use_legacy_name_id_behavior) { false }
 
-          it_behaves_like 'returns an unauthorized nameid error'
+          context 'when the service provider is not allowed to use email' do
+            let(:email_allowed) { false }
+
+            it_behaves_like 'sends the UUID'
+          end
+
+          context 'when the service provider is allowed to use email' do
+            let(:email_allowed) { true }
+
+            it_behaves_like 'sends the email'
+          end
         end
 
         context 'when the service provider is configured with use_legacy_name_id_behavior' do
@@ -2233,6 +2252,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -2288,6 +2308,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -2339,6 +2360,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',

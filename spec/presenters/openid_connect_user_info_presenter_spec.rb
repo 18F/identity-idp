@@ -324,25 +324,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           end
         end
       end
-
-      context 'when the sp requested x509_presented scope before it was fixed to string' do
-        before do
-          expect(IdentityConfig.store).to receive(
-            :x509_presented_hash_attribute_requested_issuers,
-          ).and_return([identity.service_provider])
-          OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.to_i)
-        end
-
-        it 'returns x509_presented as an X509::Attribute' do
-          # This is guarding against partners who may have coded against
-          # a bug where we returning the wrong data type for x509_presented
-          aggregate_failures do
-            expect(user_info[:x509_subject]).to eq(x509_subject)
-            expect(user_info[:x509_presented].class).to eq(X509::Attribute)
-            expect(user_info[:x509_issuer]).to eq(x509_issuer)
-          end
-        end
-      end
     end
   end
 end

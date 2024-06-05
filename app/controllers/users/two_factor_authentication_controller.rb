@@ -176,17 +176,11 @@ module Users
       otp_rate_limiter.reset_count_and_otp_last_sent_at if current_user.no_longer_locked_out?
 
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends(
-          phone: parsed_phone.e164,
-          context: context,
-        )
+        return handle_too_many_otp_sends
       end
       otp_rate_limiter.increment
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends(
-          phone: parsed_phone.e164,
-          context: context,
-        )
+        return handle_too_many_otp_sends
       end
 
       if exceeded_short_term_otp_rate_limit?
@@ -236,28 +230,6 @@ module Users
           reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
         ),
       )
-
-      if UserSessionContext.reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_sent(
-          success: @telephony_result.success?,
-          reauthentication: true,
-          phone_number: parsed_phone.e164,
-          otp_delivery_method: otp_delivery_preference,
-        )
-      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_sent(
-          success: @telephony_result.success?,
-          reauthentication: false,
-          phone_number: parsed_phone.e164,
-          otp_delivery_method: otp_delivery_preference,
-        )
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_sent(
-          success: @telephony_result.success?,
-          phone_number: parsed_phone.e164,
-          otp_delivery_method: otp_delivery_preference,
-        )
-      end
     end
 
     def exceeded_otp_send_limit?

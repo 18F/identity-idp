@@ -22,7 +22,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     stub_sign_in(user)
     stub_up_to(:agreement, idv_session: subject.idv_session)
     stub_analytics
-    stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
 
@@ -71,7 +70,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         analytics_id: 'Doc Auth',
         redo_document_capture: nil,
         skip_hybrid_handoff: nil,
-        irs_reproofing: false,
         selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
       }.merge(ab_test_args)
     end
@@ -310,7 +308,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           redo_document_capture: nil,
           skip_hybrid_handoff: nil,
           selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
-          irs_reproofing: false,
           telephony_response: {
             errors: {},
             message_id: 'fake-message-id',
@@ -368,7 +365,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           analytics_id: 'Doc Auth',
           redo_document_capture: nil,
           skip_hybrid_handoff: nil,
-          irs_reproofing: false,
           selfie_check_required: doc_auth_selfie_capture_enabled && sp_selfie_enabled,
         }.merge(ab_test_args)
       end
@@ -383,14 +379,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-      end
-
-      it 'sends irs_attempts_api_tracking' do
-        expect(@irs_attempts_api_tracker).to receive(
-          :idv_document_upload_method_selected,
-        ).with({ upload_method: 'desktop' })
-
-        put :update, params: { type: 'desktop' }
       end
     end
   end

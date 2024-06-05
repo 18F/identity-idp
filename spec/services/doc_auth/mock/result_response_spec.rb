@@ -359,7 +359,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           address2: nil,
           city: 'GREAT FALLS',
           state: 'MT',
-          zipcode: '59010',
+          zipcode: '59010-1234',
           dob: '1938-10-06',
           state_id_number: '1111111111111',
           state_id_jurisdiction: 'ND',

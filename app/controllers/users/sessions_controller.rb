@@ -47,9 +47,6 @@ module Users
         redirect_to root_path
       else
         analytics.logout_initiated(sp_initiated: false, oidc: false)
-        irs_attempts_api_tracker.logout_initiated(
-          success: true,
-        )
         super
       end
     end
@@ -74,7 +71,6 @@ module Users
     end
 
     def process_locked_out_session
-      irs_attempts_api_tracker.login_rate_limited(email: auth_params[:email])
       warden.logout(:user)
       warden.lock!
       flash[:error] = t('errors.sign_in.bad_password_limit')
@@ -113,7 +109,7 @@ module Users
     def handle_valid_authentication
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
-      set_new_device_session
+      set_new_device_session(nil)
       event, = create_user_event(:sign_in_before_2fa)
       UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
@@ -137,10 +133,6 @@ module Users
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
-      )
-      irs_attempts_api_tracker.login_email_and_password_auth(
-        email: email,
-        success: success,
       )
     end
 

@@ -33,21 +33,20 @@ RSpec.describe OpenidConnect::LogoutController do
     ).id_token
   end
 
-  shared_examples 'set redirect URL for concurrent session logout' do |req_method|
+  shared_examples 'set redirect URL for concurrent session logout' do |req_action, req_method|
     it "#{req_method}: assigns devise session limited failure redirect url" do
-      process :logout,
-              method: req_method
+      process(req_action, method: req_method)
 
       expect(request.env['devise_session_limited_failure_redirect_url']).to eq(request.url)
     end
   end
 
-  shared_examples 'logout allows id_token_hint' do |req_method|
+  shared_examples 'when allowing id_token_hint' do |req_action, req_method|
     let(:id_token_hint) { valid_id_token_hint }
 
     context 'when sending id_token_hint' do
       subject(:action) do
-        process :logout,
+        process req_action,
                 method: req_method,
                 params: {
                   id_token_hint: id_token_hint,
@@ -177,11 +176,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 ),
               )
 
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: true,
-              )
             action
           end
         end
@@ -210,16 +204,17 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(@analytics).to receive(:track_event).
               with(
                 'OIDC Logout Requested',
-                success: false,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: false,
-                id_token_hint_parameter_present: true,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
-                sp_initiated: true,
-                oidc: true,
-                method: nil,
-                saml_request_valid: nil,
+                hash_including(
+                  success: false,
+                  client_id: service_provider.issuer,
+                  client_id_parameter_present: false,
+                  id_token_hint_parameter_present: true,
+                  errors: errors,
+                  error_details: hash_including(*errors.keys),
+                  sp_initiated: true,
+                  oidc: true,
+                  saml_request_valid: nil,
+                ),
               )
 
             action
@@ -235,18 +230,18 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(@analytics).to receive(:track_event).
               with(
                 'OIDC Logout Requested',
-                success: false,
-                client_id: nil,
-                client_id_parameter_present: false,
-                id_token_hint_parameter_present: true,
-                errors: hash_including(*errors_keys),
-                error_details: hash_including(*errors_keys),
-                sp_initiated: true,
-                oidc: true,
-                method: nil,
-                saml_request_valid: nil,
+                hash_including(
+                  success: false,
+                  client_id: nil,
+                  client_id_parameter_present: false,
+                  id_token_hint_parameter_present: true,
+                  errors: hash_including(*errors_keys),
+                  error_details: hash_including(*errors_keys),
+                  sp_initiated: true,
+                  oidc: true,
+                  saml_request_valid: nil,
+                ),
               )
-
             action
           end
         end
@@ -283,7 +278,7 @@ RSpec.describe OpenidConnect::LogoutController do
 
     context 'when sending client_id' do
       subject(:action) do
-        process :logout,
+        process req_action,
                 method: req_method,
                 params: {
                   client_id: service_provider.issuer,
@@ -366,7 +361,6 @@ RSpec.describe OpenidConnect::LogoutController do
                   error_details: hash_including(*errors.keys),
                   sp_initiated: true,
                   oidc: true,
-                  method: nil,
                   saml_request_valid: nil,
                 ),
               )
@@ -406,10 +400,10 @@ RSpec.describe OpenidConnect::LogoutController do
     end
   end
 
-  shared_examples 'logout rejects id_token_hint' do |req_method|
+  shared_examples 'when rejecting id_token_hint' do |req_action, req_method|
     let(:id_token_hint) { nil }
     subject(:action) do
-      process :logout,
+      process req_action,
               method: req_method,
               params: {
                 client_id: service_provider.issuer,
@@ -487,16 +481,17 @@ RSpec.describe OpenidConnect::LogoutController do
           expect(@analytics).to receive(:track_event).
             with(
               'OIDC Logout Requested',
-              success: false,
-              client_id: service_provider.issuer,
-              client_id_parameter_present: true,
-              id_token_hint_parameter_present: true,
-              errors: errors,
-              error_details: hash_including(*errors.keys),
-              sp_initiated: true,
-              oidc: true,
-              method: nil,
-              saml_request_valid: nil,
+              hash_including(
+                success: false,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: true,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                sp_initiated: true,
+                oidc: true,
+                saml_request_valid: nil,
+              ),
             )
 
           action
@@ -527,16 +522,17 @@ RSpec.describe OpenidConnect::LogoutController do
           expect(@analytics).to receive(:track_event).
             with(
               'OIDC Logout Requested',
-              success: false,
-              client_id: service_provider.issuer,
-              client_id_parameter_present: true,
-              id_token_hint_parameter_present: false,
-              errors: errors,
-              error_details: hash_including(*errors.keys),
-              sp_initiated: true,
-              oidc: true,
-              method: nil,
-              saml_request_valid: nil,
+              hash_including(
+                success: false,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: false,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                sp_initiated: true,
+                oidc: true,
+                saml_request_valid: nil,
+              ),
             )
 
           action
@@ -576,9 +572,9 @@ RSpec.describe OpenidConnect::LogoutController do
     end
   end
 
-  describe '#logout' do
-    it_behaves_like 'set redirect URL for concurrent session logout', 'GET'
-    it_behaves_like 'set redirect URL for concurrent session logout', 'POST'
+  describe 'concurrent session management' do
+    it_behaves_like 'set redirect URL for concurrent session logout', :show, 'GET'
+    it_behaves_like 'set redirect URL for concurrent session logout', :create, 'POST'
   end
 
   context 'when accepting id_token_hint and client_id' do
@@ -587,12 +583,8 @@ RSpec.describe OpenidConnect::LogoutController do
         and_return(false)
     end
 
-    describe 'GET /openid_connect/logout' do
-      it_behaves_like 'logout allows id_token_hint', 'GET'
-    end
-
-    describe 'POST /openid_connect/logout' do
-      it_behaves_like 'logout allows id_token_hint', 'POST'
+    describe '#logout[GET]' do
+      it_behaves_like 'when allowing id_token_hint', :show, 'GET'
     end
 
     describe '#delete' do
@@ -746,12 +738,8 @@ RSpec.describe OpenidConnect::LogoutController do
         and_return(true)
     end
 
-    describe 'GET /openid_connect/logout' do
-      it_behaves_like 'logout rejects id_token_hint', 'GET'
-    end
-
-    describe 'POST /openid_connect/logout' do
-      it_behaves_like 'logout rejects id_token_hint', 'POST'
+    describe '#logout[GET]' do
+      it_behaves_like 'when rejecting id_token_hint', :show, 'GET'
     end
 
     describe '#delete' do
@@ -826,11 +814,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 oidc: true,
                 method: nil,
                 saml_request_valid: nil,
-              )
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:logout_initiated).
-              with(
-                success: true,
               )
 
             action

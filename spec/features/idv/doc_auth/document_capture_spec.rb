@@ -86,12 +86,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
     end
 
     context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
-      let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do
-        allow_any_instance_of(ApplicationController).to receive(
-          :irs_attempts_api_tracker,
-        ).and_return(fake_attempts_tracker)
-        allow(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
         allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
         DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
@@ -107,7 +102,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
       end
 
-      it 'redirects to the rate limited error page and logs events' do
+      it 'redirects to the rate limited error page' do
         freeze_time do
           attach_and_submit_images
           timeout = distance_of_time_in_words(
@@ -116,13 +111,15 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           message = strip_tags(t('errors.doc_auth.rate_limited_text_html', timeout: timeout))
           expect(page).to have_content(message)
           expect(page).to have_current_path(idv_session_errors_rate_limited_path)
-
-          expect(@fake_analytics).to have_logged_event(
-            'Rate Limit Reached',
-            limiter_type: :idv_doc_auth,
-          )
-          expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
         end
+      end
+
+      it 'logs the rate limited analytics event for doc_auth' do
+        attach_and_submit_images
+        expect(@fake_analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :idv_doc_auth,
+        )
       end
 
       context 'successfully processes image on last attempt' do

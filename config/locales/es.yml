@@ -433,13 +433,24 @@ date.month_names:
   - noviembre
   - diciembre
 date.range: De %{from} a %{to}
+datetime.dotiw.days.one: 1 día
+datetime.dotiw.days.other: '%{count} días'
+datetime.dotiw.hours.one: 1 hora
+datetime.dotiw.hours.other: '%{count} horas'
 datetime.dotiw.last_word_connector: ' y '
+datetime.dotiw.less_than_x: 'menos de %{distance}'
 datetime.dotiw.minutes.one: un minuto
 datetime.dotiw.minutes.other: '%{count} minutos'
+datetime.dotiw.months.one: 1 mes
+datetime.dotiw.months.other: '%{count} meses'
 datetime.dotiw.seconds.one: un segundo
 datetime.dotiw.seconds.other: '%{count} segundos'
 datetime.dotiw.two_words_connector: ' y '
+datetime.dotiw.weeks.one: 1 semana
+datetime.dotiw.weeks.other: '%{count} semanas'
 datetime.dotiw.words_connector: ', '
+datetime.dotiw.years.one: 1 año
+datetime.dotiw.years.other: '%{count} años'
 devise.confirmations.already_confirmed: Su dirección de correo electrónico fue confirmada. %{action}
 devise.confirmations.confirmed: Usted confirmó su dirección de correo electrónico
 devise.confirmations.confirmed_but_must_set_password: Usted confirmó su dirección de correo electrónico
@@ -786,8 +797,8 @@ event_types.piv_cac_disabled: Tarjeta PIV o CAC no asociada
 event_types.piv_cac_enabled: Tarjeta PIV o CAC asociada
 event_types.sign_in_after_2fa: Inicio de sesión con un segundo factor
 event_types.sign_in_before_2fa: Inicio de sesión con contraseña
-event_types.sign_in_notification_timeframe_expired: Plazo de notificación expirado para el inicio de sesión desde un nuevo dispositivo
-event_types.sign_in_unsuccessful_2fa: Error al autenticar
+event_types.sign_in_notification_timeframe_expired: Venció el tiempo del mensaje para iniciar sesión en un dispositivo nuevo
+event_types.sign_in_unsuccessful_2fa: No se pudo autenticar
 event_types.webauthn_key_added: Clave de seguridad de hardware añadida
 event_types.webauthn_key_removed: Clave de seguridad de hardware eliminada
 forms.backup_code_regenerate.caution: Si vuelve a generar sus códigos de recuperación, recibirá un conjunto nuevo de códigos. Sus códigos de recuperación originales ya no serán válidos.
@@ -1339,6 +1350,7 @@ instructions.password.strength.4: Muy buena
 instructions.password.strength.intro: 'Seguridad de la contraseña:'
 instructions.sp_handoff_bounced: Logró iniciar sesión, pero %{sp_name} lo envió de nuevo a %{app_name}. Contacte con %{sp_link} para obtener ayuda.
 instructions.sp_handoff_bounced_with_no_sp: su proveedor de servicios
+links.accessibility_statement: Declaración de accesibilidad
 links.account.reactivate.with_key: Tengo mi clave
 links.account.reactivate.without_key: No tengo mi clave
 links.back_to_sp: Volver a %{sp}
@@ -1417,7 +1429,7 @@ notices.use_diff_email.text_html: O %{link_html}
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
 openid_connect.authorization.errors.bad_client_id: client_id incorrecto
-openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} día o más
+openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
 openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL
@@ -1425,7 +1437,7 @@ openid_connect.authorization.errors.no_auth: Los acr_values no están autorizado
 openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables
 openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos
 openid_connect.authorization.errors.no_valid_vtr: vots encontrados no aceptables
-openid_connect.authorization.errors.prompt_invalid: Prompt no es válido
+openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado
 openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado
@@ -1436,10 +1448,11 @@ openid_connect.logout.errors.client_id_missing: Falta client_id
 openid_connect.logout.errors.id_token_hint: No se reconoció id_token_hint
 openid_connect.logout.errors.id_token_hint_present: Esta aplicación está mal configurada y no debería estar enviando id_token_hint. En vez de ello, enviar client_id.
 openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe enviar client_id o id_token_hint.
-openid_connect.logout.heading: '¿Desea cerrar sesión en %{app_name}?'
-openid_connect.logout.heading_with_sp: '¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?'
+openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
+openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
+
 openid_connect.token.errors.expired_code: venció
-openid_connect.token.errors.invalid_aud: Reclamación de audiencia no válida, %{url} previsto
+openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista
 openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion
 openid_connect.token.errors.invalid_code: no es válido porque no coincide con ningún usuario. Consulte nuestra documentación en https://developers.login.gov/oidc/#token
 openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge
@@ -1453,19 +1466,19 @@ pages.page_took_too_long.header: El servidor tardó demasiado en procesar su sol
 report_mailer.deleted_accounts_report.issuers: Emisores
 report_mailer.deleted_accounts_report.name: Nombre
 report_mailer.deleted_accounts_report.subject: Informe de cuentas eliminadas
-risc.security_event.errors.alg_unsupported: algoritmo no compatible, debe estar firmado con %{expected_alg}
-risc.security_event.errors.aud_invalid: reclamo de auditor inválido, esperado %{url}
-risc.security_event.errors.event_type_missing: event perdido
+risc.security_event.errors.alg_unsupported: algoritmo no admitido, debe firmarse con %{expected_alg}
+risc.security_event.errors.aud_invalid: notificación de audiencia no válida, prevista %{url}
+risc.security_event.errors.event_type_missing: evento ausente
 risc.security_event.errors.event_type_unsupported: tipo de evento no admitido %{event_type}
-risc.security_event.errors.exp_present: Los eventos SET no deben tener un reclamo de exp
-risc.security_event.errors.jti_not_unique: jti ya existe
-risc.security_event.errors.jti_required: se requiere reclamo jti
+risc.security_event.errors.exp_present: los eventos SET no deben tener una notificación de vencimiento
+risc.security_event.errors.jti_not_unique: jti no era único
+risc.security_event.errors.jti_required: se necesita notificación jti
 risc.security_event.errors.jwt_could_not_parse: no se pudo analizar JWT
-risc.security_event.errors.no_public_key: no se pudo cargar la clave pública para el emisor
-risc.security_event.errors.sub_not_found: reclamo de event.subject.sub no válido
-risc.security_event.errors.sub_unsupported: no se acepta subclase de nivel superior
+risc.security_event.errors.no_public_key: no se pudo cargar la clave pública del emisor
+risc.security_event.errors.sub_not_found: evento inválido.asunto.subnotificación
+risc.security_event.errors.sub_unsupported: no se aceptó subnotificación de nivel superior
 risc.security_event.errors.subject_type_unsupported: subject_type debe ser %{expected_subject_type}
-risc.security_event.errors.typ_error: El encabezado típico debe ser %{expected_typ}
+risc.security_event.errors.typ_error: encabezado de tipo debe ser %{expected_typ}
 saml_idp.auth.error.title: Error
 saml_idp.shared.saml_post_binding.heading: Enviar para continuar
 saml_idp.shared.saml_post_binding.no_js: JavaScript parece estar desactivado en su navegador. Por lo general, este paso es automático, pero, debido a que tiene JavaScript desactivado, haga clic en el botón Enviar para continuar iniciando sesión o cerrándola.

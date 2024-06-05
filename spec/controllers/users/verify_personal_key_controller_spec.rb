@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::VerifyPersonalKeyController do
   let(:user) { create(:user, personal_key: personal_key) }
   let!(:profiles) { [] }
   let(:personal_key) { 'key' }
@@ -54,7 +54,6 @@ RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*]
 
       it 'renders rate limited page' do
         stub_analytics
-        stub_attempts_tracker
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form visited',
         ).once
@@ -62,8 +61,6 @@ RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*]
           'Rate Limit Reached',
           limiter_type: :verify_personal_key,
         ).once
-
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited)
 
         get :new
 
@@ -110,24 +107,13 @@ RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*]
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
           errors: {},
+          error_details: nil,
           success: true,
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once
 
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Account reactivated with personal key',
-        ).once
-
-        post :create, params: { personal_key: profiles.first.personal_key }
-
-        expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
-      end
-
-      it 'tracks irs attempts api for relevant users' do
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          success: true,
         ).once
 
         post :create, params: { personal_key: profiles.first.personal_key }
@@ -147,24 +133,11 @@ RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*]
         post :create, params: personal_key_bad_params
         expect(response).to redirect_to(verify_personal_key_url)
       end
-
-      it 'tracks irs attempts api for relevant users' do
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_properties,
-        ).once
-
-        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
-
-        post :create, params: personal_key_bad_params
-      end
     end
 
     context 'with rate limit reached' do
       it 'renders rate limited page' do
         stub_analytics
-        stub_attempts_tracker
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
           errors: { personal_key: ['Please fill in this field.', error_text] },
@@ -177,24 +150,10 @@ RSpec.describe Users::VerifyPersonalKeyController, allowed_extra_analytics: [:*]
           limiter_type: :verify_personal_key,
         ).once
 
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once
-
         max_attempts = RateLimiter.max_attempts(:verify_personal_key)
         max_attempts.times { post :create, params: personal_key_bad_params }
 
         expect(response).to render_template(:rate_limited)
-      end
-
-      it 'tracks irs attempts api for relevant users' do
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_properties,
-        ).once
-
-        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
-
-        post :create, params: personal_key_bad_params
       end
     end
   end

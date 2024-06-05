@@ -17,7 +17,14 @@ module TwoFactorAuthenticatableMethods
 
     if IdentityConfig.store.feature_new_device_alert_aggregation_enabled && new_device?
       if current_user.sign_in_new_device_at.blank?
-        current_user.update(sign_in_new_device_at: disavowal_event.created_at)
+        if sign_in_notification_timeframe_expired_event.present?
+          current_user.update(
+            sign_in_new_device_at: sign_in_notification_timeframe_expired_event.created_at,
+          )
+        else
+          current_user.update(sign_in_new_device_at: disavowal_event.created_at)
+          analytics.sign_in_notification_timeframe_expired_absent
+        end
       end
 
       UserAlerts::AlertUserAboutNewDevice.send_alert(
@@ -27,6 +34,7 @@ module TwoFactorAuthenticatableMethods
       )
     end
 
+    set_new_device_session(false)
     reset_second_factor_attempts_count
   end
 
@@ -36,37 +44,15 @@ module TwoFactorAuthenticatableMethods
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type:, context: nil)
+  def handle_second_factor_locked_user(type:)
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
-
-    if context && type
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_rate_limited(mfa_device_type: type)
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_rate_limited(mfa_device_type: type)
-      end
-    end
-
     handle_max_attempts(type + '_login_attempts')
   end
 
-  def handle_too_many_otp_sends(phone: nil, context: nil)
+  def handle_too_many_otp_sends
     analytics.multi_factor_auth_max_sends
-
-    if context && phone
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
-          phone_number: phone,
-        )
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(
-          phone_number: phone,
-        )
-      end
-    end
-
     handle_max_attempts('otp_requests')
   end
 
@@ -108,6 +94,15 @@ module TwoFactorAuthenticatableMethods
     )
   end
 
+  def sign_in_notification_timeframe_expired_event
+    return @sign_in_notification_timeframe_expired_event if defined?(
+      @sign_in_notification_timeframe_expired_event
+    )
+    @sign_in_notification_timeframe_expired_event = current_user.events.where(
+      event_type: 'sign_in_notification_timeframe_expired',
+    ).order(created_at: :desc).limit(1).take
+  end
+
   def handle_remember_device_preference(remember_device_preference)
     save_user_opted_remember_device_pref(remember_device_preference)
     save_remember_device_preference(remember_device_preference)
@@ -126,7 +121,7 @@ module TwoFactorAuthenticatableMethods
     flash.now[:error] = invalid_otp_error(type)
 
     if current_user.locked_out?
-      handle_second_factor_locked_user(context: context, type: type)
+      handle_second_factor_locked_user(type:)
     else
       render_show_after_invalid
     end

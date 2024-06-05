@@ -53,6 +53,7 @@ RSpec.describe Risc::SecurityEventsController, allowed_extra_analytics: [:*] do
              event_type: event_type,
              error_code: nil,
              errors: {},
+             error_details: nil,
              jti: jti,
              success: true,
              user_id: user.uuid)

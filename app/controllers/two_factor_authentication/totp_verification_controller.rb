@@ -22,7 +22,6 @@ module TwoFactorAuthentication
     def create
       result = TotpVerificationForm.new(current_user, params.require(:code).strip).submit
       analytics.multi_factor_auth(**result.to_h.merge(new_device: new_device?))
-      irs_attempts_api_tracker.mfa_login_totp(success: result.success?)
 
       if result.success?
         handle_valid_verification_for_authentication_context(

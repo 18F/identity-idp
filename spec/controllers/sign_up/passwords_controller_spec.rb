@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
+RSpec.describe SignUp::PasswordsController do
   let(:token) { 'new token' }
 
   describe '#create' do
@@ -24,13 +24,13 @@ RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
         {
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
         }
       end
 
       before do
         stub_analytics
-        stub_attempts_tracker
       end
 
       it 'tracks analytics' do
@@ -42,10 +42,6 @@ RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
           'Password Creation',
           analytics_hash.merge({ request_id_present: false }),
         )
-
-        expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
-          with(success_properties)
-        expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
         subject
       end
@@ -64,7 +60,6 @@ RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
 
       before do
         stub_analytics
-        stub_attempts_tracker
       end
 
       context 'with a password that is too short' do
@@ -72,12 +67,6 @@ RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
         let(:password_confirmation) { 'NewVal' }
 
         it 'tracks an invalid password event' do
-          expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
-            with(
-              success: false,
-            )
-          expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
-
           subject
 
           expect(@analytics).to have_logged_event(

@@ -8,7 +8,7 @@ require 'extensions/capybara/node/simple'
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless=new') if !ENV['SHOW_BROWSER']
+  options.add_argument("--headless#{ENV['CI'] ? '' : '=new'}") if !ENV['SHOW_BROWSER']
   options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
   options.add_argument('--window-size=1200x700')
   options.add_argument('--no-sandbox')
@@ -27,7 +27,7 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
                       'HeadlessChrome/88.0.4324.150 Safari/602.1'
 
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless=new') if !ENV['SHOW_BROWSER']
+  options.add_argument("--headless#{ENV['CI'] ? '' : '=new'}") if !ENV['SHOW_BROWSER']
   options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')

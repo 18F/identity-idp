@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:0cea6ebf8fa4d693177f46ae9a8c24e6030245f3c795753269b7910178d5cfdd'
+  IDP_CI_SHA: 'sha256:756a1d450b422720dee36cb9a6217687bcad1e40b780219d360989861ce94212'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
 
@@ -143,6 +143,56 @@ build-review-image:
       --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
       --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
       --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
+
+build-idp-image:
+  stage: review
+  needs: []
+  interruptible: true
+  variables:
+    BRANCH_TAGGING_STRING: ''
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        BRANCH_TAGGING_STRING: '--destination ${ECR_REGISTRY}/identity-idp/idp:main'
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo ${CI_ENVIRONMENT_SLUG}
+    - echo $CI_ENVIRONMENT_SLUG
+    - echo $CI_COMMIT_BRANCH
+    - echo $CI_COMMIT_SHA
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_prod.Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-idp/idp:${CI_COMMIT_SHA}"
+      ${BRANCH_TAGGING_STRING}
+      --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
+      --cache-ttl=168h
+      --cache=true
+      --compressed-caching=false
+      --build-arg "http_proxy=${http_proxy}"
+      --build-arg "https_proxy=${https_proxy}"
+      --build-arg "no_proxy=${no_proxy}"
+      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
+      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
+      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
+      --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}"
+      --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
 
 check_changelog:
   stage: test
@@ -363,7 +413,7 @@ trigger_devops:
     name: dtzar/helm-kubectl:latest
   script:
     - kubectl config get-contexts
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep review-apps | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - |-
       export IDP_CONFIG=$(cat <<EOF
@@ -381,7 +431,6 @@ trigger_devops:
         },
         "railsOffline": "true",
         "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },
@@ -414,7 +463,6 @@ trigger_devops:
         },
         "railsOffline": "true",
         "redis": {
-          "irsAttemptsApiUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2",
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },
@@ -520,7 +568,7 @@ review-app:
 stop-review-app:
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   script:
-    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - export CONTEXT=$(kubectl config get-contexts | grep review-apps | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
   stage: review

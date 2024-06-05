@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_02_192930) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_31_175935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -22,7 +22,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_192930) do
     t.datetime "requested_at", precision: nil
     t.string "request_token"
     t.datetime "cancelled_at", precision: nil
-    t.datetime "reported_fraud_at", precision: nil
     t.datetime "granted_at", precision: nil
     t.string "granted_token"
     t.datetime "created_at", precision: nil, null: false

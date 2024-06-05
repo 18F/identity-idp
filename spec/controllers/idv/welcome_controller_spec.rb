@@ -41,7 +41,6 @@ RSpec.describe Idv::WelcomeController, allowed_extra_analytics: [:*] do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false,
       }.merge(ab_test_args)
     end
 
@@ -107,7 +106,6 @@ RSpec.describe Idv::WelcomeController, allowed_extra_analytics: [:*] do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false,
       }.merge(ab_test_args)
     end
 

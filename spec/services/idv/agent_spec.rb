@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'ostruct'
 
 RSpec.describe Idv::Agent do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   let(:bad_phone) do
     Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
@@ -133,6 +133,30 @@ RSpec.describe Idv::Agent do
         end
       end
 
+      it 'passes the correct service provider to the ResolutionProofingJob' do
+        issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
+        document_capture_session.update!(issuer: issuer)
+        agent = Idv::Agent.new(
+          Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '999-99-9999'),
+        )
+
+        expect(ResolutionProofingJob).to receive(:perform_later).with(
+          hash_including(
+            service_provider_issuer: issuer,
+          ),
+        )
+
+        agent.proof_resolution(
+          document_capture_session,
+          should_proof_state_id: true,
+          trace_id: trace_id,
+          user_id: user.id,
+          threatmetrix_session_id: nil,
+          request_ip: request_ip,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        )
+      end
+
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
         agent = Idv::Agent.new(
           Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
@@ -159,10 +183,10 @@ RSpec.describe Idv::Agent do
         )
       end
 
-      context 'successfully proofs in IPP flow' do
+      context 'in-person proofing is enabled' do
         let(:ipp_enrollment_in_progress) { true }
 
-        it 'returns a successful result' do
+        it 'returns a successful result if resolution passes' do
           addr = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
           agent = Idv::Agent.new(addr.merge(uuid: user.uuid))
           agent.proof_resolution(

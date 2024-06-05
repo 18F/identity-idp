@@ -18,7 +18,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
-      irs_attempts_api_tracker: irs_attempts_api_tracker,
       liveness_checking_required: liveness_checking_required,
     )
   end
@@ -52,7 +51,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -82,8 +80,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
     context 'when rate limited from submission' do
       it 'is not valid' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
-
         RateLimiter.new(
           rate_limit_type: :idv_doc_auth,
           user: document_capture_session.user,
@@ -167,29 +163,13 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   describe '#submit' do
     context 'with a valid form' do
       it 'logs analytics' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-          {
-            address: '1 FAKE RD',
-            date_of_birth: '1938-10-06',
-            document_back_image_filename: nil,
-            document_expiration: '2099-12-31',
-            document_front_image_filename: nil,
-            document_image_encryption_key: nil,
-            document_issued: '2019-12-31',
-            document_number: '1111111111111',
-            document_state: 'MT',
-            first_name: 'FAKEY',
-            last_name: 'MCFAKERSON',
-            success: true,
-          },
-        )
-
         form.submit
 
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
+          error_details: nil,
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
@@ -257,6 +237,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           transaction_reason_code: nil,
           workflow: 'test_non_liveness_workflow',
           birth_year: 1938,
+          zip_code: '59010',
         )
       end
 
@@ -281,29 +262,13 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         end
 
         it 'logs analytics' do
-          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-            {
-              address: '1 FAKE RD',
-              date_of_birth: '1938-10-06',
-              document_back_image_filename: nil,
-              document_expiration: '2099-12-31',
-              document_front_image_filename: nil,
-              document_image_encryption_key: nil,
-              document_issued: '2019-12-31',
-              document_number: '1111111111111',
-              document_state: 'MT',
-              first_name: 'FAKEY',
-              last_name: 'MCFAKERSON',
-              success: true,
-            },
-          )
-
           form.submit
 
           expect(fake_analytics).to have_logged_event(
             'IdV: doc auth image upload form submitted',
             success: true,
             errors: {},
+            error_details: nil,
             submit_attempts: 1,
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
@@ -377,6 +342,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             transaction_reason_code: nil,
             workflow: 'test_liveness_workflow',
             birth_year: 1938,
+            zip_code: '59010',
           )
         end
 
@@ -435,6 +401,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
+          error_details: nil,
           submit_attempts: 1,
           remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
@@ -609,13 +576,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       end
 
       it 'includes doc_pii errors' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-          hash_including(
-            {
-              success: false,
-            },
-          ),
-        )
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
       end

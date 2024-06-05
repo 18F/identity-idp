@@ -18,11 +18,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
       it 'redirects to profile and sends a password change email' do
         stub_sign_in
         stub_analytics
-        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-
-        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
-          with(success: true)
 
         params = {
           password: 'salty new password',
@@ -34,6 +30,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
           'Password Changed',
           success: true,
           errors: {},
+          error_details: nil,
           pending_profile_present: false,
           active_profile_present: false,
           user_id: subject.current_user.uuid,
@@ -136,15 +133,10 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         before do
           stub_sign_in
           stub_analytics
-          stub_attempts_tracker
           allow(@analytics).to receive(:track_event)
         end
 
         it 'renders edit' do
-          expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
-            success: false,
-          )
-
           patch :update, params: { update_user_password_form: params }
 
           expect(@analytics).to have_received(:track_event).with(
@@ -188,15 +180,10 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         before do
           stub_sign_in
           stub_analytics
-          stub_attempts_tracker
           allow(@analytics).to receive(:track_event)
         end
 
         it 'renders edit' do
-          expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
-            success: false,
-          )
-
           patch :update, params: { update_user_password_form: params }
 
           expect(@analytics).to have_received(:track_event).with(

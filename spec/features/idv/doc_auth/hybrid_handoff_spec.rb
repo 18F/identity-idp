@@ -6,7 +6,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
   include ActionView::Helpers::DateHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:idv_send_link_max_attempts) { 3 }
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
@@ -22,8 +21,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
-      and_return(fake_attempts_tracker)
   end
 
   context 'on a desktop device send link' do
@@ -40,10 +37,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
 
     it 'proceeds to link sent page when user chooses to use phone' do
-      expect(fake_attempts_tracker).to receive(
-        :idv_document_upload_method_selected,
-      ).with({ upload_method: 'mobile' })
-
       click_send_link
 
       expect(page).to have_current_path(idv_link_sent_path)
@@ -54,13 +47,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
 
     it 'proceeds to the next page with valid info', :js do
-      expect(fake_attempts_tracker).to receive(
-        :idv_phone_upload_link_sent,
-      ).with(
-        success: true,
-        phone_number: '+1 415-555-0199',
-      )
-
       expect(Telephony).to receive(:send_doc_auth_link).
         with(hash_including(to: '+1 415-555-0199')).
         and_call_original
@@ -95,10 +81,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
     end
 
     it 'does not proceed if Telephony raises an error' do
-      expect(fake_attempts_tracker).to receive(:idv_phone_upload_link_sent).with(
-        success: false,
-        phone_number: '+1 225-555-1000',
-      )
       fill_in :doc_auth_phone, with: '225-555-1000'
 
       click_send_link
@@ -139,10 +121,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       )
       allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
         and_return(idv_send_link_max_attempts)
-
-      expect(fake_attempts_tracker).to receive(
-        :idv_phone_send_link_rate_limited,
-      ).with({ phone_number: '+1 415-555-0199' })
 
       freeze_time do
         idv_send_link_max_attempts.times do

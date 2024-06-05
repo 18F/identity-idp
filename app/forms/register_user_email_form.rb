@@ -15,10 +15,9 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(analytics:, attempts_tracker:)
+  def initialize(analytics:)
     @rate_limited = false
     @analytics = analytics
-    @attempts_tracker = attempts_tracker
   end
 
   def user
@@ -141,9 +140,6 @@ class RegisterUserEmailForm
       @analytics.rate_limit_reached(
         limiter_type: :reg_unconfirmed_email,
       )
-      @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_already_registered: false,
-      )
     else
       user.accepted_terms_at = Time.zone.now
       user.save!
@@ -159,9 +155,6 @@ class RegisterUserEmailForm
       @analytics.rate_limit_reached(
         limiter_type: :reg_unconfirmed_email,
       )
-      @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_already_registered: false,
-      )
     else
       SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
     end
@@ -173,9 +166,6 @@ class RegisterUserEmailForm
     if rate_limited?
       @analytics.rate_limit_reached(
         limiter_type: :reg_confirmed_email,
-      )
-      @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_already_registered: true,
       )
     else
       UserMailer.with(user: existing_user, email_address: email_address_record).

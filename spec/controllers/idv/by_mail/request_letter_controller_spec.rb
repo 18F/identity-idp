@@ -10,7 +10,6 @@ RSpec.describe Idv::ByMail::RequestLetterController,
 
   before do
     stub_analytics
-    stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -158,13 +157,6 @@ RSpec.describe Idv::ByMail::RequestLetterController,
         )
       end
 
-      it 'logs attempts api tracking' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
-          with(resend: false)
-
-        put :create
-      end
-
       it 'updates the doc auth log for the user for the usps_letter_sent event' do
         unstub_analytics
         doc_auth_log = DocAuthLog.create(user_id: user.id)
@@ -226,13 +218,6 @@ RSpec.describe Idv::ByMail::RequestLetterController,
             **ab_test_args,
           ),
         )
-      end
-
-      it 'logs attempts api tracking' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_letter_requested).
-          with(resend: true)
-
-        put :create
       end
 
       it 'redirects to capture password if pii is locked' do

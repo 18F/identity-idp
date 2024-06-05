@@ -75,7 +75,7 @@ module Users
         presented: true,
       )
 
-      set_new_device_session
+      set_new_device_session(nil)
       handle_valid_verification_for_authentication_context(
         auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )

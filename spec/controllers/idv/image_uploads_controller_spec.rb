@@ -51,12 +51,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
       it 'tracks events' do
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          any_args,
-        )
 
         action
 
@@ -99,23 +93,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
       it 'tracks events' do
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          { address: nil,
-            date_of_birth: nil,
-            document_back_image_filename: nil,
-            document_expiration: nil,
-            document_front_image_filename: nil,
-            document_image_encryption_key: nil,
-            document_issued: nil,
-            document_number: nil,
-            document_state: nil,
-            first_name: nil,
-            last_name: nil,
-            success: false },
-        )
 
         action
 
@@ -232,29 +209,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
 
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_rate_limited,
-        )
-
-        # This is the last upload which triggers the rate limit, apparently.
-        # I do find this moderately confusing.
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          { address: nil,
-            date_of_birth: nil,
-            document_back_image_filename: nil,
-            document_expiration: nil,
-            document_front_image_filename: nil,
-            document_image_encryption_key: nil,
-            document_issued: nil,
-            document_number: nil,
-            document_state: nil,
-            first_name: nil,
-            last_name: nil,
-            success: false },
-        )
 
         action
 
@@ -383,23 +337,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
       it 'tracks events' do
         stub_analytics
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          success: true,
-          document_back_image_filename: nil,
-          document_front_image_filename: nil,
-          document_image_encryption_key: nil,
-          document_state: 'MT',
-          document_number: '1111111111111',
-          document_issued: '2019-12-31',
-          document_expiration: '2099-12-31',
-          first_name: 'FAKEY',
-          last_name: 'MCFAKERSON',
-          date_of_birth: '1938-10-06',
-          address: '1 FAKE RD',
-        )
 
         action
 
@@ -407,6 +344,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -462,12 +400,14 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           vendor: nil,
           workflow: an_instance_of(String),
           birth_year: 1938,
+          zip_code: '59010',
         )
 
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
           success: true,
           errors: {},
+          error_details: nil,
           attention_with_barcode: false,
           user_id: user.uuid,
           submit_attempts: 1,
@@ -538,54 +478,11 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           )
         end
 
-        context 'encrypted document storage is enabled' do
-          let(:first_name) { nil }
-
-          it 'includes image references in attempts api' do
-            stub_attempts_tracker
-
-            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-              :idv_document_upload_submitted,
-              success: false,
-              document_state: 'ND',
-              document_number: state_id_number,
-              document_issued: nil,
-              document_expiration: nil,
-              first_name: nil,
-              last_name: 'MCFAKERSON',
-              date_of_birth: '10/06/1938',
-              address: address1,
-              document_back_image_filename: nil,
-              document_front_image_filename: nil,
-              document_image_encryption_key: nil,
-            )
-
-            action
-          end
-        end
-
         context 'due to invalid Name' do
           let(:first_name) { nil }
 
           it 'tracks name validation errors in analytics' do
             stub_analytics
-            stub_attempts_tracker
-
-            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-              :idv_document_upload_submitted,
-              success: false,
-              document_state: 'ND',
-              document_number: state_id_number,
-              document_issued: nil,
-              document_expiration: nil,
-              first_name: nil,
-              last_name: 'MCFAKERSON',
-              date_of_birth: '10/06/1938',
-              address: address1,
-              document_back_image_filename: nil,
-              document_front_image_filename: nil,
-              document_image_encryption_key: nil,
-            )
 
             action
 
@@ -593,6 +490,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               'IdV: doc auth image upload form submitted',
               success: true,
               errors: {},
+              error_details: nil,
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -647,6 +545,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: 1938,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -682,23 +581,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
           it 'tracks state validation errors in analytics' do
             stub_analytics
-            stub_attempts_tracker
-
-            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-              :idv_document_upload_submitted,
-              success: false,
-              document_state: 'Maryland',
-              document_number: state_id_number,
-              document_issued: nil,
-              document_expiration: nil,
-              first_name: 'FAKEY',
-              last_name: 'MCFAKERSON',
-              date_of_birth: '10/06/1938',
-              address: address1,
-              document_back_image_filename: nil,
-              document_front_image_filename: nil,
-              document_image_encryption_key: nil,
-            )
 
             action
 
@@ -706,6 +588,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               'IdV: doc auth image upload form submitted',
               success: true,
               errors: {},
+              error_details: nil,
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -760,6 +643,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: 1938,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -795,23 +679,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
           it 'tracks state_id_number validation errors in analytics' do
             stub_analytics
-            stub_attempts_tracker
-
-            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-              :idv_document_upload_submitted,
-              success: false,
-              document_back_image_filename: nil,
-              document_front_image_filename: nil,
-              document_image_encryption_key: nil,
-              document_state: 'ND',
-              document_number: state_id_number,
-              document_issued: nil,
-              document_expiration: nil,
-              first_name: 'FAKEY',
-              last_name: 'MCFAKERSON',
-              date_of_birth: '10/06/1938',
-              address: address1,
-            )
 
             action
 
@@ -819,6 +686,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               'IdV: doc auth image upload form submitted',
               success: true,
               errors: {},
+              error_details: nil,
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -873,6 +741,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: 1938,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -905,23 +774,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
           it 'tracks dob validation errors in analytics' do
             stub_analytics
-            stub_attempts_tracker
-
-            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-              :idv_document_upload_submitted,
-              success: false,
-              document_back_image_filename: nil,
-              document_front_image_filename: nil,
-              document_image_encryption_key: nil,
-              document_state: 'ND',
-              document_number: state_id_number,
-              document_issued: nil,
-              document_expiration: nil,
-              first_name: 'FAKEY',
-              last_name: 'MCFAKERSON',
-              date_of_birth: nil,
-              address: address1,
-            )
 
             action
 
@@ -929,6 +781,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               'IdV: doc auth image upload form submitted',
               success: true,
               errors: {},
+              error_details: nil,
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -983,6 +836,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               transaction_status: nil,
               vendor: nil,
               birth_year: nil,
+              zip_code: '12345',
             )
 
             expect(@analytics).to have_logged_event(
@@ -1046,6 +900,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -1102,6 +957,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           transaction_status: nil,
           vendor: nil,
           birth_year: nil,
+          zip_code: nil,
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1135,6 +991,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -1194,6 +1051,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           vendor: nil,
           workflow: an_instance_of(String),
           birth_year: nil,
+          zip_code: nil,
         )
 
         expect_funnel_update_counts(user, 1)

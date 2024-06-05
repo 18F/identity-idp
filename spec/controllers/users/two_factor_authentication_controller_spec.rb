@@ -326,6 +326,7 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           **otp_preference_sms,
           resend: true,
           context: 'authentication',
@@ -349,14 +350,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         }
       end
 
-      it 'tracks the verification attempt event' do
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-          with(reauthentication: false, **success_parameters)
-
-        get :send_code, params: otp_delivery_form_sms
-      end
-
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
         allow(OtpRateLimiter).to receive(:new).
@@ -375,10 +368,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
 
         allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
           and_return(true)
-
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent_rate_limited).
-          with(**valid_phone_number)
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
@@ -437,15 +426,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         it 'does not send an OTP' do
           expect(Telephony).to_not receive(:send_authentication_otp)
           expect(Telephony).to_not receive(:send_confirmation_otp)
-
-          get :send_code, params: otp_delivery_form_sms
-        end
-
-        it 'tracks the attempt event with failure reason' do
-          stub_attempts_tracker
-
-          expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-            with(reauthentication: false, **default_parameters, success: false)
 
           get :send_code, params: otp_delivery_form_sms
         end
@@ -515,6 +495,7 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           otp_delivery_preference: 'voice',
           resend: false,
           context: 'authentication',
@@ -593,50 +574,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
             resend: nil,
           },
         )
-      end
-
-      it 'sends a 6-digit OTP when the idv_ten_digit_otp A/B test is in progress' do
-        stub_const(
-          'AbTests::IDV_TEN_DIGIT_OTP',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(@user.uuid => :ten_digit_otp) },
-        )
-
-        sign_in_before_2fa(@user)
-        subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
-        parsed_phone = Phonelib.parse(@unconfirmed_phone)
-
-        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
-
-        get :send_code, params: otp_delivery_form_sms
-
-        expect(Telephony).to have_received(:send_confirmation_otp).with(
-          otp: subject.current_user.direct_otp,
-          to: @unconfirmed_phone,
-          expiration: 10,
-          channel: :sms,
-          otp_format: 'digit',
-          otp_length: '6',
-          domain: IdentityConfig.store.domain_name,
-          country_code: 'US',
-          extra_metadata: {
-            area_code: parsed_phone.area_code,
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-            resend: nil,
-          },
-        )
-      end
-
-      it 'tracks the enrollment attempt event' do
-        sign_in_before_2fa(@user)
-        subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
-
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).
-          with({ phone_number: '+12025551213', success: true, otp_delivery_method: 'sms' })
-
-        get :send_code, params: otp_delivery_form_sms
       end
 
       it 'rate limits confirmation OTPs on sign up' do
@@ -719,10 +656,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
 
         allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
           and_return(true)
-
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent_rate_limited).
-          with(phone_number: '+12025551213')
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do

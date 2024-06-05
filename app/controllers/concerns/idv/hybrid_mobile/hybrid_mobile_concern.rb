@@ -58,12 +58,6 @@ module Idv
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
       end
-
-      def irs_reproofing?
-        document_capture_user.reproof_for_irs?(
-          service_provider: current_sp,
-        ).present?
-      end
     end
   end
 end

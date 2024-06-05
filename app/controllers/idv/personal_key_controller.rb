@@ -88,8 +88,6 @@ module Idv
       @personal_key_generated_at = current_user.personal_key_generated_at
 
       idv_session.personal_key = @code
-
-      irs_attempts_api_tracker.idv_personal_key_generated
     end
 
     def personal_key
