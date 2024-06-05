@@ -22,6 +22,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: true,
         errors: {},
+        error_details: nil,
         mfa_method_counts: { backup_codes: 10, webauthn: 2, phone: 2 },
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
