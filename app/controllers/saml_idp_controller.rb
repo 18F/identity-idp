@@ -131,6 +131,7 @@ class SamlIdpController < ApplicationController
       requested_ial: requested_ial,
       request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
+      requested_nameid_format: saml_request.name_id_format,
     )
     analytics.saml_auth(**analytics_payload)
   end
