@@ -44,13 +44,13 @@ module Reports
         )
       end
 
-      by_issuer_profile_age_results = iaas.flat_map do |iaa|
-        iaa.issuers.flat_map do |issuer|
+      by_issuer_profile_age_results = partner_accounts.flat_map do |partner_account|
+        partner_account.issuers.flat_map do |issuer|
           Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
-            partner: issuer, # just a label
+            partner: partner_account.partner,
             issuers: [issuer],
-            start_date: iaa.start_date,
-            end_date: iaa.end_date,
+            start_date: partner_account.start_date,
+            end_date: partner_account.end_date,
           )
         end
       end
