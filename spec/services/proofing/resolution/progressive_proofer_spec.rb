@@ -29,17 +29,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
   let(:dcs_uuid) { SecureRandom.uuid }
 
-  subject(:progressive_proofer) do
-    described_class.new(
-      applicant_pii: applicant_pii,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      request_ip: Faker::Internet.ip_v4_address,
-      should_proof_state_id: true,
-      threatmetrix_session_id: threatmetrix_session_id,
-      timer: JobHelpers::Timer.new,
-      user_email: Faker::Internet.email,
-    )
-  end
+  subject(:progressive_proofer) { described_class.new }
 
   let(:state_id_address) do
     {
@@ -110,7 +100,17 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
     end
 
-    subject(:proof) { progressive_proofer.proof }
+    subject(:proof) do
+      progressive_proofer.proof(
+        applicant_pii: applicant_pii,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        request_ip: Faker::Internet.ip_v4_address,
+        should_proof_state_id: true,
+        threatmetrix_session_id: threatmetrix_session_id,
+        timer: JobHelpers::Timer.new,
+        user_email: Faker::Internet.email,
+      )
+    end
 
     context 'remote proofing' do
       it 'returns a ResultAdjudicator' do
