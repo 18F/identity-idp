@@ -35,43 +35,46 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
       let(:partner_key) { 'DHS' }
       let(:issuers) { [issuer1, issuer2, issuer3] }
 
-      let(:partner_range) { Date.new(2020, 9, 15)..Date.new(2021, 9, 14) }
-      let(:inside_partial_month) { Date.new(2020, 9, 16) }
-      let(:inside_whole_month) { Date.new(2020, 10, 16) }
+      let(:partner_range) { DateTime.new(2020, 9, 15).utc..DateTime.new(2021, 9, 14).utc }
+      let(:inside_partial_month) { DateTime.new(2020, 9, 16).utc }
+      let(:inside_whole_month) { DateTime.new(2020, 10, 16).utc }
 
       let(:user1) { create(:user, profiles: [profile1a, profile1b]) }
-      let(:profile1a) { build(:profile, verified_at: '2015-09-16') }
-      let(:profile1b) { build(:profile, verified_at: '2020-09-16') }
+      let(:profile1a) { build(:profile, verified_at: DateTime.new(2015, 9, 17).utc) }
+      let(:profile1b) { build(:profile, verified_at: DateTime.new(2020, 9, 16).utc) }
 
       let(:user2) { create(:user, profiles: [profile2]) }
-      let(:profile2) { build(:profile, verified_at: '2018-12-25') }
+      let(:profile2) { build(:profile, verified_at: DateTime.new(2018, 12, 25).utc) }
 
       let(:user3) { create(:user, profiles: [profile3]) }
-      let(:profile3) { build(:profile, verified_at: '2019-11-10') }
+      let(:profile3) { build(:profile, verified_at: DateTime.new(2019, 11, 10).utc) }
 
       let(:user4) { create(:user, profiles: [profile4]) }
-      let(:profile4) { build(:profile, verified_at: '2020-03-01') }
+      let(:profile4) { build(:profile, verified_at: DateTime.new(2020, 3, 1).utc) }
 
       let(:user5) { create(:user, profiles: [profile5]) }
-      let(:profile5) { build(:profile, verified_at: '2019-04-17') }
+      let(:profile5) { build(:profile, verified_at: DateTime.new(2019, 4, 17).utc) }
 
       let(:user6) { create(:user, profiles: [profile6]) }
-      let(:profile6) { build(:profile, verified_at: '2018-09-15') }
+      let(:profile6) { build(:profile, verified_at: DateTime.new(2018, 9, 15).utc) }
 
       let(:user7) { create(:user, profiles: [profile7]) }
-      let(:profile7) { build(:profile, verified_at: '2017-02-15') }
+      let(:profile7) { build(:profile, verified_at: DateTime.new(2017, 2, 15).utc) }
 
       let(:user8) { create(:user, profiles: [profile8]) }
-      let(:profile8) { build(:profile, verified_at: '2016-03-20') }
+      let(:profile8) { build(:profile, verified_at: DateTime.new(2016, 3, 20).utc) }
 
       let(:user9) { create(:user, profiles: [profile9]) }
-      let(:profile9) { build(:profile, verified_at: '2012-12-15') }
+      let(:profile9) { build(:profile, verified_at: DateTime.new(2012, 12, 15).utc) }
 
       let(:user10) { create(:user, profiles: [profile10]) }
       let(:profile10) { build(:profile, verified_at: nil) }
 
-      let(:user11) { create(:user, profiles: [profile9]) }
-      let(:profile11) { build(:profile, verified_at: '2019-11-10') }
+      let(:user11) { create(:user, profiles: [profile11]) }
+      let(:profile11) { build(:profile, verified_at: DateTime.new(2019, 10, 1).utc) }
+
+      let(:user12) { create(:user, profiles: [profile12]) }
+      let(:profile12) { build(:profile, verified_at: DateTime.new(2019, 10, 16).utc) }
 
       let(:issuer1) { 'issuer1' }
       let(:issuer2) { 'issuer2' }
@@ -103,13 +106,13 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             ial: 2,
             requested_at: inside_partial_month,
             returned_at: inside_partial_month,
-            profile_verified_at: user.profiles.map(&:verified_at).max,
+            profile_verified_at: user.profiles.map(&:verified_at).min,
             billable: true,
           )
         end
 
-        #  5 new users in whole month proofed in year 1-5
-        [user4, user5, user6, user7, user8].each do |user|
+        #  6 new users in partial month proofed in year 1-5
+        [user4, user5, user6, user7, user8, user11].each do |user|
           create(
             :sp_return_log,
             user_id: user.id,
@@ -188,6 +191,47 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           end
         end
 
+        # 1 old user returns with a new profile age 2 inside whole month
+        [user11].each do |user|
+          2.times do
+            create(
+              :sp_return_log,
+              user_id: user.id,
+              ial: 2,
+              issuer: issuer2,
+              requested_at: inside_whole_month,
+              returned_at: inside_whole_month,
+              profile_verified_at: user.profiles.map(&:verified_at).max,
+              billable: true,
+            )
+          end
+        end
+
+        # 1 new user signs in with profile age of 1 year and then signs in again later in same month
+        # with profile age of 2 years
+        [user12].each do |user|
+          create(
+            :sp_return_log,
+            user_id: user.id,
+            ial: 2,
+            issuer: issuer2,
+            requested_at: inside_whole_month,
+            returned_at: DateTime.new(2020, 10, 1).utc,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
+            billable: true,
+          )
+          create(
+            :sp_return_log,
+            user_id: user.id,
+            ial: 2,
+            issuer: issuer2,
+            requested_at: inside_whole_month,
+            returned_at: DateTime.new(2020, 10, 30).utc,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
+            billable: true,
+          )
+        end
+
         # Outside analysis range
         # 1 new user returning outside the range of analysis
         [user11].each do |user, profile|
@@ -197,8 +241,8 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
               user_id: user.id,
               ial: 2,
               issuer: issuer2,
-              requested_at: '2021-08-16',
-              returned_at: '2021-10-05',
+              requested_at: DateTime.new(2022, 8, 16).utc,
+              returned_at: DateTime.new(2022, 10, 5).utc,
               profile_verified_at: user.profiles[0].verified_at,
               billable: true,
             )
@@ -214,13 +258,13 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             year_month: '202009',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
-            unique_users: 7,
-            new_unique_users: 7,
+            unique_user_proofed_events: 8,
+            new_unique_user_proofed_events: 8,
             partner_ial2_new_unique_users_year1: 2,
             partner_ial2_new_unique_users_year2: 2,
             partner_ial2_new_unique_users_year3: 1,
             partner_ial2_new_unique_users_year4: 1,
-            partner_ial2_new_unique_users_year5: 1,
+            partner_ial2_new_unique_users_year5: 2,
             partner_ial2_new_unique_users_year_greater_than_5: 0,
             partner_ial2_new_unique_users_unknown: 0,
           },
@@ -230,14 +274,14 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             year_month: '202010',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
-            unique_users: 6,
-            new_unique_users: 3,
-            partner_ial2_new_unique_users_year1: 1,
-            partner_ial2_new_unique_users_year2: 0,
+            unique_user_proofed_events: 10,
+            new_unique_user_proofed_events: 8,
+            partner_ial2_new_unique_users_year1: 3,
+            partner_ial2_new_unique_users_year2: 2,
             partner_ial2_new_unique_users_year3: 0,
             partner_ial2_new_unique_users_year4: 0,
             partner_ial2_new_unique_users_year5: 0,
-            partner_ial2_new_unique_users_year_greater_than_5: 1,
+            partner_ial2_new_unique_users_year_greater_than_5: 2,
             partner_ial2_new_unique_users_unknown: 1,
           },
         ]
