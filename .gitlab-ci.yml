@@ -74,7 +74,7 @@ workflow:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod" || $CI_COMMIT_BRANCH =~ /^cmccarthy\/rc-.+/'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod" || $CI_COMMIT_BRANCH =~ /^stages\/rc-.+/'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
 
 install:
@@ -553,7 +553,7 @@ include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
   - project: 'lg-public/identity-eks-pipeline'
-    ref: 'cmccarthy/initial'
+    ref: 'main'
     file: '.eks_release_pipeline.yml'
 
 secret_detection:
