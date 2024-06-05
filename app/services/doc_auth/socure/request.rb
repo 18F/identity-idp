@@ -5,12 +5,11 @@ module DocAuth
     class Request
 
       def fetch
+        # return DocAuth::Respose with DocAuth:Error if workflow invalid
         http_response = send_http_request
-        begin
-          http_response.body.present? ? JSON.parse(http_response.body) : {}
-        rescue JSON::JSONError
-          {}
-        end
+        return handle_invalid_response(http_response) unless http_response.success?
+
+        handle_http_response(http_response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
         handle_connection_error(exception: e)
       end
@@ -36,7 +35,12 @@ module DocAuth
 
       def handle_invalid_response(http_response)
         begin
-          http_response.body.present? ? JSON.parse(http_response.body) : {}
+          if http_response.body.present?
+            warn(http_response.body)
+            JSON.parse(http_response.body)
+          else
+            {}
+          end
         rescue JSON::JSONError
           {}
         end
