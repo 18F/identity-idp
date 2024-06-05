@@ -1518,7 +1518,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
       before do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
       end
 
       it 'notes that in the analytics event' do
@@ -1533,6 +1532,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           errors: {},
           error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          requested_nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
@@ -1548,8 +1548,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           encryption_cert_matches_matching_cert: false,
         }
 
-        expect(@analytics).to have_received(:track_event).
-          with('SAML Auth', analytics_hash)
+        expect(@analytics).to have_logged_event('SAML Auth', analytics_hash)
       end
     end
 
