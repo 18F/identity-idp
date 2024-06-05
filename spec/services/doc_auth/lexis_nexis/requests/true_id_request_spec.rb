@@ -102,116 +102,42 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     end
   end
 
-  context 'with liveness_checking_enabled as false' do
-    context 'when liveness checking is NOT required' do
-      let(:liveness_checking_required) { false }
+  context 'when liveness checking is NOT required' do
+    let(:liveness_checking_required) { false }
 
+    context 'with non-cropped images' do
+      it 'use cropping non-liveness workflow' do
+        expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
+      end
       it_behaves_like 'a successful request'
-
-      context 'with non-cropped images' do
-        it 'uses cropping non-liveness workflow' do
-          expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
-        end
-      end
-
-      it 'does not include a nil selfie in the request body sent to TrueID' do
-        body_as_json = subject.send(:body)
-        body_as_hash = JSON.parse(body_as_json)
-        expect(body_as_hash['Document']).not_to have_key('Selfie')
-      end
-
-      context 'with cropped images' do
-        let(:images_cropped) { true }
-
-        it 'uses non-cropping non-liveness workflow' do
-          expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
-        end
-
-        it_behaves_like 'a successful request'
-      end
     end
 
-    context 'when liveness checking is required' do
-      let(:liveness_checking_required) { true }
-
-      context 'with non-cropped images' do
-        it 'uses non-cropping non-liveness workflow' do
-          expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
-        end
-
-        it_behaves_like 'a successful request'
+    context 'with cropped images' do
+      let(:images_cropped) { true }
+      it 'use non-cropping non-liveness workflow' do
+        expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
       end
-
-      context 'with cropped images' do
-        let(:images_cropped) { true }
-        it 'uses non-cropping non-liveness workflow' do
-          expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
-        end
-
-        it_behaves_like 'a successful request'
-      end
+      it_behaves_like 'a successful request'
     end
   end
 
-  context 'with liveness_checking_enabled as true' do
-    let(:selfie_check_allowed) { true }
+  context 'when liveness checking is required' do
+    let(:liveness_checking_required) { true }
 
-    context 'when liveness checking is NOT required' do
-      let(:liveness_checking_required) { false }
-      context 'with non-cropped images' do
-        it 'use cropping non-liveness workflow' do
-          expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
-        end
-        it_behaves_like 'a successful request'
+    context 'with non-cropped images' do
+      it 'use cropping liveness workflow' do
+        expect(subject.send(:workflow)).to eq(cropping_liveness_flow)
       end
-      context 'with cropped images' do
-        let(:images_cropped) { true }
-        it 'use non-cropping non-liveness workflow' do
-          expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
-        end
-        it_behaves_like 'a successful request'
-      end
+
+      it_behaves_like 'a successful request'
     end
 
-    context 'when liveness checking is required' do
-      let(:liveness_checking_required) { true }
-
-      context 'with non-cropped images' do
-        it 'use cropping liveness workflow' do
-          expect(subject.send(:workflow)).to eq(cropping_liveness_flow)
-        end
-
-        it_behaves_like 'a successful request'
+    context 'with cropped images' do
+      let(:images_cropped) { true }
+      it 'use non-cropping liveness workflow' do
+        expect(subject.send(:workflow)).to eq(non_cropping_liveness_flow)
       end
-
-      context 'with cropped images' do
-        let(:images_cropped) { true }
-        it 'use non-cropping liveness workflow' do
-          expect(subject.send(:workflow)).to eq(non_cropping_liveness_flow)
-        end
-        it_behaves_like 'a successful request'
-      end
-
-      context 'when hosted env is prod' do
-        let(:selfie_check_allowed) { false }
-
-        context 'with non-cropped images' do
-          it 'use cropping non-liveness workflow' do
-            expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
-          end
-          it_behaves_like 'a successful request'
-        end
-
-        context 'with cropped images' do
-          let(:images_cropped) { true }
-
-          it 'use non-cropping non-liveness workflow' do
-            expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
-          end
-
-          it_behaves_like 'a successful request'
-        end
-      end
+      it_behaves_like 'a successful request'
     end
   end
 
