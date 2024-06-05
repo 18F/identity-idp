@@ -51,9 +51,9 @@ module Idv
       doc_req = DocAuth::Socure::Requests::DocumentRequest.new
       doc_resp = doc_req.fetch
 
-      @url = doc_resp['url']
+      @url = doc_resp.dig('data', 'url')
       @msg = doc_resp['msg']
-      @reference_id = doc_resp['referenceId']
+      @reference_id = doc_resp.dig('referenceId')
     end
 
     def extra_view_variables
