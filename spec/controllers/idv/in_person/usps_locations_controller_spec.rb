@@ -96,14 +96,30 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
         allow(controller).to receive(:sp_from_sp_session).and_return(sp)
       end
 
-      it 'sends the proofer the correct vector of trust' do
-        expect(AuthnContextResolver).to receive(:new).with(
-          user: user, service_provider: sp,
-          vtr: vtr, acr_values: nil
-        ).and_call_original
-        expect(proofer).to receive(:request_facilities).with(address, true)
+      context 'with a staging host environment' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('staging')
+        end
+        it 'requests EIPP locations' do
+          expect(AuthnContextResolver).to receive(:new).with(
+            user: user, service_provider: sp,
+            vtr: vtr, acr_values: nil
+          ).and_call_original
+          expect(proofer).to receive(:request_facilities).with(address, true)
 
-        subject
+          subject
+        end
+      end
+
+      context 'with a production host environment' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+        end
+        it 'does not request EIPP locations' do
+          expect(proofer).to receive(:request_facilities).with(address, false)
+
+          subject
+        end
       end
     end
 
