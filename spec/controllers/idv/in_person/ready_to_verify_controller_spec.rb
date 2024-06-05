@@ -123,6 +123,3 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
     end
   end
 end
-
-
-
