@@ -108,6 +108,7 @@ module I18n
         { key: 'idv.failure.setup.fail_html', locales: %i[zh] },
         { key: 'idv.failure.verify.exit', locales: %i[zh] },
         { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] },
+        { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] },
         { key: 'mfa.recommendation', locales: %i[zh] },
         { key: 'notices.signed_up_but_unconfirmed.resend_confirmation_email', locales: %i[zh] },
         { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] },
