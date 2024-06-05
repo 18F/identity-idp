@@ -221,13 +221,12 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     context 'when the user is going through EIPP' do
       let(:usps_eipp_sponsor_id) { '314159265359' }
-      let(:ipp_assurance_level) { '2.0' }
       let(:is_enhanced_ipp) { true }
       before do
         allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
           and_return(usps_eipp_sponsor_id)
       end
-      it 'uses the EIPP usps_ipp_sponsor_id and ipp_assurance_level in calls to the USPS API' do
+      it 'uses the EIPP usps_ipp_sponsor_id in calls to the USPS API' do
         stub_request_eipp_facilities
         subject.request_facilities(location, is_enhanced_ipp)
 
@@ -236,7 +235,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
             body: hash_including(
               {
                 sponsorID: usps_eipp_sponsor_id.to_i,
-                IPPAssuranceLevel: ipp_assurance_level,
               },
             ),
           )

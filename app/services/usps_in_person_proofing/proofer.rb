@@ -26,7 +26,6 @@ module UspsInPersonProofing
       }
 
       if is_enhanced_ipp
-        request_body[:IPPAssuranceLevel] = USPS_EIPP_ASSURANCE_LEVEL
         request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
       end
 
