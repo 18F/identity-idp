@@ -24,7 +24,8 @@ module Proofing
       # @param [String] threatmetrix_session_id identifies the threatmetrix session
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_email email address for applicant
-      def initialize(
+      # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
+      def proof(
         applicant_pii:,
         request_ip:,
         should_proof_state_id:,
@@ -40,10 +41,7 @@ module Proofing
         @timer = timer
         @user_email = user_email
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
-      end
 
-      # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
-      def proof
         @device_profiling_result = proof_with_threatmetrix_if_needed
         @residential_instant_verify_result = proof_residential_address_if_needed
         @instant_verify_result = proof_id_address_with_lexis_nexis_if_needed
@@ -51,7 +49,7 @@ module Proofing
 
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           resolution_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result,
