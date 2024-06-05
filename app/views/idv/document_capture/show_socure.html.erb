@@ -1,12 +1,11 @@
 <% self.title = t('titles.doc_auth.doc_capture') %>
 <% if @url.present? %>
   <a href="<%= @url %>">Click here to open Socure CaptureApp</a>
-<% end %>
-
-<% if @msg.present? %>
-  <p>ErrorMessage: <%= @msg %></p>
-<% end %>
-
-<% if @reference_id.present? %>
-  <p>ReferenceId: <%= @reference_id %></p>
+<% else %>
+  <% if @reference_id.present? %>
+    <p>ReferenceId: <%= @reference_id %></p>
+  <% end %>
+  <% if @msg.present? %>
+    <p>ErrorMessage: <%= @msg %></p>
+  <% end %>
 <% end %>
