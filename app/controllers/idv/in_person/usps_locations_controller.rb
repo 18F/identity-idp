@@ -26,8 +26,7 @@ module Idv
           city: search_params['city'], state: search_params['state'],
           zip_code: search_params['zip_code']
         )
-        is_enhanced_ipp = resolved_authn_context_result.enhanced_ipp? &&
-                          Identity::Hostdata.env != 'prod'
+        is_enhanced_ipp = resolved_authn_context_result.enhanced_ipp?
         response = proofer.request_facilities(candidate, is_enhanced_ipp)
         if response.length > 0
           analytics.idv_in_person_locations_searched(
