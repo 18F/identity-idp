@@ -789,6 +789,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
               finish_profile: false,
               request_signed: true,
               matching_cert_serial: saml_test_sp_cert_serial,
+              encryption_cert_matches_matching_cert: true,
             ),
           )
         expect(@analytics).to receive(:track_event).with(
@@ -942,6 +943,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
               finish_profile: false,
               request_signed: true,
               matching_cert_serial: saml_test_sp_cert_serial,
+              encryption_cert_matches_matching_cert: true,
             ),
           )
         expect(@analytics).to receive(:track_event).with(
@@ -1603,6 +1605,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
+          encryption_cert_matches_matching_cert: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -2316,6 +2319,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
+          encryption_cert_matches_matching_cert: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -2371,6 +2375,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           finish_profile: true,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
+          encryption_cert_matches_matching_cert: true,
         }
 
         expect(@analytics).to receive(:track_event).
