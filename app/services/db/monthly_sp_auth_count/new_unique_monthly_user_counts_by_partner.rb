@@ -5,6 +5,8 @@ module Db
     module NewUniqueMonthlyUserCountsByPartner
       extend Reports::QueryHelpers
 
+      UserVerifiedKey = Data.define(:user_id, :profile_verified_at, :profile_age).freeze
+
       module_function
 
       # @param [String] partner label for billing (Partner requesting agency)
@@ -45,9 +47,10 @@ module Db
               ActiveRecord::Base.connection.execute(query).each do |row|
                 year_month = row['year_month']
                 profile_age = row['profile_age']
+                user_id = row['user_id']
+                profile_verified_at = row['profile_verified_at']
 
-                user_unique_id = row['user_id'].to_s + '_' + row['profile_verified_at'].to_s +
-                                 '_' + row['profile_age'].to_s
+                user_unique_id = UserVerifiedKey.new(user_id:, profile_verified_at:, profile_age:)
 
                 year_month_to_users_to_profile_age[year_month][user_unique_id] = profile_age
               end
