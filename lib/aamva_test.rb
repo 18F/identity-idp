@@ -45,6 +45,14 @@ class AamvaTest
   end
 
   def build_proofer
-    Proofing::Resolution::ProgressiveProofer.new.send(:state_id_proofer)
+    Proofing::Aamva::Proofer.new(
+      auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
+      auth_url: IdentityConfig.store.aamva_auth_url,
+      cert_enabled: IdentityConfig.store.aamva_cert_enabled,
+      private_key: IdentityConfig.store.aamva_private_key,
+      public_key: IdentityConfig.store.aamva_public_key,
+      verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
+      verification_url: IdentityConfig.store.aamva_verification_url,
+    )
   end
 end

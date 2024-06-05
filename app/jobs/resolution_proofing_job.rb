@@ -79,7 +79,7 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     ipp_enrollment_in_progress:
   )
-    result = resolution_proofer.proof(
+    result = Proofing::Resolution::ProgressiveProofer.new(
       applicant_pii: applicant_pii,
       user_email: user.confirmed_email_addresses.first.email,
       threatmetrix_session_id: threatmetrix_session_id,
@@ -87,7 +87,7 @@ class ResolutionProofingJob < ApplicationJob
       should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       timer: timer,
-    )
+    ).proof
 
     log_threatmetrix_info(result.device_profiling_result, user)
     add_threatmetrix_proofing_component(user.id, result.device_profiling_result) if user.present?
@@ -112,10 +112,6 @@ class ResolutionProofingJob < ApplicationJob
 
   def logger_info_hash(hash)
     logger.info(hash.to_json)
-  end
-
-  def resolution_proofer
-    @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.new
   end
 
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
