@@ -13,8 +13,7 @@ module Proofing
                   :should_proof_state_id,
                   :threatmetrix_session_id,
                   :timer,
-                  :user_email,
-                  :ipp_enrollment_in_progress
+                  :user_email
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
       # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
@@ -52,7 +51,7 @@ module Proofing
 
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
           resolution_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result,
@@ -89,7 +88,7 @@ module Proofing
       end
 
       def proof_residential_address_if_needed
-        return residential_address_unnecessary_result unless ipp_enrollment_in_progress
+        return residential_address_unnecessary_result unless ipp_enrollment_in_progress?
 
         timer.time('residential address') do
           resolution_proofer.proof(applicant_pii_with_residential_address)
@@ -109,7 +108,7 @@ module Proofing
       end
 
       def proof_id_address_with_lexis_nexis_if_needed
-        if same_address_as_id? && ipp_enrollment_in_progress
+        if same_address_as_id? && ipp_enrollment_in_progress?
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
@@ -123,7 +122,7 @@ module Proofing
         return false unless should_proof_state_id
         # If the user is in in-person-proofing and they have changed their address then
         # they are not eligible for get-to-yes
-        if !ipp_enrollment_in_progress || same_address_as_id?
+        if !ipp_enrollment_in_progress? || same_address_as_id?
           user_can_pass_after_state_id_check?
         else
           residential_instant_verify_result.success?
@@ -157,7 +156,11 @@ module Proofing
       end
 
       def same_address_as_id?
-        applicant_pii[:same_address_as_id] == 'true'
+        applicant_pii[:same_address_as_id].to_s == 'true'
+      end
+
+      def ipp_enrollment_in_progress?
+        @ipp_enrollment_in_progress
       end
 
       def threatmetrix_disabled_result
@@ -242,7 +245,7 @@ module Proofing
       end
 
       def applicant_pii_with_state_id_address
-        if ipp_enrollment_in_progress
+        if ipp_enrollment_in_progress?
           with_state_id_address(applicant_pii)
         else
           applicant_pii
