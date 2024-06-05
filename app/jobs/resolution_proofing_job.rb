@@ -79,7 +79,7 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     ipp_enrollment_in_progress:
   )
-    result = resolution_proofer.proof(
+    result = progressive_proofer.proof(
       applicant_pii: applicant_pii,
       user_email: user.confirmed_email_addresses.first.email,
       threatmetrix_session_id: threatmetrix_session_id,
@@ -114,8 +114,8 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def resolution_proofer
-    @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.new
+  def progressive_proofer
+    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new
   end
 
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
