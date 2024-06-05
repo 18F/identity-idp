@@ -1434,7 +1434,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
       end
     end
 
-    context 'no matching cert from the SAML request' do
+    context 'SAML request is not signed' do
       let(:user) { create(:user, :fully_registered) }
 
       before do
@@ -1482,6 +1482,74 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to have_received(:track_event).
           with('SAML Auth', hash_including(analytics_hash))
+      end
+    end
+
+    context 'SAML request is signed' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:authn_requests_signed) { true }
+      let(:service_provider) do
+        create(
+          :service_provider,
+          certs: ['sp_sinatra_demo', 'saml_test_sp'],
+          active: true,
+          assertion_consumer_logout_service_url: 'https://example.com',
+        )
+      end
+
+      let(:auth_settings) do
+        saml_settings(
+          overrides: {
+            authn_context: [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            ],
+            certificate: File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt')),
+            issuer: service_provider.issuer,
+            private_key: OpenSSL::PKey::RSA.new(
+              File.read(Rails.root + 'keys/saml_test_sp2.key'),
+            ).to_pem,
+            security: {
+              authn_requests_signed:,
+            },
+          },
+        )
+      end
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'notes that in the analytics event' do
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          error_details: nil,
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ],
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: service_provider.issuer,
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+          request_signed: authn_requests_signed,
+          matching_cert_serial: nil,
+          encryption_cert_matches_matching_cert: false,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
       end
     end
 
