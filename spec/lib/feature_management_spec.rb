@@ -492,27 +492,4 @@ RSpec.describe 'FeatureManagement' do
       end
     end
   end
-
-  describe '#idv_allow_selfie_check?' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-        and_return(selfie_capture_enabled)
-    end
-
-    context 'selfies are disabled' do
-      let(:selfie_capture_enabled) { false }
-
-      it 'says to block biometric requests' do
-        expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
-      end
-    end
-
-    context 'selfies are enabled' do
-      let(:selfie_capture_enabled) { true }
-
-      it 'says to allow biometric requests' do
-        expect(FeatureManagement.idv_allow_selfie_check?).to eq(true)
-      end
-    end
-  end
 end

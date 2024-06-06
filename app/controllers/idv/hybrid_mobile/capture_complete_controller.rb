@@ -20,15 +20,11 @@ module Idv
       private
 
       def analytics_arguments
-        liveness_checking_required =
-          FeatureManagement.idv_allow_selfie_check? &&
-          resolved_authn_context_result.biometric_comparison?
-
         {
           flow_path: 'hybrid',
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
-          liveness_checking_required:,
+          liveness_checking_required: resolved_authn_context_result.biometric_comparison?,
         }.merge(ab_test_analytics_buckets)
       end
     end

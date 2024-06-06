@@ -11,10 +11,6 @@ RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
     create(:user, :proofed, password: RequestHelper::VALID_PASSWORD)
   end
 
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-  end
-
   scenario 'User with active profile can redo idv when selfie required', js: true do
     visit_idp_from_sp_with_ial2(sp, biometric_comparison_required: true)
     sign_in_live_with_2fa(user)
