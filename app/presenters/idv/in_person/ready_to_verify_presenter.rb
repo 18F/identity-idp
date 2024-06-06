@@ -3,7 +3,6 @@
 module Idv
   module InPerson
     class ReadyToVerifyPresenter
-      include ActionView::Helpers::TagHelper
       include ActionView::Helpers::TranslationHelper
       # WILLFIX: With LG-6881, confirm timezone or use deadline from enrollment response.
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York'].dup.freeze
