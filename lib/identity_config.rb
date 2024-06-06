@@ -276,7 +276,6 @@ module IdentityConfig
       type: :json,
       options: { symbolize_names: true },
     )
-    config.add(:phone_recaptcha_mock_validator, type: :boolean)
     config.add(:phone_recaptcha_score_threshold, type: :float)
     config.add(:phone_service_check, type: :boolean)
     config.add(:phone_setups_per_ip_limit, type: :integer)
@@ -312,6 +311,7 @@ module IdentityConfig
     config.add(:reauthn_window, type: :integer)
     config.add(:recaptcha_enterprise_api_key, type: :string)
     config.add(:recaptcha_enterprise_project_id, type: :string)
+    config.add(:recaptcha_mock_validator, type: :boolean)
     config.add(:recaptcha_secret_key, type: :string)
     config.add(:recaptcha_site_key, type: :string)
     config.add(:recovery_code_length, type: :integer)

@@ -349,7 +349,7 @@ RSpec.describe NewPhoneForm do
       subject(:result) { form.submit(params) }
 
       before do
-        allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+        allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
         allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
           and_return(score_threshold)
       end
