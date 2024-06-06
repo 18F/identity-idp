@@ -5,24 +5,31 @@ module UspsInPersonProofing
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token
     # Automatically refresh our auth token if it is within this many minutes of expiring
     AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES = 1.minute.freeze
+    # Assurance Level to use for enhanced in-person proofing
+    USPS_EIPP_ASSURANCE_LEVEL = '2.0'
 
     # Makes HTTP request to get nearby in-person proofing facilities
-    # Requires address, city, state and zip code.
+    # Requires address, city, state, zip code, and is_enhanced_ipp.
     # The PostOffice objects have a subset of the fields
     # returned by the API.
     # @param location [Object]
+    # @param is_enhanced_ipp [Boolean]
     # @return [Array<PostOffice>] Facility locations
-    def request_facilities(location)
+    def request_facilities(location, is_enhanced_ipp)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList"
-      body = {
+      request_body = {
         sponsorID: sponsor_id,
         streetAddress: location.address,
         city: location.city,
         state: location.state,
         zipCode: location.zip_code,
-      }.to_json
+      }
 
-      response = faraday.post(url, body, dynamic_headers) do |req|
+      if is_enhanced_ipp
+        request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
+      end
+
+      response = faraday.post(url, request_body.to_json, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_facilities' }
       end.body
 
@@ -41,7 +48,7 @@ module UspsInPersonProofing
     # @return [Hash] API response
     def request_enroll(applicant)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
-      body = {
+      request_body = {
         sponsorID: sponsor_id,
         uniqueID: applicant.unique_id,
         firstName: applicant.first_name,
@@ -54,7 +61,7 @@ module UspsInPersonProofing
         IPPAssuranceLevel: '1.5',
       }
 
-      res = faraday.post(url, body, dynamic_headers) do |req|
+      res = faraday.post(url, request_body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_enroll' }
       end
       Response::RequestEnrollResponse.new(res.body)
@@ -70,13 +77,13 @@ module UspsInPersonProofing
     # @return [Hash] API response
     def request_proofing_results(unique_id, enrollment_code)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults"
-      body = {
+      request_body = {
         sponsorID: sponsor_id,
         uniqueID: unique_id,
         enrollmentCode: enrollment_code,
       }
 
-      faraday.post(url, body, dynamic_headers) do |req|
+      faraday.post(url, request_body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_proofing_results' }
       end.body
     end
@@ -90,12 +97,12 @@ module UspsInPersonProofing
     # @return [Hash] API response
     def request_enrollment_code(unique_id)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode"
-      body = {
+      request_body = {
         sponsorID: sponsor_id,
         uniqueID: unique_id,
       }
 
-      faraday.post(url, body, dynamic_headers) do |req|
+      faraday.post(url, request_body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_enrollment_code' }
       end.body
     end
@@ -104,14 +111,14 @@ module UspsInPersonProofing
     # historically had 15 minute expirys
     # @return [String] the token
     def retrieve_token!
-      body = request_token
+      request_body = request_token
       # Refresh our token early so that it won't expire while a request is in-flight. We expect 15m
       # expirys for tokens but are careful not to trim the expiry by too much, just in case
-      expires_in = body['expires_in'].seconds
+      expires_in = request_body['expires_in'].seconds
       if expires_in - AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES > 0
         expires_in -= AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES
       end
-      token = "#{body['token_type']} #{body['access_token']}"
+      token = "#{request_body['token_type']} #{request_body['access_token']}"
       Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_in: expires_in)
       token
     end
@@ -162,7 +169,7 @@ module UspsInPersonProofing
     # @return [Hash] API response
     def request_token
       url = "#{root_url}/oauth/authenticate"
-      body = {
+      request_body = {
         username: IdentityConfig.store.usps_ipp_username,
         password: IdentityConfig.store.usps_ipp_password,
         grant_type: 'implicit',
@@ -171,7 +178,7 @@ module UspsInPersonProofing
         scope: 'ivs.ippaas.apis',
       }
 
-      faraday.post(url, body) do |req|
+      faraday.post(url, request_body) do |req|
         req.options.context = { service_name: 'usps_token' }
       end.body
     end

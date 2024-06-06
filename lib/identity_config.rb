@@ -387,6 +387,7 @@ module IdentityConfig
     config.add(:use_vot_in_sp_requests, type: :boolean)
     config.add(:usps_auth_token_refresh_job_enabled, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
+    config.add(:usps_eipp_sponsor_id, type: :string)
     config.add(:usps_ipp_client_id, type: :string)
     config.add(:usps_ipp_password, type: :string)
     config.add(:usps_ipp_request_timeout, type: :integer)
