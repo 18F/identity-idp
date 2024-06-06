@@ -26,24 +26,6 @@ describe('document-capture/components/acuant-capture-canvas', () => {
 
       expect(callback).to.have.been.calledOnceWithExactly('value');
     });
-
-    it('ignores the second call if called twice for the same property', () => {
-      const object = {};
-      let callbackOneCalled = false;
-      let callbackTwoCalled = false;
-
-      defineObservableProperty(object, 'key', () => {
-        callbackOneCalled = true;
-      });
-      defineObservableProperty(object, 'key', () => {
-        callbackTwoCalled = true;
-      });
-
-      object.key = 'new value';
-
-      expect(callbackOneCalled).to.equal(true);
-      expect(callbackTwoCalled).to.equal(false);
-    });
   });
 
   it('renders a "take photo" button', async () => {
