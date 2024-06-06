@@ -166,6 +166,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         {
           success: true,
           errors: {},
+          error_details: nil,
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'state_id',

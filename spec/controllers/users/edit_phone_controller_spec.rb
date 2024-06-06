@@ -15,6 +15,7 @@ RSpec.describe Users::EditPhoneController do
         attributes = {
           success: true,
           errors: {},
+          error_details: nil,
           delivery_preference: 'voice',
           make_default_number: true,
           phone_configuration_id: phone_configuration.id,

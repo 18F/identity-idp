@@ -28,11 +28,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:proof_id_address_with_lexis_nexis_if_needed_value) { nil }
 
   let(:dcs_uuid) { SecureRandom.uuid }
-  let(:instance) do
-    instance = described_class.new
-    allow(instance).to receive(:user_can_pass_after_state_id_check?).and_call_original
-    instance
-  end
+
+  subject(:progressive_proofer) { described_class.new }
 
   let(:state_id_address) do
     {
@@ -91,9 +88,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   before do
-    allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-    allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
-    allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+    allow(progressive_proofer).to receive(:resolution_proofer).and_return(instant_verify_proofer)
+    allow(progressive_proofer).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
+    allow(progressive_proofer).to receive(:state_id_proofer).and_return(aamva_proofer)
 
     block_real_instant_verify_requests
   end
@@ -104,7 +101,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     subject(:proof) do
-      instance.proof(
+      progressive_proofer.proof(
         applicant_pii: applicant_pii,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         request_ip: Faker::Internet.ip_v4_address,
@@ -209,7 +206,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         it 'uses the transformed PII' do
-          allow(instance).to receive(:with_state_id_address).and_return(transformed_pii)
+          allow(progressive_proofer).to receive(:with_state_id_address).and_return(transformed_pii)
 
           expect(proof.same_address_as_id).to eq('true')
           expect(proof.ipp_enrollment_in_progress).to eq(true)
@@ -230,12 +227,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
 
           it 'includes the state ID in the InstantVerify call' do
-            proof
-
-            expect(instance).to have_received(:user_can_pass_after_state_id_check?).
-              with(instant_verify_proofer_result)
-            expect(instant_verify_proofer).to have_received(:proof).
+            expect(progressive_proofer).to receive(:user_can_pass_after_state_id_check?).
+              and_call_original
+            expect(instant_verify_proofer).to receive(:proof).
               with(hash_including(state_id_address))
+
+            proof
           end
 
           context 'the failure can be covered by AAMVA' do
@@ -276,7 +273,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             end
 
             before do
-              allow(instance).to receive(:proof_residential_address_if_needed).
+              allow(progressive_proofer).to receive(:proof_residential_address_if_needed).
                 and_return(residential_resolution_that_passed_instant_verify)
             end
 
@@ -369,7 +366,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           let(:instant_verify_proofer_result) { residential_address_proof }
 
           before do
-            allow(instance).to receive(:proof_residential_address_if_needed).
+            allow(progressive_proofer).to receive(:proof_residential_address_if_needed).
               and_return(residential_address_proof)
             allow(residential_address_proof).to receive(:success?).
               and_return(false)

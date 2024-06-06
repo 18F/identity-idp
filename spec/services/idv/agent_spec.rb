@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'ostruct'
 
 RSpec.describe Idv::Agent do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
 
   let(:bad_phone) do
     Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
