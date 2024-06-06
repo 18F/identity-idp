@@ -1289,7 +1289,7 @@ in_person_proofing.process.eipp_state_id_military_id.image_alt_text: 州身份�
 in_person_proofing.process.eipp_state_id_military_id.info: 出示州的普通身份证件或驾照，以及军人证件。
 in_person_proofing.process.eipp_state_id_passport.heading: A.州身份证件+护照
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: 州身份证件和护照
-in_person_proofing.process.eipp_state_id_passport.info: 出示州的普通身份证件或驾照，以及护照或护照卡
+in_person_proofing.process.eipp_state_id_passport.info: 出示州的普通身份证件或驾照，以及护照或护照卡。
 in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州身份证件+两种支持文件
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: 州身份证件和两份证明文件
 in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示州的普通身份证件或驾照，以及以下清单中两个支持性文件：'
