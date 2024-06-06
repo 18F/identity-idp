@@ -79,23 +79,18 @@ module Users
     end
 
     def valid_captcha_result?
-      if cookies[:device] && (device = Device.find_by(cookie_uuid: cookies[:device]))
-        return true if device.user.email_addresses.lazy.map(&:email).include?(auth_params[:email])
-      end
-
-      response, _assessment_id = recaptcha_form.submit(params.require(:user)[:recaptcha_token])
-      flash[:error] = response.first_error_message if !response.success?
-      response.success?
+      SignInRecaptchaForm.new(**recaptcha_form_args).submit(
+        email: auth_params[:email],
+        recaptcha_token: params.require(:user)[:recaptcha_token],
+        device_cookie: cookies[:device],
+      ).success?
     end
 
     def process_failed_captcha
+      flash[:error] = t('errors.messages.invalid_recaptcha_token')
       warden.logout(:user)
       warden.lock!
       redirect_to root_url
-    end
-
-    def recaptcha_form
-      @recaptcha_form ||= SignInRecaptchaForm.new(**recaptcha_form_args)
     end
 
     def recaptcha_form_args
