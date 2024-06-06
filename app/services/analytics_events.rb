@@ -4920,7 +4920,8 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] nameid_format
+  # @param [String] nameid_format The NameID format sent in the response
+  # @param [String] requested_nameid_format The NameID format requested
   # @param [Array] authn_context
   # @param [String] authn_context_comparison
   # @param [String] service_provider
@@ -4934,6 +4935,7 @@ module AnalyticsEvents
     success:,
     errors:,
     nameid_format:,
+    requested_nameid_format:,
     authn_context:,
     authn_context_comparison:,
     service_provider:,
@@ -4952,6 +4954,7 @@ module AnalyticsEvents
       errors:,
       error_details:,
       nameid_format:,
+      requested_nameid_format:,
       authn_context:,
       authn_context_comparison:,
       service_provider:,
