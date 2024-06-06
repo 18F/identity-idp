@@ -97,7 +97,7 @@ module DocAuth
       def request_headers(extras = {})
         {
           'Content-Type': 'application/json',
-          Authorization: "SocureApiKey #{IdentityConfig.store.socure_id_key}",
+          Authorization: "SocureApiKey #{IdentityConfig.store.socure_id_secret_key}",
         }.merge(extras)
       end
 

@@ -373,7 +373,7 @@ module IdentityConfig
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:socure_document_endpoint, type: :string)
-    config.add(:socure_id_key, type: :string)
+    config.add(:socure_id_secret_key, type: :string)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
