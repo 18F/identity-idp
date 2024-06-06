@@ -49,12 +49,19 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :view, true)
 
-      doc_req = DocAuth::Socure::Requests::DocumentRequest.new
+      doc_req = DocAuth::Socure::Requests::DocumentRequest.new(
+        document_capture_session_uuid: document_capture_session_uuid,
+        redirect_url: idv_document_capture_url, # to be updated ssn?
+      )
       doc_resp = doc_req.fetch
 
       @url = doc_resp.dig('data', 'url')
       @msg = doc_resp['msg']
       @reference_id = doc_resp.dig('referenceId')
+      @qr_code = nil
+
+      # if redirect_to @url if mobile && @url.present?
+
     end
 
     def extra_view_variables
