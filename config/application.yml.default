@@ -436,13 +436,14 @@ production:
   aws_logo_bucket: ''
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
-  database_host: ''
-  database_name: ''
-  database_password: ''
+  database_sslmode: 'prefer'
+  database_host: 'host.docker.internal'
+  database_name: 'identity_idp_development'
+  database_password: 'postgres'
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
-  database_username: ''
+  database_username: 'postgres'
   database_worker_jobs_name: ''
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
@@ -475,8 +476,8 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
-  redis_throttle_url: redis://redis.login.gov.internal:6379/1
-  redis_url: redis://redis.login.gov.internal:6379
+  redis_throttle_url: redis://host.docker.internal:6379/1 # Change this when deploying to cloudrun
+  redis_url: redis://host.docker.internal:6379 # Change this when deploying to cloudrun
   report_timeout: 1_000_000
   ruby_workers_idv_enabled: false
   s3_report_bucket_prefix: login-gov.reports
