@@ -51,6 +51,7 @@ class ResolutionProofingJob < ApplicationJob
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+      current_sp: current_sp,
     )
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -77,7 +78,8 @@ class ResolutionProofingJob < ApplicationJob
     threatmetrix_session_id:,
     request_ip:,
     should_proof_state_id:,
-    ipp_enrollment_in_progress:
+    ipp_enrollment_in_progress:,
+    current_sp:
   )
     result = progressive_proofer.proof(
       applicant_pii: applicant_pii,
@@ -87,6 +89,7 @@ class ResolutionProofingJob < ApplicationJob
       should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       timer: timer,
+      current_sp: current_sp,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)

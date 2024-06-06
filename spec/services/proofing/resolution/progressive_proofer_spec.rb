@@ -4,6 +4,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
   let(:ipp_enrollment_in_progress) { false }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
+  let(:current_sp) { build(:service_provider) }
 
   let(:instant_verify_proofing_success) { true }
   let(:instant_verify_proofer_result) do
@@ -11,6 +12,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       Proofing::Resolution::Result,
       success?: instant_verify_proofing_success,
       attributes_requiring_additional_verification: [:address],
+      transaction_id: 'ln-123',
     )
   end
   let(:instant_verify_proofer) do
@@ -20,12 +22,24 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     )
   end
 
-  let(:aamva_proofer_result) { nil }
+  let(:aamva_proofer_result) do
+    instance_double(
+      Proofing::StateIdResult,
+      success?: false,
+      transaction_id: 'aamva-123',
+    )
+  end
   let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result) }
 
-  let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer, proof: nil) }
-
-  let(:proof_id_address_with_lexis_nexis_if_needed_value) { nil }
+  let(:threatmetrix_proofer_result) do
+    instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
+  end
+  let(:threatmetrix_proofer) do
+    instance_double(
+      Proofing::LexisNexis::Ddp::Proofer,
+      proof: threatmetrix_proofer_result,
+    )
+  end
 
   let(:dcs_uuid) { SecureRandom.uuid }
 
@@ -109,6 +123,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         threatmetrix_session_id: threatmetrix_session_id,
         timer: JobHelpers::Timer.new,
         user_email: Faker::Internet.email,
+        current_sp: current_sp,
       )
     end
 
@@ -119,8 +134,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'ThreatMetrix is enabled' do
-        let(:proof_id_address_with_lexis_nexis_if_needed_value) { resolution_result }
-
         before do
           enable_threatmetrix
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
@@ -131,6 +144,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         it 'makes a request to the ThreatMetrix proofer' do
           expect(threatmetrix_proofer).to have_received(:proof)
+        end
+
+        it 'creates a ThreatMetrix associated cost' do
+          threatmetrix_sp_costs = SpCost.where(cost_type: :threatmetrix, issuer: current_sp.issuer)
+          expect(threatmetrix_sp_costs.count).to eq(1)
         end
 
         context 'session id is missing' do
@@ -178,6 +196,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(device_profiling_result.client).to eq('tmx_disabled')
           expect(device_profiling_result.review_status).to eq('pass')
         end
+
+        it 'does not create a ThreatMetrix associated cost' do
+          threatmetrix_sp_costs = SpCost.where(cost_type: :threatmetrix, issuer: current_sp.issuer)
+          expect(threatmetrix_sp_costs.count).to eq(0)
+        end
       end
     end
 
@@ -215,6 +238,19 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(aamva_proofer).to have_received(:proof).with(transformed_pii)
         end
 
+        it 'records a single LexisNexis SP cost and an AAMVA SP cost' do
+          proof
+
+          lexis_nexis_sp_costs = SpCost.where(
+            cost_type: :lexis_nexis_resolution,
+            issuer: current_sp.issuer,
+          )
+          aamva_sp_costs = SpCost.where(cost_type: :aamva, issuer: current_sp.issuer)
+
+          expect(lexis_nexis_sp_costs.count).to eq(1)
+          expect(aamva_sp_costs.count).to eq(1)
+        end
+
         context 'LexisNexis InstantVerify fails' do
           let(:instant_verify_proofing_success) { false }
 
@@ -242,6 +278,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                   Proofing::StateIdResult,
                   verified_attributes: [],
                   success?: false,
+                  transaction_id: 'aamva-123',
                 )
               end
 
@@ -256,6 +293,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                   Proofing::StateIdResult,
                   verified_attributes: [:address],
                   success?: true,
+                  transaction_id: 'aamva-123',
                 )
               end
 
@@ -269,7 +307,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         context 'LexisNexis InstantVerify passes for residential address and id address' do
           context 'should proof with AAMVA' do
             let(:residential_resolution_that_passed_instant_verify) do
-              instance_double(Proofing::Resolution::Result, success?: true)
+              instance_double(
+                Proofing::Resolution::Result,
+                success?: true,
+                transaction_id: 'aamva-123',
+              )
             end
 
             before do
@@ -286,7 +328,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             context 'AAMVA proofing fails' do
               let(:aamva_client) { instance_double(Proofing::Aamva::VerificationClient) }
               let(:aamva_proofer_result) do
-                instance_double(Proofing::StateIdResult, success?: false)
+                instance_double(
+                  Proofing::StateIdResult,
+                  success?: false,
+                  transaction_id: 'aamva-123',
+                )
               end
 
               before do
@@ -303,7 +349,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       context 'residential address and id address are different' do
         let(:residential_address_proof) do
-          instance_double(Proofing::Resolution::Result)
+          instance_double(Proofing::Resolution::Result, transaction_id: 'residential-123')
         end
 
         let(:ipp_enrollment_in_progress) { true }
@@ -348,9 +394,26 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                 ordered
             end
 
+            it 'records 2 LexisNexis SP cost and an AAMVA SP cost' do
+              proof
+
+              lexis_nexis_sp_costs = SpCost.where(
+                cost_type: :lexis_nexis_resolution,
+                issuer: current_sp.issuer,
+              )
+              aamva_sp_costs = SpCost.where(cost_type: :aamva, issuer: current_sp.issuer)
+
+              expect(lexis_nexis_sp_costs.count).to eq(2)
+              expect(aamva_sp_costs.count).to eq(1)
+            end
+
             context 'AAMVA fails' do
               let(:aamva_proofer_result) do
-                instance_double(Proofing::StateIdResult, success?: false)
+                instance_double(
+                  Proofing::StateIdResult,
+                  success?: false,
+                  transaction_id: 'aamva-123',
+                )
               end
 
               it 'returns the correct resolution results' do

@@ -23,15 +23,15 @@ RSpec.feature 'SP Costing', :email, allowed_extra_analytics: [:*] do
     expect_sp_cost_type(0, 2, 'acuant_front_image')
     expect_sp_cost_type(1, 2, 'acuant_back_image')
     expect_sp_cost_type(2, 2, 'acuant_result')
+    expect_sp_cost_type(3, 2, 'threatmetrix')
     expect_sp_cost_type(
-      3, 2, 'lexis_nexis_resolution',
+      4, 2, 'lexis_nexis_resolution',
       transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID
     )
     expect_sp_cost_type(
-      4, 2, 'aamva',
+      5, 2, 'aamva',
       transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID
     )
-    expect_sp_cost_type(5, 2, 'threatmetrix')
     expect_sp_cost_type(6, 2, 'lexis_nexis_address')
   end
 
