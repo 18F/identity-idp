@@ -116,13 +116,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       )
     end
 
-    it 'does send doc_auth_selfie_capture to the FE' do
-      render_partial
-      expect(rendered).to have_css(
-        "#document-capture-form[data-doc-auth-selfie-capture='true']",
-      )
-    end
-    context 'when hosted in prod env' do
+    context 'when doc_auth_selfie_capture is false' do
       let(:selfie_capture_enabled) { false }
       it 'does not send doc_auth_selfie_capture to the FE' do
         render_partial
