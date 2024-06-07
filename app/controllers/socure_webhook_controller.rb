@@ -11,6 +11,9 @@ class SocureWebhookController < ApplicationController
 
     # analytics.security_event_received(**result.to_h)
 
+    body = request.body.read
+    params = request.params
+    analytics.socure_webhook(text: { body: body, params: params})
     # if result.success?
       head :ok
     # else
