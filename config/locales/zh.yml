@@ -581,7 +581,7 @@ doc_auth.headings.verify_at_post_office: 去邮局验证身份
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.verify_online_selfie: 使用手机在网上验证你的身份
-doc_auth.headings.welcome: 开始验证你的身份
+doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
 doc_auth.hybrid_flow_warning.only_add_if_text: 只有在以下情况下才添加你的身份证件：
@@ -596,7 +596,7 @@ doc_auth.info.capture_status_small_document: 靠近一些
 doc_auth.info.capture_status_tap_to_capture: 点击来扫描
 doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{app_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
-doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
+doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
 doc_auth.info.how_to_verify: 你可以选择在网上验证身份或者到参与本项目的邮局亲身验证身份。
 doc_auth.info.how_to_verify_selfie: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
@@ -639,20 +639,20 @@ doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全
 doc_auth.info.verify_online_instruction_selfie: 使用手机在网上验证你的身份你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
-doc_auth.instructions.bullet1: 州政府颁发的身份证件
-doc_auth.instructions.bullet2: 社会保障号码
-doc_auth.instructions.bullet3: 电话号码或家庭地址
-doc_auth.instructions.bullet4: Re-enter your %{app_name} password
+doc_auth.instructions.bullet1: 带上驾照或州身份证件
+doc_auth.instructions.bullet2: 输入你的社会保障号码
+doc_auth.instructions.bullet3: 与你电话号码匹配
+doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
 doc_auth.instructions.consent: 在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。
-doc_auth.instructions.getting_started: 'You’ll need to:'
+doc_auth.instructions.getting_started: '你需要：'
 doc_auth.instructions.learn_more: 了解有关我们隐私和安全措施的更多信息。
 doc_auth.instructions.switch_back: 然后再返回你的电脑完成验证身份。
 doc_auth.instructions.switch_back_image: 从手机指向电脑的箭头
 doc_auth.instructions.test_ssn: 在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。
-doc_auth.instructions.text1: 你的身份证件不能是过期的。
-doc_auth.instructions.text2: 你不需要有卡。
-doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
-doc_auth.instructions.text4: Your password saves and encrypts your personal information.
+doc_auth.instructions.text1: 其他形式的身份证件不被接受。我们要查看你是身份证件上的人。
+doc_auth.instructions.text2: 不需要你社会保障卡实体。
+doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
+doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
 doc_auth.tips.document_capture_id_text1: 把你身份证件放在一个平坦、暗色的表面上。
 doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照。

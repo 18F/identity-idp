@@ -171,7 +171,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   scenario 'signing up using phone with a reCAPTCHA challenge', :js do
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+    allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
 
     sign_up_and_set_password

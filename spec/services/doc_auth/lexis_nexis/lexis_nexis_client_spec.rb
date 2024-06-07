@@ -116,9 +116,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
   context 'with selfie check enabled' do
     ## enable feature
     let(:workflow) { 'LIVENESS.CROPPING.WORKFLOW' }
-    before do
-      allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
-    end
     describe 'when success response returned' do
       before do
         stub_request(:post, image_upload_url).to_return(

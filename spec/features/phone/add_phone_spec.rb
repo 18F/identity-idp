@@ -206,7 +206,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
   scenario 'adding a phone with a reCAPTCHA challenge', :js do
     user = create(:user, :fully_registered)
 
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+    allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
     fake_analytics = FakeAnalytics.new(user:)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)

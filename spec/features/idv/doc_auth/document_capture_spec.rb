@@ -199,8 +199,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   context 'selfie check' do
     let(:selfie_check_enabled) { true }
     before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-        and_return(selfie_check_enabled)
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     end
 
@@ -281,9 +279,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             end
 
             before do
-              allow(IdentityConfig.store).to receive(
-                :doc_auth_selfie_capture_enabled,
-              ).and_return(true)
               allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
               allow(IdentityConfig.store).to receive(
                 :in_person_proofing_opt_in_enabled,
@@ -1295,7 +1290,6 @@ RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [
     let(:in_person_proofing_enabled) { true }
     let(:sp_ipp_enabled) { true }
     let(:in_person_proofing_opt_in_enabled) { true }
-    let(:doc_auth_selfie_capture_enabled) { true }
     let(:biometric_comparison_required) { true }
     let(:user) { user_with_2fa }
 
@@ -1312,8 +1306,6 @@ RSpec.feature 'direct access to IPP on desktop', :js, allowed_extra_analytics: [
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,
       )
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-        and_return(doc_auth_selfie_capture_enabled)
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
         and_return(sp_ipp_enabled)
       visit_idp_from_sp_with_ial2(

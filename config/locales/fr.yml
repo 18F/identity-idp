@@ -612,7 +612,7 @@ doc_auth.info.selfie_capture_status.face_not_found: Visage non trouvé
 doc_auth.info.selfie_capture_status.face_too_small: Visage trop petit
 doc_auth.info.selfie_capture_status.too_many_faces: Trop de visages
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
-doc_auth.info.stepping_up_html: Vérifiez à nouveau votre identité pour accéder à ce service. Pour plus d’informations sur la vérification de votre identité %{link_html}
+doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}
 doc_auth.info.tag: Recommandation
 doc_auth.info.upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de votre pièce d’identité depuis cet ordinateur.
 doc_auth.info.upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos. Votre téléphone portable doit être équipé d’un appareil photo et d’un navigateur web.

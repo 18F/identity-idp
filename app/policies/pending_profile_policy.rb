@@ -26,7 +26,6 @@ class PendingProfilePolicy
   end
 
   def biometric_comparison_requested?
-    return false if !FeatureManagement.idv_allow_selfie_check?
     resolved_authn_context_result.biometric_comparison? || biometric_comparison_requested
   end
 

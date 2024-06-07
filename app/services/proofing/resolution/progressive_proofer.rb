@@ -13,7 +13,8 @@ module Proofing
                   :should_proof_state_id,
                   :threatmetrix_session_id,
                   :timer,
-                  :user_email
+                  :user_email,
+                  :current_sp
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
       # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
@@ -32,7 +33,8 @@ module Proofing
         threatmetrix_session_id:,
         timer:,
         user_email:,
-        ipp_enrollment_in_progress:
+        ipp_enrollment_in_progress:,
+        current_sp:
       )
         @applicant_pii = applicant_pii
         @request_ip = request_ip
@@ -41,6 +43,7 @@ module Proofing
         @timer = timer
         @user_email = user_email
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
+        @current_sp = current_sp
 
         @device_profiling_result = proof_with_threatmetrix_if_needed
         @residential_instant_verify_result = proof_residential_address_if_needed
@@ -82,6 +85,8 @@ module Proofing
 
         timer.time('threatmetrix') do
           lexisnexis_ddp_proofer.proof(ddp_pii)
+        end.tap do |result|
+          add_sp_cost(:threatmetrix, result.transaction_id)
         end
       end
 
@@ -90,6 +95,8 @@ module Proofing
 
         timer.time('residential address') do
           resolution_proofer.proof(applicant_pii_with_residential_address)
+        end.tap do |result|
+          add_sp_cost(:lexis_nexis_resolution, result.transaction_id)
         end
       end
 
@@ -113,6 +120,8 @@ module Proofing
 
         timer.time('resolution') do
           resolution_proofer.proof(applicant_pii_with_state_id_address)
+        end.tap do |result|
+          add_sp_cost(:lexis_nexis_resolution, result.transaction_id)
         end
       end
 
@@ -132,6 +141,8 @@ module Proofing
 
         timer.time('state_id') do
           state_id_proofer.proof(applicant_pii_with_state_id_address)
+        end.tap do |result|
+          add_sp_cost(:aamva, result.transaction_id)
         end
       end
 
@@ -252,6 +263,10 @@ module Proofing
 
       def applicant_pii_with_residential_address
         applicant_pii
+      end
+
+      def add_sp_cost(token, transaction_id)
+        Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
       end
 
       # Make a copy of pii with the user's state ID address overwriting the address keys

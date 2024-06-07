@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
+RSpec.describe SamlIdpController do
   include SamlAuthHelper
 
   render_views
@@ -581,14 +581,8 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             ssn: '666666666',
           )
         end
-        let(:doc_auth_selfie_capture_enabled) { true }
 
         before do
-          allow(IdentityConfig.store).to receive(
-            :doc_auth_selfie_capture_enabled,
-          ).and_return(
-            doc_auth_selfie_capture_enabled,
-          )
           create(:profile, :active, user: user, pii: pii.to_h)
           Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
             pii,
@@ -667,15 +661,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             saml_get_auth(vtr_settings)
             expect(response).to redirect_to(sign_up_completed_url)
             expect(controller.session[:sp][:vtr]).to eq(['C1.C2.P1.Pb'])
-          end
-        end
-
-        context 'selfie check is disabled for the environment' do
-          let(:doc_auth_selfie_capture_enabled) { false }
-
-          it 'renders an error' do
-            saml_get_auth(vtr_settings)
-            expect(response.status).to eq(406)
           end
         end
       end
