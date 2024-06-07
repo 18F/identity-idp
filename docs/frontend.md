@@ -406,7 +406,7 @@ Font files are optimized to remove unused character data. If a new character is 
    1. `cd tmp/public-sans-v2/fonts/ttf`
    2. `find . -name "*-subset.woff2" -exec sh -c 'cp $1 "../../../../app/assets/fonts/public-sans/${1%-subset.woff2}.woff2"' _ {} \;`
 
-At this point, your working directory should reflect changes to all of the files within `app/assets/fonts/public-sans`.
+At this point, your working directory should reflect changes to all of the files within `app/assets/fonts/public-sans`, and new or removed characters in `app/assets/fonts/glyphs.txt`. These changes should be committed to resolve the lint failure for character data.
 
 ## Devices
 
