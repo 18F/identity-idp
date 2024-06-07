@@ -3767,7 +3767,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @Param ['phone'] method_name Authentication method added
+  # @param ['phone'] method_name Authentication method added
   def multi_factor_auth_added_phone(
     enabled_mfa_methods_count:,
     recaptcha_annotation:,
