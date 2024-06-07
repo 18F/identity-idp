@@ -114,8 +114,7 @@ class SamlIdpController < ApplicationController
   end
 
   def biometric_comparison_needed?
-    FeatureManagement.idv_allow_selfie_check? &&
-      resolved_authn_context_result.biometric_comparison? &&
+    resolved_authn_context_result.biometric_comparison? &&
       !current_user.identity_verified_with_biometric_comparison?
   end
 
@@ -131,6 +130,7 @@ class SamlIdpController < ApplicationController
       requested_ial: requested_ial,
       request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
+      requested_nameid_format: saml_request.name_id_format,
     )
     analytics.saml_auth(**analytics_payload)
   end

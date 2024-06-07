@@ -257,7 +257,7 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
-        result = Proofing::Resolution::ResultAdjudicator.new(
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: success,
             errors: errors,
@@ -272,11 +272,12 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,
           should_proof_state_id: true,
-        )
+        ).adjudicated_result.to_h
+        adjudicated_result[:context].delete(:sp_costs_added)
 
         document_capture_session.create_proofing_session
 
-        document_capture_session.store_proofing_result(result.adjudicated_result.to_h)
+        document_capture_session.store_proofing_result(adjudicated_result)
 
         document_capture_session.load_proofing_result
       end

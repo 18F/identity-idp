@@ -35,6 +35,14 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_eipp_facilities
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
+      status: 200,
+      body: UspsInPersonProofing::Mock::Fixtures.request_eipp_facilities_response,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_facilities_with_unordered_distance
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
       status: 200,

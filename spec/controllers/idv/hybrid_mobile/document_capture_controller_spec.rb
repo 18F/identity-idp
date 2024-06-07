@@ -76,8 +76,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
 
       context 'when selfie is required' do
         before do
-          allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
-
           authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
           allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
         end

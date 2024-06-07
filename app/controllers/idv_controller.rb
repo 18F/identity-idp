@@ -32,8 +32,7 @@ class IdvController < ApplicationController
   private
 
   def already_verified?
-    if FeatureManagement.idv_allow_selfie_check? &&
-       resolved_authn_context_result.biometric_comparison?
+    if resolved_authn_context_result.biometric_comparison?
       current_user.identity_verified_with_biometric_comparison?
     else
       current_user.active_profile.present?

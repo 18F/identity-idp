@@ -8,6 +8,14 @@ module Proofing
     #   2. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
+      attr_reader :applicant_pii,
+                  :request_ip,
+                  :should_proof_state_id,
+                  :threatmetrix_session_id,
+                  :timer,
+                  :user_email,
+                  :current_sp
+
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
       # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
       #   both state id address and current residential address verified
@@ -25,42 +33,22 @@ module Proofing
         threatmetrix_session_id:,
         timer:,
         user_email:,
-        ipp_enrollment_in_progress:
+        ipp_enrollment_in_progress:,
+        current_sp:
       )
-        device_profiling_result = proof_with_threatmetrix_if_needed(
-          applicant_pii: applicant_pii,
-          request_ip: request_ip,
-          threatmetrix_session_id: threatmetrix_session_id,
-          timer: timer,
-          user_email: user_email,
-        )
+        @applicant_pii = applicant_pii
+        @request_ip = request_ip
+        @should_proof_state_id = should_proof_state_id
+        @threatmetrix_session_id = threatmetrix_session_id
+        @timer = timer
+        @user_email = user_email
+        @ipp_enrollment_in_progress = ipp_enrollment_in_progress
+        @current_sp = current_sp
 
-        residential_instant_verify_result = proof_residential_address_if_needed(
-          applicant_pii: applicant_pii,
-          timer: timer,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-        )
-
-        applicant_pii_transformed = applicant_pii.clone
-        if ipp_enrollment_in_progress
-          applicant_pii_transformed = with_state_id_address(applicant_pii_transformed)
-        end
-
-        instant_verify_result = proof_id_address_with_lexis_nexis_if_needed(
-          applicant_pii: applicant_pii_transformed,
-          timer: timer,
-          residential_instant_verify_result: residential_instant_verify_result,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-        )
-
-        state_id_result = proof_id_with_aamva_if_needed(
-          applicant_pii: applicant_pii_transformed,
-          timer: timer,
-          residential_instant_verify_result: residential_instant_verify_result,
-          instant_verify_result: instant_verify_result,
-          should_proof_state_id: should_proof_state_id,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-        )
+        @device_profiling_result = proof_with_threatmetrix_if_needed
+        @residential_instant_verify_result = proof_residential_address_if_needed
+        @instant_verify_result = proof_id_address_with_lexis_nexis_if_needed
+        @state_id_result = proof_id_with_aamva_if_needed
 
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
@@ -75,13 +63,12 @@ module Proofing
 
       private
 
-      def proof_with_threatmetrix_if_needed(
-        applicant_pii:,
-        user_email:,
-        threatmetrix_session_id:,
-        request_ip:,
-        timer:
-      )
+      attr_reader :device_profiling_result,
+                  :residential_instant_verify_result,
+                  :instant_verify_result,
+                  :state_id_result
+
+      def proof_with_threatmetrix_if_needed
         unless FeatureManagement.proofing_device_profiling_collecting_enabled?
           return threatmetrix_disabled_result
         end
@@ -98,18 +85,18 @@ module Proofing
 
         timer.time('threatmetrix') do
           lexisnexis_ddp_proofer.proof(ddp_pii)
+        end.tap do |result|
+          add_sp_cost(:threatmetrix, result.transaction_id)
         end
       end
 
-      def proof_residential_address_if_needed(
-        applicant_pii:,
-        timer:,
-        ipp_enrollment_in_progress: false
-      )
-        return residential_address_unnecessary_result unless ipp_enrollment_in_progress
+      def proof_residential_address_if_needed
+        return residential_address_unnecessary_result unless ipp_enrollment_in_progress?
 
         timer.time('residential address') do
-          resolution_proofer.proof(applicant_pii)
+          resolution_proofer.proof(applicant_pii_with_residential_address)
+        end.tap do |result|
+          add_sp_cost(:lexis_nexis_resolution, result.transaction_id)
         end
       end
 
@@ -125,66 +112,64 @@ module Proofing
         )
       end
 
-      def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
-                                                      residential_instant_verify_result:,
-                                                      ipp_enrollment_in_progress:)
-        if applicant_pii[:same_address_as_id] == 'true' && ipp_enrollment_in_progress
+      def proof_id_address_with_lexis_nexis_if_needed
+        if same_address_as_id? && ipp_enrollment_in_progress?
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
 
         timer.time('resolution') do
-          resolution_proofer.proof(applicant_pii)
+          resolution_proofer.proof(applicant_pii_with_state_id_address)
+        end.tap do |result|
+          add_sp_cost(:lexis_nexis_resolution, result.transaction_id)
         end
       end
 
-      def should_proof_state_id_with_aamva?(ipp_enrollment_in_progress:, same_address_as_id:,
-                                            should_proof_state_id:, instant_verify_result:,
-                                            residential_instant_verify_result:)
+      def should_proof_state_id_with_aamva?
         return false unless should_proof_state_id
         # If the user is in in-person-proofing and they have changed their address then
         # they are not eligible for get-to-yes
-        if !ipp_enrollment_in_progress || same_address_as_id == 'true'
-          user_can_pass_after_state_id_check?(instant_verify_result)
+        if !ipp_enrollment_in_progress? || same_address_as_id?
+          user_can_pass_after_state_id_check?
         else
           residential_instant_verify_result.success?
         end
       end
 
-      def proof_id_with_aamva_if_needed(
-        applicant_pii:, timer:,
-        residential_instant_verify_result:,
-        instant_verify_result:,
-        should_proof_state_id:,
-        ipp_enrollment_in_progress:
-      )
-        same_address_as_id = applicant_pii[:same_address_as_id]
-        should_proof_state_id_with_aamva = should_proof_state_id_with_aamva?(
-          ipp_enrollment_in_progress:,
-          same_address_as_id:,
-          should_proof_state_id:,
-          instant_verify_result:,
-          residential_instant_verify_result:,
-        )
-        return out_of_aamva_jurisdiction_result unless should_proof_state_id_with_aamva
+      def proof_id_with_aamva_if_needed
+        return out_of_aamva_jurisdiction_result unless should_proof_state_id_with_aamva?
 
         timer.time('state_id') do
-          state_id_proofer.proof(applicant_pii)
+          state_id_proofer.proof(applicant_pii_with_state_id_address)
+        end.tap do |result|
+          add_sp_cost(:aamva, result.transaction_id)
         end
       end
 
-      def user_can_pass_after_state_id_check?(resolution_result)
-        return true if resolution_result.success?
+      def user_can_pass_after_state_id_check?
+        return true if instant_verify_result.success?
         # For failed IV results, this method validates that the user is eligible to pass if the
         # failed attributes are covered by the same attributes in a successful AAMVA response
         # aka the Get-to-Yes w/ AAMVA feature.
-        return false unless resolution_result.failed_result_can_pass_with_additional_verification?
+        if !instant_verify_result.failed_result_can_pass_with_additional_verification?
+          return false
+        end
 
         attributes_aamva_can_pass = [:address, :dob, :state_id_number]
+        attributes_requiring_additional_verification =
+          instant_verify_result.attributes_requiring_additional_verification
         results_that_cannot_pass_aamva =
-          resolution_result.attributes_requiring_additional_verification - attributes_aamva_can_pass
+          attributes_requiring_additional_verification - attributes_aamva_can_pass
 
         results_that_cannot_pass_aamva.blank?
+      end
+
+      def same_address_as_id?
+        applicant_pii[:same_address_as_id].to_s == 'true'
+      end
+
+      def ipp_enrollment_in_progress?
+        @ipp_enrollment_in_progress
       end
 
       def threatmetrix_disabled_result
@@ -266,6 +251,22 @@ module Proofing
               verification_url: IdentityConfig.store.aamva_verification_url,
             )
           end
+      end
+
+      def applicant_pii_with_state_id_address
+        if ipp_enrollment_in_progress?
+          with_state_id_address(applicant_pii)
+        else
+          applicant_pii
+        end
+      end
+
+      def applicant_pii_with_residential_address
+        applicant_pii
+      end
+
+      def add_sp_cost(token, transaction_id)
+        Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
       end
 
       # Make a copy of pii with the user's state ID address overwriting the address keys

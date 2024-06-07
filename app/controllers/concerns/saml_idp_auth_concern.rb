@@ -9,7 +9,6 @@ module SamlIdpAuthConcern
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :validate_and_create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
-    before_action :block_biometric_requests_in_production, only: :auth
     before_action :check_sp_active, only: :auth
     before_action :log_external_saml_auth_request, only: [:auth]
     # this must take place _before_ the store_saml_request action or the SAML
@@ -21,13 +20,6 @@ module SamlIdpAuthConcern
   end
 
   private
-
-  def block_biometric_requests_in_production
-    if @saml_request_validator.biometric_comparison_requested? &&
-       !FeatureManagement.idv_allow_selfie_check?
-      render_not_acceptable
-    end
-  end
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     if !saml_request.force_authn?
