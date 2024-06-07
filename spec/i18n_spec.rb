@@ -26,6 +26,7 @@ ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   'zh.idv.failure.exit.with_sp',
   'zh.in_person_proofing.body.barcode.return_to_partner_link',
   'zh.telephony.account_reset_notice',
+  'zh.telephony.confirmation_otp.voice',
   'zh.two_factor_authentication.account_reset.pending',
   'zh.user_mailer.account_reset_granted.intro_html',
   'zh.user_mailer.account_reset_request.header',
