@@ -4931,8 +4931,8 @@ module AnalyticsEvents
   # @param [Integer] requested_ial
   # @param [Boolean] request_signed
   # @param [String] matching_cert_serial
-  # @option extra [Boolean] encryption_cert_matches_matching_cert If the encryption certificate
-  # matches the request certificate
+  # @param [Boolean|nil] encryption_cert_matches_matching_cert If the encryption certificate
+  # matches the request certificate in a successful, signed request
   def saml_auth(
     success:,
     errors:,
@@ -4947,6 +4947,7 @@ module AnalyticsEvents
     requested_ial:,
     request_signed:,
     matching_cert_serial:,
+    encryption_cert_matches_matching_cert: nil,
     error_details: nil,
     **extra
   )
@@ -4966,6 +4967,7 @@ module AnalyticsEvents
       requested_ial:,
       request_signed:,
       matching_cert_serial:,
+      encryption_cert_matches_matching_cert:,
       **extra,
     )
   end
