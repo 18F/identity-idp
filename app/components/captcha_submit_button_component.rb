@@ -6,7 +6,7 @@ class CaptchaSubmitButtonComponent < BaseComponent
   alias_method :f, :form
 
   # @param [String] action https://developers.google.com/recaptcha/docs/v3#actions
-  def initialize(form:, action:, button_options:, **tag_options)
+  def initialize(form:, action:, button_options: {}, **tag_options)
     @form = form
     @action = action
     @button_options = button_options
