@@ -31,16 +31,21 @@ module Users
 
     def create
       session[:sign_in_flow] = :sign_in
-      return process_locked_out_session if session_bad_password_count_max_exceeded?
-      return process_locked_out_user if current_user && user_locked_out?(current_user)
-      return process_failed_captcha if !valid_captcha_result?
+
+      failure_reason = nil
+      failure_reason = process_locked_out_session if session_bad_password_count_max_exceeded?
+      failure_reason = process_locked_out_user if current_user && user_locked_out?(current_user)
+      failure_reason = process_failed_captcha if !valid_captcha_result?
+      return if failure_reason
 
       rate_limit_password_failure = true
+      failure_reason = :invalid_credentials
       self.resource = warden.authenticate!(auth_options)
+      failure_reason = nil
       handle_valid_authentication
     ensure
       increment_session_bad_password_count if rate_limit_password_failure && !current_user
-      track_authentication_attempt(auth_params[:email])
+      track_authentication_attempt(email: auth_params[:email], failure_reason:)
     end
 
     def destroy
@@ -76,6 +81,7 @@ module Users
       warden.lock!
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url
+      :locked_out_session
     end
 
     def valid_captcha_result?
@@ -92,6 +98,7 @@ module Users
       warden.logout(:user)
       warden.lock!
       redirect_to root_url
+      :recaptcha
     end
 
     def recaptcha_form_args
@@ -135,6 +142,7 @@ module Users
       )
       sign_out
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
+      :locked_out_user
     end
 
     def handle_valid_authentication
@@ -153,23 +161,18 @@ module Users
       redirect_to next_url_after_valid_authentication
     end
 
-    def track_authentication_attempt(email)
+    def track_authentication_attempt(email:, failure_reason:)
       user = User.find_with_email(email) || AnonymousUser.new
 
-      success = user_signed_in_and_not_locked_out?(user)
       analytics.email_and_password_auth(
-        success: success,
+        success: failure_reason.nil?,
         user_id: user.uuid,
-        user_locked_out: user_locked_out?(user),
+        user_locked_out: failure_reason == :locked_out_user,
+        recaptcha_success: failure_reason != :recaptcha,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
       )
-    end
-
-    def user_signed_in_and_not_locked_out?(user)
-      return false unless current_user
-      !user_locked_out?(user)
     end
 
     def user_locked_out?(user)

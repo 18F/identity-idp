@@ -53,6 +53,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          recaptcha_success: true,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: false,
@@ -123,6 +124,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        recaptcha_success: true,
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
@@ -142,6 +144,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        recaptcha_success: true,
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
@@ -173,6 +176,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: true,
+        recaptcha_success: true,
         bad_password_count: 0,
         sp_request_url_present: false,
         remember_device: false,
@@ -182,6 +186,28 @@ RSpec.describe Users::SessionsController, devise: true do
         with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
+    end
+
+    it 'tracks unsuccessful authentication for failed reCAPTCHA' do
+      user = create(:user, :fully_registered)
+
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+      stub_analytics
+
+      post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
+
+      expect(@analytics).to have_logged_event(
+        'Email and Password Authentication',
+        success: false,
+        user_id: user.uuid,
+        user_locked_out: false,
+        recaptcha_success: false,
+        bad_password_count: 0,
+        remember_device: false,
+        sp_request_url_present: false,
+      )
     end
 
     it 'tracks count of multiple unsuccessful authentication attempts' do
@@ -196,6 +222,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        recaptcha_success: true,
         bad_password_count: 2,
         sp_request_url_present: false,
         remember_device: false,
@@ -214,6 +241,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        recaptcha_success: true,
         bad_password_count: 1,
         sp_request_url_present: true,
         remember_device: false,
@@ -384,6 +412,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          recaptcha_success: true,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: false,
@@ -510,6 +539,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          recaptcha_success: true,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: true,
@@ -535,6 +565,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          recaptcha_success: true,
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: true,
