@@ -7,7 +7,7 @@ class SignInRecaptchaForm
 
   attr_reader :form_class, :form_args, :email, :recaptcha_token, :device_cookie
 
-  validate :validate_device_cookie
+  validate :validate_recaptcha_result
 
   def initialize(form_class: RecaptchaForm, **form_args)
     @form_class = form_class
@@ -25,24 +25,26 @@ class SignInRecaptchaForm
 
   private
 
-  def validate_device_cookie
-    return if exempt?
+  def validate_recaptcha_result
     recaptcha_response, _assessment_id = recaptcha_form.submit(recaptcha_token)
-    return if recaptcha_response.success?
-    errors.merge!(recaptcha_form)
-  end
-
-  def exempt?
-    device.present?
+    errors.merge!(recaptcha_form) if !recaptcha_response.success?
   end
 
   def device
     User.find_with_confirmed_email(email)&.devices&.find_by(cookie_uuid: device_cookie)
   end
 
+  def score_threshold
+    if device.present?
+      0.0
+    else
+      IdentityConfig.store.sign_in_recaptcha_score_threshold
+    end
+  end
+
   def recaptcha_form
     @recaptcha_form ||= form_class.new(
-      score_threshold: IdentityConfig.store.sign_in_recaptcha_score_threshold,
+      score_threshold:,
       recaptcha_action: RECAPTCHA_ACTION,
       **form_args,
     )
