@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'proofing components' do
+RSpec.describe 'proofing components', allowed_extra_analytics: [:*] do
   include DocAuthHelper
   include IdvHelper
   include SamlAuthHelper

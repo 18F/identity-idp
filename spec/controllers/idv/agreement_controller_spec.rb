@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::AgreementController do
+RSpec.describe Idv::AgreementController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }

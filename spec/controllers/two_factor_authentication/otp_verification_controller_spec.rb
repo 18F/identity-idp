@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::OtpVerificationController do
+RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra_analytics: [:*] do
   describe '#show' do
     context 'when resource is not fully authenticated yet' do
       before do

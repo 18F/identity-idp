@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ImageUploadsController do
+RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
   include DocPiiHelper
 
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }

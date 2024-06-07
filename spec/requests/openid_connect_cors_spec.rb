@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'CORS headers for OpenID Connect endpoints' do
+RSpec.describe 'CORS headers for OpenID Connect endpoints', allowed_extra_analytics: [:*] do
   before { Rails.cache.clear }
   after { Rails.cache.clear }
 

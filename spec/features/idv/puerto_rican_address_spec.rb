@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'proofing flow with a Puerto Rican document', :js do
+RSpec.describe 'proofing flow with a Puerto Rican document', :js, allowed_extra_analytics: [:*] do
   include DocAuthHelper
   include IdvStepHelper
 

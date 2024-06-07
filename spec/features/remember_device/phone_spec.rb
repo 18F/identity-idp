@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Remembering a phone' do
+RSpec.feature 'Remembering a phone', allowed_extra_analytics: [:*] do
   include IdvStepHelper
 
   before do

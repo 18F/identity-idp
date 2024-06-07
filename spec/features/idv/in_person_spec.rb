@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.describe 'In Person Proofing', js: true do
+RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include SpAuthHelper
   include InPersonHelper

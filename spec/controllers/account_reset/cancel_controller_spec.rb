@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AccountReset::CancelController do
+RSpec.describe AccountReset::CancelController, allowed_extra_analytics: [:*] do
   include AccountResetHelper
 
   let(:user) { create(:user, :fully_registered) }

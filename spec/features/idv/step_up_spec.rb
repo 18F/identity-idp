@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'IdV step up flow' do
+RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include InPersonHelper
 

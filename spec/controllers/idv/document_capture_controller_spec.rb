@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::DocumentCaptureController do
+RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:document_capture_session_requested_at) { Time.zone.now }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'View personal key' do
+RSpec.feature 'View personal key', allowed_extra_analytics: [:*] do
   include XPathHelper
   include PersonalKeyHelper
   include SamlAuthHelper

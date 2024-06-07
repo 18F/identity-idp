@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'OIDC requests using VTR' do
+RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
   include OidcAuthHelper
   include IdvHelper
   include WebAuthnHelper

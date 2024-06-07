@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ApiImageUploadForm do
+RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   include DocPiiHelper
 
   subject(:form) do

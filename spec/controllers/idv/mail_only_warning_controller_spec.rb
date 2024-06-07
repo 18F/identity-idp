@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::MailOnlyWarningController do
+RSpec.describe Idv::MailOnlyWarningController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   before do

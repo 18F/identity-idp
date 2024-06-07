@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'dev rake tasks' do
+RSpec.describe 'dev rake tasks', allowed_extra_analytics: [:*] do
   include UspsIppHelper
 
   let(:env) do

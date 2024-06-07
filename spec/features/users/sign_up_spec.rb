@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign Up' do
+RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include OidcAuthHelper
   include DocAuthHelper

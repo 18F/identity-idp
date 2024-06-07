@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'adding email address' do
+RSpec.feature 'adding email address', allowed_extra_analytics: [:*] do
   let(:email) { 'test@test.com' }
 
   it 'allows the user to add an email and confirm with an active session' do
