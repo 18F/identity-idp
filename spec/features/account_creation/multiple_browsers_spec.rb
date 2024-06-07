@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'account creation across multiple browsers', allowed_extra_analytics: [:*] do
+RSpec.feature 'account creation across multiple browsers' do
   include SpAuthHelper
   include SamlAuthHelper
   include OidcAuthHelper
