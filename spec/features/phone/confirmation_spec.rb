@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'phone otp confirmation', allowed_extra_analytics: [:*] do
+RSpec.describe 'phone otp confirmation' do
   let(:phone) { '2025551234' }
   let(:formatted_phone) { PhoneFormatter.format(phone) }
 

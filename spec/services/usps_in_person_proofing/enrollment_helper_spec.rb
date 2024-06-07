@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: [:*] do
+RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   include UspsIppHelper
 
   let(:usps_mock_fallback) { false }

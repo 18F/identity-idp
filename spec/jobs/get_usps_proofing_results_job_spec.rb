@@ -175,7 +175,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
   end
 end
 
-RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
+RSpec.describe GetUspsProofingResultsJob do
   include UspsIppHelper
   include ApproximatingHelper
 

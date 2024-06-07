@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'doc auth IPP state ID step', js: true, allowed_extra_analytics: [:*] do
+RSpec.describe 'doc auth IPP state ID step', js: true do
   include IdvStepHelper
   include InPersonHelper
 

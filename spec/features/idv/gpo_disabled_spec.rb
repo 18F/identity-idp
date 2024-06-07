@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'disabling GPO address verification', allowed_extra_analytics: [:*] do
+RSpec.feature 'disabling GPO address verification' do
   include IdvStepHelper
 
   context 'with GPO address verification disabled' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::WebauthnSetupController do
   include WebAuthnHelper
   include UserAgentHelper
 

@@ -589,7 +589,7 @@ RSpec.describe FakeAnalytics do
       )
     end
 
-    it 'does not error when undocumented params are allowed via *', allowed_extra_analytics: [:*] do
+    it 'does not error when undocumented params are allowed via *' do
       analytics.idv_phone_confirmation_otp_submitted(
         success: true,
         errors: true,

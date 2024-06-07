@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Sign in with multiple vectors of trust', allowed_extra_analytics: [:*] do
+RSpec.feature 'Sign in with multiple vectors of trust' do
   include SamlAuthHelper
   include OidcAuthHelper
   include IdvHelper

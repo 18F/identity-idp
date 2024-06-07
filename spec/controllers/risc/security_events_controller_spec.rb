@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Risc::SecurityEventsController, allowed_extra_analytics: [:*] do
+RSpec.describe Risc::SecurityEventsController do
   include Rails.application.routes.url_helpers
 
   let(:user) { create(:user) }

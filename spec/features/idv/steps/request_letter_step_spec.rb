@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
+RSpec.feature 'idv request letter step' do
   include IdvStepHelper
   include OidcAuthHelper
 

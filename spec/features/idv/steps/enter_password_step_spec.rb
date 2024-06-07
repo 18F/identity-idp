@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv enter password step', :js, allowed_extra_analytics: [:*] do
+RSpec.feature 'idv enter password step', :js do
   include IdvStepHelper
 
   context 'choosing to confirm address with gpo' do

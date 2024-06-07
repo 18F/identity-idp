@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'welcome step', allowed_extra_analytics: [:*] do
+RSpec.feature 'welcome step' do
   include IdvHelper
   include DocAuthHelper
 
