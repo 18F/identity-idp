@@ -1047,7 +1047,7 @@ idv.failure.sessions.fail_html: 为了你的安全，我们限制你在网上尝
 idv.failure.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.failure.sessions.warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
 idv.failure.setup.fail_date_html: 请给我们的联系中心在<strong>%{date_html}</strong> 之前打电话以继续验证你的身份。
-idv.failure.setup.fail_html: Call <strong>%{contact_number}</strong> and provide them with the error <br/>code <strong>%{support_code}</strong>.
+idv.failure.setup.fail_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 <br/>代码 <strong>%{support_code}</strong>。
 idv.failure.setup.heading: 请给我们打个电话
 idv.failure.timeout: 目前处理你请求的时间超出正常等待时间。请再试一次。
 idv.failure.verify.exit: Exit %{app_name}
@@ -1803,7 +1803,7 @@ user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮�
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-user_mailer.in_person_please_call.body.contact_message_html: 请拨打 <strong>%{contact_number}</strong> 向他们提供错误信息 代码 <strong>%{support_code}</strong>。
+user_mailer.in_person_please_call.body.contact_message_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 代码 <strong>%{support_code}</strong>。
 user_mailer.in_person_please_call.body.intro_html: 请在 <strong>%{date}</strong> 之前给我们的联系中心打电话，以继续验证你的身份。
 user_mailer.in_person_please_call.header: 请给我们打个电话
 user_mailer.in_person_please_call.subject: 致电 %{app_name} 继续进行身份验证
