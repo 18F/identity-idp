@@ -121,8 +121,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
       expect(fake_analytics).to have_logged_event(
         'Multi-Factor Authentication Setup',
         success: true,
-        errors: nil,
-        error_details: nil,
         multi_factor_auth_method: 'backup_codes',
         in_account_creation_flow: true,
         enabled_mfa_methods_count: 2,

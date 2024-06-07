@@ -3766,13 +3766,22 @@ module AnalyticsEvents
   # Tracks when the the user has added the MFA method phone to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
-  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, recaptcha_annotation:, **extra)
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  # @param ['phone'] method_name Authentication method added
+  def multi_factor_auth_added_phone(
+    enabled_mfa_methods_count:,
+    recaptcha_annotation:,
+    in_account_creation_flow:,
+    method_name: :phone,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication: Added phone',
       {
-        method_name: :phone,
+        method_name:,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         recaptcha_annotation:,
+        in_account_creation_flow:,
         **extra,
       }.compact,
     )
@@ -3798,12 +3807,17 @@ module AnalyticsEvents
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
-                                   **extra)
+  # @param ['totp'] method_name Authentication method added
+  def multi_factor_auth_added_totp(
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
+    method_name: :totp,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication: Added TOTP',
       {
-        method_name: :totp,
+        method_name:,
         in_account_creation_flow:,
         enabled_mfa_methods_count:,
         **extra,
@@ -3995,6 +4009,16 @@ module AnalyticsEvents
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
   # @param [integer] enabled_mfa_methods_count
+  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
+  # @param ['authentication','reauthentication','confirmation'] context User session context
+  # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
+  # @param [String] area_code Area code of phone number
+  # @param [String] country_code Country code associated with phone number
+  # @param [String] phone_fingerprint The hmac fingerprint of the phone number formatted as e164
+  # @param [Integer] phone_configuration_id Database ID of phone configuration
+  # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
+  # @param [Boolean] totp_secret_present Whether TOTP secret was present in form validation
+  # @param [Boolean] new_device Whether the user is authenticating from a new device
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -4002,17 +4026,39 @@ module AnalyticsEvents
     in_account_creation_flow:,
     errors: nil,
     error_details: nil,
+    multi_factor_auth_method_created_at: nil,
+    context: nil,
+    confirmation_for_add_phone: nil,
+    area_code: nil,
+    country_code: nil,
+    phone_fingerprint: nil,
+    phone_configuration_id: nil,
+    totp_secret_present: nil,
+    auth_app_configuration_id: nil,
+    new_device: nil,
     **extra
   )
     track_event(
       'Multi-Factor Authentication Setup',
-      success:,
-      errors:,
-      error_details:,
-      multi_factor_auth_method:,
-      in_account_creation_flow:,
-      enabled_mfa_methods_count:,
-      **extra,
+      {
+        success:,
+        errors:,
+        error_details:,
+        multi_factor_auth_method:,
+        in_account_creation_flow:,
+        enabled_mfa_methods_count:,
+        multi_factor_auth_method_created_at:,
+        context:,
+        confirmation_for_add_phone:,
+        area_code:,
+        country_code:,
+        phone_fingerprint:,
+        phone_configuration_id:,
+        totp_secret_present:,
+        auth_app_configuration_id:,
+        new_device:,
+        **extra,
+      }.compact,
     )
   end
 

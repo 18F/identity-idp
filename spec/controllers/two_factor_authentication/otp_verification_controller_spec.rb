@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::OtpVerificationController do
   describe '#show' do
     context 'when resource is not fully authenticated yet' do
       before do
@@ -466,10 +466,19 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
             phone_configuration_created_at = controller.current_user.
               default_phone_configuration.created_at
 
-            properties = {
+            controller.user_session[:phone_id] = phone_id
+
+            post(
+              :create,
+              params: {
+                code: subject.current_user.direct_otp,
+                otp_delivery_preference: 'sms',
+              },
+            )
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
               success: true,
-              errors: nil,
-              error_details: nil,
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
@@ -481,19 +490,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
-            }
-
-            controller.user_session[:phone_id] = phone_id
-
-            post(
-              :create,
-              params: {
-                code: subject.current_user.direct_otp,
-                otp_delivery_preference: 'sms',
-              },
             )
-
-            expect(@analytics).to have_logged_event('Multi-Factor Authentication Setup', properties)
           end
 
           it 'resets otp session data' do
@@ -547,27 +544,23 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
           end
 
           it 'tracks an event' do
-            phone_configuration_created_at = controller.current_user.
-              default_phone_configuration.created_at
-
-            properties = {
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
               success: false,
-              errors: nil,
               error_details: { code: { wrong_length: true, incorrect: true } },
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               phone_configuration_id: controller.current_user.default_phone_configuration.id,
-              multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
+              multi_factor_auth_method_created_at: controller.current_user.
+                default_phone_configuration.created_at.strftime('%s%L'),
               new_device: true,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: false,
-            }
-
-            expect(@analytics).to have_logged_event('Multi-Factor Authentication Setup', properties)
+            )
           end
 
           context 'user enters in valid code after invalid entry' do
@@ -618,26 +611,22 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController, allowed_extra
 
           it 'tracks the confirmation event' do
             parsed_phone = Phonelib.parse('+1 (703) 555-5555')
-            properties = {
+
+            response
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
               success: true,
-              errors: nil,
-              error_details: nil,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
-              multi_factor_auth_method_created_at: nil,
               new_device: true,
               confirmation_for_add_phone: false,
-              phone_configuration_id: nil,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
               in_account_creation_flow: false,
-            }
-
-            response
-
-            expect(@analytics).to have_logged_event('Multi-Factor Authentication Setup', properties)
+            )
 
             expect(controller).to have_received(:create_user_event).with(:phone_confirmed)
             expect(controller).to have_received(:create_user_event).exactly(:once)
