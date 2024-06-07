@@ -99,7 +99,7 @@ class WebauthnSetupForm
 
   def validate_attestation_response
     return if valid_attestation_response?(protocol)
-    errors.add :name, :attestation_error, message: general_error_message
+    errors.add(:attestation_object, :invalid, message: general_error_message)
   end
 
   def valid_attestation_response?(protocol)

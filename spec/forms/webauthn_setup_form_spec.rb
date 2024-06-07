@@ -172,11 +172,15 @@ RSpec.describe WebauthnSetupForm do
 
         expect(subject.submit(params).to_h).to eq(
           success: false,
-          errors: { name: [I18n.t(
-            'errors.webauthn_setup.general_error_html',
-            link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
-          )] },
-          error_details: { name: { attestation_error: true } },
+          errors: {
+            attestation_object: [
+              I18n.t(
+                'errors.webauthn_setup.general_error_html',
+                link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+              ),
+            ],
+          },
+          error_details: { attestation_object: { invalid: true } },
           **extra_attributes,
         )
       end
@@ -217,11 +221,15 @@ RSpec.describe WebauthnSetupForm do
 
         expect(subject.submit(params).to_h).to eq(
           success: false,
-          errors: { name: [I18n.t(
-            'errors.webauthn_setup.general_error_html',
-            link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
-          )] },
-          error_details: { name: { attestation_error: true } },
+          errors: {
+            attestation_object: [
+              I18n.t(
+                'errors.webauthn_setup.general_error_html',
+                link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+              ),
+            ],
+          },
+          error_details: { attestation_object: { invalid: true } },
           **extra_attributes,
         )
       end
