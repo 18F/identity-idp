@@ -58,25 +58,26 @@ module I18n
       # List of keys allowed to be untranslated or are the same as English
       # rubocop:disable Layout/LineLength
       ALLOWED_UNTRANSLATED_KEYS = [
-        { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
-        { key: /^countries/ }, # Some countries have the same name across languages
-        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
-        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
-        { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'i18n.locale.en', locales: %i[es fr zh] },
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
+        { key: /^countries/ }, # Some countries have the same name across languages
+        { key: 'date.formats.long', locales: %i[es zh] },
+        { key: 'date.formats.short', locales: %i[es zh] },
+        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
+        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
+        { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
+        { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
-        { key: 'time.formats.sms_date' }, # for us date format
-        { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
-        { key: 'date.formats.long', locales: %i[es zh] },
-        { key: 'date.formats.short', locales: %i[es zh] },
         { key: 'time.formats.event_date', locales: %i[es zh] },
         { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
+        { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
+        { key: 'time.formats.sms_date' }, # for us date format
         # need to be fixed
         { key: 'account.email_language.name.zh', locales: %i[es fr] },
         { key: 'account_reset.pending.canceled', locales: %i[zh] },

@@ -1171,6 +1171,7 @@ in_person_proofing.body.barcode.retail_hours: Heures d’ouverture
 in_person_proofing.body.barcode.retail_hours_closed: Fermé
 in_person_proofing.body.barcode.return_to_partner_html: Vous pouvez maintenant %{link_html} afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez accéder jusqu’à ce que votre identité ait été vérifiée.
 in_person_proofing.body.barcode.return_to_partner_link: vous déconnecter et retourner à %{sp_name}
+in_person_proofing.body.barcode.what_to_bring: 'Selon le type de pièce d’identité ou de permis de conduire dont vous disposez, il pourra vous être demandé de produire des documents complémentaires. Étudiez attentivement les options suivantes:'
 in_person_proofing.body.barcode.what_to_expect: À quoi s’attendre au bureau de poste
 in_person_proofing.body.cta.button: Essayer en personne
 in_person_proofing.body.cta.prompt_detail: Vous pourrez peut-être confirmer votre identité dans un bureau de poste participant près de chez vous.
@@ -1252,6 +1253,8 @@ in_person_proofing.form.state_id.state_id_number_texas_hint: Il s’agit du num�
 in_person_proofing.form.state_id.zipcode: Code postal
 in_person_proofing.headings.address: Saisissez votre adresse résidentielle actuelle
 in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d’identité délivrée par l’État à un bureau de poste pour terminer la vérification de votre identité
+in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les documents complémentaires à un bureau de poste pour terminer la vérification de votre identité
+in_person_proofing.headings.barcode_what_to_bring: À apporter au bureau de poste
 in_person_proofing.headings.cta: Essayez de confirmer votre identité en personne
 in_person_proofing.headings.id_address: Adresse sur votre pièce d’identité
 in_person_proofing.headings.po_search.location: Trouvez un bureau de poste participant
@@ -1263,8 +1266,32 @@ in_person_proofing.headings.update_state_id: Mettez à jour les informations fig
 in_person_proofing.process.barcode.caption_label: Code d’inscription
 in_person_proofing.process.barcode.heading: Montrez votre code-barres %{app_name}
 in_person_proofing.process.barcode.info: Le préposé doit scanner votre code-barres en haut de cette page. Vous pouvez imprimer cette page ou la montrer sur votre appareil mobile.
+in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Apporter une pièce d’identité Real ID'
+in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
+in_person_proofing.process.eipp_bring_id.info: Si vous présentez une carte d’identité ou un permis de conduire d’un État de type Real ID, vous n’avez pas besoin de présenter des documents complémentaires.
+in_person_proofing.process.eipp_state_id_military_id.heading: B. Pièce d’identité d’un État + carte d’identité militaire
+in_person_proofing.process.eipp_state_id_military_id.image_alt_text: Pièce d’identité d’un État et carte d’identité militaire
+in_person_proofing.process.eipp_state_id_military_id.info: Présentez une pièce d’identité ou un permis de conduire d’État accompagné d’une carte d’identité militaire.
+in_person_proofing.process.eipp_state_id_passport.heading: A. Pièce d’identité d’un État + passeport
+in_person_proofing.process.eipp_state_id_passport.image_alt_text: Pièce d’identité d’un État et passeport
+in_person_proofing.process.eipp_state_id_passport.info: Présentez une pièce d’identité ou un permis de conduire d’État accompagné d’un passeport ou d’une carte-passeport.
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. Pièce d’identité d’État + deux documents complémentaires
+in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: Pièce d’identité d’État et deux documents complémentaires
+in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Présentez une pièce d’identité ou un permis de conduire d’État ainsi que deux documents complémentaires parmi ceux qui figurent sur la liste suivante:'
+in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
+  - Bail locatif
+  - Contrat d’emprunt immobilier
+  - Acte fiduciaire
+  - Carte d’électeur
+  - Carte d’immatriculation d’un véhicule
+  - Attestation d’assurance habitation
+  - Attestation d’assurance automobile/deux roues
+in_person_proofing.process.eipp_what_to_bring.heading: 'Option 2: Apporter une carte d’identité ou un permis de conduire d’un État standard ainsi que des documents complémentaires'
+in_person_proofing.process.eipp_what_to_bring.info: 'Vous pouvez présenter votre carte d’identité ou permis de conduire d’État ainsi que des documents complémentaires parmi les options A, B et C ci-dessous. UNE seule option doit être choisie:'
 in_person_proofing.process.state_id.heading: Présentez votre permis de conduire ou votre carte d’identité de l’État
+in_person_proofing.process.state_id.heading_eipp: Présenter votre pièce d’identité et les documents complémentaires
 in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
+in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de carte d’identité ou de permis de conduire que vous présentez, il pourra être nécessaire de présenter des documents complémentaires. Vous trouverez les impératifs à respecter dans la section À apporter au bureau de poste.
 in_person_proofing.process.what_to_do.heading: Faites la queue
 in_person_proofing.process.what_to_do.info: Dites au préposé du bureau de poste que vous êtes là pour confirmer votre identité auprès de %{app_name}.
 instructions.account.reactivate.begin: Commençons.
