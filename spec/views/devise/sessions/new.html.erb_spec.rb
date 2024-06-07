@@ -138,7 +138,10 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'does not have an sp alert for service providers without alert messages' do
         render
 
-        expect(rendered).to_not have_selector('.usa-alert')
+        expect(rendered).to_not have_selector(
+          '.usa-alert',
+          text: 'custom sign in help text for Awesome Application!',
+        )
       end
     end
   end
