@@ -12,7 +12,9 @@ Rails.application.routes.draw do
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
-  post '/api/socure/webhook' => 'socure_webhook#create'
+  unless IdentityConfig.store.socure_webhook_secret_key.blank?
+    post '/api/socure/webhook' => 'socure_webhook#create'
+  end
 
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
   match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options

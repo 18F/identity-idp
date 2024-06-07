@@ -310,6 +310,7 @@ short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 socure_document_endpoint: ''
 socure_id_secret_key: ''
+socure_webhook_secret_key: ''
 sp_handoff_bounce_max_seconds: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
