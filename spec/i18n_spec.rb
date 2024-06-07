@@ -72,7 +72,7 @@ module I18n
         { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
-        { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish        
+        { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'time.formats.event_date', locales: %i[es zh] },
         { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
