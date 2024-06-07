@@ -623,7 +623,7 @@ doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
 doc_auth.info.selfie_capture_status.face_too_small: Rostro demasiado pequeño
 doc_auth.info.selfie_capture_status.too_many_faces: Demasiados rostros
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
-doc_auth.info.stepping_up_html: Verifique su identidad de nuevo para acceder a este servicio. %{link_html}
+doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
 doc_auth.info.tag: Recomendado
 doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora.'
 doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
