@@ -1669,7 +1669,7 @@ two_factor_authentication.piv_cac_header_text: 提供你的 PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
 two_factor_authentication.piv_cac_upsell.existing_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这将大大增强你账户的安全性。
-two_factor_authentication.piv_cac_upsell.new_user_info: 由于你使用的是  %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这为你的帐户增加了另一层安全保障。
+two_factor_authentication.piv_cac_upsell.new_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这为你的帐户增加了另一层安全保障。
 two_factor_authentication.piv_cac_upsell.skip: 跳过
 two_factor_authentication.piv_cac.change_nickname: 更改昵称
 two_factor_authentication.piv_cac.delete: 删除此方法
