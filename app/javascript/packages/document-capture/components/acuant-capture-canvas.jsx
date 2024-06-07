@@ -13,16 +13,13 @@ import AcuantContext from '../context/acuant';
  * @param {(nextValue: any) => void} onChangeCallback Callback to trigger on change.
  */
 export function defineObservableProperty(object, property, onChangeCallback) {
-  console.log('      defineObservableProperty');
   let currentValue;
 
   Object.defineProperty(object, property, {
     get() {
-      console.log('        get');
       return currentValue;
     },
     set(nextValue) {
-      console.log('        set');
       currentValue = nextValue;
       onChangeCallback(nextValue);
     },
@@ -39,7 +36,6 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  * @param {any} originalDescriptor The descriptor to reset the property with.
  */
 export function resetObservableProperty(object, property, originalDescriptor) {
-  console.log('      resetObservableProperty');
   if (originalDescriptor !== undefined) {
     Object.defineProperty(object, property, originalDescriptor);
   } else {
@@ -48,28 +44,23 @@ export function resetObservableProperty(object, property, originalDescriptor) {
 }
 
 function AcuantCaptureCanvas() {
-  console.log('AcuantCaptureCanvas');
   const { isReady, acuantCaptureMode, setAcuantCaptureMode } = useContext(AcuantContext);
   const { t } = useI18n();
   const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
 
   useEffect(() => {
-    console.log('  useEffect');
     let canvas;
     let originalDescriptor;
 
     function onAcuantCameraCreated() {
-      console.log('    onAcuantCameraCreated');
       canvas = document.getElementById('acuant-ui-canvas');
       if (originalDescriptor === undefined) {
         originalDescriptor = Object.getOwnPropertyDescriptor(canvas, 'callback');
       }
-      console.log('    - originalDescriptor: ', originalDescriptor);
 
       // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
       // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
       defineObservableProperty(canvas, 'callback', (callback) => {
-        console.log('          callback');
         setAcuantCaptureMode(callback ? 'TAP' : 'AUTO');
       });
     }
