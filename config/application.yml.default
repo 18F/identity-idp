@@ -221,7 +221,6 @@ short_term_phone_otp_max_attempts: 2
 phone_confirmation_max_attempts: 20
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
-phone_recaptcha_mock_validator: true
 phone_recaptcha_score_threshold: 0.0
 phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0,"CA":0.0,"MX":0.0}'
 phone_setups_per_ip_limit: 25
@@ -252,6 +251,7 @@ raise_on_missing_title: false
 reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
+recaptcha_mock_validator: true
 recaptcha_site_key: ''
 recaptcha_secret_key: ''
 recovery_code_length: 4
@@ -481,13 +481,10 @@ production:
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
   password_pepper:
-  phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
-  session_encryptor_alert_enabled: true
+  recaptcha_mock_validator: false
   redis_throttle_url: redis://10.1.97.3:6379/1 # cloudRun
   redis_url: redis://10.1.97.3:6379 # cloudRun
-  # redis_throttle_url: redis://host.docker.internal:6379/1 # local
-  # redis_url: redis://host.docker.internal:6379 # local
   report_timeout: 1_000_000
   ruby_workers_idv_enabled: false
   s3_report_bucket_prefix: login-gov.reports
@@ -498,6 +495,7 @@ production:
   secret_key_base:
   seed_agreements_data: false
   session_encryption_key:
+  session_encryptor_alert_enabled: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
