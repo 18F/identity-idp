@@ -17,7 +17,7 @@ fr:
         %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour ! Votre code de %{format_length} %{format_type} à usage unique est %{code}. Votre code à usage unique est %{code}. À nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
+      voice: Bonjour ! Votre code de %{format_length} %{format_type} à usage unique pour %{app_name} est %{code}. Votre code à usage unique est %{code}. À nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
     doc_auth_link: "%{app_name} : %{link} Vous êtes en train de confirmer votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer."
     error:
       friendly_message:
