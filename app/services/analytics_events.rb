@@ -1137,6 +1137,13 @@ module AnalyticsEvents
     )
   end
 
+  def socure_webhook(text)
+    track_event(
+      'Socure webhook text',
+      text: text,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
