@@ -6,24 +6,20 @@ class SocureWebhookController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    # form = SecurityEventForm.new(body: request.body.read)
-    # result = form.submit
+    # log webhook received referenceID, customerUserId, ...
+    webhook = SocureWebhook.new(parsed_response_body)
+    webhook.handle_event
+  ensure
+    head :ok
+  end
 
-    # analytics.security_event_received(**result.to_h)
+  private
 
-    # body = request.body.read
-    # params = request.params
-    # headers = request.headers
-
-    # analytics.socure_webhook(text: { body: body, params: params, header: headers})
-    # if result.success?
-      head :ok
-    # else
-    #   render status: :bad_request,
-    #           json: {
-    #             err: form.error_code,
-    #             description: form.description,
-    #           }
-    # end
+  def parsed_response_body
+    begin
+      JSON.parse(request.body.read)
+    rescue JSON::JSONError
+      raise 'failed to parse Socure webhook body'
+    end
   end
 end
