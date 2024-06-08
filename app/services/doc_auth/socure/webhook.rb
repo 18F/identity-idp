@@ -10,28 +10,35 @@ module DocAuth
       # validate :validate_payload # agains socure key
 
       def initialize(payload)
-        @payload = payload # webhook_event('VERIFICATION_COMPLETED') ||
-        @document_capture_session_uuid = DocumentCaptureSession.first&.uuid # @event['customerUserId']
+        @payload = payload # webhook_event('VERIFICATION_COMPLETED')
+        @document_capture_session_uuid =  event['customerUserId'] # DocumentCaptureSession.first&.uuid
       end
 
       def handle_event
         # validate_payload
 
-        event = payload&.dig('event')
-        case event&.dig('eventType')
+        case event_type
         when 'VERIFICATION_COMPLETED'
-          complete_verification(event)
+          complete_verification
         end
       end
 
       private
+
+      def event
+        payload&.dig('event')
+      end
+
+      def event_type
+        event&.dig('eventType')
+      end
 
       def validate_payload
         # socure_webhook_secret_key = IdentityConfig.store.socure_webhook_secret_key
         # raise 'Socure webhook key not configured' if socure_webhook_secret_key.blank?
       end
 
-      def complete_verification(event)
+      def complete_verification
         return unless document_capture_session
 
         doc_auth_response = Responses::Verification.new(event)
@@ -63,7 +70,6 @@ module DocAuth
 
       def webhook_event(event_type)
         # webhook_events.find { |t| t.dig('event', 'eventType') == event_type }
-        {}
       end
     end
   end
