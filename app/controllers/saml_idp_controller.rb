@@ -132,7 +132,23 @@ class SamlIdpController < ApplicationController
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
       requested_nameid_format: saml_request.name_id_format,
     )
+
+    if result.success? && saml_request.signed?
+      # Logging to indicate if a validation bug fix will create a potentially breaking change
+      analytics_payload[:encryption_cert_matches_matching_cert] =
+        encryption_cert_matches_matching_cert?
+    end
+
     analytics.saml_auth(**analytics_payload)
+  end
+
+  def matching_cert
+    saml_request.matching_cert
+  rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
+  end
+
+  def encryption_cert_matches_matching_cert?
+    matching_cert == encryption_cert
   end
 
   def log_external_saml_auth_request
