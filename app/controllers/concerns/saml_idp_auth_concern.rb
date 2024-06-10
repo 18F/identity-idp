@@ -195,14 +195,17 @@ module SamlIdpAuthConcern
        saml_request_service_provider&.skip_encryption_allowed
       nil
     elsif saml_request_service_provider&.encrypt_responses?
-      cert = saml_request.service_provider.matching_cert ||
-             saml_request_service_provider&.ssl_certs&.first
       {
-        cert: cert,
+        cert: encryption_cert,
         block_encryption: saml_request_service_provider&.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }
     end
+  end
+
+  def encryption_cert
+    saml_request.service_provider.matching_cert ||
+      saml_request_service_provider&.ssl_certs&.first
   end
 
   def saml_response_signature_options
