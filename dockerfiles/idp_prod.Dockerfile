@@ -159,7 +159,8 @@ RUN echo "{\"branch\":\"$ARG_CI_COMMIT_BRANCH\",\"git_sha\":\"$ARG_CI_COMMIT_SHA
 RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
     -keyout $RAILS_ROOT/keys/localhost.key \
     -out $RAILS_ROOT/keys/localhost.crt \
-    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
+    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost" && \
+    chmod 644 $RAILS_ROOT/keys/localhost.key $RAILS_ROOT/keys/localhost.crt
 
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
