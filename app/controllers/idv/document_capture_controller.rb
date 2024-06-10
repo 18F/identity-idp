@@ -50,7 +50,7 @@ module Idv
 
       doc_req = DocAuth::Socure::Requests::DocumentRequest.new(
         document_capture_session_uuid: document_capture_session_uuid,
-        redirect_url: idv_document_capture_url, # to be updated ssn?
+        redirect_url: idv_document_capture_socure_redirect_url, # to be updated ssn?
       )
       doc_resp = doc_req.fetch
 
@@ -60,7 +60,27 @@ module Idv
       @qr_code = nil
 
       # if redirect_to @url if mobile && @url.present?
+    end
 
+    def socure_redirect
+      clear_future_steps!
+      idv_session.redo_document_capture = nil # done with this redo
+      # Not used in standard flow, here for data consistency with hybrid flow.
+      document_capture_session.confirm_ocr
+
+      result = handle_stored_result
+      analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
+
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('document_capture', :update, true)
+
+      cancel_establishing_in_person_enrollments
+
+      if result.success?
+        redirect_to idv_ssn_url
+      else
+        redirect_to idv_document_capture_socure_url
+      end
     end
 
     def extra_view_variables
