@@ -35,6 +35,14 @@ ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   'zh.user_mailer.new_device_sign_in.info',
 ].sort.freeze
 
+PUNCTUATION_PAIRS = {
+  '{' => '}',
+  '[' => ']',
+  '(' => ')',
+  '<' => '>',
+  '（' => '）',
+}.freeze
+
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
 # solution based on current content, intended to help prevent accidents when adding new translated
 # content. If you are having issues with new content, it would be reasonable to remove or modify
@@ -182,6 +190,28 @@ RSpec.describe 'I18n' do
   let(:untranslated_keys) { i18n.untranslated_keys }
   let(:leading_or_trailing_whitespace_keys) do
     i18n.leading_or_trailing_whitespace_keys
+  end
+
+  it 'has matching pairs of punctuation' do
+    mismatched_punctuation_pairs = {}
+    i18n.locales.each do |locale|
+      i18n.data[locale].key_values.each do |key, value|
+        PUNCTUATION_PAIRS.each do |item1, item2|
+          Array(value).each do |value|
+            next if value.nil?
+            if value.count(item1) != value.count(item2)
+              mismatched_punctuation_pairs["#{locale}.#{key}"] ||= []
+              mismatched_punctuation_pairs["#{locale}.#{key}"].push("#{item1} #{item2}")
+            end
+          end
+        end
+      end
+    end
+
+    expect(mismatched_punctuation_pairs).to(
+      be_empty,
+      "keys with mismatched punctuation pairs: #{mismatched_punctuation_pairs.pretty_inspect}",
+    )
   end
 
   it 'does not have missing keys' do
