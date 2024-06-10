@@ -621,6 +621,7 @@ Lint/UnusedMethodArgument:
 
 Lint/UnusedBlockArgument:
   Enabled: true
+  AllowUnusedKeywordArguments: true
 
 Lint/UriEscapeUnescape:
   Enabled: true
