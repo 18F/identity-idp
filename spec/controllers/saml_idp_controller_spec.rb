@@ -1438,7 +1438,7 @@ RSpec.describe SamlIdpController do
       let(:authn_requests_signed) { false }
       let(:encryption_cert_matches_matching_cert) { nil }
       let(:matching_cert_serial) { nil }
-      let(:service_provider) { ServiceProvider.find_by(issuer: auth_settings.issuer)}
+      let(:service_provider) { ServiceProvider.find_by(issuer: auth_settings.issuer) }
       let(:user) { create(:user, :fully_registered) }
 
       let(:auth_settings) do
@@ -1480,7 +1480,7 @@ RSpec.describe SamlIdpController do
 
         context 'Matching certificate' do
           let(:encryption_cert_matches_matching_cert) { true }
-          let(:matching_cert_serial) {  saml_test_sp_cert_serial }
+          let(:matching_cert_serial) { saml_test_sp_cert_serial }
 
           it 'notes that in the analytics event' do
             user.identities.last.update!(verified_attributes: ['email'])
