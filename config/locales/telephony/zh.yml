@@ -18,7 +18,7 @@ zh:
         %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
 
         @%{domain} #%{code}
-      voice: 你好! 你的 %{format_length}-%{format_type} %{app_name} 一次性代码是 %{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
+      voice: 你好! 你的%{format_length}%{format_type}一次性代码是 %{code}。你的一次性代码是 %{code}。 重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
     doc_auth_link: |-
       %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
     error:
@@ -41,6 +41,6 @@ zh:
       ten: '10'
     format_type:
       character: 字符
-      digit: 数码
+      digit: 位数
     personal_key_regeneration_notice: 已给你的 %{app_name} 账户发放了一个新个人密钥。如果不是你，请重设你的密码。
     personal_key_sign_in_notice: 你的个人密钥刚被用来登录你的 %{app_name} 账户。如果不是你，请重设你的密码。
