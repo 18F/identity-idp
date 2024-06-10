@@ -71,7 +71,7 @@ module Db
           new_unique_user_proofed_events = this_month_user_proofed_events -
                                            prev_seen_user_proofed_events
 
-          profile_age_counts = new_unique_user_proofed_events.group_by do |user_unique_id|
+          unique_profile_age_counts = this_month_user_proofed_events.group_by do |user_unique_id|
             age = users_to_profile_age[user_unique_id]
             if age.nil? || age < 0
               :unknown
@@ -82,6 +82,20 @@ module Db
             end
           end.tap { |counts| counts.default = [] }
 
+          new_unique_profile_age_counts = new_unique_user_proofed_events.group_by do
+                                          |user_unique_id|
+            age = users_to_profile_age[user_unique_id]
+            if age.nil? || age < 0
+              :unknown
+            elsif age > 4
+              :older
+            else
+              age.to_i
+            end
+          end.tap do |counts|
+            counts.default = []
+          end
+
           prev_seen_user_proofed_events |= this_month_user_proofed_events
 
           rows << {
@@ -91,14 +105,21 @@ module Db
             iaa_start_date: date_range.begin.to_s,
             iaa_end_date: date_range.end.to_s,
             unique_user_proofed_events: this_month_user_proofed_events.count,
+            partner_ial2_unique_users_year1: unique_profile_age_counts[0].count,
+            partner_ial2_unique_users_year2: unique_profile_age_counts[1].count,
+            partner_ial2_unique_users_year3: unique_profile_age_counts[2].count,
+            partner_ial2_unique_users_year4: unique_profile_age_counts[3].count,
+            partner_ial2_unique_users_year5: unique_profile_age_counts[4].count,
+            partner_ial2_unique_users_year_greater_than_5: unique_profile_age_counts[:older].count,
+            partner_ial2_unique_users_unknown: unique_profile_age_counts[:unknown].count,
             new_unique_user_proofed_events: new_unique_user_proofed_events.count,
-            partner_ial2_new_unique_users_year1: profile_age_counts[0].count,
-            partner_ial2_new_unique_users_year2: profile_age_counts[1].count,
-            partner_ial2_new_unique_users_year3: profile_age_counts[2].count,
-            partner_ial2_new_unique_users_year4: profile_age_counts[3].count,
-            partner_ial2_new_unique_users_year5: profile_age_counts[4].count,
-            partner_ial2_new_unique_users_year_greater_than_5: profile_age_counts[:older].count,
-            partner_ial2_new_unique_users_unknown: profile_age_counts[:unknown].count,
+            partner_ial2_new_unique_users_year1: new_unique_profile_age_counts[0].count,
+            partner_ial2_new_unique_users_year2: new_unique_profile_age_counts[1].count,
+            partner_ial2_new_unique_users_year3: new_unique_profile_age_counts[2].count,
+            partner_ial2_new_unique_users_year4: new_unique_profile_age_counts[3].count,
+            partner_ial2_new_unique_users_year5: new_unique_profile_age_counts[4].count,
+            partner_ial2_new_unique_users_year_greater_than_5: new_unique_profile_age_counts[:older].count, # rubocop:disable Layout/LineLength
+            partner_ial2_new_unique_users_unknown: new_unique_profile_age_counts[:unknown].count,
           }
         end
         # rubocop:enable Metrics/BlockLength
