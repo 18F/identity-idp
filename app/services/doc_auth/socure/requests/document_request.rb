@@ -22,10 +22,10 @@ module DocAuth
           {
             config: {
               documentType: document_type,
-              # redirect: {
-              #   method: 'GET',
-              #   url: redirect_url,
-              # },
+              redirect: {
+                method: 'GET',
+                url: redirect_url,
+              },
             },
             customerUserId: document_capture_session_uuid,
             verificationLevel: verification_level,
