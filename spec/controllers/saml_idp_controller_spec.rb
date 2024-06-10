@@ -1489,10 +1489,31 @@ RSpec.describe SamlIdpController do
             expect(response.status).to eq(200)
             expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
           end
+
+          context 'Certificate does not match because of order bug' do
+            let(:encryption_cert_matches_matching_cert) { false }
+            let(:matching_cert_serial) { nil }
+            let(:request_sp) { double  }
+
+            before do
+              service_provider.update(certs: ['sp_sinatra_demo', 'saml_test_sp'])
+              allow_any_instance_of(
+                SamlIdp::ServiceProvider,
+              ).to receive(:matching_cert).and_return nil
+            end
+
+            it 'notes that in the analytics event' do
+              user.identities.last.update!(verified_attributes: ['email'])
+              generate_saml_response(user, auth_settings)
+
+              expect(response.status).to eq(200)
+              expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
+            end
+          end
         end
 
-        context 'No matching certificate' do
-          let(:encryption_cert_matches_matching_cert) { false }
+        context 'Certificate does not match' do
+          let(:encryption_cert_matches_matching_cert) { true }
           let(:service_provider) do
             create(
               :service_provider,
