@@ -4,7 +4,7 @@ RSpec.describe 'GoodJob.cron' do
   it 'has valid cron jobs' do
     expect(Rails.application.config.good_job.cron).to be_present
     aggregate_failures do
-      Rails.application.config.good_job.cron.each do |key, config|
+      Rails.application.config.good_job.cron.each do |_key, config|
         expect(config[:class].constantize.new).to be_kind_of(ApplicationJob)
 
         expect(Fugit.parse(config[:cron])).to_not be_nil

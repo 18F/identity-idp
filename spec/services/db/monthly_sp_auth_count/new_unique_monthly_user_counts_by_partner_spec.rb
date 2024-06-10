@@ -234,7 +234,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
 
         # Outside analysis range
         # 1 new user returning outside the range of analysis
-        [user11].each do |user, profile|
+        [user11].each do |user, _profile|
           3.times do
             create(
               :sp_return_log,

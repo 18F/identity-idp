@@ -619,6 +619,10 @@ Lint/UnusedMethodArgument:
   Enabled: true
   AllowUnusedKeywordArguments: false
 
+Lint/UnusedBlockArgument:
+  Enabled: true
+  AllowUnusedKeywordArguments: true
+
 Lint/UriEscapeUnescape:
   Enabled: true
 
