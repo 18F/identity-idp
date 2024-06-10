@@ -26,8 +26,8 @@ module DocAuth
               #   method: 'GET',
               #   url: redirect_url,
               # },
-              customerUserId: document_capture_session_uuid,
             },
+            customerUserId: document_capture_session_uuid,
             verificationLevel: verification_level,
           }.to_json
         end

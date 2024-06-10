@@ -11,7 +11,7 @@ module DocAuth
 
       def initialize(payload)
         @payload = ENV['RAILS_ENV'] == 'production' ? payload : webhook_event('VERIFICATION_COMPLETED')
-        @document_capture_session_uuid ||= ENV['RAILS_ENV'] == 'production' ? event['customerUserId'] : DocumentCaptureSession.last&.uuid
+        @document_capture_session_uuid = ENV['RAILS_ENV'] == 'production' ? event['customerUserId'] : DocumentCaptureSession.last&.uuid
       end
 
       def handle_event

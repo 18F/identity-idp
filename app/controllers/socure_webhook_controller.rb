@@ -7,6 +7,7 @@ class SocureWebhookController < ApplicationController
 
   def create
     # log webhook received referenceID, customerUserId, ...
+    analytics.socure_webhook(request.body.read)
     webhook = SocureWebhook.new(parsed_response_body)
     webhook.handle_event
   ensure
