@@ -281,7 +281,7 @@ RSpec.describe 'I18n' do
       # most common interpolation arguments is the correct one. We then take the keys
       # in the remaining groups and add them to the missing keys list.
       keys = interpolation_arguments.group_by { |k, _v| v }.sort_by { |_k, v| v.length * -1 }.drop(1).
-        map { |x| x[1].flatten }.to_h.keys
+        map { |_k, group| group.flatten }.to_h.keys
 
       missing_interpolation_argument_locale_keys += keys
     end
