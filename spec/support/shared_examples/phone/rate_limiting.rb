@@ -45,7 +45,7 @@ RSpec.shared_examples 'phone rate limiting' do |delivery_method|
 
   it 'limits the number of times the user can enter an OTP' do
     visit_otp_confirmation(delivery_method)
-    (max_confirmation_attempts - 1).times do |number_of_times|
+    (max_confirmation_attempts - 1).times do |_number_of_times|
       fill_in :code, with: '123456'
       click_submit_default
       count_remaining = max_confirmation_attempts - user.reload.second_factor_attempts_count

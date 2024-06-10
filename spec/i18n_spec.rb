@@ -367,7 +367,7 @@ RSpec.describe 'I18n' do
       end
 
       it 'does not contain content from another language' do
-        flattened_yaml_data.each do |key, value|
+        flattened_yaml_data.each do |_key, value|
           other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
           expect(value).not_to match(
             Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
@@ -376,7 +376,7 @@ RSpec.describe 'I18n' do
       end
 
       it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
-        flattened_yaml_data.each do |key, value|
+        flattened_yaml_data.each do |_key, value|
           expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
         end
       end
