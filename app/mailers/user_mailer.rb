@@ -294,6 +294,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def in_person_ready_to_verify(enrollment:)
+    # TO DO: Evalute sponsor id on enrollment rather than hardcoding below
+    is_eipp = false
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
@@ -302,11 +304,13 @@ class UserMailer < ActionMailer::Base
       @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
                     IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
-      @header = t('in_person_proofing.headings.barcode')
+      @header = is_eipp ? t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
+        is_eipp: is_eipp,
       )
+      @is_eipp = is_eipp
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
@@ -315,6 +319,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def in_person_ready_to_verify_reminder(enrollment:)
+        # TO DO: Evalute sponsor id on enrollment rather than hardcoding below
+    is_eipp = false
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
@@ -323,7 +329,9 @@ class UserMailer < ActionMailer::Base
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
+        is_eipp: is_eipp,
       )
+      @is_eipp = is_eipp
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
         count: @presenter.days_remaining,

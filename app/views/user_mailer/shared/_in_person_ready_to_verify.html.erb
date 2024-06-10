@@ -13,7 +13,9 @@
     <%= t('in_person_proofing.headings.barcode') %>
   </h1>
 <% end %>
-<div class="text-center">
+
+<%# Barcode %>
+<div class="text-center margin-y-4">
   <%= render 'idv/shared/mini_logo', filename: 'email/logo.png' %>
   <%= render BarcodeComponent.new(
         barcode_data: @presenter.enrollment_code,
@@ -23,7 +25,8 @@
       ) %>
 </div>
 
-<table class="info-alert margin-y-4">
+<%# Alert box %>
+<table class="info-alert margin-y-4 radius-lg">
   <tr>
     <td width="16">
       <%= image_tag('email/info.png', width: 16, height: 16, alt: '') %>
@@ -35,6 +38,102 @@
   </tr>
 </table>
 
+<%# EIPP Only - What to bring section %>
+<% if @is_eipp %>
+  <section class="border-1px radius-lg border-primary-light padding-4 margin-bottom-4">
+    <%# What to bring to the Post Office %>
+    <h2 class="margin-bottom-2"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
+    <p class="margin-bottom-2"><%= t('in_person_proofing.body.barcode.what_to_bring') %></p>
+
+    <%# Option 1: Bring a Real ID %>
+    <h3 class="margin-bottom-2"><%= t('in_person_proofing.process.eipp_bring_id.heading') %></h3>
+    <div class="grid-row">
+      <%= image_tag(
+            asset_url('idv/real-id.svg'),
+            width: 110,
+            height: 80,
+            alt: t('in_person_proofing.process.eipp_bring_id.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-2',
+            role: 'img',
+          ) %>
+      <p class='grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3'><%= t('in_person_proofing.process.eipp_bring_id.info') %></p>
+    </div>
+    <hr />
+
+    <%# Option 2: Bring a standard State ID... %>
+    <h3 class="margin-y-2"><%= t('in_person_proofing.process.eipp_what_to_bring.heading') %></h3>
+    <p><%= t('in_person_proofing.process.eipp_what_to_bring.info') %></p>
+
+    <%# A. State ID + Passport %>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/state-id-and-passport.svg'),
+            width: 110.46,
+            height: 129.11,
+            alt: t('in_person_proofing.process.eipp_state_id_passport.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-3 tablet:margin-bottom-0',
+            role: 'img',
+          ) %>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_passport.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_passport.info') %></p>
+      </div>
+    </div>
+    <hr />
+
+    <%# B. State ID + Military ID %>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/state-id-and-military-id.svg'),
+            width: 110.46,
+            height: 93,
+            alt: t('in_person_proofing.process.eipp_state_id_military_id.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-3 tablet:margin-bottom-0',
+            role: 'img',
+          ) %>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_military_id.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_military_id.info') %></p>
+      </div>   
+    </div>
+    <hr />
+
+    <%# C. State ID + two supporting documents %>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/state-id-and-fair-evidence-documents.svg'),
+            width: 110.46,
+            height: 107,
+            alt: t('in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-3 tablet:margin-bottom-0',
+            role: 'img',
+          ) %>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_supporting_docs.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_supporting_docs.info') %></p>
+        <ul class="usa-list margin-top-0">
+          <% t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |doc| %>
+            <li><%= doc %></li> 
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <%# Questions? %>
+    <p class="margin-top-3 margin-bottom-0">
+      <%= t('in_person_proofing.body.barcode.questions') %>
+      <%= link_to(
+            t('in_person_proofing.body.barcode.learn_more'),
+            MarketingSite.help_center_article_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person',
+            ),
+          ) %>
+    </p>
+  </section>
+<% end %>
+
+<%# What to expect at the Post Office %>
 <div class="border-1px border-primary-light radius-lg padding-4 margin-bottom-4">
   <h2 class="margin-top-0 margin-bottom-2 font-heading-lg text-bold">
     <%= t('in_person_proofing.body.barcode.what_to_expect') %>
@@ -58,21 +157,24 @@
     <tr>
       <td><div class="process-list__circle">3</div></td>
       <td>
-        <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.state_id.heading') %></h3>
-        <p class="margin-bottom-105"><%= t('in_person_proofing.process.state_id.info') %></p>
+        <h3 class="font-heading-md text-bold"><%= @presenter.state_id_heading_text %></h3>
+        <p class="margin-bottom-105"><%= @presenter.state_id_info %></p>
       </td>
     </tr>
   </table>
-  <p class="margin-bottom-0">
-    <%= t('in_person_proofing.body.barcode.questions') %>
-    <%= link_to(
-          t('in_person_proofing.body.barcode.learn_more'),
-          MarketingSite.help_center_article_url(
-            category: 'verify-your-identity',
-            article: 'verify-your-identity-in-person',
-          ),
-        ) %>
-  </p>
+  
+  <% if !@is_eipp %>
+    <p class="margin-bottom-0">
+      <%= t('in_person_proofing.body.barcode.questions') %>
+      <%= link_to(
+            t('in_person_proofing.body.barcode.learn_more'),
+            MarketingSite.help_center_article_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person',
+            ),
+          ) %>
+    </p>
+  <% end %>
 </div>
 
 <h2 class="font-heading-lg text-bold margin-top-2"><%= t('in_person_proofing.body.location.heading') %></h2>
