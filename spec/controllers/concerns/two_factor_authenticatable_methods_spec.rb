@@ -117,7 +117,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
             end
 
             it 'creates a new user event with disavowal' do
-              expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do |**_args|
+              expect(UserAlerts::AlertUserAboutNewDevice).to receive(:send_alert) do
                 expect(user.reload.sign_in_new_device_at.change(usec: 0)).to eq(
                   10.minutes.ago,
                 )
