@@ -36,7 +36,6 @@ RUN apt-get update && \
     git-lfs \
     curl \
     zlib1g-dev \
-    build-essential \
     libssl-dev \
     libreadline-dev \
     libyaml-dev \
@@ -48,6 +47,7 @@ RUN apt-get update && \
     software-properties-common \
     libffi-dev \
     libpq-dev \
+    xz-utils \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
@@ -89,7 +89,9 @@ RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development doc test'
-RUN bundle install --jobs $(nproc)
+RUN apt-get install -y build-essential && \
+    bundle install --jobs $(nproc) && \
+    apt autoremove -y --purge build-essential
 RUN bundle binstubs --all
 
 COPY package.json $RAILS_ROOT/package.json
