@@ -94,14 +94,6 @@ module I18n
         { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] }, # needs to be translated
         { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] }, # needs to be translated
         { key: 'telephony.account_deleted_notice', locales: %i[zh] }, # needs to be translated
-        { key: 'two_factor_authentication.auth_app.deleted', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.edit_heading', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.renamed', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.deleted', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.edit_heading', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.renamed', locales: %i[zh] },
       ].freeze
       # rubocop:enable Layout/LineLength
 
