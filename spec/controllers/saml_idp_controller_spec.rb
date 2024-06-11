@@ -1490,7 +1490,7 @@ RSpec.describe SamlIdpController do
             expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
           end
 
-          context 'Certificate does not match because of order bug' do
+          context 'Certificate sig validation fails because of namespace bug' do
             let(:encryption_cert_matches_matching_cert) { false }
             let(:matching_cert_serial) { nil }
             let(:request_sp) { double  }
