@@ -40,6 +40,7 @@ PUNCTUATION_PAIRS = {
   '(' => ')',
   '<' => '>',
   '（' => '）',
+  '“' => '”',
 }.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
