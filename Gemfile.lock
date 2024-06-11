@@ -745,6 +745,7 @@ PLATFORMS
 DEPENDENCIES
   ahoy_matey (~> 3.0)
   aws-sdk-cloudwatchlogs
+  aws-sdk-core (>= 3.188.0)
   aws-sdk-kms (~> 1.4)
   aws-sdk-pinpoint
   aws-sdk-pinpointsmsvoice
