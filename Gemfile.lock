@@ -1,11 +1,12 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 9574e05398833c531f450c3da99a6afde4ce68fc
-  tag: v4.0.0
+  revision: 81caa5c0596d50aaeaa284366986829610e0bd9b
+  branch: mitchellhenke/secrets-manager
   specs:
-    identity-hostdata (4.0.0)
+    identity-hostdata (4.2.0)
       activesupport (>= 6.1, < 8)
       aws-sdk-s3 (~> 1.8)
+      aws-sdk-secretsmanager (>= 1.91)
       redacted_struct (>= 2.0)
 
 GIT
@@ -189,6 +190,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.179.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.6)
+    aws-sdk-secretsmanager (1.96.0)
+      aws-sdk-core (~> 3, >= 3.197.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-ses (1.44.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
