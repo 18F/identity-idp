@@ -148,7 +148,7 @@ class SamlIdpController < ApplicationController
   end
 
   def encryption_cert_matches_matching_cert?
-    matching_cert == encryption_cert
+    (matching_cert || saml_request_service_provider&.ssl_certs&.first) == encryption_cert
   end
 
   def log_external_saml_auth_request
