@@ -54,6 +54,13 @@ class ResolutionProofingJob < ApplicationJob
       current_sp: current_sp,
     )
 
+    ssn_is_unique = Idv::DuplicateSsnFinder.new(
+      ssn: applicant_pii[:ssn],
+      user: user,
+    ).ssn_is_unique?
+
+    callback_log_data.result[:ssn_is_unique] = ssn_is_unique
+
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure

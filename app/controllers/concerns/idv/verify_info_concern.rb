@@ -188,10 +188,17 @@ module Idv
         },
       )
 
-      form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
-        ssn: idv_session.ssn,
-        user: current_user,
-      ).ssn_is_unique?
+      if current_async_state.result[:ssn_is_unique]
+        # new state
+        # It would be cleaner to reverse this, but what about existing logs?
+        form_response.extra[:ssn_is_unique] = current_async_state.result[:ssn_is_unique]
+      else
+        # old state
+        form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
+          ssn: idv_session.ssn,
+          user: current_user,
+          ).ssn_is_unique?
+      end
 
       summarize_result_and_rate_limit(form_response)
       delete_async
