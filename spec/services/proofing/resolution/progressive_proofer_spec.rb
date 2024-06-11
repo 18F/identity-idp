@@ -27,6 +27,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       Proofing::StateIdResult,
       success?: false,
       transaction_id: 'aamva-123',
+      exception: nil,
     )
   end
   let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer, proof: aamva_proofer_result) }
@@ -202,6 +203,21 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(threatmetrix_sp_costs.count).to eq(0)
         end
       end
+
+      context 'AAMVA raises an exception' do
+        let(:aamva_proofer_result) do
+          instance_double(
+            Proofing::StateIdResult,
+            success?: false,
+            transaction_id: 'aamva-123',
+            exception: RuntimeError.new('this is a fun test error!!'),
+          )
+        end
+
+        it 'does not track an SP cost for AAMVA' do
+          expect { proof }.to_not change { SpCost.where(cost_type: :aamva).count }
+        end
+      end
     end
 
     context 'ipp flow' do
@@ -279,6 +295,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                   verified_attributes: [],
                   success?: false,
                   transaction_id: 'aamva-123',
+                  exception: nil,
                 )
               end
 
@@ -294,6 +311,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                   verified_attributes: [:address],
                   success?: true,
                   transaction_id: 'aamva-123',
+                  exception: nil,
                 )
               end
 
@@ -332,6 +350,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                   Proofing::StateIdResult,
                   success?: false,
                   transaction_id: 'aamva-123',
+                  exception: nil,
                 )
               end
 
@@ -413,6 +432,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                   Proofing::StateIdResult,
                   success?: false,
                   transaction_id: 'aamva-123',
+                  exception: nil,
                 )
               end
 
