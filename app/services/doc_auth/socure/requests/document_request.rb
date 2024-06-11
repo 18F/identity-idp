@@ -23,7 +23,7 @@ module DocAuth
             config: {
               documentType: document_type,
               redirect: {
-                method: 'GET',
+                method: 'POST',
                 url: redirect_url,
               },
             },
