@@ -102,8 +102,6 @@ module I18n
         { key: 'two_factor_authentication.webauthn_roaming.edit_heading', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.manage_accessible_label', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.renamed', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_after_2fa.info_p3_html', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_after_2fa.reset_password', locales: %i[zh] },
       ].freeze
       # rubocop:enable Layout/LineLength
 
