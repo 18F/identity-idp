@@ -13,7 +13,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
   end
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
-  let(:doc_auth_selfie_capture_enabled) { false }
   let(:sp_selfie_enabled) { false }
 
   before do
@@ -25,7 +24,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
 
-    resolved_authn_context_result = sp_selfie_enabled && doc_auth_selfie_capture_enabled ?
+    resolved_authn_context_result = sp_selfie_enabled ?
                                       Vot::Parser.new(vector_of_trust: 'Pb').parse :
                                       Vot::Parser.new(vector_of_trust: 'P1').parse
 
@@ -36,8 +35,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                      ipp_opt_in_enabled
                                    }
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-      and_return(doc_auth_selfie_capture_enabled)
   end
 
   describe '#step_info' do
@@ -70,7 +67,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         analytics_id: 'Doc Auth',
         redo_document_capture: nil,
         skip_hybrid_handoff: nil,
-        selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
+        selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
     end
 
@@ -267,8 +264,6 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     end
 
     context 'with selfie enabled system wide' do
-      let(:doc_auth_selfie_capture_enabled) { true }
-
       describe 'when selfie is enabled for sp' do
         let(:sp_selfie_enabled) { true }
 
@@ -307,7 +302,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           analytics_id: 'Doc Auth',
           redo_document_capture: nil,
           skip_hybrid_handoff: nil,
-          selfie_check_required: sp_selfie_enabled && doc_auth_selfie_capture_enabled,
+          selfie_check_required: sp_selfie_enabled,
           telephony_response: {
             errors: {},
             message_id: 'fake-message-id',
@@ -365,7 +360,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           analytics_id: 'Doc Auth',
           redo_document_capture: nil,
           skip_hybrid_handoff: nil,
-          selfie_check_required: doc_auth_selfie_capture_enabled && sp_selfie_enabled,
+          selfie_check_required: sp_selfie_enabled,
         }.merge(ab_test_args)
       end
 

@@ -29,8 +29,12 @@ module UspsInPersonProofing
         Response::RequestEnrollResponse.new(res)
       end
 
-      def request_facilities(_location)
-        parse_facilities(JSON.parse(Fixtures.request_facilities_response))
+      def request_facilities(_location, is_enhanced_ipp)
+        if is_enhanced_ipp
+          parse_facilities(JSON.parse(Fixtures.request_eipp_facilities_response))
+        else
+          parse_facilities(JSON.parse(Fixtures.request_facilities_response))
+        end
       end
 
       def request_proofing_results(_unique_id, _enrollment_code)

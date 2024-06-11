@@ -22,7 +22,10 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       user: user
     )
   end
-  let(:presenter) { Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment) }
+  let(:is_eipp) { false }
+  let(:presenter) do
+    Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment, is_eipp: is_eipp)
+  end
   let(:step_indicator_steps) { Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS }
   let(:sp_event_name) { 'IdV: user clicked sp link on ready to verify page' }
   let(:help_event_name) { 'IdV: user clicked what to bring link on ready to verify page' }
@@ -134,6 +137,150 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       expect(rendered).not_to have_content(
         t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
       )
+    end
+  end
+
+  context 'For IPP (Not Enhanced IPP)' do
+    let(:is_eipp) { false }
+    before do
+      @is_eipp = false
+    end
+
+    context 'template displays modified content' do
+      it 'conditionally renders content in the what to expect section applicable to IPP' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.headings.barcode'))
+        expect(rendered).to have_content(t('in_person_proofing.process.state_id.heading'))
+        expect(rendered).to have_content(t('in_person_proofing.process.state_id.info'))
+      end
+    end
+
+    it 'renders Questions? and Learn more link only once' do
+      render
+
+      expect(rendered).to have_content(t('in_person_proofing.body.barcode.questions')).once
+      expect(rendered).to have_link(
+        t('in_person_proofing.body.barcode.learn_more'),
+        href: MarketingSite.help_center_article_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-identity-in-person',
+        ),
+      ).once
+    end
+
+    it 'template does not displays EIPP specific content' do
+      render
+
+      expect(rendered).to_not have_content(t('in_person_proofing.headings.barcode_eipp'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.state_id.heading_eipp'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.state_id.info_eipp'))
+      expect(rendered).to_not have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
+      expect(rendered).to_not have_content(t('in_person_proofing.body.barcode.what_to_bring'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_bring_id.heading'))
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_bring_id.info'))
+      expect(rendered).to_not have_content(
+        t('in_person_proofing.process.eipp_what_to_bring.heading'),
+      )
+      expect(rendered).to_not have_content(t('in_person_proofing.process.eipp_what_to_bring.info'))
+      expect(rendered).to_not have_content(
+        t('in_person_proofing.process.eipp_state_id_passport.heading'),
+      )
+      expect(rendered).to_not have_content(
+        t('in_person_proofing.process.eipp_state_id_passport.info'),
+      )
+      expect(rendered).to_not have_content(
+        t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+      )
+      expect(rendered).to_not have_content(
+        t('in_person_proofing.process.eipp_state_id_military_id.info'),
+      )
+      expect(rendered).to_not have_content(
+        t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+      )
+      expect(rendered).to_not have_content(
+        t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+      )
+
+      t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+        expect(rendered).to_not have_content(strip_tags(item))
+      end
+    end
+  end
+
+  context 'For Enhanced IPP (EIPP)' do
+    let(:is_eipp) { true }
+
+    before do
+      @is_eipp = true
+    end
+
+    context 'template displays modified content' do
+      it 'conditionally renders content in the what to expect section applicable to EIPP' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.headings.barcode_eipp'))
+        expect(rendered).to have_content(t('in_person_proofing.process.state_id.heading_eipp'))
+        expect(rendered).to have_content(t('in_person_proofing.process.state_id.info_eipp'))
+      end
+    end
+
+    it 'renders Questions? and Learn more link only once' do
+      render
+
+      expect(rendered).to have_content(t('in_person_proofing.body.barcode.questions')).once
+      expect(rendered).to have_link(
+        t('in_person_proofing.body.barcode.learn_more'),
+        href: MarketingSite.help_center_article_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-identity-in-person',
+        ),
+      ).once
+    end
+
+    context 'template displays additional (EIPP specific) content' do
+      it 'renders What to bring section' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.what_to_bring'))
+      end
+
+      it 'renders Option 1 content' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.process.eipp_bring_id.heading'))
+        expect(rendered).to have_content(t('in_person_proofing.process.eipp_bring_id.info'))
+      end
+
+      it 'renders Option 2 content' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.process.eipp_what_to_bring.heading'))
+        expect(rendered).to have_content(t('in_person_proofing.process.eipp_what_to_bring.info'))
+        expect(rendered).to have_content(
+          t('in_person_proofing.process.eipp_state_id_passport.heading'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.process.eipp_state_id_passport.info'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.process.eipp_state_id_military_id.info'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+        )
+
+        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+          expect(rendered).to have_content(strip_tags(item))
+        end
+      end
     end
   end
 end

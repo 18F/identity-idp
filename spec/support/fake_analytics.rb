@@ -190,7 +190,7 @@ RSpec.configure do |c|
     FakeAnalytics::UndocumentedParamsChecker.checked_extra_analytics = []
   end
 
-  c.after(:all) do |ex|
+  c.after(:all) do |_ex|
     next if c.world.all_examples.count != c.world.example_count
 
     groups.group_by(&:first).each do |group, pairs|

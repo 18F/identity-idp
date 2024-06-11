@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
+RSpec.describe 'Add a new phone number' do
   scenario 'Adding and confirming a new phone number allows the phone number to be used for MFA' do
     user = create(:user, :fully_registered)
     phone = '+1 (225) 278-1234'
@@ -206,7 +206,7 @@ RSpec.describe 'Add a new phone number', allowed_extra_analytics: [:*] do
   scenario 'adding a phone with a reCAPTCHA challenge', :js do
     user = create(:user, :fully_registered)
 
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+    allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
     fake_analytics = FakeAnalytics.new(user:)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)

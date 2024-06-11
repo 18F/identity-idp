@@ -16,20 +16,19 @@ module Reports
 
       save_report(REPORT_NAME, csv, extension: 'csv')
 
-      if emails.empty?
+      email = IdentityConfig.store.team_ada_email
+      if email.blank?
         Rails.logger.warn 'No email addresses received - Identity Verification Report NOT SENT'
         return false
       end
 
-      emails.each do |email|
-        ReportMailer.tables_report(
-          email: email,
-          subject: "Daily Identity Verification Report - #{report_date.to_date}",
-          reports: reports,
-          message: message,
-          attachment_format: :xlsx,
-        ).deliver_now
-      end
+      ReportMailer.tables_report(
+        email: email,
+        subject: "Daily Identity Verification Report - #{report_date.to_date}",
+        reports: reports,
+        message: message,
+        attachment_format: :xlsx,
+      ).deliver_now
     end
 
     def message
@@ -51,10 +50,6 @@ module Reports
           Disclaimer: This Report is In Progress: Not Production Ready
         </p>
       HTML
-    end
-
-    def emails
-      [IdentityConfig.store.team_ada_email].compact
     end
 
     def reports

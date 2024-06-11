@@ -106,7 +106,6 @@ module IdentityConfig
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
-    config.add(:doc_auth_selfie_capture_enabled, type: :boolean)
     config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
@@ -276,7 +275,6 @@ module IdentityConfig
       type: :json,
       options: { symbolize_names: true },
     )
-    config.add(:phone_recaptcha_mock_validator, type: :boolean)
     config.add(:phone_recaptcha_score_threshold, type: :float)
     config.add(:phone_service_check, type: :boolean)
     config.add(:phone_setups_per_ip_limit, type: :integer)
@@ -312,6 +310,7 @@ module IdentityConfig
     config.add(:reauthn_window, type: :integer)
     config.add(:recaptcha_enterprise_api_key, type: :string)
     config.add(:recaptcha_enterprise_project_id, type: :string)
+    config.add(:recaptcha_mock_validator, type: :boolean)
     config.add(:recaptcha_secret_key, type: :string)
     config.add(:recaptcha_site_key, type: :string)
     config.add(:recovery_code_length, type: :integer)
@@ -387,6 +386,7 @@ module IdentityConfig
     config.add(:use_vot_in_sp_requests, type: :boolean)
     config.add(:usps_auth_token_refresh_job_enabled, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
+    config.add(:usps_eipp_sponsor_id, type: :string)
     config.add(:usps_ipp_client_id, type: :string)
     config.add(:usps_ipp_password, type: :string)
     config.add(:usps_ipp_request_timeout, type: :integer)

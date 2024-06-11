@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SAML Authorization Confirmation', allowed_extra_analytics: [:*] do
+RSpec.feature 'SAML Authorization Confirmation' do
   include SamlAuthHelper
 
   before do

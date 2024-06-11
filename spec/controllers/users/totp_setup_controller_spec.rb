@@ -19,7 +19,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
         stub_analytics
         user = create(:user, :fully_registered, :with_phone, with: { phone: '703-555-1212' })
         stub_sign_in(user)
-        allow(@analytics).to receive(:track_event)
         get :new
       end
 
@@ -38,15 +37,13 @@ RSpec.describe Users::TotpSetupController, devise: true do
       end
 
       it 'captures an analytics event' do
-        properties = {
+        expect(@analytics).to have_logged_event(
+          'TOTP Setup Visited',
           user_signed_up: true,
           totp_secret_present: true,
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
-        }
-
-        expect(@analytics).
-          to have_received(:track_event).with('TOTP Setup Visited', properties)
+        )
       end
     end
 
@@ -55,7 +52,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
         user = create(:user)
         stub_analytics
         stub_sign_in_before_2fa(user)
-        allow(@analytics).to receive(:track_event)
         get :new
       end
 
@@ -74,15 +70,13 @@ RSpec.describe Users::TotpSetupController, devise: true do
       end
 
       it 'captures an analytics event' do
-        properties = {
+        expect(@analytics).to have_logged_event(
+          'TOTP Setup Visited',
           user_signed_up: false,
           totp_secret_present: true,
           enabled_mfa_methods_count: 0,
           in_account_creation_flow: false,
-        }
-
-        expect(@analytics).
-          to have_received(:track_event).with('TOTP Setup Visited', properties)
+        )
       end
     end
   end
@@ -96,7 +90,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
           stub_sign_in(user)
           stub_analytics
-          allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -107,20 +100,15 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(flash[:error]).to eq t('errors.invalid_totp')
           expect(subject.current_user.auth_app_configurations.any?).to eq false
 
-          result = {
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
             success: false,
             errors: {},
-            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
-            auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
-            pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with('Multi-Factor Authentication Setup', result)
+          )
         end
       end
 
@@ -130,7 +118,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
-          allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
@@ -140,20 +127,16 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(response).to redirect_to(account_path)
           expect(subject.user_session[:new_totp_secret]).to be_nil
 
-          result = {
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
             success: true,
             errors: {},
-            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
             enabled_mfa_methods_count: 2,
             in_account_creation_flow: false,
-            pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with('Multi-Factor Authentication Setup', result)
+          )
         end
       end
 
@@ -163,7 +146,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
-          allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name }
@@ -174,20 +156,15 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(flash[:error]).to eq t('errors.invalid_totp')
           expect(subject.current_user.auth_app_configurations.any?).to eq false
 
-          result = {
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
             success: false,
             errors: {},
-            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
-            auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
-            pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with('Multi-Factor Authentication Setup', result)
+          )
         end
       end
 
@@ -197,7 +174,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
-          allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { code: generate_totp_code(secret) }
@@ -208,20 +184,16 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(flash[:error]).to eq t('errors.invalid_totp')
           expect(subject.current_user.auth_app_configurations.any?).to eq false
 
-          result = {
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
             success: false,
             error_details: { name: { blank: true } },
             errors: { name: [t('errors.messages.blank')] },
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
-            auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
-            pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with('Multi-Factor Authentication Setup', result)
+          )
         end
       end
     end
@@ -231,7 +203,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
         before do
           stub_sign_in_before_2fa
           stub_analytics
-          allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -242,19 +213,15 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(flash[:error]).to eq t('errors.invalid_totp')
           expect(subject.current_user.auth_app_configurations.any?).to eq false
 
-          result = {
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
             success: false,
             errors: {},
-            error_details: nil,
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
-            auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
-            pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          }
-          expect(@analytics).to have_received(:track_event).
-            with('Multi-Factor Authentication Setup', result)
+          )
         end
       end
 
@@ -264,7 +231,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           secret = ROTP::Base32.random_base32
           stub_sign_in_before_2fa
           stub_analytics
-          allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
           subject.user_session[:in_account_creation_flow] = true
@@ -277,20 +243,16 @@ RSpec.describe Users::TotpSetupController, devise: true do
             expect(response).to redirect_to(auth_method_confirmation_path)
             expect(subject.user_session[:new_totp_secret]).to be_nil
 
-            result = {
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
               success: true,
               errors: {},
-              error_details: nil,
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
-              pii_like_keypaths: [[:mfa_method_counts, :phone]],
-            }
-
-            expect(@analytics).to have_received(:track_event).
-              with('Multi-Factor Authentication Setup', result)
+            )
           end
         end
 
@@ -300,20 +262,16 @@ RSpec.describe Users::TotpSetupController, devise: true do
           it 'redirects to next mfa path with a success message and still logs analytics' do
             expect(response).to redirect_to(phone_setup_url)
 
-            result = {
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
               success: true,
               errors: {},
-              error_details: nil,
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_account_creation_flow: true,
-              pii_like_keypaths: [[:mfa_method_counts, :phone]],
-            }
-
-            expect(@analytics).to have_received(:track_event).
-              with('Multi-Factor Authentication Setup', result)
+            )
           end
         end
       end
@@ -322,7 +280,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
         before do
           stub_sign_in_before_2fa
           stub_analytics
-          allow(@analytics).to receive(:track_event)
 
           patch :confirm, params: { name: name, code: 123 }
         end
@@ -332,20 +289,15 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(flash[:error]).to eq t('errors.invalid_totp')
           expect(subject.current_user.auth_app_configurations.any?).to eq false
 
-          result = {
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication Setup',
             success: false,
             errors: {},
-            error_details: nil,
             totp_secret_present: false,
             multi_factor_auth_method: 'totp',
-            auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
-            pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with('Multi-Factor Authentication Setup', result)
+          )
         end
       end
     end

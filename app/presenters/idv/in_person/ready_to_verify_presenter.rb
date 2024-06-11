@@ -3,6 +3,7 @@
 module Idv
   module InPerson
     class ReadyToVerifyPresenter
+      include ActionView::Helpers::TranslationHelper
       # WILLFIX: With LG-6881, confirm timezone or use deadline from enrollment response.
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York'].dup.freeze
 
@@ -10,10 +11,11 @@ module Idv
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_eipp: false)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
         @sp_name = sp_name
+        @is_eipp = is_eipp
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
@@ -63,6 +65,30 @@ module Idv
         true
       rescue
         false
+      end
+
+      def barcode_heading_text
+        if @is_eipp
+          t('in_person_proofing.headings.barcode_eipp')
+        else
+          t('in_person_proofing.headings.barcode')
+        end
+      end
+
+      def state_id_heading_text
+        if @is_eipp
+          t('in_person_proofing.process.state_id.heading_eipp')
+        else
+          t('in_person_proofing.process.state_id.heading')
+        end
+      end
+
+      def state_id_info
+        if @is_eipp
+          t('in_person_proofing.process.state_id.info_eipp')
+        else
+          t('in_person_proofing.process.state_id.info')
+        end
       end
 
       private

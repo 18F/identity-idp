@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_31_175935) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_04_173515) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -318,6 +318,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_175935) do
     t.boolean "ready_for_status_check", default: false
     t.datetime "notification_sent_at", comment: "The time a notification was sent"
     t.datetime "last_batch_claimed_at"
+    t.string "sponsor_id", comment: "The identification number for USPS to recognize us and our flow (ex: Enhanced IPP)"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"

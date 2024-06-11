@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'OIDC Authorization Confirmation', allowed_extra_analytics: [:*] do
+RSpec.feature 'OIDC Authorization Confirmation' do
   include OidcAuthHelper
 
   before do
@@ -124,18 +124,6 @@ RSpec.feature 'OIDC Authorization Confirmation', allowed_extra_analytics: [:*] d
         expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
         expect(page.get_rack_session.keys).to include('sp')
       end
-    end
-  end
-
-  context 'when asked for selfie verification in production' do
-    before do
-      allow(Rails.env).to receive(:production?).and_return(true)
-      allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      visit visit_idp_from_ial2_oidc_sp(biometric_comparison_required: true)
-    end
-
-    it 'redirects to the 406 (unacceptable) page' do
-      expect(page.status_code).to eq(406)
     end
   end
 end

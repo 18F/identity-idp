@@ -13,7 +13,7 @@ class CaptchaSubmitButtonComponent < BaseComponent
   end
 
   def show_mock_score_field?
-    IdentityConfig.store.phone_recaptcha_mock_validator
+    IdentityConfig.store.recaptcha_mock_validator
   end
 
   def recaptcha_script_src

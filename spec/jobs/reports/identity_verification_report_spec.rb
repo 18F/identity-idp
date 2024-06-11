@@ -64,7 +64,7 @@ RSpec.describe Reports::IdentityVerificationReport do
     end
 
     it 'does not send report in email if the email field is empty' do
-      allow(IdentityConfig.store).to receive(:team_ada_email).and_return(nil)
+      allow(IdentityConfig.store).to receive(:team_ada_email).and_return('')
 
       report_maker = double(
         Reporting::IdentityVerificationReport,

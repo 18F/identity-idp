@@ -242,11 +242,6 @@ RSpec.describe Idv::ProfileMaker do
       context 'unsupervised with selfie' do
         let(:selfie_check_performed) { true }
 
-        before do
-          expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-            and_return(true)
-        end
-
         it 'creates an active profile' do
           expect(profile.activated_at).to be_nil
           expect(profile.active).to eq(false)

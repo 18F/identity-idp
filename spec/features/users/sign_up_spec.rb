@@ -121,8 +121,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
       expect(fake_analytics).to have_logged_event(
         'Multi-Factor Authentication Setup',
         success: true,
-        errors: nil,
-        error_details: nil,
         multi_factor_auth_method: 'backup_codes',
         in_account_creation_flow: true,
         enabled_mfa_methods_count: 2,
@@ -171,7 +169,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
   end
 
   scenario 'signing up using phone with a reCAPTCHA challenge', :js do
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+    allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
 
     sign_up_and_set_password

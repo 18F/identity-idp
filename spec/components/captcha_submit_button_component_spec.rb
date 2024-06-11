@@ -72,15 +72,15 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
   end
 
   describe 'mock score field' do
-    let(:phone_recaptcha_mock_validator) { nil }
+    let(:recaptcha_mock_validator) { nil }
 
     before do
-      allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).
-        and_return(phone_recaptcha_mock_validator)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).
+        and_return(recaptcha_mock_validator)
     end
 
     context 'with mock validator disabled' do
-      let(:phone_recaptcha_mock_validator) { false }
+      let(:recaptcha_mock_validator) { false }
 
       it 'does not render mock score field' do
         expect(rendered).not_to have_field(t('components.captcha_submit_button.mock_score_label'))
@@ -88,7 +88,7 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
     end
 
     context 'with mock validator enabled' do
-      let(:phone_recaptcha_mock_validator) { true }
+      let(:recaptcha_mock_validator) { true }
 
       it 'renders mock score field' do
         expect(rendered).to have_field(t('components.captcha_submit_button.mock_score_label'))
