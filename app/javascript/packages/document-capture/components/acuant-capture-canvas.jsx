@@ -36,6 +36,10 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  * @param {any} originalDescriptor The descriptor to reset the property with.
  */
 export function resetObservableProperty(object, property, originalDescriptor) {
+  if (object === undefined) {
+    return;
+  }
+
   if (originalDescriptor !== undefined) {
     Object.defineProperty(object, property, originalDescriptor);
   } else {
