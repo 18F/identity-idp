@@ -17,5 +17,19 @@ export function defineObservableProperty(object, property, onChangeCallback) {
       currentValue = nextValue;
       onChangeCallback(nextValue);
     },
+    configurable: true,
   });
+}
+
+/**
+ * Removes an observable property by removing the defined getter/setter methods
+ * and replaces the value with the most recent value.
+ *
+ * @param {any} object Object on which to remove defined property.
+ * @param {string} property Property name to remove observer for
+ */
+export function removeObservableProperty(object, property) {
+  let currentValue = object[property];
+
+  Object.defineProperty(object, property, { value: currentValue, writable: true });
 }
