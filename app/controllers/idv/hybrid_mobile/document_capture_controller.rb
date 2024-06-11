@@ -31,7 +31,7 @@ module Idv
 
         doc_req = DocAuth::Socure::Requests::DocumentRequest.new(
           document_capture_session_uuid: document_capture_session_uuid,
-          redirect_url: idv_document_capture_socure_redirect_url,
+          redirect_url: idv_hybrid_mobile_document_capture_socure_redirect_url,
         )
         doc_resp = doc_req.fetch
 
