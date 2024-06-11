@@ -1,9 +1,11 @@
 import { useContext, useEffect, useRef } from 'react';
-
 import { getAssetPath } from '@18f/identity-assets';
 import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
-import { defineObservableProperty } from '../higher-order/observable-property';
+import {
+  defineObservableProperty,
+  removeObservableProperty,
+} from '../higher-order/observable-property';
 
 function AcuantCaptureCanvas() {
   const { isReady, acuantCaptureMode, setAcuantCaptureMode } = useContext(AcuantContext);
@@ -22,6 +24,11 @@ function AcuantCaptureCanvas() {
 
     cameraRef.current?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
     return () => {
+      const canvas = document.getElementById('acuant-ui-canvas');
+      if (canvas) {
+        removeObservableProperty(canvas, 'callback');
+      }
+
       cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
     };
   }, []);
