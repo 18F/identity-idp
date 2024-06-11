@@ -21,6 +21,26 @@ module Idv
         render :show, locals: extra_view_variables
       end
 
+      def show_socure
+        analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
+
+        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
+          call('document_capture', :view, true)
+
+        # render :show, locals: extra_view_variables
+
+        doc_req = DocAuth::Socure::Requests::DocumentRequest.new(
+          document_capture_session_uuid: document_capture_session_uuid,
+          redirect_url: idv_document_capture_socure_redirect_url,
+        )
+        doc_resp = doc_req.fetch
+
+        @url = doc_resp.dig('data', 'url')
+        @msg = doc_resp['msg']
+        @reference_id = doc_resp.dig('referenceId')
+        @qr_code = nil
+      end
+
       def update
         document_capture_session.confirm_ocr
         result = handle_stored_result
@@ -36,6 +56,24 @@ module Idv
           redirect_to idv_hybrid_mobile_capture_complete_url
         else
           redirect_to idv_hybrid_mobile_document_capture_url
+        end
+      end
+
+      def socure_redirect
+        document_capture_session.confirm_ocr
+        result = handle_stored_result
+
+        analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
+
+        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
+          call('document_capture', :update, true)
+
+        # rate limiting redirect is in ImageUploadResponsePresenter
+        if result.success?
+          # flash[:success] = t('doc_auth.headings.capture_complete')
+          redirect_to idv_hybrid_mobile_capture_complete_url
+        else
+          redirect_to idv_hybrid_mobile_document_capture_socure_url
         end
       end
 
