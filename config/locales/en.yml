@@ -72,8 +72,14 @@ account.index.reactivation.instructions: Your profile was recently deactivated d
 account.index.reactivation.link: Reactivate your profile now.
 account.index.sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
 account.index.unknown_location: unknown location
-account.index.verification.instructions: Your account requires a verification code to be verified.
-account.index.verification.reactivate_button: Enter the code you received via US mail
+account.index.verification.finish_verifying: Finish verifying your identity to access %{partner_agency}
+account.index.verification.identity_verification: Identity verification
+account.index.verification.instructions: Enter your verification code to finish verifying your identity.
+account.index.verification.in_person_instructions: You must visit any participating Post Office by %{deadline} to verify your identity.
+account.index.verification.learn_more_link: Learn more about verifying your identity
+account.index.verification.reactivate_button: Enter the verification code you received via US mail
+account.index.verification.show_bar_code: Show me my Login.gov barcode
+account.index.verification.you_verified_your_identity: You verified your identity for %{partner_agency} with the information below.
 account.index.verification.success: We verified your information
 account.index.webauthn: Security key
 account.index.webauthn_add: Add security key

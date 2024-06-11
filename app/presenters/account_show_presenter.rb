@@ -18,7 +18,9 @@ class AccountShowPresenter
   end
 
   def show_pii_partial?
-    decrypted_pii.present? || user.identity_verified?
+    decrypted_pii.present? || user.identity_verified? unless
+      user.pending_in_person_enrollment.present? || user.
+        gpo_verification_pending_profile.present?
   end
 
   def show_manage_personal_key_partial?
@@ -34,10 +36,31 @@ class AccountShowPresenter
     user.gpo_verification_pending_profile?
   end
 
+  def show_ipp_partial?
+    user.pending_in_person_enrollment.present?
+  end
+
   def showing_any_partials?
+    show_password_reset_partial? ||
+      show_gpo_partial? || show_ipp_partial? || show_pii_partial?
+  end
+
+  def showing_alerts?
     show_service_provider_continue_partial? ||
-      show_password_reset_partial? ||
-      show_gpo_partial?
+      show_password_reset_partial?
+  end
+
+  def service_provider_or_app_name
+    if user.last_identity.instance_of(NullIdentity)
+      APP_NAME
+    else
+      user.last_identity.friendly_name
+    end
+  end
+
+  def formatted_due_date
+    user.pending_in_person_enrollment.due_date.
+      strftime(I18n.t('time.formats.event_date'))
   end
 
   def show_unphishable_badge?
