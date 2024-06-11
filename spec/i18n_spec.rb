@@ -90,8 +90,6 @@ module I18n
         # need to be fixed
         { key: 'account.email_language.name.zh', locales: %i[es fr] }, # needs to be translated
         { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] }, # needs to be translated
-        { key: 'idv.failure.verify.exit', locales: %i[zh] }, # needs to be translated
-        { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] }, # needs to be translated
         { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] }, # needs to be translated
         { key: 'telephony.account_deleted_notice', locales: %i[zh] }, # needs to be translated
       ].freeze

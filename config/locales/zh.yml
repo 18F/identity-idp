@@ -1050,7 +1050,7 @@ idv.failure.setup.fail_date_html: 请给我们的联系中心在<strong>%{date_h
 idv.failure.setup.fail_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 <br/>代码 <strong>%{support_code}</strong>。
 idv.failure.setup.heading: 请给我们打个电话
 idv.failure.timeout: 目前处理你请求的时间超出正常等待时间。请再试一次。
-idv.failure.verify.exit: Exit %{app_name}
+idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
@@ -1258,7 +1258,7 @@ in_person_proofing.form.state_id.state_id_jurisdiction: 颁发州
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: 这是颁发你身份证件的州
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- 选择 -'
 in_person_proofing.form.state_id.state_id_number: 身份证件号
-in_person_proofing.form.state_id.state_id_number_florida_hint_html: This is the number on your ID with one letter and 12 numbers. Example:&nbsp;D123-456-78-901-2
+in_person_proofing.form.state_id.state_id_number_florida_hint_html: 这是你ID上的号码，由 1 个字母和 12 个数字组成。举例： D123-456-78-901-2
 in_person_proofing.form.state_id.state_id_number_hint: 可以包含字母、数字以及以下符号：
 in_person_proofing.form.state_id.state_id_number_hint_asterisks: 星号
 in_person_proofing.form.state_id.state_id_number_hint_dashes: 横杠
