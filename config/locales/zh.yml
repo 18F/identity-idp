@@ -1611,12 +1611,12 @@ two_factor_authentication.account_reset.successful_cancel: 谢谢。你删除自
 two_factor_authentication.account_reset.text_html: 如果你无法使用上述身份证实方法，可以通过 %{link_html} 重设你的首选。
 two_factor_authentication.attempt_remaining_warning_html.one: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.attempt_remaining_warning_html.other: 你还可以再试 <strong>%{count} 次 </strong> 。
-two_factor_authentication.auth_app.change_nickname: Change nickname
-two_factor_authentication.auth_app.delete: Delete this device
+two_factor_authentication.auth_app.change_nickname: 更改昵称
+two_factor_authentication.auth_app.delete: 删除该设备
 two_factor_authentication.auth_app.deleted: Successfully deleted an authentication app method
 two_factor_authentication.auth_app.edit_heading: Manage your authentication app settings
 two_factor_authentication.auth_app.manage_accessible_label: Manage authentication app
-two_factor_authentication.auth_app.nickname: Nickname
+two_factor_authentication.auth_app.nickname: 昵称
 two_factor_authentication.auth_app.renamed: Successfully renamed your authentication app method
 two_factor_authentication.backup_code_header_text: 输入你的备用代码。
 two_factor_authentication.backup_code_prompt: 该安全代码可使用一次。提交后，你下次就需要使用一个新备用代码。
@@ -1751,12 +1751,12 @@ two_factor_authentication.webauthn_platform.edit_heading: 管理你的人脸或�
 two_factor_authentication.webauthn_platform.manage_accessible_label: 管理人脸或触摸解锁
 two_factor_authentication.webauthn_platform.nickname: 昵称
 two_factor_authentication.webauthn_platform.renamed: 成功地重新命名了你的人脸或触摸解锁方法
-two_factor_authentication.webauthn_roaming.change_nickname: Change nickname
-two_factor_authentication.webauthn_roaming.delete: Delete this device
+two_factor_authentication.webauthn_roaming.change_nickname: 更改昵称
+two_factor_authentication.webauthn_roaming.delete: 删除该设备
 two_factor_authentication.webauthn_roaming.deleted: Successfully deleted a security key method
 two_factor_authentication.webauthn_roaming.edit_heading: Manage your security key settings
 two_factor_authentication.webauthn_roaming.manage_accessible_label: Manage security key
-two_factor_authentication.webauthn_roaming.nickname: Nickname
+two_factor_authentication.webauthn_roaming.nickname: 昵称
 two_factor_authentication.webauthn_roaming.renamed: Successfully renamed your security key method
 two_factor_authentication.webauthn_use_key: 使用安全密钥
 user_authorization_confirmation.continue: 继续
