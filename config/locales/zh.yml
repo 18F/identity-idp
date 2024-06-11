@@ -486,7 +486,7 @@ doc_auth.accessible_labels.camera_video_capture_instructions: 我们会自动拍
 doc_auth.accessible_labels.camera_video_capture_label: 带框的取景器能把你身份证件放在中间。
 doc_auth.accessible_labels.document_capture_dialog: 文档扫描
 doc_auth.buttons.add_new_photos: 添加新照片
-doc_auth.buttons.close: Close
+doc_auth.buttons.close: 关闭
 doc_auth.buttons.continue: 继续
 doc_auth.buttons.take_or_upload_picture_html: '<lg-take-photo>拍照</lg-take-photo> <lg-or> 或 </lg-or> <lg-upload>上传照片</lg-upload>'
 doc_auth.buttons.take_picture: 拍照
@@ -691,7 +691,7 @@ errors.capture_doc.invalid_link: 链接已过期或有误。 请要求另外一�
 errors.confirm_password_incorrect: 密码不对。
 errors.doc_auth.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
 errors.doc_auth.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
-errors.doc_auth.document_capture_canceled: You have canceled uploading photos of your ID on your phone.
+errors.doc_auth.document_capture_canceled: 你已取消了用手机上传身份证件照片。
 errors.doc_auth.how_to_verify_form: 选择一个验证身份的方法。
 errors.doc_auth.phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
 errors.doc_auth.rate_limited_heading: 我们无法验证你的身份证件。
@@ -880,8 +880,8 @@ forms.webauthn_platform_setup.intro_html:
 forms.webauthn_platform_setup.intro_link_text: 了解关于使用不同设备的更多信息。
 forms.webauthn_platform_setup.nickname: 设备昵称
 forms.webauthn_platform_setup.nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
-forms.webauthn_setup.intro: 使用实体安全密钥为您的 %{app_name} 帐户添加了额外一层安全保障，以防止未经授权的访问。了解有关安全密钥的更多信息
-forms.webauthn_setup.learn_more: Learn more about security keys
+forms.webauthn_setup.intro: 使用实体安全密钥为您的 %{app_name} 帐户添加了额外一层安全保障，以防止未经授权的访问。
+forms.webauthn_setup.learn_more: 了解有关安全密钥的更多信息
 forms.webauthn_setup.nickname: 安全密钥昵称
 forms.webauthn_setup.saving: 正在保存你的凭据…
 forms.webauthn_setup.set_up: 设置安全密钥
@@ -1393,7 +1393,7 @@ mailer.sent_at: 在 %{formatted_timestamp}时发出
 mfa.account_info: 添加另外一个身份证实方法可以预防你在失去其他方法后被锁在账户外。
 mfa.add: 添加另外一个方法
 mfa.info: 通过选择多因素身份证实方法来为您的 %{app_name} 帐户添加额外一层安全保障。
-mfa.recommendation: We recommend you select at least two different options in case you lose one of your methods.
+mfa.recommendation: 我们建议你选择至少两个不同方法，以防你丢失其中一个。
 mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
@@ -1420,7 +1420,7 @@ notices.signed_up_and_confirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: 没有收到电邮？
 notices.signed_up_but_unconfirmed.first_paragraph_end: 带有确认你电邮的链接。点击链接来继续设立你的账户。
 notices.signed_up_but_unconfirmed.first_paragraph_start: 我们已发电邮到
-notices.signed_up_but_unconfirmed.resend_confirmation_email: Resend the confirmation email
+notices.signed_up_but_unconfirmed.resend_confirmation_email: 重新发送确认电邮
 notices.timeout_warning.partially_signed_in.continue: 继续登录
 notices.timeout_warning.partially_signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
 notices.timeout_warning.partially_signed_in.message_html: 为了你的安全， %{time_left_in_session_html} 后我们将取消你的登录。
@@ -1560,7 +1560,7 @@ titles.enter_2fa_code.security_code: 输入安全的一次性安全代码
 titles.failure.information_not_verified: 个人信息未验证
 titles.failure.phone_verification: 电话号码未验证
 titles.forget_all_browsers: 忘掉所有浏览器
-titles.idv.canceled: Identity verification is canceled
+titles.idv.canceled: 身份验证已取消
 titles.idv.cancellation_prompt: 取消身份验证
 titles.idv.come_back_soon: 稍后再回来
 titles.idv.enter_one_time_code: 输入一次性代码
@@ -1582,7 +1582,7 @@ titles.personal_key: 万一
 titles.piv_cac_login.add: 添加你的 PIV 或者 CAC
 titles.piv_cac_login.new: 用 PIV/CAC 登入你的账户
 titles.piv_cac_setup.new: 用 PIV/CAC 卡来保护你账户安全
-titles.piv_cac_setup.upsell: Enhance your account security with a government employee ID
+titles.piv_cac_setup.upsell: 使用政府雇员ID增强帐户安全性
 titles.present_piv_cac: 提供你的 PIV/CAC
 titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
