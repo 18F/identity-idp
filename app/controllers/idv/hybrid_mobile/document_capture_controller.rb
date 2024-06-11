@@ -13,12 +13,14 @@ module Idv
       before_action :set_usps_form_presenter
 
       def show
-        analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
+        # analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
-        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
-          call('document_capture', :view, true)
+        # Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
+        #   call('document_capture', :view, true)
 
-        render :show, locals: extra_view_variables
+        # render :show, locals: extra_view_variables
+
+        redirect_to idv_hybrid_mobile_document_capture_socure_url
       end
 
       def show_socure
