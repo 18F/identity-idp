@@ -300,7 +300,7 @@ module Reporting
           , coalesce(properties.event_properties.success, 0) AS success
         #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
-        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1 and properties.event_properties.tmx_status = 'threatmetrix_pass')
+        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1 and properties.event_properties.tmx_status not in ['threatmetrix_review', 'threatmetrix_reject'])
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name not in %{gpo_verification_submitted})
