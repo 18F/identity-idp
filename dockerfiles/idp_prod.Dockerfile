@@ -149,6 +149,7 @@ COPY certs.example $RAILS_ROOT/certs
 COPY config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
+RUN apt-get install -y make
 RUN bundle exec rake assets:precompile --trace
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
