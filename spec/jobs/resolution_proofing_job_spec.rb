@@ -10,7 +10,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:document_capture_session) do
     DocumentCaptureSession.new(result_id: SecureRandom.hex, uuid: SecureRandom.uuid)
   end
-  let(:should_proof_state_id) { true }
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { create(:user, :fully_registered) }
   let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
@@ -35,7 +34,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,
-        should_proof_state_id: should_proof_state_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         user_id: user.id,
@@ -249,7 +247,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
     end
 
     context 'in a state where AAMVA is not supported' do
-      let(:should_proof_state_id) { false }
+      let(:pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(state_id_jurisdiction: 'NY')
+      end
 
       it 'does not make an AAMVA request' do
         stub_vendor_requests
@@ -332,7 +332,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
       subject(:perform) do
         instance.perform(
           result_id: document_capture_session.result_id,
-          should_proof_state_id: should_proof_state_id,
           encrypted_arguments: encrypted_arguments,
           trace_id: trace_id,
           user_id: user.id,
