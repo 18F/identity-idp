@@ -139,7 +139,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
         end
       end
 
-      context 'iaa2 two issuers in year_month September 2020' do
+      context 'with an IAA with two issuers in September 2020' do
         let(:partner_account2) { create(:partner_account) }
         let(:iaa2_range) { DateTime.new(2020, 9, 1).utc..DateTime.new(2021, 8, 30).utc }
 
