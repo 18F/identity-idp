@@ -29,7 +29,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  * @param {string} property Property name to remove observer for
  */
 export function stopObservingProperty(object, property) {
-  let currentValue = object[property];
+  const currentValue = object[property];
 
   Object.defineProperty(object, property, { value: currentValue, writable: true });
 }
