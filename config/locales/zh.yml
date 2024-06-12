@@ -1050,7 +1050,7 @@ idv.failure.setup.fail_date_html: 请给我们的联系中心在<strong>%{date_h
 idv.failure.setup.fail_html: 打电话给 <strong>%{contact_number}</strong> 并向他们提供错误 <br/>代码 <strong>%{support_code}</strong>。
 idv.failure.setup.heading: 请给我们打个电话
 idv.failure.timeout: 目前处理你请求的时间超出正常等待时间。请再试一次。
-idv.failure.verify.exit: Exit %{app_name}
+idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
@@ -1258,7 +1258,7 @@ in_person_proofing.form.state_id.state_id_jurisdiction: 颁发州
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: 这是颁发你身份证件的州
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- 选择 -'
 in_person_proofing.form.state_id.state_id_number: 身份证件号
-in_person_proofing.form.state_id.state_id_number_florida_hint_html: This is the number on your ID with one letter and 12 numbers. Example:&nbsp;D123-456-78-901-2
+in_person_proofing.form.state_id.state_id_number_florida_hint_html: 这是你ID上的号码，由 1 个字母和 12 个数字组成。举例:&nbsp;D123-456-78-901-2
 in_person_proofing.form.state_id.state_id_number_hint: 可以包含字母、数字以及以下符号：
 in_person_proofing.form.state_id.state_id_number_hint_asterisks: 星号
 in_person_proofing.form.state_id.state_id_number_hint_dashes: 横杠
@@ -1613,11 +1613,11 @@ two_factor_authentication.attempt_remaining_warning_html.one: 你还可以再试
 two_factor_authentication.attempt_remaining_warning_html.other: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.auth_app.change_nickname: 更改昵称
 two_factor_authentication.auth_app.delete: 删除该设备
-two_factor_authentication.auth_app.deleted: Successfully deleted an authentication app method
-two_factor_authentication.auth_app.edit_heading: Manage your authentication app settings
-two_factor_authentication.auth_app.manage_accessible_label: Manage authentication app
+two_factor_authentication.auth_app.deleted: 成功删除了一个身份验证应用程序方法
+two_factor_authentication.auth_app.edit_heading: 管理你的身份验证应用程序设置
+two_factor_authentication.auth_app.manage_accessible_label: 管理身份验证应用程序
 two_factor_authentication.auth_app.nickname: 昵称
-two_factor_authentication.auth_app.renamed: Successfully renamed your authentication app method
+two_factor_authentication.auth_app.renamed: 成功重新命名了一个身份验证应用程序
 two_factor_authentication.backup_code_header_text: 输入你的备用代码。
 two_factor_authentication.backup_code_prompt: 该安全代码可使用一次。提交后，你下次就需要使用一个新备用代码。
 two_factor_authentication.backup_codes.instructions: 如果你无法使用另一个设备，请将安全代码存放好。万一丢失备用代码，你就无法登录%{app_name}。
@@ -1753,11 +1753,11 @@ two_factor_authentication.webauthn_platform.nickname: 昵称
 two_factor_authentication.webauthn_platform.renamed: 成功地重新命名了你的人脸或触摸解锁方法
 two_factor_authentication.webauthn_roaming.change_nickname: 更改昵称
 two_factor_authentication.webauthn_roaming.delete: 删除该设备
-two_factor_authentication.webauthn_roaming.deleted: Successfully deleted a security key method
-two_factor_authentication.webauthn_roaming.edit_heading: Manage your security key settings
-two_factor_authentication.webauthn_roaming.manage_accessible_label: Manage security key
+two_factor_authentication.webauthn_roaming.deleted: 成功删除了一个安全密钥方法
+two_factor_authentication.webauthn_roaming.edit_heading: 管理你的安全密钥设置
+two_factor_authentication.webauthn_roaming.manage_accessible_label: 管理安全密钥
 two_factor_authentication.webauthn_roaming.nickname: 昵称
-two_factor_authentication.webauthn_roaming.renamed: Successfully renamed your security key method
+two_factor_authentication.webauthn_roaming.renamed: 成功重新命名了一个安全密钥方法
 two_factor_authentication.webauthn_use_key: 使用安全密钥
 user_authorization_confirmation.continue: 继续
 user_authorization_confirmation.currently_logged_in: '你已用以下电邮登入:'
@@ -1860,8 +1860,8 @@ user_mailer.letter_reminder.subject: 我们已向你存档地址发送了一封�
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: 身份证实方法
 user_mailer.new_device_sign_in_after_2fa.info_p1: 你的 %{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。
 user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
-user_mailer.new_device_sign_in_after_2fa.info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
-user_mailer.new_device_sign_in_after_2fa.reset_password: reset your password
+user_mailer.new_device_sign_in_after_2fa.info_p3_html: 如果不是你，%{reset_password_link_html} 并立即改变你的验%{authentication_methods_link_html}。
+user_mailer.new_device_sign_in_after_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的登录和身份验证'
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: 身份已证实
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: 使用密码登录

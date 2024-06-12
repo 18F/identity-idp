@@ -1253,7 +1253,7 @@ in_person_proofing.form.state_id.state_id_jurisdiction: Estado emisor
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Este es el estado que emitió su identificación
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.state_id_number: Número de identificación
-in_person_proofing.form.state_id.state_id_number_florida_hint_html: Este es el número que figura en su ID con una letra y 12 números. Ejemplo:&nbsp;D123-456-78-901-2
+in_person_proofing.form.state_id.state_id_number_florida_hint_html: Este es el número de su identificación que comienza con una letra seguida de 12 números. Ejemplo:&nbsp;D123-456-78-901-2
 in_person_proofing.form.state_id.state_id_number_hint: 'Puede incluir letras, números y los siguientes caracteres:'
 in_person_proofing.form.state_id.state_id_number_hint_asterisks: asteriscos
 in_person_proofing.form.state_id.state_id_number_hint_dashes: guiones
