@@ -6,7 +6,11 @@
  * @param property Property name to observe.
  * @param onChangeCallback Callback to trigger on change.
  */
-export function defineObservableProperty(object: any, property: string, onChangeCallback: (nextValue: any) => void) {
+export function defineObservableProperty(
+  object: any,
+  property: string,
+  onChangeCallback: (nextValue: any) => void,
+) {
   let currentValue: any;
 
   Object.defineProperty(object, property, {
