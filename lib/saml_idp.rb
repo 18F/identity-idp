@@ -86,6 +86,12 @@ module Saml
         Namespaces::SIGNATURE
       end
 
+      def gather_errors(fingerprint, options = {})
+        signed_document.validate(fingerprint, false, options)
+      rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError => e
+        { cert: options[:cert].serial.to_s, error_code: e.error_code }
+      end
+
       def to_xml
         super(
           save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION

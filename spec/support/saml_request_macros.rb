@@ -21,8 +21,8 @@ module SamlRequestMacros
     Rack::Utils.parse_nested_query uri.query
   end
 
-  def make_invalid_saml_request
-    auth_url = url(invalid_saml_settings)
+  def make_invalid_saml_request(values: {'issuer': ''}, signed: false)
+    auth_url = url(invalid_saml_settings(values:, signed:))
     CGI.unescape(auth_url.split('=').last)
   end
 
@@ -75,9 +75,23 @@ module SamlRequestMacros
     settings
   end
 
-  def invalid_saml_settings
+  def invalid_saml_settings(values: {'issuer': ''}, signed: false)
     settings = saml_settings.dup
-    settings.issuer = ''
+
+    values.keys.each do |key|
+      settings.send("#{key}=".to_sym, values[key])
+    end
+
+    if signed
+      settings.security = {
+        embed_sign: true,
+        authn_requests_signed: true,
+        want_assertions_signed: true,
+        digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
+        signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+      }
+    end
+
     settings
   end
 

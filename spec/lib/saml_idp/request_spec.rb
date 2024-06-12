@@ -479,6 +479,145 @@ module SamlIdp
       end
     end
 
+    describe '#cert_errors' do
+      let(:saml_request) { make_saml_request }
+
+      subject do
+        described_class.from_deflated_request saml_request
+      end
+
+      describe 'document is not signed' do
+        it 'returns nil' do
+          expect(subject.cert_errors).to be_nil
+        end
+      end
+
+      describe 'document is signed' do
+        let(:saml_request) { signed_auth_request }
+        let(:service_provider) { subject.service_provider }
+        let(:cert) { saml_settings.get_sp_cert }
+
+        describe 'the service provider has no registered certs' do
+          before { subject.service_provider.certs = [] }
+
+          it 'returns a no registered cert error' do
+            expect(subject.cert_errors).to eq [{cert: nil, error_code: :no_registered_certs}]
+          end
+        end
+
+        describe 'the service provider has one registered cert' do
+          before { subject.service_provider.certs = [cert] }
+          let(:errors) { [{ cert: cert.serial.to_s, error_code: error_code }] }
+
+          describe 'the cert matches the assertion cert' do
+            it 'returns nil' do
+              expect(subject.cert_errors).to be_nil
+            end
+          end
+
+          describe 'the embedded certificate is bad' do
+            let(:error_code) { :invalid_certificate_in_request }
+            let(:cert_text) do
+              invalid_cert.to_s.
+              gsub('-----BEGIN CERTIFICATE-----', '').
+              gsub('-----END CERTIFICATE-----', '').
+              gsub("\n", '')
+            end
+            before do
+              allow(OpenSSL::X509::Certificate).to receive(:new).with(Base64.decode64(cert_text)).and_raise OpenSSL::X509::CertificateError
+            end
+
+            let(:saml_request) do
+              make_invalid_saml_request(values: {certificate: invalid_cert.to_pem}, signed: true)
+            end
+
+            it 'returns an invalid certificate error' do
+              expect(subject.cert_errors).to eq errors
+            end
+          end
+
+          describe 'the cert element exists but is empty' do
+            let(:error_code) { :no_certificate_in_request }
+            let(:errors) { [{ cert: nil, error_code: error_code }] }
+            let(:blank_cert_element_req) do
+              <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+                <?xml version="1.0"?>
+                <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2024" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
+                  <saml:Issuer>http://localhost:3000</saml:Issuer>
+                  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                    <ds:SignedInfo>
+                      <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                      <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                      <ds:Reference URI="#_223d186c-35a0-4d1f-b81a-c473ad496415">
+                        <ds:Transforms>
+                          <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                          <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default samlp saml ds xs xsi md"/>
+                          </ds:Transform>
+                        </ds:Transforms>
+                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                        <ds:DigestValue>2Nb3RLbiFHn0cyn+7JA7hWbbK1NvFMVGa4MYTb3Q91I=</ds:DigestValue>
+                      </ds:Reference>
+                    </ds:SignedInfo>
+                    <ds:SignatureValue>UmsRcaWkHXrUnBMfOQBC2DIQk1rkQqMc5oucz6FAjulq0ZX7qT+zUbSZ7K/us+lzcL1hrgHXi2wxjKSRiisWrJNSmbIGGZIa4+U8wIMhkuY5vZVKgxRc2aP88i/lWwURMI183ifAzCwpq5Y4yaJ6pH+jbgYOtmOhcXh1OwrI+QqR7QSglyUJ55WO+BCR07Hf8A7DSA/Wgp9xH+DUw1EnwbDdzoi7TFqaHY8S4SWIcc26DHsq88mjsmsxAFRQ+4t6nadOnrrFnJWKJeiFlD8MxcQuBiuYBetKRLIPxyXKFxjEn7EkJ5zDkkrBWyUT4VT/JnthUlD825D+v81ZXIX3Tg==</ds:SignatureValue>
+                    <ds:KeyInfo>
+                      <ds:X509Data>
+                        <ds:X509Certificate>
+                        </ds:X509Certificate>
+                      </ds:X509Data>
+                    </ds:KeyInfo>
+                  </ds:Signature>
+                  <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient">_13ae90d1-2f9b-4ed5-b84d-3722ea42e386</saml:NameID>
+                </samlp:LogoutRequest>
+              XML
+            end
+            let(:saml_request) do
+              Base64.encode64(Zlib::Deflate.deflate(blank_cert_element_req, 9)[2..-5])
+            end
+
+            it 'returns a no certificate in request error' do
+              expect(subject.cert_errors).to eq errors
+            end
+          end
+
+          describe 'the cert does not match the assertion cert' do
+            describe 'returns a fingerprint mismatch error' do
+              let(:cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+              let(:error_code) { :fingerprint_mismatch }
+
+              it 'returns nil' do
+                expect(subject.cert_errors).to eq errors
+              end
+            end
+          end
+        end
+
+        describe 'sp has multiple certs' do
+          let(:not_matching_cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+
+          before { subject.service_provider.certs = [not_matching_cert, invalid_cert, cert] }
+          describe 'there is a matching cert' do
+            it 'returns nil' do
+              expect(subject.cert_errors).to be_nil
+            end
+          end
+
+          describe 'there are no matching certs' do
+            before { subject.service_provider.certs = [not_matching_cert, invalid_cert] }
+
+            it 'returns multiple errors' do
+              expected_errors = [
+                { cert: not_matching_cert.serial.to_s, error_code: :fingerprint_mismatch },
+                { cert: invalid_cert.serial.to_s, error_code: :fingerprint_mismatch },
+              ]
+              expect(subject.cert_errors).to eq expected_errors
+            end
+
+          end
+        end
+      end
+    end
+
     def build_authn_context_classref(contexts)
       [contexts].flatten.map do |c|
         "<saml:AuthnContextClassRef xmlns:saml='urn:oasis:names:tc:SAML:2.0:assertion'>#{c}</saml:AuthnContextClassRef>"
