@@ -29,9 +29,14 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       transaction_id: 'ddp-mock-transaction-id-123' }
   end
   let(:base_proofing_components) do
-    # rubocop:disable Layout/LineLength
-    { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
-    # rubocop:enable Layout/LineLength
+    {
+      document_check: 'mock',
+      document_type: 'state_id',
+      source_check: 'aamva',
+      resolution_check: 'lexis_nexis',
+      threatmetrix: threatmetrix,
+      threatmetrix_review_status: 'pass',
+    }
   end
   let(:lexis_nexis_address_proofing_components) do
     base_proofing_components.merge(address_check: 'lexis_nexis_address')
