@@ -4,6 +4,8 @@ class BadgeComponent < BaseComponent
   ICONS = %i[
     lock
     check_circle
+    warning
+    info
   ].to_set.freeze
 
   attr_reader :icon, :tag_options

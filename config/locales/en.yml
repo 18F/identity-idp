@@ -892,9 +892,11 @@ headings.account.federal_employee_id: Federal employee ID
 headings.account.login_info: Your account
 headings.account.reactivate: Reactivate your account
 headings.account.two_factor: Your authentication methods
+headings.account.pending: Pending
 headings.account.unphishable: Unphishable
-headings.account.verified_account: Verified Account
-headings.account.verified_information: Verified information
+headings.account.unverified: Unverified
+headings.account.verified_account: Verified
+headings.account.verified: Verified information
 headings.add_email: Add a new email address
 headings.add_info.phone: Add a phone number
 headings.cancellations.login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?

@@ -17,9 +17,18 @@
     <div class="margin-bottom-4 card profile-info-box">
       <div class="grid-row margin-bottom-1 margin-top-0">
         <div class="grid-col-12">
-          <h2 class="margin-0">
-            <%= t('account.index.verification.identity_verification') %>
-          </h2>
+          <div class="grid-row flex-justify padding-y-2 tablet:padding-y-0 margin-bottom-2 bg-primary-lightest tablet:bg-transparent position-relative padding-bottom-4">
+            <div class="grid-col-12 tablet:grid-col-auto">
+              <h2 class="margin-0">
+                <div class="tablet:text-center">
+                  <%= t('account.index.verification.identity_verification') %>
+                </div>
+              </h2>
+            </div>
+            <div class="account-header__badges grid-col-12 tablet:grid-col-auto">
+              <%= render 'accounts/validated_badge' %>
+            </div>
+          </div>
           <% unless @presenter.show_pii_partial? %>
             <p><%= t('account.index.verification.finish_verifying', partner_agency: @presenter.service_provider_or_app_name) %>
               <br><%= link_to t('account.index.verification.learn_more_link'), MarketingSite.help_url %></p>
