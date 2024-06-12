@@ -51,10 +51,10 @@ class AccountShowPresenter
   end
 
   def service_provider_or_app_name
-    if user.last_identity.instance_of(NullIdentity)
+    if user.identities.count == 0
       APP_NAME
     else
-      user.last_identity.friendly_name
+      user.identities.last.friendly_name
     end
   end
 

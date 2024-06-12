@@ -1,0 +1,9 @@
+<% if @presenter.show_verified_badge? %>
+  <%= render BadgeComponent.new(icon: :check_circle).with_content(t('headings.account.verified_account')) %>
+<% end %>
+<% if @presenter.show_password_reset_partial? && (!@presenter.show_ipp_partial? || !@presenter.show_gpo_partial?) %>
+  <%= render BadgeComponent.new(icon: :warning, class: 'border-warning').with_content(t('headings.account.unverified')) %>
+<% end %>
+<% if @presenter.show_ipp_partial? || @presenter.show_gpo_partial? %>
+  <%= render BadgeComponent.new(icon: :info, class: 'border-info').with_content(t('headings.account.pending')) %>
+<% end %>
