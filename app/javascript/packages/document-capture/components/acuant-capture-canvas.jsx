@@ -13,13 +13,8 @@ function AcuantCaptureCanvas() {
   const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
 
   useEffect(() => {
-    let originalDescriptor;
-
     function onAcuantCameraCreated() {
       const canvas = document.getElementById('acuant-ui-canvas');
-      if (originalDescriptor === undefined) {
-        originalDescriptor = Object.getOwnPropertyDescriptor(canvas, 'callback');
-      }
 
       // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
       // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
