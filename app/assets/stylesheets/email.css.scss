@@ -177,6 +177,10 @@ h6 {
   @include u-border(1px);
 }
 
+.border-top-width-0 {
+  border-top: 0;
+}
+
 .border-primary-light {
   @include u-border('primary-light');
 }
@@ -221,6 +225,10 @@ h6 {
   @include u-margin-bottom(2);
 }
 
+.margin-bottom-3 {
+  @include u-margin-bottom(3);
+}
+
 .margin-bottom-4 {
   @include u-margin-bottom(4);
 }
@@ -253,8 +261,20 @@ h6 {
   @include u-padding(4);
 }
 
+.padding-x-4 {
+  @include u-padding-x(4)
+}
+
+.padding-bottom-0 {
+  @include u-padding-bottom(0);
+}
+
 .padding-bottom-4 {
   @include u-padding-bottom(4);
+}
+
+.padding-top-4 {
+  @include u-padding-top(4);
 }
 
 .radius-lg {
