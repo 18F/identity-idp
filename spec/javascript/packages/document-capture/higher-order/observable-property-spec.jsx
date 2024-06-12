@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { defineObservableProperty, removeObservableProperty } from '@18f/identity-document-capture/higher-order/observable-property';
+import { defineObservableProperty, stopObservingProperty } from '@18f/identity-document-capture/higher-order/observable-property';
 
 describe('document-capture/higher-order/observable-property', () => {
   describe('defineObservableProperty', () => {
@@ -21,7 +21,7 @@ describe('document-capture/higher-order/observable-property', () => {
     });
   });
 
-  describe('removeObservableProperty', () => {
+  describe('stopObservingProperty', () => {
     it('removes the defined property and set the last value as a plain value', () => {
       const object = {};
       const callback = sinon.spy();
@@ -29,7 +29,7 @@ describe('document-capture/higher-order/observable-property', () => {
 
       object.key = 'value';
 
-      removeObservableProperty(object, 'key');
+      stopObservingProperty(object, 'key');
       expect(object.key).to.equal('value');
 
       object.key = 'second_value';

@@ -4,7 +4,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
 import {
   defineObservableProperty,
-  removeObservableProperty,
+  stopObservingProperty,
 } from '../higher-order/observable-property';
 
 /**
@@ -53,7 +53,7 @@ function AcuantCaptureCanvas() {
     return () => {
       const canvas = document.getElementById('acuant-ui-canvas');
       if (canvas) {
-        removeObservableProperty(canvas, 'callback');
+        stopObservingProperty(canvas, 'callback');
       }
 
       cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);

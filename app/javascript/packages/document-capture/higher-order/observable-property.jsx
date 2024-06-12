@@ -28,7 +28,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  * @param {any} object Object on which to remove defined property.
  * @param {string} property Property name to remove observer for
  */
-export function removeObservableProperty(object, property) {
+export function stopObservingProperty(object, property) {
   let currentValue = object[property];
 
   Object.defineProperty(object, property, { value: currentValue, writable: true });
