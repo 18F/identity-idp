@@ -81,7 +81,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           end
         end
 
-        it 'has correct authentication counts in ial1 + ial2 & checks partner single issuer cases' do
+        it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
           expect(csv.length).to eq(1)
           aggregate_failures do
             row = csv.find { |r| r['issuer'] == iaa1_sp.issuer }
@@ -260,7 +260,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           )
         end
 
-        it 'has correct values for all profile age columns and multiple issuers for single partner' do
+        it 'checks values for all profile age columns and multiple issuers for single partner' do
           aggregate_failures do
             row = csv.find { |r| r['issuer'] == iaa2_sp1.issuer }
 
@@ -453,7 +453,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           )
         end
 
-        it 'handles the case when a user reproofs and changes profile age events in the same and different months' do
+        it 'checks for user reproof or change profile age events in same and different months' do
           aggregate_failures do
             row = csv.find { |r| r['issuer'] == iaa3_sp1.issuer && r['year_month'] == '202009' }
 
