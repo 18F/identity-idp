@@ -260,7 +260,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           )
         end
 
-        it 'validates all profile age columns and mulitple issuers for single partner' do
+        it 'has correct values for all profile age columns and multiple issuers for single partner' do
           aggregate_failures do
             row = csv.find { |r| r['issuer'] == iaa2_sp1.issuer }
 
