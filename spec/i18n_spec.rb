@@ -71,8 +71,6 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
-        # need to be fixed
-        { key: 'account.email_language.name.zh', locales: %i[es fr] }, # needs to be translated
       ].freeze
       # rubocop:enable Layout/LineLength
 
