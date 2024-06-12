@@ -40,6 +40,7 @@ PUNCTUATION_PAIRS = {
   '(' => ')',
   '<' => '>',
   '（' => '）',
+  '“' => '”',
 }.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
@@ -94,19 +95,13 @@ module I18n
         { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] }, # needs to be translated
         { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] }, # needs to be translated
         { key: 'telephony.account_deleted_notice', locales: %i[zh] }, # needs to be translated
-        { key: 'two_factor_authentication.auth_app.change_nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.delete', locales: %i[zh] },
         { key: 'two_factor_authentication.auth_app.deleted', locales: %i[zh] },
         { key: 'two_factor_authentication.auth_app.edit_heading', locales: %i[zh] },
         { key: 'two_factor_authentication.auth_app.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.nickname', locales: %i[zh] },
         { key: 'two_factor_authentication.auth_app.renamed', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.change_nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.delete', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.deleted', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.edit_heading', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.nickname', locales: %i[zh] },
         { key: 'two_factor_authentication.webauthn_roaming.renamed', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_after_2fa.info_p3_html', locales: %i[zh] },
         { key: 'user_mailer.new_device_sign_in_after_2fa.reset_password', locales: %i[zh] },
