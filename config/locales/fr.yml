@@ -1243,7 +1243,7 @@ in_person_proofing.form.state_id.state_id_jurisdiction: État d’émission
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.state_id_number: Numéro de la pièce d’identité
-in_person_proofing.form.state_id.state_id_number_florida_hint_html: Il s’agit du numéro de votre carte d’identité comportant une lettre et&nbsp;12 chiffres. Exemple:&nbsp;D123-456-78-901-2
+in_person_proofing.form.state_id.state_id_number_florida_hint_html: Il s’agit du numéro sur votre pièce d’identité qui commence par une lettre suivie de 12 chiffres. Exemple:&nbsp;D123-456-78-901-2
 in_person_proofing.form.state_id.state_id_number_hint: 'Il peut comprendre des lettres, des chiffres et les symboles suivants :'
 in_person_proofing.form.state_id.state_id_number_hint_asterisks: des astérisques
 in_person_proofing.form.state_id.state_id_number_hint_dashes: des tirets

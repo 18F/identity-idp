@@ -1258,7 +1258,7 @@ in_person_proofing.form.state_id.state_id_jurisdiction: 颁发州
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: 这是颁发你身份证件的州
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- 选择 -'
 in_person_proofing.form.state_id.state_id_number: 身份证件号
-in_person_proofing.form.state_id.state_id_number_florida_hint_html: 这是你ID上的号码，由 1 个字母和 12 个数字组成。举例： D123-456-78-901-2
+in_person_proofing.form.state_id.state_id_number_florida_hint_html: 这是你ID上的号码，由 1 个字母和 12 个数字组成。举例:&nbsp;D123-456-78-901-2
 in_person_proofing.form.state_id.state_id_number_hint: 可以包含字母、数字以及以下符号：
 in_person_proofing.form.state_id.state_id_number_hint_asterisks: 星号
 in_person_proofing.form.state_id.state_id_number_hint_dashes: 横杠
