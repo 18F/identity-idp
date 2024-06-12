@@ -18,7 +18,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
       let(:user1) { create(:user, profiles: [profile1]) }
       let(:profile1) { build(:profile, verified_at: DateTime.new(2019, 10, 15).utc) }
 
-      context 'iaa1 single issuer in year_month April 2020' do
+      context 'with an IAA with a single issuer in April 2020' do
         let(:partner_account1) { create(:partner_account) }
         let(:iaa1_range) { DateTime.new(2020, 4, 15).utc..DateTime.new(2021, 4, 14).utc }
 
