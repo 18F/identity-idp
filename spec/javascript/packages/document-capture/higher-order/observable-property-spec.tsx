@@ -7,7 +7,7 @@ import {
 describe('document-capture/higher-order/observable-property', () => {
   describe('defineObservableProperty', () => {
     it('behaves like an object', () => {
-      const object = {} as { key: string };
+      const object = {} as { key?: string };
       defineObservableProperty(object, 'key', () => {});
       object.key = 'value';
 
@@ -16,7 +16,7 @@ describe('document-capture/higher-order/observable-property', () => {
 
     it('calls the callback on changes, with the changed value', () => {
       const callback = sinon.spy();
-      const object = {} as { key: string };
+      const object = {} as { key?: string };
       defineObservableProperty(object, 'key', callback);
       object.key = 'value';
 
@@ -26,7 +26,7 @@ describe('document-capture/higher-order/observable-property', () => {
 
   describe('stopObservingProperty', () => {
     it('removes the defined property and set the last value as a plain value', () => {
-      const object = {} as { key: string };
+      const object = {} as { key?: string };
       const callback = sinon.spy();
       defineObservableProperty(object, 'key', callback);
 
