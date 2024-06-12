@@ -1860,7 +1860,7 @@ user_mailer.letter_reminder.subject: 我们已向你存档地址发送了一封�
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: 身份证实方法
 user_mailer.new_device_sign_in_after_2fa.info_p1: 你的 %{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。
 user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则无需做任何事情。
-user_mailer.new_device_sign_in_after_2fa.info_p3_html: 如果不是你， %{reset_password_link_html} 并立即改变你的验 %{authentication_methods_link_html}。
+user_mailer.new_device_sign_in_after_2fa.info_p3_html: 如果不是你，%{reset_password_link_html} 并立即改变你的验%{authentication_methods_link_html}。
 user_mailer.new_device_sign_in_after_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的登录和身份验证'
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: 身份已证实
