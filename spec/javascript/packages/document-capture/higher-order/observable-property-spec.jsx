@@ -1,5 +1,8 @@
 import sinon from 'sinon';
-import { defineObservableProperty, stopObservingProperty } from '@18f/identity-document-capture/higher-order/observable-property';
+import {
+  defineObservableProperty,
+  stopObservingProperty,
+} from '@18f/identity-document-capture/higher-order/observable-property';
 
 describe('document-capture/higher-order/observable-property', () => {
   describe('defineObservableProperty', () => {
@@ -36,6 +39,6 @@ describe('document-capture/higher-order/observable-property', () => {
       expect(object.key).to.equal('second_value');
 
       expect(callback).to.have.been.calledOnceWithExactly('value');
-    })
+    });
   });
 });
