@@ -16,7 +16,7 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
 
   describe 'usps auth token refresh job' do
     context 'when using redis as a backing store' do
-      before do |ex|
+      before do |_ex|
         allow(Rails).to receive(:cache).and_return(
           ActiveSupport::Cache::RedisCacheStore.new(
             url: IdentityConfig.store.redis_throttle_url,

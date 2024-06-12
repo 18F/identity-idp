@@ -4,7 +4,7 @@ RSpec.describe Utf8Sanitizer do
   include Rack::Test::Methods
 
   let(:inner_app) do
-    proc { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
+    proc { |_env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
   end
 
   subject(:app) { Utf8Sanitizer.new(inner_app) }
