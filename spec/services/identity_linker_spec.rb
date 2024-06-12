@@ -216,7 +216,7 @@ RSpec.describe IdentityLinker do
     end
 
     context 'identity.verified_at' do
-      context 'the request is includes identity proofing and verified_at is null' do
+      context 'the request includes identity proofing and verified_at is null' do
         it 'sets the timestamp' do
           IdentityLinker.new(user, service_provider).link_identity(ial: 2)
 
@@ -226,7 +226,7 @@ RSpec.describe IdentityLinker do
         end
       end
 
-      context 'the request is includes identity proofing and verified_at is not null' do
+      context 'the request includes identity proofing and verified_at is not null' do
         it 'does not set the timestamp' do
           freeze_time
           travel_to 1.week.ago do
