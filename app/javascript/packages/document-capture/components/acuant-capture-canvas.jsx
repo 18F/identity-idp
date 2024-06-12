@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
+
 import { getAssetPath } from '@18f/identity-assets';
 import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
@@ -15,7 +16,6 @@ function AcuantCaptureCanvas() {
   useEffect(() => {
     function onAcuantCameraCreated() {
       const canvas = document.getElementById('acuant-ui-canvas');
-
       // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
       // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
       defineObservableProperty(canvas, 'callback', (callback) => {
