@@ -81,7 +81,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           end
         end
 
-        it 'validates authentication counts in ial1 + ial2 & checks partner single issuer cases' do
+        it 'has correct authentication counts in ial1 + ial2 & checks partner single issuer cases' do
           expect(csv.length).to eq(1)
           aggregate_failures do
             row = csv.find { |r| r['issuer'] == iaa1_sp.issuer }
