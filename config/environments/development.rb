@@ -8,6 +8,9 @@ Rails.application.configure do
   config.active_record.migration_error = :page_load
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.i18n.raise_on_missing_translations = true
+  require 'i18n_tagged_output'
+  config.i18n.backend = I18nTaggedOutput.new
+  config.i18n_tag_keys_in_html = true
 
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise

@@ -15,6 +15,9 @@ Rails.application.configure do
   config.active_support.test_order = :random
   config.active_support.deprecation = :stderr
   config.i18n.raise_on_missing_translations = true
+  require 'i18n_tagged_output'
+  config.i18n.backend = I18nTaggedOutput.new
+  config.i18n_tag_keys_in_html = false
 
   config.action_mailer.delivery_method = :test
   config.action_mailer.default_url_options = { host: IdentityConfig.store.domain_name }
