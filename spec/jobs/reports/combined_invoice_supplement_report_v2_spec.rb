@@ -453,7 +453,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           )
         end
 
-        it 'validates transient reproof and change profile age events inter and intra year_month' do
+        it 'handles the case when a user reproofs and changes profile age events in the same and different months' do
           aggregate_failures do
             row = csv.find { |r| r['issuer'] == iaa3_sp1.issuer && r['year_month'] == '202009' }
 
