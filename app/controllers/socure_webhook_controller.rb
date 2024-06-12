@@ -7,7 +7,10 @@ class SocureWebhookController < ApplicationController
 
   def create
     # log webhook received referenceID, customerUserId, ...
-    analytics.socure_webhook(request.body.read)
+    body = request.body.read
+    parsed_response_body = parse_response_body(body)
+    event_type = parsed_response_body.dig('event', 'eventType')
+    analytics.socure_webhook(event_type: event_type, text: body)
     webhook = DocAuth::Socure::Webhook.new(parsed_response_body)
     webhook.handle_event
   ensure
@@ -16,9 +19,9 @@ class SocureWebhookController < ApplicationController
 
   private
 
-  def parsed_response_body
+  def parse_response_body(body)
     begin
-      JSON.parse(request.body.read)
+      JSON.parse(body)
     rescue JSON::JSONError
       raise 'failed to parse Socure webhook body'
     end
