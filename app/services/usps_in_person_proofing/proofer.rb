@@ -9,13 +9,13 @@ module UspsInPersonProofing
     USPS_EIPP_ASSURANCE_LEVEL = '2.0'
 
     # Makes HTTP request to get nearby in-person proofing facilities
-    # Requires address, city, state, zip code, and is_enhanced_ipp.
+    # Requires address, city, state, zip code, and enhanced_ipp.
     # The PostOffice objects have a subset of the fields
     # returned by the API.
     # @param location [Object]
-    # @param is_enhanced_ipp [Boolean]
+    # @param enhanced_ipp [Boolean]
     # @return [Array<PostOffice>] Facility locations
-    def request_facilities(location, is_enhanced_ipp)
+    def request_facilities(location, enhanced_ipp)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList"
       request_body = {
         sponsorID: sponsor_id,
@@ -25,7 +25,7 @@ module UspsInPersonProofing
         zipCode: location.zip_code,
       }
 
-      if is_enhanced_ipp
+      if enhanced_ipp
         request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
       end
 
@@ -46,7 +46,7 @@ module UspsInPersonProofing
     # stored with the unique ID to be able to request the status of proofing.
     # @param applicant [Hash]
     # @return [Hash] API response
-    def request_enroll(applicant)
+    def request_enroll(applicant, enhanced_ipp)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
       request_body = {
         sponsorID: sponsor_id,
@@ -60,6 +60,11 @@ module UspsInPersonProofing
         emailAddress: applicant.email,
         IPPAssuranceLevel: '1.5',
       }
+
+      if enhanced_ipp
+        request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
+        request_body[:IPPAssuranceLevel] = '2.0'
+      end
 
       res = faraday.post(url, request_body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_enroll' }

@@ -19,8 +19,8 @@ module UspsInPersonProofing
         load_response_fixture('request_facilities_response.json')
       end
 
-      def self.request_eipp_facilities_response
-        load_response_fixture('request_eipp_facilities_response.json')
+      def self.request_enhanced_ipp_facilities_response
+        load_response_fixture('request_enhanced_ipp_facilities_response.json')
       end
 
       def self.request_facilities_response_with_unordered_distance

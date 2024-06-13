@@ -85,18 +85,18 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
     end
 
-    context 'with EIPP enabled' do
+    context 'with enhanced ipp enabled' do
       let(:vtr) { ['C1.C2.P1.Pe'] }
-      let(:eipp_sp_session) { { vtr: vtr, acr_values: nil } }
+      let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
       let(:user) { build(:user) }
       let(:sp) { build(:service_provider, ial: 2) }
 
       before do
-        allow(controller).to receive(:sp_session).and_return(eipp_sp_session)
+        allow(controller).to receive(:sp_session).and_return(enhanced_ipp_sp_session)
         allow(controller).to receive(:sp_from_sp_session).and_return(sp)
       end
 
-      it 'requests EIPP locations' do
+      it 'requests enhanced ipp locations' do
         expect(AuthnContextResolver).to receive(:new).with(
           user: user, service_provider: sp,
           vtr: vtr, acr_values: nil
