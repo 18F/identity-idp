@@ -1,6 +1,6 @@
 <header>
   <%= render 'shared/no_pii_banner' if FeatureManagement.show_no_pii_banner? %>
-  <section class="usa-banner usa-banner--centered" aria-label="<%= t('shared.banner.landmark_label') %>">
+  <%= content_tag(:section, class: "usa-banner usa-banner--centered", aria: { label: t('shared.banner.landmark_label') }) do %>
     <div class="usa-accordion">
       <div class="usa-banner__header">
         <div class="usa-banner__inner">
@@ -58,7 +58,7 @@
         </div>
       </div>
     </div>
-  </section>
+  <% end %>
   <div class="page-header<%= ' page-header--basic' if !content_for?(:header) %>">
     <% if content_for?(:header) %>
       <%= yield(:header) %>

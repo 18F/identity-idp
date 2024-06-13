@@ -7,7 +7,15 @@ class I18nTaggedOutput < I18nFlatYmlBackend
     result = super
 
     if Rails.application.config.i18n_tag_keys_in_html
-      content_tag(:span, result, data: { i18n_key: key })
+      if result.is_a?(Array)
+        puts "ARRAY #{result}"
+        result
+      elsif result.is_a?(Hash)
+        puts "HASH #{result}"
+        result
+      else
+        content_tag(:span, data: { i18n: key }) { result }
+      end
     else
       result
     end
