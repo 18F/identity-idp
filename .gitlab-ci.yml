@@ -235,8 +235,7 @@ migrate:
     - *bundle_install
     - bundle exec rake db:create db:migrate --trace
     - git diff db/
-    - '(! git diff --name-only | grep db/schema.rb) || (echo "Error: db/schema.rb does not match after running migrations"; exit 1)'
-    - '(! git diff --name-only | grep db/worker_jobs_schema.rb) || (echo "Error: db/worker_jobs_schema.rb does not match after running migrations"; exit 1)'
+    - make lint_database_schema_files
 
 specs:
   stage: test
