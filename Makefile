@@ -26,6 +26,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_analytics_events \
 	lint_analytics_events_sorted \
 	lint_country_dialing_codes \
+	lint_database_schema_files \
 	lint_erb \
 	lint_font_glyphs \
 	lint_lockfiles \
@@ -255,6 +256,10 @@ update_pinpoint_supported_countries: ## Updates list of countries supported by P
 
 lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that countries supported by Pinpoint for voice and SMS are up to date
 	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
+
+lint_database_schema_files: ## Checks that database schema files have not changed
+	(! git diff --name-only | grep db/schema.rb) || (echo "Error: db/schema.rb does not match after running migrations"; exit 1)
+	(! git diff --name-only | grep db/worker_jobs_schema.rb) || (echo "Error: db/worker_jobs_schema.rb does not match after running migrations"; exit 1)
 
 build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
 	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"
