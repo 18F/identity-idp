@@ -329,6 +329,8 @@ pinpoint-check:
     - make lint_country_dialing_codes
 
 audit_packages:
+  needs:
+    - job: install
   stage: test
   cache:
     - <<: *ruby_cache
