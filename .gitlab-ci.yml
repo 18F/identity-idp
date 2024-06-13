@@ -319,6 +319,8 @@ js_tests:
     - yarn test
 
 pinpoint-check:
+  needs:
+    - job: install
   stage: test
   cache:
     - <<: *ruby_cache
