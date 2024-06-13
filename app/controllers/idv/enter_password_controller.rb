@@ -129,9 +129,9 @@ module Idv
     end
 
     def init_profile
-      is_eipp = is_enhanced_ipp?
+      is_enhanced_ipp = is_enhanced_ipp?
 
-      idv_session.create_profile_from_applicant_with_password(password, is_eipp)
+      idv_session.create_profile_from_applicant_with_password(password, is_enhanced_ipp)
 
       if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)

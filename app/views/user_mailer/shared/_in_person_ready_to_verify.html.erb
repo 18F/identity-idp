@@ -39,7 +39,7 @@
 </table>
 
 <%# EIPP Only - What to bring section %>
-<% if @is_eipp %>
+<% if @is_enhanced_ipp %>
   <section class="border-1px radius-lg border-primary-light padding-4 margin-bottom-4">
     <%# What to bring to the Post Office %>
     <h2 class="margin-bottom-2"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
@@ -196,7 +196,7 @@
     </tr>
   </table>
   
-  <% if !@is_eipp %>
+  <% if !@is_enhanced_ipp %>
     <p class="margin-bottom-0">
       <%= t('in_person_proofing.body.barcode.questions') %>
       <%= link_to(

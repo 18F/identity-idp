@@ -101,7 +101,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           it 'evaluates to IPP' do
             response
 
-            expect(assigns(:is_eipp)).to be false
+            expect(assigns(:is_enhanced_ipp)).to be false
           end
         end
 
@@ -116,7 +116,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           it 'evaluates to EIPP' do
             response
 
-            expect(assigns(:is_eipp)).to be true
+            expect(assigns(:is_enhanced_ipp)).to be true
           end
         end
       end

@@ -3,7 +3,7 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user, pii, opt_in = nil, is_eipp = false)
+      def schedule_in_person_enrollment(user, pii, opt_in = nil, is_enhanced_ipp = false)
         enrollment = user.establishing_in_person_enrollment
         return unless enrollment
 
@@ -35,14 +35,14 @@ module UspsInPersonProofing
           tmx_status: enrollment.profile&.tmx_status,
         )
 
-        send_ready_to_verify_email(user, enrollment, is_eipp: is_eipp)
+        send_ready_to_verify_email(user, enrollment, is_enhanced_ipp: is_enhanced_ipp)
       end
 
-      def send_ready_to_verify_email(user, enrollment, is_eipp:)
+      def send_ready_to_verify_email(user, enrollment, is_enhanced_ipp:)
         user.confirmed_email_addresses.each do |email_address|
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,
-            is_eipp: is_eipp,
+            is_enhanced_ipp: is_enhanced_ipp,
           ).deliver_now_or_later
         end
       end

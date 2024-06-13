@@ -62,7 +62,7 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def create_profile_from_applicant_with_password(user_password, is_eipp)
+    def create_profile_from_applicant_with_password(user_password, is_enhanced_ipp)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
@@ -90,7 +90,7 @@ module Idv
           current_user,
           profile_maker.pii_attributes,
           opt_in_param,
-          is_eipp,
+          is_enhanced_ipp,
         )
       end
     end

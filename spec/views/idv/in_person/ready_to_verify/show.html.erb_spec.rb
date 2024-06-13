@@ -22,9 +22,9 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       user: user
     )
   end
-  let(:is_eipp) { false }
+  let(:is_enhanced_ipp) { false }
   let(:presenter) do
-    Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment, is_eipp: is_eipp)
+    Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment, is_enhanced_ipp: is_enhanced_ipp)
   end
   let(:step_indicator_steps) { Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS }
   let(:sp_event_name) { 'IdV: user clicked sp link on ready to verify page' }
@@ -141,9 +141,9 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
 
   context 'For IPP (Not Enhanced IPP)' do
-    let(:is_eipp) { false }
+    let(:is_enhanced_ipp) { false }
     before do
-      @is_eipp = false
+      @is_enhanced_ipp = false
     end
 
     context 'template displays modified content' do
@@ -209,10 +209,10 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
 
   context 'For Enhanced IPP (EIPP)' do
-    let(:is_eipp) { true }
+    let(:is_enhanced_ipp) { true }
 
     before do
-      @is_eipp = true
+      @is_enhanced_ipp = true
     end
 
     context 'template displays modified content' do
