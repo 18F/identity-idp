@@ -126,6 +126,7 @@ group :test do
   gem 'bundler-audit', require: false
   gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'
+  gem 'rspec_oscal_formatter', github: 'mitchellhenke/rspec_oscal_formatter'
   gem 'simplecov_json_formatter'
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 6.2.0'
