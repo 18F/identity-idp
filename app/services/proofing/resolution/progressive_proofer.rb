@@ -142,7 +142,7 @@ module Proofing
         timer.time('state_id') do
           state_id_proofer.proof(applicant_pii_with_state_id_address)
         end.tap do |result|
-          add_sp_cost(:aamva, result.transaction_id)
+          add_sp_cost(:aamva, result.transaction_id) if result.exception.blank?
         end
       end
 
