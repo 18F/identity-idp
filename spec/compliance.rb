@@ -1,6 +1,8 @@
 require 'rails_helper'
 require 'rspec_oscal_formatter'
 
+# run `rspec spec/compliance.rb`
+
 RSpec.configure do |config|
   config.add_formatter RSpec::RSpecOscalFormatter::Formatter
 end
