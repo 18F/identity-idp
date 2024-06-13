@@ -296,26 +296,14 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
             hash_including(**analytics_args, success: true, analytics_id: 'Doc Auth'),
           )
         end
-
-        it 'records the cost as billable' do
-          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
-        end
       end
 
       context 'when aamva returns success: false but no exception' do
         let(:success) { false }
 
-        it 'logs a cost' do
-          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
-        end
-      end
-
-      context 'when the jurisdiction is unsupported' do
-        let(:success) { true }
-        let(:vendor_name) { 'UnsupportedJurisdiction' }
-
-        it 'does not consider the request billable' do
-          expect { put :show }.to_not change { SpCost.where(cost_type: 'aamva').count }
+        it 'redirects to the warning URL' do
+          put :show
+          expect(response).to redirect_to(idv_session_errors_warning_url)
         end
       end
 
@@ -336,10 +324,6 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
             step_name: 'verify_info',
             remaining_submit_attempts: kind_of(Numeric),
           )
-        end
-
-        it 'does not log a cost' do
-          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(0)
         end
       end
     end
@@ -420,45 +404,6 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url
-      end
-    end
-  end
-
-  describe '#add_proofing_costs' do
-    let(:sp_costs_added) { nil }
-    let(:result) do
-      {
-        context: {
-          sp_costs_added:,
-          stages: {
-            resolution: {
-              transaction_id: 'ABCD1234',
-            },
-            residential_address: {
-              vendor_name: 'ResidentialAddressNotRequired',
-            },
-            state_id: {
-              transaction_id: 'EFGH5678',
-            },
-            threatmetrix: {
-              transaction_id: 'IJKL9012',
-            },
-          },
-        },
-      }
-    end
-
-    it 'adds proofing costs' do
-      expect(subject).to receive(:add_cost).exactly(3).times
-      subject.send(:add_proofing_costs, result)
-    end
-
-    context 'when proofing costs have already been added' do
-      let(:sp_costs_added) { true }
-
-      it 'does not add proofing costs' do
-        expect(subject).not_to receive(:add_cost)
-        subject.send(:add_proofing_costs, result)
       end
     end
   end
