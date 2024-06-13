@@ -354,7 +354,7 @@ coverage:
     - bundle exec spec/simplecov_merger.rb
     - mv coverage/coverage/* coverage/
     - cat rspec_xml/*.xml > rspec.xml
-  coverage: '/\(\d+.\d+\%\) covered/'
+  coverage: '/LOC \(\d+.\d+\%\) covered/'
   artifacts:
     reports:
       coverage_report:
