@@ -311,6 +311,7 @@ short_term_phone_otp_max_attempts: 2
 socure_document_request_endpoint: ''
 socure_id_plus_endpoint: ''
 socure_id_secret_key: ''
+socure_test_scenario_uuid: ''
 socure_webhook_secret_key: ''
 socure_verification_level: 2
 sp_handoff_bounce_max_seconds: 2
