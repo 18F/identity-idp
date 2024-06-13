@@ -24,13 +24,7 @@ module Idv
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
-      # proof_resolution job expects these values
-      agent_pii = pii.merge(
-        uuid: current_user.uuid,
-        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-        ssn: idv_session.ssn,
-      )
-      Idv::Agent.new(agent_pii).proof_resolution(
+      Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: aamva_state?,
         trace_id: amzn_trace_id,
