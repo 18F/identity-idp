@@ -158,6 +158,7 @@ RSpec.describe GpoReminderSender do
       end
 
       context 'but the user has completed gpo verification' do
+        let(:enhanced_ipp) { false }
         before do
           otp = 'ABC123'
           pending_profile = user.gpo_verification_pending_profile
@@ -175,7 +176,7 @@ RSpec.describe GpoReminderSender do
             user: user,
             pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
             otp: otp,
-          ).submit
+          ).submit(enhanced_ipp)
         end
 
         include_examples 'sends no emails'

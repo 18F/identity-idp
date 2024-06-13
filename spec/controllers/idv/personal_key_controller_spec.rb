@@ -30,6 +30,7 @@ RSpec.describe Idv::PersonalKeyController do
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :fully_registered, password: password) }
+  let(:enhanced_ipp) { false }
 
   # Most (but not all) of these tests assume that a profile has been minted
   # from the data in idv_session. Set this to false to prevent this behavior
@@ -68,7 +69,7 @@ RSpec.describe Idv::PersonalKeyController do
     idv_session.applicant = applicant
 
     if mint_profile_from_idv_session
-      idv_session.create_profile_from_applicant_with_password(password)
+      idv_session.create_profile_from_applicant_with_password(password, enhanced_ipp)
     end
   end
 
@@ -260,6 +261,14 @@ RSpec.describe Idv::PersonalKeyController do
           it 'does not redirect' do
             get :show
             expect(response).to_not be_redirect
+          end
+
+          context 'when the user is going through enhanced ipp' do
+            let(:enhanced_ipp) { false }
+            it 'does not redirect' do
+              get :show
+              expect(response).to_not be_redirect
+            end
           end
         end
       end
@@ -496,6 +505,30 @@ RSpec.describe Idv::PersonalKeyController do
             proofing_components: nil,
           ),
         )
+      end
+
+      context 'when the user is going through enhanced ipp' do
+        let(:enhanced_ipp) { false }
+        it 'creates a profile and returns completion url' do
+          patch :update
+
+          expect(response).to redirect_to idv_in_person_ready_to_verify_url
+        end
+
+        it 'logs key submitted event' do
+          patch :update
+
+          expect(@analytics).to have_logged_event(
+            'IdV: personal key submitted',
+            hash_including(
+              address_verification_method: 'phone',
+              fraud_review_pending: false,
+              fraud_rejection: false,
+              in_person_verification_pending: false,
+              proofing_components: nil,
+            ),
+          )
+        end
       end
     end
 
