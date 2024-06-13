@@ -12,6 +12,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
 .PHONY: \
 	analytics_events \
+	audit \
 	brakeman \
 	build_artifact \
 	check \
@@ -74,11 +75,7 @@ endif
 	make lint_analytics_events_sorted
 	@echo "--- brakeman ---"
 	make brakeman
-	@echo "--- bundler-audit ---"
-	bundle exec bundler-audit check --update
 	# JavaScript
-	@echo "--- yarn audit ---"
-	yarn audit --groups dependencies; test $$? -le 7
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
@@ -104,6 +101,12 @@ endif
 	make lint_spec_file_name
 	@echo "--- lint migrations ---"
 	make lint_migrations
+
+audit: ## Checks packages for vulnerabilities
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
+	@echo "--- yarn audit ---"
+	yarn audit --groups dependencies; test $$? -le 7
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
