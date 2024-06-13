@@ -364,6 +364,7 @@ coverage:
     name: coverage
     expire_in: 31d
     paths:
+      - rspec.xml
       - rspec_json/rspec.json
       - knapsack_rspec_report.json
       - coverage/index.html
