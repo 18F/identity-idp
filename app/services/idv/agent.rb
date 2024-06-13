@@ -22,7 +22,6 @@ module Idv
 
       job_arguments = {
         encrypted_arguments: encrypted_arguments,
-        should_proof_state_id: false,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
         user_id: user_id,
@@ -30,6 +29,8 @@ module Idv
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        # This argument is intended to be removed
+        should_proof_state_id: false,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled
