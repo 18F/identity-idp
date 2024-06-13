@@ -20,12 +20,11 @@ ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   'zh.account_reset.pending.confirm',
   'zh.account_reset.pending.wait_html',
   'zh.account_reset.recovery_options.check_webauthn_platform_info',
-  'zh.doc_auth.headings.welcome',
   'zh.doc_auth.info.exit.with_sp',
   'zh.idv.cancel.headings.exit.with_sp',
   'zh.idv.failure.exit.with_sp',
-  'zh.in_person_proofing.body.barcode.return_to_partner_link',
   'zh.telephony.account_reset_notice',
+  'zh.telephony.confirmation_otp.voice',
   'zh.two_factor_authentication.account_reset.pending',
   'zh.user_mailer.account_reset_granted.intro_html',
   'zh.user_mailer.account_reset_request.header',
@@ -34,6 +33,15 @@ ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
   'zh.user_mailer.in_person_verified.subject',
   'zh.user_mailer.new_device_sign_in.info',
 ].sort.freeze
+
+PUNCTUATION_PAIRS = {
+  '{' => '}',
+  '[' => ']',
+  '(' => ')',
+  '<' => '>',
+  '（' => '）',
+  '“' => '”',
+}.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
 # solution based on current content, intended to help prevent accidents when adding new translated
@@ -73,43 +81,18 @@ module I18n
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
+        { key: 'telephony.format_length.six', locales: %i[zh] }, # numeral is not translated
+        { key: 'telephony.format_length.ten', locales: %i[zh] }, # numeral is not translated
         { key: 'time.formats.event_date', locales: %i[es zh] },
         { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
         # need to be fixed
-        { key: 'account.email_language.name.zh', locales: %i[es fr] },
-        { key: 'doc_auth.buttons.close', locales: %i[zh] },
-        { key: 'errors.doc_auth.document_capture_canceled', locales: %i[zh] },
-        { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] },
-        { key: 'forms.webauthn_setup.learn_more', locales: %i[zh] },
-        { key: 'idv.failure.verify.exit', locales: %i[zh] },
-        { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] },
-        { key: 'mfa.recommendation', locales: %i[zh] },
-        { key: 'notices.signed_up_but_unconfirmed.resend_confirmation_email', locales: %i[zh] },
-        { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] },
-        { key: 'telephony.account_deleted_notice', locales: %i[zh] },
-        { key: 'telephony.format_length.six', locales: %i[zh] },
-        { key: 'telephony.format_length.ten', locales: %i[zh] },
-        { key: 'titles.idv.canceled', locales: %i[zh] },
-        { key: 'titles.piv_cac_setup.upsell', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.change_nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.delete', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.deleted', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.edit_heading', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.renamed', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.change_nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.delete', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.deleted', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.edit_heading', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.renamed', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_after_2fa.info_p3_html', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_after_2fa.reset_password', locales: %i[zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr] }, # needs to be translated
+        { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] }, # needs to be translated
+        { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] }, # needs to be translated
+        { key: 'telephony.account_deleted_notice', locales: %i[zh] }, # needs to be translated
       ].freeze
       # rubocop:enable Layout/LineLength
 
@@ -184,6 +167,28 @@ RSpec.describe 'I18n' do
     i18n.leading_or_trailing_whitespace_keys
   end
 
+  it 'has matching pairs of punctuation' do
+    mismatched_punctuation_pairs = {}
+    i18n.locales.each do |locale|
+      i18n.data[locale].key_values.each do |key, value|
+        PUNCTUATION_PAIRS.each do |item1, item2|
+          Array(value).each do |value|
+            next if value.nil?
+            if value.count(item1) != value.count(item2)
+              mismatched_punctuation_pairs["#{locale}.#{key}"] ||= []
+              mismatched_punctuation_pairs["#{locale}.#{key}"].push("#{item1} #{item2}")
+            end
+          end
+        end
+      end
+    end
+
+    expect(mismatched_punctuation_pairs).to(
+      be_empty,
+      "keys with mismatched punctuation pairs: #{mismatched_punctuation_pairs.pretty_inspect}",
+    )
+  end
+
   it 'does not have missing keys' do
     expect(missing_keys).to(
       be_empty,
@@ -228,24 +233,58 @@ RSpec.describe 'I18n' do
     missing_interpolation_argument_locale_keys = []
 
     i18n.data[i18n.base_locale].select_keys do |key, _node|
-      if key.start_with?('i18n.transliterate.rule.') || i18n.t(key).is_a?(Array) || i18n.t(key).nil?
+      if key.start_with?('i18n.transliterate.rule.') || i18n.t(key).is_a?(Array) || !i18n.t(key)
         next
       end
 
       interpolation_arguments = i18n.locales.map do |locale|
-        if ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS.include?("#{locale}.#{key}")
-          missing_interpolation_argument_locale_keys.push("#{locale}.#{key}")
-          next
+        value = extract_interpolation_arguments i18n.t(key, locale)
+        if value
+          ["#{locale}.#{key}", value]
         end
-        extract_interpolation_arguments i18n.t(key, locale)
-      end.compact
+      end.compact.to_h
 
-      missing_interpolation_argument_keys.push(key) if interpolation_arguments.uniq.length > 1
+      next if interpolation_arguments.blank?
+      next if interpolation_arguments.values.uniq.length == 1
+      if ALLOWED_INTERPOLATION_MISMATCH_KEYS.include?(key)
+        missing_interpolation_argument_keys.push(key)
+        next
+      end
+
+      # interpolation_arguments is a hash where the keys are the locale-specific content key,
+      # and values are the Set of interpolation arguments used in that key.
+      #
+      # We group and sort by the Set of interpolation arguments and assume the group with the
+      # most common interpolation arguments is the correct one. We then take the keys
+      # in the remaining groups and add them to the missing keys list.
+      keys =
+        interpolation_arguments.group_by { |_k, v| v }.
+          sort_by { |_k, v| v.length * -1 }.drop(1).
+          map { |x| x[1].flatten }.to_h.keys
+
+      missing_interpolation_argument_locale_keys += keys
     end
 
-    expect(missing_interpolation_argument_keys.sort).to eq ALLOWED_INTERPOLATION_MISMATCH_KEYS
-    expect(missing_interpolation_argument_locale_keys.sort).to eq(
-      ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS,
+    unused_allowed_interpolation_mismatch_keys =
+      ALLOWED_INTERPOLATION_MISMATCH_KEYS - missing_interpolation_argument_keys
+    expect(unused_allowed_interpolation_mismatch_keys.sort).to(
+      be_empty,
+      <<~EOS,
+        ALLOWED_INTERPOLATION_MISMATCH_KEYS contains unused allowed interpolation mismatches.
+        The following keys can be removed from ALLOWED_INTERPOLATION_MISMATCH_KEYS:
+        #{unused_allowed_interpolation_mismatch_keys.pretty_inspect}
+      EOS
+    )
+
+    unused_allowed_interpolation_mismatch_locale_keys =
+      ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS - missing_interpolation_argument_locale_keys
+    expect(unused_allowed_interpolation_mismatch_locale_keys).to(
+      be_empty,
+      <<~EOS,
+        ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS contains unused allowed interpolation mismatches.
+        The following keys can be removed from ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS:
+        #{unused_allowed_interpolation_mismatch_locale_keys.pretty_inspect}
+      EOS
     )
   end
 
@@ -336,7 +375,7 @@ RSpec.describe 'I18n' do
       end
 
       it 'does not contain content from another language' do
-        flattened_yaml_data.each do |key, value|
+        flattened_yaml_data.each do |_key, value|
           other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
           expect(value).not_to match(
             Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
@@ -345,7 +384,7 @@ RSpec.describe 'I18n' do
       end
 
       it 'does not contain common misspellings', if: COMMONLY_MISSPELLED_WORDS.key?(locale) do
-        flattened_yaml_data.each do |key, value|
+        flattened_yaml_data.each do |_key, value|
           expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
         end
       end

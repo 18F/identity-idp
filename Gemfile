@@ -6,6 +6,9 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 gem 'rails', '~> 7.1.3'
 
 gem 'ahoy_matey', '~> 3.0'
+# pod identity requires 3.188.0
+# https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
+gem 'aws-sdk-core', '>= 3.188.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-cloudwatchlogs', require: false
 gem 'aws-sdk-pinpoint'
@@ -68,7 +71,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.21.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.21.2-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false

@@ -2,7 +2,7 @@
 
 namespace :convert_application_yml_to_proper_types do
   desc 'Take application.yml input file and convert to proper type'
-  task :convert, [:filename] => :environment do |t, args|
+  task :convert, [:filename] => :environment do |_t, args|
     filename = args[:filename]
     if filename
       content = ''

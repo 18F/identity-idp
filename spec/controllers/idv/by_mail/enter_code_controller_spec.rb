@@ -390,7 +390,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
       before do
         allow(IdentityConfig.store).to receive(:verify_gpo_key_max_attempts).
           and_return(max_attempts)
-        (max_attempts - 1).times do |i|
+        (max_attempts - 1).times do |_i|
           post(:create, params: { gpo_verify_form: { otp: bad_otp } })
         end
       end

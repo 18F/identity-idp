@@ -127,8 +127,8 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
 
         # Inside whole month
 
-        # 2 old user + 1 new user in whole month
-        [user1, user2, user3].each do |user|
+        # 5 old user + 1 new user in whole month
+        [user1, user2, user3, user4, user5, user7].each do |user|
           2.times do
             create(
               :sp_return_log,
@@ -234,7 +234,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
 
         # Outside analysis range
         # 1 new user returning outside the range of analysis
-        [user11].each do |user, profile|
+        [user11].each do |user, _profile|
           3.times do
             create(
               :sp_return_log,
@@ -259,6 +259,13 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
             unique_user_proofed_events: 8,
+            partner_ial2_unique_users_year1: 2,
+            partner_ial2_unique_users_year2: 2,
+            partner_ial2_unique_users_year3: 1,
+            partner_ial2_unique_users_year4: 1,
+            partner_ial2_unique_users_year5: 2,
+            partner_ial2_unique_users_year_greater_than_5: 0,
+            partner_ial2_unique_users_unknown: 0,
             new_unique_user_proofed_events: 8,
             partner_ial2_new_unique_users_year1: 2,
             partner_ial2_new_unique_users_year2: 2,
@@ -274,7 +281,14 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             year_month: '202010',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
-            unique_user_proofed_events: 10,
+            unique_user_proofed_events: 13,
+            partner_ial2_unique_users_year1: 4,
+            partner_ial2_unique_users_year2: 4,
+            partner_ial2_unique_users_year3: 1,
+            partner_ial2_unique_users_year4: 1,
+            partner_ial2_unique_users_year5: 0,
+            partner_ial2_unique_users_year_greater_than_5: 2,
+            partner_ial2_unique_users_unknown: 1,
             new_unique_user_proofed_events: 8,
             partner_ial2_new_unique_users_year1: 3,
             partner_ial2_new_unique_users_year2: 2,
