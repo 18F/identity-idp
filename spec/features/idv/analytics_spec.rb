@@ -28,6 +28,22 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       timed_out: false,
       transaction_id: 'ddp-mock-transaction-id-123' }
   end
+  let(:base_proofing_components) do
+    {
+      document_check: 'mock',
+      document_type: 'state_id',
+      source_check: 'aamva',
+      resolution_check: 'lexis_nexis',
+      threatmetrix: threatmetrix,
+      threatmetrix_review_status: 'pass',
+    }
+  end
+  let(:lexis_nexis_address_proofing_components) do
+    base_proofing_components.merge(address_check: 'lexis_nexis_address')
+  end
+  let(:gpo_letter_proofing_components) do
+    base_proofing_components.merge(address_check: 'gpo_letter')
+  end
 
   # rubocop:disable Layout/LineLength
   # rubocop:disable Layout/MultilineHashKeyLineBreaks
@@ -102,62 +118,62 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: phone confirmation form' => {
         success: true, errors: {}, error_details: nil, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, otp_delivery_preference: 'sms',
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
         success: true, errors: {}, error_details: nil, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
         success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, errors: {}, error_details: nil, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp submitted' => {
         success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, error_details: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_visited => {
         address_verification_method: 'phone', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_submitted => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: final resolution' => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key visited' => {
         address_verification_method: 'phone', encrypted_profiles_missing: false, in_person_verification_pending: false,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
     }
   end
@@ -228,62 +244,62 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: phone confirmation form' => {
         success: true, errors: {}, error_details: nil, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, otp_delivery_preference: 'sms',
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
         success: true, errors: {}, error_details: nil, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
         success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, errors: {}, error_details: nil, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp submitted' => {
         success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, error_details: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_visited => {
         address_verification_method: 'phone', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_submitted => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: final resolution' => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key visited' => {
         address_verification_method: 'phone', encrypted_profiles_missing: false, in_person_verification_pending: false,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'legacy_unsupervised', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
     }
   end
@@ -351,12 +367,12 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: USPS address letter requested' => {
         resend: false, phone_step_attempts: 0, first_letter_requested_at: nil, hours_since_first_letter: 0, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: request letter visited' => {
         letter_already_sent: false,
@@ -364,28 +380,28 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       :idv_enter_password_visited => {
         address_verification_method: 'gpo', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
+        proofing_components: gpo_letter_proofing_components
       },
       'IdV: USPS address letter enqueued' => {
         enqueued_at: Time.zone.now.utc, resend: false, phone_step_attempts: 0, first_letter_requested_at: Time.zone.now.utc, hours_since_first_letter: 0, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
+        proofing_components: gpo_letter_proofing_components
       },
       :idv_enter_password_submitted => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
+        proofing_components: gpo_letter_proofing_components
       },
       'IdV: final resolution' => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, deactivation_reason: nil,
         # NOTE: pending_profile_idv_level should be set here, a nil value is cached for current_user.pending_profile.
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
+        proofing_components: gpo_letter_proofing_components
       },
       'IdV: letter enqueued visited' => {
         active_profile_idv_level: nil, pending_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
+        proofing_components: gpo_letter_proofing_components
       },
     }
   end
@@ -602,62 +618,62 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: phone confirmation form' => {
         success: true, errors: {}, error_details: nil, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, otp_delivery_preference: 'sms',
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
+        proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
         success: true, errors: {}, error_details: nil, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
         success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, errors: {}, error_details: nil, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp submitted' => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, error_details: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_visited => {
         address_verification_method: 'phone', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_submitted => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'unsupervised_with_selfie', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: final resolution' => {
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'unsupervised_with_selfie', pending_profile_idv_level: nil,
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key visited' => {
         address_verification_method: 'phone', in_person_verification_pending: false, encrypted_profiles_missing: false,
         active_profile_idv_level: 'unsupervised_with_selfie', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
         active_profile_idv_level: 'unsupervised_with_selfie', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: false, deactivation_reason: nil,
         active_profile_idv_level: 'unsupervised_with_selfie', pending_profile_idv_level: nil,
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: lexis_nexis_address_proofing_components
       },
     }
   end
