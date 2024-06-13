@@ -40,6 +40,7 @@ PUNCTUATION_PAIRS = {
   '(' => ')',
   '<' => '>',
   '（' => '）',
+  '“' => '”',
 }.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
@@ -80,43 +81,18 @@ module I18n
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
+        { key: 'telephony.format_length.six', locales: %i[zh] }, # numeral is not translated
+        { key: 'telephony.format_length.ten', locales: %i[zh] }, # numeral is not translated
         { key: 'time.formats.event_date', locales: %i[es zh] },
         { key: 'time.formats.event_time', locales: %i[es zh] },
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
         # need to be fixed
-        { key: 'account.email_language.name.zh', locales: %i[es fr] },
-        { key: 'doc_auth.buttons.close', locales: %i[zh] },
-        { key: 'errors.doc_auth.document_capture_canceled', locales: %i[zh] },
-        { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] },
-        { key: 'forms.webauthn_setup.learn_more', locales: %i[zh] },
-        { key: 'idv.failure.verify.exit', locales: %i[zh] },
-        { key: 'in_person_proofing.form.state_id.state_id_number_florida_hint_html', locales: %i[zh] },
-        { key: 'mfa.recommendation', locales: %i[zh] },
-        { key: 'notices.signed_up_but_unconfirmed.resend_confirmation_email', locales: %i[zh] },
-        { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] },
-        { key: 'telephony.account_deleted_notice', locales: %i[zh] },
-        { key: 'telephony.format_length.six', locales: %i[zh] },
-        { key: 'telephony.format_length.ten', locales: %i[zh] },
-        { key: 'titles.idv.canceled', locales: %i[zh] },
-        { key: 'titles.piv_cac_setup.upsell', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.change_nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.delete', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.deleted', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.edit_heading', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.auth_app.renamed', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.change_nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.delete', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.deleted', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.edit_heading', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.manage_accessible_label', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.nickname', locales: %i[zh] },
-        { key: 'two_factor_authentication.webauthn_roaming.renamed', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_after_2fa.info_p3_html', locales: %i[zh] },
-        { key: 'user_mailer.new_device_sign_in_after_2fa.reset_password', locales: %i[zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr] }, # needs to be translated
+        { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] }, # needs to be translated
+        { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] }, # needs to be translated
+        { key: 'telephony.account_deleted_notice', locales: %i[zh] }, # needs to be translated
       ].freeze
       # rubocop:enable Layout/LineLength
 
