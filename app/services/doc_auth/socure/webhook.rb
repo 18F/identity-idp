@@ -58,6 +58,12 @@ module DocAuth
 
         # fetch decision using uuid
         socure_document_uuid = event.dig('data', 'uuid')
+
+        test_scenario_uuid = IdentityConfig.store.socure_test_scenario_uuid
+        if test_scenario_uuid.present?
+          socure_document_uuid = test_scenario_uuid
+        end
+
         return unless socure_document_uuid # log an error?
 
         document_verification_req = DocAuth::Socure::Requests::EmailAuthScore.new(
