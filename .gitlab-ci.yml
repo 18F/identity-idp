@@ -249,8 +249,7 @@ specs:
       - coverage/
       - rspec.xml
       - rspec_json/
-    reports:
-      junit: rspec.xml
+      - rspec_xml/
   script:
     - *bundle_install
     - *yarn_install
@@ -270,7 +269,7 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
-    - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
+    - bundle exec rake knapsack:rspec["--seed ${CI_PIPELINE_IID} --format documentation --format RspecJunitFormatter --out rspec_xml/${CI_NODE_INDEX}.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
 
 lint:
   stage: test
@@ -354,11 +353,13 @@ coverage:
     - *bundle_install
     - bundle exec spec/simplecov_merger.rb
     - mv coverage/coverage/* coverage/
+  coverage: 'LOC /\(\d+.\d+\%\) covered/'
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
         path: coverage/coverage.xml
+      junit: rspec.xml
     name: coverage
     expire_in: 31d
     paths:
