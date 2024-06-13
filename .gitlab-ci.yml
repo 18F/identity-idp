@@ -220,8 +220,6 @@ migrate:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
   variables:
     DOCKER_DB_HOST: db-postgres
     POSTGRES_DB: identity_idp_test
@@ -234,6 +232,7 @@ migrate:
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
+    - *bundle_install
     - bundle exec rake db:create db:migrate --trace
     - git diff db/
     - '(! git diff --name-only | grep db/schema.rb) || (echo "Error: db/schema.rb does not match after running migrations"; exit 1)'
