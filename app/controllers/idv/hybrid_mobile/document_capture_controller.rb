@@ -34,6 +34,7 @@ module Idv
         doc_req = DocAuth::Socure::Requests::DocumentRequest.new(
           document_capture_session_uuid: document_capture_session_uuid,
           redirect_url: idv_hybrid_mobile_document_capture_socure_redirect_url,
+          verification_level: request.params['verification_level'],
         )
         doc_resp = doc_req.fetch
 
@@ -62,6 +63,14 @@ module Idv
       end
 
       def socure_redirect
+        # fetch result
+        if socure_document_uuid = request.params[:document_uuid]
+          uploaded_documents_decision(
+            socure_document_uuid: socure_document_uuid,
+            customer_user_id: document_capture_session_uuid,
+          )
+        end
+
         document_capture_session.confirm_ocr
         result = handle_stored_result
 

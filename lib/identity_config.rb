@@ -375,7 +375,6 @@ module IdentityConfig
     config.add(:socure_document_request_endpoint, type: :string)
     config.add(:socure_id_plus_endpoint, type: :string)
     config.add(:socure_id_secret_key, type: :string)
-    config.add(:socure_test_scenario_uuid, type: :string)
     config.add(:socure_webhook_secret_key, type: :string)
     config.add(:socure_verification_level, type: :integer)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)

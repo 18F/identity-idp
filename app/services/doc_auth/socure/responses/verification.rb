@@ -45,7 +45,7 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          verification_data['reasonCodes'] # may need to be hash
+          { reason_codes: verification_data['reasonCodes'] }
         end
 
         def extra_attributes
