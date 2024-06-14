@@ -43,9 +43,9 @@ account.connected_apps.description: 使用你的 %{app_name} 账户，你可以�
 account.email_language.default: '%{language} （默认）'
 account.email_language.edit_title: 编辑电邮语言选择
 account.email_language.languages_list: '%{app_name} 允许你以 %{list}接受电邮沟通。'
-account.email_language.name.en: 英文
-account.email_language.name.es: 西班牙文
-account.email_language.name.fr: 法文
+account.email_language.name.en: English
+account.email_language.name.es: Español
+account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
 account.email_language.sentence_connector: 或者
 account.email_language.updated: 你的电邮语言选择已更新。
