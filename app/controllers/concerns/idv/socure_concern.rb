@@ -2,14 +2,14 @@
 
 module Idv
   module SocureConcern
-    def uploaded_documents_decision(socure_document_uuid:, customer_user_id:)
+    def uploaded_documents_decision(socure_document_uuid)
       # return if IdentityConfig.store.socure_verification_level > 1
       return unless document_capture_session
 
       document_verification_req = DocAuth::Socure::Requests::EmailAuthScore.new(
         modules: ['documentverification'],
         document_uuid: socure_document_uuid,
-        customer_user_id: customer_user_id,
+        customer_user_id: document_capture_session.uuid,
       )
 
       decision = document_verification_req.fetch
