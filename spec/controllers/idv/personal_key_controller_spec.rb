@@ -262,14 +262,6 @@ RSpec.describe Idv::PersonalKeyController do
             get :show
             expect(response).to_not be_redirect
           end
-
-          context 'when the user is going through enhanced ipp' do
-            let(:enhanced_ipp) { false }
-            it 'does not redirect' do
-              get :show
-              expect(response).to_not be_redirect
-            end
-          end
         end
       end
     end
@@ -505,30 +497,6 @@ RSpec.describe Idv::PersonalKeyController do
             proofing_components: nil,
           ),
         )
-      end
-
-      context 'when the user is going through enhanced ipp' do
-        let(:enhanced_ipp) { false }
-        it 'creates a profile and returns completion url' do
-          patch :update
-
-          expect(response).to redirect_to idv_in_person_ready_to_verify_url
-        end
-
-        it 'logs key submitted event' do
-          patch :update
-
-          expect(@analytics).to have_logged_event(
-            'IdV: personal key submitted',
-            hash_including(
-              address_verification_method: 'phone',
-              fraud_review_pending: false,
-              fraud_rejection: false,
-              in_person_verification_pending: false,
-              proofing_components: nil,
-            ),
-          )
-        end
       end
     end
 

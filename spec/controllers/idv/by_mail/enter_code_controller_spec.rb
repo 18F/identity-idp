@@ -448,7 +448,10 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
     end
 
     context 'when the user is going through enhanced ipp' do
-      let(:user) { create(:user) }
+      subject(:action) do
+        post(:create, params: { gpo_verify_form: { otp: good_otp } })
+      end
+      let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
       let(:gpo_verify_form) { GpoVerifyForm.new(user: user, pii: {}, otp: good_otp) }
       before do
         authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
@@ -460,7 +463,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
       end
 
       it 'passes the correct param to the gpo verify form submit method' do
-        post(:create, params: { gpo_verify_form: { otp: good_otp } })
+        action
 
         expect(gpo_verify_form).to have_received(:submit).with(true)
       end
