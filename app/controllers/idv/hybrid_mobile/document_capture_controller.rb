@@ -41,6 +41,8 @@ module Idv
         @msg = doc_resp['msg']
         @reference_id = doc_resp.dig('referenceId')
         @qr_code = nil
+
+        redirect_to @url, allow_other_host: true if @url
       end
 
       def update

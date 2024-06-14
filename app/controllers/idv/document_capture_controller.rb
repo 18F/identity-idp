@@ -62,7 +62,7 @@ module Idv
       @reference_id = doc_resp.dig('referenceId')
       @qr_code = nil
 
-      # if redirect_to @url if mobile && @url.present?
+      redirect_to @url, allow_other_host: true if @url.present? && idv_session.skip_hybrid_handoff?
     end
 
     def socure_redirect
