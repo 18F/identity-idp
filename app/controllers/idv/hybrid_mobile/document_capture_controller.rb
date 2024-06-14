@@ -6,6 +6,7 @@ module Idv
       include Idv::AvailabilityConcern
       include DocumentCaptureConcern
       include HybridMobileConcern
+      include Idv::SocureConcern
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
@@ -42,7 +43,9 @@ module Idv
         @reference_id = doc_resp.dig('referenceId')
         @qr_code = nil
 
-        redirect_to @url, allow_other_host: true if @url
+        unless Rails.env.development?
+          redirect_to @url, allow_other_host: true if @url
+        end
       end
 
       def update
@@ -65,11 +68,8 @@ module Idv
 
       def socure_redirect
         # fetch result
-        if socure_document_uuid = request.params[:document_uuid]
-          uploaded_documents_decision(
-            socure_document_uuid: socure_document_uuid,
-            customer_user_id: document_capture_session_uuid,
-          )
+        if (socure_document_uuid = request.params[:document_uuid])
+          uploaded_documents_decision(socure_document_uuid)
         end
 
         document_capture_session.confirm_ocr
