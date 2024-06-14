@@ -16,11 +16,11 @@ account_reset.delete_account.info: 被锁在账户之外时，取消账户应当
 account_reset.delete_account.title: 删除账户应当是你最后的选择。
 account_reset.pending.cancel_request: 取消请求
 account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
-account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待24个小时。
+account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待%{interval} 。
 account_reset.pending.header: 你已提出删除账户的请求。
-account_reset.pending.wait_html: 要删除账户，有 24 小时的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
+account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
 account_reset.recovery_options.check_saved_credential: 查看你是否有已保存的凭据
-account_reset.recovery_options.check_webauthn_platform_info: 如果你在设立账户时设置了人脸或触摸解锁，务必使用你设立 %{app_name} 账户时使用的同一设备。
+account_reset.recovery_options.check_webauthn_platform_info: 如果你设立了人脸或触摸解锁，凭据可能已存在了一个密码管理器中，比如 iCloud Keychain 或者 Google Password Manager。尝试在用那个密码管理器的浏览器上使用人脸或触摸解锁。
 account_reset.recovery_options.header: 你确定要删除账户吗？
 account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
 account_reset.recovery_options.try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
@@ -594,7 +594,7 @@ doc_auth.info.capture_status_capturing: 扫描中
 doc_auth.info.capture_status_none: 对齐
 doc_auth.info.capture_status_small_document: 靠近一些
 doc_auth.info.capture_status_tap_to_capture: 点击来扫描
-doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{app_name}
+doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
@@ -709,7 +709,7 @@ errors.manage_authenticator.unique_name_error: 名字已在使用。请使用一
 errors.max_password_attempts_reached: 你输入了太多不正确的密码。你可以使用“忘了密码？”链接来重设密码。
 errors.messages.already_confirmed: 已确认，请尝试登录
 errors.messages.blank: 请填写这一字段。
-errors.messages.blank_cert_element_req: We cannot detect a certificate in your request.
+errors.messages.blank_cert_element_req: 我们在你的请求中探查不到证书。
 errors.messages.confirmation_code_incorrect: 验证码不对。你打字打对了吗？
 errors.messages.confirmation_invalid_token: 确认链接有误。链接已过期，或者你已确认了你的账户。
 errors.messages.confirmation_period_expired: 过期的确认链接。你可以点击“重新发送确认说明”来得到另一个。
@@ -996,7 +996,7 @@ idv.cancel.description.gpo.warnings:
 idv.cancel.description.hybrid: 如果你现在取消的话，会被提示切换回电脑继续验证你的身份。
 idv.cancel.description.start_over: 如果你重新开始，就会从头重新开始这一流程。
 idv.cancel.headings.confirmation.hybrid: 你已取消了在该手机上上传身份证件照片
-idv.cancel.headings.exit.with_sp: 退出 %{app_name} 并返回 %{app_name}
+idv.cancel.headings.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 idv.cancel.headings.exit.without_sp: 退出身份验证并到你的账户页面
 idv.cancel.headings.prompt.hybrid: 你确定要取消在该手机上上传身份证件照片吗？
 idv.cancel.headings.prompt.standard: 取消验证身份？
@@ -1019,7 +1019,7 @@ idv.failure.exceptions.internal_error: 处理你的请求时内部出错。请�
 idv.failure.exceptions.link: 请联系我们。
 idv.failure.exceptions.post_office_search_error: 我们这边目前遇到技术困难。请再次尝试搜索一个邮局。如果该问题继续存在，请稍后回来。
 idv.failure.exceptions.text_html: 请再试一次。如果这些错误一直出现，%{link_html}。
-idv.failure.exit.with_sp: 退出 %{app_name} 并返回 %{app_name}
+idv.failure.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 idv.failure.exit.without_sp: 退出身份验证并到你的账户页面
 idv.failure.gpo.rate_limited.heading: 请稍后再试
 idv.failure.phone.heading: 我们无法将该电话号码与其他记录相匹配
@@ -1442,7 +1442,7 @@ openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别
 openid_connect.authorization.errors.no_auth: Acr_values 未经授权
 openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values
 openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值
-openid_connect.authorization.errors.no_valid_vtr: No acceptable vots found
+openid_connect.authorization.errors.no_valid_vtr: 未找到可接受的vots
 openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配
@@ -1606,7 +1606,7 @@ two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_na
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
 two_factor_authentication.account_reset.cancel_link: 取消你的请求
 two_factor_authentication.account_reset.link: 删除你的账户
-two_factor_authentication.account_reset.pending: 你目前有个待处理的删除账户请求。从你提出请求到完成该流程需要 24 个小时请稍后回来查看。
+two_factor_authentication.account_reset.pending: 你目前有个待处理的删除账户请求。从你提出请求到完成该流程需要 %{interval}。请随后回来查看。
 two_factor_authentication.account_reset.successful_cancel: 谢谢。你删除自己 %{app_name} 账户的请求已被取消。
 two_factor_authentication.account_reset.text_html: 如果你无法使用上述身份证实方法，可以通过 %{link_html} 重设你的首选。
 two_factor_authentication.attempt_remaining_warning_html.one: 你还可以再试 <strong>%{count} 次 </strong> 。
@@ -1774,11 +1774,11 @@ user_mailer.account_reset_complete.subject: 账户已删除
 user_mailer.account_reset_granted.button: 是的，继续删除
 user_mailer.account_reset_granted.cancel_link_text: 请取消
 user_mailer.account_reset_granted.help_html: 如果你不想删除你的账户，%{cancel_account_reset_html}。
-user_mailer.account_reset_granted.intro_html: 你的24小时等待期已结束。请完成流程第 2 步。<br><br> 如果你无法找到自己的身份证实方法，选择“确认删除”来删除你的 %{app_name} 账户。<br><br> 账户删除后，将来如果你需要访问使用 %{app_name}的参与这个项目的政府网站，可以使用同一电邮地址来设立一个新 %{app_name} 账户。<br><br>
+user_mailer.account_reset_granted.intro_html: 你%{waiting_period}的等待期已结束。请完成流程的第 2 步。<br><br> 如果您无法找到你的身份证实方法，请选择“确认删除”以删除你的 %{app_name} 帐户。<br><br> 如果你将来需要访问使用 %{app_name} 的参与政府网站，可以在帐户删除后使用相同的电子邮件地址创建一个新的 %{app_name} 帐户.<br><br>
 user_mailer.account_reset_granted.subject: 删除你的 %{app_name} 账户
 user_mailer.account_reset_request.cancel: 不想删除你的账户？登入你的 %{app_name} 账户来取消。
-user_mailer.account_reset_request.header: 你的账户会在 24 小时后删除。
-user_mailer.account_reset_request.intro_html: '作为安全措施, %{app_name} 要求一个两步流程来删除账户: <br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个 24 小时的等待期。如果你找到了身份证实方法, 可登入你的 %{app_name} 账户来取消这一请求。<br><br> 第二步：24 小时等待期过了之后，你会收到一封电邮，请你确认删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。'
+user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除。
+user_mailer.account_reset_request.intro_html: 作为一项安全措施，%{app_name} 要求一个两步流程来删除你的帐户：<br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个%{waiting_period} 的等待期。如果你找到了身份证实方法，可以登录你的 %{app_name} 帐户来取消这个请求。<br><br> 第二步：%{waiting_period}等待期之后，你会收到一封电邮，请你确认要删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
 user_mailer.account_verified.contact_link: 联系我们
@@ -1845,9 +1845,9 @@ user_mailer.in_person_verified.greeting: 你好，
 user_mailer.in_person_verified.intro: 你于 %{date}在 %{location} 邮局成功地验证了身份。
 user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
 user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: 你现在可以从 %{sp_name} 的网站登录。
-user_mailer.in_person_verified.next_sign_in.without_sp: 接下来请点击按钮或复制下面的连接来登录 %{sp_name}。
+user_mailer.in_person_verified.next_sign_in.without_sp: 接下来请点击按钮或复制下面的连接来登录 %{app_name}。
 user_mailer.in_person_verified.sign_in: 登录
-user_mailer.in_person_verified.subject: 你在 %{sp_name} 成功地验证了身份
+user_mailer.in_person_verified.subject: 你在 %{app_name} 成功地验证了身份
 user_mailer.in_person_verified.warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href="%{reset_password_url}"> 重设密码</a>。要报告这件事，<a href="%{contact_us_url}">联系 %{app_name} 支持 %{app_name}</a>。
 user_mailer.letter_reminder_14_days.body_html: "<p><strong>%{date_letter_was_se\
   nt} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>"
@@ -1876,7 +1876,7 @@ user_mailer.new_device_sign_in_before_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_before_2fa.subject: 你 %{app_name} 账户有新的登录
 user_mailer.new_device_sign_in.disavowal_link: 重设你的密码
 user_mailer.new_device_sign_in.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
-user_mailer.new_device_sign_in.info: ''
+user_mailer.new_device_sign_in.info: 你的 %{app_name} 帐号刚刚在一个新设备上用于登录。
 user_mailer.new_device_sign_in.subject: 用你 %{app_name} 账户进行的新登录
 user_mailer.password_changed.disavowal_link: 重设你的密码
 user_mailer.password_changed.help_html: 如果你没做此更改， %{disavowal_link_html}。要得到更多帮助，请访问 %{app_name_html} %{help_link_html} 或者 %{contact_link_html}。
