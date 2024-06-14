@@ -1,5 +1,5 @@
 <% if @presenter.show_verified_badge? %>
-  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: t('components.badge_tooltip_component.verified'), class: 'usa-tooltip', data_position: 'top').with_content(t('headings.account.verified_account')) %>
+  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: @presenter.biometric_identity_verification? ? t('components.badge_tooltip_component.verified_biometric') : t('components.badge_tooltip_component.verified'), class: 'usa-tooltip', data_position: 'top').with_content(t('headings.account.verified_account')) %>
 <% end %>
 <% if @presenter.show_password_reset_partial? && (!@presenter.show_ipp_partial? || !@presenter.show_gpo_partial?) %>
   <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: t('components.badge_tooltip_component.unverified'), class: 'usa-tooltip', data_position: 'top').with_content(t('headings.account.unverified')) %>
