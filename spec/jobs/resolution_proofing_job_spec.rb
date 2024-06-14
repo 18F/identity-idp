@@ -59,7 +59,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
       context 'when the SSN is not unique' do
         before do
-          allow_any_instance_of(Idv::DuplicateSsnFinder).to receive(:ssn_is_unique?).and_return false
+          allow_any_instance_of(Idv::DuplicateSsnFinder).
+            to receive(:ssn_is_unique?).and_return false
+          # user2 = create(:user, :fully_registered)
+          # _profile2 = create(:profile, user: user2, pii: { ssn: user.profiles.last.pii[:ssn] })
         end
 
         it 'sets ssn_is_unique: false on the result' do
