@@ -139,6 +139,9 @@ anonymous_mailer.password_reset_missing_user.use_this_email_html: Or use this em
 banned_user.details: We are unable to authenticate you at this time.
 banned_user.title: Access is restricted
 components.barcode.image_alt: Barcode
+components.badge_tooltip_component.pending:  Your identity is pending verification.
+components.badge_tooltip_component.verified:  Your identity has been verified.
+components.badge_tooltip_component.unverified:  Finish verifying your identity.
 components.captcha_submit_button.action_message: Verifying…
 components.captcha_submit_button.mock_score_disclaimer: Internal Only
 components.captcha_submit_button.mock_score_label: 'reCAPTCHA score: (0.0 - 1.0)'
