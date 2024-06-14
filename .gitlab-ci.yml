@@ -214,6 +214,29 @@ check_changelog:
         exit 0
       fi
 
+migrate:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+  variables:
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity_idp_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: postgres:13.9
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+  script:
+    - *bundle_install
+    - bundle exec rake db:create db:migrate --trace
+    - git diff db/
+    - make lint_database_schema_files
+
 specs:
   stage: test
   needs:
@@ -319,6 +342,8 @@ js_tests:
     - yarn test
 
 pinpoint-check:
+  needs:
+    - job: install
   stage: test
   cache:
     - <<: *ruby_cache
@@ -327,6 +352,18 @@ pinpoint-check:
     - *bundle_install
     - *yarn_install
     - make lint_country_dialing_codes
+
+audit_packages:
+  needs:
+    - job: install
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make audit
 
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing
