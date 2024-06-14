@@ -81,6 +81,7 @@ namespace :dev do
 
   desc 'Create in-person enrollments for N random users'
   task random_in_person_users: [:environment, :random_users] do
+    is_enhanced_ipp = false
     usps_request_delay_ms = (ENV['USPS_REQUEST_DELAY_MS'] || 0).to_i
     num_users = (ENV['NUM_USERS'] || 100).to_i
     pw = 'salty pickles'
@@ -151,6 +152,7 @@ namespace :dev do
                   UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
                     user,
                     pii,
+                    is_enhanced_ipp,
                   )
                 rescue StandardError => e
                   Rails.logger.error 'Exception raised while enrolling user: ' + e.message
