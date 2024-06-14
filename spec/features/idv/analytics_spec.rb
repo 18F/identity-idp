@@ -73,20 +73,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       vendor_workflow: nil }
   end
 
-  let(:residential_address_not_required) do
-    { attributes_requiring_additional_verification: [],
-      can_pass_with_additional_verification: false,
-      errors: {},
-      exception: nil,
-      reference: '',
-      success: true,
-      timed_out: false,
-      transaction_id: '',
-      vendor_name: 'ResidentialAddressNotRequired',
-      vendor_workflow: nil }
-  end
-
-  let(:happy_mobile_path_proofing_results) do
+  let(:base_proofing_results) do
     {
       exception: nil,
       ssn_is_unique: true,
@@ -99,70 +86,16 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         sp_costs_added: true,
         stages: {
           resolution: resolution_block,
-          residential_address: residential_address_not_required,
-          state_id: state_id_resolution,
-          threatmetrix: threatmetrix_response,
-        },
-      },
-    }
-  end
-
-  let(:happy_path_proofing_results) do
-    {
-      exception: nil,
-      ssn_is_unique: true,
-      timed_out: false,
-      threatmetrix_review_status: 'pass',
-      context: {
-        device_profiling_adjudication_reason: 'device_profiling_result_pass',
-        resolution_adjudication_reason: 'pass_resolution_and_state_id',
-        should_proof_state_id: true,
-        sp_costs_added: true,
-        stages: {
-          resolution: resolution_block,
-          residential_address: residential_address_not_required,
-          state_id: state_id_resolution,
-          threatmetrix: threatmetrix_response,
-        },
-      },
-    }
-  end
-
-  let(:happy_hybrid_path_proofing_results) do
-    {
-      exception: nil,
-      ssn_is_unique: true,
-      timed_out: false,
-      threatmetrix_review_status: 'pass',
-      context: {
-        device_profiling_adjudication_reason: 'device_profiling_result_pass',
-        resolution_adjudication_reason: 'pass_resolution_and_state_id',
-        should_proof_state_id: true,
-        sp_costs_added: true,
-        stages: {
-          resolution: resolution_block,
-          residential_address: residential_address_not_required,
-          state_id: state_id_resolution,
-          threatmetrix: threatmetrix_response,
-        },
-      },
-    }
-  end
-
-  let(:gpo_path_proofing_results) do
-    {
-      exception: nil,
-      ssn_is_unique: true,
-      timed_out: false,
-      threatmetrix_review_status: 'pass',
-      context: {
-        device_profiling_adjudication_reason: 'device_profiling_result_pass',
-        resolution_adjudication_reason: 'pass_resolution_and_state_id',
-        should_proof_state_id: true,
-        sp_costs_added: true,
-        stages: {
-          resolution: resolution_block,
-          residential_address: residential_address_not_required,
+          residential_address: { attributes_requiring_additional_verification: [],
+                                 can_pass_with_additional_verification: false,
+                                 errors: {},
+                                 exception: nil,
+                                 reference: '',
+                                 success: true,
+                                 timed_out: false,
+                                 transaction_id: '',
+                                 vendor_name: 'ResidentialAddressNotRequired',
+                                 vendor_workflow: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
         },
@@ -268,7 +201,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
-        proofing_results: happy_path_proofing_results
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
@@ -394,7 +327,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
-        proofing_results: happy_hybrid_path_proofing_results
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
@@ -517,7 +450,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
-        proofing_results: gpo_path_proofing_results
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
@@ -768,7 +701,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
-        proofing_results: happy_mobile_path_proofing_results
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
