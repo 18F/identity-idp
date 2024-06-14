@@ -83,6 +83,10 @@ class AccountShowPresenter
     user.personal_key_generated_at
   end
 
+  def biometric_identity_verification?
+    user.identity_verified_with_biometric_comparison?
+  end
+
   def header_personalization
     return decrypted_pii.first_name if decrypted_pii.present?
 
