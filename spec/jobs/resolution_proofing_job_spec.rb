@@ -53,7 +53,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result[:ssn_is_unique]).to be_truthy
+          expect(result[:ssn_is_unique]).to eq(true)
         end
       end
 
@@ -67,7 +67,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result[:ssn_is_unique]).to be_falsey
+          expect(result[:ssn_is_unique]).to eq(false)
         end
       end
     end
