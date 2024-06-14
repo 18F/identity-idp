@@ -251,7 +251,6 @@ raise_on_missing_title: false
 reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
-recaptcha_mock_validator: true
 recaptcha_site_key: ''
 recaptcha_secret_key: ''
 recovery_code_length: 4
@@ -298,7 +297,6 @@ session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
-sign_in_recaptcha_score_threshold: 0.0
 sp_handoff_bounce_max_seconds: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
@@ -335,7 +333,6 @@ use_kms: false
 use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
-usps_eipp_sponsor_id: ''
 usps_ipp_password: ''
 usps_ipp_client_id: ''
 usps_ipp_root_url: ''
@@ -412,7 +409,6 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_unsupported_passkey_platform_authentication_setup: true
-  sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   state_tracking_enabled: true
   telephony_adapter: test
@@ -473,8 +469,8 @@ production:
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
   password_pepper:
+  phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
-  recaptcha_mock_validator: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
