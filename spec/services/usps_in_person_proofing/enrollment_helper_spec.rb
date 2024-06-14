@@ -327,6 +327,8 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
     before do
       allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
         and_return(usps_eipp_sponsor_id)
+      allow(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(proofer)
+      allow(proofer).to receive(:request_enroll).and_call_original
     end
     context 'when the user is going through enhanced ipp' do
       it 'creates an enhanced ipp enrollment' do
