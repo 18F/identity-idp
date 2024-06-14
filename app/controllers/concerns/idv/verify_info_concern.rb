@@ -183,7 +183,7 @@ module Idv
       form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
         ssn: idv_session.ssn,
         user: current_user,
-        ).ssn_is_unique?
+      ).ssn_is_unique?
 
       summarize_result_and_rate_limit(form_response)
       delete_async
