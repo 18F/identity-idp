@@ -72,8 +72,15 @@ account.index.reactivation.instructions: Su perfil fue desactivado recientemente
 account.index.reactivation.link: Reactive su perfil ahora.
 account.index.sign_in_location_and_ip: Desde %{ip} (la dirección IP se encuentra posiblemente en %{location})
 account.index.unknown_location: ubicación desconocida
-account.index.verification.instructions: Su cuenta requiere un código de verificación para poderla verificar.
-account.index.verification.reactivate_button: Ingrese el código que recibió por correo de los EE. UU.
+account.index.verification.finish_verifying: Termine de verificar su identidad para acceder a la %{partner_agency}.
+account.index.verification.identity_verification: Verificación de identidad
+account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
+account.index.verification.in_person_instructions: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del %{deadline}. 
+account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
+account.index.verification.reactivate_button: Ingrese el código de verificación que recibió por correo de los EE. UU.
+account.index.verification.show_bar_code: Mostrar mi código de barras de Login.gov
+account.index.verification.you_verified_your_biometric_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de Login.gov.
+account.index.verification.you_verified_your_identity: Usted verificó su identidad para %{partner_agency} con la información siguiente.
 account.index.verification.success: Verificamos su información
 account.index.webauthn: Clave de seguridad
 account.index.webauthn_add: Agregar clave de seguridad
@@ -133,6 +140,10 @@ anonymous_mailer.password_reset_missing_user.use_this_email_html: O use este cor
 banned_user.details: No podemos autenticarle en este momento.
 banned_user.title: Acceso restringido
 components.barcode.image_alt: Código de barras
+components.badge_tooltip_component.pending: La verificación de su identidad está pendiente
+components.badge_tooltip_component.verified: Se verificó su identidad.
+components.badge_tooltip_component.verified_biometric: Se verificó tanto su identidad como su fotografía.
+components.badge_tooltip_component.unverified: Termine de verificar su identidad.
 components.captcha_submit_button.action_message: Verificando…
 components.captcha_submit_button.mock_score_disclaimer: Uso interno
 components.captcha_submit_button.mock_score_label: 'Puntuación reCAPTCHA: (0.0 - 1.0)'
@@ -897,7 +908,10 @@ headings.account.federal_employee_id: Identificación de empleado federal
 headings.account.login_info: Su cuenta
 headings.account.reactivate: Reactive su cuenta
 headings.account.two_factor: Sus métodos de autenticación
+headings.account.pending: Pendiente
 headings.account.unphishable: No vulnerable al phishing
+headings.account.unverified: No verificada
+headings.account.verified_account: Verificada
 headings.account.verified_account: Cuenta verificada
 headings.account.verified_information: Información verificada
 headings.add_email: Agregar una nueva dirección de correo electrónico
