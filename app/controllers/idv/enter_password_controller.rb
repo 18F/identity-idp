@@ -123,15 +123,10 @@ module Idv
       @gpo_mail_service ||= Idv::GpoMail.new(current_user)
     end
 
-    def is_enhanced_ipp?
-      return false if !defined?(resolved_authn_context_result)
-      return resolved_authn_context_result.enhanced_ipp?
-    end
-
     def init_profile
       idv_session.create_profile_from_applicant_with_password(
         password,
-        is_enhanced_ipp: is_enhanced_ipp?,
+        resolved_authn_context_result.enhanced_ipp?,
       )
 
       if idv_session.verify_by_mail?
