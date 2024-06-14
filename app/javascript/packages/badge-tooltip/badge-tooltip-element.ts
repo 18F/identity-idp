@@ -7,7 +7,7 @@ class BadgeTooltipElement extends HTMLElement {
     this.badge = this.querySelector('.usa-tooltip')!;
 
     this.setUpTooltip();
-    this.badge.addEventListener('click', () => this.handleClick());
+    this.badge.addEventListener('mouseover', () => this.handleHover());
   }
 
   /**
@@ -32,7 +32,7 @@ class BadgeTooltipElement extends HTMLElement {
   /**
    * Handles behaviors associated with clicking the button.
    */
-  handleClick() {
+  handleHover() {
     this.showTooltip();
   }
 
