@@ -212,7 +212,8 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
         it 'creates a USPS enrollment' do
           expect(UspsInPersonProofing::EnrollmentHelper).
             to receive(:schedule_in_person_enrollment).
-            with(user, Pii::Attributes.new_from_hash(subject.applicant), is_enhanced_ipp, opt_in_param)
+            with(user, Pii::Attributes.new_from_hash(subject.applicant),
+                 is_enhanced_ipp, opt_in_param)
 
           subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
 
