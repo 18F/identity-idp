@@ -53,6 +53,10 @@ module I18n
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.en', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.es', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.fr', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'date.formats.long', locales: %i[es zh] },
@@ -71,8 +75,6 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
-        # need to be fixed
-        { key: 'account.email_language.name.zh', locales: %i[es fr] }, # needs to be translated
       ].freeze
       # rubocop:enable Layout/LineLength
 
