@@ -33,6 +33,7 @@
   <p><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
 <% end %>
 
+<%# Enhanced IPP Only - What to bring section %>
 <% if @is_enhanced_ipp %>
   <section class="border-1px rounded-xl border-primary-light padding-4 padding-2 margin-bottom-4">
     <%# What to bring to the Post Office %>
@@ -143,6 +144,7 @@
       <p><%= @presenter.state_id_info %></p>
     <% end %>
   <% end %>
+
   <% if !@is_enhanced_ipp %>
     <p class="margin-top-3 margin-bottom-0">
       <%= t('in_person_proofing.body.barcode.questions') %>
