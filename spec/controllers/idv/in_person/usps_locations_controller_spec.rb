@@ -85,7 +85,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
     end
 
-    context 'with enhanced ipp enabled' do
+    context 'with a user going through enhanced ipp' do
       let(:vtr) { ['C1.C2.P1.Pe'] }
       let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
       let(:user) { build(:user) }

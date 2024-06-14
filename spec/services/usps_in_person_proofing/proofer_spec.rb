@@ -169,7 +169,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       )
     end
     let(:request_url) { "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList" }
-    let(:enhanced_ipp) { false }
+    let(:is_enhanced_ipp) { false }
 
     before do
       stub_request_token
@@ -178,7 +178,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     it 'uses the sponsor id set in the environment config' do
       stub_request_facilities
-      subject.request_facilities(location, enhanced_ipp)
+      subject.request_facilities(location, is_enhanced_ipp)
 
       expect(WebMock).to have_requested(:post, request_url).
         with(
@@ -192,14 +192,14 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     it 'returns facilities' do
       stub_request_facilities
-      facilities = subject.request_facilities(location, enhanced_ipp)
+      facilities = subject.request_facilities(location, is_enhanced_ipp)
 
       expect_facility_fields_to_be_present(facilities[0])
     end
 
     it 'returns facilities sorted by ascending distance' do
       stub_request_facilities_with_unordered_distance
-      facilities = subject.request_facilities(location, enhanced_ipp)
+      facilities = subject.request_facilities(location, is_enhanced_ipp)
 
       expect(facilities.count).to be > 1
       facilities.each_cons(2) do |facility_a, facility_b|
@@ -209,7 +209,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     it 'does not return duplicates' do
       stub_request_facilities_with_duplicates
-      facilities = subject.request_facilities(location, enhanced_ipp)
+      facilities = subject.request_facilities(location, is_enhanced_ipp)
 
       expect(facilities.length).to eq(9)
       expect(
@@ -221,14 +221,14 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
     context 'when the user is going through enhanced ipp' do
       let(:usps_eipp_sponsor_id) { '314159265359' }
-      let(:enhanced_ipp) { true }
+      let(:is_enhanced_ipp) { true }
       before do
         allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
           and_return(usps_eipp_sponsor_id)
       end
       it 'uses the usps_eipp_sponsor_id in calls to the USPS API' do
         stub_request_enhanced_ipp_facilities
-        subject.request_facilities(location, enhanced_ipp)
+        subject.request_facilities(location, is_enhanced_ipp)
 
         expect(WebMock).to have_requested(:post, request_url).
           with(
@@ -257,7 +257,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       it 'refreshes the auth token before making the request' do
         facilities = nil
         travel_to(expires_at) do
-          facilities = subject.request_facilities(location, enhanced_ipp)
+          facilities = subject.request_facilities(location, is_enhanced_ipp)
         end
 
         expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice
@@ -355,14 +355,14 @@ RSpec.describe UspsInPersonProofing::Proofer do
       let(:request_url) { "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant" }
       let(:usps_eipp_sponsor_id) { '314159265359' }
       let(:ipp_assurance_level) { '2.0' }
-      let(:enhanced_ipp) { true }
+      let(:is_enhanced_ipp) { true }
       before do
         allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).
           and_return(usps_eipp_sponsor_id)
       end
       it 'uses the enhanced ipp usps_ipp_sponsor_id & IPPAssuranceLevel in calls to the USPS API' do
         stub_request_enroll
-        subject.request_enroll(applicant, enhanced_ipp)
+        subject.request_enroll(applicant, is_enhanced_ipp)
 
         expect(WebMock).to have_requested(:post, request_url).
           with(

@@ -451,6 +451,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
       subject(:action) do
         post(:create, params: { gpo_verify_form: { otp: good_otp } })
       end
+      let(:is_enhanced_ipp) { true }
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
       let(:gpo_verify_form) { GpoVerifyForm.new(user: user, pii: {}, otp: good_otp) }
       before do
@@ -465,7 +466,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
       it 'passes the correct param to the gpo verify form submit method' do
         action
 
-        expect(gpo_verify_form).to have_received(:submit).with(true)
+        expect(gpo_verify_form).to have_received(:submit).with(is_enhanced_ipp)
       end
     end
   end

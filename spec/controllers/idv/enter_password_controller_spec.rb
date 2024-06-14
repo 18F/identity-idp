@@ -892,7 +892,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
     end
 
     context 'user is going through enhanced ipp' do
-      let(:enhanced_ipp) { true }
+      let(:is_enhanced_ipp) { true }
       let!(:enrollment) do
         create(:in_person_enrollment, :establishing, user: user, profile: nil)
       end
@@ -907,7 +907,7 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
           with(
             user,
             Pii::Attributes.new_from_hash(applicant),
-            enhanced_ipp,
+            is_enhanced_ipp,
             nil,
           )
 

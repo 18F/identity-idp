@@ -128,7 +128,7 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
 
   describe '#create_profile_from_applicant_with_password' do
     let(:opt_in_param) { nil }
-    let(:enhanced_ipp) { false }
+    let(:is_enhanced_ipp) { false }
     before do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
@@ -145,7 +145,7 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
           now = Time.zone.now
 
           subject.user_phone_confirmation = true
-          subject.create_profile_from_applicant_with_password(user.password, enhanced_ipp)
+          subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
           profile = subject.profile
 
           expect(profile.activated_at).to eq now
@@ -164,7 +164,7 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
 
       it 'does not complete the profile if the user has not completed OTP phone confirmation' do
         subject.user_phone_confirmation = nil
-        subject.create_profile_from_applicant_with_password(user.password, enhanced_ipp)
+        subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
         profile = subject.profile
 
         expect(profile.activated_at).to eq nil
@@ -193,7 +193,7 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
         end
 
         it 'sets profile to pending in person verification' do
-          subject.create_profile_from_applicant_with_password(user.password, enhanced_ipp)
+          subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
           profile = subject.profile
 
           expect(profile.activated_at).to eq nil
@@ -212,9 +212,9 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
         it 'creates a USPS enrollment' do
           expect(UspsInPersonProofing::EnrollmentHelper).
             to receive(:schedule_in_person_enrollment).
-            with(user, Pii::Attributes.new_from_hash(subject.applicant), enhanced_ipp, opt_in_param)
+            with(user, Pii::Attributes.new_from_hash(subject.applicant), is_enhanced_ipp, opt_in_param)
 
-          subject.create_profile_from_applicant_with_password(user.password, enhanced_ipp)
+          subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
 
           profile = enrollment.reload.profile
           expect(profile).to eq(user.profiles.last)
@@ -236,7 +236,7 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
       end
 
       it 'sets profile to pending gpo verification' do
-        subject.create_profile_from_applicant_with_password(user.password, enhanced_ipp)
+        subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
         profile = subject.profile
 
         expect(profile.activated_at).to eq nil
@@ -260,7 +260,7 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
       end
 
       it 'does not complete the user profile' do
-        subject.create_profile_from_applicant_with_password(user.password, enhanced_ipp)
+        subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
         profile = subject.profile
 
         expect(profile.activated_at).to eq nil
