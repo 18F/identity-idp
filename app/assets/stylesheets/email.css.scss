@@ -262,7 +262,7 @@ h6 {
 }
 
 .padding-x-4 {
-  @include u-padding-x(4)
+  @include u-padding-x(4);
 }
 
 .padding-bottom-0 {

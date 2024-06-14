@@ -24,7 +24,10 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
   let(:is_enhanced_ipp) { false }
   let(:presenter) do
-    Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment, is_enhanced_ipp: is_enhanced_ipp)
+    Idv::InPerson::ReadyToVerifyPresenter.new(
+      enrollment: enrollment,
+      is_enhanced_ipp: is_enhanced_ipp,
+    )
   end
   let(:step_indicator_steps) { Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS }
   let(:sp_event_name) { 'IdV: user clicked sp link on ready to verify page' }

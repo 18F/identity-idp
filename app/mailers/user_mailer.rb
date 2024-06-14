@@ -302,7 +302,8 @@ class UserMailer < ActionMailer::Base
       @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
                     IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
-      @header = is_enhanced_ipp ? t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
+      @header = is_enhanced_ipp ?
+        t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
