@@ -7,6 +7,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include Idv::SocureConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
@@ -52,6 +53,7 @@ module Idv
       doc_req = DocAuth::Socure::Requests::DocumentRequest.new(
         document_capture_session_uuid: document_capture_session_uuid,
         redirect_url: idv_document_capture_socure_redirect_url,
+        verification_level: request.params['verification_level'],
       )
       doc_resp = doc_req.fetch
 
@@ -66,6 +68,15 @@ module Idv
     def socure_redirect
       clear_future_steps!
       idv_session.redo_document_capture = nil # done with this redo
+
+      # fetch result
+      if socure_document_uuid = request.params[:document_uuid]
+        uploaded_documents_decision(
+          socure_document_uuid: socure_document_uuid,
+          customer_user_id: document_capture_session_uuid,
+        )
+      end
+
       # Not used in standard flow, here for data consistency with hybrid flow.
       document_capture_session.confirm_ocr
 

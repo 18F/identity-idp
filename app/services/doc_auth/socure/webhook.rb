@@ -23,7 +23,7 @@ module DocAuth
         # when 'SESSION_COMPLETE'
         #   complete_session
         when 'DOCUMENTS_UPLOADED'
-          uploaded_documents_decision
+          documents_uploaded
         end
       end
 
@@ -52,29 +52,15 @@ module DocAuth
         verify_document_data(event.dig('data', 'documentVerification'))
       end
 
-      def uploaded_documents_decision
+      def documents_uploaded
         return if IdentityConfig.store.socure_verification_level > 1
-        return unless document_capture_session
 
-        # fetch decision using uuid
-        socure_document_uuid = event.dig('data', 'uuid')
-
-        test_scenario_uuid = IdentityConfig.store.socure_test_scenario_uuid
-        if test_scenario_uuid.present?
-          socure_document_uuid = test_scenario_uuid
+        if socure_document_uuid = event.dig('data', 'uuid')
+          uploaded_documents_decision(
+            socure_document_uuid: socure_document_uuid,
+            customer_user_id: document_capture_session_uuid,
+          )
         end
-
-        return unless socure_document_uuid # log an error?
-
-        document_verification_req = DocAuth::Socure::Requests::EmailAuthScore.new(
-          modules: ['documentverification'],
-          document_uuid: socure_document_uuid,
-          customer_user_id: customer_user_id,
-        )
-
-        decision = document_verification_req.fetch
-        # log decision here -- analytics not available
-        verify_document_data(decision.dig('documentVerification'))
       end
 
       def document_capture_session
@@ -85,28 +71,6 @@ module DocAuth
 
       def webhook_event(event_type)
         webhook_events.find { |t| t.dig('event', 'eventType') == event_type }
-      end
-
-      def verify_document_data(data)
-        doc_auth_response = Responses::Verification.new(data)
-        if doc_auth_response.success?
-          doc_pii_response = Idv::DocPiiForm.new(
-            pii: doc_auth_response.pii_from_doc.to_h,
-            attention_with_barcode: doc_auth_response.attention_with_barcode?,
-          ).submit
-          if doc_pii_response.success?
-            document_capture_session.store_result_from_response(doc_auth_response)
-            return
-          end
-        end
-
-        document_capture_session.store_failed_auth_data(
-          front_image_fingerprint: nil,
-          back_image_fingerprint: nil,
-          selfie_image_fingerprint: nil,
-          doc_auth_success: doc_auth_response.doc_auth_success?,
-          selfie_status: doc_auth_response.selfie_status,
-        )
       end
 
       def webhook_events
