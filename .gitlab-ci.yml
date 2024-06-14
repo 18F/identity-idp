@@ -391,6 +391,7 @@ coverage:
     - *bundle_install
     - bundle exec spec/simplecov_merger.rb
     - mv coverage/coverage/* coverage/
+  coverage: '/LOC \(\d+.\d+\%\) covered/'
   artifacts:
     reports:
       coverage_report:
