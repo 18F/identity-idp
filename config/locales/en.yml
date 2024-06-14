@@ -901,7 +901,6 @@ headings.account.pending: Pending
 headings.account.unphishable: Unphishable
 headings.account.unverified: Unverified
 headings.account.verified_account: Verified
-headings.account.verified: Verified information
 headings.add_email: Add a new email address
 headings.add_info.phone: Add a phone number
 headings.cancellations.login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?
