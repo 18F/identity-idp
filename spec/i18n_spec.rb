@@ -53,6 +53,10 @@ module I18n
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.en', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.es', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.fr', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'date.formats.long', locales: %i[es zh] },
