@@ -3,7 +3,7 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user, pii, is_enhanced_ipp = false, opt_in = nil)
+      def schedule_in_person_enrollment(user, pii, is_enhanced_ipp, opt_in = nil)
         enrollment = user.establishing_in_person_enrollment
         return unless enrollment
 

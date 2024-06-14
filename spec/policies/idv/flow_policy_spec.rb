@@ -6,6 +6,7 @@ RSpec.describe 'Idv::FlowPolicy' do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:is_enhanced_ipp) {false}
 
   let(:user_session) { { 'idv/in_person' => {} } }
 
@@ -317,7 +318,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         it 'returns personal_key' do
           stub_up_to(:request_letter, idv_session: idv_session)
           idv_session.gpo_code_verified = true
-          idv_session.create_profile_from_applicant_with_password('password')
+          idv_session.create_profile_from_applicant_with_password('password', is_enhanced_ipp)
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)
           expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be
@@ -327,7 +328,7 @@ RSpec.describe 'Idv::FlowPolicy' do
       context 'user has a newly activated profile' do
         it 'returns personal_key' do
           stub_up_to(:otp_verification, idv_session: idv_session)
-          idv_session.create_profile_from_applicant_with_password('password')
+          idv_session.create_profile_from_applicant_with_password('password', is_enhanced_ipp)
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)
           expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be

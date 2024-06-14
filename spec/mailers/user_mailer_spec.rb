@@ -5,6 +5,7 @@ RSpec.describe UserMailer, type: :mailer do
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
   let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
+  let(:is_enhanced_ipp) {false}
 
   describe '#validate_user_and_email_address' do
     let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
@@ -604,6 +605,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
           enrollment: enrollment,
+          is_enhanced_ipp:,
         )
       end
 
@@ -630,7 +632,8 @@ RSpec.describe UserMailer, type: :mailer do
                 date: formatted_date,
               ),
             )
-        end
+        
+          end
 
         it 'does not render a warning when outage dates are not included' do
           allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
