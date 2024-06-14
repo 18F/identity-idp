@@ -43,6 +43,10 @@ module UspsInPersonProofing
         load_response_fixture('request_enroll_response.json')
       end
 
+      def self.request_enroll_response_enhanced_ipp
+        load_response_fixture('request_enroll_response_enhanced_ipp.json')
+      end
+
       def self.request_enroll_bad_request_response
         load_response_fixture('request_enroll_failed_response.json')
       end

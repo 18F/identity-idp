@@ -3,7 +3,7 @@
 module UspsInPersonProofing
   module Mock
     class Proofer < UspsInPersonProofing::Proofer
-      def request_enroll(applicant, _is_enhanced_ipp)
+      def request_enroll(applicant, is_enhanced_ipp)
         case applicant['first_name']
         when 'usps waiting'
           # timeout
@@ -26,6 +26,9 @@ module UspsInPersonProofing
           res = JSON.parse(Fixtures.request_enroll_response)
         end
 
+        if is_enhanced_ipp
+          res = JSON.parse(Fixtures.request_enroll_response_enhanced_ipp)
+        end
         Response::RequestEnrollResponse.new(res)
       end
 
