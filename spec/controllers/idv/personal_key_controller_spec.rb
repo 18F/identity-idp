@@ -30,7 +30,7 @@ RSpec.describe Idv::PersonalKeyController do
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :fully_registered, password: password) }
-  let(:is_enhanced_ipp) {false}
+  let(:is_enhanced_ipp) { false }
 
   # Most (but not all) of these tests assume that a profile has been minted
   # from the data in idv_session. Set this to false to prevent this behavior

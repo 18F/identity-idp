@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
   let(:user_session) { {} }
-  let(:is_enhanced_ipp) {false}
+  let(:is_enhanced_ipp) { false }
 
   subject do
     Idv::Session.new(user_session: user_session, current_user: user, service_provider: nil)

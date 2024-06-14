@@ -22,7 +22,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
     'registration@usps.local.identitysandbox.gov'
   end
   let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
-  let(:is_enhanced_ipp) {false}
+  let(:is_enhanced_ipp) { false }
 
   before(:each) do
     stub_request_token

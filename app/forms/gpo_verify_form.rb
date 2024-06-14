@@ -64,7 +64,9 @@ class GpoVerifyForm
   end
 
   def schedule_in_person_enrollment_and_deactivate_profile
-    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii, is_enhanced_ipp = false)
+    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+      user, pii
+    )
     pending_profile&.deactivate_for_in_person_verification
   end
 
