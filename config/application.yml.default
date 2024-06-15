@@ -276,7 +276,6 @@ reset_password_email_max_attempts: 20
 reset_password_email_window_in_minutes: 60
 reset_password_on_auth_fraud_event: true
 risc_notifications_local_enabled: false
-risc_notifications_active_job_enabled: false
 risc_notifications_rate_limit_interval: 60
 risc_notifications_rate_limit_max_requests: 1_000
 risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval":120,"max_requests":10000}}'
