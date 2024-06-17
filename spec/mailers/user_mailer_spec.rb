@@ -746,7 +746,6 @@ RSpec.describe UserMailer, type: :mailer do
                 end
               end
             end
-            
           end
         end
 
@@ -806,7 +805,8 @@ RSpec.describe UserMailer, type: :mailer do
                   expect(mail.html_part.body).to have_content(part)
                 end
 
-                t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+                t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
+                  each do |item|
                   expect(mail.html_part.body).to have_content(strip_tags(item))
                 end
               end
