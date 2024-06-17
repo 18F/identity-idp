@@ -35,7 +35,6 @@ RUN apt-get update && \
     git-core \
     git-lfs \
     curl \
-    mtr net-tools netcat \
     zlib1g-dev \
     libssl-dev \
     libreadline-dev \
