@@ -94,6 +94,7 @@ module IdentityConfig
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_email_sending, type: :boolean)
+    config.add(:dexcom_skip_email_confirmation, type: :boolean)
     config.add(:disable_logout_get_request, type: :boolean)
     config.add(:disposable_email_services, type: :json)
     config.add(:doc_auth_attempt_window_in_minutes, type: :integer)
