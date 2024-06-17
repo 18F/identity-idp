@@ -65,6 +65,7 @@ deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
+dexcom_skip_email_confirmation: true
 disable_logout_get_request: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
