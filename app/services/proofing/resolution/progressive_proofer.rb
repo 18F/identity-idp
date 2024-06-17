@@ -133,7 +133,6 @@ module Proofing
 
       def aamva_supports_state_id_jurisdiction?
         state_id_jurisdiction = applicant_pii[:state_id_jurisdiction]
-        raise 'blank state_id_jurisdiction' if state_id_jurisdiction.blank?
         IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
       end
 
