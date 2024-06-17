@@ -487,6 +487,8 @@ development:
     redirect_uris:
       - 'http://localhost:3000/'
       - 'http://localhost:3000/test/oidc/auth_result'
+      - 'http://localhost:9750/'
+      - 'http://localhost:9750/api/v1/clinic/sso/callback'
     certs:
       - 'sp_sinatra_demo'
     friendly_name: 'Example Test OIDC SP'

@@ -6,7 +6,7 @@ Rails.application.configure do
   config.eager_load = true
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
-  config.force_ssl = true
+  config.force_ssl = false
 
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
@@ -14,7 +14,7 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = {
     host: IdentityConfig.store.domain_name,
-    protocol: 'https',
+    protocol: 'http',
   }
   config.action_mailer.asset_host = IdentityConfig.store.asset_host.presence ||
                                     IdentityConfig.store.mailer_domain_name
@@ -30,12 +30,12 @@ Rails.application.configure do
     config.action_mailer.preview_path = Rails.root.join('spec/mailers/previews')
   end
 
-  routes.default_url_options[:protocol] = :https
+  # routes.default_url_options[:protocol] = 'http'
 
   # turn off IP spoofing protection since the network configuration in the production environment
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
 
-  config.log_level = :info
+  # config.log_level = :info
   config.lograge.ignore_actions = ['Api::Internal::SessionsController#show']
 end

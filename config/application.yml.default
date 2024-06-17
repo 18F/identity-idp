@@ -180,7 +180,7 @@ lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_js_signing_cert: ''
 ###################################################################
 lockout_period_in_minutes: 10
-log_to_stdout: false
+log_to_stdout: true
 login_otp_confirmation_max_attempts: 10
 logins_per_email_and_ip_bantime: 60
 logins_per_email_and_ip_limit: 5
@@ -366,24 +366,26 @@ development:
   compromised_password_randomizer_threshold: 0
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
-  database_host: ''
-  database_name: ''
-  database_password: ''
+  database_sslmode: 'prefer'
+  database_host: '10.1.98.10'
+  database_name: 'idp'
+  database_password: 'q>31uYz/CL\nSd%l'
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
-  database_username: ''
-  database_worker_jobs_name: ''
-  database_worker_jobs_username: ''
-  database_worker_jobs_host: ''
-  database_worker_jobs_password: ''
+  database_username: 'postgres'
+  database_worker_jobs_sslmode: 'prefer'
+  database_worker_jobs_name: 'idp_worker'
+  database_worker_jobs_username: 'postgres'
+  database_worker_jobs_host: '10.1.98.10'
+  database_worker_jobs_password: 'q>31uYz/CL\nSd%l'
   doc_auth_selfie_capture_enabled: false
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
-  domain_name: localhost:3000
+  domain_name: https://identity-idp-ir4fy3wx3a-uc.a.run.app
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
@@ -404,6 +406,8 @@ development:
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
   raise_on_missing_title: true
+  redis_throttle_url: redis://10.1.97.3:6379/1 # cloudRun
+  redis_url: redis://10.1.97.3:6379 # cloudRun
   risc_notifications_local_enabled: true
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
@@ -437,24 +441,29 @@ production:
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_sslmode: 'prefer'
-  database_host: 'host.docker.internal'
-  database_name: 'identity_idp_development'
-  database_password: 'postgres'
+  database_host: '10.1.98.10' # cloudrun
+  # database_host: 'host.docker.internal' # local
+  database_name: 'idp'
+  database_password: 'q>31uYz/CL\nSd%l' # cloudRun
+  # database_password: 'password' # local
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
   database_username: 'postgres'
-  database_worker_jobs_name: ''
-  database_worker_jobs_username: ''
-  database_worker_jobs_host: ''
-  database_worker_jobs_password: ''
+  database_worker_jobs_sslmode: 'prefer'
+  database_worker_jobs_name: 'idp_worker'
+  database_worker_jobs_username: 'postgres'
+  # database_worker_jobs_host: 'host.docker.internal' # local
+  database_worker_jobs_host: '10.1.98.10'
+  # database_worker_jobs_password: 'password' # local
+  database_worker_jobs_password: 'q>31uYz/CL\nSd%l'
   disable_email_sending: false
   disable_logout_get_request: false
   doc_auth_vendor: 'acuant'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
-  domain_name: login.gov
+  domain_name: localhost
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
@@ -476,8 +485,10 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
-  redis_throttle_url: redis://host.docker.internal:6379/1 # Change this when deploying to cloudrun
-  redis_url: redis://host.docker.internal:6379 # Change this when deploying to cloudrun
+  redis_throttle_url: redis://10.1.97.3:6379/1 # cloudRun
+  redis_url: redis://10.1.97.3:6379 # cloudRun
+  # redis_throttle_url: redis://host.docker.internal:6379/1 # local
+  # redis_url: redis://host.docker.internal:6379 # local
   report_timeout: 1_000_000
   ruby_workers_idv_enabled: false
   s3_report_bucket_prefix: login-gov.reports
@@ -491,7 +502,7 @@ production:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
-  use_kms: true
+  use_kms: false
   usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''

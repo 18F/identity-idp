@@ -1,12 +1,14 @@
 postgresql: &postgresql
   adapter: postgresql
   encoding: utf8
-  database: identity_idp_<%= Rails.env %>
+  database: <%= IdentityConfig.store.database_name %>
   port: 5432
-  username: <%= ENV['DOCKER_DB_USER'] %>
+  username: <%= IdentityConfig.store.database_username || ENV['DOCKER_DB_USER'] %>
+  password: <%= IdentityConfig.store.database_password %>
+
 
 defaults: &defaults
-  host: <%= ENV['DOCKER_DB_HOST'] || 'localhost' %>
+  host: <%= IdentityConfig.store.database_host || ENV['DOCKER_DB_HOST'] || 'localhost' %>
   pool: 5
   <<: *postgresql
   # timeout settings
@@ -32,7 +34,11 @@ development:
     replica: true
   worker_jobs:
     <<: *defaults
-    database: identity_idp_worker_jobs_<%= Rails.env %>
+    database: <%= IdentityConfig.store.database_worker_jobs_name %>
+    username: <%= IdentityConfig.store.database_worker_jobs_username %>
+    host: <%= IdentityConfig.store.database_worker_jobs_host %>
+    password: <%= IdentityConfig.store.database_worker_jobs_password %>
+    sslmode: <%= IdentityConfig.store.database_worker_jobs_sslmode %>
     migrations_paths: db/worker_jobs_migrate
 
 test:
@@ -52,6 +58,7 @@ test:
   worker_jobs:
     <<: *test
     database: <%= "identity_idp_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
+    username: <%= IdentityConfig.store.database_worker_jobs_username %>
     migrations_paths: db/worker_jobs_migrate
 
 <%
