@@ -51,27 +51,15 @@ RUN apt-get update && \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
-# RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
-#   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
-#   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
-#   && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
+RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
+  && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
+  && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
+  && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
 
-# # Install Yarn
-# RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
-# RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-# RUN apt-get update && apt-get install -y yarn=1.22.5-1
-
-# Install node + yarn
-RUN apt install -y curl
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="$NVM_DIR/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-RUN node --version
-RUN npm install --global yarn
-RUN yarn --version
+# Install Yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install -y yarn=1.22.5-1
 
 # Download RDS Combined CA Bundle
 RUN mkdir -p /usr/local/share/aws \
@@ -133,11 +121,11 @@ ARG LARGE_FILES_USER
 ARG LARGE_FILES_TOKEN
 RUN mkdir -p $RAILS_ROOT/geo_data && chmod 755 $RAILS_ROOT/geo_data
 RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_passwords
-# RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git && \
-#     cp idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/ && \
-#     cp idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/ && \
-#     cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/ && \
-#     rm -r idp-large-files
+RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git && \
+    cp idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/ && \
+    cp idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/ && \
+    cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/ && \
+    rm -r idp-large-files
 RUN mkdir -p /usr/local/share/aws && \
     curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem
 
@@ -176,7 +164,6 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
-    chown -R app:app $RAILS_ROOT/keys && \
     find $RAILS_ROOT -type d | xargs chmod 755
 
 # Expose the port the app runs on
@@ -187,4 +174,3 @@ USER app
 
 # Start the application
 CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:3000?key=/app/keys/localhost.key&cert=/app/keys/localhost.crt"]
-
