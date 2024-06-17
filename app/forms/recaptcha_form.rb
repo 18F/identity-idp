@@ -23,11 +23,13 @@ class RecaptchaForm
     :score,
     :errors,
     :reasons,
+    :account_defender_assesment,
     keyword_init: true,
   ) do
     alias_method :success?, :success
 
-    def initialize(success:, assessment_id: nil, score: nil, errors: [], reasons: [])
+    def initialize(success:, assessment_id: nil, score: nil, account_defender_assesment: nil,
+                   errors: [], reasons: [])
       super
     end
   end

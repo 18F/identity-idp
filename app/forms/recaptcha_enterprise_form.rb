@@ -19,7 +19,7 @@ class RecaptchaEnterpriseForm < RecaptchaForm
   def recaptcha_result
     response = faraday.post(
       assessment_url,
-      ,
+      assessment_properties,
     ) do |request|
       request.options.context = { service_name: 'recaptcha' }
     end
@@ -36,7 +36,7 @@ class RecaptchaEnterpriseForm < RecaptchaForm
           *response.body.dig('riskAnalysis', 'reasons').to_a,
           response.body.dig('tokenProperties', 'invalidReason'),
         ].compact,
-        account_defender_assesment: reponse.dig('accountDefenderAssessment')
+        account_defender_assesment: response.body.dig('accountDefenderAssessment'),
       )
     end
   end
@@ -51,14 +51,15 @@ class RecaptchaEnterpriseForm < RecaptchaForm
     }.merge(user_info)
   end
 
-
   def user_info
     return {} unless IdentityConfig.store.account_defender_enabled
-    userInfo: {
-      accountId: user&.uuid,
-      userIds: {
-        email: encrypted_email
-      }
+    {
+      userInfo: {
+        accountId: user&.uuid,
+        userIds: {
+          email: encrypted_email,
+        },
+      },
     }
   end
 

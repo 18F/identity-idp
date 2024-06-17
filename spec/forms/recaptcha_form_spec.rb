@@ -5,9 +5,10 @@ RSpec.describe RecaptchaForm do
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
   let(:recaptcha_secret_key) { 'recaptcha_secret_key' }
+  let(:user) { create(:user) }
 
   subject(:form) do
-    RecaptchaForm.new(score_threshold:, analytics:, extra_analytics_properties:)
+    RecaptchaForm.new(user:, score_threshold:, analytics:, extra_analytics_properties:)
   end
 
   before do
@@ -120,6 +121,7 @@ RSpec.describe RecaptchaForm do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            account_defender_assesment: nil,
             assessment_id: nil,
             success: false,
             score: nil,
@@ -154,6 +156,7 @@ RSpec.describe RecaptchaForm do
             expect(analytics).to have_logged_event(
               'reCAPTCHA verify result received',
               recaptcha_result: {
+                account_defender_assesment: nil,
                 assessment_id: nil,
                 success: false,
                 score: nil,
@@ -188,6 +191,7 @@ RSpec.describe RecaptchaForm do
             expect(analytics).to have_logged_event(
               'reCAPTCHA verify result received',
               recaptcha_result: {
+                account_defender_assesment: nil,
                 assessment_id: nil,
                 success: false,
                 score: nil,
@@ -254,6 +258,7 @@ RSpec.describe RecaptchaForm do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            account_defender_assesment: nil,
             assessment_id: nil,
             success: true,
             score:,
@@ -290,6 +295,7 @@ RSpec.describe RecaptchaForm do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            account_defender_assesment: nil,
             assessment_id: nil,
             success: true,
             score:,
@@ -311,6 +317,7 @@ RSpec.describe RecaptchaForm do
           expect(analytics).to have_logged_event(
             'reCAPTCHA verify result received',
             recaptcha_result: {
+              account_defender_assesment: nil,
               assessment_id: nil,
               success: true,
               score:,

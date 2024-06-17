@@ -8,6 +8,7 @@ RSpec.describe RecaptchaEnterpriseForm do
   let(:recaptcha_enterprise_api_key) { 'recaptcha_enterprise_api_key' }
   let(:recaptcha_enterprise_project_id) { 'project_id' }
   let(:recaptcha_site_key) { 'recaptcha_site_key' }
+  let(:user) { create(:user) }
   let(:assessment_url) do
     format(
       '%{base_endpoint}/%{project_id}/assessments?key=%{api_key}',
@@ -146,6 +147,7 @@ RSpec.describe RecaptchaEnterpriseForm do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            account_defender_assesment: nil,
             success: false,
             score: nil,
             errors: [],
@@ -185,6 +187,7 @@ RSpec.describe RecaptchaEnterpriseForm do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            account_defender_assesment: nil,
             success: false,
             assessment_id: nil,
             score: nil,
@@ -259,6 +262,7 @@ RSpec.describe RecaptchaEnterpriseForm do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            account_defender_assesment: nil,
             success: true,
             score:,
             reasons: ['AUTOMATION'],
@@ -305,6 +309,7 @@ RSpec.describe RecaptchaEnterpriseForm do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
+            account_defender_assesment: nil,
             success: true,
             score:,
             reasons: ['LOW_CONFIDENCE'],
@@ -353,6 +358,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           expect(analytics).to have_logged_event(
             'reCAPTCHA verify result received',
             recaptcha_result: {
+              account_defender_assesment: nil,
               success: true,
               score:,
               reasons: ['LOW_CONFIDENCE'],
