@@ -442,16 +442,17 @@ production:
   database_readonly_password: ''
   database_readonly_username: ''
   database_username: ''
-  database_worker_jobs_name: ''
-  database_worker_jobs_username: ''
   database_worker_jobs_host: ''
+  database_worker_jobs_name: ''
   database_worker_jobs_password: ''
+  database_worker_jobs_username: ''
+  dexcom_skip_email_confirmation: true
   disable_email_sending: false
   disable_logout_get_request: false
-  doc_auth_vendor: 'acuant'
-  doc_auth_vendor_randomize: false
-  doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize: false
+  doc_auth_vendor: 'acuant'
   domain_name: login.gov
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
