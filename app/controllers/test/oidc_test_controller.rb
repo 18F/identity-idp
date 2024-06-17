@@ -8,7 +8,7 @@ module Test
     BIOMETRIC_REQUIRED = 'biometric-comparison-required'
 
     def initialize
-      @client_id = 'urn:gov:gsa:openidconnect:sp:test'
+      @client_id = 'urn:gov:gsa:openidconnect:sp:sinatra'
       super
     end
 

@@ -1451,15 +1451,6 @@ RSpec.describe SamlIdpController do
         )
       end
 
-      let(:analytics_hash) do
-        {
-          success: true,
-          request_signed: authn_requests_signed,
-          matching_cert_serial:,
-          encryption_cert_matches_matching_cert:,
-        }
-      end
-
       before do
         stub_analytics
         IdentityLinker.new(user, service_provider).link_identity
@@ -1471,7 +1462,13 @@ RSpec.describe SamlIdpController do
           generate_saml_response(user, auth_settings)
 
           expect(response.status).to eq(200)
-          expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
+          expect(@analytics).to have_logged_event(
+            'SAML Auth', hash_including(
+              request_signed: false,
+              matching_cert_serial: nil,
+              encryption_cert_matches_matching_cert: nil,
+            )
+          )
         end
       end
 
@@ -1479,24 +1476,52 @@ RSpec.describe SamlIdpController do
         let(:authn_requests_signed) { true }
 
         context 'Matching certificate' do
-          let(:encryption_cert_matches_matching_cert) { true }
-          let(:matching_cert_serial) { saml_test_sp_cert_serial }
-
           it 'notes that in the analytics event' do
             user.identities.last.update!(verified_attributes: ['email'])
             generate_saml_response(user, auth_settings)
 
             expect(response.status).to eq(200)
-            expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
+            expect(@analytics).to have_logged_event(
+              'SAML Auth', hash_including(
+                request_signed: authn_requests_signed,
+                matching_cert_serial: saml_test_sp_cert_serial,
+                encryption_cert_matches_matching_cert: true,
+                cert_error_details: nil,
+              )
+            )
+          end
+
+          context 'Certificate sig validation fails because of namespace bug' do
+            let(:request_sp) { double }
+
+            before do
+              service_provider.update(certs: ['sp_sinatra_demo', 'saml_test_sp'])
+              allow_any_instance_of(
+                SamlIdp::ServiceProvider,
+              ).to receive(:matching_cert).and_return nil
+            end
+
+            it 'notes that in the analytics event' do
+              user.identities.last.update!(verified_attributes: ['email'])
+              generate_saml_response(user, auth_settings)
+
+              expect(response.status).to eq(200)
+              expect(@analytics).to have_logged_event(
+                'SAML Auth', hash_including(
+                  request_signed: authn_requests_signed,
+                  matching_cert_serial: nil,
+                  encryption_cert_matches_matching_cert: false,
+                )
+              )
+            end
           end
         end
 
-        context 'No matching certificate' do
-          let(:encryption_cert_matches_matching_cert) { false }
+        context 'Certificate does not match' do
           let(:service_provider) do
             create(
               :service_provider,
-              certs: ['sp_sinatra_demo', 'saml_test_sp'],
+              certs: ['saml_test_sp'],
               active: true,
               assertion_consumer_logout_service_url: 'https://example.com',
             )
@@ -1520,9 +1545,22 @@ RSpec.describe SamlIdpController do
           it 'notes that in the analytics event' do
             user.identities.last.update!(verified_attributes: ['email'])
             generate_saml_response(user, auth_settings)
+            cert_error_details = [
+              {
+                cert: saml_test_sp_cert_serial,
+                error_code: :fingerprint_mismatch,
+              },
+            ]
 
             expect(response.status).to eq(200)
-            expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
+            expect(@analytics).to have_logged_event(
+              'SAML Auth', hash_including(
+                request_signed: authn_requests_signed,
+                matching_cert_serial:,
+                encryption_cert_matches_matching_cert: true,
+                cert_error_details:,
+              )
+            )
           end
         end
       end

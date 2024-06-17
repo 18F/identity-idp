@@ -44,9 +44,9 @@ account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
 account.email_language.languages_list: '%{app_name} allows you to receive your email communication in %{list}.'
 account.email_language.name.en: English
-account.email_language.name.es: Spanish
-account.email_language.name.fr: French
-account.email_language.name.zh: Chinese
+account.email_language.name.es: Español
+account.email_language.name.fr: Français
+account.email_language.name.zh: 中文 (简体)
 account.email_language.sentence_connector: or
 account.email_language.updated: Your email language preference has been updated.
 account.forget_all_browsers.longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method (such as text/SMS code or a security key) each time you want to access your account.

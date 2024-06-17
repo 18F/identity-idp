@@ -14,10 +14,15 @@ class RiscDeliveryJob < ApplicationJob
     *NETWORK_ERRORS,
     wait: :polynomially_longer,
     attempts: 2,
-  )
+  ) do |_job, _exception|
+    # Don't bubble up the exception when retries are exhausted
+  end
+
   retry_on RedisRateLimiter::LimitError,
            wait: :polynomially_longer,
-           attempts: 10
+           attempts: 10 do |_job, _exception|
+             # Don't bubble up the exception when retries are exhausted
+           end
 
   def self.warning_error_classes
     NETWORK_ERRORS + [RedisRateLimiter::LimitError]

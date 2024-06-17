@@ -137,6 +137,7 @@ class SamlIdpController < ApplicationController
       # Logging to indicate if a validation bug fix will create a potentially breaking change
       analytics_payload[:encryption_cert_matches_matching_cert] =
         encryption_cert_matches_matching_cert?
+      analytics_payload[:cert_error_details] = saml_request.cert_errors
     end
 
     analytics.saml_auth(**analytics_payload)
@@ -148,7 +149,7 @@ class SamlIdpController < ApplicationController
   end
 
   def encryption_cert_matches_matching_cert?
-    matching_cert == encryption_cert
+    (matching_cert || saml_request_service_provider&.ssl_certs&.first) == encryption_cert
   end
 
   def log_external_saml_auth_request
