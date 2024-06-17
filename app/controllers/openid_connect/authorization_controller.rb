@@ -13,7 +13,6 @@ module OpenidConnect
     include SignInDurationConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
-    before_action :block_biometric_requests_in_production, only: [:index]
     before_action :set_devise_failure_redirect_for_concurrent_session_logout
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
@@ -55,13 +54,6 @@ module OpenidConnect
         resolved_authn_context_result: resolved_authn_context_result,
         biometric_comparison_requested: biometric_comparison_requested?,
       )
-    end
-
-    def block_biometric_requests_in_production
-      if biometric_comparison_requested? &&
-         !FeatureManagement.idv_allow_selfie_check?
-        render_not_acceptable
-      end
     end
 
     def biometric_comparison_requested?
@@ -146,8 +138,7 @@ module OpenidConnect
     end
 
     def biometric_comparison_needed?
-      FeatureManagement.idv_allow_selfie_check? &&
-        resolved_authn_context_result.biometric_comparison? &&
+      resolved_authn_context_result.biometric_comparison? &&
         !current_user.identity_verified_with_biometric_comparison?
     end
 

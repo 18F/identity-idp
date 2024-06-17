@@ -419,12 +419,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP requests biometric_comparison_required' do
-              let(:selfie_capture_enabled) { true }
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
@@ -451,19 +448,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'selfie capture not enabled, biometric comparison required' do
-                let(:selfie_capture_enabled) { false }
-                let(:vtr) { ['Pb'].to_json }
-
-                it 'returns status not_acceptable' do
-                  action
-
-                  expect(response.status).to eq(406)
-                end
-              end
-
               context 'selfie capture not enabled, biometric comparison not required' do
-                let(:selfie_capture_enabled) { false }
                 let(:vtr) { ['P1'].to_json }
 
                 it 'redirects to the service provider' do
@@ -474,13 +459,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP has a vector of trust that includes a biometric comparison' do
-              let(:selfie_capture_enabled) { true }
               let(:acr_values) { nil }
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -517,15 +499,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 end
               end
-
-              context 'selfie capture not enabled, biometric_comparison_check requested by sp' do
-                let(:selfie_capture_enabled) { false }
-                it 'returns status not_acceptable' do
-                  action
-
-                  expect(response.status).to eq(406)
-                end
-              end
             end
           end
 
@@ -541,13 +514,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'sp does not request biometrics' do
-              let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
-
-              before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
-              end
 
               it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                 create(:profile, :verify_by_mail_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
@@ -569,14 +536,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'sp requests biometrics' do
-              let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
               let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
-
-              before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
-              end
 
               it 'redirects to gpo enter code page' do
                 create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
@@ -1413,12 +1374,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP requests biometric_comparison_required' do
-              let(:selfie_capture_enabled) { true }
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)
@@ -1445,19 +1403,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'selfie capture not enabled, biometric comparison required' do
-                let(:selfie_capture_enabled) { false }
-                let(:vtr) { ['Pb'].to_json }
-
-                it 'returns status not_acceptable' do
-                  action
-
-                  expect(response.status).to eq(406)
-                end
-              end
-
               context 'selfie capture not enabled, biometric comparison not required' do
-                let(:selfie_capture_enabled) { false }
                 let(:vtr) { ['P1'].to_json }
 
                 it 'redirects to the service provider' do
@@ -1468,13 +1414,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP has a vector of trust that includes a biometric comparison' do
-              let(:selfie_capture_enabled) { true }
               let(:acr_values) { nil }
               let(:vtr) { ['Pb'].to_json }
 
               before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -1511,15 +1454,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 end
               end
-
-              context 'selfie capture not enabled, biometric_comparison_check requested by sp' do
-                let(:selfie_capture_enabled) { false }
-                it 'returns status not_acceptable' do
-                  action
-
-                  expect(response.status).to eq(406)
-                end
-              end
             end
           end
 
@@ -1535,13 +1469,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'sp does not request biometrics' do
-              let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
-
-              before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
-              end
 
               it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                 create(:profile, :verify_by_mail_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
@@ -1553,7 +1481,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(user.identities.last.verified_attributes).to eq(%w[birthdate family_name given_name verified_at])
               end
 
-              it 'redirects to please call page if user has a fraudualent profile' do
+              it 'redirects to please call page if user has a fraudulent profile' do
                 create(:profile, :fraud_review_pending, :with_pii, idv_level: :unsupervised_with_selfie, user: user)
 
                 action
@@ -1563,14 +1491,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'sp requests biometrics' do
-              let(:selfie_capture_enabled) { true }
               let(:user) { create(:profile, :active, :verified).user }
               let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
-
-              before do
-                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
-                  and_return(selfie_capture_enabled)
-              end
 
               it 'redirects to gpo enter code page' do
                 create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)

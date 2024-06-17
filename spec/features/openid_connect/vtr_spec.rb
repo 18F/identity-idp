@@ -117,8 +117,6 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
   end
 
   scenario 'sign in with VTR request for idv with biometric requires idv with biometric', :js do
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-
     user = create(:user, :fully_registered)
 
     visit_idp_from_oidc_sp_with_vtr(vtr: ['Pb'])

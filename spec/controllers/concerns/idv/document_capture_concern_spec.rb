@@ -19,8 +19,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
     context 'selfie checks enabled' do
       before do
-        allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
-
         stored_result = instance_double(DocumentCaptureSessionResult)
         allow(stored_result).to receive(:selfie_check_performed?).and_return(selfie_check_performed)
         allow(controller).to receive(:stored_result).and_return(stored_result)
