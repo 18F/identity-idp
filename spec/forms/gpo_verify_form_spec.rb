@@ -336,7 +336,7 @@ RSpec.describe GpoVerifyForm, allowed_extra_analytics: [:*] do
       end
       it 'sends the correct information for scheduling an in person enrollment' do
         expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
-          with(user, applicant, is_enhanced_ipp)
+          with(user: anything, pii: anything, is_enhanced_ipp: is_enhanced_ipp)
 
         subject.submit(is_enhanced_ipp)
       end

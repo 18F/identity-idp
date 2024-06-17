@@ -905,10 +905,10 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       it 'passes the correct param to the enrollment helper method' do
         expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
           with(
-            user,
-            Pii::Attributes.new_from_hash(applicant),
-            is_enhanced_ipp,
-            nil,
+            user: user,
+            pii: Pii::Attributes.new_from_hash(applicant),
+            is_enhanced_ipp: is_enhanced_ipp,
+            opt_in: nil,
           )
 
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }

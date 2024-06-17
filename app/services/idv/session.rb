@@ -87,10 +87,10 @@ module Idv
         create_gpo_entry(profile_maker.pii_attributes, profile)
       elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-          current_user,
-          profile_maker.pii_attributes,
-          is_enhanced_ipp,
-          opt_in_param,
+          user: current_user,
+          pii: profile_maker.pii_attributes,
+          is_enhanced_ipp: is_enhanced_ipp,
+          opt_in: opt_in_param,
         )
       end
     end
