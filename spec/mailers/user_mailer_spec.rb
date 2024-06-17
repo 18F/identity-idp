@@ -664,13 +664,17 @@ RSpec.describe UserMailer, type: :mailer do
       context 'For In-Person Proofing (IPP)' do
         context 'template displays modified content' do
           it 'conditionally renders content in the what to expect section applicable to IPP' do
-            expect(mail.html_part.body).to have_content(t('in_person_proofing.headings.barcode'))
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.state_id.heading'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.state_id.info'),
-            )
+            aggregate_failures do
+              [
+                t('in_person_proofing.headings.barcode'),
+                t('in_person_proofing.process.state_id.heading'),
+                t('in_person_proofing.process.state_id.info'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
           end
         end
 
@@ -688,51 +692,30 @@ RSpec.describe UserMailer, type: :mailer do
         end
 
         it 'template does not displays Enhanced In-Person Proofing specific content' do
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.headings.barcode_eipp'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.state_id.heading_eipp'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.state_id.info_eipp'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.headings.barcode_what_to_bring'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.body.barcode.what_to_bring'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_bring_id.heading'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_bring_id.info'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_what_to_bring.heading'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_what_to_bring.info'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_state_id_passport.heading'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_state_id_passport.info'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_state_id_military_id.heading'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_state_id_military_id.info'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
-          )
-          expect(mail.html_part.body).to_not have_content(
-            t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
-          )
+          aggregate_failures do
+            [
+              t('in_person_proofing.headings.barcode_eipp'),
+              t('in_person_proofing.process.state_id.heading_eipp'),
+              t('in_person_proofing.process.state_id.info_eipp'),
+              t('in_person_proofing.headings.barcode_what_to_bring'),
+              t('in_person_proofing.body.barcode.what_to_bring'),
+              t('in_person_proofing.process.eipp_bring_id.heading'),
+              t('in_person_proofing.process.eipp_bring_id.info'),
+              t('in_person_proofing.process.eipp_what_to_bring.heading'),
+              t('in_person_proofing.process.eipp_what_to_bring.info'),
+              t('in_person_proofing.process.eipp_state_id_passport.heading'),
+              t('in_person_proofing.process.eipp_state_id_passport.info'),
+              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+              t('in_person_proofing.process.eipp_state_id_military_id.info'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(mail.html_part.body).to_not have_content(part)
+              end
+            end
+          end
+
           t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
             expect(mail.html_part.body).to_not have_content(strip_tags(item))
           end
@@ -752,15 +735,18 @@ RSpec.describe UserMailer, type: :mailer do
         context 'template displays modified content' do
           it 'conditionally renders content in the what to expect section
             applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.headings.barcode_eipp'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.state_id.heading_eipp'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.state_id.info_eipp'),
-            )
+            aggregate_failures do
+              [
+                t('in_person_proofing.headings.barcode_eipp'),
+                t('in_person_proofing.process.state_id.heading_eipp'),
+                t('in_person_proofing.process.state_id.info_eipp'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
+            
           end
         end
 
@@ -779,50 +765,51 @@ RSpec.describe UserMailer, type: :mailer do
 
         context 'template displays additional Enhanced In-Person Proofing specific content' do
           it 'renders What to bring section' do
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.headings.barcode_what_to_bring'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.body.barcode.what_to_bring'),
-            )
+            aggregate_failures do
+              [
+                t('in_person_proofing.headings.barcode_what_to_bring'),
+                t('in_person_proofing.body.barcode.what_to_bring'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
           end
 
           it 'renders Option 1 content' do
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_bring_id.heading'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_bring_id.info'),
-            )
+            aggregate_failures do
+              [
+                t('in_person_proofing.process.eipp_bring_id.heading'),
+                t('in_person_proofing.process.eipp_bring_id.info'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
           end
 
           it 'renders Option 2 content' do
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_what_to_bring.heading'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_what_to_bring.info'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_state_id_passport.heading'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_state_id_passport.info'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_state_id_military_id.info'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
-            )
-            expect(mail.html_part.body).to have_content(
-              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
-            )
-            t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
-              expect(mail.html_part.body).to have_content(strip_tags(item))
+            aggregate_failures do
+              [
+                t('in_person_proofing.process.eipp_what_to_bring.heading'),
+                t('in_person_proofing.process.eipp_what_to_bring.info'),
+                t('in_person_proofing.process.eipp_state_id_passport.heading'),
+                t('in_person_proofing.process.eipp_state_id_passport.info'),
+                t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+                t('in_person_proofing.process.eipp_state_id_military_id.info'),
+                t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+                t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+
+                t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+                  expect(mail.html_part.body).to have_content(strip_tags(item))
+                end
+              end
             end
           end
         end
