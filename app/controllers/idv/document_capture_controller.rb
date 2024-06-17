@@ -88,8 +88,14 @@ module Idv
       if result.success?
         redirect_to idv_ssn_url
       else
-        redirect_to idv_document_capture_socure_url
+        redirect_to idv_document_capture_warning_url
       end
+    end
+
+    def warning
+      @step_indicator_steps = step_indicator_steps
+      @remaining_submit_attempts = 5 # rate_limiter.remaining_count
+      @try_again_path = idv_document_capture_socure_url
     end
 
     def extra_view_variables
