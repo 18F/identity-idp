@@ -1,6 +1,5 @@
 @use 'uswds-core' as *;
 @forward 'usa-verification-badge';
-@forward 'usa-tooltip';
 
 // Upstream: https://github.com/18F/identity-design-system/pull/445
 .lg-verification-badge .usa-icon {
@@ -18,23 +17,5 @@
   border-color: color('info');
   .usa-icon {
     color: color('info');
-  }
-}
-
-// Workaround for tooltip styles affecting icon button appearance.
-// See: https://github.com/uswds/uswds/pull/5263
-.usa-tooltip__trigger > svg {
-  display: inline;
-}
-
-// Workaround for tooltip issue preventing buttons from showing as full width at small screen sizes.
-// See: https://github.com/uswds/uswds/issues/5273
-.usa-tooltip {
-  @include at-media-max('mobile-lg') {
-    display: block;
-
-    .clipboard-button--unstyled & {
-      display: inline;
-    }
   }
 }
