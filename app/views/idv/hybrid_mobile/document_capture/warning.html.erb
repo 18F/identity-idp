@@ -1,0 +1,17 @@
+<% self.title = t('titles.failure.information_not_verified') %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { t('errors.doc_auth.rate_limited_heading') } %>
+
+  <h2><%= t('errors.doc_auth.rate_limited_subheading') %></h2>
+  <p><%= t('idv.failure.attempts_html', count: @remaining_submit_attempts) %></p>
+
+  <% c.with_action_button(
+       url: @try_again_path,
+       class: 'margin-bottom-2',
+     ) { t('idv.forgot_password.try_again') } %>
+<% end %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('links.cancel'), idv_cancel_path(step: :invalid_session) %>
+<% end %>

@@ -86,8 +86,13 @@ module Idv
           # flash[:success] = t('doc_auth.headings.capture_complete')
           redirect_to idv_hybrid_mobile_capture_complete_url
         else
-          redirect_to idv_hybrid_mobile_document_capture_socure_url
+          redirect_to idv_hybrid_mobile_document_capture_warning_url
         end
+      end
+
+      def warning
+        @remaining_submit_attempts = 5 # rate_limiter.remaining_count
+        @try_again_path = idv_hybrid_mobile_document_capture_url
       end
 
       def extra_view_variables
