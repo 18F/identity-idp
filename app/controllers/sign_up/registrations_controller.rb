@@ -47,18 +47,18 @@ module SignUp
       user = @register_user_email_form.user
       create_user_event(:account_created, user) unless @register_user_email_form.email_taken?
 
-      # resend_confirmation = params[:user][:resend]
+      resend_confirmation = params[:user][:resend]
       session[:email] = @register_user_email_form.email
       session[:terms_accepted] = @register_user_email_form.terms_accepted
       session[:sign_in_flow] = :create_account
 
       # DEXCOM CHANGE: Skip sending the email and immedaitely redirect to the email confirmation page
-      # redirect_to http://localhost:3000/sign_up/email/confirm?confirmation_token=Q3sDRFYSsfXEQ8-8yNgm
-      # redirect_to sign_up_verify_email_url(resend: resend_confirmation)
-
-      confirmation_token = user.email_addresses.last.confirmation_token
-      redirect_to sign_up_create_email_confirmation_url(confirmation_token: confirmation_token)
-
+      if IdentityConfig.store.dexcom_skip_email_confirmation
+        confirmation_token = user.email_addresses.last.confirmation_token
+        redirect_to sign_up_create_email_confirmation_url(confirmation_token: confirmation_token)
+      else
+        redirect_to sign_up_verify_email_url(resend: resend_confirmation)
+      end
     end
 
     def request_id
