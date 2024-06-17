@@ -115,117 +115,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
         )
       end
     end
-
-    context 'tracks costs' do
-      let(:review_status) { 'pass' }
-      let(:async_state) { instance_double(ProofingSessionAsyncResult) }
-      let(:adjudicated_result) do
-        {
-          context: {
-            stages: {
-              threatmetrix: {
-                transaction_id: 1,
-              },
-              resolution: {
-                transaction_id: 'resolution-mock-transaction-id-123',
-                vendor_name: 'ResolutionMock',
-              },
-              residential_address: {
-                transaction_id: 'resolution-mock-transaction-id-123',
-                vendor_name: 'ResolutionMock',
-              },
-              state_id: {
-                transaction_id: 'state-id-mock-transaction-id-456',
-                vendor_name: 'StateIdMock',
-              },
-            },
-          },
-        }
-      end
-
-      before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
-        allow(async_state).to receive(:done?).and_return(true)
-      end
-
-      context 'when same address as id is true and in aamva jurisdiction' do
-        it 'adds costs to database' do
-          allow(async_state).to receive(:result).and_return(adjudicated_result)
-
-          get :show
-
-          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
-          expect(lexis_nexis_costs.count).to eq(1)
-
-          aamva_costs = SpCost.where(cost_type: 'aamva')
-          expect(aamva_costs.count).to eq(1)
-
-          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
-          expect(threatmetrix_costs.count).to eq(1)
-        end
-      end
-
-      context 'when same address as id is true and not in aamva jurisdiction' do
-        it 'adds costs to database' do
-          adjudicated_result[:context][:stages][:state_id][:vendor_name] = 'UnsupportedJurisdiction'
-          allow(async_state).to receive(:result).and_return(adjudicated_result)
-
-          get :show
-
-          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
-          expect(lexis_nexis_costs.count).to eq(1)
-
-          aamva_costs = SpCost.where(cost_type: 'aamva')
-          expect(aamva_costs.count).to eq(0)
-
-          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
-          expect(threatmetrix_costs.count).to eq(1)
-        end
-      end
-
-      context 'when same address as id is false and in aamva jurisdiction' do
-        let(:pii_from_user) do
-          { same_address_as_id: 'false' }
-        end
-
-        it 'adds costs to database' do
-          allow(async_state).to receive(:result).and_return(adjudicated_result)
-
-          get :show
-
-          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
-          expect(lexis_nexis_costs.count).to eq(2)
-
-          aamva_costs = SpCost.where(cost_type: 'aamva')
-          expect(aamva_costs.count).to eq(1)
-
-          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
-          expect(threatmetrix_costs.count).to eq(1)
-        end
-      end
-
-      context 'when same address as id is false and not in aamva jurisdiction' do
-        let(:pii_from_user) do
-          { same_address_as_id: 'false' }
-        end
-
-        it 'adds costs to database' do
-          adjudicated_result[:context][:stages][:state_id][:vendor_name] = 'UnsupportedJurisdiction'
-          allow(async_state).to receive(:result).and_return(adjudicated_result)
-
-          get :show
-
-          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
-          expect(lexis_nexis_costs.count).to eq(2)
-
-          aamva_costs = SpCost.where(cost_type: 'aamva')
-          expect(aamva_costs.count).to eq(0)
-
-          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
-          expect(threatmetrix_costs.count).to eq(1)
-        end
-      end
-    end
   end
 
   describe '#update' do
@@ -241,17 +130,21 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     end
 
-    it 'sets uuid_prefix and state_id_type on pii_from_user' do
-      expect(Idv::Agent).to receive(:new).
-        with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
+    it 'sets ssn and state_id_type on pii_from_user' do
+      expect(Idv::Agent).to receive(:new).with(
+        hash_including(
+          state_id_type: 'drivers_license',
+          ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
+        ),
+      ).and_call_original
+
       # our test data already has the expected value by default
       subject.user_session['idv/in_person'][:pii_from_user].delete(:state_id_type)
+
       put :update
 
       expect(subject.user_session['idv/in_person'][:pii_from_user][:state_id_type]).
         to eq 'drivers_license'
-      expect(subject.user_session['idv/in_person'][:pii_from_user][:uuid_prefix]).
-        to eq service_provider.app_id
     end
 
     context 'a user does not have an establishing in person enrollment associated with them' do
@@ -292,10 +185,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
 
       it 'captures state id address fields in the pii' do
         expect(Idv::Agent).to receive(:new).with(
-          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(
-            uuid_prefix: nil,
-            uuid: user.uuid,
-          ),
+          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS,
         ).and_call_original
         put :update
       end

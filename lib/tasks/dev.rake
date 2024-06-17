@@ -150,9 +150,9 @@ namespace :dev do
                 num_attempts += 1
                 begin
                   UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-                    user,
-                    pii,
-                    is_enhanced_ipp,
+                    user: user,
+                    pii: pii,
+                    is_enhanced_ipp: is_enhanced_ipp,
                   )
                 rescue StandardError => e
                   Rails.logger.error 'Exception raised while enrolling user: ' + e.message

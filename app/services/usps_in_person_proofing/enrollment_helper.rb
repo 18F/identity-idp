@@ -3,7 +3,7 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user, pii, is_enhanced_ipp, opt_in = nil)
+      def schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:, opt_in: nil)
         enrollment = user.establishing_in_person_enrollment
         return unless enrollment
 
@@ -17,7 +17,7 @@ module UspsInPersonProofing
             transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end
 
-        enrollment_code = create_usps_enrollment(enrollment, pii)
+        enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         return unless enrollment_code
 
         # update the enrollment to status pending
@@ -53,7 +53,7 @@ module UspsInPersonProofing
       # @param [Pii::Attributes] pii The PII associated with the in-person enrollment
       # @return [String] The enrollment code
       # @raise [Exception::RequestEnrollException] Raised with a problem creating the enrollment
-      def create_usps_enrollment(enrollment, pii)
+      def create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
         unique_id = enrollment.unique_id || enrollment.usps_unique_id
@@ -72,7 +72,7 @@ module UspsInPersonProofing
         )
 
         proofer = usps_proofer
-        response = proofer.request_enroll(applicant)
+        response = proofer.request_enroll(applicant, is_enhanced_ipp)
         response.enrollment_code
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)

@@ -313,6 +313,7 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
 
     context 'preconditions for personal_key are present' do
+      let(:is_enhanced_ipp) { false }
       let(:password) { 'sekrit phrase' }
       context 'user has a verify by mail pending profile' do
         it 'returns personal_key' do
@@ -326,6 +327,7 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
 
       context 'user has a newly activated profile' do
+        let(:is_enhanced_ipp) { false }
         it 'returns personal_key' do
           stub_up_to(:otp_verification, idv_session: idv_session)
           idv_session.create_profile_from_applicant_with_password('password', is_enhanced_ipp)

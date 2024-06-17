@@ -323,5 +323,23 @@ RSpec.describe GpoVerifyForm, allowed_extra_analytics: [:*] do
         end
       end
     end
+
+    context 'when the user is going through enhanced ipp' do
+      let(:is_enhanced_ipp) { true }
+      let!(:establishing_enrollment) do
+        create(
+          :in_person_enrollment,
+          :establishing,
+          profile: pending_profile,
+          user: user,
+        )
+      end
+      it 'sends the correct information for scheduling an in person enrollment' do
+        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
+          with(user: anything, pii: anything, is_enhanced_ipp: is_enhanced_ipp)
+
+        subject.submit(is_enhanced_ipp)
+      end
+    end
   end
 end

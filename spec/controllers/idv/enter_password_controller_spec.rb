@@ -934,5 +934,29 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
         end
       end
     end
+
+    context 'user is going through enhanced ipp' do
+      let(:is_enhanced_ipp) { true }
+      let!(:enrollment) do
+        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+      end
+      before do
+        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+        allow(controller).to(
+          receive(:resolved_authn_context_result).and_return(authn_context_result),
+        )
+      end
+      it 'passes the correct param to the enrollment helper method' do
+        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment).
+          with(
+            user: user,
+            pii: Pii::Attributes.new_from_hash(applicant),
+            is_enhanced_ipp: is_enhanced_ipp,
+            opt_in: nil,
+          )
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+    end
   end
 end

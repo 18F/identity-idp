@@ -24,13 +24,7 @@ module Idv
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
-      # proof_resolution job expects these values
-      agent_pii = pii.merge(
-        uuid: current_user.uuid,
-        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-        ssn: idv_session.ssn,
-      )
-      Idv::Agent.new(agent_pii).proof_resolution(
+      Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: aamva_state?,
         trace_id: amzn_trace_id,
@@ -164,8 +158,6 @@ module Idv
     end
 
     def async_state_done(current_async_state)
-      add_proofing_costs(current_async_state.result)
-
       create_fraud_review_request_if_needed(current_async_state.result)
 
       form_response = idv_result_to_form_response(
@@ -293,34 +285,6 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
-    end
-
-    def add_proofing_costs(results)
-      return if results[:context][:sp_costs_added]
-
-      results[:context][:stages].each do |stage, hash|
-        if stage == :resolution
-          # transaction_id comes from ConversationId
-          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-        elsif stage == :residential_address
-          next if pii[:same_address_as_id] == 'true'
-          next if hash[:vendor_name] == 'ResidentialAddressNotRequired'
-          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-        elsif stage == :state_id
-          next if hash[:exception].present?
-          next if hash[:vendor_name] == 'UnsupportedJurisdiction'
-          # transaction_id comes from TransactionLocatorId
-          add_cost(:aamva, transaction_id: hash[:transaction_id])
-        elsif stage == :threatmetrix
-          # transaction_id comes from request_id
-          if hash[:transaction_id]
-            add_cost(
-              :threatmetrix,
-              transaction_id: hash[:transaction_id],
-            )
-          end
-        end
-      end
     end
 
     def add_cost(token, transaction_id: nil)
