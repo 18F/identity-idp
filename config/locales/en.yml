@@ -74,14 +74,14 @@ account.index.sign_in_location_and_ip: From %{ip} (IP address potentially locate
 account.index.unknown_location: unknown location
 account.index.verification.finish_verifying: Finish verifying your identity to access %{partner_agency}.
 account.index.verification.identity_verification: Identity verification
-account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.in_person_instructions: You must visit any participating Post Office by %{deadline} to verify your identity.
+account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.learn_more_link: Learn more about verifying your identity
 account.index.verification.reactivate_button: Enter the verification code you received via US mail
 account.index.verification.show_bar_code: Show me my Login.gov barcode
+account.index.verification.success: We verified your information
 account.index.verification.you_verified_your_biometric_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all Login.gov partners.
 account.index.verification.you_verified_your_identity: You verified your identity for %{partner_agency} with the information below.
-account.index.verification.success: We verified your information
 account.index.webauthn: Security key
 account.index.webauthn_add: Add security key
 account.index.webauthn_platform: Face or touch unlock
@@ -139,11 +139,11 @@ anonymous_mailer.password_reset_missing_user.try_different_email: Try a differen
 anonymous_mailer.password_reset_missing_user.use_this_email_html: Or use this email address and %{create_account_link_html}.
 banned_user.details: We are unable to authenticate you at this time.
 banned_user.title: Access is restricted
-components.barcode.image_alt: Barcode
 components.badge_tooltip_component.pending: Your identity is pending verification.
+components.badge_tooltip_component.unverified: Finish verifying your identity.
 components.badge_tooltip_component.verified: Your identity has been verified.
 components.badge_tooltip_component.verified_biometric: Your identity and photo have both been verified.
-components.badge_tooltip_component.unverified: Finish verifying your identity.
+components.barcode.image_alt: Barcode
 components.captcha_submit_button.action_message: Verifying…
 components.captcha_submit_button.mock_score_disclaimer: Internal Only
 components.captcha_submit_button.mock_score_label: 'reCAPTCHA score: (0.0 - 1.0)'
@@ -895,9 +895,9 @@ headings.account.devices: Devices
 headings.account.events: Events
 headings.account.federal_employee_id: Federal employee ID
 headings.account.login_info: Your account
+headings.account.pending: Pending
 headings.account.reactivate: Reactivate your account
 headings.account.two_factor: Your authentication methods
-headings.account.pending: Pending
 headings.account.unphishable: Unphishable
 headings.account.unverified: Unverified
 headings.account.verified_account: Verified
