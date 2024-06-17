@@ -177,6 +177,13 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_ready_to_verify_enhanced_ipp_enabled
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
+      enrollment: in_person_enrollment,
+      is_enhanced_ipp: true,
+    )
+  end
+
   def in_person_ready_to_verify_reminder
     UserMailer.with(
       user: user,
