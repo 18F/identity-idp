@@ -130,17 +130,21 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     end
 
-    it 'sets uuid_prefix and state_id_type on pii_from_user' do
-      expect(Idv::Agent).to receive(:new).
-        with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
+    it 'sets ssn and state_id_type on pii_from_user' do
+      expect(Idv::Agent).to receive(:new).with(
+        hash_including(
+          state_id_type: 'drivers_license',
+          ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
+        ),
+      ).and_call_original
+
       # our test data already has the expected value by default
       subject.user_session['idv/in_person'][:pii_from_user].delete(:state_id_type)
+
       put :update
 
       expect(subject.user_session['idv/in_person'][:pii_from_user][:state_id_type]).
         to eq 'drivers_license'
-      expect(subject.user_session['idv/in_person'][:pii_from_user][:uuid_prefix]).
-        to eq service_provider.app_id
     end
 
     context 'a user does not have an establishing in person enrollment associated with them' do
@@ -181,10 +185,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
 
       it 'captures state id address fields in the pii' do
         expect(Idv::Agent).to receive(:new).with(
-          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(
-            uuid_prefix: nil,
-            uuid: user.uuid,
-          ),
+          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS,
         ).and_call_original
         put :update
       end

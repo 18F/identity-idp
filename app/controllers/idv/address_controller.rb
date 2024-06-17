@@ -20,7 +20,6 @@ module Idv
       @address_form = build_address_form
       form_result = @address_form.submit(profile_params)
       track_submit_event(form_result)
-      capture_address_edited(form_result)
       if form_result.success?
         success
       else
@@ -69,8 +68,11 @@ module Idv
     end
 
     def track_submit_event(form_result)
-      address_edited = form_result.success? && address_edited?
-      analytics.idv_address_submitted(**form_result.to_h.merge(address_edited:))
+      analytics.idv_address_submitted(
+        **form_result.to_h.merge(
+          address_edited: address_edited?,
+        ),
+      )
     end
 
     def address_edited?
@@ -79,11 +81,6 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
-    end
-
-    def capture_address_edited(result)
-      address_edited = result.to_h[:address_edited]
-      idv_session.address_edited = true if address_edited
     end
   end
 end

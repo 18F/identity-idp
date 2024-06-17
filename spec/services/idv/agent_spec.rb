@@ -33,7 +33,7 @@ RSpec.describe Idv::Agent do
       context 'proofing state_id enabled' do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new(
-            Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
+            Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '444-55-6666'),
           )
           agent.proof_resolution(
             document_capture_session,
@@ -51,7 +51,7 @@ RSpec.describe Idv::Agent do
         end
 
         it 'does proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user.uuid))
+          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: true,
@@ -76,7 +76,7 @@ RSpec.describe Idv::Agent do
       context 'proofing state_id disabled' do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new(
-            Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
+            Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '444-55-6666'),
           )
           agent.proof_resolution(
             document_capture_session,
@@ -93,7 +93,7 @@ RSpec.describe Idv::Agent do
         end
 
         it 'does not proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user.uuid))
+          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: false,
@@ -113,7 +113,7 @@ RSpec.describe Idv::Agent do
 
         it 'returns a successful result if SSN does not start with 900 but is in SSN allowlist' do
           agent = Idv::Agent.new(
-            Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '999-99-9999'),
+            Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '999-99-9999'),
           )
 
           agent.proof_resolution(
@@ -137,7 +137,7 @@ RSpec.describe Idv::Agent do
         issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
         document_capture_session.update!(issuer: issuer)
         agent = Idv::Agent.new(
-          Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '999-99-9999'),
+          Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '999-99-9999'),
         )
 
         expect(ResolutionProofingJob).to receive(:perform_later).with(
@@ -159,10 +159,7 @@ RSpec.describe Idv::Agent do
 
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
         agent = Idv::Agent.new(
-          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
-            uuid: user.uuid,
-            first_name: 'Time Exception',
-          ),
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(first_name: 'Time Exception'),
         )
 
         agent.proof_resolution(
@@ -187,8 +184,7 @@ RSpec.describe Idv::Agent do
         let(:ipp_enrollment_in_progress) { true }
 
         it 'returns a successful result if resolution passes' do
-          addr = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
-          agent = Idv::Agent.new(addr.merge(uuid: user.uuid))
+          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS)
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: true,
@@ -217,7 +213,6 @@ RSpec.describe Idv::Agent do
 
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new(
-          uuid: SecureRandom.uuid,
           first_name: 'Fakey',
           last_name: 'Fakersgerald',
           dob: 50.years.ago.to_date.to_s,

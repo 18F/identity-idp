@@ -1,9 +1,9 @@
 ---
 zh:
   telephony:
-    account_deleted_notice: This text message confirms you have deleted your %{app_name} account.
+    account_deleted_notice: 这条信息确认你已删除了你的 %{app_name} 账户。
     account_reset_cancellation_notice: 删除你 %{app_name} 账户的请求已被取消。
-    account_reset_notice: 按照你的请求，你的 %{app_name} 账户会在 24 小时后删除。不想删除你的账户？登入你的 %{app_name} 账户去取消。
+    account_reset_notice: 按照你的请求，你的 %{app_name} 账户会在%{interval}后删除。不想删除你的账户？登入你的 %{app_name} 账户去取消。
     authentication_otp:
       sms: |-
         %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
@@ -18,7 +18,7 @@ zh:
         %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
 
         @%{domain} #%{code}
-      voice: 你好! 你的%{format_length}%{format_type}一次性代码是 %{code}。你的一次性代码是 %{code}。 重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
+      voice: 你好！你的%{format_length}-%{format_type} %{app_name}一次性代码是，%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
     doc_auth_link: |-
       %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
     error:

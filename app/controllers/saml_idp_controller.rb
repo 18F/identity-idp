@@ -137,6 +137,7 @@ class SamlIdpController < ApplicationController
       # Logging to indicate if a validation bug fix will create a potentially breaking change
       analytics_payload[:encryption_cert_matches_matching_cert] =
         encryption_cert_matches_matching_cert?
+      analytics_payload[:cert_error_details] = saml_request.cert_errors
     end
 
     analytics.saml_auth(**analytics_payload)

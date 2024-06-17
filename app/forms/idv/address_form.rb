@@ -30,6 +30,8 @@ module Idv
     end
 
     def updated_user_address
+      return nil unless valid?
+
       Pii::Address.new(
         address1: address1,
         address2: address2,

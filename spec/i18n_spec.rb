@@ -6,7 +6,7 @@ require 'i18n/tasks'
 # List of keys allowed to contain different interpolation arguments across locales
 ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
-].sort.freeze
+].freeze
 
 ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS = [
   'datetime.dotiw.last_word_connector',
@@ -15,24 +15,7 @@ ALLOWED_LEADING_OR_TRAILING_SPACE_KEYS = [
 ].sort.freeze
 
 # These are keys with mismatch interpolation for specific locales
-ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [
-  # need to be fixed
-  'zh.account_reset.pending.confirm',
-  'zh.account_reset.pending.wait_html',
-  'zh.account_reset.recovery_options.check_webauthn_platform_info',
-  'zh.doc_auth.info.exit.with_sp',
-  'zh.idv.cancel.headings.exit.with_sp',
-  'zh.idv.failure.exit.with_sp',
-  'zh.telephony.account_reset_notice',
-  'zh.telephony.confirmation_otp.voice',
-  'zh.two_factor_authentication.account_reset.pending',
-  'zh.user_mailer.account_reset_granted.intro_html',
-  'zh.user_mailer.account_reset_request.header',
-  'zh.user_mailer.account_reset_request.intro_html',
-  'zh.user_mailer.in_person_verified.next_sign_in.without_sp',
-  'zh.user_mailer.in_person_verified.subject',
-  'zh.user_mailer.new_device_sign_in.info',
-].sort.freeze
+ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS = [].freeze
 
 PUNCTUATION_PAIRS = {
   '{' => '}',
@@ -70,6 +53,10 @@ module I18n
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.en', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.es', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.fr', locales: %i[es fr zh] },
+        { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'date.formats.long', locales: %i[es zh] },
@@ -88,11 +75,6 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
-        # need to be fixed
-        { key: 'account.email_language.name.zh', locales: %i[es fr] }, # needs to be translated
-        { key: 'errors.messages.blank_cert_element_req', locales: %i[zh] }, # needs to be translated
-        { key: 'openid_connect.authorization.errors.no_valid_vtr', locales: %i[zh] }, # needs to be translated
-        { key: 'telephony.account_deleted_notice', locales: %i[zh] }, # needs to be translated
       ].freeze
       # rubocop:enable Layout/LineLength
 
@@ -260,14 +242,25 @@ RSpec.describe 'I18n' do
       keys =
         interpolation_arguments.group_by { |_k, v| v }.
           sort_by { |_k, v| v.length * -1 }.drop(1).
-          map { |x| x[1].flatten }.to_h.keys
+          flat_map { |x| x[1] }.to_h.keys
 
       missing_interpolation_argument_locale_keys += keys
     end
 
+    unallowed_interpolation_mismatch_locale_keys =
+      missing_interpolation_argument_locale_keys - ALLOWED_INTERPOLATION_MISMATCH_LOCALE_KEYS
+
+    expect(unallowed_interpolation_mismatch_locale_keys).to(
+      be_empty,
+      <<~EOS,
+        There are mismatched interpolation arguments:
+        #{unallowed_interpolation_mismatch_locale_keys.pretty_inspect}
+      EOS
+    )
+
     unused_allowed_interpolation_mismatch_keys =
       ALLOWED_INTERPOLATION_MISMATCH_KEYS - missing_interpolation_argument_keys
-    expect(unused_allowed_interpolation_mismatch_keys.sort).to(
+    expect(unused_allowed_interpolation_mismatch_keys).to(
       be_empty,
       <<~EOS,
         ALLOWED_INTERPOLATION_MISMATCH_KEYS contains unused allowed interpolation mismatches.
