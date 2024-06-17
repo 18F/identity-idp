@@ -125,7 +125,7 @@ RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_password
 RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git && \
     cp idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/ && \
     cp idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/ && \
-    cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/ && \
+    cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/pwned_passwords.txt && \
     rm -r idp-large-files
 RUN mkdir -p /usr/local/share/aws && \
     curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem
