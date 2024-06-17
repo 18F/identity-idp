@@ -142,7 +142,7 @@ class NewPhoneForm
   end
 
   def recaptcha_form_args
-    args = { analytics: }
+    args = { analytics:, user: }
     if IdentityConfig.store.recaptcha_mock_validator
       args.merge(form_class: RecaptchaMockForm, score: recaptcha_mock_score)
     elsif FeatureManagement.recaptcha_enterprise?

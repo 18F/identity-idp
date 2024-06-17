@@ -24,6 +24,12 @@ class RecaptchaEnterpriseForm < RecaptchaForm
           token: recaptcha_token,
           siteKey: IdentityConfig.store.recaptcha_site_key,
           expectedAction: recaptcha_action,
+          userInfo: {
+            accountId: user&.uuid,
+            userInfo: {
+              email: encrypted_email
+            }
+          }
         },
       },
     ) do |request|
@@ -42,8 +48,13 @@ class RecaptchaEnterpriseForm < RecaptchaForm
           *response.body.dig('riskAnalysis', 'reasons').to_a,
           response.body.dig('tokenProperties', 'invalidReason'),
         ].compact,
+        account_defender_assesment: reponse.dig('accountDefenderAssessment')
       )
     end
+  end
+
+  def encrypted_email
+    user.email_addresses.first.&encrypted_email
   end
 
   def faraday

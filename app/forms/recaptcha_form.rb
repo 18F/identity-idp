@@ -11,6 +11,7 @@ class RecaptchaForm
               :recaptcha_token,
               :score_threshold,
               :analytics,
+              :user,
               :extra_analytics_properties
 
   validate :validate_token_exists
@@ -32,11 +33,13 @@ class RecaptchaForm
   end
 
   def initialize(
+    user: nil,
     recaptcha_action: nil,
     score_threshold: 0.0,
     analytics: nil,
     extra_analytics_properties: {}
   )
+    @user = user
     @score_threshold = score_threshold
     @analytics = analytics
     @recaptcha_action = recaptcha_action
