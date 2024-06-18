@@ -78,9 +78,9 @@ account.index.verification.in_person_instructions: 你必须在 %{deadline} 之�
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
 account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
 account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
-account.index.verification.show_bar_code: 显示我的Login.gov 条形码
+account.index.verification.show_bar_code: 显示我的%{app_name} 条形码
 account.index.verification.success: 我们验证了你的信息
-account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问Login.gov所有合作伙伴机构的权限。
+account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
 account.index.verification.you_verified_your_identity: 你使用以下信息向 %{partner_agency} 验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
