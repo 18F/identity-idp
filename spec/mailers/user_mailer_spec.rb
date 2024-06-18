@@ -691,7 +691,7 @@ RSpec.describe UserMailer, type: :mailer do
           ).once
         end
 
-        it 'template does not displays Enhanced In-Person Proofing specific content' do
+        it 'template does not display Enhanced In-Person Proofing specific content' do
           aggregate_failures do
             [
               t('in_person_proofing.headings.barcode_eipp'),
@@ -723,8 +723,7 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
-        is_enhanced_ipp = true
-
+        let(:is_enhanced_ipp) { true }
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,

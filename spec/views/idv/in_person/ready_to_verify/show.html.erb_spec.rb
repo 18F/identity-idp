@@ -180,7 +180,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       ).once
     end
 
-    it 'template does not displays EIPP specific content' do
+    it 'template does not display Enhanced In-Person Proofing specific content' do
       render
 
       aggregate_failures do
@@ -213,7 +213,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
   end
 
-  context 'For Enhanced IPP (EIPP)' do
+  context 'For Enhanced In-Person Proofing (EIPP)' do
     let(:is_enhanced_ipp) { true }
 
     before do
