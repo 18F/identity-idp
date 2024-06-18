@@ -35,6 +35,7 @@ module Idv
           document_capture_session_uuid: document_capture_session_uuid,
           redirect_url: idv_hybrid_mobile_document_capture_socure_redirect_url,
           verification_level: request.params['verification_level'],
+          language: locale,
         )
         doc_resp = doc_req.fetch
 
