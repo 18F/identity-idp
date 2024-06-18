@@ -30,8 +30,14 @@
             </div>
           </div>
           <% unless @presenter.show_pii_partial? %>
-            <p><%= t('account.index.verification.finish_verifying', partner_agency: @presenter.service_provider_or_app_name) %>
-              <br><%= link_to t('account.index.verification.learn_more_link'), MarketingSite.help_url %></p>
+            <% if @presenter.show_verified_badge? %>
+              <%= render 'accounts/unverified_profile' %>
+            <% else %>
+              <p>
+                <%= t('account.index.verification.finish_verifying', partner_agency: @presenter.service_provider_or_app_name) %>
+                  <br><%= link_to t('account.index.verification.learn_more_link'), MarketingSite.help_url %>
+              </p>
+            <% end %>
           <% end %>
           <% if @presenter.show_gpo_partial? %>
             <%= render 'accounts/pending_profile_gpo' %>
@@ -45,7 +51,7 @@
       <% if @presenter.show_pii_partial? %>
 
       <% if @presenter.biometric_identity_verification? %>
-        <p><%= t('account.index.verification.you_verified_your_biometric_identity', partner_agency: @presenter.service_provider_or_app_name) %>
+        <p><%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
           <%= link_to t('account.index.verification.learn_more_link'), MarketingSite.help_url %></p>
       <% else %>
         <p><%= t('account.index.verification.you_verified_your_identity', partner_agency: @presenter.service_provider_or_app_name) %>
