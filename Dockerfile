@@ -165,7 +165,9 @@ RUN bundle exec rake assets:precompile --trace
 
 # Setup setup files
 COPY db-init.sh $RAILS_ROOT/db-init.sh
+COPY db-migrate.sh $RAILS_ROOT/db-migrate.sh
 RUN chmod +x ./db-init.sh
+RUN chmod +x ./db-migrate.sh
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"
@@ -182,6 +184,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
     chown -R app:app $RAILS_ROOT/keys && \
+    chown -R app:app $RAILS_ROOT/db && \
     find $RAILS_ROOT -type d | xargs chmod 755
 
 # Expose the port the app runs on
