@@ -4,6 +4,8 @@
 module DocAuth
   module Socure
     class Webhook
+      include Idv::SocureConcern
+
       attr_reader :payload
 
       def initialize(payload)
