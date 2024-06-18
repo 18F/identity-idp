@@ -80,7 +80,7 @@ class NotifySlack
     parser.parse!(argv)
 
     if !channel || !username || !text || !webhook
-      puts parser
+      stdout.puts parser
       exit 1
     end
 

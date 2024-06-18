@@ -134,6 +134,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
   gem 'rspec_junit_formatter'
+  gem 'rspec-json_matchers', require: false
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'simple_xlsx_reader', require: false
   gem 'tableparser', require: false
