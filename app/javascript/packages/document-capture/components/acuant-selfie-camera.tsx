@@ -83,6 +83,11 @@ interface FaceDetectionStates {
   TOO_MANY_FACES: string;
   FACE_TOO_SMALL: string;
   FACE_CLOSE_TO_BORDER: string;
+  CLOSE_TEXT: string;
+  RETAKE_TEXT: string;
+  INTRO_TEXT: string;
+  SUBMIT_ALT: string;
+  CAPTURE_ALT: string;
 }
 
 function AcuantSelfieCamera({
@@ -145,6 +150,11 @@ function AcuantSelfieCamera({
       TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
       FACE_TOO_SMALL: t('doc_auth.info.selfie_capture_status.face_too_small'),
       FACE_CLOSE_TO_BORDER: t('doc_auth.info.selfie_capture_status.face_close_to_border'),
+      CLOSE_TEXT: "close",
+      RETAKE_TEXT: "retake",
+      INTRO_TEXT: "Camera is on, ready for selfie",
+      SUBMIT_ALT: "Use this photo",
+      CAPTURE_ALT: "Take photo"
     };
     const cleanupSelfieCamera = () => {
       window.AcuantPassiveLiveness.end();
