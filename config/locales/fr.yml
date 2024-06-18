@@ -901,7 +901,6 @@ headings.account.two_factor: Vos méthodes d’authentification
 headings.account.unphishable: Non hameçonnable
 headings.account.unverified: Non vérifiée
 headings.account.verified_account: Vérifiée
-headings.account.verified_information: Informations vérifiées
 headings.add_email: Ajouter une nouvelle adresse e-mail
 headings.add_info.phone: Ajouter un numéro de téléphone
 headings.cancellations.login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
