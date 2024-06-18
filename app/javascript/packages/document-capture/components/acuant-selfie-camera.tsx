@@ -150,11 +150,11 @@ function AcuantSelfieCamera({
       TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
       FACE_TOO_SMALL: t('doc_auth.info.selfie_capture_status.face_too_small'),
       FACE_CLOSE_TO_BORDER: t('doc_auth.info.selfie_capture_status.face_close_to_border'),
-      CLOSE_TEXT: "close",
-      RETAKE_TEXT: "retake",
-      INTRO_TEXT: "Camera is on, ready for selfie",
-      SUBMIT_ALT: "Use this photo",
-      CAPTURE_ALT: "Take photo"
+      CLOSE_TEXT: 'close',
+      RETAKE_TEXT: 'retake',
+      INTRO_TEXT: 'Camera is on, ready for selfie',
+      SUBMIT_ALT: 'Use this photo',
+      CAPTURE_ALT: 'Take photo'
     };
     const cleanupSelfieCamera = () => {
       window.AcuantPassiveLiveness.end();
