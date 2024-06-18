@@ -119,7 +119,7 @@ RSpec.describe GpoVerifyForm, allowed_extra_analytics: [:*] do
     end
   end
 
-  describe '#submit(is_enhanced_ipp)' do
+  describe '#submit' do
     context 'correct OTP' do
       it 'returns true' do
         result = subject.submit(is_enhanced_ipp)
