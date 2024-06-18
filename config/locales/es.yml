@@ -78,9 +78,9 @@ account.index.verification.in_person_instructions: Para terminar de verificar su
 account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
 account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
 account.index.verification.reactivate_button: Ingrese el código de verificación que recibió por correo de los EE. UU.
-account.index.verification.show_bar_code: Mostrar mi código de barras de Login.gov
+account.index.verification.show_bar_code: Mostrar mi código de barras de %{app_name}
 account.index.verification.success: Verificamos su información
-account.index.verification.you_verified_your_biometric_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de Login.gov.
+account.index.verification.you_verified_your_biometric_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de %{app_name}.
 account.index.verification.you_verified_your_identity: Usted verificó su identidad para %{partner_agency} con la información siguiente.
 account.index.webauthn: Clave de seguridad
 account.index.webauthn_add: Agregar clave de seguridad
