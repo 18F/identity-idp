@@ -154,7 +154,7 @@ function AcuantSelfieCamera({
       RETAKE_TEXT: 'retake',
       INTRO_TEXT: 'Camera is on, ready for selfie',
       SUBMIT_ALT: 'Use this photo',
-      CAPTURE_ALT: 'Take photo'
+      CAPTURE_ALT: 'Take photo',
     };
     const cleanupSelfieCamera = () => {
       window.AcuantPassiveLiveness.end();

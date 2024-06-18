@@ -49,7 +49,7 @@ describe('document-capture/components/acuant-selfie-camera', () => {
       INTRO_TEXT: 'Camera is on, ready for selfie',
       RETAKE_TEXT: 'retake',
       SUBMIT_ALT: 'Use this photo',
-      TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces')
+      TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
     });
   });
 
