@@ -50,6 +50,11 @@ class AccountShowPresenter
       show_password_reset_partial?
   end
 
+  def show_unverified?
+    show_password_reset_partial? &&
+      (!show_ipp_partial? || !show_gpo_partial?)
+  end
+
   def service_provider_or_app_name
     if user.identities.count == 0
       APP_NAME
