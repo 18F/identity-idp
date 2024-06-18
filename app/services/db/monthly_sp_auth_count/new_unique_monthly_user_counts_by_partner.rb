@@ -83,21 +83,21 @@ module Db
             iaa_start_date: date_range.begin.to_s,
             iaa_end_date: date_range.end.to_s,
             unique_user_proofed_events: this_month_user_proofed_events.count,
-            partner_ial2_unique_users_year1: unique_profiles_by_age[0].count,
-            partner_ial2_unique_users_year2: unique_profiles_by_age[1].count,
-            partner_ial2_unique_users_year3: unique_profiles_by_age[2].count,
-            partner_ial2_unique_users_year4: unique_profiles_by_age[3].count,
-            partner_ial2_unique_users_year5: unique_profiles_by_age[4].count,
-            partner_ial2_unique_users_year_greater_than_5: unique_profiles_by_age[:older].count,
-            partner_ial2_unique_users_unknown: unique_profiles_by_age[:unknown].count,
+            partner_ial2_unique_user_events_year1: unique_profiles_by_age[0].count,
+            partner_ial2_unique_user_events_year2: unique_profiles_by_age[1].count,
+            partner_ial2_unique_user_events_year3: unique_profiles_by_age[2].count,
+            partner_ial2_unique_user_events_year4: unique_profiles_by_age[3].count,
+            partner_ial2_unique_user_events_year5: unique_profiles_by_age[4].count,
+            partner_ial2_unique_user_events_year_greater_than_5: unique_profiles_by_age[:older].count, # rubocop:disable Layout/LineLength
+            partner_ial2_unique_user_events_unknown: unique_profiles_by_age[:unknown].count,
             new_unique_user_proofed_events: new_unique_user_proofed_events.count,
-            partner_ial2_new_unique_users_year1: new_unique_profiles_by_age[0].count,
-            partner_ial2_new_unique_users_year2: new_unique_profiles_by_age[1].count,
-            partner_ial2_new_unique_users_year3: new_unique_profiles_by_age[2].count,
-            partner_ial2_new_unique_users_year4: new_unique_profiles_by_age[3].count,
-            partner_ial2_new_unique_users_year5: new_unique_profiles_by_age[4].count,
-            partner_ial2_new_unique_users_year_greater_than_5: new_unique_profiles_by_age[:older].count, # rubocop:disable Layout/LineLength
-            partner_ial2_new_unique_users_unknown: new_unique_profiles_by_age[:unknown].count,
+            partner_ial2_new_unique_user_events_year1: new_unique_profiles_by_age[0].count,
+            partner_ial2_new_unique_user_events_year2: new_unique_profiles_by_age[1].count,
+            partner_ial2_new_unique_user_events_year3: new_unique_profiles_by_age[2].count,
+            partner_ial2_new_unique_user_events_year4: new_unique_profiles_by_age[3].count,
+            partner_ial2_new_unique_user_events_year5: new_unique_profiles_by_age[4].count,
+            partner_ial2_new_unique_user_events_year_greater_than_5: new_unique_profiles_by_age[:older].count, # rubocop:disable Layout/LineLength
+            partner_ial2_new_unique_user_events_unknown: new_unique_profiles_by_age[:unknown].count,
           }
         end
         # rubocop:enable Metrics/BlockLength

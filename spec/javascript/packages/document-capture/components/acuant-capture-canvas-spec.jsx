@@ -1,32 +1,11 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
-import AcuantCaptureCanvas, {
-  defineObservableProperty,
-} from '@18f/identity-document-capture/components/acuant-capture-canvas';
+import AcuantCaptureCanvas from '@18f/identity-document-capture/components/acuant-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-capture-canvas', () => {
   const { initialize } = useAcuant();
-
-  describe('defineObservableProperty', () => {
-    it('behaves like an object', () => {
-      const object = {};
-      defineObservableProperty(object, 'key', () => {});
-      object.key = 'value';
-
-      expect(object.key).to.equal('value');
-    });
-
-    it('calls the callback on changes, with the changed value', () => {
-      const callback = sinon.spy();
-      const object = {};
-      defineObservableProperty(object, 'key', callback);
-      object.key = 'value';
-
-      expect(callback).to.have.been.calledOnceWithExactly('value');
-    });
-  });
 
   it('renders a "take photo" button', async () => {
     const { getByRole, container } = render(
