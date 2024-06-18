@@ -1331,7 +1331,7 @@ instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户�
 instructions.mfa.piv_cac.please_try_again: 再试一次
 instructions.mfa.piv_cac.sign_in_html: 确保 <strong>你有 %{app_name} 账户</strong> 而且 <strong> PIV/CAC</strong> 已被你设置为一个双因素身份证实方法。
 instructions.mfa.piv_cac.step_1: 给它一个昵称
-instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CA 话，你就能把它们分辨开来。
+instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CAC 话，你就能把它们分辨开来。
 instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
 instructions.mfa.piv_cac.step_3: 添加 PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: 你将需要<strong>选择一个证书</strong> （恰当的证书可能会有你的名字）而且<strong>输入你的个人识别号码（PIN）</strong> (你的个人识别号码（PIN）是在设置 PIV/CAC 时设立的)。
@@ -1415,15 +1415,15 @@ notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
 notices.session_cleared: 为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
 notices.session_timedout: 我们已将你登出。为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
-notices.signed_up_and_confirmed.first_paragraph_end: 带有重设你密码的链接。点击链接去继续把这个电邮添加到你的账户。
+notices.signed_up_and_confirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接去继续把这个电邮添加到你的账户。
 notices.signed_up_and_confirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: 没有收到电邮？
-notices.signed_up_but_unconfirmed.first_paragraph_end: 带有确认你电邮的链接。点击链接来继续设立你的账户。
+notices.signed_up_but_unconfirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接来继续设立你的账户。
 notices.signed_up_but_unconfirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_but_unconfirmed.resend_confirmation_email: 重新发送确认电邮
 notices.timeout_warning.partially_signed_in.continue: 继续登录
 notices.timeout_warning.partially_signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
-notices.timeout_warning.partially_signed_in.message_html: 为了你的安全， %{time_left_in_session_html} 后我们将取消你的登录。
+notices.timeout_warning.partially_signed_in.message_html: 为了你的安全， %{time_left_in_session_html}分钟后我们将取消你的登录。
 notices.timeout_warning.partially_signed_in.sign_out: 取消登录
 notices.timeout_warning.signed_in.continue: 保持我登录状态
 notices.timeout_warning.signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
@@ -1937,7 +1937,7 @@ users.rules_of_use.details_html: |-
   <ul>
   <li>解释 %{app_name} 服务原理以及你应有的期望,</li>
   <li>我们给你提供 %{app_name} 服务的服务条款,</li>
-  <li>我们如何使用你的信息以及你对此信息拥有的权力，以及 and</li>
+  <li>我们如何使用你的信息以及你对此信息拥有的权力，以及</li>
   <li>你同意的在 %{app_name} 采取某些行动的前提条件。</li>
   </ul>
 users.rules_of_use.overview_html: 我们已更新了我们的 %{link_html}。请审阅并在下面方框里打勾来继续。
