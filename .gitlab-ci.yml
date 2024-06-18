@@ -341,6 +341,7 @@ js_tests:
     - *yarn_install
     - yarn test
 
+# Can be removed once pinpoint_check_scheduled is confirmed
 pinpoint-check:
   needs:
     - job: install
@@ -353,6 +354,7 @@ pinpoint-check:
     - *yarn_install
     - make lint_country_dialing_codes
 
+# Can be removed once audit_packages_scheduled is confirmed
 audit_packages:
   needs:
     - job: install
@@ -838,3 +840,50 @@ ecr-scan-ci:
   stage: scan
   variables:
     ecr_repo: idp/ci
+
+pinpoint_check_scheduled:
+  needs:
+    - job: install
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint_country_dialing_codes
+  after_script:
+    - |-
+      if [[ "$CI_JOB_STATUS" != "success" ]]; then
+        ./scripts/notify-slack \
+          --icon ":gitlab:" \
+          --text "Pinpoint supported countries check in GitLab failed <Build Results|${CI_JOB_URL}>\nCheck results locally with `make lint_country_dialing_codes`" \
+          --channel "#login-appdev" \
+          --webhook "$SLACK_WEBHOOK" \
+          --raise
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+audit_packages_scheduled:
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make audit
+  after_script:
+    - |-
+      if [[ "$CI_JOB_STATUS" != "success" ]]; then
+        ./scripts/notify-slack \
+          --icon ":gitlab:" \
+          --text "Dependencies audit in GitLab failed <Build Results|${CI_JOB_URL}>\nCheck results locally with `make audit`" \
+          --channel "#login-appdev" \
+          --webhook "$SLACK_WEBHOOK" \
+          --raise
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
