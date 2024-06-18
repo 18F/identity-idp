@@ -256,6 +256,7 @@ module Reporting
     end
 
     # rubocop:disable Layout/LineLength
+    # rubocop:disable Metrics/BlockLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
     # @return [Hash<Set<String>>]
@@ -306,6 +307,7 @@ module Reporting
         event_users
       end
     end
+    # rubocop:enable Metrics/BlockLength
     # rubocop:enable Layout/LineLength
 
     def fetch_results
