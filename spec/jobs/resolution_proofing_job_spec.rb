@@ -46,6 +46,32 @@ RSpec.describe ResolutionProofingJob, type: :job do
       )
     end
 
+    context 'ssn_is_unique attribute' do
+      context 'when the SSN is unique' do
+        it 'sets ssn_is_unique: true on the result' do
+          stub_vendor_requests
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result[:ssn_is_unique]).to eq(true)
+        end
+      end
+
+      context 'when the SSN is not unique' do
+        before do
+          create(:profile, pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
+        end
+
+        it 'sets ssn_is_unique: false on the result' do
+          stub_vendor_requests
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result[:ssn_is_unique]).to eq(false)
+        end
+      end
+    end
+
     context 'all of the vendor requests pass' do
       it 'stores a successful result' do
         stub_vendor_requests

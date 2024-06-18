@@ -45,6 +45,94 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
     base_proofing_components.merge(address_check: 'gpo_letter')
   end
 
+  let(:state_id_resolution) do
+    { success: true,
+      errors: {},
+      exception: nil,
+      mva_exception: nil,
+      requested_attributes: {},
+      timed_out: false,
+      transaction_id: 'state-id-mock-transaction-id-456',
+      vendor_name: 'StateIdMock',
+      verified_attributes: [],
+      state: 'MT',
+      state_id_jurisdiction: 'ND',
+      state_id_number: '#############' }
+  end
+
+  let(:resolution_block) do
+    { success: true,
+      errors: {},
+      exception: nil,
+      timed_out: false,
+      transaction_id: 'resolution-mock-transaction-id-123',
+      reference: 'aaa-bbb-ccc',
+      can_pass_with_additional_verification: false,
+      attributes_requiring_additional_verification: [],
+      vendor_name: 'ResolutionMock',
+      vendor_workflow: nil }
+  end
+
+  let(:base_proofing_results) do
+    {
+      exception: nil,
+      ssn_is_unique: true,
+      timed_out: false,
+      threatmetrix_review_status: 'pass',
+      context: {
+        device_profiling_adjudication_reason: 'device_profiling_result_pass',
+        resolution_adjudication_reason: 'pass_resolution_and_state_id',
+        should_proof_state_id: true,
+        sp_costs_added: true,
+        stages: {
+          resolution: resolution_block,
+          residential_address: { attributes_requiring_additional_verification: [],
+                                 can_pass_with_additional_verification: false,
+                                 errors: {},
+                                 exception: nil,
+                                 reference: '',
+                                 success: true,
+                                 timed_out: false,
+                                 transaction_id: '',
+                                 vendor_name: 'ResidentialAddressNotRequired',
+                                 vendor_workflow: nil },
+          state_id: state_id_resolution,
+          threatmetrix: threatmetrix_response,
+        },
+      },
+    }
+  end
+
+  let(:in_person_path_proofing_results) do
+    {
+      exception: nil,
+      ssn_is_unique: true,
+      timed_out: false,
+      threatmetrix_review_status: 'pass',
+      context: {
+        device_profiling_adjudication_reason: 'device_profiling_result_pass',
+        resolution_adjudication_reason: 'pass_resolution_and_state_id',
+        should_proof_state_id: true,
+        sp_costs_added: true,
+        stages: {
+          resolution: resolution_block,
+          residential_address: { errors: {},
+                                 exception: nil,
+                                 reference: 'aaa-bbb-ccc',
+                                 success: true,
+                                 timed_out: false,
+                                 transaction_id: 'resolution-mock-transaction-id-123',
+                                 can_pass_with_additional_verification: false,
+                                 attributes_requiring_additional_verification: [],
+                                 vendor_name: 'ResolutionMock',
+                                 vendor_workflow: nil },
+          state_id: state_id_resolution,
+          threatmetrix: threatmetrix_response,
+        },
+      },
+    }
+  end
+
   # rubocop:disable Layout/LineLength
   # rubocop:disable Layout/MultilineHashKeyLineBreaks
 
@@ -113,7 +201,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, sp_costs_added: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
@@ -239,7 +327,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, sp_costs_added: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
@@ -362,7 +450,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, sp_costs_added: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
@@ -480,7 +568,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, same_address_as_id: false, skip_hybrid_handoff: nil,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, sp_costs_added: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: 'aaa-bbb-ccc', success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: in_person_path_proofing_results
       },
       'IdV: phone confirmation form' => {
         success: true, errors: {}, error_details: nil, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, otp_delivery_preference: 'sms',
@@ -613,7 +701,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, sp_costs_added: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, requested_attributes: {}, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
