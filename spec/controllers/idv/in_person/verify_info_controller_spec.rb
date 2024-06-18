@@ -156,7 +156,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
           with(
             kind_of(DocumentCaptureSession),
-            should_proof_state_id: anything,
             trace_id: subject.send(:amzn_trace_id),
             threatmetrix_session_id: nil,
             user_id: anything,
@@ -172,7 +171,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
       it 'indicates to the IDV agent that ipp_enrollment_in_progress is enabled' do
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).with(
           kind_of(DocumentCaptureSession),
-          should_proof_state_id: anything,
           trace_id: anything,
           threatmetrix_session_id: anything,
           user_id: anything,
@@ -195,7 +193,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController, allowed_extra_analytics: [:*
       expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
         with(
           kind_of(DocumentCaptureSession),
-          should_proof_state_id: anything,
           trace_id: subject.send(:amzn_trace_id),
           threatmetrix_session_id: nil,
           user_id: anything,
