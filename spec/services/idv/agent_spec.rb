@@ -9,15 +9,12 @@ RSpec.describe Idv::Agent do
   end
 
   describe 'instance' do
-    let(:applicant) { { foo: 'bar' } }
     let(:trace_id) { SecureRandom.uuid }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:issuer) { 'fake-issuer' }
     let(:friendly_name) { 'fake-name' }
     let(:app_id) { 'fake-app-id' }
     let(:ipp_enrollment_in_progress) { false }
-
-    let(:agent) { Idv::Agent.new(applicant) }
 
     before do
       ServiceProvider.create(
@@ -30,14 +27,13 @@ RSpec.describe Idv::Agent do
     describe '#proof_resolution' do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
 
-      context 'proofing state_id enabled' do
+      context 'proofing in an AAMVA state' do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new(
             Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '444-55-6666'),
           )
           agent.proof_resolution(
             document_capture_session,
-            should_proof_state_id: true,
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
@@ -54,7 +50,6 @@ RSpec.describe Idv::Agent do
           agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
           agent.proof_resolution(
             document_capture_session,
-            should_proof_state_id: true,
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
@@ -76,11 +71,12 @@ RSpec.describe Idv::Agent do
       context 'proofing state_id disabled' do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new(
-            Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '444-55-6666'),
+            Idp::Constants::MOCK_IDV_APPLICANT.merge(
+              ssn: '444-55-6666', state_id_jurisdiction: 'NY',
+            ),
           )
           agent.proof_resolution(
             document_capture_session,
-            should_proof_state_id: false,
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
@@ -93,10 +89,13 @@ RSpec.describe Idv::Agent do
         end
 
         it 'does not proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
+          agent = Idv::Agent.new(
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+              state_id_jurisdiction: 'NY',
+            ),
+          )
           agent.proof_resolution(
             document_capture_session,
-            should_proof_state_id: false,
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
@@ -110,27 +109,26 @@ RSpec.describe Idv::Agent do
             transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
           )
         end
+      end
 
-        it 'returns a successful result if SSN does not start with 900 but is in SSN allowlist' do
-          agent = Idv::Agent.new(
-            Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '999-99-9999'),
-          )
+      it 'returns a successful result if SSN does not start with 900 but is in SSN allowlist' do
+        agent = Idv::Agent.new(
+          Idp::Constants::MOCK_IDV_APPLICANT.merge(ssn: '999-99-9999'),
+        )
 
-          agent.proof_resolution(
-            document_capture_session,
-            should_proof_state_id: false,
-            trace_id: trace_id,
-            user_id: user.id,
-            threatmetrix_session_id: nil,
-            request_ip: request_ip,
-            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-          )
-          result = document_capture_session.load_proofing_result.result
+        agent.proof_resolution(
+          document_capture_session,
+          trace_id: trace_id,
+          user_id: user.id,
+          threatmetrix_session_id: nil,
+          request_ip: request_ip,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        )
+        result = document_capture_session.load_proofing_result.result
 
-          expect(result).to include(
-            success: true,
-          )
-        end
+        expect(result).to include(
+          success: true,
+        )
       end
 
       it 'passes the correct service provider to the ResolutionProofingJob' do
@@ -148,7 +146,6 @@ RSpec.describe Idv::Agent do
 
         agent.proof_resolution(
           document_capture_session,
-          should_proof_state_id: true,
           trace_id: trace_id,
           user_id: user.id,
           threatmetrix_session_id: nil,
@@ -164,7 +161,6 @@ RSpec.describe Idv::Agent do
 
         agent.proof_resolution(
           document_capture_session,
-          should_proof_state_id: true,
           trace_id: trace_id,
           user_id: user.id,
           threatmetrix_session_id: nil,
@@ -187,7 +183,6 @@ RSpec.describe Idv::Agent do
           agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS)
           agent.proof_resolution(
             document_capture_session,
-            should_proof_state_id: true,
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,

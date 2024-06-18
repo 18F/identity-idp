@@ -249,29 +249,17 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
     let(:mock_state_id_jurisdiction) do
       [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]]
     end
-    let(:proof_resolution_args) do
-      {
-        trace_id: anything,
-        threatmetrix_session_id: anything,
-        request_ip: kind_of(String),
-        ipp_enrollment_in_progress: false,
-      }
-    end
 
     context 'when the user lives in an AAMVA supported state' do
       it 'performs a resolution and state ID check' do
         allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
           mock_state_id_jurisdiction,
         )
-        expect_any_instance_of(Idv::Agent).
-          to receive(:proof_resolution).
-          with(
-            anything,
-            should_proof_state_id: true,
-            user_id: user.id,
-            **proof_resolution_args,
-          ).
-          and_call_original
+        expect_any_instance_of(Proofing::Mock::StateIdMockClient).to receive(:proof).with(
+          hash_including(
+            **Idp::Constants::MOCK_IDV_APPLICANT,
+          ),
+        ).and_call_original
 
         complete_ssn_step
         complete_verify_step
@@ -284,15 +272,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js, allowed_extra_ana
           IdentityConfig.store.aamva_supported_jurisdictions -
             mock_state_id_jurisdiction,
         )
-        expect_any_instance_of(Idv::Agent).
-          to receive(:proof_resolution).
-          with(
-            anything,
-            should_proof_state_id: false,
-            user_id: user.id,
-            **proof_resolution_args,
-          ).
-          and_call_original
+        expect_any_instance_of(Proofing::Mock::StateIdMockClient).to_not receive(:proof)
 
         complete_ssn_step
         complete_verify_step

@@ -10,7 +10,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:document_capture_session) do
     DocumentCaptureSession.new(result_id: SecureRandom.hex, uuid: SecureRandom.uuid)
   end
-  let(:should_proof_state_id) { true }
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { create(:user, :fully_registered) }
   let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
@@ -35,7 +34,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,
-        should_proof_state_id: should_proof_state_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         user_id: user.id,
@@ -44,6 +42,32 @@ RSpec.describe ResolutionProofingJob, type: :job do
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       )
+    end
+
+    context 'ssn_is_unique attribute' do
+      context 'when the SSN is unique' do
+        it 'sets ssn_is_unique: true on the result' do
+          stub_vendor_requests
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result[:ssn_is_unique]).to eq(true)
+        end
+      end
+
+      context 'when the SSN is not unique' do
+        before do
+          create(:profile, pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
+        end
+
+        it 'sets ssn_is_unique: false on the result' do
+          stub_vendor_requests
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result[:ssn_is_unique]).to eq(false)
+        end
+      end
     end
 
     context 'all of the vendor requests pass' do
@@ -249,7 +273,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
     end
 
     context 'in a state where AAMVA is not supported' do
-      let(:should_proof_state_id) { false }
+      let(:pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(state_id_jurisdiction: 'NY')
+      end
 
       it 'does not make an AAMVA request' do
         stub_vendor_requests
@@ -332,7 +358,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
       subject(:perform) do
         instance.perform(
           result_id: document_capture_session.result_id,
-          should_proof_state_id: should_proof_state_id,
           encrypted_arguments: encrypted_arguments,
           trace_id: trace_id,
           user_id: user.id,
