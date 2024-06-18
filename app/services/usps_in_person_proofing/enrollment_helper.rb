@@ -35,13 +35,14 @@ module UspsInPersonProofing
           tmx_status: enrollment.profile&.tmx_status,
         )
 
-        send_ready_to_verify_email(user, enrollment)
+        send_ready_to_verify_email(user, enrollment, is_enhanced_ipp: is_enhanced_ipp)
       end
 
-      def send_ready_to_verify_email(user, enrollment)
+      def send_ready_to_verify_email(user, enrollment, is_enhanced_ipp:)
         user.confirmed_email_addresses.each do |email_address|
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,
+            is_enhanced_ipp: is_enhanced_ipp,
           ).deliver_now_or_later
         end
       end
