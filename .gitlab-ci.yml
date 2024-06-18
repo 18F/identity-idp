@@ -844,7 +844,6 @@ ecr-scan-ci:
 pinpoint_check_scheduled:
   needs:
     - job: install
-  stage: test
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
