@@ -28,6 +28,7 @@ ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
 ENV PIV_CAC_SERVICE_URL https://localhost:8443/
 ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/
+ENV REMOTE_ADDRESS_HEADER X-Forwarded-For
 
 # Install dependencies
 RUN apt-get update && \
