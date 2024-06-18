@@ -916,7 +916,6 @@ headings.account.two_factor: 你的身份证实方法。
 headings.account.unphishable: 无法网络钓鱼
 headings.account.unverified: 未验证
 headings.account.verified_account: 已验证
-headings.account.verified_information: 验证过的信息
 headings.add_email: 添加一个新电邮地址
 headings.add_info.phone: 添加一个电话号码
 headings.cancellations.login_cancel_prompt: 你确定要取消并退出 %{app_name} 吗？
