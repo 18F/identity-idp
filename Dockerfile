@@ -168,8 +168,10 @@ RUN bundle exec rake assets:precompile --trace
 # Setup setup files
 COPY db-init.sh $RAILS_ROOT/db-init.sh
 COPY db-migrate.sh $RAILS_ROOT/db-migrate.sh
+COPY db-sync-service-providers.sh $RAILS_ROOT/db-sync-service-providers.sh
 RUN chmod +x ./db-init.sh
 RUN chmod +x ./db-migrate.sh
+RUN chmod +x ./db-sync-service-providers.sh
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"

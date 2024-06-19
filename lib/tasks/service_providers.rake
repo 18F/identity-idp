@@ -23,4 +23,9 @@ namespace :service_providers do
     issuers = ENV.fetch('ISSUERS', '').split(',')
     DestroyUnusedProviders.new(issuers).run
   end
+
+  desc 'Sync service provider configurations'
+  task sync: :environment do
+    ServiceProviderSeeder.new.run
+  end
 end
