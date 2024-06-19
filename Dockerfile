@@ -139,6 +139,8 @@ RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_password
 #     cp idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/ && \
 #     cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/ && \
 #     rm -r idp-large-files
+COPY ./pwned_passwords/pwned_passwords.txt.sample $RAILS_ROOT/pwned_passwords/pwned_passwords.txt
+
 RUN mkdir -p /usr/local/share/aws && \
     curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem
 

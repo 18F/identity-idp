@@ -369,8 +369,10 @@ development:
   dashboard_url: http://localhost:3001/api/service_providers
   database_sslmode: 'prefer'
   database_host: '10.1.98.10'
+  # database_host: 'localhost'
   database_name: 'idp'
   database_password: 'q>31uYz/CL\nSd%l'
+  # database_password: 'password'
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
@@ -379,13 +381,16 @@ development:
   database_worker_jobs_name: 'idp_worker'
   database_worker_jobs_username: 'postgres'
   database_worker_jobs_host: '10.1.98.10'
+  # database_worker_jobs_host: 'localhost'
   database_worker_jobs_password: 'q>31uYz/CL\nSd%l'
+  # database_worker_jobs_password: 'password'
   doc_auth_selfie_desktop_test_mode: true
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: https://identity-idp-ir4fy3wx3a-uc.a.run.app
+  # domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
@@ -407,7 +412,9 @@ development:
   rack_timeout_service_timeout_seconds: 9_999_999_999
   raise_on_missing_title: true
   redis_throttle_url: redis://10.1.97.3:6379/1 # cloudRun
+  # redis_throttle_url: redis://localhost:6379/1
   redis_url: redis://10.1.97.3:6379 # cloudRun
+  # redis_url: redis://localhost:6379
   risc_notifications_local_enabled: true
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
