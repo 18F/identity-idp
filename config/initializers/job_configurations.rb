@@ -229,6 +229,12 @@ else
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday] },
       },
+      # Previous week's protocols report
+      weekly_protocols_report: {
+        class: 'Reports::ProtocolsReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
