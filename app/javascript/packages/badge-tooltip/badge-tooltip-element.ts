@@ -8,6 +8,7 @@ class BadgeTooltipElement extends HTMLElement {
 
     this.setUpTooltip();
     this.badge.addEventListener('mouseover', () => this.handleHover());
+    document.addEventListener('keyup', (event) => this.#handleKeyDown(event));
   }
 
   /**
@@ -36,6 +37,18 @@ class BadgeTooltipElement extends HTMLElement {
     this.showTooltip();
   }
 
+  #handleKeyDown(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'Tab':
+        if (document.activeElement === this.badge) {
+          this.showTooltip();
+        }
+        break;
+
+      default:
+    }
+  }
+
   /**
    * Displays confirmation tooltip and binds event to dismiss tooltip on mouseout.
    */
@@ -49,6 +62,12 @@ class BadgeTooltipElement extends HTMLElement {
       tooltip.hide(body);
     }
     this.badge.addEventListener('mouseout', hideTooltip, { once: true });
+
+    if (document.activeElement === this.badge) {
+      this.badge.addEventListener('blur', hideTooltip, { once: true });
+    } else {
+      this.badge.addEventListener('mouseout', hideTooltip, { once: true });
+    }
   }
 }
 
