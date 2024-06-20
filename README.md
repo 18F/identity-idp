@@ -61,9 +61,27 @@ The CloudRun Job [identity-idp-db-migrate](https://console.cloud.google.com/run/
 #### To run migrations:
 
 - Select "_EDIT_" ![EDIT](./docs/images/migrate/EDIT.png)
-- Edit the container image, and select new image build in [Step 1](#step1) ![SELECT_CONTAINER](./docs/images/migrate/SELECT_IMAGE.png)
+- Edit the container image, and select new image built in [Step 1](#step1) ![SELECT_CONTAINER](./docs/images/migrate/SELECT_IMAGE.png)
 - Make sure "_Execute job immediately_" is checked at the bottom
 - Click "_UPDATE_" ![UPDATE](./docs/images/migrate/UPDATE.png)
+
+### Sync Service Provider Configurations
+
+We're using default service provider clients for this environment.
+
+Specifically, we'll be using `CLIENT_ID: urn:gov:gsa:openidconnect:sp:test` and its configuration can be found in [service_providers.localdev.yml](./config/service_providers.localdev.yml) under the `development` section.
+
+One thing we may need to update is which `redirect_uris` are registered for this client. Make the change directly in [service_providers.localdev.yml](./config/service_providers.localdev.yml), kick off a build, and run the [identity-idp-sync-service-providers](https://console.cloud.google.com/run/jobs/details/us-central1/identity-idp-db-sync-service-providers/executions?project=dev-us-5g-clarity-7) CloudRun job.
+
+#### To sync service providers
+
+Assuming you've made the change in [service_providers.localdev.yml](./config/service_providers.localdev.yml).
+
+- Run a build as described in [Step 1](#step1)
+- Select "_EDIT_" ![EDIT](./docs/images/sync/EDIT.png)
+- Edit the container image, and select new image built in [Step 1](#step1) ![SELECT_CONTAINER](./docs/images/sync/SELECT_IMAGE.png)
+- Make sure "_Execute job immediately_" is checked at the bottom
+- Click "_UPDATE_" ![UPDATE](./docs/images/sync/UPDATE.png)
 
 ### Re-Create Database
 
@@ -72,6 +90,6 @@ If we need to clobber the postgres database and re-seed it, the CloudRun Job [id
 #### To re-create the database:
 
 - Select "_EDIT_" ![EDIT](./docs/images/create/EDIT.png)
-- Edit the container image, and select new image build in [Step 1](#step1) ![SELECT_CONTAINER](./docs/images/create/SELECT_IMAGE.png)
+- Edit the container image, and select new image built in [Step 1](#step1) ![SELECT_CONTAINER](./docs/images/create/SELECT_IMAGE.png)
 - Make sure "_Execute job immediately_" is checked at the bottom
 - Click "_UPDATE_" ![UPDATE](./docs/images/create/UPDATE.png)
