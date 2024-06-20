@@ -21,7 +21,7 @@ module Vot
           phishing_resistant?: false,
           hspd12?: false,
           identity_proofing?: false,
-          biometric_comparison?: false,
+          biometric_comparison?: IdentityConfig.store.biometric_comparison_required,
           ialmax?: false,
           enhanced_ipp?: false,
         )
@@ -58,7 +58,8 @@ module Vot
         phishing_resistant?: requirement_list.include?(:phishing_resistant),
         hspd12?: requirement_list.include?(:hspd12),
         identity_proofing?: requirement_list.include?(:identity_proofing),
-        biometric_comparison?: requirement_list.include?(:biometric_comparison),
+        biometric_comparison?: IdentityConfig.store.biometric_comparison_required ||
+          requirement_list.include?(:biometric_comparison),
         ialmax?: requirement_list.include?(:ialmax),
         enhanced_ipp?: requirement_list.include?(:enhanced_ipp),
       )
