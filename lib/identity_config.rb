@@ -13,6 +13,7 @@ module IdentityConfig
     Identity::Hostdata.config
   end
 
+  # identity-hostdata transforms these configs to the described type
   # rubocop:disable Metrics/BlockLength
   BUILDER = proc do |config|
     #  ______________________________________

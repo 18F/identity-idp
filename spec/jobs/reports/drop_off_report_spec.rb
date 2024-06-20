@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Reports::DropOffReport do
   let(:report_date) { Date.new(2023, 12, 12).in_time_zone('UTC') }
+  # This is in S3 as a string that gets parsed via identity_config.rb
   let(:report_config) do
-    '[{"emails":["ursula@example.com"],
-       "issuers":"urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"}]'
+    JSON.parse'[{"emails":["ursula@example.com"],
+       "issuers":["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
   end
 
   before do
