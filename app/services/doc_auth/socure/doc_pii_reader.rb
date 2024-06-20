@@ -19,7 +19,7 @@ module DocAuth
           last_name: document_data['surName'],
           middle_name: nil, # doesn't appear to be available?
           address1: parsed_address['physicalAddress'],
-          address2: nil, # doesn't appear to be available?
+          address2: parsed_address['physicalAddress2'],
           city: parsed_address['city'],
           state: parsed_address['state'],
           zipcode: parsed_address['zip'],
