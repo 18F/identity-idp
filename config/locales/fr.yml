@@ -72,9 +72,16 @@ account.index.reactivation.instructions: Votre profil a été récemment désact
 account.index.reactivation.link: Réactiver votre profil maintenant.
 account.index.sign_in_location_and_ip: De %{ip} (adresse IP éventuellement située dans %{location})
 account.index.unknown_location: lieu inconnu
-account.index.verification.instructions: Votre compte nécessite un code de vérification pour être vérifié.
-account.index.verification.reactivate_button: Saisissez le code que vous avez reçu par la poste
+account.index.verification.finish_verifying: Terminez la procédure de vérification d’identité pour pouvoir accéder à %{partner_agency}.
+account.index.verification.identity_verification: Vérification de l’identité
+account.index.verification.in_person_instructions: Vous devez vous rendre à un bureau de poste participant d’ici le %{deadline} pour terminer la procédure de vérification de votre identité.
+account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
+account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
+account.index.verification.reactivate_button: Saisissez le code de vérification que vous avez reçu par la poste.
+account.index.verification.show_bar_code: Me montrer mon code-barre %{app_name}
 account.index.verification.success: Nous avons vérifié vos informations
+account.index.verification.you_verified_your_biometric_identity: Vous avez confirmé votre identité à l’aide des informations ci-dessous et d’une photo de vous-même, ce qui vous permet d’accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.you_verified_your_identity: Vous avez confirmé votre identité auprès de %{partner_agency} à l’aide des informations ci-dessous.
 account.index.webauthn: Clé de sécurité
 account.index.webauthn_add: Ajouter une clé de sécurité
 account.index.webauthn_platform: Déverrouillage facial ou tactile
@@ -132,6 +139,10 @@ anonymous_mailer.password_reset_missing_user.try_different_email: Essayez une au
 anonymous_mailer.password_reset_missing_user.use_this_email_html: Ou utilisez cet e-mail et %{create_account_link_html}.
 banned_user.details: Nous ne sommes pas en mesure de vous authentifier pour le moment.
 banned_user.title: L’accès est restreint
+components.badge_tooltip_component.pending: Votre identité est en cours de vérification.
+components.badge_tooltip_component.unverified: Terminer la vérification de votre identité.
+components.badge_tooltip_component.verified: Votre identité a été vérifiée.
+components.badge_tooltip_component.verified_biometric: Votre identité et votre photo ont été vérifiées.
 components.barcode.image_alt: Code-barres
 components.captcha_submit_button.action_message: Vérification en cours…
 components.captcha_submit_button.mock_score_disclaimer: Usage interne uniquement
@@ -884,11 +895,12 @@ headings.account.devices: Appareils
 headings.account.events: Événements
 headings.account.federal_employee_id: Carte d’employé fédéral
 headings.account.login_info: Votre compte
+headings.account.pending: En cours
 headings.account.reactivate: Réactiver votre compte
 headings.account.two_factor: Vos méthodes d’authentification
 headings.account.unphishable: Non hameçonnable
-headings.account.verified_account: Compte vérifié
-headings.account.verified_information: Informations vérifiées
+headings.account.unverified: Non vérifiée
+headings.account.verified_account: Vérifiée
 headings.add_email: Ajouter une nouvelle adresse e-mail
 headings.add_info.phone: Ajouter un numéro de téléphone
 headings.cancellations.login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?

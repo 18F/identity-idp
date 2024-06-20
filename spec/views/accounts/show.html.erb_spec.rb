@@ -23,9 +23,27 @@ RSpec.describe 'accounts/show.html.erb' do
     render
   end
 
+  context 'when current user has a verified account' do
+    before do
+      allow(user).to receive(:identity_verified?).and_return(true)
+    end
+
+    it 'displays a Verified badge' do
+      render
+
+      expect(rendered).to have_content(t('headings.account.verified_account'))
+    end
+  end
+
   context 'when current user has password_reset_profile' do
     before do
       allow(user).to receive(:password_reset_profile).and_return(true)
+    end
+
+    it 'displays an Unverified badge' do
+      render
+
+      expect(rendered).to have_content(t('headings.account.unverified'))
     end
 
     it 'displays an alert with instructions to reactivate their profile' do
@@ -67,6 +85,12 @@ RSpec.describe 'accounts/show.html.erb' do
         user: user,
       )
       allow(user).to receive(:pending_profile).and_return(pending)
+    end
+
+    it 'displays a Pending badge' do
+      render
+
+      expect(rendered).to have_content(t('headings.account.pending'))
     end
 
     it 'contains a link to activate profile' do
