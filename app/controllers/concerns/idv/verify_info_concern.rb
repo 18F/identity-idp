@@ -26,7 +26,6 @@ module Idv
 
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
-        should_proof_state_id: aamva_state?,
         trace_id: amzn_trace_id,
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
@@ -41,10 +40,6 @@ module Idv
 
     def ipp_enrollment_in_progress?
       current_user.has_in_person_enrollment?
-    end
-
-    def aamva_state?
-      IdentityConfig.store.aamva_supported_jurisdictions.include?(pii['state_id_jurisdiction'])
     end
 
     def resolution_rate_limiter

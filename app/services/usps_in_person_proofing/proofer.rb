@@ -46,7 +46,7 @@ module UspsInPersonProofing
     # stored with the unique ID to be able to request the status of proofing.
     # @param applicant [Hash]
     # @return [Hash] API response
-    def request_enroll(applicant)
+    def request_enroll(applicant, is_enhanced_ipp)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
       request_body = {
         sponsorID: sponsor_id,
@@ -60,6 +60,11 @@ module UspsInPersonProofing
         emailAddress: applicant.email,
         IPPAssuranceLevel: '1.5',
       }
+
+      if is_enhanced_ipp
+        request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
+        request_body[:IPPAssuranceLevel] = '2.0'
+      end
 
       res = faraday.post(url, request_body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_enroll' }

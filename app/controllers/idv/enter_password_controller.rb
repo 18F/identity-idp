@@ -124,8 +124,10 @@ module Idv
     end
 
     def init_profile
-      idv_session.create_profile_from_applicant_with_password(password)
-
+      idv_session.create_profile_from_applicant_with_password(
+        password,
+        resolved_authn_context_result.enhanced_ipp?,
+      )
       if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
         analytics.idv_gpo_address_letter_enqueued(

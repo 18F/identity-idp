@@ -5,6 +5,7 @@ RSpec.describe UserMailer, type: :mailer do
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
   let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
+  let(:is_enhanced_ipp) { false }
 
   describe '#validate_user_and_email_address' do
     let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
@@ -604,6 +605,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
           enrollment: enrollment,
+          is_enhanced_ipp:,
         )
       end
 
@@ -659,11 +661,157 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
-      it 'renders the body' do
-        expect(mail.html_part.body).
-          to have_content(
-            t('in_person_proofing.process.state_id.heading'),
+      context 'For In-Person Proofing (IPP)' do
+        context 'template displays modified content' do
+          it 'conditionally renders content in the what to expect section applicable to IPP' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.headings.barcode'),
+                t('in_person_proofing.process.state_id.heading'),
+                t('in_person_proofing.process.state_id.info'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
+          end
+        end
+
+        it 'renders Questions? and Learn more link only once' do
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.barcode.questions'),
+          ).once
+          expect(mail.html_part.body).to have_link(
+            t('in_person_proofing.body.barcode.learn_more'),
+            href: MarketingSite.help_center_article_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person',
+            ),
+          ).once
+        end
+
+        it 'template does not display Enhanced In-Person Proofing specific content' do
+          aggregate_failures do
+            [
+              t('in_person_proofing.headings.barcode_eipp'),
+              t('in_person_proofing.process.state_id.heading_eipp'),
+              t('in_person_proofing.process.state_id.info_eipp'),
+              t('in_person_proofing.headings.barcode_what_to_bring'),
+              t('in_person_proofing.body.barcode.what_to_bring'),
+              t('in_person_proofing.process.eipp_bring_id.heading'),
+              t('in_person_proofing.process.eipp_bring_id.info'),
+              t('in_person_proofing.process.eipp_what_to_bring.heading'),
+              t('in_person_proofing.process.eipp_what_to_bring.info'),
+              t('in_person_proofing.process.eipp_state_id_passport.heading'),
+              t('in_person_proofing.process.eipp_state_id_passport.info'),
+              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+              t('in_person_proofing.process.eipp_state_id_military_id.info'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(mail.html_part.body).to_not have_content(part)
+              end
+            end
+          end
+
+          t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+            expect(mail.html_part.body).to_not have_content(strip_tags(item))
+          end
+        end
+      end
+
+      context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
+        let(:is_enhanced_ipp) { true }
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
+            enrollment: enrollment,
+            is_enhanced_ipp:,
           )
+        end
+
+        context 'template displays modified content' do
+          it 'conditionally renders content in the what to expect section
+            applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.headings.barcode_eipp'),
+                t('in_person_proofing.process.state_id.heading_eipp'),
+                t('in_person_proofing.process.state_id.info_eipp'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
+          end
+        end
+
+        it 'renders Questions? and Learn more link only once' do
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.barcode.questions'),
+          ).once
+          expect(mail.html_part.body).to have_link(
+            t('in_person_proofing.body.barcode.learn_more'),
+            href: MarketingSite.help_center_article_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person',
+            ),
+          ).once
+        end
+
+        context 'template displays additional Enhanced In-Person Proofing specific content' do
+          it 'renders What to bring section' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.headings.barcode_what_to_bring'),
+                t('in_person_proofing.body.barcode.what_to_bring'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
+          end
+
+          it 'renders Option 1 content' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.process.eipp_bring_id.heading'),
+                t('in_person_proofing.process.eipp_bring_id.info'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+              end
+            end
+          end
+
+          it 'renders Option 2 content' do
+            aggregate_failures do
+              [
+                t('in_person_proofing.process.eipp_what_to_bring.heading'),
+                t('in_person_proofing.process.eipp_what_to_bring.info'),
+                t('in_person_proofing.process.eipp_state_id_passport.heading'),
+                t('in_person_proofing.process.eipp_state_id_passport.info'),
+                t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+                t('in_person_proofing.process.eipp_state_id_military_id.info'),
+                t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+                t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+              ].each do |copy|
+                Array(copy).each do |part|
+                  expect(mail.html_part.body).to have_content(part)
+                end
+
+                t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
+                  each do |item|
+                  expect(mail.html_part.body).to have_content(strip_tags(item))
+                end
+              end
+            end
+          end
+        end
       end
     end
 
