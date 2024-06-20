@@ -62,7 +62,7 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def create_profile_from_applicant_with_password(user_password)
+    def create_profile_from_applicant_with_password(user_password, is_enhanced_ipp)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
@@ -87,9 +87,10 @@ module Idv
         create_gpo_entry(profile_maker.pii_attributes, profile)
       elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-          current_user,
-          profile_maker.pii_attributes,
-          opt_in_param,
+          user: current_user,
+          pii: profile_maker.pii_attributes,
+          is_enhanced_ipp: is_enhanced_ipp,
+          opt_in: opt_in_param,
         )
       end
     end
