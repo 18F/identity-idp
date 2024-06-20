@@ -19,7 +19,7 @@ class RecaptchaEnterpriseForm < RecaptchaForm
   def recaptcha_result
     response = faraday.post(
       assessment_url,
-      assessment_properties,
+      { event: assessment_properties },
     ) do |request|
       request.options.context = { service_name: 'recaptcha' }
     end
@@ -43,11 +43,9 @@ class RecaptchaEnterpriseForm < RecaptchaForm
 
   def assessment_properties
     {
-      event: {
-        token: recaptcha_token,
-        siteKey: IdentityConfig.store.recaptcha_site_key,
-        expectedAction: recaptcha_action,
-      },
+      token: recaptcha_token,
+      siteKey: IdentityConfig.store.recaptcha_site_key,
+      expectedAction: recaptcha_action,
     }.merge(user_info)
   end
 
@@ -64,7 +62,7 @@ class RecaptchaEnterpriseForm < RecaptchaForm
   end
 
   def encrypted_email
-    user.email_addresses.first.&encrypted_email
+    user.email_addresses.first&.encrypted_email
   end
 
   def faraday

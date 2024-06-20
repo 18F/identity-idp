@@ -20,6 +20,7 @@ RSpec.describe RecaptchaEnterpriseForm do
 
   subject(:form) do
     described_class.new(
+      user: user,
       recaptcha_action: action,
       score_threshold:,
       analytics:,
@@ -232,6 +233,14 @@ RSpec.describe RecaptchaEnterpriseForm do
       let(:token) { 'token' }
       let(:name) { 'projects/project-id/assessments/assessment-id' }
       let(:score) { score_threshold - 0.1 }
+      let(:response_body) do
+        {
+          tokenProperties: { valid: true, action: },
+          riskAnalysis: { score:, reasons: ['AUTOMATION'] },
+          event: {},
+          name:,
+        }
+      end
 
       before do
         stub_recaptcha_response(
@@ -246,33 +255,102 @@ RSpec.describe RecaptchaEnterpriseForm do
         )
       end
 
-      it 'is unsuccessful with assesment id and error for invalid token' do
-        response, assessment_id = result
+      context 'with account_defender_enabled set to true' do
+        let(:response_body) do
+          {
+            tokenProperties: { valid: true, action: },
+            riskAnalysis: { score:, reasons: ['AUTOMATION'] },
+            event: {},
+            name:,
+            accountDefenderAssessment: {
+              labels: ['SUSPICIOUS_LOGIN_ACTIVITY']
+            }
+          }
+        end
+        before do
+          allow(IdentityConfig.store).to receive(:account_defender_enabled).
+            and_return(true)
 
-        expect(response.to_h).to eq(
-          success: false,
-          error_details: { recaptcha_token: { invalid: true } },
-        )
-        expect(assessment_id).to eq(name)
+          stub_request(:post, assessment_url).
+            with do |req|
+              req.body == { event: { token:,
+                                     siteKey: recaptcha_site_key,
+                                     expectedAction: action,
+                                     userInfo: {
+                                       accountId: user.uuid,
+                                       userIds: {
+                                         email: user.email_addresses.first&.encrypted_email,
+                                       },
+                                     } } }.to_json
+            end.
+            to_return(headers: { 'Content-Type': 'application/json' }, body: response_body.to_json)
+        end
+        it 'is unsuccessful with assesment id and error for invalid token' do
+          response, assessment_id = result
+
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { recaptcha_token: { invalid: true } },
+          )
+          expect(assessment_id).to eq(name)
+        end
+
+        it 'logs analytics of the body' do
+          result
+
+          expect(analytics).to have_logged_event(
+            'reCAPTCHA verify result received',
+            recaptcha_result: {
+              account_defender_assesment: {
+                labels: ['SUSPICIOUS_LOGIN_ACTIVITY']
+              },
+              success: true,
+              score:,
+              reasons: ['AUTOMATION'],
+              errors: [],
+              assessment_id: name,
+            },
+            evaluated_as_valid: false,
+            score_threshold: score_threshold,
+            form_class: 'RecaptchaEnterpriseForm',
+          )
+        end
       end
 
-      it 'logs analytics of the body' do
-        result
+      context 'with account_defender_enabled set to false' do
+        before do
+          allow(IdentityConfig.store).to receive(:account_defender_enabled).
+            and_return(false)
+        end
 
-        expect(analytics).to have_logged_event(
-          'reCAPTCHA verify result received',
-          recaptcha_result: {
-            account_defender_assesment: nil,
-            success: true,
-            score:,
-            reasons: ['AUTOMATION'],
-            errors: [],
-            assessment_id: name,
-          },
-          evaluated_as_valid: false,
-          score_threshold: score_threshold,
-          form_class: 'RecaptchaEnterpriseForm',
-        )
+        it 'is unsuccessful with assesment id and error for invalid token' do
+          response, assessment_id = result
+
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { recaptcha_token: { invalid: true } },
+          )
+          expect(assessment_id).to eq(name)
+        end
+
+        it 'logs analytics of the body' do
+          result
+
+          expect(analytics).to have_logged_event(
+            'reCAPTCHA verify result received',
+            recaptcha_result: {
+              account_defender_assesment: nil,
+              success: true,
+              score:,
+              reasons: ['AUTOMATION'],
+              errors: [],
+              assessment_id: name,
+            },
+            evaluated_as_valid: false,
+            score_threshold: score_threshold,
+            form_class: 'RecaptchaEnterpriseForm',
+          )
+        end
       end
     end
 
@@ -371,6 +449,27 @@ RSpec.describe RecaptchaEnterpriseForm do
             extra: true,
           )
         end
+      end
+
+      context 'with account defender enabled' do
+        around do |example|
+          stubbed_request = stub_request(:post, assessment_url).
+          with do |req|
+            req.body == { event: { token:,
+                                   siteKey: recaptcha_site_key,
+                                   expectedAction: action,
+                                   userInfo: {
+                                     accountId: user.uuid,
+                                     userIds: {
+                                       email: user.email_addresses.first&.encrypted_email,
+                                     },
+                                   } } }.to_json
+          end.
+          to_return(headers: { 'Content-Type': 'application/json' }, body: response_body.to_json)
+          example.run
+          expect(stubbed_request).to have_been_made.once
+        end
+
       end
 
       context 'without analytics' do
