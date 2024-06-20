@@ -334,7 +334,6 @@ module IdentityConfig
     config.add(:reset_password_email_max_attempts, type: :integer)
     config.add(:reset_password_email_window_in_minutes, type: :integer)
     config.add(:reset_password_on_auth_fraud_event, type: :boolean)
-    config.add(:risc_notifications_active_job_enabled, type: :boolean)
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:risc_notifications_rate_limit_interval, type: :integer)
     config.add(:risc_notifications_rate_limit_max_requests, type: :integer)
