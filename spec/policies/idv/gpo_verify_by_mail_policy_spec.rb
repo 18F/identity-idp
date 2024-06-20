@@ -2,8 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::GpoVerifyByMailPolicy do
-  describe '#gpo_available_for_user?' do
-    let(:subject) { described_class.new(user).gpo_available_for_user? }
+  describe '#resend_letter_available?' do
+    let(:subject) { described_class.new(user).resend_letter_available? }
     let(:user) { create(:user) }
 
     context 'when the feature flag is off' do

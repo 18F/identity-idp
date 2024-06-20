@@ -87,6 +87,8 @@ module Idv
         current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
       end
 
+      # So some of these things check constituent parts and take action.
+      # Does that kinda undermine the point of some of this?
       def confirm_mail_not_rate_limited
         redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
       end
