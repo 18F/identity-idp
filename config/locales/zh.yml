@@ -632,7 +632,7 @@ doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
-doc_auth.info.verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
+doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
 doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
 doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
@@ -1028,7 +1028,7 @@ idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网�
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
-idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>5 到 10 天</strong>
+idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
 idv.failure.phone.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
@@ -1036,7 +1036,7 @@ idv.failure.phone.warning.attempts_html.other: 出于安全考虑，你只能再
 idv.failure.phone.warning.gpo.button: 通过普通邮件验证
 idv.failure.phone.warning.gpo.explanation: 如果你没有别的电话号码可以尝试，那请通过普通邮件验证。
 idv.failure.phone.warning.gpo.heading: 通过普通邮件验证
-idv.failure.phone.warning.gpo.how_long_it_takes_html: 这需要<strong>5 到 10 天</strong>。
+idv.failure.phone.warning.gpo.how_long_it_takes_html: 这需要<strong>五到十天</strong>。
 idv.failure.phone.warning.heading: 我们无法将你与该号码匹配。
 idv.failure.phone.warning.learn_more_link: 了解有关使用什么号码的更多信息。
 idv.failure.phone.warning.next_steps_html: 尝试 <strong>a另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
@@ -1086,9 +1086,9 @@ idv.gpo.did_not_receive_letter.title: 没收到信？
 idv.gpo.form.otp_label: 验证码
 idv.gpo.form.submit: 提交
 idv.gpo.intro: 欢迎回来输入你收到信中的由 10 个字符组成的代码。
-idv.gpo.last_letter_request_message_html: 你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>。如果你的信件还没到，请耐心一点，因为信件有可能需要<strong>10 days</strong>才能送到。感谢你的耐心。
+idv.gpo.last_letter_request_message_html: 你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>。如果你的信件还没到，请耐心一点，因为信件有可能需要<strong>十天</strong>才能送到。感谢你的耐心。
 idv.gpo.request_another_letter.button: 要求再发一封信
-idv.gpo.request_another_letter.instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>5 到 10 天</strong>到达。
+idv.gpo.request_another_letter.instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>五到十天</strong>到达。
 idv.gpo.request_another_letter.learn_more_link: 对通过邮件验证你地址获得更多了解
 idv.gpo.request_another_letter.title: 要求再发一封信？
 idv.gpo.return_to_profile: 返回你的用户资料
@@ -1183,7 +1183,7 @@ in_person_proofing.body.barcode.learn_more: 了解有关携带物品的更多信
 in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？
 in_person_proofing.body.barcode.retail_hours: 营业时间
-in_person_proofing.body.barcode.retail_hours_closed: 已关闭
+in_person_proofing.body.barcode.retail_hours_closed: 关闭
 in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
 in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
 in_person_proofing.body.barcode.what_to_bring: 取决于你身份证件或驾照的类型，你可能会被要求出示支持性文件。请仔细阅读以下选项：
@@ -1954,7 +1954,7 @@ vendor_outage.alerts.phone.idv: 我们目前无法验证电话。请等一会再
 vendor_outage.alerts.pinpoint.idv.header: 我们正在争取解决错误。
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html}需要确保你是你，而不是别人冒充你。'
 vendor_outage.alerts.pinpoint.idv.options_html:
-  - 现在继续并通过普通邮件验证，这需要<strong>5 到 10 天</strong>。
+  - 现在继续并通过普通邮件验证，这需要<strong>五到十天</strong>。
   - 退出 %{app_name}，稍后再试。
 vendor_outage.alerts.pinpoint.idv.options_prompt: 你可以：
 vendor_outage.alerts.pinpoint.idv.status_page_html: 遗憾的是，我们目前遇到技术困难。到 %{link_html} 了解错误何时能解决。
