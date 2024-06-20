@@ -20,12 +20,13 @@ class ResolutionProofingJob < ApplicationJob
     result_id:,
     encrypted_arguments:,
     trace_id:,
-    should_proof_state_id:,
     ipp_enrollment_in_progress:,
     user_id: nil,
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil
+    request_ip: nil,
+    # DEPRECATED ARGUMENTS
+    should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
   )
     timer = JobHelpers::Timer.new
 
@@ -49,10 +50,16 @@ class ResolutionProofingJob < ApplicationJob
       applicant_pii: applicant_pii,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       current_sp: current_sp,
     )
+
+    ssn_is_unique = Idv::DuplicateSsnFinder.new(
+      ssn: applicant_pii[:ssn],
+      user: user,
+    ).ssn_is_unique?
+
+    callback_log_data.result[:ssn_is_unique] = ssn_is_unique
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
@@ -77,7 +84,6 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii:,
     threatmetrix_session_id:,
     request_ip:,
-    should_proof_state_id:,
     ipp_enrollment_in_progress:,
     current_sp:
   )
@@ -86,7 +92,6 @@ class ResolutionProofingJob < ApplicationJob
       user_email: user.confirmed_email_addresses.first.email,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       timer: timer,
       current_sp: current_sp,

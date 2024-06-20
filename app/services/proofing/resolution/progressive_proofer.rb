@@ -10,7 +10,6 @@ module Proofing
     class ProgressiveProofer
       attr_reader :applicant_pii,
                   :request_ip,
-                  :should_proof_state_id,
                   :threatmetrix_session_id,
                   :timer,
                   :user_email,
@@ -20,8 +19,6 @@ module Proofing
       # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
       #   both state id address and current residential address verified
       # @param [String] request_ip IP address for request
-      # @param [Boolean] should_proof_state_id based on state id jurisdiction, indicates if
-      #   there should be a state id proofing request made to aamva
       # @param [String] threatmetrix_session_id identifies the threatmetrix session
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_email email address for applicant
@@ -29,7 +26,6 @@ module Proofing
       def proof(
         applicant_pii:,
         request_ip:,
-        should_proof_state_id:,
         threatmetrix_session_id:,
         timer:,
         user_email:,
@@ -38,7 +34,6 @@ module Proofing
       )
         @applicant_pii = applicant_pii
         @request_ip = request_ip
-        @should_proof_state_id = should_proof_state_id
         @threatmetrix_session_id = threatmetrix_session_id
         @timer = timer
         @user_email = user_email
@@ -54,7 +49,7 @@ module Proofing
           device_profiling_result: device_profiling_result,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           resolution_result: instant_verify_result,
-          should_proof_state_id: should_proof_state_id,
+          should_proof_state_id: aamva_supports_state_id_jurisdiction?,
           state_id_result: state_id_result,
           residential_resolution_result: residential_instant_verify_result,
           same_address_as_id: applicant_pii[:same_address_as_id],
@@ -126,7 +121,7 @@ module Proofing
       end
 
       def should_proof_state_id_with_aamva?
-        return false unless should_proof_state_id
+        return false unless aamva_supports_state_id_jurisdiction?
         # If the user is in in-person-proofing and they have changed their address then
         # they are not eligible for get-to-yes
         if !ipp_enrollment_in_progress? || same_address_as_id?
@@ -134,6 +129,11 @@ module Proofing
         else
           residential_instant_verify_result.success?
         end
+      end
+
+      def aamva_supports_state_id_jurisdiction?
+        state_id_jurisdiction = applicant_pii[:state_id_jurisdiction]
+        IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
       end
 
       def proof_id_with_aamva_if_needed

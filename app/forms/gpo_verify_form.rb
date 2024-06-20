@@ -17,7 +17,7 @@ class GpoVerifyForm
     @otp = otp
   end
 
-  def submit
+  def submit(is_enhanced_ipp)
     result = valid?
     fraud_check_failed = pending_profile&.fraud_pending_reason.present?
 
@@ -25,7 +25,7 @@ class GpoVerifyForm
       pending_profile&.remove_gpo_deactivation_reason
 
       if user.has_establishing_in_person_enrollment_safe?
-        schedule_in_person_enrollment_and_deactivate_profile
+        schedule_in_person_enrollment_and_deactivate_profile(is_enhanced_ipp)
       elsif fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
       elsif fraud_check_failed
@@ -63,8 +63,12 @@ class GpoVerifyForm
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
-  def schedule_in_person_enrollment_and_deactivate_profile
-    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
+  def schedule_in_person_enrollment_and_deactivate_profile(is_enhanced_ipp)
+    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+      user:,
+      pii:,
+      is_enhanced_ipp:,
+    )
     pending_profile&.deactivate_for_in_person_verification
   end
 

@@ -273,7 +273,6 @@ RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
           same_address_as_id: true,
           should_proof_state_id: true,
         ).adjudicated_result.to_h
-        adjudicated_result[:context].delete(:sp_costs_added)
 
         document_capture_session.create_proofing_session
 

@@ -98,10 +98,10 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
               and_return(resolved_authn_context_result)
           end
 
-          it 'evaluates to IPP' do
+          it 'evaluates to In Person Proofing' do
             response
 
-            expect(assigns(:is_eipp)).to be false
+            expect(assigns(:is_enhanced_ipp)).to be false
           end
         end
 
@@ -113,10 +113,10 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
               and_return(resolved_authn_context_result)
           end
 
-          it 'evaluates to EIPP' do
+          it 'evaluates to Enhanced IPP' do
             response
 
-            expect(assigns(:is_eipp)).to be true
+            expect(assigns(:is_enhanced_ipp)).to be true
           end
         end
       end
