@@ -94,7 +94,7 @@ RSpec.describe NotifySlack do
         },
       ) do |req|
         form = Rack::Utils.parse_query(req.body)
-        expect(form['payload']).to be_json.with_content(
+        expect(JSON.parse(form['payload'], symbolize_names: true)).to eq(
           channel:,
           username:,
           text:,

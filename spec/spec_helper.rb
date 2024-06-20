@@ -8,7 +8,6 @@ end
 
 require 'active_support/core_ext/object/blank'
 require 'active_support'
-require 'rspec-json_matchers'
 
 RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?.freeze
 
@@ -52,7 +51,3 @@ end
 require 'zonebie/rspec'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :nothing
-
-RSpec.configure do |config|
-  config.include(RSpec::JsonMatchers::Matchers)
-end
