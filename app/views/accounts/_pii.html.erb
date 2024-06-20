@@ -14,8 +14,15 @@
     </div>
   </div>
 <% end %>
-
-  
+<div class="margin-bottom-4 card profile-info-box">
+  <div class="grid-row margin-bottom-1 margin-top-0">
+    <div class="grid-col-12">
+      <h2 class="margin-0">
+        <%= t('headings.account.verified_information') %>
+        <%= image_tag asset_url('lock.svg'), width: 8, height: 10 %>
+      </h2>
+    </div>
+  </div>
   <div class="border-bottom border-primary-light">
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="tablet:grid-col-4 text-bold">
@@ -67,3 +74,4 @@
       <%= link_to t('account.security.link'), MarketingSite.help_url %>
     </div>
   <% end %>
+</div>

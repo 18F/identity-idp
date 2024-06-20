@@ -72,16 +72,9 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.finish_verifying: 完成身份验证流程来获得访问 %{partner_agency} 的权限。
-account.index.verification.identity_verification: 身份验证
-account.index.verification.in_person_instructions: 你必须在 %{deadline} 之前去邮局完成验证你的身份。
-account.index.verification.instructions: 输入你的验证码来完成身份验证。
-account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
-account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
-account.index.verification.show_bar_code: 显示我的%{app_name} 条形码
+account.index.verification.instructions: 你账户的验证需要一个验证码。
+account.index.verification.reactivate_button: 输入你通过邮局邮件收到的代码。
 account.index.verification.success: 我们验证了你的信息
-account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
-account.index.verification.you_verified_your_identity: 你使用以下信息向 %{partner_agency} 验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
 account.index.webauthn_platform: 人脸或触摸解锁
@@ -139,10 +132,6 @@ anonymous_mailer.password_reset_missing_user.try_different_email: 尝试用一�
 anonymous_mailer.password_reset_missing_user.use_this_email_html: 或者使用此电子邮件地址和 %{create_account_link_html}。
 banned_user.details: 我们目前无法验证你的身份。
 banned_user.title: 访问受限。
-components.badge_tooltip_component.pending: 你的身份有待验证。
-components.badge_tooltip_component.unverified: 完成验证你的身份。
-components.badge_tooltip_component.verified: 你的身份已经验证。
-components.badge_tooltip_component.verified_biometric: 你的身份和照片都已验证。
 components.barcode.image_alt: 条形码
 components.captcha_submit_button.action_message: 验证中
 components.captcha_submit_button.mock_score_disclaimer: 只针对内部
@@ -910,12 +899,11 @@ headings.account.devices: 设备
 headings.account.events: 事件
 headings.account.federal_employee_id: 政府雇员身份证件
 headings.account.login_info: 你的账户
-headings.account.pending: 待验证
 headings.account.reactivate: 重新激活你的账户
 headings.account.two_factor: 你的身份证实方法。
 headings.account.unphishable: 无法网络钓鱼
-headings.account.unverified: 未验证
-headings.account.verified_account: 已验证
+headings.account.verified_account: 验证过的账户
+headings.account.verified_information: 验证过的信息
 headings.add_email: 添加一个新电邮地址
 headings.add_info.phone: 添加一个电话号码
 headings.cancellations.login_cancel_prompt: 你确定要取消并退出 %{app_name} 吗？

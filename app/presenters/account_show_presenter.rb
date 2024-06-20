@@ -18,9 +18,7 @@ class AccountShowPresenter
   end
 
   def show_pii_partial?
-    decrypted_pii.present? || user.identity_verified? unless
-      user.pending_in_person_enrollment.present? || user.
-        gpo_verification_pending_profile.present?
+    decrypted_pii.present? || user.identity_verified?
   end
 
   def show_manage_personal_key_partial?
@@ -36,36 +34,10 @@ class AccountShowPresenter
     user.gpo_verification_pending_profile?
   end
 
-  def show_ipp_partial?
-    user.pending_in_person_enrollment.present?
-  end
-
   def showing_any_partials?
-    show_password_reset_partial? ||
-      show_gpo_partial? || show_ipp_partial? || show_pii_partial?
-  end
-
-  def showing_alerts?
     show_service_provider_continue_partial? ||
-      show_password_reset_partial?
-  end
-
-  def show_unverified?
-    show_password_reset_partial? &&
-      (!show_ipp_partial? || !show_gpo_partial?)
-  end
-
-  def service_provider_or_app_name
-    if user.identities.count == 0
-      APP_NAME
-    else
-      user.identities.last.friendly_name
-    end
-  end
-
-  def formatted_due_date
-    user.pending_in_person_enrollment.due_date.
-      strftime(I18n.t('time.formats.event_date'))
+      show_password_reset_partial? ||
+      show_gpo_partial?
   end
 
   def show_unphishable_badge?
@@ -86,10 +58,6 @@ class AccountShowPresenter
 
   def personal_key_generated_at
     user.personal_key_generated_at
-  end
-
-  def biometric_identity_verification?
-    user.identity_verified_with_biometric_comparison?
   end
 
   def header_personalization
