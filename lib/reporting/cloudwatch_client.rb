@@ -4,6 +4,7 @@ require 'aws-sdk-cloudwatchlogs'
 require 'ruby-progressbar'
 require 'identity/hostdata'
 require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/string/filters'
 
 module Reporting
   class CloudwatchClient
@@ -55,6 +56,8 @@ module Reporting
     #   @yieldparam [Hash] row a row of the query result
     #   @return [nil]
     def fetch(query:, from: nil, to: nil, time_slices: nil)
+      validate_query!(query)
+
       results = Concurrent::Array.new if !block_given?
       errors = Concurrent::Array.new
       each_result_queue = Queue.new if block_given?
@@ -289,6 +292,16 @@ module Reporting
       end
     end
     # rubocop:enable Rails/TimeZone
+
+    # @raise [ArgumentError] if the query is missing a limit
+    def validate_query!(query)
+      if ensure_complete_logs? && !query.match?(/\|\s+limit\s+#{MAX_RESULTS_LIMIT}/i)
+        raise ArgumentError, <<~STR.squish
+          ensure_complete_logs is true but query is missing '| limit #{MAX_RESULTS_LIMIT}',
+          script is unable to detect incomplete results
+        STR
+      end
+    end
 
     # @yield [ProgressBar]
     def with_progress_bar

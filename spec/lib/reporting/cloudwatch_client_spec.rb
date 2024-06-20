@@ -221,6 +221,14 @@ RSpec.describe Reporting::CloudwatchClient do
 
         expect(results.size).to eq(999)
       end
+
+      context 'query is missing a limit' do
+        let(:query) { 'fields @message | stats count(*) by bin(1d)' }
+
+        it 'raises' do
+          expect { fetch }.to raise_error(ArgumentError, /query is missing '| limit 10000'/)
+        end
+      end
     end
 
     context 'query is before Cloudwatch Insights Availability and AWS errors' do
