@@ -83,7 +83,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
-        sp_costs_added: true,
         stages: {
           resolution: resolution_block,
           residential_address: { attributes_requiring_additional_verification: [],
@@ -113,7 +112,6 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
-        sp_costs_added: true,
         stages: {
           resolution: resolution_block,
           residential_address: { errors: {},
