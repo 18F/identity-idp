@@ -263,8 +263,8 @@ RSpec.describe RecaptchaEnterpriseForm do
             event: {},
             name:,
             accountDefenderAssessment: {
-              labels: ['SUSPICIOUS_LOGIN_ACTIVITY']
-            }
+              labels: ['SUSPICIOUS_LOGIN_ACTIVITY'],
+            },
           }
         end
         before do
@@ -302,7 +302,7 @@ RSpec.describe RecaptchaEnterpriseForm do
             'reCAPTCHA verify result received',
             recaptcha_result: {
               account_defender_assesment: {
-                labels: ['SUSPICIOUS_LOGIN_ACTIVITY']
+                labels: ['SUSPICIOUS_LOGIN_ACTIVITY'],
               },
               success: true,
               score:,
@@ -454,7 +454,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       context 'with account defender enabled' do
         around do |example|
           stubbed_request = stub_request(:post, assessment_url).
-          with do |req|
+            with do |req|
             req.body == { event: { token:,
                                    siteKey: recaptcha_site_key,
                                    expectedAction: action,
@@ -465,11 +465,10 @@ RSpec.describe RecaptchaEnterpriseForm do
                                      },
                                    } } }.to_json
           end.
-          to_return(headers: { 'Content-Type': 'application/json' }, body: response_body.to_json)
+            to_return(headers: { 'Content-Type': 'application/json' }, body: response_body.to_json)
           example.run
           expect(stubbed_request).to have_been_made.once
         end
-
       end
 
       context 'without analytics' do

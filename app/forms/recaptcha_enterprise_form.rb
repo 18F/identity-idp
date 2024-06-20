@@ -55,14 +55,14 @@ class RecaptchaEnterpriseForm < RecaptchaForm
       userInfo: {
         accountId: user&.uuid,
         userIds: {
-          email: encrypted_email,
+          email: email_fingerprint,
         },
       },
     }
   end
 
-  def encrypted_email
-    user.email_addresses.first&.encrypted_email
+  def email_fingerprint
+    user.email_addresses.first&.email_fingerprint
   end
 
   def faraday
