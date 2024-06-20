@@ -1039,7 +1039,7 @@ idv.failure.phone.warning.gpo.heading: 通过普通邮件验证
 idv.failure.phone.warning.gpo.how_long_it_takes_html: 这需要<strong>五到十天</strong>。
 idv.failure.phone.warning.heading: 我们无法将你与该号码匹配。
 idv.failure.phone.warning.learn_more_link: 了解有关使用什么号码的更多信息。
-idv.failure.phone.warning.next_steps_html: 尝试 <strong>a另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
+idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
 idv.failure.phone.warning.you_entered: 你输入了：
 idv.failure.sessions.exception: 处理你的请求时内部出错。
