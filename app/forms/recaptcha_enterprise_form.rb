@@ -61,8 +61,9 @@ class RecaptchaEnterpriseForm < RecaptchaForm
     }
   end
 
-  def email_fingerprint
-    user.email_addresses.first&.email_fingerprint
+  def encrypted_email
+    email = user.email_addresses.first&.email
+    Digest::SHA256.hexdigest(email)
   end
 
   def faraday
