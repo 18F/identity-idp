@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'json'
 require 'net/http'
 require 'optparse'
@@ -49,15 +51,15 @@ class NotifySlack
       end
 
       opts.on('--text TEXT', 'text of notification, pass - to read from STDIN') do |text_v|
-        text = if text_v == '-'
+        if text_v == '-'
           if stdin.tty?
-            stdout.print "please enter text of message: "
-            stdin.gets
+            stdout.print 'please enter text of message: '
+            text = stdin.gets
           else
-            stdin.read
+            text = stdin.read
           end
         else
-          text_v
+          text = text_v
         end
       end
 
@@ -91,8 +93,8 @@ class NotifySlack
       text: text,
       icon: format_icon(icon),
     )
-    stdout.puts "OK"
-  rescue Net::HTTPServerException => err
+    stdout.puts 'OK'
+  rescue Net::HTTPClientException => err
     stdout.puts "#{program_name} HTTP ERROR: #{err.response.code}"
     raise err if raise_on_failure
   rescue => err
@@ -100,7 +102,7 @@ class NotifySlack
     raise err if raise_on_failure
   end
 
-  # @raise [Net::HTTPServerException] throws an error for non-successful response
+  # @raise [Net::HTTPClientException] throws an error for non-successful response
   # @return [Net::HTTPResponse]
   def notify(webhook:, channel:, username:, text:, icon:)
     url = URI(webhook)
