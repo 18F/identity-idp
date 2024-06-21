@@ -15,7 +15,7 @@ class BadgeTooltipElement extends HTMLElement {
    * Retrieves the text to be shown in the tooltip.
    */
   get tooltipText(): string {
-    return this.getAttribute('data-tooltip-text')!;
+    return this.getAttribute('tooltip-text')!;
   }
 
   /**

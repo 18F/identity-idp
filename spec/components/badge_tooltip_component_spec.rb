@@ -9,6 +9,6 @@ RSpec.describe BadgeTooltipComponent, type: :component do
   end
 
   it 'renders with tooltip text as an attribute' do
-    expect(rendered).to have_css("lg-badge-tooltip[data-tooltip-text='#{tooltip_text}']")
+    expect(rendered).to have_css("lg-badge-tooltip[tooltip-text='#{tooltip_text}']")
   end
 end
