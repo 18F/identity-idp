@@ -12,7 +12,7 @@ class BadgeTooltipComponent < BaseComponent
     content_tag(
       :'lg-badge-tooltip',
       badge_content,
-      'tooltip-text': tooltip_text,
+      data: { tooltip_text: tooltip_text },
     )
   end
 
