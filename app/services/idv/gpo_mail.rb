@@ -46,11 +46,8 @@ module Idv
     def too_many_letter_requests_within_window?
       return false unless window_limit_enabled?
       current_user.gpo_confirmation_codes.where(
-        updated_at: Range.new(
-          IdentityConfig.store.max_mail_events_window_in_days.days.ago,
-          Time.zone.now,
-        ),
-      ).count > IdentityConfig.store.max_mail_events
+        updated_at: IdentityConfig.store.max_mail_events_window_in_days.days.ago..Time.zone.now,
+      ).count >= IdentityConfig.store.max_mail_events
     end
 
     def last_letter_request_too_recent?
