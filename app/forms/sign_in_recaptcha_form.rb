@@ -35,7 +35,7 @@ class SignInRecaptchaForm
   end
 
   def score_threshold
-    if device.present?
+    if IdentityConfig.store.sign_in_recaptcha_score_threshold.zero? || device.present?
       0.0
     else
       IdentityConfig.store.sign_in_recaptcha_score_threshold

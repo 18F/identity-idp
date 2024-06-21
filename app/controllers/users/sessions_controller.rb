@@ -85,7 +85,6 @@ module Users
     end
 
     def valid_captcha_result?
-      return true unless FeatureManagement.sign_in_recaptcha_enabled?
       SignInRecaptchaForm.new(**recaptcha_form_args).submit(
         email: auth_params[:email],
         recaptcha_token: params.require(:user)[:recaptcha_token],
