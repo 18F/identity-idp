@@ -111,8 +111,7 @@
 
 
 # Fix syntax highlighting on GitHub to allow comments
-tsconfig.json              jsonc
-knapsack_rspec_report.json jsonc
+tsconfig.json       jsonc
 
 # Lock files (usually for managing project dependencies)
 *.lock              lockfile
@@ -132,7 +131,7 @@ pnpm-lock.yaml                  lockfile
 ### Force text diff for specific lockfiles
 Gemfile.lock                    diff
 yarn.lock                       diff
-knapsack_rspec_report.json      diff
+knapsack_rspec_report.json      jsonc
 
 ## Executables and runtimes
 *.wasm                          binary
