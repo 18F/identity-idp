@@ -119,10 +119,6 @@ module Idv
       redirect_to idv_enter_password_url
     end
 
-    def gpo_mail_service
-      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-    end
-
     def init_profile
       idv_session.create_profile_from_applicant_with_password(
         password,
@@ -133,10 +129,9 @@ module Idv
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
           resend: false,
-          phone_step_attempts: gpo_mail_service.phone_step_attempts,
+          phone_step_attempts: RateLimiter.new(user: @current_user, rate_limit_type: :proof_address).attempts,
           first_letter_requested_at: first_letter_requested_at,
-          hours_since_first_letter:
-            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
+          hours_since_first_letter: hours_since_first_letter(first_letter_requested_at),
           **ab_test_analytics_buckets,
         )
       end
@@ -153,6 +148,11 @@ module Idv
 
     def first_letter_requested_at
       idv_session.profile.gpo_verification_pending_at
+    end
+
+    def hours_since_first_letter(first_letter_requested_at)
+      first_letter_requested_at ?
+        (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
     end
 
     def valid_password?
