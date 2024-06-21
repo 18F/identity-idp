@@ -59,7 +59,7 @@ module Users
         user_session: user_session,
         device_name: DeviceName.from_user_agent(request.user_agent),
       )
-      result = form.submit(request.protocol, confirm_params)
+      result = form.submit(confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
         current_user: current_user,
@@ -161,7 +161,7 @@ module Users
         :name,
         :platform_authenticator,
         :transports,
-      )
+      ).merge(protocol: request.protocol)
     end
   end
 end
