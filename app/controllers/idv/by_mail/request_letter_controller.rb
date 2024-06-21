@@ -71,7 +71,10 @@ module Idv
           first_letter_requested_at: first_letter_requested_at,
           hours_since_first_letter:
             hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: RateLimiter.new(user: @current_user, rate_limit_type: :proof_address).attempts,
+          phone_step_attempts: RateLimiter.new(
+            user: current_user,
+            rate_limit_type: :proof_address,
+          ).attempts,
           **ab_test_analytics_buckets,
         )
         create_user_event(:gpo_mail_sent, current_user)
@@ -103,7 +106,10 @@ module Idv
           first_letter_requested_at: first_letter_requested_at,
           hours_since_first_letter:
             hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: RateLimiter.new(user: @current_user, rate_limit_type: :proof_address).attempts,
+          phone_step_attempts: RateLimiter.new(
+            user: current_user,
+            rate_limit_type: :proof_address,
+          ).attempts,
           **ab_test_analytics_buckets,
         )
         confirmation_maker = confirmation_maker_perform
