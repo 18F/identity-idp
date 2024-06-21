@@ -182,4 +182,34 @@ RSpec.describe 'accounts/show.html.erb' do
       )
     end
   end
+
+  describe 'email language' do
+    context 'without explicit user language preference' do
+      let(:user) { create(:user, :fully_registered, email_language: nil) }
+
+      before do
+        I18n.locale = :es
+      end
+
+      it 'renders email language with language of parts as English' do
+        # Ensure that non-English content in English page is annotated with language.
+        # See: https://www.w3.org/WAI/WCAG21/Understanding/language-of-parts
+        render
+
+        expect(rendered).to have_css('[lang=en]', text: t('account.email_language.name.en'))
+      end
+    end
+
+    context 'with user language preference' do
+      let(:user) { create(:user, :fully_registered, email_language: :es) }
+
+      it 'renders email language with language of parts as that language' do
+        # Ensure that non-English content in English page is annotated with language.
+        # See: https://www.w3.org/WAI/WCAG21/Understanding/language-of-parts
+        render
+
+        expect(rendered).to have_css('[lang=es]', text: t('account.email_language.name.es'))
+      end
+    end
+  end
 end
