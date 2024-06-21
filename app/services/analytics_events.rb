@@ -1322,52 +1322,52 @@ module AnalyticsEvents
   # @option proofing_results [Boolean] timed_out true if any vendor API calls timed out during proofing
   # @option proofing_results [String] threatmetrix_review_status Result of Threatmetrix assessment, either "review", "reject", or "pass"
   # @option proofing_results [Hash] context Full context of the proofing process
-  # @option proofing_results [String] context[:device_profiling_adjudication_reason] Reason code describing how we arrived at the device profiling result
-  # @option proofing_results [String] context[:resolution_adjudication_reason] Reason code describing how we arrived at the identity resolution result
-  # @option proofing_results [Boolean] context[:should_proof_state_id] Whether we need to verify the user's PII with AAMVA. False if the user is using a document from a non-AAMVA jurisdiction
-  # @option proofing_results [Hash] context[:stages] Object holding details about each stage of the proofing process
-  # @option proofing_results [Hash] context[:stages][:resolution] Object holding details about the call made to the identity resolution vendor
-  # @option proofing_results [Boolean] context[:stages][:resolution][:success] Whether identity resolution proofing was successful
-  # @option proofing_results [Hash] context[:stages][:resolution][:errors] Object describing errors encountered during identity resolution
-  # @option proofing_results [String,nil] context[:stages][:resolution][:exception] If an exception occured during identity resolution its message is provided here
-  # @option proofing_results [Boolean] context[:stages][:resolution][:timed_out] Whether the identity resolution API request timed out
-  # @option proofing_results [String] context[:stages][:resolution][:transaction_id] A unique id for the underlying vendor request
-  # @option proofing_results [Boolean] context[:stages][:resolution][:can_pass_with_additional_verification] Whether the PII could be verified if another vendor verified certain attributes
-  # @option proofing_results [Array<String>] context[:stages][:resolution][:attributes_requiring_additional_verification] Attributes that need to be verified by another vendor
-  # @option proofing_results [String] context[:stages][:resolution][:vendor_name] Vendor used (e.g. lexisnexis:instant_verify)
-  # @option proofing_results [String] context[:stages][:resolution][:vendor_workflow] ID of workflow or configuration the vendor used for this transaction
-  # @option proofing_results [Boolean] context[:stages][:residential_address][:success] Whether the residential address passed proofing
-  # @option proofing_results [Hash] context[:stages][:residential_address][:errors] Object holding error details returned by the residential address proofing vendor.
-  # @option proofing_results [String,nil] context[:stages][:residential_address][:exception] If an exception occured during residential address verification its message is provided here
-  # @option proofing_results [Boolean] context[:stages][:residential_address][:timed_out] True if the request to the residential address proofing vendor timed out
-  # @option proofing_results [String] context[:stages][:residential_address][:transaction_id] Vendor-specific transaction ID for the request made to the residential address proofing vendor
-  # @option proofing_results [Boolean] context[:stages][:residential_address][:can_pass_with_additional_verification] Whether, if residential address proofing failed, it could pass with additional proofing from another vendor
-  # @option proofing_results [Array<String>,nil] context[:stages][:residential_address][:attributes_requiring_additional_verification] List of PII attributes that require additional verification for residential address proofing to pass
-  # @option proofing_results [String] context[:stages][:residential_address][:vendor_name] Vendor used for residential address proofing
-  # @option proofing_results [String] context[:stages][:residential_address][:vendor_workflow] Vendor-specific workflow or configuration ID associated with the request made.
-  # @option proofing_results [Hash] context[:stages][:state_id] Object holding details about the call made to the state ID proofing vendor
-  # @option proofing_results [Boolean] context[:stages][:state_id][:success] Whether the PII associated with the user's state ID document passed proofing
-  # @option proofing_results [Hash] context[:stages][:state_id][:errors] Object describing errors encountered while proofing the user's state ID PII
-  # @option proofing_results [String,nil] context[:stages][:state_id][:exception] If an exception occured during state ID PII verification its message is provided here
-  # @option proofing_results [Boolean] context[:stages][:state_id][:mva_exception] For AAMVA, whether the exception that occurred was due to an error on the state MVA side
-  # @option proofing_results [Hash<String,Numeric>] context[:stages][:state_id][:requested_attributes] An object whose keys are field names and values are "1" representing PII attributes sent to the state ID proofing vendor for verification.
-  # @option proofing_results [Boolean] context[:stages][:state_id][:timed_out] Whether the request to the state ID verification vendor timed out
-  # @option proofing_results [String] context[:stages][:state_id][:transaction_id] Vendor-specific transaction ID for the request made to the state id proofing vendor
-  # @option proofing_results [String] context[:stages][:state_id][:vendor_name] Name of the vendor used for state ID PII verification. If the ID was not from a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls did not succeed.
-  # @option proofing_results [String] context[:stages][:state_id][:state] The state that was listed as the user's address on their state ID. Note that this may differ from state_id_jurisdiction.
-  # @option proofing_results [String] context[:stages][:state_id][:state_id_jurisdiction] The state that issued the drivers license or ID card being used for proofing.
-  # @option proofing_results [String] context[:stages][:state_id][:state_id_number] A string describing the _format_ of the state ID number provided.
-  # @option proofing_results [Hash] context[:stages][:threatmetrix] Object holding details about the call made to the device profiling vendor
-  # @option proofing_results [String] context[:stages][:threatmetrix][:client] Identifier string indicating which client was used.
-  # @option proofing_results [Boolean] context[:stages][:threatmetrix][:success] Whether the request to the vendor succeeded.
-  # @option proofing_results [Hash] context[:stages][:threatmetrix][:errors] Hash describing errors encountered when making the request.
-  # @option proofing_results [String,nil] context[:stages][:threatmetrix][:exception] If an exception was encountered making the request to the vendor, its message is provided here.
-  # @option proofing_results [Boolean] context[:stages][:threatmetrix][:timed_out] Whether the request to the vendor timed out.
-  # @option proofing_results [String] context[:stages][:threatmetrix][:transaction_id] Vendor-specific transaction ID for the request.
-  # @option proofing_results [Hash] context[:stages][:threatmetrix][:response_body] JSON body of the response returned from the vendor. PII has been redacted.
-  # @option proofing_results [String] context[:stages][:threatmetrix][:response_body][:account_lex_id] LexID associated with the response.
-  # @option proofing_results [String] context[:stages][:threatmetrix][:response_body][:session_id] Session ID associated with the response.
-  # @option proofing_results [String] context[:stages][:threatmetrix][:review_status] One of "pass", "review", "reject".
+  # @option proofing_results [String] context.device_profiling_adjudication_reason Reason code describing how we arrived at the device profiling result
+  # @option proofing_results [String] context.resolution_adjudication_reason Reason code describing how we arrived at the identity resolution result
+  # @option proofing_results [Boolean] context.should_proof_state_id Whether we need to verify the user's PII with AAMVA. False if the user is using a document from a non-AAMVA jurisdiction
+  # @option proofing_results [Hash] context.stages Object holding details about each stage of the proofing process
+  # @option proofing_results [Hash] context.stages.resolution Object holding details about the call made to the identity resolution vendor
+  # @option proofing_results [Boolean] context.stages.resolution.success Whether identity resolution proofing was successful
+  # @option proofing_results [Hash] context.stages.resolution.errors Object describing errors encountered during identity resolution
+  # @option proofing_results [String,nil] context.stages.resolution.exception If an exception occured during identity resolution its message is provided here
+  # @option proofing_results [Boolean] context.stages.resolution.timed_out Whether the identity resolution API request timed out
+  # @option proofing_results [String] context.stages.resolution.transaction_id A unique id for the underlying vendor request
+  # @option proofing_results [Boolean] context.stages.resolution.can_pass_with_additional_verification Whether the PII could be verified if another vendor verified certain attributes
+  # @option proofing_results [Array<String>] context.stages.resolution.attributes_requiring_additional_verification Attributes that need to be verified by another vendor
+  # @option proofing_results [String] context.stages.resolution.vendor_name Vendor used (e.g. lexisnexis:instant_verify)
+  # @option proofing_results [String] context.stages.resolution.vendor_workflow ID of workflow or configuration the vendor used for this transaction
+  # @option proofing_results [Boolean] context.stages.residential_address.success Whether the residential address passed proofing
+  # @option proofing_results [Hash] context.stages.residential_address.errors Object holding error details returned by the residential address proofing vendor.
+  # @option proofing_results [String,nil] context.stages.residential_address.exception If an exception occured during residential address verification its message is provided here
+  # @option proofing_results [Boolean] context.stages.residential_address.timed_out True if the request to the residential address proofing vendor timed out
+  # @option proofing_results [String] context.stages.residential_address.transaction_id Vendor-specific transaction ID for the request made to the residential address proofing vendor
+  # @option proofing_results [Boolean] context.stages.residential_address.can_pass_with_additional_verification Whether, if residential address proofing failed, it could pass with additional proofing from another vendor
+  # @option proofing_results [Array<String>,nil] context.stages.residential_address.attributes_requiring_additional_verification List of PII attributes that require additional verification for residential address proofing to pass
+  # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
+  # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
+  # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
+  # @option proofing_results [Boolean] context.stages.state_id.success Whether the PII associated with the user's state ID document passed proofing
+  # @option proofing_results [Hash] context.stages.state_id.errors Object describing errors encountered while proofing the user's state ID PII
+  # @option proofing_results [String,nil] context.stages.state_id.exception If an exception occured during state ID PII verification its message is provided here
+  # @option proofing_results [Boolean] context.stages.state_id.mva_exception For AAMVA, whether the exception that occurred was due to an error on the state MVA side
+  # @option proofing_results [Hash<String,Numeric>] context.stages.state_id.requested_attributes An object whose keys are field names and values are "1" representing PII attributes sent to the state ID proofing vendor for verification.
+  # @option proofing_results [Boolean] context.stages.state_id.timed_out Whether the request to the state ID verification vendor timed out
+  # @option proofing_results [String] context.stages.state_id.transaction_id Vendor-specific transaction ID for the request made to the state id proofing vendor
+  # @option proofing_results [String] context.stages.state_id.vendor_name Name of the vendor used for state ID PII verification. If the ID was not from a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls did not succeed.
+  # @option proofing_results [String] context.stages.state_id.state The state that was listed as the user's address on their state ID. Note that this may differ from state_id_jurisdiction.
+  # @option proofing_results [String] context.stages.state_id.state_id_jurisdiction The state that issued the drivers license or ID card being used for proofing.
+  # @option proofing_results [String] context.stages.state_id.state_id_number A string describing the _format_ of the state ID number provided.
+  # @option proofing_results [Hash] context.stages.threatmetrix Object holding details about the call made to the device profiling vendor
+  # @option proofing_results [String] context.stages.threatmetrix.client Identifier string indicating which client was used.
+  # @option proofing_results [Boolean] context.stages.threatmetrix.success Whether the request to the vendor succeeded.
+  # @option proofing_results [Hash] context.stages.threatmetrix.errors Hash describing errors encountered when making the request.
+  # @option proofing_results [String,nil] context.stages.threatmetrix.exception If an exception was encountered making the request to the vendor, its message is provided here.
+  # @option proofing_results [Boolean] context.stages.threatmetrix.timed_out Whether the request to the vendor timed out.
+  # @option proofing_results [String] context.stages.threatmetrix.transaction_id Vendor-specific transaction ID for the request.
+  # @option proofing_results [Hash] context.stages.threatmetrix.response_body JSON body of the response returned from the vendor. PII has been redacted.
+  # @option proofing_results [String] context.stages.threatmetrix.response_body.account_lex_id LexID associated with the response.
+  # @option proofing_results [String] context.stages.threatmetrix.response_body.session_id Session ID associated with the response.
+  # @option proofing_results [String] context.stages.threatmetrix.review_status One of "pass", "review", "reject".
   # @param skip_hybrid_handoff [Boolean] Whether the user should skip hybrid handoff (i.e. because they are already on a mobile device)
   # @param ssn_is_unique [Boolean] Whether another Profile existed with the same SSN at the time the profile associated with the current IdV session was minted.
   # @param step [String] Always "verify" (leftover from flow state machine days)
