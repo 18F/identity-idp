@@ -863,6 +863,7 @@ pinpoint_check_scheduled:
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 audit_packages_scheduled:
   needs:
@@ -886,3 +887,4 @@ audit_packages_scheduled:
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: '$CI_COMMIT_BRANCH == "main"'
