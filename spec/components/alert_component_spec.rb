@@ -19,10 +19,10 @@ RSpec.describe AlertComponent, type: :component do
     expect(rendered).to have_content('locals')
   end
 
-  it 'defaults to type "info"' do
+  it 'renders without modifier classes by default' do
     rendered = render_inline AlertComponent.new(message: 'FYI')
 
-    expect(rendered).to have_selector('.usa-alert.usa-alert--info')
+    expect(rendered).to have_selector('.usa-alert:not([class*=usa-alert--])')
   end
 
   it 'accepts alert type param' do
