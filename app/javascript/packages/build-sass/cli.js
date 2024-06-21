@@ -73,7 +73,7 @@ function build(files) {
     files.map(async (file) => {
       const { loadedUrls } = await buildFile(file, options);
       if (isWatching) {
-        const loadedPaths = loadedUrls.map(fileURLToPath);
+        const loadedPaths = loadedUrls.map((url) => fileURLToPath(url));
         watchOnce(loadedPaths, () => build([file]));
       }
     }),
