@@ -9,6 +9,9 @@ module FormHelper
       ['American Samoa', 'AS'],
       ['Arizona', 'AZ'],
       ['Arkansas', 'AR'],
+      ['Armed Forces Americas', 'AA'],
+      ['Armed Forces Others', 'AE'],
+      ['Armed Forces Pacific', 'AP'],
       ['California', 'CA'],
       ['Colorado', 'CO'],
       ['Connecticut', 'CT'],
@@ -52,6 +55,7 @@ module FormHelper
       ['South Dakota', 'SD'],
       ['Tennessee', 'TN'],
       ['Texas', 'TX'],
+      ['United States Minor Outlying Islands', 'UM'],
       ['Utah', 'UT'],
       ['Vermont', 'VT'],
       ['Virgin Islands', 'VI'],
@@ -61,5 +65,10 @@ module FormHelper
       ['Wisconsin', 'WI'],
       ['Wyoming', 'WY'],
     ]
+  end
+
+  # Filtered list to removve territories that error due to USPS API
+  def filtered_us_states_territories
+    us_states_territories.filter { |t| !['AA','AE','AP','UM'].include? t[1] }
   end
 end
