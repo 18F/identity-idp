@@ -11,6 +11,7 @@ module Reporting
     DEFAULT_NUM_THREADS = 5
     DEFAULT_WAIT_DURATION = 3
     MAX_RESULTS_LIMIT = 10_000
+    MAX_RESULTS_LIMIT_MATCHER = /\|\s+limit\s+#{MAX_RESULTS_LIMIT}/i
 
     attr_reader :num_threads, :wait_duration, :slice_interval, :logger, :log_group_name
 
@@ -295,7 +296,7 @@ module Reporting
 
     # @raise [ArgumentError] if the query is missing a limit
     def validate_query!(query)
-      if ensure_complete_logs? && !query.match?(/\|\s+limit\s+#{MAX_RESULTS_LIMIT}/i)
+      if ensure_complete_logs? && !query.match?(MAX_RESULTS_LIMIT_MATCHER)
         raise ArgumentError, <<~STR.squish
           ensure_complete_logs is true but query is missing '| limit #{MAX_RESULTS_LIMIT}',
           script is unable to detect incomplete results
