@@ -129,8 +129,9 @@ knapsack_rspec_report.json      lockfile
 package-lock.json               lockfile
 pnpm-lock.yaml                  lockfile
 
-### Force text diff for Gemfile.lock
+### Force text diff for specific lockfiles
 Gemfile.lock                    diff
+yarn.lock                       diff
 
 ## Executables and runtimes
 *.wasm                          binary
