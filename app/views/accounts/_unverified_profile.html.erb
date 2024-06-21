@@ -4,7 +4,7 @@
     <br>
     <%= link_to 
       t('account.index.verification.learn_more_link'), 
-      MarketingSite.help_center_article_url(category: 'verify-your-identity', article: 'overview'),
+      help_center_redirect_path(category: 'verify-your-identity', article: 'overview'),
     %>
   </p>
 <% end %>
