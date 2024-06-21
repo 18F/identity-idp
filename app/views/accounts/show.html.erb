@@ -35,7 +35,14 @@
             <% else %>
               <p>
                 <%= t('account.index.verification.finish_verifying', partner_agency: @presenter.service_provider_or_app_name) %>
-                  <br><%= link_to t('account.index.verification.learn_more_link'), MarketingSite.help_url %>
+                <br>
+                <%= link_to 
+                  t('account.index.verification.learn_more_link'), 
+                  MarketingSite.help_center_article_url(
+                    category: 'verify-your-identity',
+                    article: 'overview',
+                  ),
+                %>
               </p>
             <% end %>
           <% end %>
@@ -50,13 +57,26 @@
       
       <% if @presenter.show_pii_partial? %>
 
-      <% if @presenter.biometric_identity_verification? %>
-        <p><%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
-          <%= link_to t('account.index.verification.learn_more_link'), MarketingSite.help_url %></p>
-      <% else %>
-        <p><%= t('account.index.verification.you_verified_your_identity', partner_agency: @presenter.service_provider_or_app_name) %>
-          <br><%= link_to t('account.index.verification.learn_more_link'), MarketingSite.help_url %></p>
-      <% end %>
+        <% if @presenter.biometric_identity_verification? %>
+          <p><%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
+            <%= link_to 
+              t('account.index.verification.learn_more_link'), 
+              MarketingSite.help_center_article_url(
+                category: 'verify-your-identity',
+                article: 'overview',
+              ),
+            %></p>
+        <% else %>
+          <p><%= t('account.index.verification.you_verified_your_identity', partner_agency: @presenter.service_provider_or_app_name) %>
+            <br>
+            <%= link_to 
+              t('account.index.verification.learn_more_link'), 
+              MarketingSite.help_center_article_url(
+                category: 'verify-your-identity',
+                article: 'overview',
+              ),
+            %></p>
+        <% end %>
         <%= render 'accounts/pii', pii: @presenter.pii, locked_for_session: @presenter.locked_for_session %>
       <% end %>
     </div>
