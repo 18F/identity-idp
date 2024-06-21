@@ -64,8 +64,7 @@ class AccountShowPresenter
   end
 
   def formatted_due_date
-    user.pending_in_person_enrollment.due_date.
-      strftime(I18n.t('time.formats.event_date'))
+    I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
   end
 
   def show_unphishable_badge?
