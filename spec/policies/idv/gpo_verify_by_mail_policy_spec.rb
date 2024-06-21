@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Idv::GpoVerifyByMailPolicy do
@@ -8,8 +9,8 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
     context 'when the feature flag is off' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification)
-          .and_return false
+        allow(IdentityConfig.store).to receive(:enable_usps_verification).
+          and_return false
       end
 
       it 'returns false' do
@@ -19,8 +20,8 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
     context 'when the feature flag is on' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification)
-          .and_return true
+        allow(IdentityConfig.store).to receive(:enable_usps_verification).
+          and_return true
       end
 
       context 'when the user is rate limited' do
@@ -64,18 +65,17 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
       :profile,
       user: user,
       gpo_verification_pending_at: at_time,
-      )
+    )
 
     GpoConfirmationMaker.new(
       pii: Idp::Constants::MOCK_IDV_APPLICANT,
       service_provider: nil,
       profile: profile,
-      ).perform
+    ).perform
 
     profile.gpo_confirmation_codes.last.update(
       created_at: at_time,
       updated_at: at_time,
-      )
+    )
   end
-
 end
