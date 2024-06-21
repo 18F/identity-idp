@@ -192,7 +192,7 @@ RSpec.describe Users::SessionsController, devise: true do
       user = create(:user, :fully_registered)
 
       allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
-      allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
       stub_analytics
 

@@ -102,7 +102,7 @@ module Users
 
     def recaptcha_form_args
       args = { analytics: }
-      if IdentityConfig.store.phone_recaptcha_mock_validator
+      if IdentityConfig.store.recaptcha_mock_validator
         args.merge(
           form_class: RecaptchaMockForm,
           score: params.require(:user)[:recaptcha_mock_score].to_f,
