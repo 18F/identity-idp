@@ -55,12 +55,21 @@ class AccountShowPresenter
       (!show_ipp_partial? || !show_gpo_partial?)
   end
 
-  def service_provider_or_app_name
-    if user.identities.count == 0
-      APP_NAME
-    else
-      user.identities.last.friendly_name
+  def find_sp_issuer
+    sp_name = 'APP_NAME'
+    user.profiles.each do |profile|
+      if profile.initiating_service_provider_issuer
+        sp_name = ServiceProvider.find_by(issuer: profile.initiating_service_provider_issuer).
+          friendly_name
+        break
+      end
     end
+    return sp_name
+  end
+
+  def service_provider_or_app_name
+    return APP_NAME unless user.profiles.count > 0
+    find_sp_issuer
   end
 
   def formatted_due_date
