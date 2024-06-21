@@ -6,8 +6,8 @@ import './badge-tooltip-element';
 describe('BadgeTooltipElement', () => {
   function createAndConnectElement({ tooltipText = '' } = {}) {
     const element = document.createElement('lg-badge-tooltip');
-    element.setAttribute('data-tooltip-text', tooltipText);
-    element.setAttribute('data-tooltip-text', 'Your identity has been verified');
+    element.setAttribute('tooltip-text', tooltipText);
+    element.setAttribute('tooltip-text', 'Your identity has been verified');
     element.innerHTML = '<div class="lg-verification-badge usa-tooltip">Verified</div>';
     document.body.appendChild(element);
     return element;
