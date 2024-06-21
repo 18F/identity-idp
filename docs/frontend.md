@@ -129,7 +129,7 @@ performance impact on users.
 
 We use [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
 to deduplicate resolved package versions within the Yarn lockfile, and enforce it with
-the `make lint_yarn_lock` check,
+the `make lint_yarn_lock` check.
 
 ### Localization
 
