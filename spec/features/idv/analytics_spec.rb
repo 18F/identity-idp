@@ -698,7 +698,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
         proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
