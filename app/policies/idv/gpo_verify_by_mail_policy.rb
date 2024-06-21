@@ -15,7 +15,6 @@ module Idv
 
     def send_letter_available?
       FeatureManagement.gpo_verification_enabled? &&
-        user &&
         !@gpo_mail.rate_limited?
     end
   end

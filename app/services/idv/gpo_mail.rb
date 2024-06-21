@@ -63,6 +63,7 @@ module Idv
       ) > 0
     end
 
+    # Maybe this goes in the GpoConfirmationCode class?
     def number_of_letter_requests_within(time_window, maximum:, for_profile: nil)
       profile_query_conditions = { user: current_user }
       profile_query_conditions[:id] = for_profile.id if for_profile
