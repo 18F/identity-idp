@@ -111,7 +111,8 @@
 
 
 # Fix syntax highlighting on GitHub to allow comments
-tsconfig.json       jsonc
+tsconfig.json              jsonc
+knapsack_rspec_report.json jsonc
 
 # Lock files (usually for managing project dependencies)
 *.lock              lockfile
@@ -122,10 +123,9 @@ tsconfig.json       jsonc
 
 # --------------------------------------------------------------------
 # PROJECT-SPEFICIC RULES
-# --------------------------------------------------------------------# 
+# --------------------------------------------------------------------#
 
 ## Lock files
-knapsack_rspec_report.json      lockfile
 package-lock.json               lockfile
 pnpm-lock.yaml                  lockfile
 
