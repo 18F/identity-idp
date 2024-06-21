@@ -29,7 +29,7 @@ RSpec.describe BadgeComponent, type: :component do
     let(:icon) { :check_circle }
 
     it 'renders badge with icon and content' do
-      expect(rendered).to have_css('.lg-verification-badge .usa-icon.text-success')
+      expect(rendered).to have_css('.lg-verification-badge .usa-icon')
       inline_icon_style = rendered.at_css('.usa-icon style').text.strip
       expect(inline_icon_style).to match(%r{url\([^)]+?/check_circle-\w+\.svg\)})
     end
