@@ -2,7 +2,6 @@
 
 module Idv
   class GpoVerifyByMailPolicy
-
     attr_reader :gpo_mail
 
     def initialize(user)
