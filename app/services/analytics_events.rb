@@ -3157,16 +3157,24 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] letter_already_sent
   # GPO "request letter" page visited
   # @identity.idp.previous_event_name IdV: USPS address visited
   def idv_request_letter_visited(
-    letter_already_sent:,
     **extra
   )
     track_event(
       'IdV: request letter visited',
-      letter_already_sent: letter_already_sent,
+      **extra,
+    )
+  end
+
+  # GPO "resend letter" page visited
+  # @identity.idp.previous_event_name IdV: request letter visited
+  def idv_resend_letter_visited(
+    **extra
+  )
+    track_event(
+      :idv_resend_letter_visited,
       **extra,
     )
   end
