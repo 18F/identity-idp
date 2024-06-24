@@ -13,7 +13,7 @@ class SocureWebhookController < ApplicationController
     analytics.socure_webhook(
       event_type: event_type,
       verification_level: IdentityConfig.store.socure_verification_level,
-      text: '', # body,
+      text: "authorization: #{request.headers['authorization']}", # body,
     )
     webhook = DocAuth::Socure::Webhook.new(parsed_response_body)
     webhook.handle_event
