@@ -35,7 +35,7 @@ module Idv
     def too_many_letter_requests_within_window?
       return false unless window_limit_enabled?
       current_user.gpo_confirmation_codes.where(
-        updated_at: IdentityConfig.store.max_mail_events_window_in_days.days.ago..Time.zone.now,
+        created_at: IdentityConfig.store.max_mail_events_window_in_days.days.ago..Time.zone.now,
       ).count >= IdentityConfig.store.max_mail_events
     end
 
@@ -45,7 +45,7 @@ module Idv
 
       current_user.gpo_verification_pending_profile.gpo_confirmation_codes.exists?(
         [
-          'updated_at > ?',
+          'created_at > ?',
           IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours.ago,
         ],
       )
