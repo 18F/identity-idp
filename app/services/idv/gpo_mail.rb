@@ -2,6 +2,8 @@
 
 module Idv
   class GpoMail
+    attr_reader :current_user
+
     def initialize(current_user)
       @current_user = current_user
     end
@@ -30,40 +32,23 @@ module Idv
       IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours != 0
     end
 
-    attr_reader :current_user
-
     def too_many_letter_requests_within_window?
       return false unless window_limit_enabled?
-
-      number_of_letter_requests_within(
-        IdentityConfig.store.max_mail_events_window_in_days.days,
-        maximum: IdentityConfig.store.max_mail_events,
-      ) >= IdentityConfig.store.max_mail_events
+      current_user.gpo_confirmation_codes.where(
+        created_at: IdentityConfig.store.max_mail_events_window_in_days.days.ago..Time.zone.now,
+      ).count >= IdentityConfig.store.max_mail_events
     end
 
     def last_letter_request_too_recent?
       return false unless last_not_too_recent_enabled?
       return false unless current_user.gpo_verification_pending_profile?
 
-      number_of_letter_requests_within(
-        IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours,
-        maximum: 1,
-        for_profile: current_user.gpo_verification_pending_profile,
-      ) > 0
-    end
-
-    # Maybe this goes in the GpoConfirmationCode class?
-    def number_of_letter_requests_within(time_window, maximum:, for_profile: nil)
-      profile_query_conditions = { user: current_user }
-      profile_query_conditions[:id] = for_profile.id if for_profile
-
-      GpoConfirmationCode.joins(:profile).
-        where(
-          updated_at: (time_window.ago..),
-          profile: profile_query_conditions,
-        ).
-        limit(maximum).
-        count
+      current_user.gpo_verification_pending_profile.gpo_confirmation_codes.exists?(
+        [
+          'created_at > ?',
+          IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours.ago,
+        ],
+      )
     end
   end
 end
