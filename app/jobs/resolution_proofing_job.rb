@@ -98,7 +98,7 @@ class ResolutionProofingJob < ApplicationJob
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)
-    add_threatmetrix_proofing_component(user.id, result.device_profiling_result) if user.present?
+    add_proofing_components(user.id, result)
 
     CallbackLogData.new(
       device_profiling_success: result.device_profiling_result.success?,
@@ -126,10 +126,17 @@ class ResolutionProofingJob < ApplicationJob
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new
   end
 
-  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
+  def add_proofing_components(user, result)
+    proofing_components = {
+      resolution_check: result[:success] && Idp::Constants::Vendors::LEXIS_NEXIS,
+      source_check: result[:success] && Idp::Constants::Vendors::AAMVA,
+      threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
+      threatmetrix_review_status: result[:threatmetrix][:review_status],
+
+    }.compact
+
     ProofingComponent.
-      create_or_find_by(user_id: user_id).
-      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
-             threatmetrix_review_status: threatmetrix_result.review_status)
+      create_or_find_by(user:).
+      update(proofing_components)
   end
 end
