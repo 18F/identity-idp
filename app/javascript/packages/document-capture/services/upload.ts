@@ -87,19 +87,15 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     body: toFormData(payload),
     json: false,
     read: false,
+    headers: {
+      Accept: 'application/json',
+    },
   });
 
   if (!response.ok && !response.status.toString().startsWith('4')) {
     // 4xx is an expected error state, handled after JSON deserialization. Anything else not OK
     // should be treated as an unhandled error.
     throw new Error(response.statusText);
-  }
-
-  if (response.url !== endpoint) {
-    forceRedirect(response.url);
-
-    // Avoid settling the promise, allowing the redirect to complete.
-    return new Promise(() => {});
   }
 
   const result: UploadSuccessResponse | UploadErrorResponse = await response.json();
