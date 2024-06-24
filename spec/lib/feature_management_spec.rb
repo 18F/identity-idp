@@ -376,57 +376,102 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe '.phone_recaptcha_enabled?' do
+  describe '.recaptcha_enabled?' do
     let(:recaptcha_site_key) { '' }
     let(:recaptcha_secret_key) { '' }
     let(:recaptcha_enterprise_api_key) { '' }
     let(:recaptcha_enterprise_project_id) { '' }
-    let(:phone_recaptcha_score_threshold) { 0.0 }
 
-    subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
+    subject(:recaptcha_enabled) { FeatureManagement.recaptcha_enabled? }
 
     before do
       allow(IdentityConfig.store).to receive(:recaptcha_site_key).
         and_return(recaptcha_site_key)
       allow(IdentityConfig.store).to receive(:recaptcha_secret_key).
         and_return(recaptcha_secret_key)
-      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
-        and_return(phone_recaptcha_score_threshold)
       allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key).
         and_return(recaptcha_enterprise_api_key)
       allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id).
         and_return(recaptcha_enterprise_project_id)
     end
 
-    it { expect(phone_recaptcha_enabled).to eq(false) }
+    it { is_expected.to eq(false) }
 
     context 'with configured recaptcha site key' do
       let(:recaptcha_site_key) { 'key' }
 
-      it { expect(phone_recaptcha_enabled).to eq(false) }
+      it { is_expected.to eq(false) }
 
-      context 'with configured default success rate threshold greater than 0' do
-        let(:phone_recaptcha_score_threshold) { 1.0 }
+      context 'with configured recaptcha secret key' do
+        let(:recaptcha_secret_key) { 'key' }
 
-        it { expect(phone_recaptcha_enabled).to eq(false) }
+        it { is_expected.to eq(true) }
+      end
 
-        context 'with configured recaptcha secret key' do
-          let(:recaptcha_secret_key) { 'key' }
+      context 'with configured recaptcha enterprise api key' do
+        let(:recaptcha_enterprise_api_key) { 'key' }
 
-          it { expect(phone_recaptcha_enabled).to eq(true) }
+        it { is_expected.to eq(false) }
+
+        context 'with configured recaptcha enterprise project id' do
+          let(:recaptcha_enterprise_project_id) { 'project-id' }
+
+          it { is_expected.to eq(true) }
         end
+      end
+    end
+  end
 
-        context 'with configured recaptcha enterprise api key' do
-          let(:recaptcha_enterprise_api_key) { 'key' }
+  describe '.phone_recaptcha_enabled?' do
+    let(:recaptcha_enabled) { false }
+    let(:phone_recaptcha_score_threshold) { 0.0 }
 
-          it { expect(phone_recaptcha_enabled).to eq(false) }
+    subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
 
-          context 'with configured recaptcha enterprise project id' do
-            let(:recaptcha_enterprise_project_id) { 'project-id' }
+    before do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
+        and_return(phone_recaptcha_score_threshold)
+    end
 
-            it { expect(phone_recaptcha_enabled).to eq(true) }
-          end
-        end
+    it { is_expected.to eq(false) }
+
+    context 'with configured default success rate threshold greater than 0' do
+      let(:phone_recaptcha_score_threshold) { 1.0 }
+
+      it { is_expected.to eq(false) }
+
+      context 'with recaptcha enabled' do
+        let(:recaptcha_enabled) { true }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '.sign_in_recaptcha_enabled?' do
+    let(:recaptcha_enabled) { false }
+    let(:sign_in_recaptcha_score_threshold) { 0.0 }
+
+    subject(:sign_in_recaptcha_enabled) { FeatureManagement.sign_in_recaptcha_enabled? }
+
+    before do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).
+        and_return(sign_in_recaptcha_score_threshold)
+    end
+
+    it { is_expected.to eq(false) }
+
+    context 'with configured default success rate threshold greater than 0' do
+      let(:sign_in_recaptcha_score_threshold) { 1.0 }
+
+      it { is_expected.to eq(false) }
+
+      context 'with recaptcha enabled' do
+        let(:recaptcha_enabled) { true }
+
+        it { is_expected.to eq(true) }
       end
     end
   end
