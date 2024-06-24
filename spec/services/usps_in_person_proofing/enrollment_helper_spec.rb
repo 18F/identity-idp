@@ -23,6 +23,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
   end
   let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
   let(:is_enhanced_ipp) { false }
+  let(:usps_ipp_sponsor_id) { '2718281828' }
 
   before(:each) do
     stub_request_token
@@ -38,6 +39,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
     allow(subject).to receive(:analytics).and_return(subject_analytics)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(usps_ipp_transliteration_enabled)
+    allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return(usps_ipp_sponsor_id)
   end
 
   describe '#schedule_in_person_enrollment' do
@@ -179,10 +181,11 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
         end
       end
 
-      it 'sets enrollment status to pending and sets established at date and unique id' do
+      it 'sets enrollment status to pending, sponsor_id to usps_ipp_sponsor_id, and sets established at date and unique id' do
         subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
 
         expect(user.in_person_enrollments.first.status).to eq(InPersonEnrollment::STATUS_PENDING)
+        expect(user.in_person_enrollments.first.sponsor_id).to eq(usps_ipp_sponsor_id)
         expect(user.in_person_enrollments.first.enrollment_established_at).to_not be_nil
         expect(user.in_person_enrollments.first.unique_id).to_not be_nil
       end
@@ -331,9 +334,25 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
       allow(proofer).to receive(:request_enroll).and_call_original
     end
     context 'when the user is going through enhanced ipp' do
+      let!(:enrollment) do
+        create(
+          :in_person_enrollment,
+          user: user,
+          service_provider: service_provider,
+          status: :establishing,
+          profile: nil,
+        )
+      end
+  
       it 'creates an enhanced ipp enrollment' do
         expect(proofer).to receive(:request_enroll).with(applicant, is_enhanced_ipp)
         subject.create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
+      end
+
+      it 'saves sponsor_id on the enrollment to the usps_eipp_sponsor_id' do
+        subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+
+        expect(user.in_person_enrollments.first.sponsor_id).to eq(usps_eipp_sponsor_id)
       end
     end
   end
