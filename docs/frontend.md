@@ -125,8 +125,11 @@ yarn add -W webpack
 
 As much as possible, try to use the same version of a dependency when it is used across multiple
 workspace packages. Otherwise, it can inflate the size of the compiled bundles and have a negative
-performance impact on users. Similarly, consider using a tool like [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
-to deduplicate resolved package versions within the Yarn lockfile.
+performance impact on users.
+
+We use [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
+to deduplicate resolved package versions within the Yarn lockfile, and enforce it with
+the `make lint_yarn_lock` check.
 
 ### Localization
 
