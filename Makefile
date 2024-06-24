@@ -148,7 +148,7 @@ lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfil
 	@yarn install --ignore-scripts
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
 	@yarn yarn-deduplicate
-	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are duplicate JS dependencies that were removed after running 'npx yarn-deduplicate'"; exit 1)
+	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are duplicate JS dependencies that were removed after running 'yarn yarn-deduplicate'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
