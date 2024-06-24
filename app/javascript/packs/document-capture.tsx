@@ -84,7 +84,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
 
 const formData: Record<string, any> = {
   document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
-  locale: document.documentElement.lang,
 };
 
 const {
