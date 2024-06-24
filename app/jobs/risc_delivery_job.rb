@@ -44,7 +44,7 @@ class RiscDeliveryJob < ApplicationJob
         'Content-Type' => 'application/secevent+jwt',
       ) do |req|
         req.options.context = {
-          service_name: inline? ? 'risc_http_push_direct' : 'risc_http_push_async',
+          service_name: 'risc_http_push_async',
         }
       end
     end
@@ -58,7 +58,7 @@ class RiscDeliveryJob < ApplicationJob
       user:,
     )
   rescue *NETWORK_ERRORS => err
-    raise err if self.executions < 2 && !inline?
+    raise err if self.executions < 2
 
     track_event(
       error: err.message,
@@ -68,7 +68,7 @@ class RiscDeliveryJob < ApplicationJob
       user:,
     )
   rescue RedisRateLimiter::LimitError => err
-    raise err if self.executions < 10 && !inline?
+    raise err if self.executions < 10
 
     track_event(
       error: err.message,
@@ -102,10 +102,6 @@ class RiscDeliveryJob < ApplicationJob
     end
   end
 
-  def inline?
-    queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
-  end
-
   def track_event(event_type:, issuer:, success:, user:, error: nil, status: nil)
     analytics(user).risc_security_event_pushed(
       client_id: issuer,
@@ -113,7 +109,6 @@ class RiscDeliveryJob < ApplicationJob
       event_type:,
       status:,
       success:,
-      transport: inline? ? 'direct' : 'async',
     )
   end
 

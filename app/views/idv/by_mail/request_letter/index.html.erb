@@ -26,7 +26,11 @@
         ) %>
   </p>
 <% else %>
-  <%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
+  <%= render AlertComponent.new(
+        type: :info,
+        message: t('idv.messages.gpo.info_alert'),
+        class: 'margin-bottom-4',
+      ) %>
   <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
   <p>
     <%= t('idv.messages.gpo.timeframe_html') %>

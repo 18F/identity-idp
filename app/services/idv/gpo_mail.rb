@@ -19,17 +19,6 @@ module Idv
       current_user.pending_profile.created_at < min_creation_date
     end
 
-    # Next two methods are analytics helpers used from RequestLetterController and
-    # EnterPasswordController
-    def phone_step_attempts
-      RateLimiter.new(user: @current_user, rate_limit_type: :proof_address).attempts
-    end
-
-    def hours_since_first_letter(first_letter_requested_at)
-      first_letter_requested_at ?
-        (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
-    end
-
     private
 
     def window_limit_enabled?

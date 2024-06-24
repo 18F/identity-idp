@@ -13,6 +13,7 @@ module IdentityConfig
     Identity::Hostdata.config
   end
 
+  # identity-hostdata transforms these configs to the described type
   # rubocop:disable Metrics/BlockLength
   BUILDER = proc do |config|
     #  ______________________________________
@@ -334,7 +335,6 @@ module IdentityConfig
     config.add(:reset_password_email_max_attempts, type: :integer)
     config.add(:reset_password_email_window_in_minutes, type: :integer)
     config.add(:reset_password_on_auth_fraud_event, type: :boolean)
-    config.add(:risc_notifications_active_job_enabled, type: :boolean)
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:risc_notifications_rate_limit_interval, type: :integer)
     config.add(:risc_notifications_rate_limit_max_requests, type: :integer)
@@ -367,6 +367,7 @@ module IdentityConfig
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:short_term_phone_otp_max_attempts, type: :integer)
     config.add(:short_term_phone_otp_max_attempt_window_in_seconds, type: :integer)
+    config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
