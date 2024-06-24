@@ -106,10 +106,18 @@ class FeatureManagement
   end
 
   def self.phone_recaptcha_enabled?
-    return false if IdentityConfig.store.recaptcha_site_key.blank? ||
-                    !IdentityConfig.store.phone_recaptcha_score_threshold.positive?
+    IdentityConfig.store.phone_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
 
-    recaptcha_enterprise? || IdentityConfig.store.recaptcha_secret_key.present?
+  def self.sign_in_recaptcha_enabled?
+    IdentityConfig.store.sign_in_recaptcha_score_threshold.positive? && recaptcha_enabled?
+  end
+
+  def self.recaptcha_enabled?
+    IdentityConfig.store.recaptcha_site_key.present? && (
+      recaptcha_enterprise? ||
+      IdentityConfig.store.recaptcha_secret_key.present?
+    )
   end
 
   def self.recaptcha_enterprise?

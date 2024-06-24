@@ -26,6 +26,7 @@ production:
   piv_cac_verify_token_secret: "a6ed2fb16320ae85a7a8e48f4b0eeb6afca5f1ac64af2a05a0c486df1c20b693987832a11f0910729f199b3ce5c7609fe6d580bed428d035ea8460990e38a382"
   piv_cac_verify_token_url: ['env', 'PIV_CAC_VERIFY_TOKEN_URL']
   secret_key_base: development_secret_key_base
+  sign_in_recaptcha_score_threshold: 0.3
   domain_name: ['env', 'DOMAIN_NAME']
   use_kms: false
   email_from: no-reply@identitysandbox.gov
