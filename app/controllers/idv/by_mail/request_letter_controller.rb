@@ -70,8 +70,11 @@ module Idv
           resend: resend_requested?,
           first_letter_requested_at: first_letter_requested_at,
           hours_since_first_letter:
-            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: gpo_mail_service.phone_step_attempts,
+            hours_since_first_letter(first_letter_requested_at),
+          phone_step_attempts: RateLimiter.new(
+            user: current_user,
+            rate_limit_type: :proof_address,
+          ).attempts,
           **ab_test_analytics_buckets,
         )
         create_user_event(:gpo_mail_sent, current_user)
@@ -87,6 +90,11 @@ module Idv
         current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
       end
 
+      def hours_since_first_letter(first_letter_requested_at)
+        first_letter_requested_at ?
+          (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
+      end
+
       def confirm_mail_not_rate_limited
         redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
       end
@@ -97,8 +105,11 @@ module Idv
           resend: true,
           first_letter_requested_at: first_letter_requested_at,
           hours_since_first_letter:
-            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: gpo_mail_service.phone_step_attempts,
+            hours_since_first_letter(first_letter_requested_at),
+          phone_step_attempts: RateLimiter.new(
+            user: current_user,
+            rate_limit_type: :proof_address,
+          ).attempts,
           **ab_test_analytics_buckets,
         )
         confirmation_maker = confirmation_maker_perform
