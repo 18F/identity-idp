@@ -12,7 +12,7 @@ module Reports
       self.report_date = report_date
 
       subject = "Drop Off Report - #{report_date.to_date}"
-      JSON.parse(configs).each do |config|
+      configs.each do |config|
         reports = [report_maker(config['issuers']).as_emailable_reports]
         config['emails'].each do |email|
           ReportMailer.tables_report(
