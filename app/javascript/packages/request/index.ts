@@ -101,7 +101,12 @@ export async function request(url: string, options: Partial<RequestOptions> = {}
     }
   }
 
-  const response = await fetch(url, { ...fetchOptions, headers, body });
+  const urlWithLocale = new URL(url);
+  if (!urlWithLocale.searchParams.has('locale')) {
+    urlWithLocale.searchParams.set('locale', document.documentElement.lang);
+  }
+
+  const response = await fetch(urlWithLocale, { ...fetchOptions, headers, body });
   CSRF.token = response.headers.get('X-CSRF-Token');
 
   if (read) {
