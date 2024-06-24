@@ -20,9 +20,9 @@ module UspsInPersonProofing
         enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         return unless enrollment_code
 
-        if is_enhanced_ipp
+        if is_enhanced_ipp && !IdentityConfig.store.usps_eipp_sponsor_id.empty?
           enrollment.sponsor_id = IdentityConfig.store.usps_eipp_sponsor_id
-        else
+        elsif !is_enhanced_ipp && !IdentityConfig.store.usps_ipp_sponsor_id.empty?
           enrollment.sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id
         end
 
