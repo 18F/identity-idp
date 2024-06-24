@@ -1,15 +1,30 @@
-<%= render(
-      'idv/shared/error',
-      heading: 'Password Compromised',
-    ) do %>
-    <p>
-        PASSWORD COMPROMISED
-    </p>
+<% self.title = t('titles.edit_info.password') %>
+
+<%= render AlertComponent.new(
+      type: :warning,
+      id: 'password-compromised',
+      class: 'margin-bottom-4',
+    ) do
+      t('users.password_compromised.warning', app_name: APP_NAME)
+    end
+%>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.edit_info.password')) %>
+
+
+<%= simple_form_for(@update_user_password_form, url: user_password_compromised_path, method: :post) do |f| %>
+  <%= f.error_notification %>
+  <%= render PasswordConfirmationComponent.new(
+        form: f,
+        password_label: t('forms.passwords.edit.labels.password'),
+        forbidden_passwords: @forbidden_passwords,
+        field_options: {
+          input_html: {
+            aria: { describedby: 'password-description' },
+          },
+        },
+      ) %>
+  <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'display-block margin-top-5 margin-bottom-4' %>
 <% end %>
 
-<div class="col-12">
-  <%= link_to(
-        @after_sign_in_path,
-        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
-      ) { 'SKIP' } %>
-</div>
+<%= render 'shared/password_accordion' %>

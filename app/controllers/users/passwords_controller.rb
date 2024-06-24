@@ -3,6 +3,7 @@
 module Users
   class PasswordsController < ApplicationController
     include ReauthenticationRequiredConcern
+    include PasswordConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :capture_password_if_pii_present_but_locked
@@ -11,9 +12,7 @@ module Users
     def edit
       analytics.edit_password_visit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
-      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
-        ForbiddenPasswords.new(email_address.email).call
-      end
+      @forbidden_passwords = forbidden_passwords
     end
 
     def update
@@ -39,10 +38,6 @@ module Users
       redirect_to capture_password_url
     end
 
-    def user_params
-      params.require(:update_user_password_form).permit(:password, :password_confirmation)
-    end
-
     def handle_valid_password
       send_password_reset_risc_event
       create_event_and_notify_user_about_password_change
@@ -59,25 +54,13 @@ module Users
       end
     end
 
-    def send_password_reset_risc_event
-      event = PushNotification::PasswordResetEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
-    end
-
-    def create_event_and_notify_user_about_password_change
-      _event, disavowal_token = create_user_event_with_disavowal(:password_changed)
-      UserAlerts::AlertUserAboutPasswordChange.call(current_user, disavowal_token)
-    end
-
     def handle_invalid_password
       # If the form is submitted with a password that's too short (based on
       # our Devise config) but that zxcvbn treats as strong enough, then we
       # need to provide our custom forbidden passwords data that zxcvbn needs,
       # otherwise the JS will throw an exception and the password strength
       # meter will not appear.
-      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
-        ForbiddenPasswords.new(email_address.email).call
-      end
+      @forbidden_passwords = forbidden_passwords
       render :edit
     end
   end

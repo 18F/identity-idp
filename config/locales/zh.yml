@@ -1926,6 +1926,7 @@ users.delete.bullet_4: 我们将通知你使用 %{app_name} 访问的政府机�
 users.delete.heading: 你确定要删除账户吗？
 users.delete.instructions: 输入密码来确认你要删除账户。
 users.delete.subheading: 如果你删除自己的账户：
+users.password_compromised.warning: 另一个网站或应用程序的数据泄露中我们发现有你的密码。%{app_name} 要求你更改密码来保护你的账户。
 users.personal_key.accessible_labels.code_example: 有 16 个字符的个人密钥示例
 users.personal_key.accessible_labels.preview: 个人密钥预览
 users.personal_key.confirmation_error: 你输入的个人密钥不对

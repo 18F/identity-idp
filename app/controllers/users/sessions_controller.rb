@@ -116,9 +116,9 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
-      check_password_compromised
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
+      check_password_compromised
       redirect_to next_url_after_valid_authentication
     end
 
@@ -205,7 +205,7 @@ module Users
       return if current_user.password_compromised_checked_at.present? ||
                 !eligible_for_password_lookup?
 
-      session[:redirect_to_password_compromised] =
+      session[:redirect_to_change_password] =
         PwnedPasswords::LookupPassword.call(auth_params[:password])
       update_user_password_compromised_checked_at
     end

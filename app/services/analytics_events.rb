@@ -4363,6 +4363,10 @@ module AnalyticsEvents
     track_event('Password Changed', success:, errors:, error_details:, **extra)
   end
 
+  def password_compromised_password_changed(success:, errors:, error_details: nil, **extra)
+    track_event(:password_compromised_password_changed, success:, errors:, error_details:, **extra)
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission

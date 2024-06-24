@@ -297,6 +297,7 @@ Rails.application.routes.draw do
 
     get '/user_please_call' => 'users/please_call#show'
     get '/user_password_compromised' => 'users/password_compromised#show'
+    post '/user_password_compromised' => 'users/password_compromised#update'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
