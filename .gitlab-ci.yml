@@ -852,7 +852,7 @@ pinpoint_check_scheduled:
   after_script:
     - |-
       if [ "$CI_JOB_STATUS" != "success" ]; then
-        ./scripts/notify-slack --icon ":gitlab:"  --channel "#login-appdev" --webhook "${SLACK_WEBHOOK}" --raise --text "Pinpoint supported countries check in GitLab failed <Build Results|${CI_JOB_URL}>\nCheck results locally with `make lint_country_dialing_codes`"
+        ./scripts/notify-slack --icon ":gitlab:"  --channel "#login-appdev" --webhook "${SLACK_WEBHOOK}" --raise --text "Pinpoint supported countries check in GitLab failed <Build Results|${CI_JOB_URL}>. Check results locally with `make lint_country_dialing_codes`"
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
@@ -875,7 +875,7 @@ audit_packages_scheduled:
       echo --text "Dependencies audit in GitLab failed <Build Results|${CI_JOB_URL}>\nCheck results locally with `make audit`"
     - |-
       if [ "$CI_JOB_STATUS" != "success" ]; then
-        ./scripts/notify-slack --icon ":gitlab:"  --channel "#login-appdev" --webhook "${SLACK_WEBHOOK}" --raise --text "Dependencies audit in GitLab failed <Build Results|${CI_JOB_URL}>\nCheck results locally with `make audit`"
+        ./scripts/notify-slack --icon ":gitlab:"  --channel "#login-appdev" --webhook "${SLACK_WEBHOOK}" --raise --text "Dependencies audit in GitLab failed <Build Results|${CI_JOB_URL}>. Check results locally with `make audit`"
       fi
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
