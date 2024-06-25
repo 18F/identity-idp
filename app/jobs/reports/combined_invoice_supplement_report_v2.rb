@@ -96,7 +96,7 @@ module Reports
 
           'iaa_ial1_unique_users',
           'iaa_ial2_unique_users',
-          'iaa_ial1_plus_2_unique_users',
+          'iaa_unique_users',
           'partner_ial2_unique_user_events_year1',
           'partner_ial2_unique_user_events_year2',
           'partner_ial2_unique_user_events_year3',
@@ -133,7 +133,7 @@ module Reports
 
           'issuer_ial1_unique_users',
           'issuer_ial2_unique_users',
-          'issuer_ial1_plus_2_unique_users',
+          'issuer_unique_users',
         ]
         by_issuer_iaa_issuer_year_months.each do |iaa_key, issuer_year_months|
           issuer_year_months.each do |issuer, year_months_data|
@@ -167,9 +167,9 @@ module Reports
                 year_month,
                 year_month_start.strftime('%B %Y'),
 
-                (iaa_ial1_unique_users = extract(iaa_results, :unique_users, ial: 1)),
-                (iaa_ial2_unique_users = extract(iaa_results, :unique_users, ial: 2)),
-                iaa_ial1_unique_users + iaa_ial2_unique_users,
+                extract(iaa_results, :unique_users, ial: 1),
+                extract(iaa_results, :unique_users, ial: 2),
+                extract(iaa_results, :unique_users, ial: :all),
                 partner_results[:partner_ial2_unique_user_events_year1] || 0,
                 partner_results[:partner_ial2_unique_user_events_year2] || 0,
                 partner_results[:partner_ial2_unique_user_events_year3] || 0,
@@ -204,9 +204,9 @@ module Reports
                 (ial2_total_auth_count = extract(issuer_results, :total_auth_count, ial: 2)),
                 ial1_total_auth_count + ial2_total_auth_count,
 
-                (issuer_ial1_unique_users = extract(issuer_results, :unique_users, ial: 1)),
-                (issuer_ial2_unique_users = extract(issuer_results, :unique_users, ial: 2)),
-                issuer_ial1_unique_users + issuer_ial2_unique_users,
+                extract(issuer_results, :unique_users, ial: 1),
+                extract(issuer_results, :unique_users, ial: 2),
+                extract(issuer_results, :unique_users, ial: :all),
               ]
             end
           end
