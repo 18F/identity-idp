@@ -2,40 +2,29 @@
 
 module Idv
   module ByMail
-    class RequestLetterController < ApplicationController
+    class ResendLetterController < ApplicationController
       include Idv::AvailabilityConcern
-      include IdvStepConcern
-      skip_before_action :confirm_no_pending_gpo_profile
+      include IdvSessionConcern
       include Idv::StepIndicatorConcern
 
+      before_action :confirm_two_factor_authenticated
+      before_action :confirm_verification_needed
       before_action :confirm_mail_not_rate_limited
-      before_action :confirm_step_allowed
       before_action :confirm_profile_not_too_old
 
-      def index
-        @applicant = idv_session.applicant
-        @presenter = RequestLetterPresenter.new(current_user, url_options)
-
-        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-          call(:usps_address, :view, true)
-        analytics.idv_request_letter_visited(
-          letter_already_sent: @presenter.resend_requested?,
-        )
+      def new
+        analytics.idv_resend_letter_visited
       end
 
       def create
-        clear_future_steps!
         update_tracking
-        idv_session.address_verification_mechanism = :gpo
 
-        if resend_requested? && pii_locked?
+        if pii_locked?
           redirect_to capture_password_url
         elsif resend_requested?
           resend_letter
           flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
           redirect_to idv_letter_enqueued_url
-        else
-          redirect_to idv_enter_password_url
         end
       end
 
@@ -43,31 +32,24 @@ module Idv
         @gpo_mail_service ||= Idv::GpoMail.new(current_user)
       end
 
-      def self.step_info
-        Idv::StepInfo.new(
-          key: :request_letter,
-          controller: self,
-          action: :index,
-          next_steps: [:enter_password],
-          preconditions: ->(idv_session:, user:) do
-            idv_session.verify_info_step_complete? || user.gpo_verification_pending_profile?
-          end,
-          undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
-        )
-      end
-
       private
 
+      def confirm_verification_needed
+        return if current_user.gpo_verification_pending_profile?
+        redirect_to account_url
+      end
+
       def confirm_profile_not_too_old
-        redirect_to idv_path if gpo_mail_service.profile_too_old?
+        redirect_to idv_verify_by_mail_enter_code_path if gpo_mail_service.profile_too_old?
+      end
+
+      def confirm_mail_not_rate_limited
+        redirect_to idv_verify_by_mail_enter_code_path if gpo_mail_service.rate_limited?
       end
 
       def update_tracking
-        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-          call(:usps_letter_sent, :update, true)
-
         analytics.idv_gpo_address_letter_requested(
-          resend: resend_requested?,
+          resend: true,
           first_letter_requested_at: first_letter_requested_at,
           hours_since_first_letter:
             hours_since_first_letter(first_letter_requested_at),
@@ -75,11 +57,8 @@ module Idv
             user: current_user,
             rate_limit_type: :proof_address,
           ).attempts,
-          **ab_test_analytics_buckets,
         )
         create_user_event(:gpo_mail_sent, current_user)
-
-        ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
       end
 
       def resend_requested?
@@ -95,10 +74,6 @@ module Idv
           (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
       end
 
-      def confirm_mail_not_rate_limited
-        redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
-      end
-
       def resend_letter
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
@@ -110,7 +85,6 @@ module Idv
             user: current_user,
             rate_limit_type: :proof_address,
           ).attempts,
-          **ab_test_analytics_buckets,
         )
         confirmation_maker = confirmation_maker_perform
         send_reminder
