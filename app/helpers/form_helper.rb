@@ -69,6 +69,6 @@ module FormHelper
 
   # Filtered list to removve territories that error due to USPS API
   def filtered_us_states_territories
-    us_states_territories.filter { |t| !['AA','AE','AP','UM'].include? t[1] }
+    us_states_territories.reject { |_name, abbrev| %w[AA AE AP UM].include?(abbrev) }
   end
 end
