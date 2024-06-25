@@ -101,7 +101,7 @@ export async function request(url: string, options: Partial<RequestOptions> = {}
     }
   }
 
-  const urlWithLocale = new URL(url);
+  const urlWithLocale = new URL(url, window.location.href);
   if (!urlWithLocale.searchParams.has('locale')) {
     urlWithLocale.searchParams.set('locale', document.documentElement.lang);
   }

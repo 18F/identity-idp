@@ -279,7 +279,10 @@ describe('document-capture/components/document-capture', () => {
 
     const response = new Response(JSON.stringify({ redirect: '#teapot' }), { status: 418 });
     sandbox.stub(response, 'url').get(() => endpoint);
-    sandbox.stub(global, 'fetch').withArgs(endpoint).resolves(response);
+    sandbox
+      .stub(global, 'fetch')
+      .withArgs(sandbox.match((url) => url.pathname === endpoint))
+      .resolves(response);
 
     const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
     const backImage = getByLabelText('doc_auth.headings.document_capture_back');
@@ -337,7 +340,10 @@ describe('document-capture/components/document-capture', () => {
           { status: 400 },
         );
         sandbox.stub(response, 'url').get(() => endpoint);
-        sandbox.stub(global, 'fetch').withArgs(endpoint).resolves(response);
+        sandbox
+          .stub(global, 'fetch')
+          .withArgs(sandbox.match((url) => url.pathname === endpoint))
+          .resolves(response);
 
         expect(queryByText('idv.troubleshooting.options.verify_in_person')).not.to.exist();
         await userEvent.click(getByText('forms.buttons.submit.default'));
