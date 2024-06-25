@@ -96,7 +96,7 @@ class RecaptchaForm
 
   def recaptcha_result_valid?(result)
     return true if result.blank?
-    return true if result_reason_exempt(result)
+    return true if result_reason_exempt?(result)
 
     if result.success?
       result.score >= score_threshold
@@ -109,8 +109,8 @@ class RecaptchaForm
     RESULT_ERRORS.include?(error_code)
   end
 
-  def result_reason_exempt(result)
-    EXEMPT_RESULT_REASONS.any? { |reason| result.reasons.include?(reason) }
+  def result_reason_exempt?(result)
+    (EXEMPT_RESULT_REASONS & result.reasons).any?
   end
 
   def log_analytics(result: nil, error: nil)
