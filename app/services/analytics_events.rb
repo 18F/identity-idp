@@ -3275,6 +3275,17 @@ module AnalyticsEvents
     )
   end
 
+  # GPO "resend letter" page visited
+  # @identity.idp.previous_event_name IdV: request letter visited
+  def idv_resend_letter_visited(
+    **extra
+  )
+    track_event(
+      :idv_resend_letter_visited,
+      **extra,
+    )
+  end
+
   # Acuant SDK errored after loading but before initialization
   # @param [Boolean] success
   # @param [String] error_message
