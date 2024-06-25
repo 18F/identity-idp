@@ -482,7 +482,7 @@ trigger_devops:
           path: .
           helm:
             parameters:
-            - name: :env"
+            - name: "env"
               value: "reviewapp-$CI_ENVIRONMENT_SLUG"
             - name: "idp.image.repository"
               value: "${ECR_REGISTRY}/identity-idp/review"
