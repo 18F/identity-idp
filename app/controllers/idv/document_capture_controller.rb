@@ -42,6 +42,16 @@ module Idv
       end
     end
 
+    def show_socure
+      # analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
+
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('document_capture', :view, true)
+
+      # make api requests
+      render :show_socure, locals: extra_view_variables
+    end
+
     def extra_view_variables
       {
         document_capture_session_uuid: document_capture_session_uuid,
