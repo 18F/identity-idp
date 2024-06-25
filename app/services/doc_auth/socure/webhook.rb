@@ -10,8 +10,8 @@ module DocAuth
       # validate :validate_payload # agains socure key
 
       def initialize(payload)
-        @payload = ENV['RAILS_ENV'] == 'production' ? payload : webhook_event('VERIFICATION_COMPLETED')
-        @document_capture_session_uuid = ENV['RAILS_ENV'] == 'production' ? event['customerUserId'] : DocumentCaptureSession.last&.uuid
+        @payload = payload
+        @document_capture_session_uuid = ENV['RAILS_ENV'] == 'production' ? customer_user_id : DocumentCaptureSession.last&.uuid
       end
 
       def handle_event
@@ -20,6 +20,10 @@ module DocAuth
         case event_type
         when 'VERIFICATION_COMPLETED'
           complete_verification
+        # when 'SESSION_COMPLETE'
+        #   complete_session
+        when 'DOCUMENTS_UPLOADED'
+          uploaded_documents_decision
         end
       end
 
@@ -33,6 +37,10 @@ module DocAuth
         event&.dig('eventType')
       end
 
+      def customer_user_id
+        event&.dig('customerUserId')
+      end
+
       def validate_payload
         # socure_webhook_secret_key = IdentityConfig.store.socure_webhook_secret_key
         # raise 'Socure webhook key not configured' if socure_webhook_secret_key.blank?
@@ -41,7 +49,40 @@ module DocAuth
       def complete_verification
         return unless document_capture_session
 
-        doc_auth_response = Responses::Verification.new(event)
+        verify_document_data(event.dig('data', 'documentVerification'))
+      end
+
+      def uploaded_documents_decision
+        return if IdentityConfig.store.socure_verification_level > 1
+        return unless document_capture_session
+
+        # fetch decision using uuid
+        socure_document_uuid = event.dig('data', 'uuid')
+        return unless socure_document_uuid # log an error?
+
+        document_verification_req = DocAuth::Socure::Requests::EmailAuthScore.new(
+          modules: ['documentverification'],
+          document_uuid: socure_document_uuid,
+          customer_user_id: customer_user_id,
+        )
+
+        decision = document_verification_req.fetch
+        # log decision here -- analytics not available
+        verify_document_data(decision.dig('documentVerification'))
+      end
+
+      def document_capture_session
+        @document_capture_session ||= DocumentCaptureSession.find_by(
+          uuid: document_capture_session_uuid,
+        )
+      end
+
+      def webhook_event(event_type)
+        webhook_events.find { |t| t.dig('event', 'eventType') == event_type }
+      end
+
+      def verify_document_data(data)
+        doc_auth_response = Responses::Verification.new(data)
         if doc_auth_response.success?
           doc_pii_response = Idv::DocPiiForm.new(
             pii: doc_auth_response.pii_from_doc.to_h,
@@ -60,16 +101,6 @@ module DocAuth
           doc_auth_success: doc_auth_response.doc_auth_success?,
           selfie_status: doc_auth_response.selfie_status,
         )
-      end
-
-      def document_capture_session
-        @document_capture_session ||= DocumentCaptureSession.find_by(
-          uuid: document_capture_session_uuid,
-        )
-      end
-
-      def webhook_event(event_type)
-        webhook_events.find { |t| t.dig('event', 'eventType') == event_type }
       end
 
       def webhook_events

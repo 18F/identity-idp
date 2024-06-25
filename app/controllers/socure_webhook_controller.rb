@@ -10,7 +10,11 @@ class SocureWebhookController < ApplicationController
     body = request.body.read
     parsed_response_body = parse_response_body(body)
     event_type = parsed_response_body.dig('event', 'eventType')
-    analytics.socure_webhook(event_type: event_type, text: body)
+    analytics.socure_webhook(
+      event_type: event_type,
+      verification_level: IdentityConfig.store.socure_verification_level,
+      text: body,
+    )
     webhook = DocAuth::Socure::Webhook.new(parsed_response_body)
     webhook.handle_event
   ensure
