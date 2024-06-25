@@ -989,6 +989,20 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
 
           expect(current_path).to eq user_password_compromised_path
         end
+
+        it 'should redirect user to account page after editing password' do
+          visit new_user_session_path
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          password = 'sugary pickles'
+          fill_in t('forms.passwords.edit.labels.password'), with: password
+          fill_in t('components.password_confirmation.confirm_label'), with: password
+          click_button t('forms.passwords.edit.buttons.submit')
+
+          expect(current_path).to eq account_path
+        end
       end
 
       context 'user is not chosen to check if password compromised' do
