@@ -181,8 +181,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
         end
       end
 
-      it 'sets enrollment status to pending, sponsor_id to usps_ipp_sponsor_id,
-       and sets established at date and unique id' do
+      it <<~STR.squish do
+        sets enrollment status to pending, sponsor_id to usps_ipp_sponsor_id,
+        and sets established at date and unique id
+      STR
         subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
 
         expect(user.in_person_enrollments.first.status).to eq(InPersonEnrollment::STATUS_PENDING)
