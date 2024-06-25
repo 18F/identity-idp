@@ -8,6 +8,10 @@ module Idv
       @idv_session = idv_session
     end
 
+    def as_json(*)
+      to_h
+    end
+
     def document_check
       if user.establishing_in_person_enrollment || user.pending_in_person_enrollment
         Idp::Constants::Vendors::USPS

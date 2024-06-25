@@ -183,8 +183,24 @@ module Idv
     end
 
     def proofing_components
-      return if !user&.respond_to?(:proofing_component) || !user.proofing_component
-      ProofingComponentsLogging.new(user.proofing_component)
+      return if !user || !user_session
+
+      proofing_components_user = user
+
+      if !user && session[:doc_capture_user_id].present?
+        proofing_components_user = User.find_by(id: session[:doc_capture_user_id])
+      end
+
+      idv_session = Idv::Session.new(
+        user_session:,
+        current_user: proofing_components_user,
+        service_provider: sp,
+      )
+
+      ProofingComponents.new(
+        user:,
+        idv_session:,
+      )
     end
   end
 end
