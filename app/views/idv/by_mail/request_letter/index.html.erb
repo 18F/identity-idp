@@ -36,7 +36,7 @@
 </p>
 
 <p>
-  <%= render partial: 'shared/address',
+  <%= render 'shared/address',
              address: @applicant.slice(:address1, :address2, :city, :state, :zipcode)
   %>
 </p>
