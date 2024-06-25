@@ -180,7 +180,7 @@ RSpec.describe Idv::PersonalKeyController do
         :confirm_idv_needed,
         :confirm_personal_key_acknowledged_if_needed,
         :confirm_no_pending_in_person_enrollment,
-        :handle_fraud,
+        :confirm_no_pending_profile,
       )
     end
 
