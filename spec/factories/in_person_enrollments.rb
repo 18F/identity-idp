@@ -41,5 +41,9 @@ FactoryBot.define do
     trait :with_notification_phone_configuration do
       association :notification_phone_configuration
     end
+
+    trait :with_sponsor_id do
+      sponsor_id { '123458' }
+    end
   end
 end
