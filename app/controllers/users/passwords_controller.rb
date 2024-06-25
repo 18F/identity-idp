@@ -18,7 +18,7 @@ module Users
     def update
       @update_user_password_form = UpdateUserPasswordForm.new(current_user, user_session)
 
-      result = @update_user_password_form.submit(user_params)
+      result = @update_user_password_form.submit(user_password_params)
 
       analytics.password_changed(**result.to_h)
 

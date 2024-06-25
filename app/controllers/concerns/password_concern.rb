@@ -19,7 +19,7 @@ module PasswordConcern
     end
   end
 
-  def user_params
+  def user_password_params
     params.require(:update_user_password_form).permit(:password, :password_confirmation)
   end
 end
