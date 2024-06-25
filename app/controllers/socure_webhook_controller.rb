@@ -14,7 +14,7 @@ class SocureWebhookController < ApplicationController
     analytics.socure_webhook(
       event_type: event_type,
       verification_level: IdentityConfig.store.socure_verification_level,
-      text: "Authorization: #{request.headers['Authorization']}\nauthorization: #{request.headers['authorization']}", # body
+      text: '',
     )
 
     if token_valid?
