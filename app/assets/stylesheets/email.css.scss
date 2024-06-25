@@ -177,8 +177,8 @@ h6 {
   @include u-border(1px);
 }
 
-.border-top-width-0 {
-  border-top: 0;
+.border-top-0 {
+  @include u-border-top(0);
 }
 
 .border-primary-light {

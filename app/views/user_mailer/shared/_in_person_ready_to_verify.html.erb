@@ -1,7 +1,7 @@
 <% if @presenter.outage_message_enabled? %>
 <table class="warning-alert margin-y-4">
   <tr>
-    <td width="16">
+    <td style="width:16px;">
       <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
     </td>
     <td>
@@ -28,7 +28,7 @@
 <%# Alert box %>
 <table class="info-alert margin-y-4 radius-lg">
   <tr>
-    <td width="16">
+    <td style="width:16px;">
       <%= image_tag('email/info.png', width: 16, height: 16, alt: '') %>
     </td>
     <td>
@@ -51,9 +51,9 @@
       <table>
         <tbody>
           <tr>
-            <td align="left" width="110.46px">
+            <td align="left" style="width:110px;">
               <%= image_tag(
-                    asset_url('idv/real-id.svg'),
+                    asset_url('email/real-id.png'),
                     width: 110,
                     height: 80,
                     alt: t('in_person_proofing.process.eipp_bring_id.image_alt_text'),
@@ -61,7 +61,7 @@
                     class: 'margin-bottom-3',
                   ) %>
             </td>
-            <td width="24px">
+            <td style="width:24px;">
             </td>
             <td>
               <p class="margin-bottom-3"><%= t('in_person_proofing.process.eipp_bring_id.info') %></p>
@@ -70,7 +70,7 @@
         </tbody>
       </table>
     </div>
-    <hr class="margin-bottom-3 border-primary-light border-top-width-0 margin-top-0">
+    <hr class="margin-bottom-3 border-primary-light border-top-0 margin-top-0">
 
     <%# Option 2: Bring a standard State ID... %>
     <h3 class="margin-bottom-2"><%= t('in_person_proofing.process.eipp_what_to_bring.heading') %></h3>
@@ -80,16 +80,16 @@
     <table class="margin-bottom-3">
       <tbody>
         <tr>
-          <td align="left" width="110.46px">
+          <td align="left" style="width:110px;">
             <%= image_tag(
-                  asset_url('idv/state-id-and-passport.svg'),
-                  width: 110.46,
-                  height: 129.11,
+                  asset_url('email/state-id-and-passport.png'),
+                  width: 110,
+                  height: 129,
                   alt: t('in_person_proofing.process.eipp_state_id_passport.image_alt_text'),
                   role: 'img',
                 ) %>
           </td>
-          <td width="24px">
+          <td style="width:24px;">
           </td>
           <td>
             <p class="text-bold margin-bottom-0"><%= t('in_person_proofing.process.eipp_state_id_passport.heading') %></p>
@@ -98,22 +98,22 @@
         </tr>
       </tbody>
     </table>
-    <hr class="margin-bottom-3 border-primary-light border-top-width-0 margin-top-0">
+    <hr class="margin-bottom-3 border-primary-light border-top-0 margin-top-0">
 
     <%# B. State ID + Military ID %>
     <table class="margin-bottom-3">
       <tbody>
         <tr>
-          <td align="left" width="110.46px">
+          <td align="left" style="width:110px;">
             <%= image_tag(
-                  asset_url('idv/state-id-and-military-id.svg'),
-                  width: 110.46,
+                  asset_url('email/state-id-and-military-id.png'),
+                  width: 110,
                   height: 93,
                   alt: t('in_person_proofing.process.eipp_state_id_military_id.image_alt_text'),
                   role: 'img',
                 ) %>
           </td>
-          <td width="24px">
+          <td style="width:24px;">
           </td>
           <td>
             <p class="text-bold margin-bottom-0"><%= t('in_person_proofing.process.eipp_state_id_military_id.heading') %></p>
@@ -122,22 +122,22 @@
         </tr>
       </tbody>
     </table>
-    <hr class="margin-bottom-3 border-primary-light border-top-width-0 margin-top-0">
+    <hr class="margin-bottom-3 border-primary-light border-top-0 margin-top-0">
 
     <%# C. State ID + two supporting documents %>
     <table class="margin-bottom-2">
       <tbody>
         <tr>
-          <td align="left" width="110.46px">
+          <td align="left" style="width:110px;">
             <%= image_tag(
-                  asset_url('idv/state-id-and-fair-evidence-documents.svg'),
-                  width: 110.46,
+                  asset_url('email/state-id-and-fair-evidence-documents.png'),
+                  width: 110,
                   height: 107,
                   alt: t('in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text'),
                   role: 'img',
                 ) %>
           </td>
-          <td width="24px">
+          <td style="width:24px;">
           </td>
           <td>
             <p class="text-bold margin-bottom-0"><%= t('in_person_proofing.process.eipp_state_id_supporting_docs.heading') %></p>

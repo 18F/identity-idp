@@ -71,6 +71,14 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
     end
   end
 
+  context 'with button options' do
+    let(:options) { super().merge(button_options: { full_width: true }) }
+
+    it 'renders spinner button with additional options' do
+      expect(rendered).to have_css('lg-spinner-button .usa-button--full-width')
+    end
+  end
+
   describe 'mock score field' do
     let(:recaptcha_mock_validator) { nil }
 

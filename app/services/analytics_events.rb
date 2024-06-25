@@ -400,6 +400,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check
   # @param [String] bad_password_count represents number of prior login failures
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
@@ -408,6 +409,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     user_locked_out:,
+    valid_captcha_result:,
     bad_password_count:,
     sp_request_url_present:,
     remember_device:,
@@ -415,12 +417,13 @@ module AnalyticsEvents
   )
     track_event(
       'Email and Password Authentication',
-      success: success,
-      user_id: user_id,
-      user_locked_out: user_locked_out,
-      bad_password_count: bad_password_count,
-      sp_request_url_present: sp_request_url_present,
-      remember_device: remember_device,
+      success:,
+      user_id:,
+      user_locked_out:,
+      valid_captcha_result:,
+      bad_password_count:,
+      sp_request_url_present:,
+      remember_device:,
       **extra,
     )
   end
@@ -4919,14 +4922,12 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] event_type
   # @param [Boolean] success
-  # @param ['async'|'direct'] transport
   # @param [Integer] status
   # @param [String] error
   def risc_security_event_pushed(
     client_id:,
     event_type:,
     success:,
-    transport:,
     status: nil,
     error: nil,
     **extra
@@ -4938,7 +4939,6 @@ module AnalyticsEvents
       event_type:,
       status:,
       success:,
-      transport:,
       **extra,
     )
   end

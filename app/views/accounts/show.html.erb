@@ -25,7 +25,7 @@
 
   <h3 class="margin-top-3"><%= t('i18n.language') %></h3>
   <div class="grid-row padding-1 border border-primary-light">
-    <div class="grid-col-8">
+    <div class="grid-col-8" lang="<%= @presenter.user.email_language || I18n.default_locale %>">
       <%= @presenter.user.email_language_preference_description %>
     </div>
     <div class="grid-col-4 text-right">

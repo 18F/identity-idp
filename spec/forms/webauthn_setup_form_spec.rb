@@ -15,6 +15,7 @@ RSpec.describe WebauthnSetupForm do
       platform_authenticator: false,
       transports: 'usb',
       authenticator_data_value: '153',
+      protocol:,
     }
   end
   let(:subject) { WebauthnSetupForm.new(user:, user_session:, device_name:) }
@@ -41,7 +42,7 @@ RSpec.describe WebauthnSetupForm do
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
-        expect(subject.submit(protocol, params).to_h).to eq(
+        expect(subject.submit(params).to_h).to eq(
           success: true,
           errors: {},
           **extra_attributes,
@@ -57,7 +58,7 @@ RSpec.describe WebauthnSetupForm do
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
-        subject.submit(protocol, params)
+        subject.submit(params)
       end
 
       context 'with platform authenticator' do
@@ -66,7 +67,7 @@ RSpec.describe WebauthnSetupForm do
         end
 
         it 'creates a platform authenticator' do
-          result = subject.submit(protocol, params)
+          result = subject.submit(params)
           expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
 
           user.reload
@@ -81,7 +82,7 @@ RSpec.describe WebauthnSetupForm do
           let(:params) { super().merge(authenticator_data_value: '65') }
 
           it 'includes data flags with bs set as false ' do
-            result = subject.submit(protocol, params)
+            result = subject.submit(params)
 
             expect(result.to_h[:authenticator_data_flags]).to eq(
               up: true,
@@ -98,7 +99,7 @@ RSpec.describe WebauthnSetupForm do
           let(:params) { super().merge(authenticator_data_value: 'bad_error') }
 
           it 'should not include authenticator data flag' do
-            result = subject.submit(protocol, params)
+            result = subject.submit(params)
 
             expect(result.to_h[:authenticator_data_flags]).to be_nil
           end
@@ -108,7 +109,7 @@ RSpec.describe WebauthnSetupForm do
           let(:params) { super().merge(authenticator_data_value: nil) }
 
           it 'should not include authenticator data flag' do
-            result = subject.submit(protocol, params)
+            result = subject.submit(params)
 
             expect(result.to_h[:authenticator_data_flags]).to be_nil
           end
@@ -119,7 +120,7 @@ RSpec.describe WebauthnSetupForm do
         let(:params) { super().merge(transports: 'wrong') }
 
         it 'creates a webauthn configuration without transports' do
-          subject.submit(protocol, params)
+          subject.submit(params)
 
           user.reload
 
@@ -127,7 +128,7 @@ RSpec.describe WebauthnSetupForm do
         end
 
         it 'includes unknown transports in extra analytics' do
-          result = subject.submit(protocol, params)
+          result = subject.submit(params)
 
           expect(result.to_h).to eq(
             success: true,
@@ -169,13 +170,17 @@ RSpec.describe WebauthnSetupForm do
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
-        expect(subject.submit(protocol, params).to_h).to eq(
+        expect(subject.submit(params).to_h).to eq(
           success: false,
-          errors: { name: [I18n.t(
-            'errors.webauthn_setup.general_error_html',
-            link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
-          )] },
-          error_details: { name: { attestation_error: true } },
+          errors: {
+            attestation_object: [
+              I18n.t(
+                'errors.webauthn_setup.general_error_html',
+                link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+              ),
+            ],
+          },
+          error_details: { attestation_object: { invalid: true } },
           **extra_attributes,
         )
       end
@@ -185,7 +190,7 @@ RSpec.describe WebauthnSetupForm do
       let(:params) { super().except(:transports) }
 
       it 'creates a webauthn configuration without transports' do
-        subject.submit(protocol, params)
+        subject.submit(params)
 
         user.reload
 
@@ -214,13 +219,17 @@ RSpec.describe WebauthnSetupForm do
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
-        expect(subject.submit(protocol, params).to_h).to eq(
+        expect(subject.submit(params).to_h).to eq(
           success: false,
-          errors: { name: [I18n.t(
-            'errors.webauthn_setup.general_error_html',
-            link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
-          )] },
-          error_details: { name: { attestation_error: true } },
+          errors: {
+            attestation_object: [
+              I18n.t(
+                'errors.webauthn_setup.general_error_html',
+                link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+              ),
+            ],
+          },
+          error_details: { attestation_object: { invalid: true } },
           **extra_attributes,
         )
       end
@@ -234,7 +243,7 @@ RSpec.describe WebauthnSetupForm do
         user
       end
       it 'checks for unique device on a webauthn device' do
-        result = subject.submit(protocol, params)
+        result = subject.submit(params)
         expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn'
         expect(result.errors[:name]).to eq(
           [I18n.t(
@@ -263,7 +272,7 @@ RSpec.describe WebauthnSetupForm do
         end
 
         it 'adds a new platform device with the same existing name and appends a (1)' do
-          result = subject.submit(protocol, params)
+          result = subject.submit(params)
           expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
           expect(user.webauthn_configurations.platform_authenticators.count).to eq(2)
           expect(
@@ -289,7 +298,7 @@ RSpec.describe WebauthnSetupForm do
         end
 
         it 'adds a second new platform device with the same existing name and appends a (2)' do
-          result = subject.submit(protocol, params)
+          result = subject.submit(params)
 
           expect(result.success?).to eq(true)
           expect(user.webauthn_configurations.platform_authenticators.count).to eq(3)
