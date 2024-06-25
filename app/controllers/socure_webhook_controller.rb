@@ -7,24 +7,28 @@ class SocureWebhookController < ApplicationController
 
   def create
     # log webhook received referenceID, customerUserId, ...
-    body = request.body.read
-    parsed_response_body = parse_response_body(body)
-    event_type = parsed_response_body.dig('event', 'eventType')
-    analytics.socure_webhook(
-      event_type: event_type,
-      verification_level: IdentityConfig.store.socure_verification_level,
-      text: { # body,
-        authorization: request.headers['authorization'],
-        Authorization: request.headers['Authorization'],
-      }.to_json,
-    )
-    webhook = DocAuth::Socure::Webhook.new(parsed_response_body)
-    webhook.handle_event
+    if token_valid?
+      body = request.body.read
+      parsed_response_body = parse_response_body(body)
+      event_type = parsed_response_body.dig('event', 'eventType')
+
+      analytics.socure_webhook(
+        event_type: event_type,
+        verification_level: IdentityConfig.store.socure_verification_level,
+        text: '', # body
+      )
+      webhook = DocAuth::Socure::Webhook.new(parsed_response_body)
+      webhook.handle_event
+    end
   ensure
-    head :ok
+    head token_valid? ? :ok : :not_found
   end
 
   private
+
+  def token_valid?
+    request.headers['authorization'] == IdentityConfig.store.socure_webhook_secret_key
+  end
 
   def parse_response_body(body)
     begin
