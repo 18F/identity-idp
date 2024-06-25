@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
-  context 'user visits add an email address page' do
+  context 'user visits edit password page' do
     let(:user) { create(:user) }
     before do
       stub_sign_in(user)

@@ -17,10 +17,8 @@ module Users
       @update_user_password_form = UpdateUserPasswordForm.new(current_user, user_session)
 
       result = @update_user_password_form.submit(user_params)
-
-      analytics.password_changed(**result.to_h)
-      analytics.password_compromised_password_changed(**result.to_h)
-
+      updated_result = result.to_h.merge({ original_password_compromised: true })
+      analytics.password_changed(**updated_result)
       if result.success?
         handle_valid_password
       else
