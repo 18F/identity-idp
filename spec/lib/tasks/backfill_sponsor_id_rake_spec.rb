@@ -25,20 +25,14 @@ RSpec.describe 'in_person_enrollments:backfill_sponsor_id rake task' do
   let(:expired_enrollment) { create(:in_person_enrollment, :expired) }
   let(:failed_enrollment) { create(:in_person_enrollment, :failed) }
   let(:enrollment_with_service_provider) { create(:in_person_enrollment, :with_service_provider) }
-  let(:enrollment_with_notification) do
-    create(
-      :in_person_enrollment,
-      :with_notification_phone_configuration,
-    )
-  end
   let(:enrollment_with_sponsor_id) { create(:in_person_enrollment, :with_sponsor_id) }
 
   before do
+    allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return('31459')
     expect(pending_enrollment.sponsor_id).to be_nil
     expect(expired_enrollment.sponsor_id).to be_nil
     expect(failed_enrollment.sponsor_id).to be_nil
     expect(enrollment_with_service_provider.sponsor_id).to be_nil
-    expect(enrollment_with_notification.sponsor_id).to be_nil
     expect(enrollment_with_sponsor_id.sponsor_id).not_to be_nil
   end
 
@@ -46,5 +40,24 @@ RSpec.describe 'in_person_enrollments:backfill_sponsor_id rake task' do
     original_sponsor_id = enrollment_with_sponsor_id.sponsor_id
     subject
     expect(enrollment_with_sponsor_id.sponsor_id).to eq(original_sponsor_id)
+  end
+
+  it 'sets a sponsor id for every enrollment with a nil sponsor id' do
+    enrollments_with_nil_sponsor_id_count = InPersonEnrollment.where(sponsor_id: nil).count
+    expect(enrollments_with_nil_sponsor_id_count).to eq(4)
+    subject
+    enrollments_with_nil_sponsor_id_count = InPersonEnrollment.where(sponsor_id: nil).count
+    expect(enrollments_with_nil_sponsor_id_count).to eq(0)
+  end
+
+  it 'outputs what it did' do
+    expect(invoke_task.to_s).to eql(
+      <<~END,
+        Found 4 in_person_enrollments needing backfill
+        set sponsor_id for 4 in_person_enrollments
+        COMPLETE: Updated 4 in_person_enrollments
+        0 enrollments without a sponsor id
+      END
+    )
   end
 end
