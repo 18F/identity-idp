@@ -50,6 +50,14 @@ RSpec.describe 'in_person_enrollments:backfill_sponsor_id rake task' do
     expect(enrollments_with_nil_sponsor_id_count).to eq(0)
   end
 
+  it 'sets a sponsor id that is a string' do
+    subject
+    enrollments = InPersonEnrollment.all
+    enrollments.each do |enrollment|
+      expect(enrollment.sponsor_id).to be_a String
+    end
+  end
+
   it 'outputs what it did' do
     expect(invoke_task.to_s).to eql(
       <<~END,

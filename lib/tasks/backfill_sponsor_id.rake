@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :in_person_enrollments do
   desc 'Backfill the sponsor_id column.'
 
@@ -9,7 +10,7 @@ namespace :in_person_enrollments do
   #
   task backfill_sponsor_id: :environment do |_task, _args|
     with_timeout do
-      ipp_sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id.to_i
+      ipp_sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id
       enrollments_without_sponsor_id = InPersonEnrollment.where(sponsor_id: nil)
       enrollments_without_sponsor_id_count = enrollments_without_sponsor_id.count
 
