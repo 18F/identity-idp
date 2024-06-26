@@ -1,3 +1,3 @@
 <% if @presenter.show_unphishable_badge? %>
-  <%= render BadgeComponent.new(icon: :lock, icon_class: 'text-success').with_content(t('headings.account.unphishable')) %>
+  <%= render BadgeComponent.new(icon: :lock).with_content(t('headings.account.unphishable')) %>
 <% end %>

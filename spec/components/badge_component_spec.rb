@@ -41,5 +41,37 @@ RSpec.describe BadgeComponent, type: :component do
         expect(rendered).to have_css('.lg-verification-badge.example-class[data-foo="bar"]')
       end
     end
+
+    context 'with lock icon' do
+      let(:icon) { :lock }
+
+      it 'renders with success color' do
+        expect(rendered).to have_css('.lg-verification-badge.border-success .usa-icon.text-success')
+      end
+    end
+
+    context 'with check_circle icon' do
+      let(:icon) { :check_circle }
+
+      it 'renders with success color' do
+        expect(rendered).to have_css('.lg-verification-badge.border-success .usa-icon.text-success')
+      end
+    end
+
+    context 'with warning icon' do
+      let(:icon) { :warning }
+
+      it 'renders with warning color' do
+        expect(rendered).to have_css('.lg-verification-badge.border-warning .usa-icon.text-warning')
+      end
+    end
+
+    context 'with info icon' do
+      let(:icon) { :info }
+
+      it 'renders with info color' do
+        expect(rendered).to have_css('.lg-verification-badge.border-info .usa-icon.text-info')
+      end
+    end
   end
 end
