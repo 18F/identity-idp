@@ -74,7 +74,6 @@ class MarketingSite
     article_anchor: '',
     partner: nil,
     partner_division: nil
-
   )
     if !HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
       raise UnknownArticleException, "Unknown help center article category #{category}/#{article}"
