@@ -119,13 +119,17 @@ RSpec.describe Users::SessionsController, devise: true do
     context 'locked out session' do
       let(:locked_at) { Time.zone.now }
       let(:user) { create(:user, :fully_registered) }
+      let(:locked_out_time_remaining) do
+        distance_of_time_in_words(Time.zone.now, (locked_at + 600.seconds), true)
+      end
 
       before do
         allow(subject).to receive(:session_bad_password_count_max_exceeded?).
           and_return(true)
         allow(subject).to receive(:clear_session_bad_password_count_if_window_expired).
           and_return(nil)
-        allow(IdentityConfig.store).to receive(:max_bad_passwords_window_in_seconds).and_return(600)
+        allow(subject).to receive(:locked_out_time_remaining).
+          and_return(locked_out_time_remaining)
       end
 
       it 'renders an error letting user know they are locked out for a period of time' do
@@ -133,7 +137,19 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
         expect(response).to redirect_to root_url
-        expect(flash[:error]).to be_truthy
+        expect(flash[:error]).to eq(
+          t(
+            'errors.sign_in.bad_password_limit',
+            time_left: locked_out_time_remaining,
+          ),
+        )
+      end
+
+      it 'tracks unsuccessful authentication for too many auth failures' do
+        allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
+        mock_email_parameter = { email: 'bob@example.com' }
+
+        post :create, params: { user: { **mock_email_parameter, password: 'eatCake!' } }
       end
     end
 
@@ -176,13 +192,6 @@ RSpec.describe Users::SessionsController, devise: true do
         with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
-    end
-
-    it 'tracks unsuccessful authentication for too many auth failures' do
-      allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
-      mock_email_parameter = { email: 'bob@example.com' }
-
-      post :create, params: { user: { **mock_email_parameter, password: 'eatCake!' } }
     end
 
     it 'tracks unsuccessful authentication for locked out user' do

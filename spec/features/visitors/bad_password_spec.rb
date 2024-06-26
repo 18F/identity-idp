@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
+  include ActionView::Helpers::DateHelper
   let(:user) { create(:user, :fully_registered) }
   let(:bad_password) { 'badpassword' }
 
@@ -15,14 +16,28 @@ RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
       expect(page).to have_content(error_message)
       expect(page).to have_current_path(new_user_session_path)
     end
+    locked_out_time_remaining = distance_of_time_in_words(5.minutes)
+    allow_any_instance_of(Users::SessionsController).to receive(:locked_out_time_remaining).
+      and_return(locked_out_time_remaining)
     2.times do
       fill_in_credentials_and_submit(user.email, bad_password)
       expect(page).to have_current_path(new_user_session_path)
-      expect(page).to have_content(t('errors.sign_in.bad_password_limit'))
+      expect(page).to have_content(
+        t(
+          'errors.sign_in.bad_password_limit',
+          time_left: locked_out_time_remaining,
+        ),
+      )
     end
     fill_in_credentials_and_submit(user.email, user.password)
     expect(page).to have_current_path(new_user_session_path)
-    expect(page).to have_content(t('errors.sign_in.bad_password_limit'))
+    expect(page).to have_content(
+      t(
+        'errors.sign_in.bad_password_limit',
+        time_left: locked_out_time_remaining,
+      ),
+    )
+
     travel_to(IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds.from_now) do
       fill_in_credentials_and_submit(user.email, bad_password)
       expect(page).to have_content(error_message)
