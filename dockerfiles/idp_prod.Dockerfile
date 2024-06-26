@@ -176,12 +176,14 @@ ENV REMOTE_ADDRESS_HEADER X-Forwarded-For
 RUN apt-get update && \
     apt-get install -y \
     git-core \
+    curl \
     zlib1g-dev \
     libssl-dev \
     libreadline-dev \
     libyaml-dev \
     libxml2-dev \
     libxslt1-dev \
+    libcurl4-openssl-dev \
     software-properties-common \
     libffi-dev \
     libpq-dev \
