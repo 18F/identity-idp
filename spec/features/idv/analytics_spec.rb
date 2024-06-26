@@ -198,7 +198,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
         proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
@@ -324,7 +324,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'hybrid', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
+        success: true, errors: {}, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
         proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
@@ -447,7 +447,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
         proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
@@ -565,7 +565,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, same_address_as_id: false,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, same_address_as_id: false,
         proofing_results: in_person_path_proofing_results
       },
       'IdV: phone confirmation form' => {
@@ -698,7 +698,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
         proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
