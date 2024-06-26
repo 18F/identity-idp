@@ -10,15 +10,12 @@ class BadgeTooltipComponent < BaseComponent
   end
 
   def call
-    content_tag(
-      :'lg-badge-tooltip',
-      badge_content,
-      'tooltip-text': tooltip_text,
-      **tag_options,
-    )
+    content_tag(:span, badge_content, **tag_options, class: ['badge-tooltip', *tag_options[:class]])
   end
 
   def badge_content
-    render BadgeComponent.new(icon:, class: 'usa-tooltip').with_content(content)
+    render(
+      BadgeComponent.new(icon:, class: 'usa-tooltip', title: tooltip_text).with_content(content),
+    )
   end
 end

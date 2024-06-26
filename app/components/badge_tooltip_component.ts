@@ -1,1 +1,3 @@
-import '@18f/identity-badge-tooltip/badge-tooltip-element';
+import { tooltip } from '@18f/identity-design-system';
+
+document.querySelectorAll<HTMLElement>('.badge-tooltip').forEach((element) => tooltip.on(element));
