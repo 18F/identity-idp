@@ -582,6 +582,7 @@ trigger_devops:
                         - path: /
                           pathType: Prefix
               dashboard:
+                enabled: true
                 config:
                   kubernetesReviewApp: true
                   clientCertS3Bucket: login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2
