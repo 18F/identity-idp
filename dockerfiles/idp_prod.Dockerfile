@@ -1,3 +1,71 @@
+#########################################################################
+# This is a multi-stage build.  This stage just builds and downloads
+# gems and yarn stuff and large files.  We have it so that we can
+# avoid having build-essential and the large-files token be in the
+# main image.
+#########################################################################
+FROM ruby:3.3.1-slim as builder
+
+# Set environment variables
+ENV RAILS_ROOT /app
+ENV RAILS_ENV production
+ENV NODE_ENV production
+ENV RAILS_SERVE_STATIC_FILES true
+ENV RAILS_LOG_TO_STDOUT true
+ENV RAILS_LOG_LEVEL debug
+ENV BUNDLE_PATH /app/vendor/bundle
+ENV YARN_VERSION 1.22.5
+ENV NODE_VERSION 20.10.0
+ENV BUNDLER_VERSION 2.5.6
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    git-core \
+    build-essential \
+    git-lfs \
+    curl \
+    zlib1g-dev \
+    libssl-dev \
+    libreadline-dev \
+    libyaml-dev \
+    libsqlite3-dev \
+    sqlite3 \
+    libxml2-dev \
+    libxslt1-dev \
+    libcurl4-openssl-dev \
+    software-properties-common \
+    libffi-dev \
+    libpq-dev \
+    xz-utils \
+    unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+# get the large files
+WORKDIR /
+ARG LARGE_FILES_USER
+ARG LARGE_FILES_TOKEN
+RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git
+
+# Set the working directory
+WORKDIR $RAILS_ROOT
+
+# build gems that will be copied into the main image later on
+COPY .ruby-version $RAILS_ROOT/.ruby-version
+COPY Gemfile $RAILS_ROOT/Gemfile
+COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
+RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set --local deployment 'true'
+RUN bundle config set --local path $BUNDLE_PATH
+RUN bundle config set --local without 'deploy development doc test'
+RUN bundle install --jobs $(nproc)
+RUN bundle binstubs --all
+
+
+
+#########################################################################
+# This is the main image.
+#########################################################################
 FROM ruby:3.3.1-slim
 
 # Set environment variables
@@ -7,7 +75,7 @@ ENV NODE_ENV production
 ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
-ENV BUNDLE_PATH /usr/local/bundle
+ENV BUNDLE_PATH /app/vendor/bundle
 ENV YARN_VERSION 1.22.5
 ENV NODE_VERSION 20.10.0
 ENV BUNDLER_VERSION 2.5.6
@@ -34,7 +102,6 @@ ENV REMOTE_ADDRESS_HEADER X-Forwarded-For
 RUN apt-get update && \
     apt-get install -y \
     git-core \
-    git-lfs \
     curl \
     zlib1g-dev \
     libssl-dev \
@@ -52,6 +119,7 @@ RUN apt-get update && \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
+# Install Node
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
@@ -71,7 +139,6 @@ RUN mkdir -p /usr/local/share/aws \
 RUN addgroup --gid 1000 app && \
     adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
     mkdir -p $RAILS_ROOT && \
-    mkdir -p $BUNDLE_PATH && \
     mkdir -p $RAILS_ROOT/tmp/pids && \
     mkdir -p $RAILS_ROOT/log
 
@@ -82,21 +149,23 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Create the working directory
 WORKDIR $RAILS_ROOT
 
+# bundle install (most of the work is already done in the builder image)
 COPY .ruby-version $RAILS_ROOT/.ruby-version
 COPY Gemfile $RAILS_ROOT/Gemfile
 COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
-COPY package.json $RAILS_ROOT/package.json
-COPY yarn.lock $RAILS_ROOT/yarn.lock
-
+COPY --from=builder $RAILS_ROOT/bin $RAILS_ROOT/bin
+COPY --from=builder $RAILS_ROOT/vendor $RAILS_ROOT/vendor
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development doc test'
-RUN apt-get install -y build-essential && \
-    bundle install --jobs $(nproc) && \
-    bundle binstubs --all && \
-    yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache && \
-    apt autoremove -y --purge build-essential
+RUN bundle install --jobs $(nproc)
+RUN bundle binstubs --all
+
+# yarn install
+COPY package.json $RAILS_ROOT/package.json
+COPY yarn.lock $RAILS_ROOT/yarn.lock
+RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
 COPY ./lib ./lib
@@ -119,17 +188,11 @@ COPY ./.browserslistrc ./.browserslistrc
 COPY keys.example $RAILS_ROOT/keys
 
 # Copy big files
-ARG LARGE_FILES_USER
-ARG LARGE_FILES_TOKEN
 RUN mkdir -p $RAILS_ROOT/geo_data && chmod 755 $RAILS_ROOT/geo_data
 RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_passwords
-RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git && \
-    cp idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/ && \
-    cp idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/ && \
-    cp idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/pwned_passwords.txt && \
-    rm -r idp-large-files
-RUN mkdir -p /usr/local/share/aws && \
-    curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem
+COPY --from=builder /idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/
+COPY --from=builder /idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/
+COPY --from=builder /idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/pwned_passwords.txt
 
 # Copy robots.txt
 COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
