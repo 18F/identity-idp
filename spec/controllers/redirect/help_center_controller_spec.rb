@@ -72,17 +72,26 @@ RSpec.describe Redirect::HelpCenterController do
         end
       end
 
-      context 'with service partner' do
+      context 'with service provider' do
         let(:category) { 'verify-your-identity' }
         let(:article) { 'accepted-state-issued-identification' }
+        let(:agency) { create(:agency, name: 'Test Agency') }        
         let(:service_provider) do
-          create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_sp')
+          create(:service_provider, 
+                 issuer: 'urn:gov:gsa:openidconnect:sp:test_sp', 
+                 agency: agency)
+        end
+        let!(:integration) do
+          create(:integration, 
+                 service_provider: service_provider, 
+                 name: 'Test Integration')
         end
         let(:params) { super().merge(category:, article:) }
         let(:redirect_url) do
           MarketingSite.help_center_article_url(
             category:, article:,
-            service_provider_issuer: service_provider.issuer
+            partner: service_provider.agency.name,
+            partner_division: integration.name
           )
         end
 
