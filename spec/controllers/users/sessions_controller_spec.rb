@@ -116,6 +116,27 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'locked out session' do
+      let(:locked_at) { Time.zone.now }
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        allow(subject).to receive(:session_bad_password_count_max_exceeded?).
+          and_return(true)
+        allow(subject).to receive(:clear_session_bad_password_count_if_window_expired).
+          and_return(nil)
+        allow(IdentityConfig.store).to receive(:max_bad_passwords_window_in_seconds).and_return(600)
+      end
+
+      it 'renders an error letting user know they are locked out for a period of time' do
+        session[:max_bad_passwords_at] = locked_at
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+
+        expect(response).to redirect_to root_url
+        expect(flash[:error]).to be_truthy
+      end
+    end
+
     it 'tracks the unsuccessful authentication for existing user' do
       user = create(:user, :fully_registered)
 
