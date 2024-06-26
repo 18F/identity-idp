@@ -67,7 +67,6 @@ class ApplicationController < ActionController::Base
         request: request,
         sp: current_sp&.issuer,
         session: session,
-        user_session: user_session,
         ahoy: ahoy,
       )
   end

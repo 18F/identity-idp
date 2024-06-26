@@ -4,14 +4,13 @@ class Analytics
   include AnalyticsEvents
   prepend Idv::AnalyticsEventsEnhancer
 
-  attr_reader :user, :request, :sp, :session, :user_session, :ahoy
+  attr_reader :user, :request, :sp, :session, :ahoy
 
-  def initialize(user:, request:, sp:, session:, user_session: nil, ahoy: nil)
+  def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
     @session = session
-    @user_session = user_session
     @ahoy = ahoy || Ahoy::Tracker.new(request: request)
   end
 

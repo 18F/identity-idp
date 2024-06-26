@@ -35,13 +35,22 @@ class OutOfBandSessionAccessor
 
   # @return [Pii::Attributes, nil]
   def load_pii(profile_id)
-    session = session_data.dig('warden.user.user.session')
-    Pii::Cacher.new(nil, session).fetch(profile_id) if session
+    user_session = load_user_session
+    Pii::Cacher.new(nil, user_session).fetch(profile_id) if user_session
+  end
+
+  def load_user_session
+    session_data.dig('warden.user.user.session')
   end
 
   # @return [X509::Attributes]
   def load_x509
-    X509::Attributes.new_from_json(session_data.dig('warden.user.user.session', :decrypted_x509))
+    X509::Attributes.new_from_json(
+      load_user_session.dig(
+        'warden.user.user.session',
+        :decrypted_x509,
+      ),
+    )
   end
 
   def destroy

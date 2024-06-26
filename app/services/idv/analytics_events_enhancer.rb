@@ -183,24 +183,34 @@ module Idv
     end
 
     def proofing_components
-      return if !user || !user_session
+      return if !user
 
       proofing_components_user = user
+      proofing_components_user_session = {}
 
-      if !user && session[:doc_capture_user_id].present?
+      if session[:doc_capture_user_id].present?
+        # We are logging an event for a user in the hybrid flow on their
+        # mobile device.
         proofing_components_user = User.find_by(id: session[:doc_capture_user_id])
+        if proofing_components_user
+          proofing_components_user_session = OutOfBandSessionAccessor.new(
+            proofing_components_user.unique_session_id,
+          ).load_user_session || {}
+        end
       end
-
-      idv_session = Idv::Session.new(
-        user_session:,
-        current_user: proofing_components_user,
-        service_provider: sp,
-      )
 
       ProofingComponents.new(
         user:,
-        idv_session:,
+        idv_session: Idv::Session.new(
+          user_session: proofing_components_user_session,
+          current_user: proofing_components_user,
+          service_provider: sp,
+        ),
       )
     end
+  end
+
+  def user_session
+    session.dig('warden.user.user.session')
   end
 end
