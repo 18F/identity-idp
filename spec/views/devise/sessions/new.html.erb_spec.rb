@@ -138,7 +138,10 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'does not have an sp alert for service providers without alert messages' do
         render
 
-        expect(rendered).to_not have_selector('.usa-alert')
+        expect(rendered).to_not have_selector(
+          '.usa-alert',
+          text: 'custom sign in help text for Awesome Application!',
+        )
       end
     end
   end
@@ -201,6 +204,47 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         )
 
         render
+      end
+    end
+  end
+
+  describe 'submit button' do
+    let(:sign_in_recaptcha_enabled) { false }
+    let(:recaptcha_mock_validator) { false }
+
+    subject(:rendered) { render }
+
+    before do
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).
+        and_return(sign_in_recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).
+        and_return(recaptcha_mock_validator)
+    end
+
+    context 'recaptcha at sign in is disabled' do
+      let(:sign_in_recaptcha_enabled) { false }
+
+      it 'renders default sign-in submit button' do
+        expect(rendered).to have_button(t('links.sign_in'))
+        expect(rendered).not_to have_css('lg-captcha-submit-button')
+      end
+
+      context 'recaptcha mock validator is enabled' do
+        let(:recaptcha_mock_validator) { true }
+
+        it 'renders captcha sign-in submit button' do
+          expect(rendered).to have_button(t('links.sign_in'))
+          expect(rendered).to have_css('lg-captcha-submit-button')
+        end
+      end
+    end
+
+    context 'recaptcha at sign in is enabled' do
+      let(:sign_in_recaptcha_enabled) { true }
+
+      it 'renders captcha sign-in submit button' do
+        expect(rendered).to have_button(t('links.sign_in'))
+        expect(rendered).to have_css('lg-captcha-submit-button')
       end
     end
   end

@@ -430,6 +430,8 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
         put '/by_mail/request_letter' => 'by_mail/request_letter#create'
+        get '/by_mail/resend_letter' => 'by_mail/resend_letter#new', as: :resend_letter
+        put '/by_mail/resend_letter' => 'by_mail/resend_letter#create'
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued

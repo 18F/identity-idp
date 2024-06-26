@@ -33,6 +33,7 @@ module Users
       session[:sign_in_flow] = :sign_in
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
+      return process_failed_captcha if !valid_captcha_result?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
@@ -75,6 +76,36 @@ module Users
       warden.lock!
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url
+    end
+
+    def valid_captcha_result?
+      return @valid_captcha_result if defined?(@valid_captcha_result)
+      @valid_captcha_result = SignInRecaptchaForm.new(**recaptcha_form_args).submit(
+        email: auth_params[:email],
+        recaptcha_token: params.require(:user)[:recaptcha_token],
+        device_cookie: cookies[:device],
+      ).success?
+    end
+
+    def process_failed_captcha
+      flash[:error] = t('errors.messages.invalid_recaptcha_token')
+      warden.logout(:user)
+      warden.lock!
+      redirect_to root_url
+    end
+
+    def recaptcha_form_args
+      args = { analytics: }
+      if IdentityConfig.store.recaptcha_mock_validator
+        args.merge(
+          form_class: RecaptchaMockForm,
+          score: params.require(:user)[:recaptcha_mock_score].to_f,
+        )
+      elsif FeatureManagement.recaptcha_enterprise?
+        args.merge(form_class: RecaptchaEnterpriseForm)
+      else
+        args
+      end
     end
 
     def redirect_to_signin
@@ -125,20 +156,16 @@ module Users
     def track_authentication_attempt(email)
       user = User.find_with_email(email) || AnonymousUser.new
 
-      success = user_signed_in_and_not_locked_out?(user)
+      success = current_user.present? && !user_locked_out?(user) && valid_captcha_result?
       analytics.email_and_password_auth(
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        valid_captcha_result: valid_captcha_result?,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
       )
-    end
-
-    def user_signed_in_and_not_locked_out?(user)
-      return false unless current_user
-      !user_locked_out?(user)
     end
 
     def user_locked_out?(user)

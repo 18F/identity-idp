@@ -1,3 +1,7 @@
+## Unreleased
+
+- Fix typecheck error due to updated arguments in `fileURLToPath` from `node:url`
+
 ## 3.1.0
 
 ### New Features
