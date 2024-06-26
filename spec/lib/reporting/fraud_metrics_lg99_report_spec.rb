@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'reporting/fraud_metrics_lg99_report'
 
 RSpec.describe Reporting::FraudMetricsLg99Report do
-  let(:time_range) { Date.new(2022, 1, 1).all_month }
+  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
   let(:expected_lg99_metrics_table) do
     [
       ['Metric', 'Total'],

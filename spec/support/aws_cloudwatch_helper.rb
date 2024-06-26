@@ -11,6 +11,8 @@ module AwsCloudwatchHelper
   def stub_cloudwatch_logs(rows)
     query_id = SecureRandom.hex
 
+    stub_const('Reporting::CloudwatchClient::DEFAULT_WAIT_DURATION', 0)
+
     Aws.config[:cloudwatchlogs] = {
       stub_responses: {
         start_query: { query_id: query_id },
