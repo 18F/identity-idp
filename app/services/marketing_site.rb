@@ -72,15 +72,33 @@ class MarketingSite
     category:,
     article:,
     article_anchor: '',
-    service_provider_issuer: nil
+    partner: nil,
+    partner_division: nil
+
   )
     if !HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
       raise UnknownArticleException, "Unknown help center article category #{category}/#{article}"
     end
+    if !valid_article_anchor?(article_anchor)
+      raise UnknownArticleException, 'Invalid article anchor'
+    end
+
     anchor_text = article_anchor.present? ? "##{article_anchor}" : ''
-    uri = URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/#{anchor_text}")
-    uri.query = "sp=#{service_provider_issuer}" if service_provider_issuer.present?
+    uri = Addressable::URI.join(
+      BASE_URL, locale_segment,
+      "help/#{category}/#{article}/#{anchor_text}"
+    )
+
+    query_params = {}
+    query_params[:partner] = partner if partner.present?
+    query_params[:partnerDiv] = partner_division if partner_division.present?
+
+    uri.query_values = query_params if query_params.any?
     uri.to_s
+  end
+
+  def self.valid_article_anchor?(anchor)
+    anchor.blank? || anchor.match?(/\A[a-zA-Z0-9\-_]+\z/)
   end
 
   def self.valid_help_center_article?(category:, article:, article_anchor: '')
