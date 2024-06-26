@@ -107,8 +107,6 @@ RUN apt-get update && \
     libssl-dev \
     libreadline-dev \
     libyaml-dev \
-    libsqlite3-dev \
-    sqlite3 \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
@@ -116,6 +114,7 @@ RUN apt-get update && \
     libffi-dev \
     libpq-dev \
     xz-utils \
+    make \
     unzip && \
     rm -rf /var/lib/apt/lists/*
 
@@ -211,7 +210,6 @@ COPY certs.example $RAILS_ROOT/certs
 COPY config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
-RUN apt-get install -y make
 RUN bundle exec rake assets:precompile --trace
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
