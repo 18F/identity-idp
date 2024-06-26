@@ -159,8 +159,6 @@ RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
 RUN bundle config set --local without 'deploy development doc test'
-RUN bundle install --jobs $(nproc)
-RUN bundle binstubs --all
 
 # yarn install
 COPY package.json $RAILS_ROOT/package.json
