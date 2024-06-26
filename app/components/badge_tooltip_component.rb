@@ -19,6 +19,7 @@ class BadgeTooltipComponent < BaseComponent
   def badge_content
     render BadgeComponent.new(
       **tag_options,
+      class: 'usa-tooltip',
     ).with_content(content)
   end
 end

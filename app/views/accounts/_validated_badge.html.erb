@@ -1,9 +1,9 @@
 <% if @presenter.show_verified_badge? %>
-  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: @presenter.biometric_identity_verification? ? t('components.badge_tooltip_component.verified_biometric') : t('components.badge_tooltip_component.verified'), class: 'usa-tooltip', data_position: 'top').with_content(t('headings.account.verified_account')) %>
+  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: @presenter.biometric_identity_verification? ? t('components.badge_tooltip_component.verified_biometric') : t('components.badge_tooltip_component.verified')).with_content(t('headings.account.verified_account')) %>
 <% end %>
 <% if @presenter.show_unverified? %>
-  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: t('components.badge_tooltip_component.unverified'), class: 'usa-tooltip', data_position: 'top').with_content(t('headings.account.unverified')) %>
+  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: t('components.badge_tooltip_component.unverified')).with_content(t('headings.account.unverified')) %>
 <% end %>
 <% if @presenter.show_ipp_partial? || @presenter.show_gpo_partial? %>
-  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: t('components.badge_tooltip_component.pending'), class: 'usa-tooltip', data_position: 'top').with_content(t('headings.account.pending')) %>
+  <%= render BadgeTooltipComponent.new(icon: :check_circle, tooltip_text: t('components.badge_tooltip_component.pending')).with_content(t('headings.account.pending')) %>
 <% end %>
