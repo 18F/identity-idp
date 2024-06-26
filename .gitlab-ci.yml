@@ -509,46 +509,29 @@ trigger_devops:
             values: |
               idp:
                 config:
-                - name: kubernetesReviewApp
-                  value: 'true'
-                - name: postgres.sslmode
-                  value: prefer
-                - name: postgres.name
-                  value: idp
-                - name: postgres.host
-                  value: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-                - name: postgresWorker.sslmode
-                  value: prefer
-                - name: postgresWorker.name
-                  value: idp
-                - name: postgresWorker.host
-                  value: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-                - name: railsOffline
-                  value: 'true'
-                - name: redis.throttleUrl
-                  value: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1"
-                - name: redis.url
-                  value: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-                - name: assetHost
-                  value: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-                - name: domainName
-                  value: "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-                - name: "loginDatacenter"
-                  value: "true"
-                - name:"loginDomain"
-                  value:  "identitysandbox.gov",
-                - name:"loginEnv"
-                  value:  "$CI_ENVIRONMENT_SLUG",
-                - name:"loginHostRole"
-                  value: "idp",
-                - name:"loginSkipRemoteConfig"
-                  value:  "true",
-                - name:"pivcacServiceUrl"
-                  value:  "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-                - name:"pivcacVerifyTokenUrl": 
-                  value:  "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-                - name:"dashboardUrl": 
-                  value: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
+                  kubernetesReviewApp: true
+                  postgres:
+                    sslmode: prefer
+                    name: idp
+                    host: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
+                  postgresWorker:
+                    sslmode: prefer
+                    name: idp
+                    host: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
+                  railsOffline: true
+                  redis:
+                    throttleUrl: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1"
+                    url: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
+                  assetHost: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
+                  domainName: "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
+                  loginDatacenter: true
+                  loginDomain: identitysandbox.gov
+                  loginEnv: $CI_ENVIRONMENT_SLUG
+                  loginHostRole: idp
+                  loginSkipRemoteConfig: true
+                  pivcacServiceUrl: "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
+                  pivcacVerifyTokenUrl: "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
+                  dashboardUrl: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
                 ingress:
                   enabled: true
                   hosts:
@@ -558,76 +541,39 @@ trigger_devops:
                           pathType: Prefix
               worker:
                 config:
-                - name: kubernetesReviewApp
-                  value: 'true'
-                - name: postgres.sslmode
-                  value: prefer
-                - name: postgres.name
-                  value: idp
-                - name: postgres.host
-                  value: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-                - name: postgresWorker.sslmode
-                  value: prefer
-                - name: postgresWorker.name
-                  value: idp
-                - name: postgresWorker.host
-                  value: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-                - name: railsOffline
-                  value: 'true'
-                - name: redis.throttleUrl
-                  value: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1"
-                - name: redis.url
-                  value: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-                - name: assetHost
-                  value: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-                - name: domainName
-                  value: "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-                - name: "loginDatacenter"
-                  value: "true"
-                - name:"loginDomain"
-                  value:  "identitysandbox.gov",
-                - name:"loginEnv"
-                  value:  "$CI_ENVIRONMENT_SLUG",
-                - name:"loginHostRole"
-                  value: "worker"
-                - name:"loginSkipRemoteConfig"
-                  value:  "true"
-                - name:"pivcacServiceUrl"
-                  value:  "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
-                - name:"pivcacVerifyTokenUrl": 
-                  value:  "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
-                - name:"dashboardUrl": 
-                  value: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
+                  kubernetesReviewApp: true
+                  postgres:
+                    sslmode: prefer
+                    name: idp
+                    host: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
+                  postgresWorker:
+                    sslmode: prefer
+                    name: idp
+                    host: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
+                  railsOffline: true
+                  redis:
+                    throttleUrl: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1"
+                    url: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
+                  assetHost: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
+                  domainName: "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
+                  loginDatacenter: true
+                  loginDomain: identitysandbox.gov
+                  loginEnv: "$CI_ENVIRONMENT_SLUG"
+                  loginHostRole: idp
+                  loginSkipRemoteConfig: true
+                  pivcacServiceUrl:  "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
+                  pivcacVerifyTokenUrl: "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
+                  dashboardUrl: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
               pivcac:
                 config:
-                - name: kubernetesReviewApp
-                  value: 'true'
-                - name: postgres.sslmode
-                  value: prefer
-                - name: postgres.name
-                  value: idp
-                - name: postgres.host
-                  value: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-                - name: postgresWorker.sslmode
-                  value: prefer
-                - name: postgresWorker.name
-                  value: idp
-                - name: postgresWorker.host
-                  value: "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"
-                - name: railsOffline
-                  value: 'true'
-                - name: redis.throttleUrl
-                  value: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1"
-                - name: redis.url
-                  value: "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
-                - name: assetHost
-                  value: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
-                - name: domainName
-                  value: "$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov"
-                - name:"idpHost"
-                  value: "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
-                - name:"clientCertS3Bucket"
-                  value:  "login-gov-pivcac-public-cert-reviewapp.894947205914-us-west-2"
+                  kubernetesReviewApp: true
+                  clientCertS3Bucket: login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2
+                  postgres:
+                    sslmode: prefer
+                    name: idp
+                    host: "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"
+                  domainName: "$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov"
+                  idpHost: "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
                 ingress:
                   enabled: true
                   hosts:
@@ -636,28 +582,20 @@ trigger_devops:
                         - path: /
                           pathType: Prefix
               dashboard:
-                enabled: true
                 config:
-                - name: kubernetesReviewApp
-                  value: 'true'
-                - name: postgres.sslmode
-                  value: prefer
-                - name: postgres.name
-                  value: dashboard
-                - name: postgres.host
-                  value: "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"
-                - name: newrelic.enabled
-                  value: false
-                - name: samlSpIssuer
-                  value: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
-                - name: idpUrl
-                  value: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
-                - name: idpSpUrl
-                  value: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
-                - name: postLogoutUrl
-                  value: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
-                - name: domainName
-                  value: "$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
+                  kubernetesReviewApp: true
+                  clientCertS3Bucket: login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2
+                  newrelic:
+                    enabled: false
+                  postgres:
+                    sslmode: prefer
+                    name: dashboard
+                    host: "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"
+                  samlSpIssuer: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
+                  idpUrl: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
+                  idpSpUrl: "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov"
+                  postLogoutUrl: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
+                  domainName: "$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
                 ingress:
                   enabled: true
                   hosts:
@@ -665,7 +603,6 @@ trigger_devops:
                       paths:
                         - path: /
                           pathType: Prefix
-              
       EOF
     - cat "$CI_ENVIRONMENT_SLUG.yaml"
     - kubectl apply -f "$CI_ENVIRONMENT_SLUG.yaml" -n argocd
