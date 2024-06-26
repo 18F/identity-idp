@@ -22,7 +22,8 @@ module Redirect
 
     def article_params_with_provider
       params = article_params
-      params[:service_provider_issuer] = current_sp&.issuer
+      params[:partner] = current_sp&.agency&.name
+      params[:partner_division] = current_sp&.integration&.name
       params
     end
   end
