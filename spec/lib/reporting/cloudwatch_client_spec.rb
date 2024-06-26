@@ -58,33 +58,16 @@ RSpec.describe Reporting::CloudwatchClient do
 
     subject(:fetch) { client.fetch(query:, from:, to:, time_slices:) }
 
-    # Helps mimic Array<Aws::CloudWatchLogs::Types::ResultField>
-    # @return [Array<Hash>]
-    def to_result_fields(hsh)
-      hsh.map do |key, value|
-        { field: key, value: value }
-      end
-    end
 
     def stub_single_page
-      query_id = SecureRandom.hex
-
-      Aws.config[:cloudwatchlogs] = {
-        stub_responses: {
-          start_query: { query_id: query_id },
-          get_query_results: {
-            status: 'Complete',
-            results: [
-              # rubocop:disable Layout/LineLength
-              to_result_fields('@message' => 'aaa', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              to_result_fields('@message' => 'bbb', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              to_result_fields('@message' => 'ccc', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              to_result_fields('@message' => 'ddd', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex),
-              # rubocop:enable Layout/LineLength
-            ],
-          },
-        },
-      }
+      stub_cloudwatch_logs(
+        [
+          { '@message' => 'aaa', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+          { '@message' => 'bbb', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+          { '@message' => 'ccc', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+          { '@message' => 'ddd', '@timestamp' => now.iso8601, '@ptr' => SecureRandom.hex },
+        ],
+      )
     end
 
     context ':slice_interval is falsy' do
