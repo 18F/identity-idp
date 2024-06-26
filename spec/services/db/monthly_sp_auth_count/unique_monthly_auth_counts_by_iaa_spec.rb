@@ -158,6 +158,14 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             new_unique_users: 2,
           },
           {
+            ial: :all,
+            key: key,
+            year_month: '202009',
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            unique_users: 2,
+          },
+          {
             ial: 1,
             key: key,
             year_month: '202010',
@@ -176,6 +184,14 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             total_auth_count: 21,
             unique_users: 3,
             new_unique_users: 1,
+          },
+          {
+            ial: :all,
+            key: key,
+            year_month: '202010',
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            unique_users: 3,
           },
         ]
 
