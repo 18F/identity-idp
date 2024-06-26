@@ -478,7 +478,7 @@ trigger_devops:
             prune: true
         source:
           repoURL: git@gitlab.login.gov:lg-public/identity-idp-helm-chart.git
-          targetRevision: main
+          targetRevision: sudheer/argocd-deployment
           path: .
           helm:
             parameters:
