@@ -58,7 +58,6 @@ RSpec.describe Reporting::CloudwatchClient do
 
     subject(:fetch) { client.fetch(query:, from:, to:, time_slices:) }
 
-
     def stub_single_page
       stub_cloudwatch_logs(
         [
