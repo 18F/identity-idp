@@ -158,10 +158,14 @@ RSpec.describe MarketingSite do
     let(:article) {}
     let(:article_anchor) {}
     let(:service_provider_issuer) { nil }
+    let(:partner) { nil }
+    let(:partner_division) { nil }
     let(:url) do
       MarketingSite.help_center_article_url(
-        category: category, article: article,
-        service_provider_issuer: service_provider_issuer
+        category: category,
+        article: article,
+        partner: partner,
+        partner_division: partner_division,
       )
     end
 
@@ -207,12 +211,36 @@ RSpec.describe MarketingSite do
     context 'with service provider issuer' do
       let(:category) { 'verify-your-identity' }
       let(:article) { 'accepted-state-issued-identification' }
-      let(:service_provider_issuer) { 'urn:gov:gsa:openidconnect:sp:test_sp' }
 
-      it 'appends the service provider issuer as a query parameter' do
-        expect(url).to eq(
-          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/?sp=urn:gov:gsa:openidconnect:sp:test_sp',
-        )
+      context 'with partner and partner division' do
+        let(:partner) { 'Test Agency' }
+        let(:partner_division) { 'Test Integration' }
+
+        it 'appends the partner and partner division as query parameters' do
+          expect(url).to eq(
+            'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/?partner=Test%20Agency&partnerDiv=Test%20Integration',
+          )
+        end
+      end
+
+      context 'with partner' do
+        let(:partner) { 'Test Agency' }
+
+        it 'appends partner as a query parameter' do
+          expect(url).to eq(
+            'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/?partner=Test%20Agency',
+          )
+        end
+      end
+
+      context 'with partner division' do
+        let(:partner_division) { 'Test Integration' }
+
+        it 'appends only the partner division as a query parameter' do
+          expect(url).to eq(
+            'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/?partnerDiv=Test%20Integration',
+          )
+        end
       end
     end
   end
