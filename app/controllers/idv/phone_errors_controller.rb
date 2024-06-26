@@ -75,7 +75,7 @@ module Idv
     def set_gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
       policy = Idv::GpoVerifyByMailPolicy.new(current_user)
-      @gpo_letter_available ||= policy.send_letter_available?
+      @gpo_letter_available = policy.send_letter_available?
     end
     # rubocop:enable Naming/MemoizedInstanceVariableName
   end
