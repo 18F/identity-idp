@@ -3,10 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::GpoVerifyByMailPolicy do
-
   let(:subject) { described_class.new(user) }
   let(:user) { create(:user) }
-
 
   describe '#resend_letter_available?' do
     context 'when the feature flag is off' do
@@ -153,7 +151,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
         before do
           user.gpo_verification_pending_profile.update(
             gpo_verification_pending_at: nil,
-            )
+          )
         end
 
         it 'returns false' do

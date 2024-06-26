@@ -18,6 +18,7 @@ module Idv
       FeatureManagement.gpo_verification_enabled? &&
         !rate_limited?
     end
+
     def rate_limited?
       too_many_letter_requests_within_window? || last_letter_request_too_recent?
     end
@@ -46,7 +47,7 @@ module Idv
       return false unless window_limit_enabled?
       user.gpo_confirmation_codes.where(
         created_at: IdentityConfig.store.max_mail_events_window_in_days.days.ago..Time.zone.now,
-        ).count >= IdentityConfig.store.max_mail_events
+      ).count >= IdentityConfig.store.max_mail_events
     end
 
     def last_letter_request_too_recent?
@@ -58,8 +59,7 @@ module Idv
           'created_at > ?',
           IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours.ago,
         ],
-        )
+      )
     end
-
   end
 end
