@@ -160,7 +160,7 @@ class FakeAnalytics < Analytics
   end
 
   def track_event(event, attributes = {})
-    if attributes[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
+    if attributes[:proofing_components].instance_of?(Idv::ProofingComponents)
       attributes[:proofing_components] = attributes[:proofing_components].as_json.symbolize_keys
     end
     events[event] ||= []
