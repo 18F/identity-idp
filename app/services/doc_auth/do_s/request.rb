@@ -1,0 +1,235 @@
+# frozen_string_literal: true
+
+module DocAuth
+  module DoS
+    class Request
+      attr_reader :config, :user_uuid, :uuid_prefix
+
+      # def initialize(config:, user_uuid: nil, uuid_prefix: nil)
+      #   @config = config
+      #   @user_uuid = user_uuid
+      #   @uuid_prefix = uuid_prefix
+      # end
+
+      def fetch
+        # return DocAuth::Respose with DocAuth:Error if workflow invalid
+        http_response = send_http_request
+        # return handle_invalid_response(http_response) unless http_response.success?
+        # handle_http_response(http_response)
+        http_response
+      rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
+        # handle_connection_error(exception: e)
+        warn e.inspect
+      end
+
+      def metric_name
+        'dos'
+      end
+
+      private
+
+      def send_http_request
+        case method.downcase.to_sym
+        when :post
+          send_http_post_request
+        when :get
+          send_http_get_request
+        end
+      end
+
+      # def handle_http_response(_response)
+      #   raise NotImplementedError
+      # end
+
+      # def handle_invalid_response(http_response)
+      #   message = [
+      #     self.class.name,
+      #     'Unexpected HTTP response',
+      #     http_response.status,
+      #   ].join(' ')
+      #   exception = DocAuth::RequestError.new(message, http_response.status)
+
+      #   response_body = begin
+      #     http_response.body.present? ? JSON.parse(http_response.body) : {}
+      #   rescue JSON::JSONError
+      #     {}
+      #   end
+
+      #   handle_connection_error(
+      #     exception: exception,
+      #     status_code: response_body.dig('status', 'code'),
+      #     status_message: response_body.dig('status', 'message'),
+      #   )
+      # end
+
+      # def handle_connection_error(exception:, status_code: nil, status_message: nil)
+      #   NewRelic::Agent.notice_error(exception)
+      #   DocAuth::Response.new(
+      #     success: false,
+      #     errors: { network: true },
+      #     exception: exception,
+      #     extra: {
+      #       vendor: 'TrueID',
+      #       selfie_live: false,
+      #       selfie_quality_good: false,
+      #       vendor_status_code: status_code,
+      #       vendor_status_message: status_message,
+      #       reference: @reference,
+      #     }.compact,
+      #   )
+      # end
+
+      def send_http_get_request
+        faraday_connection.get do |req|
+          req.options.context = { service_name: metric_name }
+        end
+      end
+
+      def send_http_post_request
+        faraday_connection.post do |req|
+          req.options.context = { service_name: metric_name }
+          req.body = body
+        end
+      end
+
+      def cert_path(file)
+        raise 'Path to certs missing' # /path/to/certs/#{file}"
+      end
+
+      def client_cert
+        client_cert_path = cert_path('client.crt')
+        OpenSSL::X509::Certificate.new(File.read(client_cert_path))
+      end
+
+      def client_key
+        client_key_path = cert_path('client.key')
+        OpenSSL::PKey::RSA.new(File.read(client_key_path))
+      end
+
+      def ca_path
+        cert_path('ca.crt')
+      end
+
+      def faraday_connection
+        retry_options = {
+          max: 2,
+          interval: 0.05,
+          interval_randomness: 0.5,
+          backoff_factor: 2,
+          retry_statuses: [404, 500],
+          retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
+            NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
+          end,
+        }
+
+        ssl = {
+          client_cert: client_cert,
+          client_key: client_key,
+          ca_file: ca_path,
+          # ca_path: ca_path,
+          # :cert_store   => ...
+        }
+
+        Faraday.new(url: url.to_s, ssl: ssl) do |conn| # headers: request_headers
+          conn.request :retry, retry_options
+          conn.request :instrumentation, name: 'request_metric.faraday'
+          # conn.request :authorization, :basic, username, password unless hmac_auth_enabled?
+          conn.adapter :net_http
+          conn.options.timeout = timeout
+          conn.options.read_timeout = timeout
+          conn.options.open_timeout = timeout
+          conn.options.write_timeout = timeout
+        end
+      end
+
+      def path
+        # "/restws/identity/v3/accounts/#{account_id}/workflows/#{workflow}/conversations"
+        '/'
+      end
+
+      def method
+        :get
+      end
+
+      def url
+        # URI.join(config.base_url, path)
+        URI.parse('https://localhost:443')
+      end
+
+      # def request_headers
+      #   headers = {
+      #     Accept: 'application/json',
+      #     'Content-Type': 'application/json',
+      #   }
+      #   headers['Authorization'] = hmac_authorization if hmac_auth_enabled?
+      #   headers
+      # end
+
+      # def hmac_auth_enabled?
+      #   IdentityConfig.store.lexisnexis_hmac_auth_enabled
+      # end
+
+      # Example HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
+      # def hmac_authorization
+      #   Proofing::LexisNexis::RequestSigner.new(
+      #     config: config,
+      #     message_body: body,
+      #     path: path,
+      #   ).hmac_authorization
+      # end
+
+      # def settings
+      #   @reference = uuid
+      #   {
+      #     Type: 'Initiate',
+      #     Settings: {
+      #       Mode: request_mode,
+      #       Locale: config.locale,
+      #       Venue: 'online',
+      #       Reference: @reference,
+      #     },
+      #   }
+      # end
+
+      # def uuid
+      #   return SecureRandom.uuid unless user_uuid
+
+      #   uuid = user_uuid
+
+      #   if uuid_prefix.present?
+      #     "#{uuid_prefix}:#{uuid}"
+      #   else
+      #     uuid
+      #   end
+      # end
+
+      # def username
+      #   raise NotImplementedError
+      # end
+
+      # def password
+      #   raise NotImplementedError
+      # end
+
+      # def account_id
+      #   config.account_id
+      # end
+
+      # def workflow
+      #   raise NotImplementedError
+      # end
+
+      # def body
+      #   raise NotImplementedError
+      # end
+
+      # def request_mode
+      #   config.request_mode
+      # end
+
+      def timeout
+        IdentityConfig.store.lexisnexis_trueid_timeout
+      end
+    end
+  end
+end
