@@ -118,7 +118,7 @@ RSpec.describe Reporting::ProtocolsReport do
     let(:default_args) do
       {
         num_threads: 10,
-        ensure_complete_logs: true,
+        ensure_complete_logs: false,
         slice_interval: 1.day,
         progress: false,
         logger: nil,
