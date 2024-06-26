@@ -19,7 +19,6 @@ class BadgeTooltipComponent < BaseComponent
   def badge_content
     render BadgeComponent.new(
       **tag_options,
-      type: :badge,
     ).with_content(content)
   end
 end
