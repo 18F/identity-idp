@@ -16,7 +16,7 @@ module PasswordConcern
   def forbidden_passwords
     current_user.email_addresses.flat_map do |email_address|
       ForbiddenPasswords.new(email_address.email).call
-    end
+    end.uniq
   end
 
   def user_password_params

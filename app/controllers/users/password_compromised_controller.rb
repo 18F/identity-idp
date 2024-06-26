@@ -14,11 +14,10 @@ module Users
     end
 
     def update
-      @update_user_password_form = UpdateUserPasswordForm.new(current_user, user_session)
+      @update_user_password_form = UpdateUserPasswordForm.new(current_user, user_session, true)
 
       result = @update_user_password_form.submit(user_password_params)
-      updated_result = result.to_h.merge({ original_password_compromised: true })
-      analytics.password_changed(**updated_result)
+      analytics.password_changed(**result)
       if result.success?
         handle_valid_password
       else
@@ -34,7 +33,8 @@ module Users
     def handle_valid_password
       send_password_reset_risc_event
       create_event_and_notify_user_about_password_change
-
+      # Changing the password hash terminates the warden session, and bypass_sign_in ensures
+      # that the user remains authenticated.
       bypass_sign_in current_user
 
       flash[:info] = t('notices.password_changed')

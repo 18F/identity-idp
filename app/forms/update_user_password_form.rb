@@ -6,9 +6,10 @@ class UpdateUserPasswordForm
 
   delegate :personal_key, to: :encryptor
 
-  def initialize(user, user_session = nil)
+  def initialize(user, user_session = nil, original_password_compromised = false)
     @user = user
     @user_session = user_session
+    @original_password_compromised = original_password_compromised
     @validate_confirmation = true
   end
 
@@ -48,6 +49,7 @@ class UpdateUserPasswordForm
       active_profile_present: user.active_profile.present?,
       pending_profile_present: user.pending_profile.present?,
       user_id: user.uuid,
+      original_password_compromised: original_password_compromised,
     }
   end
 end

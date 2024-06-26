@@ -2,7 +2,6 @@
 
 <%= render AlertComponent.new(
       type: :warning,
-      id: 'password-compromised',
       class: 'margin-bottom-4',
     ) do
       t('users.password_compromised.warning', app_name: APP_NAME)
@@ -18,11 +17,6 @@
         form: f,
         password_label: t('forms.passwords.edit.labels.password'),
         forbidden_passwords: @forbidden_passwords,
-        field_options: {
-          input_html: {
-            aria: { describedby: 'password-description' },
-          },
-        },
       ) %>
   <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'display-block margin-top-5 margin-bottom-4' %>
 <% end %>
