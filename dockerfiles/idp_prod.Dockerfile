@@ -50,17 +50,6 @@ RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.logi
 # Set the working directory
 WORKDIR $RAILS_ROOT
 
-# bundle install
-COPY .ruby-version $RAILS_ROOT/.ruby-version
-COPY Gemfile $RAILS_ROOT/Gemfile
-COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
-RUN bundle config build.nokogiri --use-system-libraries
-RUN bundle config set --local deployment 'true'
-RUN bundle config set --local path $BUNDLE_PATH
-RUN bundle config set --local without 'deploy development doc test'
-RUN bundle install --jobs $(nproc)
-RUN bundle binstubs --all
-
 # Install Node
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
@@ -109,6 +98,17 @@ COPY config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_acc
 COPY config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY certs.example $RAILS_ROOT/certs
 COPY config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
+
+# bundle install
+COPY .ruby-version $RAILS_ROOT/.ruby-version
+COPY Gemfile $RAILS_ROOT/Gemfile
+COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
+RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set --local deployment 'true'
+RUN bundle config set --local path $BUNDLE_PATH
+RUN bundle config set --local without 'deploy development doc test'
+RUN bundle install --jobs $(nproc)
+RUN bundle binstubs --all
 
 # yarn install
 COPY package.json $RAILS_ROOT/package.json
@@ -207,6 +207,12 @@ WORKDIR $RAILS_ROOT
 
 # copy in all the stuff from the builder image
 COPY --from=builder $RAILS_ROOT $RAILS_ROOT
+
+# set bundler up
+RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set --local deployment 'true'
+RUN bundle config set --local path $BUNDLE_PATH
+RUN bundle config set --local without 'deploy development doc test'
 
 # Copy big files
 RUN mkdir -p $RAILS_ROOT/geo_data && chmod 755 $RAILS_ROOT/geo_data
