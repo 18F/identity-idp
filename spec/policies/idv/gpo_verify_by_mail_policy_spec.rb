@@ -3,10 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Idv::GpoVerifyByMailPolicy do
-  describe '#resend_letter_available?' do
-    let(:subject) { described_class.new(user).resend_letter_available? }
-    let(:user) { create(:user) }
 
+  let(:subject) { described_class.new(user) }
+  let(:user) { create(:user) }
+
+
+  describe '#resend_letter_available?' do
     context 'when the feature flag is off' do
       before do
         allow(IdentityConfig.store).to receive(:enable_usps_verification).
@@ -14,7 +16,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
       end
 
       it 'returns false' do
-        expect(subject).to eq false
+        expect(subject.resend_letter_available?).to eq false
       end
     end
 
@@ -24,42 +26,143 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
           and_return true
       end
 
-      context 'when the user is rate limited' do
-        # copypasta
-        before do
-          enqueue_gpo_letter_for(user, at_time: 4.days.ago)
-          enqueue_gpo_letter_for(user, at_time: 3.days.ago)
-          enqueue_gpo_letter_for(user, at_time: 2.days.ago)
-        end
+      it 'returns false when the user is rate-limited' do
+        enqueue_gpo_letter_for(user, at_time: 4.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 3.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 2.days.ago)
 
-        it 'returns false' do
-          expect(subject).to eq false
+        expect(subject.resend_letter_available?).to eq false
+      end
+
+      it 'returns false when the profile is too old' do
+        create(:profile, :verify_by_mail_pending, user: user, created_at: 90.days.ago)
+
+        expect(subject.resend_letter_available?).to eq false
+      end
+
+      it 'returns true if not rate-limited and the profile is current' do
+        create(:profile, :verify_by_mail_pending, user: user)
+
+        expect(subject.resend_letter_available?).to eq true
+      end
+    end
+  end
+
+  describe '#send_letter_available?' do
+    context 'when the feature flag is off' do
+      before do
+        allow(IdentityConfig.store).to receive(:enable_usps_verification).
+          and_return false
+      end
+
+      it 'returns false' do
+        expect(subject.send_letter_available?).to eq false
+      end
+    end
+
+    context 'when the feature flag is on' do
+      before do
+        allow(IdentityConfig.store).to receive(:enable_usps_verification).
+          and_return true
+      end
+
+      it 'returns false when the user is rate-limited' do
+        enqueue_gpo_letter_for(user, at_time: 4.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 3.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 2.days.ago)
+
+        expect(subject.send_letter_available?).to eq false
+      end
+
+      it 'returns true even if the profile is too old' do
+        create(:profile, :verify_by_mail_pending, user: user, created_at: 90.days.ago)
+        expect(subject.send_letter_available?).to eq true
+      end
+    end
+  end
+
+  describe '#rate_limited?' do
+    let(:max_letter_request_events) { 2 }
+    let(:letter_request_events_window_days) { 30 }
+    let(:minimum_wait_before_another_usps_letter_in_hours) { 24 }
+
+    before do
+      allow(IdentityConfig.store).to receive(:max_mail_events).
+        and_return(max_letter_request_events)
+      allow(IdentityConfig.store).to receive(:max_mail_events_window_in_days).
+        and_return(letter_request_events_window_days)
+      allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
+        and_return(minimum_wait_before_another_usps_letter_in_hours)
+    end
+
+    context 'when no letters have been requested' do
+      it 'returns false' do
+        expect(subject.rate_limited?).to eq false
+      end
+    end
+
+    context 'when too many letters have been requested within the limiting window' do
+      before do
+        enqueue_gpo_letter_for(user, at_time: 4.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 3.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 2.days.ago)
+      end
+
+      it 'is true' do
+        expect(subject.rate_limited?).to eq true
+      end
+
+      context 'but the window limit is disabled due to a 0 window size' do
+        let(:letter_request_events_window_days) { 0 }
+
+        it 'is false' do
+          expect(subject.rate_limited?).to eq false
         end
       end
 
-      context 'when the user has a too-old profile' do
-        before do
-          create(:profile, :verify_by_mail_pending, user: user, created_at: 90.days.ago)
-        end
+      context 'but the window limit is disabled due to a 0 window count' do
+        let(:max_letter_request_events) { 0 }
 
-        it 'returns false' do
-          expect(subject).to eq(false)
+        it 'is false' do
+          expect(subject.rate_limited?).to eq false
+        end
+      end
+    end
+
+    context 'when a letter has been requested too recently' do
+      before do
+        enqueue_gpo_letter_for(user)
+      end
+
+      it 'is true' do
+        expect(subject.rate_limited?).to eq true
+      end
+
+      context 'but the too-recent limit is disabled' do
+        let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
+
+        it 'is false' do
+          expect(subject.rate_limited?).to eq false
         end
       end
 
-      context 'when the user has a current profile and is not rate limited' do
+      context 'but the letter is not attached to their pending profile' do
+        # This can happen if the user resets their password while a GPO
+        # letter is pending.
+
         before do
-          create(:profile, :verify_by_mail_pending, user: user)
+          user.gpo_verification_pending_profile.update(
+            gpo_verification_pending_at: nil,
+            )
         end
 
-        it 'returns true' do
-          expect(subject).to eq(true)
+        it 'returns false' do
+          expect(subject.rate_limited?).to be false
         end
       end
     end
   end
 
-  # FIXME: Straight-up copied and pasted from GpoMailSpec
   def enqueue_gpo_letter_for(user, at_time: Time.zone.now)
     profile = create(
       :profile,
