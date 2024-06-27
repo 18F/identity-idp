@@ -11,6 +11,7 @@ RSpec.describe 'accounts/history/show.html.erb' do
         decrypted_pii: nil,
         user: user,
         sp_session_request_url: nil,
+        authn_context: nil,
         sp_name: nil,
         locked_for_session: false,
       ),

@@ -1,7 +1,0 @@
-<%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
-  <p>
-    <%= t('account.index.verification.finish_verifying', partner_agency: @presenter.service_provider_or_app_name) %>
-    <br>
-    <%= link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %>
-  </p>
-<% end %>

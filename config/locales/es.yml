@@ -72,16 +72,20 @@ account.index.reactivation.instructions: Su perfil fue desactivado recientemente
 account.index.reactivation.link: Reactive su perfil ahora.
 account.index.sign_in_location_and_ip: Desde %{ip} (la dirección IP se encuentra posiblemente en %{location})
 account.index.unknown_location: ubicación desconocida
-account.index.verification.finish_verifying: Termine de verificar su identidad para acceder a la %{partner_agency}.
+account.index.verification.continue_idv: Continuar la verificación de identidad
+account.index.verification.finish_verifying_html: Termine de verificar su identidad para acceder a la <strong>%{sp_name}</strong>.
+account.index.verification.finish_verifying_no_sp: Termine el proceso de verificación de identidad para obtener acceso a todos los asociados de %{app_name}.
 account.index.verification.identity_verification: Verificación de identidad
-account.index.verification.in_person_instructions: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del %{deadline}.
+account.index.verification.in_person_instructions_html: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del <strong>%{deadline}</strong>.
 account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
 account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
+account.index.verification.nonbiometric_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
 account.index.verification.reactivate_button: Ingrese el código de verificación que recibió por correo de los EE. UU.
 account.index.verification.show_bar_code: Mostrar mi código de barras de %{app_name}
 account.index.verification.success: Verificamos su información
+account.index.verification.verify_with_biometric_html: Para acceder a la <strong>%{sp_name}</strong>, verifique su identidad de nuevo usando una foto de usted.
 account.index.verification.you_verified_your_biometric_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de %{app_name}.
-account.index.verification.you_verified_your_identity: Usted verificó su identidad para %{partner_agency} con la información siguiente.
+account.index.verification.you_verified_your_identity_html: Usted verificó su identidad para <strong>%{sp_name}</strong> con la información siguiente.
 account.index.webauthn: Clave de seguridad
 account.index.webauthn_add: Agregar clave de seguridad
 account.index.webauthn_platform: Desbloqueo facial o táctil
