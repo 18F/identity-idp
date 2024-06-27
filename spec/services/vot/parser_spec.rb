@@ -15,7 +15,7 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust:).parse
 
-        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.Cb')
+        expect(result.expanded_component_values).to eq('C1.C2.Cb')
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(true)
@@ -32,7 +32,7 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust:).parse
 
-        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
+        expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
@@ -47,7 +47,7 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust:).parse
 
-        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pe')
+        expect(result.expanded_component_values).to eq('C1.C2.P1.Pe')
         expect(result.enhanced_ipp?).to eq(true)
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe Vot::Parser do
 
       result = Vot::Parser.new(vector_of_trust:).parse
 
-      expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
+      expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
       expect(result.two_pieces_of_fair_evidence?).to eq(true)
     end
 
