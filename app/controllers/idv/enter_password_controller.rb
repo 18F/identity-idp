@@ -140,6 +140,10 @@ module Idv
       end
     end
 
+    def first_letter_requested_at
+      idv_session.profile.gpo_verification_pending_at
+    end
+
     def valid_password?
       current_user.valid_password?(password)
     end

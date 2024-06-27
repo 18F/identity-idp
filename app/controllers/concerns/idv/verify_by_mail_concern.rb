@@ -15,6 +15,7 @@ module Idv
           user: current_user,
           rate_limit_type: :proof_address,
         ).attempts,
+        **ab_test_analytics_buckets,
       )
     end
 
