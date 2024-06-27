@@ -199,8 +199,4 @@ module Idv
       proofing_components_hash.empty? ? nil : proofing_components_hash
     end
   end
-
-  def user_session
-    session.dig('warden.user.user.session')
-  end
 end
