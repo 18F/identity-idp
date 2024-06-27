@@ -31,7 +31,7 @@ module Idv
       def selected_location_hours(prefix)
         return unless selected_location_details
         hours = selected_location_details["#{prefix}_hours"]
-        return UspsInPersonProofing::EnrollmentHelper.localized_hours(hours) if hours
+        UspsInPersonProofing::EnrollmentHelper.localized_hours(hours) if hours
       end
 
       def service_provider
