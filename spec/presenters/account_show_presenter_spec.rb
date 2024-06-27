@@ -16,6 +16,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: decrypted_pii,
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -33,61 +34,12 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
 
         expect(profile_index.header_personalization).to eq email_address.email
-      end
-    end
-  end
-
-  describe '#show_pii_partial?' do
-    context 'user has decrypted pii but is pending gpo verification' do
-      let(:user) { create(:user, :with_pending_gpo_profile) }
-
-      it 'does not show pii table' do
-        first_name = 'John'
-        last_name = 'Doe'
-        birthday = Date.new(2000, 7, 27)
-        decrypted_pii = Pii::Attributes.new_from_hash(
-          first_name: first_name, last_name: last_name,
-          dob: birthday
-        )
-
-        account_show = AccountShowPresenter.new(
-          decrypted_pii: decrypted_pii,
-          user: user,
-          sp_session_request_url: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        )
-
-        expect(account_show.show_pii_partial?).to be(nil)
-      end
-    end
-
-    context 'user has decrypted pii and is not pending gpo verification' do
-      let(:user) { create(:user) }
-
-      it 'does not show pii table' do
-        first_name = 'John'
-        last_name = 'Doe'
-        birthday = Date.new(2000, 7, 27)
-        decrypted_pii = Pii::Attributes.new_from_hash(
-          first_name: first_name, last_name: last_name,
-          dob: birthday
-        )
-
-        account_show = AccountShowPresenter.new(
-          decrypted_pii: decrypted_pii,
-          user: user,
-          sp_session_request_url: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        )
-
-        expect(account_show.show_pii_partial?).to be(true)
       end
     end
   end
@@ -104,6 +56,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -122,6 +75,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -140,6 +94,7 @@ RSpec.describe AccountShowPresenter do
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
         sp_session_request_url: nil,
+        authn_context: nil,
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
@@ -158,6 +113,7 @@ RSpec.describe AccountShowPresenter do
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
         sp_session_request_url: nil,
+        authn_context: nil,
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
@@ -177,6 +133,7 @@ RSpec.describe AccountShowPresenter do
       AccountShowPresenter.new(
         decrypted_pii: decrypted_pii,
         sp_session_request_url: nil,
+        authn_context: nil,
         sp_name: nil,
         user: user,
         locked_for_session: false,
@@ -215,6 +172,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -238,6 +196,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -256,6 +215,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )

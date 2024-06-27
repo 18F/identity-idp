@@ -95,6 +95,7 @@ RSpec.describe AccountsController do
         presenter = AccountShowPresenter.new(
           decrypted_pii: nil,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           user: user,
           locked_for_session: false,
@@ -149,6 +150,7 @@ RSpec.describe AccountsController do
           presenter = AccountShowPresenter.new(
             decrypted_pii: nil,
             sp_session_request_url: nil,
+            authn_context: nil,
             sp_name: nil,
             user: user,
             locked_for_session: false,

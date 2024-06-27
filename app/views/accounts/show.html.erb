@@ -12,56 +12,9 @@
   </div>
 <% end %>
 
-<% if @presenter.showing_any_partials? %>
-  <div class="margin-bottom-4">
-    <div class="margin-bottom-4 card profile-info-box">
-      <div class="grid-row margin-bottom-1 margin-top-0">
-        <div class="grid-col-12">
-          <div class="grid-row flex-justify padding-y-2 tablet:padding-y-0 margin-bottom-2 bg-primary-lightest tablet:bg-transparent position-relative padding-bottom-4">
-            <div class="grid-col-12 tablet:grid-col-auto">
-              <h2 class="margin-0">
-                <div class="tablet:text-center">
-                  <%= t('account.index.verification.identity_verification') %>
-                </div>
-              </h2>
-            </div>
-            <div class="account-header__badges grid-col-12 tablet:grid-col-auto">
-              <%= render 'accounts/validated_badge' %>
-            </div>
-          </div>
-          <% unless @presenter.show_pii_partial? %>
-            <% if @presenter.show_verified_badge? %>
-              <%= render 'accounts/unverified_profile' %>
-            <% else %>
-              <p>
-                <%= t('account.index.verification.finish_verifying', partner_agency: @presenter.service_provider_or_app_name) %>
-                <br>
-                <%= link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %>
-              </p>
-            <% end %>
-          <% end %>
-          <% if @presenter.show_gpo_partial? %>
-            <%= render 'accounts/pending_profile_gpo' %>
-          <% end %>
-          <% if @presenter.show_ipp_partial? %>
-            <%= render 'accounts/pending_profile_ipp' %>
-          <% end %>
-        </div>
-      </div>
-      
-      <% if @presenter.show_pii_partial? %>
-
-        <% if @presenter.biometric_identity_verification? %>
-          <p><%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
-            <%= link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %></p>
-        <% else %>
-          <p><%= t('account.index.verification.you_verified_your_identity', partner_agency: @presenter.service_provider_or_app_name) %>
-            <br>
-            <%= link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %></p>
-        <% end %>
-        <%= render 'accounts/pii', pii: @presenter.pii, locked_for_session: @presenter.locked_for_session %>
-      <% end %>
-    </div>
+<% if @presenter.show_idv_partial? %>
+  <div class="margin-bottom-4 card profile-info-box">
+    <%= render 'accounts/identity_verification' %>
   </div>
 <% end %>
 

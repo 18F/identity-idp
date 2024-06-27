@@ -1,0 +1,88 @@
+<div class="grid-row margin-bottom-2">
+  <h2 class="grid-col-fill margin-y-0">
+    <%= t('account.index.verification.identity_verification') %>
+  </h2>
+  <div class="grid-col-auto">
+    <% if @presenter.active_profile_for_authn_context? %>
+      <%= render TooltipComponent.new(tooltip_text: @presenter.biometric_identity_verification? ? t('components.badge_tooltip_component.verified_biometric') : t('components.badge_tooltip_component.verified')) do %>
+        <%= render BadgeComponent.new(icon: :check_circle).with_content(t('headings.account.verified_account')) %>
+      <% end %>
+    <% elsif @presenter.pending_gpo? || @presenter.pending_ipp? %>
+      <%= render TooltipComponent.new(tooltip_text: t('components.badge_tooltip_component.pending')) do %>
+        <%= render BadgeComponent.new(icon: :info).with_content(t('headings.account.pending')) %>
+      <% end %>
+    <% else %>
+      <%= render TooltipComponent.new(tooltip_text: t('components.badge_tooltip_component.unverified')) do %>
+        <%= render BadgeComponent.new(icon: :warning).with_content(t('headings.account.unverified')) %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<% if @presenter.active_profile? || @presenter.pending_ipp? || @presenter.pending_gpo? %>
+  <p>
+    <% if @presenter.active_profile_for_authn_context? %>
+      <% if @presenter.biometric_identity_verification? %>
+        <%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
+      <% else %>
+        <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.user.active_profile.initiating_service_provider&.friendly_name || APP_NAME) %>
+      <% end %>
+    <% elsif @presenter.active_profile? %>
+      <%= t('account.index.verification.nonbiometric_verified_html', app_name: APP_NAME, date: @presenter.formatted_nonbiometric_idv_date) %>
+    <% elsif @presenter.user.pending_profile.initiating_service_provider %>
+      <%= t('account.index.verification.finish_verifying_html', sp_name: @presenter.user.pending_profile.initiating_service_provider.friendly_name) %>
+    <% else %>
+      <%= t('account.index.verification.finish_verifying_no_sp', app_name: APP_NAME) %>
+    <% end %>
+
+    <% if !@presenter.active_profile? || @presenter.active_profile_for_authn_context? %>
+      <%= new_tab_link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %>
+    <% end %>
+  </p>
+<% end %>
+
+<% if @presenter.active_profile? && !@presenter.active_profile_for_authn_context? %>
+  <p>
+    <%= t('account.index.verification.verify_with_biometric_html', sp_name: @presenter.sp_name) %>
+  </p>
+  <p>
+    <%= new_tab_link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %>
+  </p>
+<% end %>
+
+<% if @presenter.pending_gpo? %>
+  <%= render AlertComponent.new(type: :info, text_tag: 'div') do %>
+    <p>
+      <%= t('account.index.verification.instructions') %>
+    </p>
+    <p>
+      <%= link_to(t('account.index.verification.reactivate_button'), idv_verify_by_mail_enter_code_path) %>
+    </p>
+  <% end %>
+<% elsif @presenter.pending_ipp? %>
+  <%= render AlertComponent.new(type: :info, text_tag: 'div') do %>
+    <p>
+      <%= t('account.index.verification.in_person_instructions_html', deadline: @presenter.formatted_ipp_due_date) %>
+    </p>
+    <p>
+      <%= link_to(t('account.index.verification.show_bar_code', app_name: APP_NAME), idv_in_person_ready_to_verify_url) %>
+    </p>
+  <% end %>
+<% elsif !@presenter.active_profile_for_authn_context? %>
+  <%= render AlertComponent.new(type: :warning, text_tag: 'div') do %>
+    <p>
+      <% if @presenter.sp_name && !@presenter.active_profile? %>
+        <%= t('account.index.verification.finish_verifying_html', sp_name: @presenter.sp_name) %>
+      <% else %>
+        <%= t('account.index.verification.finish_verifying_no_sp', app_name: APP_NAME) %>
+      <% end %>
+    </p>
+    <p>
+      <%= link_to(t('account.index.verification.continue_idv'), idv_path) %>
+    </p>
+  <% end %>
+<% end %>
+
+<% if @presenter.active_profile_for_authn_context? %>
+  <%= render 'accounts/pii', pii: @presenter.pii, locked_for_session: @presenter.locked_for_session %>
+<% end %>

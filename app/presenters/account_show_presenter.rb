@@ -1,26 +1,33 @@
 # frozen_string_literal: true
 
 class AccountShowPresenter
-  attr_reader :user, :decrypted_pii, :locked_for_session, :pii, :sp_session_request_url, :sp_name
+  attr_reader :user,
+              :decrypted_pii,
+              :locked_for_session,
+              :pii,
+              :sp_session_request_url,
+              :authn_context,
+              :sp_name
 
-  def initialize(decrypted_pii:, sp_session_request_url:, sp_name:, user:,
-                 locked_for_session:)
+  def initialize(
+    decrypted_pii:,
+    sp_session_request_url:,
+    authn_context:,
+    sp_name:,
+    user:,
+    locked_for_session:
+  )
     @decrypted_pii = decrypted_pii
     @user = user
     @sp_name = sp_name
     @sp_session_request_url = sp_session_request_url
+    @authn_context = authn_context
     @locked_for_session = locked_for_session
     @pii = determine_pii
   end
 
   def show_password_reset_partial?
     user.password_reset_profile.present?
-  end
-
-  def show_pii_partial?
-    decrypted_pii.present? || user.identity_verified? unless
-      user.pending_in_person_enrollment.present? || user.
-        gpo_verification_pending_profile.present?
   end
 
   def show_manage_personal_key_partial?
@@ -32,48 +39,49 @@ class AccountShowPresenter
     sp_name.present? && sp_session_request_url.present?
   end
 
-  def show_gpo_partial?
-    user.gpo_verification_pending_profile?
-  end
-
-  def show_ipp_partial?
-    user.pending_in_person_enrollment.present?
-  end
-
-  def showing_any_partials?
-    show_password_reset_partial? ||
-      show_gpo_partial? || show_ipp_partial? || show_pii_partial?
-  end
-
   def showing_alerts?
     show_service_provider_continue_partial? ||
       show_password_reset_partial?
   end
 
-  def show_unverified?
-    show_password_reset_partial? &&
-      (!show_ipp_partial? || !show_gpo_partial?)
+  def active_profile?
+    return @active_profile if defined?(@active_profile)
+    @active_profile ||= user.active_profile.present?
   end
 
-  def find_sp_issuer
-    sp_name = 'APP_NAME'
-    user.profiles.each do |profile|
-      if profile.initiating_service_provider_issuer
-        sp_name = ServiceProvider.find_by(issuer: profile.initiating_service_provider_issuer).
-          friendly_name
-        break
-      end
-    end
-    return sp_name
+  def active_profile_for_authn_context?
+    return @active_profile_for_authn_context if defined?(@active_profile_for_authn_context)
+
+    @active_profile_for_authn_context = active_profile? && (
+      !authn_context.biometric_comparison? || user.identity_verified_with_biometric_comparison?
+    )
   end
 
-  def service_provider_or_app_name
-    return APP_NAME unless user.profiles.count > 0
-    find_sp_issuer
+  def pending_idv?
+    return @pending_idv if defined?(@pending_idv)
+    @pending_idv = authn_context.identity_proofing? && !active_profile?
   end
 
-  def formatted_due_date
+  def pending_ipp?
+    return @pending_ipp if defined?(@pending_ipp)
+    @pending_ipp = user.pending_in_person_enrollment.present?
+  end
+
+  def pending_gpo?
+    return @pending_gpo if defined?(@pending_gpo)
+    @pending_gpo = user.gpo_verification_pending_profile?
+  end
+
+  def show_idv_partial?
+    active_profile? || pending_idv? || pending_ipp? || pending_gpo?
+  end
+
+  def formatted_ipp_due_date
     I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
+  end
+
+  def formatted_nonbiometric_idv_date
+    I18n.l(user.active_profile.created_at, format: :event_date)
   end
 
   def show_unphishable_badge?
@@ -159,7 +167,7 @@ class AccountShowPresenter
   end
 
   def determine_pii
-    return PiiAccessor.new unless show_pii_partial?
+    return PiiAccessor.new unless active_profile?
     if decrypted_pii.present? && !@locked_for_session
       decrypted_pii_accessor
     else
