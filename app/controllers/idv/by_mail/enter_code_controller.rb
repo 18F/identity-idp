@@ -18,7 +18,7 @@ module Idv
         analytics.idv_verify_by_mail_enter_code_visited(
           source: user_did_not_receive_letter? ? 'gpo_reminder_email' : nil,
           otp_rate_limited: rate_limiter.limited?,
-          user_can_request_another_letter: resend_letter_available?,
+          user_can_request_another_letter: gpo_verify_by_mail_policy.resend_letter_available?,
         )
 
         if rate_limiter.limited?
@@ -65,7 +65,7 @@ module Idv
       private
 
       def render_enter_code_form
-        @can_request_another_letter = resend_letter_available?
+        @can_request_another_letter = gpo_verify_by_mail_policy.resend_letter_available?
         @user_did_not_receive_letter = user_did_not_receive_letter?
         @last_date_letter_was_sent = last_date_letter_was_sent
         render :index

@@ -73,7 +73,7 @@ module Idv
     end
 
     def set_gpo_letter_available
-      @gpo_letter_available = send_letter_available?
+      @gpo_letter_available = gpo_verify_by_mail_policy.send_letter_available?
     end
   end
 end

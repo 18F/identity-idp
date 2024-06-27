@@ -36,11 +36,15 @@ module Idv
         analytics.idv_phone_of_record_visited(
           **ab_test_analytics_buckets,
         )
-        render :new, locals: { gpo_letter_available: send_letter_available? }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        render :new, locals: { gpo_letter_available: send_letter_available? }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       end
     end
 
@@ -57,7 +61,9 @@ module Idv
         redirect_to idv_phone_path
       else
         flash.now[:error] = result.first_error_message
-        render :new, locals: { gpo_letter_available: send_letter_available? }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       end
     end
 

@@ -37,7 +37,7 @@ module Idv
       end
 
       def confirm_resend_letter_available
-        unless resend_letter_available?
+        unless gpo_verify_by_mail_policy.resend_letter_available?
           redirect_to idv_verify_by_mail_enter_code_path
         end
       end
