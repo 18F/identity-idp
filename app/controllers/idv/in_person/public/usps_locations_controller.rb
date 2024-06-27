@@ -18,17 +18,42 @@ module Idv
           )
           locations = proofer.request_facilities(candidate, false)
 
-          render json: locations.to_json
+          render json: localized_locations(locations).to_json
         end
 
         def options
           head :ok
         end
 
-        protected
+        private
 
         def proofer
           @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer
+        end
+
+        def localized_locations(locations)
+          return nil if locations.nil?
+          locations.map do |location|
+            {
+              address: location[:address],
+              city: location[:city],
+              distance: location[:distance],
+              name: location[:name],
+              saturday_hours: UspsInPersonProofing::EnrollmentHelper.localized_hours(
+                location[:saturday_hours],
+              ),
+              state: location[:state],
+              sunday_hours: UspsInPersonProofing::EnrollmentHelper.localized_hours(
+                location[:sunday_hours],
+              ),
+              weekday_hours: UspsInPersonProofing::EnrollmentHelper.localized_hours(
+                location[:weekday_hours],
+              ),
+              zip_code_4: location[:zip_code_4],
+              zip_code_5: location[:zip_code_5],
+              is_pilot: location[:is_pilot],
+            }
+          end
         end
 
         def enabled?

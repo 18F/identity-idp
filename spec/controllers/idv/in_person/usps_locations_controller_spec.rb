@@ -4,7 +4,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
-  let(:empty_locations) { [] }
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
@@ -39,6 +38,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   end
 
   describe '#index' do
+    let(:locale) { nil }
     let(:proofer) { double('Proofer') }
     let(:locations) do
       [
@@ -75,7 +75,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       ]
     end
     subject(:response) do
-      post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
+      post :index, params: { locale: locale,
+                             address: { street_address: '1600 Pennsylvania Ave',
                                         city: 'Washington',
                                         state: 'DC',
                                         zip_code: '20500' } }
@@ -129,7 +130,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
     context 'no addresses found by usps' do
       before do
         allow(proofer).to receive(:request_facilities).with(address, false).
-          and_return(empty_locations)
+          and_return([])
       end
 
       it 'logs analytics with error when successful response is empty' do
@@ -164,6 +165,32 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: nil,
           response_status_code: nil,
         )
+      end
+
+      context 'with non-English locale' do
+        let(:locale) { 'fr' }
+
+        it 'returns content in selected locale' do
+          json = response.body
+
+          expect(json).to include(
+            I18n.t('in_person_proofing.body.barcode.retail_hours_closed', locale: locale),
+          )
+          I18n.locale = locale
+          facilities = JSON.parse(json)
+
+          facilities.zip(locations).each do |facility, location|
+            expect(facility['weekday_hours']).to eq(
+              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:weekday_hours]),
+            )
+            expect(facility['saturday_hours']).to eq(
+              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:saturday_hours]),
+            )
+            expect(facility['sunday_hours']).to eq(
+              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:sunday_hours]),
+            )
+          end
+        end
       end
     end
 

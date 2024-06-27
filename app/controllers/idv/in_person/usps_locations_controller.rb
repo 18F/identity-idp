@@ -27,18 +27,18 @@ module Idv
           zip_code: search_params['zip_code']
         )
         is_enhanced_ipp = resolved_authn_context_result.enhanced_ipp?
-        response = proofer.request_facilities(candidate, is_enhanced_ipp)
-        if response.length > 0
+        locations = proofer.request_facilities(candidate, is_enhanced_ipp)
+        if locations.length > 0
           analytics.idv_in_person_locations_searched(
             success: true,
-            result_total: response.length,
+            result_total: locations.length,
           )
         else
           analytics.idv_in_person_locations_searched(
             success: false, errors: 'No USPS locations found',
           )
         end
-        render json: response.to_json
+        render json: localized_locations(locations).to_json
       end
 
       # save the Post Office location the user selected to an enrollment
@@ -62,6 +62,25 @@ module Idv
         ProofingComponent.
           create_or_find_by(user: current_or_hybrid_user).
           update(document_check: Idp::Constants::Vendors::USPS)
+      end
+
+      def localized_locations(locations)
+        return nil if locations.nil?
+        locations.map do |location|
+          {
+            address: location[:address],
+            city: location[:city],
+            distance: location[:distance],
+            name: location[:name],
+            saturday_hours: EnrollmentHelper.localized_hours(location[:saturday_hours]),
+            state: location[:state],
+            sunday_hours: EnrollmentHelper.localized_hours(location[:sunday_hours]),
+            weekday_hours: EnrollmentHelper.localized_hours(location[:weekday_hours]),
+            zip_code_4: location[:zip_code_4],
+            zip_code_5: location[:zip_code_5],
+            is_pilot: location[:is_pilot],
+          }
+        end
       end
 
       def handle_error(err)

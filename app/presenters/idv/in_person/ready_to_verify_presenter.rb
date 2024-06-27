@@ -31,7 +31,7 @@ module Idv
       def selected_location_hours(prefix)
         return unless selected_location_details
         hours = selected_location_details["#{prefix}_hours"]
-        return localized_hours(hours) if hours
+        return UspsInPersonProofing::EnrollmentHelper.localized_hours(hours) if hours
       end
 
       def service_provider
@@ -105,18 +105,6 @@ module Idv
 
       def format_outage_date(date)
         I18n.l(date.to_date, format: :short)
-      end
-
-      def localized_hours(hours)
-        case hours
-        when 'Closed'
-          I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
-        else
-          hours.
-            split(' - '). # Hyphen
-            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
-            join(' – ') # Endash
-        end
       end
 
       def sp_return_url_resolver

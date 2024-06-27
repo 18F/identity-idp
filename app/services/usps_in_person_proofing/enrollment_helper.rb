@@ -95,6 +95,24 @@ module UspsInPersonProofing
         end
       end
 
+      def localized_hours(hours)
+        if hours == 'Closed'
+          I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
+        elsif hours.include?(' - ') # Hyphen
+          hours.
+            split(' - '). # Hyphen
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        elsif hours.include?(' – ') # Endash
+          hours.
+            split(' – '). # Endash
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        else
+          hours
+        end
+      end
+
       private
 
       SECONDARY_ID_ADDRESS_MAP = {
