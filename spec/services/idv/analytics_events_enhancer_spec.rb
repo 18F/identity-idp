@@ -3,7 +3,15 @@ require 'rails_helper'
 RSpec.describe Idv::AnalyticsEventsEnhancer do
   let(:user) { build(:user) }
   let(:sp) { nil }
-  let(:session) { nil }
+  let(:user_session) { nil }
+  let(:session) do
+    if !user_session.nil?
+      {
+        'warden.user.user.session' => user_session,
+      }
+    end
+  end
+
   let(:analytics_class) do
     Class.new(FakeAnalytics) do
       include AnalyticsEvents
@@ -63,11 +71,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
   end
 
   describe 'proofing_components' do
-    let(:proofing_components) { nil }
-
-    before do
-      user.proofing_component = proofing_components
-    end
+    let(:user_session) { {} }
 
     context 'without proofing component' do
       it 'calls analytics method with original attributes' do
@@ -79,17 +83,26 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       end
     end
 
-    context 'with proofing component' do
-      let(:proofing_components) do
-        ProofingComponent.new(source_check: Idp::Constants::Vendors::AAMVA)
+    context 'with proofing components' do
+      before do
+        # Set up the user_session so it looks like the user's been through doc auth
+        idv_session = Idv::Session.new(
+          user_session:,
+          current_user: user,
+          service_provider: sp,
+        )
+        idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
       end
 
       it 'calls analytics method with original attributes and proofing_components' do
         analytics.idv_test_method(extra: true)
 
-        expect(analytics.called_kwargs).to match(
+        expect(analytics.called_kwargs).to eql(
           extra: true,
-          proofing_components: kind_of(Idv::ProofingComponentsLogging),
+          proofing_components: {
+            document_check: 'mock',
+            document_type: 'state_id',
+          },
         )
       end
     end

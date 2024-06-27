@@ -185,13 +185,15 @@ module Idv
     def proofing_components
       return if !user
 
+      idv_session = Idv::Session.new(
+        user_session: session&.dig('warden.user.user.session') || {},
+        current_user: user,
+        service_provider: sp,
+      )
+
       proofing_components_hash = ProofingComponents.new(
         user:,
-        idv_session: Idv::Session.new(
-          user_session: session&.dig('warden.user.user.session') || {},
-          current_user: user,
-          service_provider: sp,
-        ),
+        idv_session:,
       ).to_h
 
       proofing_components_hash.empty? ? nil : proofing_components_hash

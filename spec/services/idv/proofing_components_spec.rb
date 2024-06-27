@@ -212,8 +212,8 @@ RSpec.describe Idv::ProofingComponents do
         before do
           idv_session.threatmetrix_review_status = 'pass'
         end
-        it 'returns nil' do
-          expect(subject.threatmetrix).to be_nil
+        it 'returns false' do
+          expect(subject.threatmetrix).to eql(false)
         end
       end
 
