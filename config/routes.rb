@@ -2,7 +2,6 @@
 
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
-  get '/api/analytics-events' => 'analytics_events#index'
   get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
@@ -429,6 +428,8 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
         put '/by_mail/request_letter' => 'by_mail/request_letter#create'
+        get '/by_mail/resend_letter' => 'by_mail/resend_letter#new', as: :resend_letter
+        put '/by_mail/resend_letter' => 'by_mail/resend_letter#create'
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
