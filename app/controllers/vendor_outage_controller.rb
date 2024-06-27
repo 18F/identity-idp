@@ -7,7 +7,7 @@ class VendorOutageController < ApplicationController
     outage_status = OutageStatus.new
 
     @specific_message = outage_status.outage_message
-    @show_gpo_option = from_idv_phone? && send_letter_available?
+    @show_gpo_option = from_idv_phone? && user_signed_in? && send_letter_available?
     outage_status.track_event(analytics)
   end
 

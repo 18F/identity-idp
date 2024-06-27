@@ -21,7 +21,10 @@ RSpec.describe VendorOutageController do
     before { allow(controller).to receive(:from_idv_phone?).and_return(true) }
 
     context 'gpo letter available' do
-      before { allow(controller).to receive(:gpo_letter_available?).and_return(true) }
+      before do
+        stub_sign_in
+        allow(controller).to receive(:send_letter_available?).and_return(true)
+      end
 
       it 'sets show_gpo_option as true' do
         get :show

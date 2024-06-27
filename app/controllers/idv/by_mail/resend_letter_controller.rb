@@ -3,10 +3,11 @@
 module Idv
   module ByMail
     class ResendLetterController < ApplicationController
-      include Idv::AvailabilityConcern
+      include AvailabilityConcern
       include IdvSessionConcern
-      include Idv::StepIndicatorConcern
+      include StepIndicatorConcern
       include VerifyByMailConcern
+      include AbTestAnalyticsConcern
 
       before_action :confirm_two_factor_authenticated
       before_action :confirm_verification_needed

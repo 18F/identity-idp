@@ -7,7 +7,8 @@ module Idv
       include IdvSessionConcern
       include Idv::StepIndicatorConcern
       include FraudReviewConcern
-      include Idv::VerifyByMailConcern
+      include AbTestAnalyticsConcern
+      include VerifyByMailConcern
 
       prepend_before_action :note_if_user_did_not_receive_letter
       before_action :confirm_two_factor_authenticated
