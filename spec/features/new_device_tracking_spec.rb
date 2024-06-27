@@ -197,6 +197,26 @@ RSpec.describe 'New device tracking' do
         end
       end
     end
+
+    context 'authenticating after new account creation from the same device' do
+      let(:user) do
+        user = sign_up_and_2fa_ial1_user
+        click_on t('links.sign_out')
+        user
+      end
+
+      before do
+        user
+        reset_email
+      end
+
+      it 'does not send a second user notification' do
+        visit new_user_session_path
+        sign_in_live_with_2fa(user)
+
+        expect_delivered_email_count(0)
+      end
+    end
   end
 
   context 'user does not have existing devices' do

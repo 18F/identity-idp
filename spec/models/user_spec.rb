@@ -1564,6 +1564,14 @@ RSpec.describe User do
       end
 
       it { expect(result).to eq(false) }
+
+      context 'with account_created event' do
+        before do
+          create(:event, device:, event_type: :account_created)
+        end
+
+        it { expect(result).to eq(true) }
+      end
     end
 
     context 'with existing device with sign_in_after_2fa event' do
