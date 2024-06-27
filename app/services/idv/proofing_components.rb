@@ -8,10 +8,6 @@ module Idv
       @idv_session = idv_session
     end
 
-    def as_json(*)
-      to_h
-    end
-
     def document_check
       if user.establishing_in_person_enrollment || user.pending_in_person_enrollment
         Idp::Constants::Vendors::USPS
@@ -51,8 +47,8 @@ module Idv
     end
 
     def threatmetrix
-      if threatmetrix_review_status.present?
-        FeatureManagement.proofing_device_profiling_collecting_enabled? ? true : nil
+      if idv_session.threatmetrix_review_status.present?
+        FeatureManagement.proofing_device_profiling_collecting_enabled?
       end
     end
 
@@ -86,6 +82,6 @@ module Idv
 
     private
 
-    attr_reader :user, :idv_session, :profile
+    attr_reader :user, :idv_session
   end
 end
