@@ -5,8 +5,8 @@
   <% end %>
   <%= render LanguagePickerComponent.new(class: 'footer__language-picker') %>
   <div class="footer__links">
-    <%= new_tab_link_to(t('links.help'), MarketingSite.help_url) %>
-    <%= new_tab_link_to(t('links.contact'), MarketingSite.contact_url) %>
+    <%= new_tab_link_to(t('links.help'), help_center_redirect_url) %>
+    <%= new_tab_link_to(t('links.contact'), contact_redirect_url) %>
     <%= new_tab_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url) %>
     <%= new_tab_link_to(t('links.accessibility_statement'), MarketingSite.accessibility_statement_url) %>
   </div>
