@@ -9,11 +9,12 @@ class GpoVerifyForm
   validate :validate_pending_profile
 
   attr_accessor :otp, :pii, :pii_attributes
-  attr_reader :user
+  attr_reader :user, :resolved_authn_context_result
 
-  def initialize(user:, pii:, otp: nil)
+  def initialize(user:, pii:, resolved_authn_context_result:, otp: nil)
     @user = user
     @pii = pii
+    @resolved_authn_context_result = resolved_authn_context_result
     @otp = otp
   end
 
@@ -127,7 +128,7 @@ class GpoVerifyForm
   end
 
   def user_can_request_another_letter?
-    policy = Idv::GpoVerifyByMailPolicy.new(user)
+    policy = Idv::GpoVerifyByMailPolicy.new(user, resolved_authn_context_result)
     policy.resend_letter_available?
   end
 end

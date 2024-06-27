@@ -50,7 +50,7 @@ module IdvStepConcern
   end
 
   def redirect_for_mail_only
-    policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+    policy = Idv::GpoVerifyByMailPolicy.new(current_user, resolved_authn_context_result)
     if policy.send_letter_available?
       redirect_to idv_mail_only_warning_url
     else

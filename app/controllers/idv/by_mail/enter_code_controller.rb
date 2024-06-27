@@ -26,7 +26,12 @@ module Idv
         end
 
         prefilled_code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
-        @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii, otp: prefilled_code)
+        @gpo_verify_form = GpoVerifyForm.new(
+          user: current_user,
+          pii: pii,
+          resolved_authn_context_result: resolved_authn_context_result,
+          otp: prefilled_code,
+        )
         render_enter_code_form
       end
 
@@ -119,6 +124,7 @@ module Idv
         GpoVerifyForm.new(
           user: current_user,
           pii: pii,
+          resolved_authn_context_result: resolved_authn_context_result,
           otp: params_otp,
         )
       end
@@ -148,7 +154,7 @@ module Idv
 
       def user_can_request_another_letter?
         return @user_can_request_another_letter if defined?(@user_can_request_another_letter)
-        policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+        policy = Idv::GpoVerifyByMailPolicy.new(current_user, resolved_authn_context_result)
         @user_can_request_another_letter = policy.resend_letter_available?
       end
 

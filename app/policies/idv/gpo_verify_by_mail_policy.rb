@@ -2,10 +2,11 @@
 
 module Idv
   class GpoVerifyByMailPolicy
-    attr_reader :user
+    attr_reader :user, :resolved_authn_context_result
 
-    def initialize(user)
+    def initialize(user, resolved_authn_context_result)
       @user = user
+      @resolved_authn_context_result = resolved_authn_context_result
     end
 
     def resend_letter_available?

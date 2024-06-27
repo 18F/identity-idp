@@ -40,7 +40,10 @@ module Idv
       end
 
       def gpo_mail_policy
-        @gpo_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(current_user)
+        @gpo_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(
+          current_user,
+          resolved_authn_context_result,
+        )
       end
 
       def self.step_info

@@ -17,7 +17,7 @@ class VendorOutageController < ApplicationController
 
   def gpo_letter_available?
     return false unless current_user
-    policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+    policy = Idv::GpoVerifyByMailPolicy.new(current_user, resolved_authn_context_result)
     policy.send_letter_available?
   end
 end

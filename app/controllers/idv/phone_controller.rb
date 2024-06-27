@@ -225,7 +225,7 @@ module Idv
 
     def gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
-      policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+      policy = Idv::GpoVerifyByMailPolicy.new(current_user, resolved_authn_context_result)
       @gpo_letter_available = policy.send_letter_available?
     end
 

@@ -29,7 +29,7 @@ module RateLimitConcern
   private
 
   def confirm_not_rate_limited_for_phone_and_letter_address_verification
-    gpo_policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+    gpo_policy = Idv::GpoVerifyByMailPolicy.new(current_user, resolved_authn_context_result)
     if idv_attempter_rate_limited?(:proof_address) && gpo_policy.rate_limited?
       rate_limit_redirect!(:proof_address)
       return true
