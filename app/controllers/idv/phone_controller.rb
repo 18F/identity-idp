@@ -225,8 +225,8 @@ module Idv
 
     def gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
-      @gpo_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
-                                !Idv::GpoMail.new(current_user).rate_limited?
+      policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+      @gpo_letter_available = policy.send_letter_available?
     end
 
     # Migrated from otp_delivery_method_controller

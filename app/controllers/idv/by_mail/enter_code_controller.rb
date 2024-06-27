@@ -148,11 +148,8 @@ module Idv
 
       def user_can_request_another_letter?
         return @user_can_request_another_letter if defined?(@user_can_request_another_letter)
-        gpo_mail = Idv::GpoMail.new(current_user)
-        @user_can_request_another_letter =
-          FeatureManagement.gpo_verification_enabled? &&
-          !gpo_mail.rate_limited? &&
-          !gpo_mail.profile_too_old?
+        policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+        @user_can_request_another_letter = policy.resend_letter_available?
       end
 
       def last_date_letter_was_sent

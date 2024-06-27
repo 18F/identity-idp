@@ -1,11 +1,22 @@
 # frozen_string_literal: true
 
 module Idv
-  class GpoMail
-    attr_reader :current_user
+  class GpoVerifyByMailPolicy
+    attr_reader :user
 
-    def initialize(current_user)
-      @current_user = current_user
+    def initialize(user)
+      @user = user
+    end
+
+    def resend_letter_available?
+      FeatureManagement.gpo_verification_enabled? &&
+        !rate_limited? &&
+        !profile_too_old?
+    end
+
+    def send_letter_available?
+      FeatureManagement.gpo_verification_enabled? &&
+        !rate_limited?
     end
 
     def rate_limited?
@@ -13,12 +24,12 @@ module Idv
     end
 
     def profile_too_old?
-      return false if !current_user.pending_profile
+      return false if !user.pending_profile
 
       min_creation_date = IdentityConfig.store.
         gpo_max_profile_age_to_send_letter_in_days.days.ago
 
-      current_user.pending_profile.created_at < min_creation_date
+      user.pending_profile.created_at < min_creation_date
     end
 
     private
@@ -34,16 +45,16 @@ module Idv
 
     def too_many_letter_requests_within_window?
       return false unless window_limit_enabled?
-      current_user.gpo_confirmation_codes.where(
+      user.gpo_confirmation_codes.where(
         created_at: IdentityConfig.store.max_mail_events_window_in_days.days.ago..Time.zone.now,
       ).count >= IdentityConfig.store.max_mail_events
     end
 
     def last_letter_request_too_recent?
       return false unless last_not_too_recent_enabled?
-      return false unless current_user.gpo_verification_pending_profile?
+      return false unless user.gpo_verification_pending_profile?
 
-      current_user.gpo_verification_pending_profile.gpo_confirmation_codes.exists?(
+      user.gpo_verification_pending_profile.gpo_confirmation_codes.exists?(
         [
           'created_at > ?',
           IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours.ago,
