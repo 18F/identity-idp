@@ -3,10 +3,7 @@ module Idv
     delegate :send_letter_available?, :resend_letter_available?, to: :gpo_verify_by_mail_policy
 
     def gpo_verify_by_mail_policy
-      @gpo_verify_by_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(
-        current_user,
-        resolved_authn_context_result,
-      )
+      @gpo_verify_by_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(current_user)
     end
 
     def log_letter_requested_analytics(resend:)
