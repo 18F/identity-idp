@@ -9,6 +9,8 @@ module Proofing
       REFERENCE = 'aaa-bbb-ccc'
 
       def proof(applicant)
+        raise 'There is a blank zipcode' if applicant[:zipcode].nil?
+
         first_name = applicant[:first_name]
         ssn = applicant[:ssn]
         zipcode = applicant[:zipcode]
