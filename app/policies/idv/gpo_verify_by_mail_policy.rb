@@ -9,14 +9,14 @@ module Idv
     end
 
     def resend_letter_available?
-      FeatureManagement.gpo_verification_enabled? &&
-        !rate_limited? &&
-        !profile_too_old?
+      @resend_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
+                                   !rate_limited? &&
+                                   !profile_too_old?
     end
 
     def send_letter_available?
-      FeatureManagement.gpo_verification_enabled? &&
-        !rate_limited?
+      @send_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
+                                 !rate_limited?
     end
 
     def rate_limited?
