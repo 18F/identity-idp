@@ -237,11 +237,10 @@ migrate:
     - git diff db/
     - make lint_database_schema_files
 
-specs:
+.specs:
   stage: test
   needs:
     - job: install
-  parallel: 22
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -274,7 +273,7 @@ specs:
       - rspec_json/
     reports:
       junit: rspec.xml
-  script:
+  before_script:
     - *bundle_install
     - *yarn_install
     - cp config/application.yml.default config/application.yml
@@ -293,7 +292,20 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
-    - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
+  script:
+    - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json $SPECS_TO_RUN"]
+    
+feature-specs:
+  extends: .specs
+  parallel: 20
+  variables:
+    SPECS_TO_RUN: 'spec/features/**/*.rb'
+
+other-specs:
+  extends: .specs
+  parallel: 4
+  variables:
+    SPECS_TO_RUN: 'spec/**/*'
 
 lint:
   stage: test
