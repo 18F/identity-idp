@@ -81,13 +81,13 @@ namespace :data_requests do
       end
 
       cloudwatch_results =
-        if !cloudwatch_dates.empty?
+        if cloudwatch_dates.empty?
+          []
+        else
           DataRequests::Local::FetchCloudwatchLogs.new(
             user_report[:login_uuid],
             cloudwatch_dates,
           ).call
-        else
-          []
         end
 
       DataRequests::Local::WriteCloudwatchLogs.new(
