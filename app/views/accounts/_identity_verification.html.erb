@@ -36,7 +36,7 @@
     <% end %>
 
     <% if !@presenter.active_profile? || @presenter.active_profile_for_authn_context? %>
-      <%= new_tab_link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %>
+      <%= new_tab_link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview', flow: :account_show, location: :idv) %>
     <% end %>
   </p>
 <% end %>
@@ -46,7 +46,7 @@
     <%= t('account.index.verification.verify_with_biometric_html', sp_name: @presenter.sp_name) %>
   </p>
   <p>
-    <%= new_tab_link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview') %>
+    <%= new_tab_link_to t('account.index.verification.learn_more_link'), help_center_redirect_path(category: 'verify-your-identity', article: 'overview', flow: :account_show, location: :idv) %>
   </p>
 <% end %>
 
