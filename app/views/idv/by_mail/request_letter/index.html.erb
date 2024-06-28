@@ -42,13 +42,12 @@
 </p>
 
 <p>
-  <%= start_over_link_html = link_to(
-        t('idv.messages.gpo.start_over_link_text'),
-        idv_confirm_start_over_before_letter_path,
-      )
-      t(
+  <%= t(
         'idv.messages.gpo.start_over_html',
-        start_over_link_html: start_over_link_html,
+        start_over_link_html: link_to(
+          t('idv.messages.gpo.start_over_link_text'),
+          idv_confirm_start_over_before_letter_path,
+        ),
       )
   %>
 </p>
