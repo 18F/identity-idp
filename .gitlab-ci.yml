@@ -582,9 +582,9 @@ trigger_devops:
                         - path: /
                           pathType: Prefix
               dashboard:
+                enabled: true
                 config:
                   kubernetesReviewApp: true
-                  clientCertS3Bucket: login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2
                   newrelic:
                     enabled: false
                   postgres:
@@ -597,7 +597,7 @@ trigger_devops:
                   postLogoutUrl: "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
                   domainName: "$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
                 ingress:
-                  enabled: false
+                  enabled: true
                   hosts:
                     - host: "$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
                       paths:
