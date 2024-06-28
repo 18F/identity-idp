@@ -60,7 +60,7 @@ RSpec.describe Idv::ByMail::RequestLetterController,
     end
 
     it 'redirects if the user has sent too much mail' do
-      allow(controller.gpo_mail_policy).to receive(:rate_limited?).and_return(true)
+      allow(controller.gpo_mail_service).to receive(:rate_limited?).and_return(true)
       allow(subject.idv_session).to receive(:address_mechanism_chosen?).
         and_return(true)
       get :index
@@ -69,7 +69,7 @@ RSpec.describe Idv::ByMail::RequestLetterController,
     end
 
     it 'allows a user to request another letter' do
-      allow(controller.gpo_mail_policy).to receive(:rate_limited?).and_return(false)
+      allow(controller.gpo_mail_service).to receive(:rate_limited?).and_return(false)
       get :index
 
       expect(response).to be_ok

@@ -15,7 +15,7 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust:).parse
 
-        expect(result.expanded_component_values).to eq('C1.C2.Cb')
+        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.Cb')
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(true)
@@ -32,7 +32,7 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust:).parse
 
-        expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
+        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
@@ -47,18 +47,15 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust:).parse
 
-        expect(result.expanded_component_values).to eq('C1.C2.P1.Pe')
+        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pe')
+        expect(result.aal2?).to eq(true)
+        expect(result.phishing_resistant?).to eq(false)
+        expect(result.hspd12?).to eq(false)
+        expect(result.identity_proofing?).to eq(true)
+        expect(result.biometric_comparison?).to eq(false)
+        expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(true)
       end
-    end
-
-    it 'adds the two pieces of fair evidence components' do
-      vector_of_trust = 'Pb'
-
-      result = Vot::Parser.new(vector_of_trust:).parse
-
-      expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
-      expect(result.two_pieces_of_fair_evidence?).to eq(true)
     end
 
     context 'when a vector includes unrecognized components' do

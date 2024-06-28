@@ -50,12 +50,9 @@ module IdvStepConcern
   end
 
   def redirect_for_mail_only
-    policy = Idv::GpoVerifyByMailPolicy.new(current_user)
-    if policy.send_letter_available?
-      redirect_to idv_mail_only_warning_url
-    else
-      redirect_to vendor_outage_url
-    end
+    return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
+
+    redirect_to idv_mail_only_warning_url
   end
 
   def pii_from_user

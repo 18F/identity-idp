@@ -9,7 +9,8 @@ module Idv
 
       before_action :confirm_two_factor_authenticated
       before_action :confirm_verification_needed
-      before_action :confirm_resend_letter_available
+      before_action :confirm_mail_not_rate_limited
+      before_action :confirm_profile_not_too_old
 
       def new
         analytics.idv_resend_letter_visited
@@ -27,8 +28,8 @@ module Idv
         end
       end
 
-      def gpo_mail_policy
-        @gpo_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(current_user)
+      def gpo_mail_service
+        @gpo_mail_service ||= Idv::GpoMail.new(current_user)
       end
 
       private
@@ -38,10 +39,12 @@ module Idv
         redirect_to account_url
       end
 
-      def confirm_resend_letter_available
-        unless gpo_mail_policy.resend_letter_available?
-          redirect_to idv_verify_by_mail_enter_code_path
-        end
+      def confirm_profile_not_too_old
+        redirect_to idv_verify_by_mail_enter_code_path if gpo_mail_service.profile_too_old?
+      end
+
+      def confirm_mail_not_rate_limited
+        redirect_to idv_verify_by_mail_enter_code_path if gpo_mail_service.rate_limited?
       end
 
       def update_tracking

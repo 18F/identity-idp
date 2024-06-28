@@ -36,7 +36,7 @@ module Vot
       name: 'Pb',
       description: 'A biometric comparison is required as part of identity proofing',
       implied_component_values: ['P1'],
-      requirements: [:biometric_comparison, :two_pieces_of_fair_evidence],
+      requirements: [:biometric_comparison],
     ).freeze
     Pe = ComponentValue.new(
       name: 'Pe',

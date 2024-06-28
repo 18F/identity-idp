@@ -186,7 +186,6 @@ RSpec.describe Analytics do
           sp_request: {
             aal2: true,
             biometric_comparison: true,
-            two_pieces_of_fair_evidence: true,
             component_values: {
               'C1' => true,
               'C2' => true,
