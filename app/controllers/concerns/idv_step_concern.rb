@@ -51,7 +51,7 @@ module IdvStepConcern
   end
 
   def redirect_for_mail_only
-    if gpo_verify_by_mail_policy.send_letter_available?.send_letter_available?
+    if gpo_verify_by_mail_policy.send_letter_available?
       redirect_to idv_mail_only_warning_url
     else
       redirect_to vendor_outage_url
