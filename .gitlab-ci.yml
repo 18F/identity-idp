@@ -854,6 +854,7 @@ pinpoint_check_scheduled:
       if [ "$CI_JOB_STATUS" != "success" ]; then
         ./scripts/notify-slack \
           --icon ":gitlab:"  \
+          --username "gitlab-notify" \
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
@@ -877,6 +878,7 @@ audit_packages_scheduled:
       if [ "$CI_JOB_STATUS" != "success" ]; then
         ./scripts/notify-slack \
           --icon ":gitlab:"  \
+          --username "gitlab-notify" \
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
