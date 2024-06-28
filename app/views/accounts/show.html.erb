@@ -1,6 +1,7 @@
 <% self.title = t('titles.account') %>
 
 <%= render 'accounts/header', presenter: @presenter %>
+
 <% if @presenter.showing_alerts? %>
   <div class="margin-bottom-4">
     <% if @presenter.show_password_reset_partial? %>
