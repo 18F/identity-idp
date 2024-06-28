@@ -25,7 +25,7 @@ RSpec.describe 'idv/session_errors/exception.html.erb' do
   it 'renders a list of troubleshooting options' do
     expect(rendered).to have_link(
       t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-      href: MarketingSite.contact_url,
+      href: contact_redirect_url,
     )
   end
 
@@ -36,7 +36,7 @@ RSpec.describe 'idv/session_errors/exception.html.erb' do
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
         t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-        href: MarketingSite.contact_url,
+        href: contact_redirect_url,
       )
     end
   end
