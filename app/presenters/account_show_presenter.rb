@@ -9,6 +9,8 @@ class AccountShowPresenter
               :authn_context,
               :sp_name
 
+  delegate :identity_verified_with_biometric_comparison?, to: :user
+
   def initialize(
     decrypted_pii:,
     sp_session_request_url:,
@@ -53,13 +55,13 @@ class AccountShowPresenter
     return @active_profile_for_authn_context if defined?(@active_profile_for_authn_context)
 
     @active_profile_for_authn_context = active_profile? && (
-      !authn_context.biometric_comparison? || user.identity_verified_with_biometric_comparison?
+      !authn_context.biometric_comparison? || identity_verified_with_biometric_comparison?
     )
   end
 
   def pending_idv?
     return @pending_idv if defined?(@pending_idv)
-    @pending_idv = authn_context.identity_proofing? && !active_profile?
+    @pending_idv = authn_context.identity_proofing? && !active_profile_for_authn_context?
   end
 
   def pending_ipp?
@@ -102,10 +104,6 @@ class AccountShowPresenter
 
   def personal_key_generated_at
     user.personal_key_generated_at
-  end
-
-  def biometric_identity_verification?
-    user.identity_verified_with_biometric_comparison?
   end
 
   def header_personalization

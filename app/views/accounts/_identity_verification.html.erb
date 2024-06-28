@@ -22,15 +22,15 @@
 <% if @presenter.active_profile? || @presenter.pending_ipp? || @presenter.pending_gpo? %>
   <p>
     <% if @presenter.active_profile_for_authn_context? %>
-      <% if @presenter.biometric_identity_verification? %>
+      <% if @presenter.identity_verified_with_biometric_comparison? %>
         <%= t('account.index.verification.you_verified_your_biometric_identity', app_name: APP_NAME) %>
       <% else %>
         <%= t('account.index.verification.you_verified_your_identity_html', sp_name: @presenter.user.active_profile.initiating_service_provider&.friendly_name || APP_NAME) %>
       <% end %>
     <% elsif @presenter.active_profile? %>
       <%= t('account.index.verification.nonbiometric_verified_html', app_name: APP_NAME, date: @presenter.formatted_nonbiometric_idv_date) %>
-    <% elsif @presenter.user.pending_profile.initiating_service_provider %>
-      <%= t('account.index.verification.finish_verifying_html', sp_name: @presenter.user.pending_profile.initiating_service_provider.friendly_name) %>
+    <% elsif @presenter.sp_name || @presenter.user.pending_profile.initiating_service_provider %>
+      <%= t('account.index.verification.finish_verifying_html', sp_name: @presenter.sp_name || @presenter.user.pending_profile.initiating_service_provider.friendly_name) %>
     <% else %>
       <%= t('account.index.verification.finish_verifying_no_sp', app_name: APP_NAME) %>
     <% end %>

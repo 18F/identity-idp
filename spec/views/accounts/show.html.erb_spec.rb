@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'accounts/show.html.erb' do
+  let(:authn_context) { Vot::Parser::Result.no_sp_result }
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
@@ -12,7 +13,7 @@ RSpec.describe 'accounts/show.html.erb' do
         decrypted_pii: nil,
         user: user,
         sp_session_request_url: nil,
-        authn_context: nil,
+        authn_context:,
         sp_name: nil,
         locked_for_session: false,
       ),
@@ -26,26 +27,16 @@ RSpec.describe 'accounts/show.html.erb' do
   end
 
   context 'when current user has a verified account' do
-    before do
-      allow(user).to receive(:identity_verified?).and_return(true)
-    end
+    let(:user) { build(:user, :proofed) }
 
-    it 'displays a Verified badge' do
-      render
-
-      expect(rendered).to have_content(t('account.index.verification.verified_badge'))
+    it 'renders idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
     end
   end
 
   context 'when current user has password_reset_profile' do
     before do
       allow(user).to receive(:password_reset_profile).and_return(true)
-    end
-
-    it 'displays an Unverified badge' do
-      render
-
-      expect(rendered).to have_content(t('account.index.verification.unverified_badge'))
     end
 
     it 'displays an alert with instructions to reactivate their profile' do
@@ -78,31 +69,19 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'when current user has pending_profile' do
-    before do
-      pending = create(
-        :profile,
-        gpo_verification_pending_at: 2.days.ago,
-        created_at: 2.days.ago,
-        user: user,
-      )
-      allow(user).to receive(:pending_profile).and_return(pending)
+  context 'when current user has gpo pending profile' do
+    let(:user) { create(:user, :with_pending_gpo_profile) }
+
+    it 'renders idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
     end
+  end
 
-    it 'displays a Pending badge' do
-      render
+  context 'when current user has ipp pending profile' do
+    let(:user) { build(:user, :with_pending_in_person_enrollment) }
 
-      expect(rendered).to have_content(t('account.index.verification.pending_badge'))
-    end
-
-    it 'contains a link to activate profile' do
-      render
-
-      expect(rendered).
-        to have_link(
-          t('account.index.verification.reactivate_button'),
-          href: idv_verify_by_mail_enter_code_path,
-        )
+    it 'renders idv partial' do
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
     end
   end
 
@@ -193,7 +172,7 @@ RSpec.describe 'accounts/show.html.erb' do
           decrypted_pii: nil,
           user: user,
           sp_session_request_url: sp.return_to_sp_url,
-          authn_context: nil,
+          authn_context:,
           sp_name: sp.friendly_name,
           locked_for_session: false,
         ),

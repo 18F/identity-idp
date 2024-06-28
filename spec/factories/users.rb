@@ -311,7 +311,7 @@ FactoryBot.define do
       fully_registered
 
       after :build do |user|
-        create(:profile, :password_reset, :with_pii, user: user)
+        create(:profile, :verified, :password_reset, :with_pii, user: user)
       end
     end
 
