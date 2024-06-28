@@ -106,6 +106,7 @@ module Reporting
             name
           , properties.user_id as user_id
         | filter name in %{event_names}
+        | limit 10000
       QUERY
     end
 

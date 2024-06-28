@@ -8,9 +8,8 @@ RSpec.describe Reporting::MfaReport do
   subject(:report) { Reporting::MfaReport.new(issuers: [issuer], time_range:) }
 
   before do
-    cloudwatch_client = double(
-      'Reporting::CloudwatchClient',
-      fetch: [
+    stub_cloudwatch_logs(
+      [
         {
           'personal_key_total' => '2',
           'sms_total' => '5',
@@ -33,8 +32,6 @@ RSpec.describe Reporting::MfaReport do
         },
       ],
     )
-
-    allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
   describe '#as_tables' do
@@ -75,7 +72,7 @@ RSpec.describe Reporting::MfaReport do
     let(:default_args) do
       {
         num_threads: 10,
-        ensure_complete_logs: true,
+        ensure_complete_logs: false,
         slice_interval: 1.day,
         progress: false,
         logger: nil,
