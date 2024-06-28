@@ -3,7 +3,10 @@
 module Idv
   module VerifyByMailConcern
     def gpo_verify_by_mail_policy
-      @gpo_verify_by_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(current_user)
+      @gpo_verify_by_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(
+        current_user,
+        resolved_authn_context_result,
+      )
     end
 
     def log_letter_requested_analytics(resend:)

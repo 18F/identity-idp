@@ -3,8 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe Idv::GpoVerifyByMailPolicy do
-  let(:subject) { described_class.new(user) }
+  let(:subject) { described_class.new(user, resolved_authn_context_result) }
   let(:user) { create(:user) }
+  let(:two_pieces_of_fair_evidence) { false }
+  let(:resolved_authn_context_result) do
+    Vot::Parser::Result.no_sp_result.with(
+      two_pieces_of_fair_evidence?: two_pieces_of_fair_evidence,
+    )
+  end
 
   describe '#resend_letter_available?' do
     context 'when the feature flag is off' do
@@ -64,6 +70,10 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
           and_return true
       end
 
+      it 'returns true when the user is not rate-limited' do
+        expect(subject.send_letter_available?).to eq true
+      end
+
       it 'returns false when the user is rate-limited' do
         enqueue_gpo_letter_for(user, at_time: 4.days.ago)
         enqueue_gpo_letter_for(user, at_time: 3.days.ago)
@@ -76,6 +86,27 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
         create(:profile, :verify_by_mail_pending, user: user, created_at: 90.days.ago)
         expect(subject.send_letter_available?).to eq true
       end
+
+      context 'the 2 pieces of fair evidence requirement is present' do
+        let(:two_pieces_of_fair_evidence) { true }
+
+        it 'returns false when the feature flag is enabled' do
+          allow(IdentityConfig.store).to receive(
+            :verify_by_mail_disabled_for_biometric_comparison,
+          ).and_return(true)
+
+          expect(subject.send_letter_available?).to eq(false)
+        end
+
+        it 'returns true when the feature flag is disabled' do
+          allow(IdentityConfig.store).to receive(
+            :verify_by_mail_disabled_for_biometric_comparison,
+          ).and_return(false)
+
+          expect(subject.send_letter_available?).to eq(true)
+        end
+      end
+
     end
   end
 

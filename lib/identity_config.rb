@@ -412,6 +412,7 @@ module IdentityConfig
     config.add(:vendor_status_idv_scheduled_maintenance_start, type: :string)
     config.add(:vendor_status_idv_scheduled_maintenance_finish, type: :string)
     config.add(:verification_errors_report_configs, type: :json)
+    config.add(:verify_by_mail_disabled_for_biometric_comparison, type: :boolean)
     config.add(:verify_gpo_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_gpo_key_max_attempts, type: :integer)
     config.add(:verify_personal_key_attempt_window_in_minutes, type: :integer)

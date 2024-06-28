@@ -323,6 +323,7 @@ vendor_status_voice: 'operational'
 vendor_status_idv_scheduled_maintenance_start: ''
 vendor_status_idv_scheduled_maintenance_finish: ''
 verification_errors_report_configs: '[]'
+verify_by_mail_disabled_for_biometric_comparison: true
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
@@ -497,6 +498,7 @@ production:
   usps_upload_sftp_host: ''
   usps_upload_sftp_password: ''
   usps_upload_sftp_username: ''
+  verify_by_mail_disabled_for_biometric_comparison: false
 
 test:
   aamva_private_key: 123abc
