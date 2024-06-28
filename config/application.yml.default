@@ -309,6 +309,7 @@ sign_in_recaptcha_score_threshold: 0.0
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 socure_document_request_endpoint: ''
+socure_docv_reason_codes: '{}'
 socure_id_plus_endpoint: ''
 socure_id_secret_key: ''
 socure_webhook_secret_key: ''

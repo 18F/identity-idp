@@ -5,6 +5,16 @@
 
   <h2><%= t('errors.doc_auth.rate_limited_subheading') %></h2>
   <p><%= t('idv.failure.attempts_html', count: @remaining_submit_attempts) %></p>
+  <% if @decision_reasons&.any? %>
+    <p>
+      <strong>Decision Reasons:</strong>
+      <ul>
+        <% @decision_reasons.each do |dr| %>
+          <li><%= dr %></li>
+        <% end %>
+      </ul>
+    </p>
+  <% end %>
 
   <% c.with_action_button(
        url: @try_again_path,

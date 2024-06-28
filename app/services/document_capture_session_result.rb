@@ -10,11 +10,11 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :failed_back_image_fingerprints,
   :failed_selfie_image_fingerprints,
   :captured_at,
-  :doc_auth_success, :selfie_status,
+  :doc_auth_success, :selfie_status, :reason_codes,
   keyword_init: true,
   allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
                     :failed_back_image_fingerprints, :failed_selfie_image_fingerprints,
-                    :captured_at, :doc_auth_success, :selfie_status]
+                    :captured_at, :doc_auth_success, :selfie_status, :reason_codes]
 ) do
   include DocAuth::SelfieConcern
 
@@ -24,6 +24,11 @@ DocumentCaptureSessionResult = RedactedStruct.new(
 
   def selfie_status
     self[:selfie_status].to_sym
+  end
+
+  def reasons
+    socure_docv_reason_codes = IdentityConfig.store.socure_docv_reason_codes
+    reason_codes&.map { |r| socure_docv_reason_codes[r] }
   end
 
   alias_method :success?, :success

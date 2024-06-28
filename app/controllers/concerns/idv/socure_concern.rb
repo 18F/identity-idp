@@ -36,6 +36,7 @@ module Idv
         selfie_image_fingerprint: nil,
         doc_auth_success: doc_auth_response.doc_auth_success?,
         selfie_status: doc_auth_response.selfie_status,
+        reason_codes: data.dig('reasonCodes'),
       )
     end
   end

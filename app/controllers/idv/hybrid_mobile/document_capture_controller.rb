@@ -94,6 +94,7 @@ module Idv
       def warning
         @remaining_submit_attempts = 5 # rate_limiter.remaining_count
         @try_again_path = idv_hybrid_mobile_document_capture_url
+        @decision_reasons = stored_result&.reasons
       end
 
       def extra_view_variables
