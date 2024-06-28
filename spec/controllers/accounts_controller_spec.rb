@@ -108,23 +108,6 @@ RSpec.describe AccountsController do
       end
     end
 
-    context 'when a profile is pending' do
-      render_views
-      it 'renders the pending profile banner' do
-        user = create(
-          :user,
-          :fully_registered,
-          profiles: [build(:profile, gpo_verification_pending_at: 1.day.ago)],
-        )
-
-        sign_in user
-        get :show
-
-        expect(response).to render_template(:show)
-        expect(response).to render_template(partial: 'accounts/_pending_profile_gpo')
-      end
-    end
-
     context 'when a user is suspended' do
       it 'redirects to contact support page' do
         user = create(:user, :fully_registered, :suspended)
