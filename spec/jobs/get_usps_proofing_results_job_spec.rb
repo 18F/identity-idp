@@ -196,6 +196,9 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
     ).in_time_zone('UTC')
   end
   let(:in_person_proofing_enforce_tmx) { true }
+  let(:sponsor_id) { '12345'}
+  let(:usps_sponsor_id) { '98765' }
+  let(:usps_eipp_sponsor_id) { '98765' }
 
   before do
     allow(IdentityConfig.store).
@@ -213,6 +216,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       and_return(in_person_proofing_enforce_tmx)
     allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled).
       and_return(false)
+    allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
       request_delay_ms / GetUspsProofingResultsJob::MILLISECONDS_PER_SECOND,
@@ -234,6 +238,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               :with_notification_phone_configuration,
               issuer: 'http://localhost:3000',
               selected_location_details: { name: name },
+              sponsor_id: sponsor_id,
             )
           end
         end
@@ -775,7 +780,9 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
         context 'when an enrollment passes proofing with an unsupported ID' do
           before(:each) do
+            pending_enrollment.update(sponsor_id: '22')
             stub_request_passed_proofing_unsupported_id_results
+            allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return('13')
           end
 
           it_behaves_like(
@@ -795,6 +802,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
 
             pending_enrollment.reload
+    
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -814,6 +822,56 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               wait_until: expected_wait_until,
               job_name: 'GetUspsProofingResultsJob',
             )
+          end
+        end
+
+        context 'when an Enhanced IPP enrollment passess proofing with an unsupported ID, enrollment by-passes the Primary ID check' do
+          before(:each) do
+            stub_request_passed_proofing_unsupported_id_results
+            allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(sponsor_id)
+          end
+
+          # it_behaves_like(
+          #   'enrollment_with_a_status_update',
+          #   passed: true,
+          #   email_type: 'Success',
+          #   enrollment_status: InPersonEnrollment::STATUS_PASSED,
+          #   response_json: UspsInPersonProofing::Mock::Fixtures.
+          #     request_passed_proofing_results_response,
+          # )
+
+
+          it 'invokes the SendProofingNotificationJob and logs details about the success' do
+            allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+              and_return(true)
+            expected_wait_until = nil
+            freeze_time do
+              expected_wait_until = 1.hour.from_now
+              expect do
+                job.perform(Time.zone.now)
+                pending_enrollment.reload
+              end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id).at(expected_wait_until).on_queue(:intentionally_delayed)
+            end
+
+            # expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
+            # expect(job_analytics).to have_logged_event(
+            #   'GetUspsProofingResultsJob: Enrollment status updated',
+            #   hash_including(
+            #     reason: 'Successful status update',
+            #     passed: true,
+            #     job_name: 'GetUspsProofingResultsJob',
+            #   ),
+            # )
+            # expect(job_analytics).to have_logged_event(
+            #   'GetUspsProofingResultsJob: Success or failure email initiated',
+            #   email_type: 'Success',
+            #   enrollment_code: pending_enrollment.enrollment_code,
+            #   service_provider: anything,
+            #   timestamp: anything,
+            #   wait_until: expected_wait_until,
+            #   job_name: 'GetUspsProofingResultsJob',
+            # )
           end
         end
 
