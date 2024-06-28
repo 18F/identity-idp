@@ -3,20 +3,25 @@
 module Users
   class PasswordsController < ApplicationController
     include ReauthenticationRequiredConcern
-    include PasswordConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :capture_password_if_pii_present_but_locked
     before_action :confirm_recently_authenticated_2fa
 
     def edit
-      analytics.edit_password_visit
+      @update_password_presenter = UpdatePasswordPresenter.new(
+        user: current_user,
+        required_password_change: required_password_change,
+      )
+      analytics.edit_password_visit(required_password_change: required_password_change)
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
-      @forbidden_passwords = forbidden_passwords
     end
 
     def update
-      @update_user_password_form = UpdateUserPasswordForm.new(current_user, user_session)
+      @update_user_password_form = UpdateUserPasswordForm.new(
+        current_user, user_session,
+        required_password_change
+      )
 
       result = @update_user_password_form.submit(user_password_params)
 
@@ -38,7 +43,12 @@ module Users
       redirect_to capture_password_url
     end
 
+    def required_password_change
+      @required_password_change ||= session[:redirect_to_change_password]
+    end
+
     def handle_valid_password
+      session.delete(:redirect_to_change_password)
       send_password_reset_risc_event
       create_event_and_notify_user_about_password_change
       # Changing the password hash terminates the warden session, and bypass_sign_in ensures
@@ -50,7 +60,15 @@ module Users
         user_session[:personal_key] = @update_user_password_form.personal_key
         redirect_to manage_personal_key_url
       else
-        redirect_to account_url
+        redirect_to account_or_after_sign_in_path
+      end
+    end
+
+    def account_or_after_sign_in_path
+      if @required_password_change
+        after_sign_in_path_for(current_user)
+      else
+        account_path
       end
     end
 
@@ -60,8 +78,25 @@ module Users
       # need to provide our custom forbidden passwords data that zxcvbn needs,
       # otherwise the JS will throw an exception and the password strength
       # meter will not appear.
-      @forbidden_passwords = forbidden_passwords
+      @update_password_presenter = UpdatePasswordPresenter.new(
+        user: current_user,
+        required_password_change: required_password_change,
+      )
       render :edit
+    end
+
+    def send_password_reset_risc_event
+      event = PushNotification::PasswordResetEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
+    end
+
+    def create_event_and_notify_user_about_password_change
+      _event, disavowal_token = create_user_event_with_disavowal(:password_changed)
+      UserAlerts::AlertUserAboutPasswordChange.call(current_user, disavowal_token)
+    end
+
+    def user_password_params
+      params.require(:update_user_password_form).permit(:password, :password_confirmation)
     end
   end
 end
