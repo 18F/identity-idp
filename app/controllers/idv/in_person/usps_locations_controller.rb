@@ -47,7 +47,6 @@ module Idv
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
         )
-        add_proofing_component
 
         render json: { success: true }, status: :ok
       end
@@ -56,12 +55,6 @@ module Idv
 
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer
-      end
-
-      def add_proofing_component
-        ProofingComponent.
-          create_or_find_by(user: current_or_hybrid_user).
-          update(document_check: Idp::Constants::Vendors::USPS)
       end
 
       def handle_error(err)

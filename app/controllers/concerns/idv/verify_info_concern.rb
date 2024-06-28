@@ -203,18 +203,9 @@ module Idv
       proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
       resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
-      if summary_result.success?
-        add_proofing_components
-      else
+      if !summary_result.success?
         idv_failure(summary_result)
       end
-    end
-
-    def add_proofing_components
-      ProofingComponent.create_or_find_by(user: current_user).update(
-        resolution_check: Idp::Constants::Vendors::LEXIS_NEXIS,
-        source_check: Idp::Constants::Vendors::AAMVA,
-      )
     end
 
     def load_async_state

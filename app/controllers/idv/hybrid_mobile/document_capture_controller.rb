@@ -65,7 +65,6 @@ module Idv
 
       def handle_stored_result
         if stored_result&.success? && selfie_requirement_met?
-          save_proofing_components(document_capture_user)
           extract_pii_from_doc(document_capture_user)
           successful_response
         else

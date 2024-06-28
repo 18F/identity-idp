@@ -128,10 +128,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
           JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
         )
-
-        proofing_component = user.proofing_component
-        expect(proofing_component.threatmetrix).to equal(true)
-        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
     end
 
@@ -322,10 +318,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
-
-        proofing_component = user.proofing_component
-        expect(proofing_component.threatmetrix).to equal(false)
-        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
     end
 
@@ -453,10 +445,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
           JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
         )
-
-        proofing_component = user.proofing_component
-        expect(proofing_component.threatmetrix).to equal(true)
-        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
     end
 
