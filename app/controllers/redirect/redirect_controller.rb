@@ -10,8 +10,8 @@ module Redirect
       params.permit(*PERMITTED_LOCATION_PARAMS).to_h.symbolize_keys
     end
 
-    def partner_query_params
-      @partner_query_params ||= begin
+    def partner_params
+      @partner_params ||= begin
         {
           partner: current_sp&.agency&.name,
           partner_div: current_sp&.integration&.name,
@@ -19,11 +19,11 @@ module Redirect
       end
     end
 
-    def add_partner_query_params(url)
+    def partner_query_params(url)
       uri = Addressable::URI.parse(url)
 
-      if partner_query_params.any?
-        uri.query_values = (uri.query_values || {}).merge(partner_query_params)
+      if partner_params.any?
+        uri.query_values = (uri.query_values || {}).merge(partner_params)
       end
 
       uri.to_s
@@ -37,7 +37,7 @@ module Redirect
         tracker_method.call(redirect_url: url, **location_params)
       end
 
-      redirect_url = add_partner_query_params(url)
+      redirect_url = partner_query_params(url)
       redirect_to(redirect_url, allow_other_host: true)
     end
   end
