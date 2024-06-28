@@ -40,14 +40,6 @@ module Idv
       end
     end
 
-    def liveness_check
-      # Not used
-    end
-
-    def device_fingerprinting_vendor
-      # Not used
-    end
-
     def threatmetrix
       if idv_session.threatmetrix_review_status.present?
         FeatureManagement.proofing_device_profiling_collecting_enabled?
@@ -58,14 +50,6 @@ module Idv
       idv_session.threatmetrix_review_status
     end
 
-    def threatmetrix_risk_rating
-      # Not used
-    end
-
-    def threatmetrix_policy_score
-      # Not used
-    end
-
     def to_h
       {
         document_check:,
@@ -73,12 +57,9 @@ module Idv
         source_check:,
         resolution_check:,
         address_check:,
-        liveness_check:,
-        device_fingerprinting_vendor:,
         threatmetrix:,
         threatmetrix_review_status:,
-        threatmetrix_risk_rating:,
-        threatmetrix_policy_score:,
+
       }.compact
     end
 
