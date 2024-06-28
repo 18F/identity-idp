@@ -33,14 +33,14 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
 
   context 'user is allowed to request another GPO letter' do
     it 'includes the send another letter link' do
-      expect(rendered).to have_link(t('idv.messages.gpo.resend'), href: idv_request_letter_path)
+      expect(rendered).to have_link(t('idv.messages.gpo.resend'), href: idv_resend_letter_path)
     end
   end
 
   context 'user is NOT allowed to request another GPO letter' do
     let(:can_request_another_letter) { false }
     it 'does not include the send another letter link' do
-      expect(rendered).not_to have_link(t('idv.messages.gpo.resend'), href: idv_request_letter_path)
+      expect(rendered).not_to have_link(t('idv.messages.gpo.resend'), href: idv_resend_letter_path)
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
     it 'links to requesting a new letter' do
       expect(rendered).to have_link(
         t('idv.messages.gpo.resend'),
-        href: idv_request_letter_path,
+        href: idv_resend_letter_path,
       )
     end
 
@@ -104,7 +104,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
       it 'does not link to requesting a new letter' do
         expect(rendered).to_not have_link(
           t('idv.messages.gpo.resend'),
-          href: idv_request_letter_path,
+          href: idv_resend_letter_path,
         )
       end
     end

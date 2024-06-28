@@ -39,8 +39,8 @@ module Idv
         end
       end
 
-      def gpo_mail_service
-        @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+      def gpo_mail_policy
+        @gpo_mail_policy ||= Idv::GpoVerifyByMailPolicy.new(current_user)
       end
 
       def self.step_info
@@ -59,7 +59,7 @@ module Idv
       private
 
       def confirm_profile_not_too_old
-        redirect_to idv_path if gpo_mail_service.profile_too_old?
+        redirect_to idv_path if gpo_mail_policy.profile_too_old?
       end
 
       def update_tracking
@@ -96,7 +96,7 @@ module Idv
       end
 
       def confirm_mail_not_rate_limited
-        redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
+        redirect_to idv_enter_password_url if gpo_mail_policy.rate_limited?
       end
 
       def resend_letter
