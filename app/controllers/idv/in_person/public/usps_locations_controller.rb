@@ -34,7 +34,7 @@ module Idv
         def localized_locations(locations)
           return nil if locations.nil?
           locations.map do |location|
-            EnrollmentHelper.localized_location(location)
+            UspsInPersonProofing::EnrollmentHelper.localized_location(location)
           end
         end
 
