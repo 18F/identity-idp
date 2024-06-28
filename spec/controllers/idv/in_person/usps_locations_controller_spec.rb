@@ -42,7 +42,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
     let(:proofer) { double('Proofer') }
     let(:locations) do
       [
-        { address: '3118 WASHINGTON BLVD',
+        UspsInPersonProofing::PostOffice.new(
+          address: '3118 WASHINGTON BLVD',
           city: 'ARLINGTON',
           distance: '6.02 mi',
           name: 'ARLINGTON',
@@ -51,8 +52,10 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: 'Closed',
           weekday_hours: '9:00 AM - 5:00 PM',
           zip_code_4: '9998',
-          zip_code_5: '22201' },
-        { address: '4005 WISCONSIN AVE NW',
+          zip_code_5: '22201',
+        ),
+        UspsInPersonProofing::PostOffice.new(
+          address: '4005 WISCONSIN AVE NW',
           city: 'WASHINGTON',
           distance: '6.59 mi',
           name: 'FRIENDSHIP',
@@ -61,8 +64,10 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: '10:00 AM - 4:00 PM',
           weekday_hours: '8:00 AM - 6:00 PM',
           zip_code_4: '9997',
-          zip_code_5: '20016' },
-        { address: '6900 WISCONSIN AVE STE 100',
+          zip_code_5: '20016',
+        ),
+        UspsInPersonProofing::PostOffice.new(
+          address: '6900 WISCONSIN AVE STE 100',
           city: 'CHEVY CHASE',
           distance: '8.99 mi',
           name: 'BETHESDA',
@@ -71,7 +76,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: 'Closed',
           weekday_hours: '9:00 AM - 5:00 PM',
           zip_code_4: '9996',
-          zip_code_5: '20815' },
+          zip_code_5: '20815',
+        ),
       ]
     end
     subject(:response) do
