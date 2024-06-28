@@ -67,19 +67,7 @@ module Idv
       def localized_locations(locations)
         return nil if locations.nil?
         locations.map do |location|
-          {
-            address: location[:address],
-            city: location[:city],
-            distance: location[:distance],
-            name: location[:name],
-            saturday_hours: EnrollmentHelper.localized_hours(location[:saturday_hours]),
-            state: location[:state],
-            sunday_hours: EnrollmentHelper.localized_hours(location[:sunday_hours]),
-            weekday_hours: EnrollmentHelper.localized_hours(location[:weekday_hours]),
-            zip_code_4: location[:zip_code_4],
-            zip_code_5: location[:zip_code_5],
-            is_pilot: location[:is_pilot],
-          }
+          EnrollmentHelper.localized_location(location)
         end
       end
 
