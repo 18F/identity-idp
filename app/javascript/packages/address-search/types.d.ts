@@ -50,12 +50,10 @@ interface AddressInputProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
-  addressSearchURL: string;
   locationsURL: string;
 }
 
 interface AddressSearchProps {
-  addressSearchURL: string;
   disabled: boolean;
   handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
   locationsURL: string;

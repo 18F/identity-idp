@@ -98,7 +98,6 @@ const {
   accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   optedInToInPersonProofing,
@@ -125,10 +124,8 @@ const App = composeComponents(
       value: {
         inPersonURL,
         locationsURL,
-        addressSearchURL: new URL('/api/addresses', window.location.href).toString(),
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
-        inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
         optedInToInPersonProofing: optedInToInPersonProofing === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
         skipDocAuth: skipDocAuth === 'true',

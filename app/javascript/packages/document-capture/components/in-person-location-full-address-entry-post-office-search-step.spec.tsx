@@ -51,10 +51,8 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       value={{
         inPersonURL,
         locationsURL,
-        addressSearchURL: 'https://localhost:3000',
         inPersonOutageMessageEnabled: false,
         inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-        inPersonFullAddressEntryEnabled: true,
         optedInToInPersonProofing: false,
         usStatesTerritories,
       }}
