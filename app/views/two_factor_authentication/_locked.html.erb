@@ -21,7 +21,7 @@
          new_tab: true,
        ).with_content(t('two_factor_authentication.read_about_two_factor_authentication')) %>
     <% tc.with_option(
-         url: MarketingSite.contact_url,
+         url: contact_redirect_url,
          new_tab: true,
        ).with_content(t('idv.troubleshooting.options.contact_support', app_name: APP_NAME)) %>
   <% end %>
