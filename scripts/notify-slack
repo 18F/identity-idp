@@ -140,9 +140,5 @@ class NotifySlack
 end
 
 if $PROGRAM_NAME == __FILE__
-  puts "DEBUG"
-  puts ARGV.inspect
-  puts "DEBUG"
-
   NotifySlack.new.run(argv: ARGV, stdin: STDIN, stdout: STDOUT)
 end
