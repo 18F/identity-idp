@@ -302,6 +302,7 @@ session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 sign_in_recaptcha_score_threshold: 0.0
 socure_document_request_endpoint: ''
+socure_docv_reason_codes: '{}'
 socure_id_plus_endpoint: ''
 socure_id_secret_key: ''
 socure_webhook_secret_key: ''

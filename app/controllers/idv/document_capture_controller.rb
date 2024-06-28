@@ -98,6 +98,7 @@ module Idv
       @step_indicator_steps = step_indicator_steps
       @remaining_submit_attempts = 5 # rate_limiter.remaining_count
       @try_again_path = idv_document_capture_socure_url
+      @decision_reasons = stored_result&.reasons
     end
 
     def extra_view_variables

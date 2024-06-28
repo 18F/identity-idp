@@ -49,6 +49,7 @@ module DocAuth
       def send_http_get_request
         faraday_connection.get do |req|
           req.options.context = { service_name: metric_name }
+          req.params = params if params&.any?
         end
       end
 
@@ -103,6 +104,10 @@ module DocAuth
 
       def timeout
         60
+      end
+
+      def params
+        {}
       end
     end
   end
