@@ -5,7 +5,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
   let(:sp) { nil }
   let(:user_session) { nil }
   let(:session) do
-    if !user_session.nil?
+    if user_session.present?
       {
         'warden.user.user.session' => user_session,
       }
