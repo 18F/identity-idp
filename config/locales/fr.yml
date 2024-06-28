@@ -80,9 +80,16 @@ account.index.verification.in_person_instructions_html: Vous devez vous rendre �
 account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
 account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
 account.index.verification.nonbiometric_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.
+account.index.verification.pending_badge: En cours
+account.index.verification.pending_badge_tooltip: Votre identité est en cours de vérification.
 account.index.verification.reactivate_button: Saisissez le code de vérification que vous avez reçu par la poste.
 account.index.verification.show_bar_code: Me montrer mon code-barre %{app_name}
 account.index.verification.success: Nous avons vérifié vos informations
+account.index.verification.unverified_badge: Non vérifiée
+account.index.verification.unverified_badge_tooltip: Terminer la vérification de votre identité.
+account.index.verification.verified_badge: Vérifiée
+account.index.verification.verified_badge_tooltip: Votre identité a été vérifiée.
+account.index.verification.verified_biometric_badge_tooltip: Votre identité et votre photo ont été vérifiées.
 account.index.verification.verify_with_biometric_html: Pour accéder à <strong>%{sp_name}</strong>, confirmez à nouveau votre identité à l’aide d’une photo de vous-même.
 account.index.verification.you_verified_your_biometric_identity: Vous avez confirmé votre identité à l’aide des informations ci-dessous et d’une photo de vous-même, ce qui vous permet d’accéder à tous les organismes partenaires de %{app_name}.
 account.index.verification.you_verified_your_identity_html: Vous avez confirmé votre identité auprès de <strong>%{sp_name}</strong> à l’aide des informations ci-dessous.
@@ -143,10 +150,6 @@ anonymous_mailer.password_reset_missing_user.try_different_email: Essayez une au
 anonymous_mailer.password_reset_missing_user.use_this_email_html: Ou utilisez cet e-mail et %{create_account_link_html}.
 banned_user.details: Nous ne sommes pas en mesure de vous authentifier pour le moment.
 banned_user.title: L’accès est restreint
-components.badge_tooltip_component.pending: Votre identité est en cours de vérification.
-components.badge_tooltip_component.unverified: Terminer la vérification de votre identité.
-components.badge_tooltip_component.verified: Votre identité a été vérifiée.
-components.badge_tooltip_component.verified_biometric: Votre identité et votre photo ont été vérifiées.
 components.barcode.image_alt: Code-barres
 components.captcha_submit_button.action_message: Vérification en cours…
 components.captcha_submit_button.mock_score_disclaimer: Usage interne uniquement
@@ -899,12 +902,9 @@ headings.account.devices: Appareils
 headings.account.events: Événements
 headings.account.federal_employee_id: Carte d’employé fédéral
 headings.account.login_info: Votre compte
-headings.account.pending: En cours
 headings.account.reactivate: Réactiver votre compte
 headings.account.two_factor: Vos méthodes d’authentification
 headings.account.unphishable: Non hameçonnable
-headings.account.unverified: Non vérifiée
-headings.account.verified_account: Vérifiée
 headings.add_email: Ajouter une nouvelle adresse e-mail
 headings.add_info.phone: Ajouter un numéro de téléphone
 headings.cancellations.login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?

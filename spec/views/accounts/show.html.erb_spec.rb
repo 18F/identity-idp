@@ -33,7 +33,7 @@ RSpec.describe 'accounts/show.html.erb' do
     it 'displays a Verified badge' do
       render
 
-      expect(rendered).to have_content(t('headings.account.verified_account'))
+      expect(rendered).to have_content(t('account.index.verification.verified_badge'))
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe 'accounts/show.html.erb' do
     it 'displays an Unverified badge' do
       render
 
-      expect(rendered).to have_content(t('headings.account.unverified'))
+      expect(rendered).to have_content(t('account.index.verification.unverified_badge'))
     end
 
     it 'displays an alert with instructions to reactivate their profile' do
@@ -92,7 +92,7 @@ RSpec.describe 'accounts/show.html.erb' do
     it 'displays a Pending badge' do
       render
 
-      expect(rendered).to have_content(t('headings.account.pending'))
+      expect(rendered).to have_content(t('account.index.verification.pending_badge'))
     end
 
     it 'contains a link to activate profile' do

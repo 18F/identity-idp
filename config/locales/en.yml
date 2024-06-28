@@ -80,9 +80,16 @@ account.index.verification.in_person_instructions_html: You must visit any parti
 account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.learn_more_link: Learn more about verifying your identity
 account.index.verification.nonbiometric_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
+account.index.verification.pending_badge: Pending
+account.index.verification.pending_badge_tooltip: Your identity is pending verification.
 account.index.verification.reactivate_button: Enter the verification code you received via US mail
 account.index.verification.show_bar_code: Show me my %{app_name} barcode
 account.index.verification.success: We verified your information
+account.index.verification.unverified_badge: Unverified
+account.index.verification.unverified_badge_tooltip: Finish verifying your identity.
+account.index.verification.verified_badge: Verified
+account.index.verification.verified_badge_tooltip: Your identity has been verified.
+account.index.verification.verified_biometric_badge_tooltip: Your identity and photo have both been verified.
 account.index.verification.verify_with_biometric_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
 account.index.verification.you_verified_your_biometric_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
 account.index.verification.you_verified_your_identity_html: You verified your identity for <strong>%{sp_name}</strong> with the information below.
@@ -143,10 +150,6 @@ anonymous_mailer.password_reset_missing_user.try_different_email: Try a differen
 anonymous_mailer.password_reset_missing_user.use_this_email_html: Or use this email address and %{create_account_link_html}.
 banned_user.details: We are unable to authenticate you at this time.
 banned_user.title: Access is restricted
-components.badge_tooltip_component.pending: Your identity is pending verification.
-components.badge_tooltip_component.unverified: Finish verifying your identity.
-components.badge_tooltip_component.verified: Your identity has been verified.
-components.badge_tooltip_component.verified_biometric: Your identity and photo have both been verified.
 components.barcode.image_alt: Barcode
 components.captcha_submit_button.action_message: Verifying…
 components.captcha_submit_button.mock_score_disclaimer: Internal Only
@@ -899,12 +902,9 @@ headings.account.devices: Devices
 headings.account.events: Events
 headings.account.federal_employee_id: Federal employee ID
 headings.account.login_info: Your account
-headings.account.pending: Pending
 headings.account.reactivate: Reactivate your account
 headings.account.two_factor: Your authentication methods
 headings.account.unphishable: Unphishable
-headings.account.unverified: Unverified
-headings.account.verified_account: Verified
 headings.add_email: Add a new email address
 headings.add_info.phone: Add a phone number
 headings.cancellations.login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?

@@ -4,16 +4,16 @@
   </h2>
   <div class="grid-col-auto">
     <% if @presenter.active_profile_for_authn_context? %>
-      <%= render TooltipComponent.new(tooltip_text: @presenter.biometric_identity_verification? ? t('components.badge_tooltip_component.verified_biometric') : t('components.badge_tooltip_component.verified')) do %>
-        <%= render BadgeComponent.new(icon: :check_circle).with_content(t('headings.account.verified_account')) %>
+      <%= render TooltipComponent.new(tooltip_text: @presenter.identity_verified_with_biometric_comparison? ? t('account.index.verification.verified_biometric_badge_tooltip') : t('account.index.verification.verified_badge_tooltip')) do %>
+        <%= render BadgeComponent.new(icon: :check_circle).with_content(t('account.index.verification.verified_badge')) %>
       <% end %>
     <% elsif @presenter.pending_gpo? || @presenter.pending_ipp? %>
-      <%= render TooltipComponent.new(tooltip_text: t('components.badge_tooltip_component.pending')) do %>
-        <%= render BadgeComponent.new(icon: :info).with_content(t('headings.account.pending')) %>
+      <%= render TooltipComponent.new(tooltip_text: t('account.index.verification.pending_badge_tooltip')) do %>
+        <%= render BadgeComponent.new(icon: :info).with_content(t('account.index.verification.pending_badge')) %>
       <% end %>
     <% else %>
-      <%= render TooltipComponent.new(tooltip_text: t('components.badge_tooltip_component.unverified')) do %>
-        <%= render BadgeComponent.new(icon: :warning).with_content(t('headings.account.unverified')) %>
+      <%= render TooltipComponent.new(tooltip_text: t('account.index.verification.unverified_badge_tooltip')) do %>
+        <%= render BadgeComponent.new(icon: :warning).with_content(t('account.index.verification.unverified_badge')) %>
       <% end %>
     <% end %>
   </div>
