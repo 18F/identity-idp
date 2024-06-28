@@ -7,6 +7,8 @@ module Idv
       include IdvSessionConcern
       include Idv::StepIndicatorConcern
       include FraudReviewConcern
+      include AbTestAnalyticsConcern
+      include VerifyByMailConcern
 
       prepend_before_action :note_if_user_did_not_receive_letter
       before_action :confirm_two_factor_authenticated
@@ -16,7 +18,7 @@ module Idv
         analytics.idv_verify_by_mail_enter_code_visited(
           source: user_did_not_receive_letter? ? 'gpo_reminder_email' : nil,
           otp_rate_limited: rate_limiter.limited?,
-          user_can_request_another_letter: user_can_request_another_letter?,
+          user_can_request_another_letter: gpo_verify_by_mail_policy.resend_letter_available?,
         )
 
         if rate_limiter.limited?
@@ -63,7 +65,7 @@ module Idv
       private
 
       def render_enter_code_form
-        @can_request_another_letter = user_can_request_another_letter?
+        @can_request_another_letter = gpo_verify_by_mail_policy.resend_letter_available?
         @user_did_not_receive_letter = user_did_not_receive_letter?
         @last_date_letter_was_sent = last_date_letter_was_sent
         render :index
@@ -144,12 +146,6 @@ module Idv
       # slightly different copy on this screen.
       def user_did_not_receive_letter?
         params[:did_not_receive_letter].present?
-      end
-
-      def user_can_request_another_letter?
-        return @user_can_request_another_letter if defined?(@user_can_request_another_letter)
-        policy = Idv::GpoVerifyByMailPolicy.new(current_user)
-        @user_can_request_another_letter = policy.resend_letter_available?
       end
 
       def last_date_letter_was_sent
