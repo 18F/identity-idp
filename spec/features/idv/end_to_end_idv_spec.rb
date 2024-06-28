@@ -95,54 +95,61 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
         update(in_person_proofing_enabled: true)
     end
 
-    scenario 'In person proofing verify by mail', allow_browser_log: true do
-      visit_idp_from_sp_with_ial2(sp)
-      user = sign_up_and_2fa_ial1_user
+    context 'when gpo is allowed for verify by mail' do
+      before do
+        allow(IdentityConfig.store).to receive(:no_verify_by_mail_for_biometric_comparison_enabled).
+          and_return(false)
+      end
 
-      begin_in_person_proofing
-      complete_all_in_person_proofing_steps(user)
-      test_restart_in_person_flow(user)
+      scenario 'In person proofing verify by mail', allow_browser_log: true do
+        visit_idp_from_sp_with_ial2(sp)
+        user = sign_up_and_2fa_ial1_user
 
-      enter_gpo_flow
-      test_go_back_from_request_letter
-      complete_request_letter
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps(user)
+        test_restart_in_person_flow(user)
 
-      test_go_back_in_person_flow
-      complete_enter_password_step(user)
+        enter_gpo_flow
+        test_go_back_from_request_letter
+        complete_request_letter
 
-      try_to_go_back_from_letter_enqueued
-      validate_letter_enqueued_page
-      complete_letter_enqueued
-      validate_return_to_sp
+        test_go_back_in_person_flow
+        complete_enter_password_step(user)
 
-      visit sign_out_url
-      user.reload
+        try_to_go_back_from_letter_enqueued
+        validate_letter_enqueued_page
+        complete_letter_enqueued
+        validate_return_to_sp
 
-      visit_idp_from_sp_with_ial2(sp)
+        visit sign_out_url
+        user.reload
 
-      sign_in_live_with_2fa(user)
+        visit_idp_from_sp_with_ial2(sp)
 
-      complete_gpo_verification(user)
-      expect(user.identity_verified?).to be(false)
+        sign_in_live_with_2fa(user)
 
-      acknowledge_and_confirm_personal_key
+        complete_gpo_verification(user)
+        expect(user.identity_verified?).to be(false)
 
-      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-      visit_sp_from_in_person_ready_to_verify
+        acknowledge_and_confirm_personal_key
 
-      visit sign_out_url
-      user.reload
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+        visit_sp_from_in_person_ready_to_verify
 
-      mark_in_person_enrollment_passed(user)
+        visit sign_out_url
+        user.reload
 
-      # sign in
-      visit_idp_from_sp_with_ial2(sp)
-      sign_in_live_with_2fa(user)
+        mark_in_person_enrollment_passed(user)
 
-      validate_idv_completed_page(user)
-      click_agree_and_continue
+        # sign in
+        visit_idp_from_sp_with_ial2(sp)
+        sign_in_live_with_2fa(user)
 
-      validate_return_to_sp
+        validate_idv_completed_page(user)
+        click_agree_and_continue
+
+        validate_return_to_sp
+      end
     end
   end
 
