@@ -33,6 +33,11 @@ namespace :data_requests do
 
   # export USERS_REPORT=/tmp/query-2020-11-17/user_report.json
   # export OUTPUT_DIR=/tmp/query-2020-11-17/results/
+  #
+  # Optionally filter by start and/or end date
+  # export START_DATE=2024-01-01
+  # export END_DATE=2025-01-01
+  #
   # rake data_requests:process_users_report
   desc 'Take a JSON user report, download logs from cloud watch, and write user data'
   task process_users_report: :environment do
@@ -40,6 +45,8 @@ namespace :data_requests do
 
     users_report = JSON.parse(File.read(ENV['USERS_REPORT']), symbolize_names: true)
     output_dir = ENV['OUTPUT_DIR']
+    start_date = Time.zone.parse(ENV['START_DATE']).to_date if ENV['START_DATE']
+    end_date = Time.zone.parse(ENV['END_DATE']).to_date if ENV['END_DATE']
 
     users_csv = CSV.open(File.join(output_dir, 'users.csv'), 'w')
     user_events_csv = CSV.open(File.join(output_dir, 'user_events.csv'), 'w')
@@ -63,12 +70,25 @@ namespace :data_requests do
 
       cloudwatch_dates = user_report[:user_events].pluck(:date_time).map do |date_time|
         Time.zone.parse(date_time).to_date
-      end.uniq
+      end.uniq.filter do |date|
+        if start_date && date < start_date
+          false
+        elsif end_date && date > end_date
+          false
+        else
+          true
+        end
+      end
 
-      cloudwatch_results = DataRequests::Local::FetchCloudwatchLogs.new(
-        user_report[:login_uuid],
-        cloudwatch_dates,
-      ).call
+      cloudwatch_results =
+        if !cloudwatch_dates.empty?
+          DataRequests::Local::FetchCloudwatchLogs.new(
+            user_report[:login_uuid],
+            cloudwatch_dates,
+          ).call
+        else
+          []
+        end
 
       DataRequests::Local::WriteCloudwatchLogs.new(
         cloudwatch_results:,
