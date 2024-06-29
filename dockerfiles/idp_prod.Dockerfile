@@ -228,6 +228,10 @@ RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
     find $RAILS_ROOT -type d | xargs chmod 755
 
+# get rid of suid/sgid binaries
+RUN find / -perm /4000 -type f | xargs chmod u-s
+RUN find / -perm /2000 -type f | xargs chmod g-s
+
 # Expose the port the app runs on
 EXPOSE 3000
 
