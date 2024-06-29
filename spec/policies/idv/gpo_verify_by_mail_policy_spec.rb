@@ -106,7 +106,6 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
           expect(subject.send_letter_available?).to eq(true)
         end
       end
-
     end
   end
 
