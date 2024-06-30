@@ -7,7 +7,6 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
-    before_action :set_usps_states_territories_presenter
 
     def new
       analytics.idv_address_visit
@@ -82,10 +81,6 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
-    end
-
-    def set_usps_states_territories_presenter
-      @presenter ||= Idv::InPerson::UspsStatesTerritoriesPresenter
     end
   end
 end
