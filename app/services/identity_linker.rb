@@ -34,8 +34,8 @@ class IdentityLinker
     identity.update!(
       identity_attributes.merge(
         code_challenge: code_challenge,
-        ial: ial,
-        aal: aal,
+        # ial: ial,
+        # aal: aal,
         acr_values: acr_values,
         vtr: vtr,
         requested_aal_value: requested_aal_value,
