@@ -603,6 +603,7 @@ trigger_devops:
                       paths:
                         - path: /
                           pathType: Prefix
+                          
       EOF
     - cat "$CI_ENVIRONMENT_SLUG.yaml"
     - kubectl apply -f "$CI_ENVIRONMENT_SLUG.yaml" -n argocd
