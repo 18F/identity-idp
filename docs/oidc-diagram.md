@@ -1,10 +1,8 @@
 # OIDC Request Flows
 
 ```mermaid
----
-title: Authorization Flow
----
 zenuml
+    title Authorization Flow
     @Actor User
     @Boundary SpApp
 
@@ -37,4 +35,29 @@ zenuml
     }
 
     }
+```
+
+```mermaid
+%%{
+ init: {
+   "theme": "light",
+   "darkMode": false,
+   "fontFamily": "monospace",
+   "logLevel": "info",
+  "sequence": {
+     "mirrorActors": true,
+     "showSequenceNumbers": true
+   }
+
+ }
+}%%
+
+sequenceDiagram
+    actor User
+    participant SpApp
+    box IdpApp 
+        participant AuthorizationController
+        participant OpenidConnectAuthorizeForm
+        participant IdentityLinker
+    end
 ```
