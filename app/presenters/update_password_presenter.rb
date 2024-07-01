@@ -15,9 +15,9 @@ class UpdatePasswordPresenter
 
   def submit_text
     if required_password_change
-      t('forms.passwords.edit.buttons.submit')
+      I18n.t('forms.passwords.edit.buttons.submit')
     else
-      t('forms.buttons.submit.update')
+      I18n.t('forms.buttons.submit.update')
     end
   end
 end

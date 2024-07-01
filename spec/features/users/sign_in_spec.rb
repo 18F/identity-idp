@@ -981,7 +981,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
             and_return(2)
         end
-        it 'should bring user to compromised password page' do
+        it 'should bring user to manage password page with warning' do
           visit new_user_session_path
           fill_in_credentials_and_submit(user.email, user.password)
           fill_in_code_with_last_phone_otp
@@ -990,7 +990,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
           expect(current_path).to eq user_password_compromised_path
         end
 
-        it 'should redirect user to account page after editing password' do
+        it 'should redirect user to after_sign_in_path after editing password' do
           visit new_user_session_path
           fill_in_credentials_and_submit(user.email, user.password)
           fill_in_code_with_last_phone_otp
