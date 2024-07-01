@@ -4334,11 +4334,10 @@ module AnalyticsEvents
   # @param [String] client_id Service Provider issuer
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details: nil, **extra)
+  def openid_connect_bearer_token(success:, client_id:, errors:, error_details: nil, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
-      ial:,
       client_id:,
       errors:,
       error_details:,
@@ -4407,14 +4406,13 @@ module AnalyticsEvents
   # @param [String] code_digest hash of "code" param
   # @param [Integer, nil] expires_in time to expiration of token
   # @param [Integer, nil] ial ial level of identity
-  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
+  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
       expires_in: expires_in,
-      ial: ial,
       **extra,
     )
   end
@@ -5302,7 +5300,6 @@ module AnalyticsEvents
   # @param [String, nil] acr_values
   # @param [Integer] sign_in_duration_seconds
   def sp_redirect_initiated(
-    ial:,
     billed_ial:,
     sign_in_flow:,
     vtr:,
@@ -5312,7 +5309,6 @@ module AnalyticsEvents
   )
     track_event(
       'SP redirect initiated',
-      ial:,
       billed_ial:,
       sign_in_flow:,
       vtr: vtr,
