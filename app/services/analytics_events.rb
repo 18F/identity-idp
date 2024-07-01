@@ -4330,7 +4330,6 @@ module AnalyticsEvents
 
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success Whether form validation was successful
-  # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
@@ -4405,7 +4404,6 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [String] code_digest hash of "code" param
   # @param [Integer, nil] expires_in time to expiration of token
-  # @param [Integer, nil] ial ial level of identity
   def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, **extra)
     track_event(
       'OpenID Connect: token',
@@ -5293,7 +5291,6 @@ module AnalyticsEvents
   end
 
   # Tracks when a user is redirected back to the service provider
-  # @param [Integer] ial
   # @param [Integer] billed_ial
   # @param [String, nil] sign_in_flow
   # @param [String, nil] vtr
