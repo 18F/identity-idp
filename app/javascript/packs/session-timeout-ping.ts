@@ -11,8 +11,8 @@ const defaultTime = '60';
 const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
 const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
-const timeoutUrl = warningEl?.dataset.timeoutUrl!;
-const sessionsApiUrl = warningEl?.dataset.sessionsApiUrl!;
+const timeoutURL = warningEl?.dataset.timeoutUrl!;
+const sessionsApiURL = warningEl?.dataset.sessionsApiUrl!;
 
 const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
 const keepaliveEl = document.getElementById('session-keepalive-btn');
