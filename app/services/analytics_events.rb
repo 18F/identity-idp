@@ -4087,15 +4087,13 @@ module AnalyticsEvents
   def multi_factor_auth_method_at_sign_in_selected(
     multi_factor_auth_method:,
     enabled_mfa_methods_count:,
-    mfa_method_counts:,
-    success:
+    mfa_method_counts:
   )
     track_event(
       :multi_factor_auth_method_at_sign_in_selected,
       mult_factor_auth_method: multi_factor_auth_method,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       mfa_method_counts: mfa_method_counts,
-      success: success,
     )
   end
 
