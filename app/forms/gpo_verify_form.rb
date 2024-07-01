@@ -127,6 +127,7 @@ class GpoVerifyForm
   end
 
   def user_can_request_another_letter?
-    !Idv::GpoMail.new(user).rate_limited?
+    policy = Idv::GpoVerifyByMailPolicy.new(user)
+    policy.resend_letter_available?
   end
 end

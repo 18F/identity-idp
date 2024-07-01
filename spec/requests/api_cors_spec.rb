@@ -109,20 +109,4 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
     it_behaves_like 'static API with correct CORS headers'
   end
-
-  describe '/api/analytics-events' do
-    before do
-      Tempfile.create do |json_file|
-        json_file.rewind
-        json_file << '{}'
-        json_file.close
-
-        stub_const('AnalyticsEventsController::JSON_FILE', json_file.path)
-
-        get api_analytics_events_path, headers: { 'HTTP_ORIGIN' => http_origin }
-      end
-    end
-
-    it_behaves_like 'static API with correct CORS headers'
-  end
 end

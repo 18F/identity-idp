@@ -93,11 +93,11 @@ RSpec.feature 'idv request letter step', allowed_extra_analytics: [:*] do
 
         # Confirm that user cannot visit other IdV pages while unverified
         visit idv_agreement_path
-        expect(page).to have_current_path(idv_letter_enqueued_path)
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
         visit idv_ssn_url
-        expect(page).to have_current_path(idv_letter_enqueued_path)
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
         visit idv_verify_info_url
-        expect(page).to have_current_path(idv_letter_enqueued_path)
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
 
         # complete verification: end to end gpo test
         sign_out

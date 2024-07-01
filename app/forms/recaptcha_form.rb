@@ -6,6 +6,7 @@ class RecaptchaForm
 
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'
   RESULT_ERRORS = ['missing-input-secret', 'invalid-input-secret'].freeze
+  EXEMPT_RESULT_REASONS = ['LOW_CONFIDENCE_SCORE'].freeze
 
   attr_reader :recaptcha_action,
               :recaptcha_token,
@@ -95,6 +96,7 @@ class RecaptchaForm
 
   def recaptcha_result_valid?(result)
     return true if result.blank?
+    return true if result_reason_exempt?(result)
 
     if result.success?
       result.score >= score_threshold
@@ -105,6 +107,10 @@ class RecaptchaForm
 
   def is_result_error?(error_code)
     RESULT_ERRORS.include?(error_code)
+  end
+
+  def result_reason_exempt?(result)
+    (EXEMPT_RESULT_REASONS & result.reasons).any?
   end
 
   def log_analytics(result: nil, error: nil)
