@@ -774,6 +774,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       and_return(proofing_device_profiling)
     allow_any_instance_of(ApplicationController).to receive(:analytics) do |controller|
       fake_analytics.user = controller.analytics_user
+      fake_analytics.session = controller.session
       fake_analytics
     end
     allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
