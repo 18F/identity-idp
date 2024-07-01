@@ -40,6 +40,7 @@ interface AppRootData {
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
   locationsUrl: string;
+  addressSearchUrl: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -109,6 +110,7 @@ const {
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
   locationsUrl: locationsURL,
+  addressSearchUrl: addressSearchURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -125,7 +127,7 @@ const App = composeComponents(
       value: {
         inPersonURL,
         locationsURL,
-        addressSearchURL: new URL('/api/addresses', window.location.href).toString(),
+        addressSearchURL,
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
