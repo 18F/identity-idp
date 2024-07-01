@@ -81,7 +81,7 @@ function handleUnauthorizedStatusResponse(error: ResponseError) {
 /**
  * Request the current session status. Returns a promise resolving to the current session status.
  *
- * @param sessionsUrl The URL for the session API
+ * @param sessionsURL The URL for the session API
  * @return A promise resolving to the current session status
  */
 export const requestSessionStatus = (sessionsURL: string): Promise<SessionStatus> =>
@@ -93,10 +93,10 @@ export const requestSessionStatus = (sessionsURL: string): Promise<SessionStatus
  * Request that the current session be kept alive. Returns a promise resolving to the updated
  * session status.
  *
- * @param sessionsUrl The URL for the session API
+ * @param sessionsURL The URL for the session API
  * @return A promise resolving to the updated session status.
  */
-export const extendSession = (sessionsUrl: string): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(sessionsUrl, { method: 'PUT' })
+export const extendSession = (sessionsURL: string): Promise<SessionStatus> =>
+  request<SessionStatusResponse>(sessionsURL, { method: 'PUT' })
     .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);
