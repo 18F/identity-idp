@@ -7,9 +7,60 @@ RSpec.describe Reports::DropOffReport do
     JSON.parse '[{"emails":["ursula@example.com"],
        "issuers":["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
   end
+  let(:empty_emailable_report) do
+    report = Reporting::DropOffReport.new(
+      issuers: 'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name',
+      time_range: report_date.all_week,
+      slice: 1.week,
+    )
+
+    cloudwatch_client = instance_double(Reporting::CloudwatchClient)
+    allow(Reporting::CloudwatchClient).to receive(:new).and_return(cloudwatch_client)
+    allow(cloudwatch_client).to receive(:fetch).with(
+      from: report_date.beginning_of_week,
+      query: a_string_including('coalesce(properties.event_properties.success, 0) AS success'),
+      to: report_date.end_of_week,
+    ).and_return([])
+
+    report.as_emailable_reports
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:drop_off_report_config).and_return(report_config)
+  end
+
+  describe 'as an integrated feature' do
+    before do
+      cloudwatch_client = instance_double(Reporting::CloudwatchClient)
+      expect(Reporting::CloudwatchClient).to receive(:new).and_return(cloudwatch_client)
+      expect(cloudwatch_client).to receive(:fetch).with(
+        from: report_date.beginning_of_week,
+        query: a_string_including('coalesce(properties.event_properties.success, 0) AS success'),
+        to: report_date.end_of_week,
+      ).and_return([])
+    end
+
+    it 'it works' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: 'ursula@example.com',
+        subject: "Drop Off Report - #{report_date.to_date}",
+        reports: satisfy do |value|
+          expect(value.first).to eq(empty_emailable_report.first)
+          expect(value.second).to eq(empty_emailable_report.second)
+          expect(value.last.to_json).to eq(empty_emailable_report.last.to_json)
+          expect(value.count).to be(3)
+        end,
+        message: "<h2>\n  Drop Off Report\n</h2>\n",
+        attachment_format: :csv,
+      ).and_call_original
+
+      subject.perform(report_date)
+    end
+
+    it 'accepts a string for issuers instead of an array' do
+      report_config[0]['issuers'] = 'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name'
+      subject.perform(report_date)
+    end
   end
 
   describe '#perform' do
@@ -29,13 +80,17 @@ RSpec.describe Reports::DropOffReport do
         as_emailable_reports: reports,
       )
 
-      allow(subject).to receive(:report_maker).and_return(report_maker)
+      allow(Reporting::DropOffReport).to receive(:new).with(
+        issuers: ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name'],
+        time_range: report_date.all_week,
+        slice: 1.week,
+      ).and_return(report_maker)
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: 'ursula@example.com',
-        subject: 'Drop Off Report - 2023-12-12',
+        subject: "Drop Off Report - #{report_date.to_date}",
         reports: anything,
-        message: anything,
+        message: "<h2>\n  Drop Off Report\n</h2>\n",
         attachment_format: :csv,
       ).and_call_original
 
