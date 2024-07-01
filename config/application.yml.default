@@ -199,6 +199,7 @@ min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
+no_verify_by_mail_for_biometric_comparison_enabled: true
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect_uuid_override_map: '{}'
@@ -323,7 +324,6 @@ vendor_status_voice: 'operational'
 vendor_status_idv_scheduled_maintenance_start: ''
 vendor_status_idv_scheduled_maintenance_finish: ''
 verification_errors_report_configs: '[]'
-verify_by_mail_disabled_for_biometric_comparison: true
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
@@ -468,6 +468,7 @@ production:
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
   newrelic_license_key: ''
+  no_verify_by_mail_for_biometric_comparison_enabled: false
   openid_connect_redirect: server_side
   openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 5
@@ -498,7 +499,6 @@ production:
   usps_upload_sftp_host: ''
   usps_upload_sftp_password: ''
   usps_upload_sftp_username: ''
-  verify_by_mail_disabled_for_biometric_comparison: false
 
 test:
   aamva_private_key: 123abc

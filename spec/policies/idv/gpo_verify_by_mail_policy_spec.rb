@@ -92,7 +92,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
         it 'returns false when the feature flag is enabled' do
           allow(IdentityConfig.store).to receive(
-            :verify_by_mail_disabled_for_biometric_comparison,
+            :no_verify_by_mail_for_biometric_comparison_enabled,
           ).and_return(true)
 
           expect(subject.send_letter_available?).to eq(false)
@@ -100,7 +100,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
         it 'returns true when the feature flag is disabled' do
           allow(IdentityConfig.store).to receive(
-            :verify_by_mail_disabled_for_biometric_comparison,
+            :no_verify_by_mail_for_biometric_comparison_enabled,
           ).and_return(false)
 
           expect(subject.send_letter_available?).to eq(true)
