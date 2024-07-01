@@ -84,8 +84,8 @@ function handleUnauthorizedStatusResponse(error: ResponseError) {
  * @param sessionsUrl The URL for the session API
  * @return A promise resolving to the current session status
  */
-export const requestSessionStatus = (sessionsUrl: string): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(sessionsUrl)
+export const requestSessionStatus = (sessionsURL: string): Promise<SessionStatus> =>
+  request<SessionStatusResponse>(sessionsURL)
     .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);
 
