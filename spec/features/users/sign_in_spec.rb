@@ -987,7 +987,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq user_password_compromised_path
+          expect(current_path).to eq manage_password_path
         end
 
         it 'should redirect user to after_sign_in_path after editing password' do
