@@ -736,11 +736,6 @@ RSpec.describe SamlIdpController do
         saml_get_auth(ial2_settings)
       end
 
-      it 'sets identity ial' do
-        saml_get_auth(ial2_settings)
-        expect(user.identities.last.ial).to eq(Idp::Constants::IAL2)
-      end
-
       it 'does not redirect the user to the IdV URL' do
         saml_get_auth(ial2_settings)
 
@@ -794,7 +789,6 @@ RSpec.describe SamlIdpController do
           )
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
-          ial: Idp::Constants::IAL2,
           sign_in_duration_seconds: nil,
           billed_ial: Idp::Constants::IAL2,
           sign_in_flow:,
@@ -890,11 +884,6 @@ RSpec.describe SamlIdpController do
         saml_get_auth(ialmax_settings)
       end
 
-      it 'sets identity ial to 0' do
-        saml_get_auth(ialmax_settings)
-        expect(user.identities.last.ial).to eq(0)
-      end
-
       it 'does not redirect the user to the IdV URL' do
         saml_get_auth(ialmax_settings)
 
@@ -948,7 +937,6 @@ RSpec.describe SamlIdpController do
           )
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
-          ial: 0,
           sign_in_duration_seconds: nil,
           billed_ial: 2,
           sign_in_flow:,
@@ -2418,7 +2406,6 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
-          ial: 1,
           sign_in_duration_seconds: nil,
           billed_ial: 1,
           sign_in_flow: :sign_in,
@@ -2474,7 +2461,6 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to receive(:track_event).with(
           'SP redirect initiated',
-          ial: 1,
           sign_in_duration_seconds: nil,
           billed_ial: 1,
           sign_in_flow: :sign_in,
