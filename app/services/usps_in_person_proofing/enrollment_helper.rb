@@ -20,6 +20,12 @@ module UspsInPersonProofing
         enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         return unless enrollment_code
 
+        if is_enhanced_ipp
+          enrollment.sponsor_id = IdentityConfig.store.usps_eipp_sponsor_id
+        else
+          enrollment.sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id
+        end
+
         # update the enrollment to status pending
         enrollment.enrollment_code = enrollment_code
         enrollment.status = :pending
