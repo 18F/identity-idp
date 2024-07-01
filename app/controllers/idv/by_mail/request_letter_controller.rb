@@ -78,8 +78,6 @@ module Idv
           **ab_test_analytics_buckets,
         )
         create_user_event(:gpo_mail_sent, current_user)
-
-        ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
       end
 
       def resend_requested?

@@ -33,7 +33,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
 
     validate_verify_info_page
     complete_verify_step
-    validate_verify_info_submit(user)
+    validate_verify_info_submit
 
     validate_phone_page
     try_to_skip_ahead_from_phone
@@ -251,10 +251,8 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
 
-  def validate_verify_info_submit(user)
+  def validate_verify_info_submit
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
-    expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-    expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
   end
 
   def validate_phone_page
