@@ -728,7 +728,7 @@ errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique
 errors.messages.missing_field: Llene este campo.
 errors.messages.no_pending_profile: No hay ningún perfil en espera de verificación
 errors.messages.not_a_number: no es un número
-errors.messages.otp_format: Ingrese su código de un solo uso completo, sin espacios ni caracteres especiales.
+errors.messages.otp_format: Introduzca el código de un solo uso enviado a su teléfono. No utilice espacios ni caracteres especiales.
 errors.messages.password_incorrect: Contraseña incorrecta
 errors.messages.password_mismatch: Sus contraseñas no coinciden
 errors.messages.personal_key_incorrect: Clave personal incorrecta

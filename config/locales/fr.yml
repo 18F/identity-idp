@@ -717,7 +717,7 @@ errors.messages.invalid_voice_number: Numéro de téléphone non valide. Vérifi
 errors.messages.missing_field: Veuillez remplir ce champ.
 errors.messages.no_pending_profile: Aucun profil en attente de vérification
 errors.messages.not_a_number: n’est pas un chiffre
-errors.messages.otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni caractères spéciaux
+errors.messages.otp_format: Entrez le code à usage unique envoyé sur votre téléphone. N’utilisez pas d’espaces ou de caractères spéciaux.
 errors.messages.password_incorrect: Mot de passe incorrect
 errors.messages.password_mismatch: Vos mots de passe ne correspondent pas
 errors.messages.personal_key_incorrect: Clé personnelle incorrecte
