@@ -47,8 +47,7 @@ class AccountShowPresenter
   end
 
   def active_profile?
-    return @active_profile if defined?(@active_profile)
-    @active_profile ||= user.active_profile.present?
+    user.active_profile.present?
   end
 
   def active_profile_for_authn_context?
@@ -60,18 +59,15 @@ class AccountShowPresenter
   end
 
   def pending_idv?
-    return @pending_idv if defined?(@pending_idv)
-    @pending_idv = authn_context.identity_proofing? && !active_profile_for_authn_context?
+    authn_context.identity_proofing? && !active_profile_for_authn_context?
   end
 
   def pending_ipp?
-    return @pending_ipp if defined?(@pending_ipp)
-    @pending_ipp = user.pending_in_person_enrollment.present?
+    user.pending_in_person_enrollment.present?
   end
 
   def pending_gpo?
-    return @pending_gpo if defined?(@pending_gpo)
-    @pending_gpo = user.gpo_verification_pending_profile?
+    user.gpo_verification_pending_profile?
   end
 
   def show_idv_partial?
