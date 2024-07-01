@@ -12,6 +12,7 @@ const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 10
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
 const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
 const timeoutUrl = warningEl?.dataset.timeoutUrl!;
+const sessionsApiUrl = warningEl?.dataset.sessionsApiUrl!;
 
 const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
 const keepaliveEl = document.getElementById('session-keepalive-btn');
@@ -43,12 +44,12 @@ function success({ isLive, timeout }: SessionStatus) {
   setTimeout(ping, nextPingTimeout);
 }
 
-const ping = () => requestSessionStatus().then(success);
+const ping = () => requestSessionStatus(sessionsApiUrl).then(success);
 
 function keepalive() {
   modal.hide();
   countdownEls.forEach((countdownEl) => countdownEl.stop());
-  extendSession();
+  extendSession(sessionsApiUrl);
 }
 
 keepaliveEl?.addEventListener('click', keepalive, false);
