@@ -119,33 +119,36 @@ RSpec.describe Users::SessionsController, devise: true do
     context 'locked out session' do
       let(:locked_at) { Time.zone.now }
       let(:user) { create(:user, :fully_registered) }
-      let(:locked_out_time_remaining) do
-        distance_of_time_in_words(Time.zone.now, (locked_at + 600.seconds), true)
-      end
+      let(:bad_password_window) { IdentityConfig.store.max_bad_passwords_window_in_seconds }
 
       before do
         allow(subject).to receive(:session_bad_password_count_max_exceeded?).
           and_return(true)
         allow(subject).to receive(:clear_session_bad_password_count_if_window_expired).
           and_return(nil)
-        allow(subject).to receive(:locked_out_time_remaining).
-          and_return(locked_out_time_remaining)
       end
 
       it 'renders an error letting user know they are locked out for a period of time' do
         session[:max_bad_passwords_at] = locked_at
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        current_time = Time.zone.now
+        time_in_hours = distance_of_time_in_words(
+          current_time,
+          (locked_at + bad_password_window.seconds),
+          true,
+        )
 
         expect(response).to redirect_to root_url
         expect(flash[:error]).to eq(
           t(
             'errors.sign_in.bad_password_limit',
-            time_left: locked_out_time_remaining,
+            time_left: time_in_hours,
           ),
         )
       end
 
       it 'tracks unsuccessful authentication for too many auth failures' do
+        session[:max_bad_passwords_at] = locked_at
         allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
         mock_email_parameter = { email: 'bob@example.com' }
 
