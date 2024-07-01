@@ -137,9 +137,9 @@ module Features
     end
 
     def sign_up
-      user = create(:user, :unconfirmed)
+      email = Faker::Internet.safe_email
+      sign_up_with(email)
       confirm_last_user
-      user
     end
 
     def sign_up_and_set_password
@@ -232,15 +232,18 @@ module Features
     end
 
     def confirm_last_user
+      user = User.last
       @raw_confirmation_token, = Devise.token_generator.generate(EmailAddress, :confirmation_token)
 
-      User.last.email_addresses.first.update(
+      user.email_addresses.first.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
 
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )
+
+      user
     end
 
     def click_send_one_time_code

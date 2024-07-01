@@ -19,6 +19,9 @@ module ControllerHelper
     allow(controller).to receive(:user_session).and_return({}.with_indifferent_access)
     controller.auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::SMS)
     allow(controller).to receive(:current_user).and_return(user)
+    allow(controller).to receive(:sign_out) do
+      allow(controller).to receive(:current_user).and_return(nil)
+    end
     allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
     allow(controller).to receive(:user_fully_authenticated?).and_return(true)
     allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)

@@ -281,7 +281,7 @@ risc_notifications_rate_limit_max_requests: 1_000
 risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval":120,"max_requests":10000}}'
 risc_notifications_request_timeout: 3
 ruby_workers_idv_enabled: true
-rules_of_use_horizon_years: 6
+rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_public_reports_enabled: false
 s3_reports_enabled: false

@@ -44,13 +44,12 @@ RSpec.describe Users::DeleteController do
       end
 
       it 'logs a failed submit' do
-        stub_analytics
-        stub_signed_in_user
-
-        expect(@analytics).to receive(:track_event).
-          with('Account Delete submitted', success: false)
+        user = stub_signed_in_user
+        stub_analytics(user:)
 
         delete
+
+        expect(@analytics).to have_logged_event('Account Delete submitted', success: false)
       end
     end
 
@@ -82,13 +81,12 @@ RSpec.describe Users::DeleteController do
     end
 
     it 'logs a succesful submit' do
-      stub_analytics
-      stub_signed_in_user
-
-      expect(@analytics).to receive(:track_event).
-        with('Account Delete submitted', success: true)
+      user = stub_signed_in_user
+      stub_analytics(user:)
 
       delete
+
+      expect(@analytics).to have_logged_event('Account Delete submitted', success: true)
     end
 
     it 'does not delete identities to prevent uuid reuse' do
