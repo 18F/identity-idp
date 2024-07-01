@@ -82,7 +82,7 @@ module Reporting
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
         # This needs to be Date.today so it works when run on the command line
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuers.join(', ')],
+        ['Issuer', [issuers].flatten.join(', ')],
       ]
     end
 

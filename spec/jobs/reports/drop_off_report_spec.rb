@@ -7,9 +7,46 @@ RSpec.describe Reports::DropOffReport do
     JSON.parse '[{"emails":["ursula@example.com"],
        "issuers":["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
   end
+  let(:empty_emailable_report) do
+    report = Reporting::DropOffReport.new(
+      issuers: 'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name',
+      time_range: report_date.all_week,
+      slice: 1.week,
+    )
+
+    report.as_emailable_reports
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:drop_off_report_config).and_return(report_config)
+  end
+
+  describe 'with empty logs' do
+    before do
+      stub_cloudwatch_logs([])
+    end
+
+    it 'sends a ReportMailer with data that matches an empty Reporting::DropOffReport' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: 'ursula@example.com',
+        subject: "Drop Off Report - #{report_date.to_date}",
+        reports: satisfy do |value|
+          expect(value.first).to eq(empty_emailable_report.first)
+          expect(value.second).to eq(empty_emailable_report.second)
+          expect(value.last.to_json).to eq(empty_emailable_report.last.to_json)
+          expect(value.count).to be(3)
+        end,
+        message: "<h2>\n  Drop Off Report\n</h2>\n",
+        attachment_format: :csv,
+      ).and_call_original
+
+      subject.perform(report_date)
+    end
+
+    it 'accepts a string for issuers instead of an array' do
+      report_config[0]['issuers'] = 'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name'
+      subject.perform(report_date)
+    end
   end
 
   describe '#perform' do
@@ -29,13 +66,17 @@ RSpec.describe Reports::DropOffReport do
         as_emailable_reports: reports,
       )
 
-      allow(subject).to receive(:report_maker).and_return(report_maker)
+      allow(Reporting::DropOffReport).to receive(:new).with(
+        issuers: ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name'],
+        time_range: report_date.all_week,
+        slice: 1.week,
+      ).and_return(report_maker)
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: 'ursula@example.com',
-        subject: 'Drop Off Report - 2023-12-12',
+        subject: "Drop Off Report - #{report_date.to_date}",
         reports: anything,
-        message: anything,
+        message: "<h2>\n  Drop Off Report\n</h2>\n",
         attachment_format: :csv,
       ).and_call_original
 
