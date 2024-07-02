@@ -717,7 +717,7 @@ errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve 
 errors.messages.missing_field: Please fill in this field.
 errors.messages.no_pending_profile: No profile is waiting for verification
 errors.messages.not_a_number: is not a number
-errors.messages.otp_format: Enter your entire one-time code without spaces or special characters
+errors.messages.otp_format: Enter the one-time code sent to your phone. Do not use spaces or special characters.
 errors.messages.password_incorrect: Incorrect password
 errors.messages.password_mismatch: Your passwords don’t match
 errors.messages.personal_key_incorrect: Incorrect personal key
