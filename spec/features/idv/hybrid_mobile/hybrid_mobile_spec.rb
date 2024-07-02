@@ -116,7 +116,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
       perform_in_browser(:desktop) do
         visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-        binding.pry
 
         user = sign_up_and_2fa_ial1_user
 
@@ -136,7 +135,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
       perform_in_browser(:mobile) do
         visit @sms_link
-        binding.pry
 
         # Confirm that jumping to LinkSent page does not cause errors
         visit idv_link_sent_url
