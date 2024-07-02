@@ -18,14 +18,6 @@ module TwoFactorAuthentication
 
     def confirm
       result = form.submit
-      analytics.multi_factor_auth(
-        **result.to_h,
-        **analytics_properties,
-        multi_factor_auth_method_created_at:
-          webauthn_configuration_or_latest.created_at.strftime('%s%L'),
-        new_device: new_device?,
-      )
-
       handle_webauthn_result(result)
     end
 
@@ -43,6 +35,16 @@ module TwoFactorAuthentication
     end
 
     def handle_webauthn_result(result)
+      handle_verification_for_authentication_context(
+        result:,
+        auth_method:,
+        extra_analytics: {
+          **analytics_properties,
+          multi_factor_auth_method_created_at:
+            webauthn_configuration_or_latest.created_at.strftime('%s%L'),
+        },
+      )
+
       if result.success?
         handle_valid_webauthn
       else
@@ -51,27 +53,25 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_webauthn
-      if form.webauthn_configuration.platform_authenticator
-        handle_valid_verification_for_authentication_context(
-          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
-        )
-      else
-        handle_valid_verification_for_authentication_context(
-          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
-        )
-      end
       handle_remember_device_preference(params[:remember_device])
       redirect_to after_sign_in_path_for(current_user)
     end
 
     def handle_invalid_webauthn(result)
-      handle_invalid_verification_for_authentication_context
       flash[:error] = result.first_error_message
 
       if platform_authenticator?
         redirect_to login_two_factor_webauthn_url(platform: 'true')
       else
         redirect_to login_two_factor_webauthn_url
+      end
+    end
+
+    def auth_method
+      if platform_authenticator?
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
+      else
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
       end
     end
 
@@ -123,7 +123,7 @@ module TwoFactorAuthentication
     def form
       @form ||= WebauthnVerificationForm.new(
         user: current_user,
-        platform_authenticator: platform_authenticator?,
+        platform_authenticator: platform_authenticator_param?,
         url_options:,
         challenge: user_session[:webauthn_challenge],
         protocol: request.protocol,
@@ -140,8 +140,16 @@ module TwoFactorAuthentication
       check_sp_required_mfa_bypass(auth_method: 'webauthn')
     end
 
-    def platform_authenticator?
+    def platform_authenticator_param?
       params[:platform].to_s == 'true'
+    end
+
+    def platform_authenticator?
+      if form.webauthn_configuration
+        form.webauthn_configuration.platform_authenticator
+      else
+        platform_authenticator_param?
+      end
     end
 
     def webauthn_configuration_or_latest

@@ -55,7 +55,6 @@ class UserPivCacVerificationForm
 
   def extra_analytics_attributes
     {
-      multi_factor_auth_method: 'piv_cac',
       piv_cac_configuration_id: piv_cac_configuration&.id,
       piv_cac_configuration_dn_uuid: x509_dn_uuid,
       key_id: key_id,

@@ -154,14 +154,6 @@ class WebauthnVerificationForm
     end
   end
 
-  def auth_method
-    if platform_authenticator?
-      'webauthn_platform'
-    else
-      'webauthn'
-    end
-  end
-
   def user_has_other_authentication_method?
     MfaContext.new(user).two_factor_configurations.any? do |configuration|
       !configuration.is_a?(WebauthnConfiguration) ||
@@ -171,7 +163,6 @@ class WebauthnVerificationForm
 
   def extra_analytics_attributes
     {
-      multi_factor_auth_method: auth_method,
       webauthn_configuration_id: webauthn_configuration&.id,
       frontend_error: webauthn_error.presence,
     }.compact
