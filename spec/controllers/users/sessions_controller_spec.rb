@@ -143,13 +143,6 @@ RSpec.describe Users::SessionsController, devise: true do
           ),
         )
       end
-
-      it 'tracks unsuccessful authentication for too many auth failures' do
-        allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
-        mock_email_parameter = { email: 'bob@example.com' }
-
-        post :create, params: { user: { **mock_email_parameter, password: 'eatCake!' } }
-      end
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
