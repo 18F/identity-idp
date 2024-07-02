@@ -17,7 +17,7 @@
 
 <%= simple_form_for(form, url: url_for, method: 'PUT') do |f| %>
   <%= render ValidatedFieldComponent.new(
-        collection: us_states_territories,
+        collection: @presenter.usps_states_territories,
         form: f,
         input_html: { class: 'address-state-selector' },
         label: t('idv.form.state'),
