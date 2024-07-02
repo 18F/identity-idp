@@ -4084,16 +4084,18 @@ module AnalyticsEvents
   # @param [String] multi_factor_auth_method What option the user selected
   # @param [integer] enabled_mfa_methods_count
   # @param [Hash] mfa_method_counts
-  def multi_factor_auth_method_at_sign_in_selected(
+  def multi_factor_auth_method_selected(
     multi_factor_auth_method:,
     enabled_mfa_methods_count:,
-    mfa_method_counts:
+    mfa_methods_count:,
+    **extra
   )
     track_event(
-      :multi_factor_auth_method_at_sign_in_selected,
-      mult_factor_auth_method: multi_factor_auth_method,
+      :multi_factor_auth_method_selected,
+      multi_factor_auth_method: multi_factor_auth_method,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      mfa_method_counts: mfa_method_counts,
+      mfa_methods_count: mfa_methods_count,
+      **extra,
     )
   end
 
