@@ -60,7 +60,15 @@ module IdvSessionConcern
   end
 
   def user_needs_biometric_comparison?
+    # puts "IdvSessionConcern#user_needs_biometric_comparison?: current_user: #{current_user.inspect}"
+    # puts "   idv_session_user: #{idv_session_user}"
+    # puts "   User.count: #{User.count}"
+    # User.all.to_a.each do |u|
+    #   puts "        #{u.inspect}"
+    # end
+
     resolved_authn_context_result.biometric_comparison? &&
-      !current_user.identity_verified_with_biometric_comparison?
+      !idv_session_user.identity_verified_with_biometric_comparison?
+      # !current_user.identity_verified_with_biometric_comparison?
   end
 end
