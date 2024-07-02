@@ -3,11 +3,13 @@
 lg-one-time-code-input {
   display: block;
 
-  @include at-media('tablet') {
-    width: 50%;
-  }
+  
 }
 
 .one-time-code-input__input {
+
+  @include at-media('tablet') {
+    max-width: 50% !important;
+  }
   @include u-font-family('mono');
 }
