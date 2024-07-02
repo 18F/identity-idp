@@ -58,11 +58,6 @@ module TwoFactorAuthentication
     end
 
     def process_valid_form
-      analytics.multi_factor_auth_method_selected(
-        multi_factor_auth_method: @two_factor_options_form.selection,
-        enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        mfa_methods_count: mfa_context.enabled_two_factor_configuration_counts_hash,
-      )
       url = mfa_redirect_url
       redirect_to url if url.present?
     end

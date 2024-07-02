@@ -4064,13 +4064,23 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
-  def multi_factor_auth_option_list(success:, errors:, selection:, error_details: nil, **extra)
+  def multi_factor_auth_option_list(
+    success:,
+    errors:,
+    selection:,
+    enabled_mfa_methods_count:,
+    mfa_method_counts:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication: option list',
       success:,
       errors:,
       error_details:,
       selection:,
+      enabled_mfa_methods_count:,
+      mfa_method_counts:,
       **extra,
     )
   end
