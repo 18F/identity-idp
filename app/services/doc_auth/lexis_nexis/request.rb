@@ -87,7 +87,7 @@ module DocAuth
       def send_http_post_request
         faraday_connection.post do |req|
           req.options.context = { service_name: metric_name }
-          req.body = body
+          req.body = JSON.parse(body).to_json # is valid json?
         end
       end
 
