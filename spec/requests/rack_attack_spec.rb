@@ -250,9 +250,6 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         # Needed because time logic wont work since we freeze time.
-        locked_out_time_remaining = 5.minutes
-        allow_any_instance_of(Users::SessionsController).to receive(:locked_out_time_remaining).
-          and_return(locked_out_time_remaining)
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 

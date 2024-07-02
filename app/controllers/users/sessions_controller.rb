@@ -68,7 +68,7 @@ module Users
     def increment_session_bad_password_count
       session[:bad_password_count] = session[:bad_password_count].to_i + 1
       return unless session_bad_password_count_max_exceeded?
-      session[:max_bad_passwords_at] ||= Time.zone.now
+      session[:max_bad_passwords_at] ||= Time.zone.now.to_i
     end
 
     def process_locked_out_session
@@ -85,7 +85,8 @@ module Users
     def locked_out_time_remaining
       locked_at = session[:max_bad_passwords_at]
       window = IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds
-      distance_of_time_in_words(Time.zone.now, (locked_at + window), true)
+      new_time = Time.zone.at(locked_at) + window
+      distance_of_time_in_words(Time.zone.now, new_time, true)
     end
 
     def valid_captcha_result?
