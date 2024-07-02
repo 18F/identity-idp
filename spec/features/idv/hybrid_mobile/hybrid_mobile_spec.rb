@@ -185,8 +185,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
         expect(
           PhoneFormatter.format(prefilled_phone),
         ).to eq(
-               PhoneFormatter.format(user.default_phone_configuration.phone),
-             )
+          PhoneFormatter.format(user.default_phone_configuration.phone),
+        )
 
         fill_out_phone_form_ok
         verify_phone_otp
