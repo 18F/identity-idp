@@ -1,4 +1,4 @@
-## 5.0.0-beta.1
+## Unreleased
 
 ### Breaking Changes
 
@@ -13,6 +13,8 @@
     - [`scss/double-slash-comment-empty-line-before`](https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/double-slash-comment-empty-line-before/README.md)
     - [`color-function-notation`](https://stylelint.io/user-guide/rules/color-function-notation/) (due to [Sass incompatibilities](https://github.com/sass/sass/issues/2831))
 - The ruleset now configures [`"reportNeedlessDisables": true`](https://stylelint.io/user-guide/options/#reportneedlessdisables), which will report inline configuration that disables rules unnecessarily.
+- The [`declaration-no-important`](https://stylelint.io/user-guide/rules/declaration-no-important/) rule is now enabled, which disallows `!important` in stylesheets.
+  - `!important` is a sledgehammer solution which often causes more problems than it helps, and usually stems from misunderstandings of [CSS specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity). See related ["Best practices" MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/important#best_practices).
 
 ## 4.1.0
 
