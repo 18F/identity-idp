@@ -19,13 +19,6 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe 'before_actions' do
-    it 'includes handle_fraud' do
-      expect(idv_step_controller_class).to have_actions(
-        :before,
-        :handle_fraud,
-      )
-    end
-
     it 'includes check_for_mail_only_outage before_action' do
       expect(idv_step_controller_class).to have_actions(
         :before,
@@ -176,6 +169,7 @@ RSpec.describe 'IdvStepConcern' do
   describe '#confirm_letter_recently_enqueued' do
     controller(idv_step_controller_class) do
       before_action :confirm_letter_recently_enqueued
+      before_action :confirm_no_pending_profile
     end
 
     before(:each) do
@@ -209,9 +203,9 @@ RSpec.describe 'IdvStepConcern' do
     end
   end
 
-  describe '#confirm_no_pending_in_person_enrollment' do
+  describe '#confirm_no_pending_profile' do
     controller(idv_step_controller_class) do
-      before_action :confirm_no_pending_in_person_enrollment
+      before_action :confirm_no_pending_profile
     end
 
     before(:each) do
@@ -243,20 +237,6 @@ RSpec.describe 'IdvStepConcern' do
         get :show
 
         expect(response).to redirect_to idv_in_person_ready_to_verify_url
-      end
-    end
-  end
-
-  describe '#confirm_no_pending_gpo_profile' do
-    controller(idv_step_controller_class) do
-      before_action :confirm_no_pending_gpo_profile
-    end
-
-    before(:each) do
-      sign_in(user)
-      allow(subject).to receive(:current_user).and_return(user)
-      routes.draw do
-        get 'show' => 'anonymous#show'
       end
     end
 
