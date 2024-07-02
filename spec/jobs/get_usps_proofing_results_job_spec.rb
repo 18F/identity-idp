@@ -488,8 +488,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             it 'generates a backwards-compatible unique ID' do
               pending_enrollment.update(unique_id: nil)
               stub_request_passed_proofing_results
-              expect_any_instance_of(InPersonEnrollment).to
-              receive(:usps_unique_id).and_call_original
+              expect_any_instance_of(InPersonEnrollment).to receive(:usps_unique_id).and_call_original
 
               job.perform(Time.zone.now)
               pending_enrollment.reload
@@ -586,7 +585,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 freeze_time do
                   stub_request_passed_proofing_results(transactionEndDateTime: proofed_at_string)
                   wait_until = Time.zone.now +
-                               IdentityConfig.store.in_person_results_delay_in_hours.hours
+                              IdentityConfig.store.in_person_results_delay_in_hours.hours
                   expect do
                     job.perform(Time.zone.now)
                   end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
@@ -612,7 +611,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 freeze_time do
                   stub_request_failed_proofing_results(transactionEndDateTime: proofed_at_string)
                   wait_until = Time.zone.now +
-                               IdentityConfig.store.in_person_results_delay_in_hours.hours
+                              IdentityConfig.store.in_person_results_delay_in_hours.hours
                   expect do
                     job.perform(Time.zone.now)
                   end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
@@ -666,8 +665,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             )
 
             it 'invokes the SendProofingNotificationJob and logs details about the success' do
-              allow(IdentityConfig.store).to
-              receive(:in_person_send_proofing_notifications_enabled).
+              allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
                 and_return(true)
               expected_wait_until = nil
               freeze_time do
@@ -676,9 +674,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   job.perform(Time.zone.now)
                   pending_enrollment.reload
                 end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
-                  with(pending_enrollment.id).
-                  at(expected_wait_until).
-                  on_queue(:intentionally_delayed)
+                  with(pending_enrollment.id).at(expected_wait_until).on_queue(:intentionally_delayed)
               end
 
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
@@ -811,7 +807,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
 
               pending_enrollment.reload
-
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(job_analytics).to have_logged_event(
                 'GetUspsProofingResultsJob: Enrollment status updated',
@@ -1379,8 +1374,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             )
 
             it 'logs a message about enrollment with secondary ID' do
-              allow(IdentityConfig.store).to
-              receive(:in_person_send_proofing_notifications_enabled).and_return(true)
+              allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+                and_return(true)
               freeze_time do
                 expect do
                   job.perform Time.zone.now
