@@ -1,6 +1,227 @@
 require 'rails_helper'
 
 RSpec.describe AccountShowPresenter do
+  let(:vtr) { ['C2'] }
+  let(:decrypted_pii) { nil }
+  let(:sp_session_request_url) { nil }
+  let(:authn_context) do
+    AuthnContextResolver.new(
+      user:,
+      service_provider: nil,
+      vtr: vtr,
+      acr_values: nil,
+    ).resolve
+  end
+  let(:sp_name) { nil }
+  let(:user) { build(:user) }
+  let(:locked_for_session) { false }
+  subject(:presenter) do
+    AccountShowPresenter.new(
+      decrypted_pii:,
+      sp_session_request_url:,
+      authn_context:,
+      sp_name:,
+      user:,
+      locked_for_session:,
+    )
+  end
+
+  describe 'identity_verified_with_biometric_comparison?' do
+    subject(:identity_verified_with_biometric_comparison?) do
+      presenter.identity_verified_with_biometric_comparison?
+    end
+
+    it 'delegates to user' do
+      expect(identity_verified_with_biometric_comparison?).to eq(
+        user.identity_verified_with_biometric_comparison?,
+      )
+    end
+  end
+
+  describe '#showing_alerts?' do
+    subject(:showing_alerts?) { presenter.showing_alerts? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with associated sp' do
+      let(:sp_session_request_url) { 'http://example.test' }
+      let(:sp_name) { 'Example SP' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with password reset profile' do
+      let(:user) { build(:user, :deactivated_password_reset_profile) }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#active_profile?' do
+    subject(:active_profile?) { presenter.active_profile? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with proofed user' do
+      let(:user) { build(:user, :proofed) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with user who proofed but has pending profile' do
+      let(:user) { build(:user, :deactivated_password_reset_profile) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#active_profile_for_authn_context?' do
+    subject(:active_profile_for_authn_context?) { presenter.active_profile_for_authn_context? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with non-biometric proofed user' do
+      let(:user) { build(:user, :proofed) }
+
+      it { is_expected.to eq(true) }
+
+      context 'with sp request for non-biometric' do
+        let(:vtr) { ['C2.P1'] }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with sp request for biometric' do
+        let(:vtr) { ['C2.Pb'] }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'with biometric proofed user' do
+      let(:user) { build(:user, :proofed_with_selfie) }
+
+      it { is_expected.to eq(true) }
+
+      context 'with sp request for biometric' do
+        let(:vtr) { ['C2.Pb'] }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  context '#pending_idv?' do
+    subject(:pending_idv?) { presenter.pending_idv? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with sp request for non-biometric' do
+      let(:vtr) { ['C2.P1'] }
+
+      it { is_expected.to eq(true) }
+
+      context 'with non-biometric proofed user' do
+        let(:user) { build(:user, :proofed) }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'with sp request for biometric' do
+      let(:vtr) { ['C2.Pb'] }
+
+      it { is_expected.to eq(true) }
+
+      context 'with non-biometric proofed user' do
+        let(:user) { build(:user, :proofed) }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with biometric proofed user' do
+        let(:user) { build(:user, :proofed_with_selfie) }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  context '#pending_ipp?' do
+    subject(:pending_ipp?) { presenter.pending_ipp? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with user pending ipp verification' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  context '#pending_gpo?' do
+    subject(:pending_gpo?) { presenter.pending_gpo? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with user pending gpo verification' do
+      let(:user) { create(:user, :with_pending_gpo_profile) }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  context '#show_idv_partial?' do
+    subject(:show_idv_partial?) { presenter.show_idv_partial? }
+
+    it { is_expected.to eq(false) }
+
+    context 'with proofed user' do
+      let(:user) { build(:user, :proofed) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with pending idv' do
+      let(:user) { build(:user, :proofed) }
+      let(:vtr) { ['C2.Pb'] }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with user pending ipp verification' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with user pending gpo verification' do
+      let(:user) { create(:user, :with_pending_gpo_profile) }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#formatted_ipp_due_date' do
+    let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+    subject(:formatted_ipp_due_date) { presenter.formatted_ipp_due_date }
+
+    it 'formats a date string' do
+      expect { Date.parse(formatted_ipp_due_date) }.not_to raise_error
+    end
+  end
+
+  describe '#formatted_nonbiometric_idv_date' do
+    let(:user) { build(:user, :proofed_with_selfie) }
+
+    subject(:formatted_nonbiometric_idv_date) { presenter.formatted_nonbiometric_idv_date }
+
+    it 'formats a date string' do
+      expect { Date.parse(formatted_nonbiometric_idv_date) }.not_to raise_error
+    end
+  end
+
   describe '#header_personalization' do
     context 'AccountShowPresenter instance has decrypted_pii' do
       it "returns the user's first name" do
@@ -16,6 +237,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: decrypted_pii,
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -33,6 +255,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -54,6 +277,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -72,6 +296,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -90,6 +315,7 @@ RSpec.describe AccountShowPresenter do
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
         sp_session_request_url: nil,
+        authn_context: nil,
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
@@ -108,6 +334,7 @@ RSpec.describe AccountShowPresenter do
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
         sp_session_request_url: nil,
+        authn_context: nil,
         sp_name: nil,
         user: user.reload,
         locked_for_session: false,
@@ -118,26 +345,17 @@ RSpec.describe AccountShowPresenter do
   end
 
   describe '#pii' do
-    let(:user) { build(:user) }
-    let(:decrypted_pii) do
-      Pii::Attributes.new_from_hash(dob: dob)
-    end
+    let(:user) { build(:user, :proofed) }
+    let(:dob) { nil }
+    let(:decrypted_pii) { Pii::Attributes.new_from_hash(dob:) }
 
-    subject(:account_show) do
-      AccountShowPresenter.new(
-        decrypted_pii: decrypted_pii,
-        sp_session_request_url: nil,
-        sp_name: nil,
-        user: user,
-        locked_for_session: false,
-      )
-    end
+    subject(:pii) { presenter.pii }
 
     context 'birthday is formatted as an american date' do
       let(:dob) { '12/31/1970' }
 
       it 'parses the birthday' do
-        expect(account_show.pii.dob).to eq('December 31, 1970')
+        expect(pii.dob).to eq('December 31, 1970')
       end
     end
 
@@ -145,7 +363,7 @@ RSpec.describe AccountShowPresenter do
       let(:dob) { '1970-01-01' }
 
       it 'parses the birthday' do
-        expect(account_show.pii.dob).to eq('January 01, 1970')
+        expect(pii.dob).to eq('January 01, 1970')
       end
     end
   end
@@ -165,6 +383,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -188,6 +407,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
@@ -206,6 +426,7 @@ RSpec.describe AccountShowPresenter do
           decrypted_pii: {},
           user: user,
           sp_session_request_url: nil,
+          authn_context: nil,
           sp_name: nil,
           locked_for_session: false,
         )
