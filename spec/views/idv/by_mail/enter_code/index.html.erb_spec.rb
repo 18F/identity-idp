@@ -21,6 +21,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
     @gpo_verify_form = GpoVerifyForm.new(
       user: user,
       pii: pii,
+      resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
       otp: '1234',
     )
 
