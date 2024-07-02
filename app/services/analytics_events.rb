@@ -887,14 +887,7 @@ module AnalyticsEvents
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user confirmed their choice to cancel going through IDV
@@ -916,14 +909,7 @@ module AnalyticsEvents
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
   # @param [String,nil] enrollment_code IPP enrollment code
   # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record
@@ -956,14 +942,7 @@ module AnalyticsEvents
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [String] request_came_from the controller and action from the
   #   source such as "users/sessions#new"
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user clicked cancel during IDV (presented with an option to go back or confirm)
@@ -1474,14 +1453,7 @@ module AnalyticsEvents
   # @param [Boolean] fraud_rejection
   # @param [Boolean] gpo_verification_pending
   # @param [Boolean] in_person_verification_pending
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -1513,14 +1485,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's
+  #        current proofing components
   # @param [String] address_verification_method The method (phone or gpo) being
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -1550,14 +1516,7 @@ module AnalyticsEvents
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verification
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verification
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
@@ -1593,14 +1552,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited forgot password page
@@ -1619,14 +1571,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User confirmed forgot password
@@ -1772,14 +1717,7 @@ module AnalyticsEvents
   # @param [Integer] hours_since_first_letter Difference between first_letter_requested_at
   #                  and now in hours
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # GPO letter was enqueued and the time at which it was enqueued
@@ -1813,14 +1751,7 @@ module AnalyticsEvents
   # @param [Integer] hours_since_first_letter Difference between first_letter_requested_at
   #                  and now in hours
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # GPO letter was requested
@@ -2281,14 +2212,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user visited the "ready to verify" page for the in person proofing flow
@@ -2770,14 +2694,7 @@ module AnalyticsEvents
   end
 
   # The user visited the "letter enqueued" page shown during the verify by mail flow
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @identity.idp.previous_event_name IdV: come back later visited
@@ -2860,14 +2777,7 @@ module AnalyticsEvents
 
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [boolean] checked whether the user checked or un-checked
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -2891,14 +2801,7 @@ module AnalyticsEvents
 
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   def idv_personal_key_downloaded(
@@ -2916,14 +2819,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason profile was deactivated.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
@@ -2957,14 +2853,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String] address_verification_method "phone" or "gpo"
   # @param [Boolean,nil] in_person_verification_pending
   # @param [Boolean] encrypted_profiles_missing True if user's session had no encrypted pii
@@ -2996,14 +2885,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user submitted their phone on the phone confirmation page
@@ -3030,14 +2912,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user was rate limited for submitting too many OTPs during the IDV phone step
@@ -3056,14 +2931,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user was locked out for hitting the phone OTP rate limit during IDV
@@ -3082,14 +2950,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The user was rate limited for requesting too many OTPs during the IDV phone step
@@ -3117,14 +2978,7 @@ module AnalyticsEvents
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
   # @param [String] phone_fingerprint Fingerprint string identifying phone number
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Hash, nil] ab_tests data for ongoing A/B tests
@@ -3173,14 +3027,7 @@ module AnalyticsEvents
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [Hash] telephony_response response from Telephony gem
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [:test, :pinpoint] adapter which adapter the OTP was delivered with
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
@@ -3228,14 +3075,7 @@ module AnalyticsEvents
   # @param [:sms,:voice] otp_delivery_preference
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # When a user attempts to confirm posession of a new phone number during the IDV process
@@ -3270,14 +3110,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # When a user visits the page to confirm posession of a new phone number during the IDV process
@@ -3299,14 +3132,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The vendor finished the process of confirming the users phone
@@ -3335,14 +3161,7 @@ module AnalyticsEvents
   # @param [Time] limiter_expires_at when the rate limit expires
   # @param [Integer] remaining_submit_attempts number of submit attempts remaining
   #                  (previously called "remaining_attempts")
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # When a user gets an error during the phone finder flow of IDV
@@ -3369,14 +3188,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited idv phone of record
@@ -3395,14 +3207,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String] step the step the user was on when they clicked use a different phone number
   # User decided to use a different phone number in idv
   def idv_phone_use_different(step:, proofing_components: nil, **extra)
@@ -3415,14 +3220,7 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name IdV: Verify setup errors visited
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
@@ -3444,14 +3242,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # The system encountered an error and the proofing results are missing
@@ -3470,13 +3261,16 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] letter_already_sent
   # GPO "request letter" page visited
   # @identity.idp.previous_event_name IdV: USPS address visited
   def idv_request_letter_visited(
+    letter_already_sent:,
     **extra
   )
     track_event(
       'IdV: request letter visited',
+      letter_already_sent: letter_already_sent,
       **extra,
     )
   end
@@ -3758,14 +3552,7 @@ module AnalyticsEvents
 
   # @param [String] step
   # @param [String] location
-  # @param [Hash,nil] proofing_components User's current proofing components
-  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
-  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
-  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
-  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
-  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
-  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [boolean,nil] cancelled_enrollment Whether the user's IPP enrollment has been canceled
   # @param [String,nil] enrollment_code IPP enrollment code
   # @param [Integer,nil] enrollment_id ID of the associated IPP enrollment record

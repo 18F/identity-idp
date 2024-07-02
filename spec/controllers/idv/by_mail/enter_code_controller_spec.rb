@@ -453,14 +453,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
       end
       let(:is_enhanced_ipp) { true }
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
-      let(:gpo_verify_form) do
-        GpoVerifyForm.new(
-          user: user,
-          pii: {},
-          resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
-          otp: good_otp,
-        )
-      end
+      let(:gpo_verify_form) { GpoVerifyForm.new(user: user, pii: {}, otp: good_otp) }
       before do
         authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
         allow(controller).to(

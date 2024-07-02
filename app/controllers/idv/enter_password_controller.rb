@@ -5,7 +5,6 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include VerifyByMailConcern
 
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
@@ -127,7 +126,17 @@ module Idv
       )
       if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
-        log_letter_enqueued_analytics(resend: false)
+        analytics.idv_gpo_address_letter_enqueued(
+          enqueued_at: Time.zone.now,
+          resend: false,
+          phone_step_attempts: RateLimiter.new(
+            user: current_user,
+            rate_limit_type: :proof_address,
+          ).attempts,
+          first_letter_requested_at: first_letter_requested_at,
+          hours_since_first_letter: hours_since_first_letter(first_letter_requested_at),
+          **ab_test_analytics_buckets,
+        )
       end
 
       if idv_session.profile.active?
@@ -142,6 +151,11 @@ module Idv
 
     def first_letter_requested_at
       idv_session.profile.gpo_verification_pending_at
+    end
+
+    def hours_since_first_letter(first_letter_requested_at)
+      first_letter_requested_at ?
+        (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
     end
 
     def valid_password?

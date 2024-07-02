@@ -10,7 +10,6 @@ RSpec.describe RateLimitConcern do
 
     include RateLimitConcern
     include IdvSessionConcern
-    include Idv::VerifyByMailConcern
 
     def show
       render plain: 'Hello'

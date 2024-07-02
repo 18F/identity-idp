@@ -175,9 +175,6 @@ RSpec.describe GpoReminderSender do
           GpoVerifyForm.new(
             user: user,
             pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
-            resolved_authn_context_result: Vot::Parser::Result.no_sp_result.with(
-              enhanced_ipp?: is_enhanced_ipp,
-            ),
             otp: otp,
           ).submit(is_enhanced_ipp)
         end

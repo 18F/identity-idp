@@ -52,6 +52,8 @@ interface SessionTimedOutStatus {
 
 export type SessionStatus = SessionLiveStatus | SessionTimedOutStatus;
 
+export const SESSIONS_URL = new URL('/api/internal/sessions', window.location.href).toString();
+
 function mapSessionStatusResponse<R extends SessionLiveStatusResponse>(
   response: R,
 ): SessionLiveStatus;
@@ -81,11 +83,10 @@ function handleUnauthorizedStatusResponse(error: ResponseError) {
 /**
  * Request the current session status. Returns a promise resolving to the current session status.
  *
- * @param sessionsURL The URL for the session API
  * @return A promise resolving to the current session status
  */
-export const requestSessionStatus = (sessionsURL: string): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(sessionsURL)
+export const requestSessionStatus = (): Promise<SessionStatus> =>
+  request<SessionStatusResponse>(SESSIONS_URL)
     .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);
 
@@ -93,10 +94,9 @@ export const requestSessionStatus = (sessionsURL: string): Promise<SessionStatus
  * Request that the current session be kept alive. Returns a promise resolving to the updated
  * session status.
  *
- * @param sessionsURL The URL for the session API
  * @return A promise resolving to the updated session status.
  */
-export const extendSession = (sessionsURL: string): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(sessionsURL, { method: 'PUT' })
+export const extendSession = (): Promise<SessionStatus> =>
+  request<SessionStatusResponse>(SESSIONS_URL, { method: 'PUT' })
     .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);

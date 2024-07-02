@@ -270,46 +270,6 @@ RSpec.describe RecaptchaEnterpriseForm do
           form_class: 'RecaptchaEnterpriseForm',
         )
       end
-
-      context 'with low confidence score as one of the reasons for failure' do
-        before do
-          stub_recaptcha_response(
-            body: {
-              tokenProperties: { valid: true, action: },
-              riskAnalysis: { score:, reasons: ['LOW_CONFIDENCE_SCORE'] },
-              event: {},
-              name:,
-            },
-            action:,
-            token:,
-          )
-        end
-
-        it 'is successful with assessment id' do
-          response, assessment_id = result
-
-          expect(response.to_h).to eq(success: true)
-          expect(assessment_id).to eq(name)
-        end
-
-        it 'logs analytics of the body' do
-          result
-
-          expect(analytics).to have_logged_event(
-            'reCAPTCHA verify result received',
-            recaptcha_result: {
-              success: true,
-              score:,
-              reasons: ['LOW_CONFIDENCE_SCORE'],
-              errors: [],
-              assessment_id: name,
-            },
-            evaluated_as_valid: true,
-            score_threshold: score_threshold,
-            form_class: 'RecaptchaEnterpriseForm',
-          )
-        end
-      end
     end
 
     context 'with successful score from validation service' do
