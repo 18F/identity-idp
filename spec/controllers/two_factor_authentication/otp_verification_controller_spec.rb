@@ -313,6 +313,54 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         )
       end
 
+      context 'with reauthentication context' do
+        before do
+          controller.user_session[:context] = 'reauthentication'
+        end
+
+        it 'tracks the valid authentication event' do
+          stub_analytics
+
+          freeze_time do
+            post :create, params: {
+              code: subject.current_user.reload.direct_otp,
+              otp_delivery_preference: 'sms',
+            }
+
+            expect(subject.user_session[:auth_events]).to eq(
+              [
+                {
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                  at: Time.zone.now,
+                },
+              ],
+            )
+            expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          end
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: true,
+            confirmation_for_add_phone: false,
+            context: 'reauthentication',
+            multi_factor_auth_method: 'sms',
+            multi_factor_auth_method_created_at: user.default_phone_configuration.created_at.
+              strftime('%s%L'),
+            new_device: true,
+            phone_configuration_id: user.default_phone_configuration.id,
+            area_code: parsed_phone.area_code,
+            country_code: parsed_phone.country,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            enabled_mfa_methods_count: 1,
+            in_account_creation_flow: false,
+          )
+          expect(@analytics).to have_logged_event(
+            'User marked authenticated',
+            authentication_type: :valid_2fa,
+          )
+        end
+      end
+
       context 'with existing device' do
         before do
           allow(controller).to receive(:new_device?).and_return(false)
