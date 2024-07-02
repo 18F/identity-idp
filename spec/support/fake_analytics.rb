@@ -150,7 +150,6 @@ class FakeAnalytics < Analytics
 
   attr_reader :events
   attr_accessor :user
-  attr_accessor :session
 
   def initialize(user: AnonymousUser.new, sp: nil, session: nil)
     @events = Hash.new
@@ -160,7 +159,7 @@ class FakeAnalytics < Analytics
   end
 
   def track_event(event, attributes = {})
-    if attributes[:proofing_components].instance_of?(Idv::ProofingComponents)
+    if attributes[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
       attributes[:proofing_components] = attributes[:proofing_components].as_json.symbolize_keys
     end
     events[event] ||= []

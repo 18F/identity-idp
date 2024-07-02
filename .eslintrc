@@ -18,8 +18,8 @@
     "no-restricted-syntax": [
       "error",
       {
-        "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/],NewExpression[callee.name=URL][arguments.0.type=/(Template)?Literal/]",
-        "message": "Avoid hard-coded string URLs, since they will not include the current locale"
+        "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
+        "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
       }
     ],
     "react-hooks/exhaustive-deps": "error"
@@ -42,7 +42,6 @@
             "packageDir": "."
           }
         ],
-        "no-restricted-syntax": "off",
         "testing-library/await-async-events": "error",
         "testing-library/await-async-queries": "error",
         "testing-library/await-async-utils": "error",

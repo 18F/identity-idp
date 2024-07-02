@@ -2,12 +2,7 @@ require 'rails_helper'
 
 RSpec.describe GpoVerifyForm, allowed_extra_analytics: [:*] do
   subject(:form) do
-    GpoVerifyForm.new(
-      user: user,
-      pii: applicant,
-      resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
-      otp: entered_otp,
-    )
+    GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
   end
 
   let(:user) { create(:user, :fully_registered) }

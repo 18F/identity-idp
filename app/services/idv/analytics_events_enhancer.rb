@@ -183,20 +183,8 @@ module Idv
     end
 
     def proofing_components
-      return if !user
-
-      idv_session = Idv::Session.new(
-        user_session: session&.dig('warden.user.user.session') || {},
-        current_user: user,
-        service_provider: sp,
-      )
-
-      proofing_components_hash = ProofingComponents.new(
-        user:,
-        idv_session:,
-      ).to_h
-
-      proofing_components_hash.empty? ? nil : proofing_components_hash
+      return if !user&.respond_to?(:proofing_component) || !user.proofing_component
+      ProofingComponentsLogging.new(user.proofing_component)
     end
   end
 end

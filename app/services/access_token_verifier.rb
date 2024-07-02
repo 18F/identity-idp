@@ -59,7 +59,7 @@ class AccessTokenVerifier
     end
 
     bearer, access_token = header.split(' ', 2)
-    if bearer != 'Bearer' || access_token.blank?
+    if bearer != 'Bearer'
       errors.add(
         :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
         type: :malformed_authorization

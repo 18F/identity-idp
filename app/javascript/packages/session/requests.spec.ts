@@ -1,10 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
-import { requestSessionStatus, extendSession } from './requests';
+import { SESSIONS_URL, requestSessionStatus, extendSession } from './requests';
 import type { SessionLiveStatusResponse, SessionTimedOutStatusResponse } from './requests';
-
-const SESSIONS_URL = '/api/internal/sessions';
 
 describe('requestSessionStatus', () => {
   let server: SetupServer;
@@ -24,7 +22,7 @@ describe('requestSessionStatus', () => {
     });
 
     it('resolves to the status', async () => {
-      const result = await requestSessionStatus(SESSIONS_URL);
+      const result = await requestSessionStatus();
 
       expect(result).to.deep.equal({ isLive: false });
     });
@@ -48,7 +46,7 @@ describe('requestSessionStatus', () => {
     });
 
     it('resolves to the status', async () => {
-      const result = await requestSessionStatus(SESSIONS_URL);
+      const result = await requestSessionStatus();
 
       expect(result).to.deep.equal({ isLive: true, timeout: new Date(timeout) });
     });
@@ -67,7 +65,7 @@ describe('requestSessionStatus', () => {
     });
 
     it('resolves to the status', async () => {
-      const result = await requestSessionStatus(SESSIONS_URL);
+      const result = await requestSessionStatus();
 
       expect(result).to.deep.equal({ isLive: false });
     });
@@ -86,7 +84,7 @@ describe('requestSessionStatus', () => {
     });
 
     it('throws an error', async () => {
-      await expect(requestSessionStatus(SESSIONS_URL)).to.be.rejected();
+      await expect(requestSessionStatus()).to.be.rejected();
     });
   });
 });
@@ -111,7 +109,7 @@ describe('extendSession', () => {
     });
 
     it('resolves to the status', async () => {
-      const result = await extendSession(SESSIONS_URL);
+      const result = await extendSession();
 
       expect(result).to.deep.equal({ isLive: true, timeout: new Date(timeout) });
     });
@@ -130,7 +128,7 @@ describe('extendSession', () => {
     });
 
     it('resolves to the status', async () => {
-      const result = await extendSession(SESSIONS_URL);
+      const result = await extendSession();
 
       expect(result).to.deep.equal({ isLive: false });
     });
@@ -149,7 +147,7 @@ describe('extendSession', () => {
     });
 
     it('throws an error', async () => {
-      await expect(extendSession(SESSIONS_URL)).to.be.rejected();
+      await expect(extendSession()).to.be.rejected();
     });
   });
 });

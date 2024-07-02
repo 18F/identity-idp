@@ -5,7 +5,6 @@ class IdvController < ApplicationController
   include AccountReactivationConcern
   include VerifyProfileConcern
   include RateLimitConcern
-  include Idv::VerifyByMailConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]

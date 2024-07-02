@@ -4,6 +4,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
+  let(:empty_locations) { [] }
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
@@ -38,12 +39,10 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
   end
 
   describe '#index' do
-    let(:locale) { nil }
     let(:proofer) { double('Proofer') }
     let(:locations) do
       [
-        UspsInPersonProofing::PostOffice.new(
-          address: '3118 WASHINGTON BLVD',
+        { address: '3118 WASHINGTON BLVD',
           city: 'ARLINGTON',
           distance: '6.02 mi',
           name: 'ARLINGTON',
@@ -52,10 +51,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: 'Closed',
           weekday_hours: '9:00 AM - 5:00 PM',
           zip_code_4: '9998',
-          zip_code_5: '22201',
-        ),
-        UspsInPersonProofing::PostOffice.new(
-          address: '4005 WISCONSIN AVE NW',
+          zip_code_5: '22201' },
+        { address: '4005 WISCONSIN AVE NW',
           city: 'WASHINGTON',
           distance: '6.59 mi',
           name: 'FRIENDSHIP',
@@ -64,10 +61,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: '10:00 AM - 4:00 PM',
           weekday_hours: '8:00 AM - 6:00 PM',
           zip_code_4: '9997',
-          zip_code_5: '20016',
-        ),
-        UspsInPersonProofing::PostOffice.new(
-          address: '6900 WISCONSIN AVE STE 100',
+          zip_code_5: '20016' },
+        { address: '6900 WISCONSIN AVE STE 100',
           city: 'CHEVY CHASE',
           distance: '8.99 mi',
           name: 'BETHESDA',
@@ -76,13 +71,11 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           sunday_hours: 'Closed',
           weekday_hours: '9:00 AM - 5:00 PM',
           zip_code_4: '9996',
-          zip_code_5: '20815',
-        ),
+          zip_code_5: '20815' },
       ]
     end
     subject(:response) do
-      post :index, params: { locale: locale,
-                             address: { street_address: '1600 Pennsylvania Ave',
+      post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
                                         city: 'Washington',
                                         state: 'DC',
                                         zip_code: '20500' } }
@@ -136,7 +129,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
     context 'no addresses found by usps' do
       before do
         allow(proofer).to receive(:request_facilities).with(address, false).
-          and_return([])
+          and_return(empty_locations)
       end
 
       it 'logs analytics with error when successful response is empty' do
@@ -171,32 +164,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: nil,
           response_status_code: nil,
         )
-      end
-
-      context 'with non-English locale' do
-        let(:locale) { 'fr' }
-
-        it 'returns content in selected locale' do
-          json = response.body
-
-          expect(json).to include(
-            I18n.t('in_person_proofing.body.barcode.retail_hours_closed', locale: locale),
-          )
-          I18n.locale = locale
-          facilities = JSON.parse(json)
-
-          facilities.zip(locations).each do |facility, location|
-            expect(facility['weekday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:weekday_hours]),
-            )
-            expect(facility['saturday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:saturday_hours]),
-            )
-            expect(facility['sunday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:sunday_hours]),
-            )
-          end
-        end
       end
     end
 

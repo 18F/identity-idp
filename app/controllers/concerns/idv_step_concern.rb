@@ -7,7 +7,6 @@ module IdvStepConcern
   include RateLimitConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
-  include Idv::VerifyByMailConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -51,7 +50,8 @@ module IdvStepConcern
   end
 
   def redirect_for_mail_only
-    if gpo_verify_by_mail_policy.send_letter_available?
+    policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+    if policy.send_letter_available?
       redirect_to idv_mail_only_warning_url
     else
       redirect_to vendor_outage_url

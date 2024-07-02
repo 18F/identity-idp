@@ -6,7 +6,6 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include Idv::AbTestAnalyticsConcern
-    include Idv::VerifyByMailConcern
 
     before_action :confirm_step_allowed, except: [:failure]
     before_action :set_gpo_letter_available
@@ -72,8 +71,12 @@ module Idv
       analytics.idv_phone_error_visited(**attributes)
     end
 
+    # rubocop:disable Naming/MemoizedInstanceVariableName
     def set_gpo_letter_available
-      @gpo_letter_available = gpo_verify_by_mail_policy.send_letter_available?
+      return @gpo_letter_available if defined?(@gpo_letter_available)
+      policy = Idv::GpoVerifyByMailPolicy.new(current_user)
+      @gpo_letter_available = policy.send_letter_available?
     end
+    # rubocop:enable Naming/MemoizedInstanceVariableName
   end
 end

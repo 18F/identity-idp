@@ -5,7 +5,6 @@ RSpec.describe 'accounts/show.html.erb' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:user_session).and_return({})
     assign(
       :presenter,
       AccountShowPresenter.new(
@@ -90,8 +89,6 @@ RSpec.describe 'accounts/show.html.erb' do
       end
 
       it 'does not render phone' do
-        render
-
         expect(view).to_not render_template(partial: '_phone')
       end
     end
@@ -119,14 +116,16 @@ RSpec.describe 'accounts/show.html.erb' do
       let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
       it 'does not render piv/cac' do
-        render
-
         expect(view).to_not render_template(partial: '_piv_cac')
       end
     end
 
     context 'user has a piv/cac' do
       let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+      before do
+        allow(view).to receive(:user_session).and_return({})
+      end
 
       it 'renders the piv/cac section' do
         render
