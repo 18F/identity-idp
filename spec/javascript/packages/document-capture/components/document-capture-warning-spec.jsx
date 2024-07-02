@@ -153,8 +153,6 @@ describe('DocumentCaptureWarning', () => {
         expect(getByText('general error')).to.be.ok();
         expect(getByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
-        // the ipp section isn't displayed with isFailedResult=true
-        validateIppSection(false);
         // troubleshooting section
         validateTroubleShootingSection();
       });
@@ -173,8 +171,6 @@ describe('DocumentCaptureWarning', () => {
         expect(getByText(/general error/)).to.be.ok();
         expect(queryByText('idv.failure.attempts_html')).to.be.ok();
         expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
-        // ipp section not existing
-        validateIppSection(false);
         // troubleshooting section
         validateTroubleShootingSection();
       });

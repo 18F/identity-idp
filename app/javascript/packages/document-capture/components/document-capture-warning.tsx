@@ -118,7 +118,7 @@ function DocumentCaptureWarning({
         troubleshootingOptions={
           <DocumentCaptureTroubleshootingOptions
             location="post_submission_warning"
-            showAlternativeProofingOptions={!isFailedResult}
+            showAlternativeProofingOptions
             heading={t('components.troubleshooting_options.ipp_heading')}
           />
         }
