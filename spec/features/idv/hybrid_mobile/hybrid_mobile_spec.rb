@@ -49,6 +49,10 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
       expect(page).to have_current_path(root_url)
       visit idv_hybrid_mobile_document_capture_url
 
+      # Confirm that clicking cancel and then coming back doesn't cause errors
+      click_link 'Cancel'
+      visit idv_hybrid_mobile_document_capture_url
+
       # Confirm that jumping to Phone page does not cause errors
       visit idv_phone_url
       expect(page).to have_current_path(root_url)
@@ -103,6 +107,102 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
       click_agree_and_continue
 
       validate_return_to_sp
+    end
+  end
+
+  context 'when biometric confirmation is requested' do
+    it 'proofs and hands off to mobile', js: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
+        binding.pry
+
+        user = sign_up_and_2fa_ial1_user
+
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
+        expect(page).to have_content(t('doc_auth.info.you_entered'))
+        expect(page).to have_content('+1 415-555-0199')
+
+        # Confirm that Continue button is not shown when polling is enabled
+        expect(page).not_to have_content(t('doc_auth.buttons.continue'))
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+        binding.pry
+
+        # Confirm that jumping to LinkSent page does not cause errors
+        visit idv_link_sent_url
+        expect(page).to have_current_path(root_url)
+        visit idv_hybrid_mobile_document_capture_url
+
+        # Confirm that clicking cancel and then coming back doesn't cause errors
+        click_link 'Cancel'
+        visit idv_hybrid_mobile_document_capture_url
+
+        # Confirm that jumping to Phone page does not cause errors
+        visit idv_phone_url
+        expect(page).to have_current_path(root_url)
+        visit idv_hybrid_mobile_document_capture_url
+
+        # Confirm that jumping to Welcome page does not cause errors
+        visit idv_welcome_url
+        expect(page).to have_current_path(root_url)
+        visit idv_hybrid_mobile_document_capture_url
+
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+        attach_images
+        attach_selfie
+        submit_images
+
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+        # Confirm app disallows jumping back to DocumentCapture page
+        visit idv_hybrid_mobile_document_capture_url
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+        expect(page).to have_current_path(idv_ssn_path)
+
+        fill_out_ssn_form_ok
+        click_idv_continue
+
+        expect(page).to have_content(t('headings.verify'))
+        complete_verify_step
+
+        prefilled_phone = page.find(id: 'idv_phone_form_phone').value
+
+        expect(
+          PhoneFormatter.format(prefilled_phone),
+        ).to eq(
+               PhoneFormatter.format(user.default_phone_configuration.phone),
+             )
+
+        fill_out_phone_form_ok
+        verify_phone_otp
+
+        fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
+        click_idv_continue
+
+        acknowledge_and_confirm_personal_key
+
+        validate_idv_completed_page(user)
+        click_agree_and_continue
+
+        validate_return_to_sp
+      end
     end
   end
 
