@@ -196,8 +196,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
     ).in_time_zone('UTC')
   end
   let(:in_person_proofing_enforce_tmx) { true }
-  let(:sponsor_id) { '12345'}
-  let(:usps_sponsor_id) { '98765' }
+  let(:usps_ipp_sponsor_id) { '12345'}
   let(:usps_eipp_sponsor_id) { '98765' }
 
   before do
@@ -216,6 +215,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       and_return(in_person_proofing_enforce_tmx)
     allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled).
       and_return(false)
+    allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return(usps_ipp_sponsor_id)  
     allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
@@ -239,7 +239,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 :with_notification_phone_configuration,
                 issuer: 'http://localhost:3000',
                 selected_location_details: { name: name },
-                sponsor_id: sponsor_id,
+                sponsor_id: usps_ipp_sponsor_id,
               )
             end
           end
@@ -781,9 +781,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           context 'when an enrollment passes proofing with an unsupported ID' do
             before(:each) do
-              pending_enrollment.update(sponsor_id: '22')
               stub_request_passed_proofing_unsupported_id_results
-              allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return('13')
             end
 
             it_behaves_like(
@@ -1499,13 +1497,12 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 :with_notification_phone_configuration,
                 issuer: 'http://localhost:3000',
                 selected_location_details: { name: 'BALTIMORE' },
-                sponsor_id: usps_eipp_sponsor_id, # InPersonEnrollment.sponsor_id matches IdentityConfig.store.usps_eipp_sponsor_id
+                sponsor_id: usps_eipp_sponsor_id,
               )
           end
   
           before do
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-            allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
             stub_request_passed_proofing_unsupported_id_results
           end
 
