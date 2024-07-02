@@ -229,10 +229,11 @@ module Users
     end
 
     def check_password_compromised
-      # return if current_user.password_compromised_checked_at.present? ||
-      #           !eligible_for_password_lookup?
+      return if current_user.password_compromised_checked_at.present? ||
+                !eligible_for_password_lookup?
 
-      session[:redirect_to_change_password] = true
+      session[:redirect_to_change_password] =
+        PwnedPasswords::LookupPassword.call(auth_params[:password])
       update_user_password_compromised_checked_at
     end
 
