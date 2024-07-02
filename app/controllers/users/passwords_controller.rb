@@ -74,7 +74,7 @@ module Users
       # meter will not appear.
       @update_password_presenter = UpdatePasswordPresenter.new(
         user: current_user,
-        required_password_change: required_password_change,
+        required_password_change: required_password_change?,
       )
       render :edit
     end
