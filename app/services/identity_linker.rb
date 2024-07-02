@@ -13,6 +13,7 @@ class IdentityLinker
     @requested_aal_value = nil
   end
 
+  # rubocop:disable Lint/UnusedMethodArgument
   def link_identity(
     code_challenge: nil,
     ial: nil,
@@ -34,8 +35,8 @@ class IdentityLinker
     identity.update!(
       identity_attributes.merge(
         code_challenge: code_challenge,
-        ial: ial,
-        aal: aal,
+        # ial: ial,
+        # aal: aal,
         acr_values: acr_values,
         vtr: vtr,
         requested_aal_value: requested_aal_value,
@@ -52,6 +53,7 @@ class IdentityLinker
     AgencyIdentityLinker.new(identity).link_identity
     identity
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   private
 

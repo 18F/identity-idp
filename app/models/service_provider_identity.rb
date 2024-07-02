@@ -4,6 +4,11 @@
 class ServiceProviderIdentity < ApplicationRecord
   self.table_name = :identities
 
+  self.ignored_columns = [
+    :ial,
+    :aal,
+  ]
+
   include NonNullUuid
 
   belongs_to :user

@@ -10,7 +10,6 @@ RSpec.describe IdTokenBuilder do
       :service_provider_identity,
       nonce: SecureRandom.hex,
       uuid: SecureRandom.uuid,
-      ial: 2,
       rails_session_id: '123',
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
@@ -84,7 +83,6 @@ RSpec.describe IdTokenBuilder do
     context 'context sp requests ACR values' do
       context 'aal and ial request' do
         before do
-          identity.aal = 2
           acr_values = [
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
             Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -99,7 +97,6 @@ RSpec.describe IdTokenBuilder do
 
       context 'ial2 request' do
         before do
-          identity.ial = 2
           identity.acr_values = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
         end
 
@@ -110,7 +107,6 @@ RSpec.describe IdTokenBuilder do
 
       context 'ial1 request' do
         before do
-          identity.ial = 1
           identity.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         end
 
@@ -121,7 +117,6 @@ RSpec.describe IdTokenBuilder do
 
       context 'ialmax request' do
         before do
-          identity.ial = 0
           identity.acr_values = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
         end
 

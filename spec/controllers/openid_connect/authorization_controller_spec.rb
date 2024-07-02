@@ -152,7 +152,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             )
             expect(@analytics).to have_logged_event(
               'SP redirect initiated',
-              ial: 1,
               billed_ial: 1,
               sign_in_duration_seconds: 15,
               sign_in_flow:,
@@ -211,7 +210,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             expect(@analytics).to have_logged_event(
               'SP redirect initiated',
-              ial: 1,
               sign_in_duration_seconds: 15,
               billed_ial: 1,
               sign_in_flow:,
@@ -409,7 +407,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
               expect(@analytics).to have_logged_event(
                 'SP redirect initiated',
-                ial: 2,
                 sign_in_duration_seconds: 15,
                 billed_ial: 2,
                 sign_in_flow:,
@@ -747,7 +744,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 expect(@analytics).to have_logged_event(
                   'SP redirect initiated',
-                  ial: 0,
                   sign_in_duration_seconds: 15,
                   billed_ial: 2,
                   sign_in_flow:,
@@ -841,7 +837,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 expect(@analytics).to have_logged_event(
                   'SP redirect initiated',
-                  ial: 0,
                   sign_in_duration_seconds: 15,
                   billed_ial: 1,
                   sign_in_flow:,
@@ -938,7 +933,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 expect(@analytics).to have_logged_event(
                   'SP redirect initiated',
-                  ial: 0,
                   sign_in_duration_seconds: 15,
                   billed_ial: 1,
                   sign_in_flow:,
@@ -1106,7 +1100,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             expect(@analytics).to have_logged_event(
               'SP redirect initiated',
-              ial: 1,
               sign_in_duration_seconds: 15,
               billed_ial: 1,
               sign_in_flow:,
@@ -1165,7 +1158,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             expect(@analytics).to have_logged_event(
               'SP redirect initiated',
-              ial: 1,
               sign_in_duration_seconds: 15,
               billed_ial: 1,
               sign_in_flow:,
@@ -1364,7 +1356,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
               expect(@analytics).to have_logged_event(
                 'SP redirect initiated',
-                ial: 2,
                 sign_in_duration_seconds: 15,
                 billed_ial: 2,
                 sign_in_flow:,
@@ -1704,7 +1695,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 expect(@analytics).to have_logged_event(
                   'SP redirect initiated',
-                  ial: 0,
                   sign_in_duration_seconds: 15,
                   billed_ial: 2,
                   sign_in_flow:,
@@ -1798,7 +1788,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 expect(@analytics).to have_logged_event(
                   'SP redirect initiated',
-                  ial: 0,
                   sign_in_duration_seconds: 15,
                   billed_ial: 1,
                   sign_in_flow:,
@@ -1895,7 +1884,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 expect(@analytics).to have_logged_event(
                   'SP redirect initiated',
-                  ial: 0,
                   sign_in_duration_seconds: 15,
                   billed_ial: 1,
                   sign_in_flow:,

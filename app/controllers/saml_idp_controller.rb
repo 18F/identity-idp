@@ -200,7 +200,6 @@ class SamlIdpController < ApplicationController
 
   def track_events
     analytics.sp_redirect_initiated(
-      ial: resolved_authn_context_int_ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
       sign_in_flow: session[:sign_in_flow],
       vtr: sp_session[:vtr],
