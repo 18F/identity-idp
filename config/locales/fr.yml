@@ -1910,6 +1910,7 @@ users.delete.bullet_4: Nous informerons les organismes auxquels vous accédez av
 users.delete.heading: Êtes-vous sûr de vouloir supprimer votre compte ?
 users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez supprimer votre compte.
 users.delete.subheading: 'Si vous supprimez votre compte :'
+users.password_compromised.warning: Nous avons trouvé votre mot de passe dans le cadre d’une fuite de données sur un autre site Web ou une application. %{app_name} vous demande de modifier votre mot de passe pour protéger votre compte.
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle
 users.personal_key.confirmation_error: Vous avez saisi une clé personnelle erronée.

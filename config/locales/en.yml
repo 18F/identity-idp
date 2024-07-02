@@ -1910,6 +1910,7 @@ users.delete.bullet_4: We will notify the agencies you access with %{app_name} t
 users.delete.heading: Are you sure you want to delete your account?
 users.delete.instructions: Enter your password to confirm that you want to delete your account.
 users.delete.subheading: 'If you delete your account:'
+users.password_compromised.warning: We found your password in a data breach on another site or app. %{app_name} requires you to change your password to protect your account.
 users.personal_key.accessible_labels.code_example: A personal key example with 16 characters
 users.personal_key.accessible_labels.preview: Personal key preview
 users.personal_key.confirmation_error: You’ve entered an incorrect personal key.

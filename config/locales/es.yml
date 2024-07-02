@@ -1921,6 +1921,7 @@ users.delete.bullet_4: Notificaremos a las agencias a las que acceda con %{app_n
 users.delete.heading: '¿Está seguro de que desea eliminar su cuenta?'
 users.delete.instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
 users.delete.subheading: 'Si elimina su cuenta:'
+users.password_compromised.warning: Hemos encontrado su contraseña en una filtración de datos en otro sitio o aplicación. %{app_name} requiere que cambie su contraseña para proteger su cuenta.
 users.personal_key.accessible_labels.code_example: Un ejemplo de clave personal con 16 caracteres
 users.personal_key.accessible_labels.preview: Vista previa de la clave personal
 users.personal_key.confirmation_error: Ingresó una clave personal incorrecta.

@@ -290,7 +290,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'stores in session redirect to check compromise' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_truthy
+            expect(controller.session[:redirect_to_change_password]).to be_truthy
           end
         end
 
@@ -308,7 +308,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not update the user ' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
       end
@@ -335,7 +335,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'stores in session false to attempt to redirect password compromised' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
 
@@ -353,7 +353,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not update the user ' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
       end

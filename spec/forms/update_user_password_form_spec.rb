@@ -57,6 +57,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           active_profile_present: false,
           pending_profile_present: false,
           user_id: user.uuid,
+          required_password_change: false,
         )
       end
 
