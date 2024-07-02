@@ -13,7 +13,7 @@ RSpec.feature 'a user that is pending verify by mail', allowed_extra_analytics: 
 
     expect(current_path).to eq(idv_verify_by_mail_enter_code_path)
 
-    # Attempting to start IdV should require enter-code to be entered
+    # Attempting to start IdV should require enter-code to be completed
     visit idv_welcome_path
     expect(current_path).to eq(idv_verify_by_mail_enter_code_path)
 
