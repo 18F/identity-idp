@@ -68,7 +68,7 @@ module Users
     def increment_session_bad_password_count
       session[:bad_password_count] = session[:bad_password_count].to_i + 1
       return unless session_bad_password_count_max_exceeded?
-      session[:max_bad_passwords_at] ||= Time.zone.now.to_i
+      session[:max_bad_passwords_at] ||= Time.zone.now
     end
 
     def process_locked_out_session
