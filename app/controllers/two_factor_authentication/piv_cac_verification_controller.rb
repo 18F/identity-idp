@@ -30,8 +30,14 @@ module TwoFactorAuthentication
 
     def process_token
       result = piv_cac_verification_form.submit
-      analytics.multi_factor_auth(**result.to_h.merge(analytics_properties))
       session[:sign_in_flow] = :sign_in
+
+      handle_verification_for_authentication_context(
+        result:,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+        extra_analytics: analytics_properties,
+      )
+
       if result.success?
         handle_valid_piv_cac
       else
@@ -47,15 +53,12 @@ module TwoFactorAuthentication
         presented: true,
       )
 
-      handle_valid_verification_for_authentication_context(
-        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
-      )
       redirect_to after_sign_in_path_for(current_user)
     end
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      handle_invalid_otp(context: context, type: 'piv_cac')
+      handle_invalid_otp(type: 'piv_cac')
     end
 
     # This overrides the method in TwoFactorAuthenticatable so that we

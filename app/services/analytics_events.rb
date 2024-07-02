@@ -4045,11 +4045,12 @@ module AnalyticsEvents
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
+    multi_factor_auth_method:,
+    enabled_mfa_methods_count:,
+    new_device:,
     errors: nil,
     error_details: nil,
     context: nil,
-    new_device: nil,
-    multi_factor_auth_method: nil,
     multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
@@ -4063,7 +4064,6 @@ module AnalyticsEvents
     phone_fingerprint: nil,
     frontend_error: nil,
     in_account_creation_flow: nil,
-    enabled_mfa_methods_count: nil,
     **extra
   )
     track_event(

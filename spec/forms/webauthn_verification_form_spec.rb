@@ -48,7 +48,6 @@ RSpec.describe WebauthnVerificationForm do
       it 'returns successful result' do
         expect(result.to_h).to eq(
           success: true,
-          multi_factor_auth_method: 'webauthn',
           webauthn_configuration_id: webauthn_configuration.id,
         )
       end
@@ -59,7 +58,6 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns successful result' do
           expect(result.to_h).to eq(
             success: true,
-            multi_factor_auth_method: 'webauthn_platform',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -71,7 +69,6 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns successful result excluding frontend_error' do
           expect(result.to_h).to eq(
             success: true,
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -89,7 +86,6 @@ RSpec.describe WebauthnVerificationForm do
               challenge: { blank: true },
               authenticator_data: { invalid_authenticator_data: true },
             },
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -104,7 +100,6 @@ RSpec.describe WebauthnVerificationForm do
             error_details: {
               authenticator_data: { blank: true, invalid_authenticator_data: true },
             },
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -120,7 +115,6 @@ RSpec.describe WebauthnVerificationForm do
               client_data_json: { blank: true },
               authenticator_data: { invalid_authenticator_data: true },
             },
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -136,7 +130,6 @@ RSpec.describe WebauthnVerificationForm do
               signature: { blank: true },
               authenticator_data: { invalid_authenticator_data: true },
             },
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -149,7 +142,6 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: { webauthn_configuration: { blank: true } },
-            multi_factor_auth_method: 'webauthn',
           )
         end
       end
@@ -161,7 +153,6 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: { webauthn_error: { present: true } },
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: webauthn_error,
           )
@@ -178,7 +169,6 @@ RSpec.describe WebauthnVerificationForm do
               error_details: {
                 screen_lock_error: { present: true },
               },
-              multi_factor_auth_method: 'webauthn',
               webauthn_configuration_id: webauthn_configuration.id,
             )
           end
@@ -205,7 +195,6 @@ RSpec.describe WebauthnVerificationForm do
                 error_details: {
                   screen_lock_error: { present: true },
                 },
-                multi_factor_auth_method: 'webauthn',
                 webauthn_configuration_id: webauthn_configuration.id,
               )
             end
@@ -231,7 +220,6 @@ RSpec.describe WebauthnVerificationForm do
                 error_details: {
                   screen_lock_error: { present: true },
                 },
-                multi_factor_auth_method: 'webauthn',
                 webauthn_configuration_id: webauthn_configuration.id,
               )
             end
@@ -256,7 +244,6 @@ RSpec.describe WebauthnVerificationForm do
                 error_details: {
                   screen_lock_error: { present: true },
                 },
-                multi_factor_auth_method: 'webauthn',
                 webauthn_configuration_id: webauthn_configuration.id,
               )
             end
@@ -283,7 +270,6 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: { authenticator_data: { invalid_authenticator_data: true } },
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -299,7 +285,6 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: { authenticator_data: { invalid_authenticator_data: true } },
-            multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
