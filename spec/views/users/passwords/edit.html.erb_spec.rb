@@ -56,5 +56,10 @@ RSpec.describe 'users/passwords/edit.html.erb' do
 
       expect(rendered).to have_content I18n.t('forms.passwords.edit.buttons.submit')
     end
+
+    it 'does not have cancel content for submission page' do
+      render
+      expect(rendered).to_not have_content(t('links.cancel'))
+    end
   end
 end

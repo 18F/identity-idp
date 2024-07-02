@@ -2,6 +2,8 @@
 
 class UpdatePasswordPresenter
   attr_reader :user, :required_password_change
+
+  alias_method :required_password_change?, :required_password_change
   def initialize(user:, required_password_change: false)
     @user = user
     @required_password_change = required_password_change

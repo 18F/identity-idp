@@ -11,16 +11,16 @@ module Users
     def edit
       @update_password_presenter = UpdatePasswordPresenter.new(
         user: current_user,
-        required_password_change: required_password_change,
+        required_password_change: required_password_change?,
       )
-      analytics.edit_password_visit(required_password_change: required_password_change)
+      analytics.edit_password_visit(required_password_change: required_password_change?)
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
     end
 
     def update
       @update_user_password_form = UpdateUserPasswordForm.new(
         current_user, user_session,
-        required_password_change
+        required_password_change?
       )
 
       result = @update_user_password_form.submit(user_password_params)
@@ -43,12 +43,11 @@ module Users
       redirect_to capture_password_url
     end
 
-    def required_password_change
-      @required_password_change ||= session[:redirect_to_change_password]
+    def required_password_change?
+      session[:redirect_to_change_password] == true
     end
 
     def handle_valid_password
-      session.delete(:redirect_to_change_password)
       send_password_reset_risc_event
       create_event_and_notify_user_about_password_change
       # Changing the password hash terminates the warden session, and bypass_sign_in ensures
@@ -59,16 +58,11 @@ module Users
       if @update_user_password_form.personal_key.present?
         user_session[:personal_key] = @update_user_password_form.personal_key
         redirect_to manage_personal_key_url
+      elsif required_password_change?
+        session.delete(:redirect_to_change_password)
+        redirect_to after_sign_in_path_for(current_user)
       else
-        redirect_to account_or_after_sign_in_path
-      end
-    end
-
-    def account_or_after_sign_in_path
-      if @required_password_change
-        after_sign_in_path_for(current_user)
-      else
-        account_path
+        redirect_to account_path
       end
     end
 
