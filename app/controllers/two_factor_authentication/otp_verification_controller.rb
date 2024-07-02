@@ -24,7 +24,7 @@ module TwoFactorAuthentication
       result = otp_verification_form.submit
       post_analytics(result)
 
-      if !UserSessionContext.confirmation_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
         handle_verification_for_authentication_context(
           result:,
           auth_method: params[:otp_delivery_preference],
