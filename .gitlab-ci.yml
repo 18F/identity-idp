@@ -67,9 +67,7 @@ stages:
 
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "schedule"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
@@ -340,30 +338,6 @@ js_tests:
   script:
     - *yarn_install
     - yarn test
-
-pinpoint-check:
-  needs:
-    - job: install
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint_country_dialing_codes
-
-audit_packages:
-  needs:
-    - job: install
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make audit
 
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing
@@ -838,3 +812,51 @@ ecr-scan-ci:
   stage: scan
   variables:
     ecr_repo: idp/ci
+
+pinpoint_check_scheduled:
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint_country_dialing_codes
+  after_script:
+    - |-
+      if [ "$CI_JOB_STATUS" != "success" ]; then
+        ./scripts/notify-slack \
+          --icon ":gitlab:"  \
+          --username "gitlab-notify" \
+          --channel "#login-appdev" \
+          --webhook "${SLACK_WEBHOOK}" \
+          --raise \
+          --text "Pinpoint supported countries check in GitLab failed.\nBuild Results: ${CI_JOB_URL}.\nCheck results locally with 'make lint_country_dialing_codes'"
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+audit_packages_scheduled:
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make audit
+  after_script:
+    - |-
+      if [ "$CI_JOB_STATUS" != "success" ]; then
+        ./scripts/notify-slack \
+          --icon ":gitlab:"  \
+          --username "gitlab-notify" \
+          --channel "#login-appdev" \
+          --webhook "${SLACK_WEBHOOK}" \
+          --raise \
+          --text "Dependencies audit in GitLab failed.\nBuild Results: ${CI_JOB_URL}\nCheck results locally with 'make audit'"
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"

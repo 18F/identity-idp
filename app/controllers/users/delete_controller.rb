@@ -16,10 +16,10 @@ module Users
       send_push_notifications
       notify_user_via_email_of_deletion
       notify_user_via_sms_of_deletion
+      analytics.account_delete_submitted(success: true)
       delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
-      analytics.account_delete_submitted(success: true)
       redirect_to root_url
     end
 
