@@ -10,6 +10,25 @@ module Redirect
       params.permit(*PERMITTED_LOCATION_PARAMS).to_h.symbolize_keys
     end
 
+    def partner_params
+      @partner_params ||= begin
+        {
+          partner: current_sp&.agency&.name,
+          partner_div: current_sp&.integration&.name,
+        }.compact
+      end
+    end
+
+    def partner_query_params(url)
+      uri = Addressable::URI.parse(url)
+
+      if partner_params.any?
+        uri.query_values = (uri.query_values || {}).merge(partner_params)
+      end
+
+      uri.to_s
+    end
+
     def redirect_to_and_log(url, event: nil, tracker_method: analytics.method(:external_redirect))
       if event
         # Once all events have been moved to tracker methods, we can remove the event: param
@@ -17,7 +36,9 @@ module Redirect
       else
         tracker_method.call(redirect_url: url, **location_params)
       end
-      redirect_to(url, allow_other_host: true)
+
+      redirect_url = partner_query_params(url)
+      redirect_to(redirect_url, allow_other_host: true)
     end
   end
 end
