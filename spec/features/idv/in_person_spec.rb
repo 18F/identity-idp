@@ -280,6 +280,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
         sign_in_and_2fa_user
         begin_in_person_proofing
         complete_all_in_person_proofing_steps
+        expect(page).to have_current_path(idv_phone_path)
         expect(page).not_to have_content(t('idv.troubleshooting.options.verify_by_mail'))
       end
     end
