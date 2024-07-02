@@ -49,6 +49,35 @@ RSpec.describe Reports::DropOffReport do
     end
   end
 
+  describe 'with some log data' do
+    before do
+      stub_cloudwatch_logs(
+        [
+          # gets through phone finder, then drops
+          { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited' },
+          { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome submitted' },
+          { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted' },
+          { 'user_id' => 'user2', 'name' => 'IdV: doc auth document_capture visited' },
+          { 'user_id' => 'user2', 'name' => 'IdV: doc auth ssn visited' },
+          { 'user_id' => 'user2', 'name' => 'IdV: doc auth verify visited' },
+          { 'user_id' => 'user2', 'name' => 'IdV: doc auth verify submitted' },
+          { 'user_id' => 'user2', 'name' => 'IdV: phone of record visited' },
+        ],
+      )
+    end
+
+    it 'sends a mailer with the log data' do
+      subject.perform(report_date)
+      sent_mail = ActionMailer::Base.deliveries.last
+      csv_data = CSV.parse(sent_mail.parts.last.body.to_s)
+      phone_finder_row = csv_data.find_index { |row| row[0] == 'Phone finder (page view)' }
+
+      expect(csv_data[0][2]).to eq('Users lost') # make sure the headers are still in the same order
+      expect(csv_data[phone_finder_row][2]).to eq('0')
+      expect(csv_data[phone_finder_row + 1][2]).to eq('1')
+    end
+  end
+
   describe '#perform' do
     it 'gets a CSV from the report maker, and sends email' do
       reports = Reporting::EmailableReport.new(
