@@ -467,7 +467,8 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   # By-pass Primary ID check if enrollment is Enhanced IPP else check for supporting doc type
   def passed_with_primary_id_check?(enrollment, response)
-    enrollment_is_enhanced_ipp?(enrollment) || SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
+    enrollment_is_enhanced_ipp?(enrollment) ||
+      SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
   end
 
   def process_enrollment_response(enrollment, response)

@@ -196,7 +196,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
     ).in_time_zone('UTC')
   end
   let(:in_person_proofing_enforce_tmx) { true }
-  let(:usps_ipp_sponsor_id) { '12345'}
+  let(:usps_ipp_sponsor_id) { '12345' }
   let(:usps_eipp_sponsor_id) { '98765' }
 
   before do
@@ -215,7 +215,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       and_return(in_person_proofing_enforce_tmx)
     allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled).
       and_return(false)
-    allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return(usps_ipp_sponsor_id)  
+    allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return(usps_ipp_sponsor_id)
     allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
@@ -332,7 +332,10 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             )
           end
 
-          it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
+          it <<~STR.squish do
+            logs a message with counts of various outcomes when the job
+            completes (errored > 0)
+          STR
             pending_enrollments.append(
               create(
                 :in_person_enrollment, :pending,
@@ -377,7 +380,10 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             ).to be >= 0.0
           end
 
-          it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
+          it <<~STR.squish do
+            logs a message with counts of various
+            outcomes when the job completes (errored = 0)
+          STR
             enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return(enrollment_records)
@@ -482,7 +488,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             it 'generates a backwards-compatible unique ID' do
               pending_enrollment.update(unique_id: nil)
               stub_request_passed_proofing_results
-              expect_any_instance_of(InPersonEnrollment).to receive(:usps_unique_id).and_call_original
+              expect_any_instance_of(InPersonEnrollment).to
+              receive(:usps_unique_id).and_call_original
 
               job.perform(Time.zone.now)
               pending_enrollment.reload
@@ -579,7 +586,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 freeze_time do
                   stub_request_passed_proofing_results(transactionEndDateTime: proofed_at_string)
                   wait_until = Time.zone.now +
-                              IdentityConfig.store.in_person_results_delay_in_hours.hours
+                               IdentityConfig.store.in_person_results_delay_in_hours.hours
                   expect do
                     job.perform(Time.zone.now)
                   end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
@@ -605,7 +612,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 freeze_time do
                   stub_request_failed_proofing_results(transactionEndDateTime: proofed_at_string)
                   wait_until = Time.zone.now +
-                              IdentityConfig.store.in_person_results_delay_in_hours.hours
+                               IdentityConfig.store.in_person_results_delay_in_hours.hours
                   expect do
                     job.perform(Time.zone.now)
                   end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
@@ -659,7 +666,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             )
 
             it 'invokes the SendProofingNotificationJob and logs details about the success' do
-              allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+              allow(IdentityConfig.store).to
+              receive(:in_person_send_proofing_notifications_enabled).
                 and_return(true)
               expected_wait_until = nil
               freeze_time do
@@ -668,7 +676,9 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   job.perform(Time.zone.now)
                   pending_enrollment.reload
                 end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
-                  with(pending_enrollment.id).at(expected_wait_until).on_queue(:intentionally_delayed)
+                  with(pending_enrollment.id).
+                  at(expected_wait_until).
+                  on_queue(:intentionally_delayed)
               end
 
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
@@ -801,7 +811,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
 
               pending_enrollment.reload
-      
+
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(job_analytics).to have_logged_event(
                 'GetUspsProofingResultsJob: Enrollment status updated',
@@ -828,8 +838,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             before(:each) do
               stub_request_expired_proofing_results
             end
-
-
 
             it_behaves_like(
               'enrollment_with_a_status_update',
@@ -1371,8 +1379,8 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             )
 
             it 'logs a message about enrollment with secondary ID' do
-              allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
-                and_return(true)
+              allow(IdentityConfig.store).to
+              receive(:in_person_send_proofing_notifications_enabled).and_return(true)
               freeze_time do
                 expect do
                   job.perform Time.zone.now
@@ -1489,18 +1497,22 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       end
 
       describe 'Enhanced In-Person Proofing' do
-        context 'when an Enhanced IPP enrollment passess proofing with an unsupported ID, enrollment by-passes the Primary ID check' do
+        context <<~STR.squish do
+          When an Enhanced IPP enrollment passess proofing
+          with unsupported ID,enrollment by-passes the
+          Primary ID check and
+        STR
           let!(:pending_enrollment) do
-              create(
-                :in_person_enrollment,
-                :pending,
-                :with_notification_phone_configuration,
-                issuer: 'http://localhost:3000',
-                selected_location_details: { name: 'BALTIMORE' },
-                sponsor_id: usps_eipp_sponsor_id,
-              )
+            create(
+              :in_person_enrollment,
+              :pending,
+              :with_notification_phone_configuration,
+              issuer: 'http://localhost:3000',
+              selected_location_details: { name: 'BALTIMORE' },
+              sponsor_id: usps_eipp_sponsor_id,
+            )
           end
-  
+
           before do
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
             stub_request_passed_proofing_unsupported_id_results
