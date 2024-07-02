@@ -50,12 +50,17 @@ module Idv
             [:same_address_as_id],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
           ],
-        }
+        }.merge(form_analytics_props)
+
         unless @flow_session[:pii_from_user]&.[](:same_address_as_id).nil?
           extra[:same_address_as_id] =
             @flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
         end
         extra
+      end
+
+      def form_analytics_props
+        @flow_session.dig(:form_analytics_props)&.symbolize_keys || {}
       end
     end
   end

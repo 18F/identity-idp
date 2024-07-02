@@ -24,6 +24,10 @@ module Idv
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
 
+          add_form_analytics_properties_to_flow_session(
+            { birth_year: flow_params[:dob][:year] },
+          )
+
           if pii_from_user[:same_address_as_id] == 'true'
             copy_state_id_address_to_residential_address(pii_from_user)
             redirect_to idv_in_person_ssn_url
@@ -51,6 +55,10 @@ module Idv
         end
 
         private
+
+        def add_form_analytics_properties_to_flow_session(props)
+          flow_session[:form_analytics_props] = props
+        end
 
         def clear_residential_address(pii_from_user)
           pii_from_user.delete(:address1)

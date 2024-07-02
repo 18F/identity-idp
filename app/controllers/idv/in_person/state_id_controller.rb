@@ -31,7 +31,9 @@ module Idv
           end
 
           analytics.idv_in_person_proofing_state_id_submitted(
-            **analytics_arguments.merge(**form_result.to_h),
+            **analytics_arguments.
+              merge(**form_result.to_h).
+              merge(form_analytics_properties),
           )
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
@@ -111,6 +113,10 @@ module Idv
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets).
           merge(extra_analytics_properties)
+      end
+
+      def form_analytics_properties
+        { birth_year: flow_params[:dob][:year] }
       end
 
       def clear_residential_address(pii_from_user)
