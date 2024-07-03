@@ -71,6 +71,28 @@ RSpec.describe GpoConfirmationUploader do
 
       subject
     end
+
+    context 'when an SSH error occurs' do
+      it 'retries the upload' do
+        expect(Net::SFTP).to receive(:start).twice.with(*sftp_options).and_yield(sftp_connection)
+        expect(sftp_connection).to receive(:upload!).once.and_raise(Net::SSH::ConnectionTimeout)
+        expect(sftp_connection).to receive(:upload!).once
+
+        subject
+      end
+
+      it 'raises after 5 unsuccessful retries' do
+        expect(Net::SFTP).to receive(:start).
+          exactly(5).times.
+          with(*sftp_options).
+          and_yield(sftp_connection)
+        expect(sftp_connection).to receive(:upload!).
+          exactly(5).times.
+          and_raise(Net::SSH::ConnectionTimeout)
+
+        expect { subject }.to raise_error(Net::SSH::ConnectionTimeout)
+      end
+    end
   end
 
   describe '#run' do

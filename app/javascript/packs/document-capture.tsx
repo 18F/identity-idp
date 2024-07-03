@@ -39,6 +39,8 @@ interface AppRootData {
   howToVerifyURL: string;
   previousStepUrl: string;
   docAuthSelfieDesktopTestMode: string;
+  locationsUrl: string;
+  addressSearchUrl: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -107,6 +109,8 @@ const {
   howToVerifyUrl,
   previousStepUrl,
   docAuthSelfieDesktopTestMode,
+  locationsUrl: locationsURL,
+  addressSearchUrl: addressSearchURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -122,8 +126,8 @@ const App = composeComponents(
     {
       value: {
         inPersonURL,
-        locationsURL: new URL('/verify/in_person/usps_locations', window.location.href).toString(),
-        addressSearchURL: new URL('/api/addresses', window.location.href).toString(),
+        locationsURL,
+        addressSearchURL,
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',

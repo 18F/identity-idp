@@ -199,6 +199,7 @@ min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
+no_verify_by_mail_for_biometric_comparison_enabled: true
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect_uuid_override_map: '{}'
@@ -281,7 +282,7 @@ risc_notifications_rate_limit_max_requests: 1_000
 risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval":120,"max_requests":10000}}'
 risc_notifications_request_timeout: 3
 ruby_workers_idv_enabled: true
-rules_of_use_horizon_years: 6
+rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_public_reports_enabled: false
 s3_reports_enabled: false
@@ -467,6 +468,7 @@ production:
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
   newrelic_license_key: ''
+  no_verify_by_mail_for_biometric_comparison_enabled: false
   openid_connect_redirect: server_side
   openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 5
