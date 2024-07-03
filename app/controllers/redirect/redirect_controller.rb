@@ -29,7 +29,7 @@ module Redirect
         tracker_method.call(redirect_url: url, **location_params)
       end
 
-      redirect_url = partner_query_params(url)
+      redirect_url = UriService.add_params(url, partner_params)
       redirect_to(redirect_url, allow_other_host: true)
     end
   end
