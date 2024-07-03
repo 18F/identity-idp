@@ -728,7 +728,7 @@ errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否
 errors.messages.missing_field: 请填写这一字段。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
-errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
+errors.messages.otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
 errors.messages.password_incorrect: 密码不对。
 errors.messages.password_mismatch: 你的密码不一致
 errors.messages.personal_key_incorrect: 个人密钥不对
@@ -755,7 +755,7 @@ errors.messages.wrong_length.one: 长度不对（应当是 1 个字符）
 errors.messages.wrong_length.other: 长度不对（应当是 %{count} 个字符）
 errors.piv_cac_setup.unique_name: 这个名字已被使用。请选择一个不同的名字。
 errors.registration.terms: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。
+errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
 errors.two_factor_auth_setup.must_select_additional_option: 请选择一个额外的身份证实方法。
 errors.two_factor_auth_setup.must_select_option: 选择一个身份证实方法。
 errors.verify_personal_key.rate_limited: 你尝试了太多次。请在 %{timeout}后再试。
