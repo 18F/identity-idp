@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     def create
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       result = @two_factor_options_form.submit(two_factor_options_form_params)
-      analytics.multi_factor_auth_option_list(**result.to_h)
+      analytics.multi_factor_auth_option_list(**result.to_h.merge(analytics_properties))
 
       if result.success?
         process_valid_form
@@ -81,6 +81,13 @@ module TwoFactorAuthentication
 
     def two_factor_options_form_params
       params.fetch(:two_factor_options_form, {}).permit(:selection)
+    end
+
+    def analytics_properties
+      {
+        enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+      }
     end
   end
 end

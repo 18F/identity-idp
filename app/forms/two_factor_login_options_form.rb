@@ -44,8 +44,6 @@ class TwoFactorLoginOptionsForm
   def extra_analytics_attributes
     {
       selection: selection,
-      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      mfa_method_counts: mfa_user.enabled_two_factor_configuration_counts_hash,
     }
   end
 end
