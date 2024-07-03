@@ -728,7 +728,7 @@ errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否
 errors.messages.missing_field: 请填写这一字段。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
-errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
+errors.messages.otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
 errors.messages.password_incorrect: 密码不对。
 errors.messages.password_mismatch: 你的密码不一致
 errors.messages.personal_key_incorrect: 个人密钥不对
