@@ -11,6 +11,7 @@ module Vot
       :hspd12?,
       :identity_proofing?,
       :biometric_comparison?,
+      :two_pieces_of_fair_evidence?,
       :ialmax?,
       :enhanced_ipp?,
     ) do
@@ -22,6 +23,7 @@ module Vot
           hspd12?: false,
           identity_proofing?: false,
           biometric_comparison?: false,
+          two_pieces_of_fair_evidence?: false,
           ialmax?: false,
           enhanced_ipp?: false,
         )
@@ -59,6 +61,7 @@ module Vot
         hspd12?: requirement_list.include?(:hspd12),
         identity_proofing?: requirement_list.include?(:identity_proofing),
         biometric_comparison?: requirement_list.include?(:biometric_comparison),
+        two_pieces_of_fair_evidence?: requirement_list.include?(:two_pieces_of_fair_evidence),
         ialmax?: requirement_list.include?(:ialmax),
         enhanced_ipp?: requirement_list.include?(:enhanced_ipp),
       )

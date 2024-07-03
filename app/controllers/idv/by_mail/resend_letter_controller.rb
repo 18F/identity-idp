@@ -3,14 +3,15 @@
 module Idv
   module ByMail
     class ResendLetterController < ApplicationController
-      include Idv::AvailabilityConcern
+      include AvailabilityConcern
       include IdvSessionConcern
-      include Idv::StepIndicatorConcern
+      include StepIndicatorConcern
+      include VerifyByMailConcern
+      include AbTestAnalyticsConcern
 
       before_action :confirm_two_factor_authenticated
       before_action :confirm_verification_needed
-      before_action :confirm_mail_not_rate_limited
-      before_action :confirm_profile_not_too_old
+      before_action :confirm_resend_letter_available
 
       def new
         analytics.idv_resend_letter_visited
@@ -28,10 +29,6 @@ module Idv
         end
       end
 
-      def gpo_mail_service
-        @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-      end
-
       private
 
       def confirm_verification_needed
@@ -39,25 +36,14 @@ module Idv
         redirect_to account_url
       end
 
-      def confirm_profile_not_too_old
-        redirect_to idv_verify_by_mail_enter_code_path if gpo_mail_service.profile_too_old?
-      end
-
-      def confirm_mail_not_rate_limited
-        redirect_to idv_verify_by_mail_enter_code_path if gpo_mail_service.rate_limited?
+      def confirm_resend_letter_available
+        unless gpo_verify_by_mail_policy.resend_letter_available?
+          redirect_to idv_verify_by_mail_enter_code_path
+        end
       end
 
       def update_tracking
-        analytics.idv_gpo_address_letter_requested(
-          resend: true,
-          first_letter_requested_at: first_letter_requested_at,
-          hours_since_first_letter:
-            hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: RateLimiter.new(
-            user: current_user,
-            rate_limit_type: :proof_address,
-          ).attempts,
-        )
+        log_letter_requested_analytics(resend: true)
         create_user_event(:gpo_mail_sent, current_user)
       end
 
@@ -65,27 +51,8 @@ module Idv
         current_user.gpo_verification_pending_profile?
       end
 
-      def first_letter_requested_at
-        current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
-      end
-
-      def hours_since_first_letter(first_letter_requested_at)
-        first_letter_requested_at ?
-          (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
-      end
-
       def resend_letter
-        analytics.idv_gpo_address_letter_enqueued(
-          enqueued_at: Time.zone.now,
-          resend: true,
-          first_letter_requested_at: first_letter_requested_at,
-          hours_since_first_letter:
-            hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: RateLimiter.new(
-            user: current_user,
-            rate_limit_type: :proof_address,
-          ).attempts,
-        )
+        log_letter_enqueued_analytics(resend: true)
         confirmation_maker = confirmation_maker_perform
         send_reminder
         return unless FeatureManagement.reveal_gpo_code?

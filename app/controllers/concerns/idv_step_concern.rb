@@ -3,19 +3,19 @@
 module IdvStepConcern
   extend ActiveSupport::Concern
 
+  include VerifyProfileConcern
   include IdvSessionConcern
   include RateLimitConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
+  include Idv::VerifyByMailConcern
 
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_personal_key_acknowledged_if_needed
     before_action :confirm_idv_needed
     before_action :confirm_letter_recently_enqueued
-    before_action :confirm_no_pending_gpo_profile
-    before_action :confirm_no_pending_in_person_enrollment
-    before_action :handle_fraud
+    before_action :confirm_no_pending_profile
     before_action :check_for_mail_only_outage
   end
 
@@ -34,13 +34,8 @@ module IdvStepConcern
     return redirect_to idv_letter_enqueued_url if letter_recently_enqueued?
   end
 
-  def confirm_no_pending_gpo_profile
-    redirect_to idv_verify_by_mail_enter_code_url if letter_not_recently_enqueued?
-  end
-
-  def confirm_no_pending_in_person_enrollment
-    return if !IdentityConfig.store.in_person_proofing_enabled
-    redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
+  def confirm_no_pending_profile
+    redirect_to url_for_pending_profile_reason if user_has_pending_profile?
   end
 
   def check_for_mail_only_outage
@@ -50,9 +45,11 @@ module IdvStepConcern
   end
 
   def redirect_for_mail_only
-    return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
-
-    redirect_to idv_mail_only_warning_url
+    if gpo_verify_by_mail_policy.send_letter_available?
+      redirect_to idv_mail_only_warning_url
+    else
+      redirect_to vendor_outage_url
+    end
   end
 
   def pii_from_user

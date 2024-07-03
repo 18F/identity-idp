@@ -8,9 +8,8 @@ RSpec.describe Reporting::DropOffReport do
   subject(:report) { Reporting::DropOffReport.new(issuers: [issuer], time_range:) }
 
   before do
-    cloudwatch_client = double(
-      'Reporting::CloudwatchClient',
-      fetch: [
+    stub_cloudwatch_logs(
+      [
         # finishes funnel
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
@@ -101,8 +100,6 @@ RSpec.describe Reporting::DropOffReport do
         { 'user_id' => 'user8', 'name' => 'IdV: final resolution' },
       ],
     )
-
-    allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
   describe '#as_tables' do

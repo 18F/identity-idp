@@ -9,77 +9,58 @@
       ) %>
 <% end %>
 
-<% if @presenter.resend_requested? %>
-  <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
-  <p>
-    <%= t('idv.gpo.request_another_letter.instructions_html') %>
-  </p>
-  <p>
-    <%= new_tab_link_to(
-          t('idv.gpo.request_another_letter.learn_more_link'),
-          help_center_redirect_url(
-            category: 'verify-your-identity',
-            article: 'verify-your-address-by-mail',
-            flow: :idv,
-            step: :gpo_send_letter,
-          ),
-        ) %>
-  </p>
-<% else %>
-  <%= render AlertComponent.new(
-        type: :info,
-        message: t('idv.messages.gpo.info_alert'),
-        class: 'margin-bottom-4',
-      ) %>
-  <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
-  <p>
-    <%= t('idv.messages.gpo.timeframe_html') %>
-    <br />
-    <%= new_tab_link_to(
-          t('idv.messages.gpo.learn_more_verify_by_mail'),
-          help_center_redirect_url(
-            category: 'verify-your-identity',
-            article: 'verify-your-address-by-mail',
-            flow: :idv,
-            step: :gpo_send_letter,
-          ),
-        )
-    %>
-  </p>
-  <p>
-    <%= t('idv.messages.gpo.address_on_file') %>
-  </p>
+<%= render AlertComponent.new(
+      type: :info,
+      message: t('idv.messages.gpo.info_alert'),
+      class: 'margin-bottom-4',
+    ) %>
 
-  <p>
-    <%= @applicant[:address1] %>
-    <br />
-    <% if @applicant[:address2] %>
-      <%= @applicant[:address2] %>
-      <br />
-    <% end %>
-    <%= @applicant[:city] %>, <%= @applicant[:state] %> <%= @applicant[:zipcode] %>
-    <br />
-  </p>
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.mail.verify')) %>
 
-  <p>
-    <%= start_over_link_html = link_to(
+<p>
+  <%= t('idv.messages.gpo.timeframe_html') %>
+  <br />
+  <%= new_tab_link_to(
+        t('idv.messages.gpo.learn_more_verify_by_mail'),
+        help_center_redirect_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-address-by-mail',
+          flow: :idv,
+          step: :gpo_send_letter,
+        ),
+      )
+  %>
+</p>
+<p>
+  <%= t('idv.messages.gpo.address_on_file') %>
+</p>
+
+<p>
+  <%= render 'shared/address',
+             address: @applicant.slice(:address1, :address2, :city, :state, :zipcode)
+  %>
+</p>
+
+<p>
+  <%= t(
+        'idv.messages.gpo.start_over_html',
+        start_over_link_html: link_to(
           t('idv.messages.gpo.start_over_link_text'),
           idv_confirm_start_over_before_letter_path,
-        )
-        t(
-          'idv.messages.gpo.start_over_html',
-          start_over_link_html: start_over_link_html,
-        )
-    %>
-  </p>
-
-<% end %>
+        ),
+      )
+  %>
+</p>
 
 <div class="margin-y-5">
-  <%= button_to @presenter.button,
+  <%= button_to t('idv.buttons.mail.send'),
                 idv_request_letter_path,
                 method: 'put',
                 class: 'usa-button usa-button--big usa-button--wide' %>
 </div>
 
-<%= render @presenter.back_or_cancel_partial, @presenter.back_or_cancel_parameters %>
+<% if FeatureManagement.idv_by_mail_only? %>
+  <%= render 'idv/doc_auth/cancel', step: 'gpo' %>
+<% else %>
+  <%= render 'idv/shared/back', fallback_path: idv_phone_path %>
+<% end %>

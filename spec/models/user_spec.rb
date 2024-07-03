@@ -567,7 +567,7 @@ RSpec.describe User do
   end
 
   describe '#accepted_rules_of_use_still_valid?' do
-    let(:rules_of_use_horizon_years) { 6 }
+    let(:rules_of_use_horizon_years) { 5 }
     let(:rules_of_use_updated_at) { 1.day.ago }
     let(:accepted_terms_at) { nil }
     let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
@@ -601,9 +601,9 @@ RSpec.describe User do
     end
 
     context 'with a user who accepted the rules of use more than 6 years ago' do
-      let(:rules_of_use_horizon_years) { 6 }
-      let(:rules_of_use_updated_at) { 7.years.ago }
-      let(:accepted_terms_at) { 6.years.ago - 1.day }
+      let(:rules_of_use_horizon_years) { 5 }
+      let(:rules_of_use_updated_at) { 6.years.ago }
+      let(:accepted_terms_at) { 5.years.ago - 1.day }
 
       it 'should return a falsey value' do
         expect(user.accepted_rules_of_use_still_valid?).to be_falsey
@@ -1564,6 +1564,14 @@ RSpec.describe User do
       end
 
       it { expect(result).to eq(false) }
+
+      context 'with account_created event' do
+        before do
+          create(:event, device:, event_type: :account_created)
+        end
+
+        it { expect(result).to eq(true) }
+      end
     end
 
     context 'with existing device with sign_in_after_2fa event' do

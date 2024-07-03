@@ -133,9 +133,9 @@ module OpenidConnect
     def handle_logout(result, redirect_uri)
       analytics.logout_initiated(**to_event(result))
 
-      sign_out
-
       redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
+
+      sign_out
     end
 
     # Convert FormResponse into loggable analytics event

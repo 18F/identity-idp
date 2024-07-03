@@ -13,7 +13,11 @@ RSpec.describe 'cancel IdV', allowed_extra_analytics: [:*] do
     start_idv_from_sp(sp)
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_agreement_step
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
+    allow_any_instance_of(ApplicationController).to receive(:analytics) do |controller|
+      fake_analytics.session = controller.session
+      fake_analytics
+    end
   end
 
   it 'shows the user a cancellation message with the option to go back to the step' do
