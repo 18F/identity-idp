@@ -44,5 +44,17 @@ RSpec.describe UriService do
 
       expect(uri).to be_nil
     end
+
+    it 'does not add a trailing question mark when adding empty params' do
+      original_uri = 'https://example.com/foo/bar'
+      uri = UriService.add_params(original_uri, {})
+      expect(uri).to eq('https://example.com/foo/bar')
+    end
+
+    it 'handles adding params to a URI with a fragment' do
+      original_uri = 'https://example.com/foo/bar/#fragment'
+      uri = UriService.add_params(original_uri, query: 'value')
+      expect(uri).to eq('https://example.com/foo/bar/?query=value#fragment')
+    end
   end
 end
