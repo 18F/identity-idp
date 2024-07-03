@@ -21,8 +21,23 @@ RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
     # Need to do this because getting rack session changes the url.
     visit new_user_session_path
     2.times do
-      fill_in_credentials_and_submit(user.email, bad_password)
+      freeze_time do 
+        fill_in_credentials_and_submit(user.email, bad_password)
 
+        expect(page).to have_current_path(new_user_session_path)
+        new_time = Time.zone.at(locked_at) + window
+        time_left = distance_of_time_in_words(Time.zone.now, new_time, true)
+        expect(page).to have_content(
+          t(
+            'errors.sign_in.bad_password_limit',
+            time_left: time_left,
+          ),
+        )
+      end
+    end
+    freeze_time do 
+      fill_in_credentials_and_submit(user.email, user.password)
+    
       expect(page).to have_current_path(new_user_session_path)
       new_time = Time.zone.at(locked_at) + window
       time_left = distance_of_time_in_words(Time.zone.now, new_time, true)
@@ -33,16 +48,6 @@ RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
         ),
       )
     end
-    fill_in_credentials_and_submit(user.email, user.password)
-    expect(page).to have_current_path(new_user_session_path)
-    new_time = Time.zone.at(locked_at) + window
-    time_left = distance_of_time_in_words(Time.zone.now, new_time, true)
-    expect(page).to have_content(
-      t(
-        'errors.sign_in.bad_password_limit',
-        time_left: time_left,
-      ),
-    )
 
     travel_to(IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds.from_now) do
       fill_in_credentials_and_submit(user.email, bad_password)
