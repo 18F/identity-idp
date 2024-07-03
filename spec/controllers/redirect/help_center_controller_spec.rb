@@ -1,14 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe Redirect::HelpCenterController do
-  before do
-    stub_analytics
-  end
+  subject(:response) { get :show, params: params }
 
   let(:params) { {} }
-  subject(:response) { get :show, params: }
+
+  before { stub_analytics }
+
+  shared_examples 'redirects to help center article and logs' do
+    it 'redirects to the help center article and logs' do
+      expect(response).to redirect_to redirect_url
+      expect(@analytics).to have_logged_event(
+        'External Redirect',
+        hash_including(redirect_url: redirect_url_base),
+      )
+    end
+  end
 
   describe '#show' do
+    let(:category) { 'verify-your-identity' }
+    let(:article) { 'accepted-state-issued-identification' }
+
     context 'without help center article' do
       it 'redirects to the root url' do
         expect(response).to redirect_to MarketingSite.help_url
@@ -17,7 +29,7 @@ RSpec.describe Redirect::HelpCenterController do
     end
 
     context 'with invalid help center article' do
-      let(:params) { { category: 'foo', article: 'bar' } }
+      let(:params) { { category: category, article: 'invalid' } }
 
       it 'redirects to the root url' do
         expect(response).to redirect_to MarketingSite.help_url
@@ -26,31 +38,23 @@ RSpec.describe Redirect::HelpCenterController do
     end
 
     context 'with valid help center article' do
-      let(:category) { 'verify-your-identity' }
-      let(:article) { 'accepted-state-issued-identification' }
-      let(:params) { { category:, article: } }
-
-      it 'redirects to the help center article and logs' do
-        redirect_url = MarketingSite.help_center_article_url(category:, article:)
-        expect(response).to redirect_to redirect_url
-        expect(@analytics).to have_logged_event(
-          'External Redirect',
-          hash_including(redirect_url: redirect_url),
-        )
+      let(:params) { { category: category, article: article } }
+      let(:redirect_url_base) do
+        MarketingSite.help_center_article_url(category: category, article: article)
       end
+      let(:redirect_url) { redirect_url_base }
+
+      it_behaves_like 'redirects to help center article and logs'
 
       context 'with optional anchor' do
         let(:article_anchor) { 'heading' }
-        let(:params) { super().merge(article_anchor:) }
-
-        it 'redirects to the help center article and logs' do
-          redirect_url = MarketingSite.help_center_article_url(category:, article:, article_anchor:)
-          expect(response).to redirect_to redirect_url
-          expect(@analytics).to have_logged_event(
-            'External Redirect',
-            hash_including(redirect_url: redirect_url),
-          )
+        let(:params) { super().merge(article_anchor: article_anchor) }
+        let(:redirect_url) do
+          MarketingSite.help_center_article_url(category:, article:, article_anchor:)
         end
+        let(:redirect_url_base) { redirect_url }
+
+        it_behaves_like 'redirects to help center article and logs'
       end
 
       context 'with location params' do
@@ -74,8 +78,6 @@ RSpec.describe Redirect::HelpCenterController do
     end
 
     context 'with service provider' do
-      let(:category) { 'verify-your-identity' }
-      let(:article) { 'accepted-state-issued-identification' }
       let(:agency) { nil }
       let!(:service_provider) do
         create(
@@ -97,32 +99,13 @@ RSpec.describe Redirect::HelpCenterController do
         allow(controller).to receive(:current_sp).and_return(service_provider)
       end
 
-      it 'redirects to the help center article and logs' do
-        expect(response).to redirect_to(redirect_url)
-        expect(@analytics).to have_logged_event(
-          'External Redirect',
-          hash_including(redirect_url: redirect_url_base),
-        )
-      end
+      it_behaves_like 'redirects to help center article and logs'
 
       context 'with agency' do
         let(:agency) { create(:agency, name: 'Test Agency') }
-        let!(:service_provider) do
-          create(
-            :service_provider,
-            issuer: 'urn:gov:gsa:openidconnect:sp:test_sp',
-            agency: agency,
-          )
-        end
-        let(:added_query_params) { '?partner=Test%20Agency' }
+        let(:added_query_params) { '?agency=Test+Agency' }
 
-        it 'redirects to the help center article and logs' do
-          expect(response).to redirect_to(redirect_url)
-          expect(@analytics).to have_logged_event(
-            'External Redirect',
-            hash_including(redirect_url: redirect_url_base),
-          )
-        end
+        it_behaves_like 'redirects to help center article and logs'
       end
 
       context 'with agency and integration' do
@@ -130,15 +113,9 @@ RSpec.describe Redirect::HelpCenterController do
         let!(:integration) do
           create(:integration, service_provider: service_provider, name: 'Test Integration')
         end
-        let(:added_query_params) { '?partner=Test%20Agency&partner_div=Test%20Integration' }
+        let(:added_query_params) { '?agency=Test+Agency&integration=Test+Integration' }
 
-        it 'redirects to the help center article and logs' do
-          expect(response).to redirect_to(redirect_url)
-          expect(@analytics).to have_logged_event(
-            'External Redirect',
-            hash_including(redirect_url: redirect_url_base),
-          )
-        end
+        it_behaves_like 'redirects to help center article and logs'
       end
     end
   end

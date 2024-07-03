@@ -1,31 +1,36 @@
 require 'rails_helper'
 
 RSpec.describe Redirect::ContactController do
-  before do
-    stub_analytics
+  subject(:action) { get :show, params: params }
+
+  let(:base_redirect_url) { MarketingSite.contact_url }
+  let(:params) do
+    { flow: 'flow', step: 'step', location: 'location', foo: 'bar' }
   end
 
-  subject(:response) { get :show, params: }
+  before { stub_analytics }
 
-  describe '#show' do
-    let(:params) { { flow: 'flow', step: 'step', location: 'location', foo: 'bar' } }
+  shared_examples 'redirects to contact page and logs event' do |query_params = ''|
+    let(:redirect_url) { "#{base_redirect_url}#{query_params}" }
 
-    it 'redirects to contact page' do
-      redirect_url = MarketingSite.contact_url
-
-      expect(response).to redirect_to redirect_url
+    it 'redirects to the contact page and logs event' do
+      expect(action).to redirect_to(redirect_url)
       expect(@analytics).to have_logged_event(
         'Contact Page Redirect',
         flow: 'flow',
         location: 'location',
-        redirect_url:,
+        redirect_url: base_redirect_url,
         step: 'step',
       )
     end
+  end
+
+  describe '#show' do
+    it_behaves_like 'redirects to contact page and logs event'
 
     context 'with service provider' do
       let(:agency) { nil }
-      let!(:service_provider) do
+      let(:service_provider) do
         create(
           :service_provider,
           issuer: 'urn:gov:gsa:openidconnect:sp:test_sp',
@@ -33,46 +38,16 @@ RSpec.describe Redirect::ContactController do
         )
       end
 
-      let(:redirect_url_base) { MarketingSite.contact_url }
-      let(:added_query_params) { '' }
-      let(:redirect_url) { redirect_url_base + added_query_params }
-
       before do
         allow(controller).to receive(:current_sp).and_return(service_provider)
       end
 
-      it 'redirects to the contact page without query params' do
-        expect(response).to redirect_to(redirect_url)
-        expect(@analytics).to have_logged_event(
-          'Contact Page Redirect',
-          flow: 'flow',
-          location: 'location',
-          redirect_url:,
-          step: 'step',
-        )
-      end
+      it_behaves_like 'redirects to contact page and logs event'
 
       context 'with agency' do
         let(:agency) { create(:agency, name: 'Test Agency') }
-        let!(:service_provider) do
-          create(
-            :service_provider,
-            issuer: 'urn:gov:gsa:openidconnect:sp:test_sp',
-            agency: agency,
-          )
-        end
-        let(:added_query_params) { '?partner=Test%20Agency' }
 
-        it 'redirects to the contact page with query param for agency' do
-          expect(response).to redirect_to(redirect_url)
-          expect(@analytics).to have_logged_event(
-            'Contact Page Redirect',
-            flow: 'flow',
-            location: 'location',
-            redirect_url: redirect_url_base,
-            step: 'step',
-          )
-        end
+        it_behaves_like 'redirects to contact page and logs event', '?agency=Test+Agency'
       end
 
       context 'with agency and integration' do
@@ -80,18 +55,9 @@ RSpec.describe Redirect::ContactController do
         let!(:integration) do
           create(:integration, service_provider: service_provider, name: 'Test Integration')
         end
-        let(:added_query_params) { '?partner=Test%20Agency&partner_div=Test%20Integration' }
 
-        it 'redirects to the contact page with query params for agency and integration' do
-          expect(response).to redirect_to(redirect_url)
-          expect(@analytics).to have_logged_event(
-            'Contact Page Redirect',
-            flow: 'flow',
-            location: 'location',
-            redirect_url: redirect_url_base,
-            step: 'step',
-          )
-        end
+        it_behaves_like 'redirects to contact page and logs event',
+                        '?agency=Test+Agency&integration=Test+Integration'
       end
     end
   end
