@@ -115,7 +115,13 @@ RSpec.describe Idv::InPerson::StateIdController do
   describe '#update' do
     let(:first_name) { 'Natalya' }
     let(:last_name) { 'Rostova' }
-    let(:dob) { InPersonHelper::GOOD_DOB }
+    let(:formatted_dob) { InPersonHelper::GOOD_DOB }
+    let(:dob) do
+      parsed_dob = Date.parse(formatted_dob)
+      { month: parsed_dob.month.to_s,
+        day: parsed_dob.day.to_s,
+        year: parsed_dob.year.to_s }
+    end
     # residential
     let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
     let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
@@ -175,10 +181,11 @@ RSpec.describe Idv::InPerson::StateIdController do
                               [:proofing_results, :context, :stages, :state_id,
                                :state_id_jurisdiction]],
           same_address_as_id: true,
+          birth_year: dob[:year],
         }.merge(ab_test_args)
       end
 
-      it 'logs idv_in_person_proofing_state_id_visited' do
+      it 'logs idv_in_person_proofing_state_id_submitted' do
         put :update, params: params
 
         expect(@analytics).to have_received(
@@ -219,27 +226,9 @@ RSpec.describe Idv::InPerson::StateIdController do
         pii_from_user = subject.user_session['idv/in_person'][:pii_from_user]
         expect(pii_from_user[:first_name]).to eq first_name
         expect(pii_from_user[:last_name]).to eq last_name
-        expect(pii_from_user[:dob]).to eq dob
+        expect(pii_from_user[:dob]).to eq formatted_dob
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
         expect(pii_from_user[:state_id_number]).to eq state_id_number
-      end
-
-      context 'receives hash dob' do
-        let(:dob) do
-          {
-            day: '3',
-            month: '9',
-            year: '1988',
-          }
-        end
-
-        it 'converts the date when setting it in flow session' do
-          expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key :dob
-
-          put :update, params: params
-
-          expect(subject.user_session['idv/in_person'][:pii_from_user][:dob]).to eq '1988-09-03'
-        end
       end
     end
 
@@ -322,8 +311,10 @@ RSpec.describe Idv::InPerson::StateIdController do
           } }
         end
 
-        it 'retains identity_doc_ attrs/value ands addr attr
-        with same value as identity_doc in flow session' do
+        it <<~EOS.squish do
+          retains identity_doc_ attrs/value ands addr attr
+          with same value as identity_doc in flow session
+        EOS
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr
           end
