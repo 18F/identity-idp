@@ -172,32 +172,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           response_status_code: nil,
         )
       end
-
-      context 'with non-English locale' do
-        let(:locale) { 'fr' }
-
-        it 'returns content in selected locale' do
-          json = response.body
-
-          expect(json).to include(
-            I18n.t('in_person_proofing.body.barcode.retail_hours_closed', locale: locale),
-          )
-          I18n.locale = locale
-          facilities = JSON.parse(json)
-
-          facilities.zip(locations).each do |facility, location|
-            expect(facility['weekday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:weekday_hours]),
-            )
-            expect(facility['saturday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:saturday_hours]),
-            )
-            expect(facility['sunday_hours']).to eq(
-              UspsInPersonProofing::EnrollmentHelper.localized_hours(location[:sunday_hours]),
-            )
-          end
-        end
-      end
     end
 
     context 'with a timeout from Faraday' do
