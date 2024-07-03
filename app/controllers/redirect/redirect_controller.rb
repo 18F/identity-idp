@@ -17,10 +17,6 @@ module Redirect
       }.compact
     end
 
-    def partner_query_params(url)
-      UriService.add_params(url, partner_params)
-    end
-
     def redirect_to_and_log(url, event: nil, tracker_method: analytics.method(:external_redirect))
       if event
         # Once all events have been moved to tracker methods, we can remove the event: param
