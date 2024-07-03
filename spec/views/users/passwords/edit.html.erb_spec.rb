@@ -42,6 +42,12 @@ RSpec.describe 'users/passwords/edit.html.erb' do
     )
   end
 
+  it 'has aria described by' do
+    render
+
+    expect(rendered).to have_selector('[aria-describedby="password-description"]')
+  end
+
   context 'required password change' do
     let(:required_password_change) { true }
 
@@ -60,6 +66,12 @@ RSpec.describe 'users/passwords/edit.html.erb' do
     it 'does not have cancel content for submission page' do
       render
       expect(rendered).to_not have_content(t('links.cancel'))
+    end
+
+    it 'aria described by is blank' do
+      render
+
+      expect(rendered).to_not have_selector('[aria-describedby="password-description"]')
     end
   end
 end
