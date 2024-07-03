@@ -88,6 +88,8 @@ RSpec.describe TwoFactorAuthentication::OptionsController do
         success: true,
         errors: {},
         error_details: nil,
+        enabled_mfa_methods_count:,
+        mfa_method_counts:,
       )
     end
   end
