@@ -11,22 +11,14 @@ module Redirect
     end
 
     def partner_params
-      @partner_params ||= begin
-        {
-          partner: current_sp&.agency&.name,
-          partner_div: current_sp&.integration&.name,
-        }.compact
-      end
+      {
+        agency: current_sp&.agency&.name,
+        integration: current_sp&.integration&.name,
+      }.compact
     end
 
     def partner_query_params(url)
-      uri = Addressable::URI.parse(url)
-
-      if partner_params.any?
-        uri.query_values = (uri.query_values || {}).merge(partner_params)
-      end
-
-      uri.to_s
+      UriService.add_params(url, partner_params)
     end
 
     def redirect_to_and_log(url, event: nil, tracker_method: analytics.method(:external_redirect))
