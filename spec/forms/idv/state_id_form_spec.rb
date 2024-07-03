@@ -75,12 +75,24 @@ RSpec.describe Idv::StateIdForm do
         FormResponse.new(
           success: true,
           errors: {},
-          extra: { birth_year: valid_dob[:year] },
+          extra: { birth_year: valid_dob[:year],
+                   document_zip_code: good_params[:identity_doc_zipcode].slice(0, 5) },
         )
       end
 
       it 'returns a successful form response' do
         expect(subject.submit(good_params)).to eq(form_response)
+      end
+
+      it 'logs extra analytics attributes' do
+        result = subject.submit(good_params)
+
+        expect(result.extra).to eq(
+          {
+            birth_year: valid_dob[:year],
+            document_zip_code: good_params[:identity_doc_zipcode].slice(0, 5),
+          },
+        )
       end
     end
 

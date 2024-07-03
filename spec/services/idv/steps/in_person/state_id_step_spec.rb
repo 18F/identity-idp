@@ -38,6 +38,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       let(:last_name) { 'Rostova' }
       let(:identity_doc_address_state) { 'Nevada' }
       let(:state_id_number) { 'ABC123234' }
+      let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
       let(:submitted_values) do
         {
           first_name: first_name,
@@ -45,6 +46,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           dob: dob,
           identity_doc_address_state: identity_doc_address_state,
           state_id_number: state_id_number,
+          identity_doc_zipcode: identity_doc_zipcode,
         }
       end
 
@@ -66,6 +68,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         expect(pii_from_user[:dob]).to eq formatted_dob
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
         expect(pii_from_user[:state_id_number]).to eq state_id_number
+        expect(pii_from_user[:identity_doc_zipcode]).to eq identity_doc_zipcode
       end
     end
 

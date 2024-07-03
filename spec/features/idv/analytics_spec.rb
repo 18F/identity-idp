@@ -542,13 +542,13 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, error_details: nil, same_address_as_id: false, opted_in_to_in_person_proofing: nil, birth_year: '1938'
+        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, error_details: nil, same_address_as_id: false, opted_in_to_in_person_proofing: nil, birth_year: '1938', document_zip_code: '12345'
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', same_address_as_id: false, opted_in_to_in_person_proofing: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, current_address_zip_code: '59010'
       },
       'IdV: doc auth ssn visited' => {
         analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
