@@ -30,7 +30,6 @@ class BackupCodeVerificationForm
 
   def extra_analytics_attributes
     {
-      multi_factor_auth_method: 'backup_code',
       multi_factor_auth_method_created_at: valid_backup_code_config_created_at&.strftime('%s%L'),
     }
   end

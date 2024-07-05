@@ -17,25 +17,18 @@ module TwoFactorAuthentication
     def create
       @personal_key_form = PersonalKeyForm.new(current_user, personal_key_param)
       result = @personal_key_form.submit
-
-      track_analytics(result)
       handle_result(result)
     end
 
     private
 
-    def track_analytics(result)
+    def analytics_properties
       mfa_created_at = current_user.encrypted_recovery_code_digest_generated_at
-      analytics_hash = result.to_h.merge(
+      {
         multi_factor_auth_method: 'personal-key',
         multi_factor_auth_method_created_at: mfa_created_at&.strftime('%s%L'),
-        new_device: new_device?,
-      )
-
-      analytics.multi_factor_auth(
-        **analytics_hash,
         pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-      )
+      }
     end
 
     def check_personal_key_enabled
@@ -49,6 +42,12 @@ module TwoFactorAuthentication
     end
 
     def handle_result(result)
+      handle_verification_for_authentication_context(
+        result:,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
+        extra_analytics: analytics_properties,
+      )
+
       if result.success?
         _event, disavowal_token = create_user_event_with_disavowal(:personal_key_used)
         alert_user_about_personal_key_sign_in(disavowal_token)
@@ -56,7 +55,7 @@ module TwoFactorAuthentication
 
         handle_valid_otp
       else
-        handle_invalid_otp(context: context, type: 'personal_key')
+        handle_invalid_otp(type: 'personal_key')
       end
     end
 
@@ -77,9 +76,6 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_otp
-      handle_valid_verification_for_authentication_context(
-        auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
-      )
       if current_user.identity_verified? || current_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).two_factor_enabled? &&

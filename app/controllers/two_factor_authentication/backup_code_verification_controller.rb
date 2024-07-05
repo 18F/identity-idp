@@ -22,7 +22,6 @@ module TwoFactorAuthentication
     def create
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
       result = @backup_code_form.submit(backup_code_params)
-      analytics.multi_factor_auth(**result.to_h.merge(new_device: new_device?))
       handle_result(result)
     end
 
@@ -48,7 +47,6 @@ module TwoFactorAuthentication
     end
 
     def handle_invalid_backup_code
-      handle_invalid_verification_for_authentication_context
       update_invalid_user
 
       flash.now[:error] = t('two_factor_authentication.invalid_backup_code')
@@ -61,11 +59,13 @@ module TwoFactorAuthentication
     end
 
     def handle_result(result)
+      handle_verification_for_authentication_context(
+        result:,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
+
       if result.success?
         handle_remember_device_preference(backup_code_params[:remember_device])
-        handle_valid_verification_for_authentication_context(
-          auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
-        )
         return handle_last_code if all_codes_used?
         handle_valid_backup_code
       else
