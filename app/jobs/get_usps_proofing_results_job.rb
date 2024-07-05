@@ -461,13 +461,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment.profile&.fraud_pending_reason.present?
   end
 
-  def enrollment_is_enhanced_ipp?(enrollment)
-    IdentityConfig.store.usps_eipp_sponsor_id.eql?(enrollment.sponsor_id)
-  end
-
   # By-pass Primary ID check if enrollment is Enhanced IPP else check for supporting doc type
   def passed_with_primary_id_check?(enrollment, response)
-    enrollment_is_enhanced_ipp?(enrollment) ||
+    enrollment.enhanced_ipp? ||
       SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
   end
 
