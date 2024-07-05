@@ -13,12 +13,18 @@ class AuthnContextResolver
   def resolve
     if vtr.present?
       selected_vtr_parser_result_from_vtr_list
+    elsif sp_in_biometric_pilot?
+      acr_with_biometric_acr_values
     else
       acr_result_with_sp_defaults
     end
   end
 
   private
+
+  def selected_acr_parser_result_from_acr_list
+    selected_vtr_parser_result_from_vtr_list
+  end
 
   def selected_vtr_parser_result_from_vtr_list
     if biometric_proofing_vot.present? && user&.identity_verified_with_biometric_comparison?
@@ -32,6 +38,7 @@ class AuthnContextResolver
     end
   end
 
+  # @return [Array<Vot::Parser::Result>]
   def parsed_vectors_of_trust
     @parsed_vectors_of_trust ||= vtr.map do |vot|
       Vot::Parser.new(vector_of_trust: vot).parse
@@ -60,6 +67,10 @@ class AuthnContextResolver
         acr_result_without_sp_defaults,
       ),
     )
+  end
+
+  def acr_with_biometric_acr_values
+    # code here
   end
 
   def acr_result_without_sp_defaults
@@ -99,5 +110,9 @@ class AuthnContextResolver
     acr_result_without_sp_defaults.component_values.filter do |component_value|
       component_value.name.include?('ial') || component_value.name.include?('loa')
     end
+  end
+
+  def sp_in_biometric_pilot?
+    false
   end
 end

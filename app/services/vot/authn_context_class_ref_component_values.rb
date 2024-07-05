@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Vot
-  module LegacyComponentValues
+  module AuthnContextClassRefComponentValues
     ## Identity proofing ACR values
     LOA1 = ComponentValue.new(
       name: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
@@ -23,7 +23,7 @@ module Vot
     ).freeze
     IAL2 = ComponentValue.new(
       name: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy IAL2',
+      description: 'Legacy IAL2 - identity proofing is performed',
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing],
     ).freeze
@@ -83,6 +83,7 @@ module Vot
       [component_value.name, component_value]
     end.to_h.freeze
 
+    # @return [Hash{String => Vot::ComponentValue}]
     def self.by_name
       NAME_HASH
     end

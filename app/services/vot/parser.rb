@@ -4,7 +4,7 @@ module Vot
   class Parser
     class ParseException < StandardError; end
 
-    Result = Data.define(
+    class Result < Data.define(
       :component_values,
       :aal2?,
       :phishing_resistant?,
@@ -14,7 +14,7 @@ module Vot
       :two_pieces_of_fair_evidence?,
       :ialmax?,
       :enhanced_ipp?,
-    ) do
+    )
       def self.no_sp_result
         self.new(
           component_values: [],
@@ -88,11 +88,12 @@ module Vot
       end
     end
 
+    # @return [Hash{String => Vot::ComponentValue}]
     def component_map
       if vector_of_trust.present?
         SupportedComponentValues.by_name
       else
-        LegacyComponentValues.by_name
+        AuthnContextClassRefComponentValues.by_name
       end
     end
 
