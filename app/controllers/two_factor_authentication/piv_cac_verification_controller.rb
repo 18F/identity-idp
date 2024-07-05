@@ -10,10 +10,10 @@ module TwoFactorAuthentication
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
 
     def show
-      analytics.multi_factor_auth_enter_piv_cac(**analytics_properties)
       if params[:token]
         process_token
       else
+        analytics.multi_factor_auth_enter_piv_cac(**analytics_properties)
         @presenter = presenter_for_two_factor_authentication_method
       end
     end
