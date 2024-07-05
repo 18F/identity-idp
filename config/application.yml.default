@@ -21,6 +21,7 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
+allowed_biometric_ial_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 available_locales: 'en,es,fr,zh'
@@ -47,6 +48,7 @@ aws_kms_session_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 backup_code_cost: '2000$8$1$'
+biometric_ial_enabled: true
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
@@ -315,7 +317,7 @@ totp_code_interval: 30
 unauthorized_scope_enabled: false
 usps_upload_enabled: false
 usps_upload_sftp_timeout: 5
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/ial/2?bio=preferred", "http://idmanagement.gov/ns/assurance/ial/2?bio=required", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true","http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true","http://idmanagement.gov/ns/assurance/aal/2?hspd12=true"]'
 vendor_status_lexisnexis_instant_verify: 'operational'
 vendor_status_lexisnexis_phone_finder: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
@@ -435,6 +437,7 @@ production:
   attribute_encryption_key_queue: '[]'
   available_locales: 'en,es,fr'
   aws_logo_bucket: ''
+  biometric_ial_enabled: false
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
