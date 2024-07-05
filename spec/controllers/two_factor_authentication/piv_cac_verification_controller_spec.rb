@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
-               allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
   let(:user) do
     create(
       :user, :fully_registered, :with_piv_or_cac,
@@ -61,6 +60,20 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
 
         expect(response).to render_template(:show)
       end
+
+      it 'logs the visit event' do
+        stub_analytics
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          :multi_factor_auth_enter_piv_cac,
+          context: 'authentication',
+          multi_factor_auth_method: 'piv_cac',
+          new_device: true,
+          piv_cac_configuration_id: nil,
+        )
+      end
     end
 
     context 'when the user presents a valid PIV/CAC' do
@@ -110,13 +123,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
 
         get :show, params: { token: 'good-token' }
 
-        expect(@analytics).to have_logged_event(
-          :multi_factor_auth_enter_piv_cac,
-          context: 'authentication',
-          multi_factor_auth_method: 'piv_cac',
-          new_device: true,
-          piv_cac_configuration_id: nil,
-        )
+        expect(@analytics).not_to have_logged_event(:multi_factor_auth_enter_piv_cac)
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: true,
@@ -240,13 +247,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
 
         get :show, params: { token: 'bad-token' }
 
-        expect(@analytics).to have_logged_event(
-          :multi_factor_auth_enter_piv_cac,
-          context: 'authentication',
-          multi_factor_auth_method: 'piv_cac',
-          new_device: true,
-          piv_cac_configuration_id: nil,
-        )
+        expect(@analytics).not_to have_logged_event(:multi_factor_auth_enter_piv_cac)
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: false,
