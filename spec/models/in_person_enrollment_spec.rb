@@ -504,17 +504,26 @@ RSpec.describe InPersonEnrollment, type: :model do
       it 'returns true' do
         user = create(:user)
         profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-        enrollment = create(:in_person_enrollment, user: user, profile: profile, sponsor_id: usps_eipp_sponsor_id)
-        
+        enrollment = create(
+          :in_person_enrollment, user: user, profile: profile,
+                                 sponsor_id: usps_eipp_sponsor_id
+        )
+
         expect(enrollment.enhanced_ipp?).to be true
       end
     end
 
-    context 'when IdentityConfig.store.usps_eipp_sponsor_id does not equals the enrollment sponsor_id' do
+    context <<~STR.squish do
+      when IdentityConfig.store.usps_eipp_sponsor_id does
+       not equals the enrollment sponsor_id
+    STR
       it 'returns false' do
         user = create(:user)
         profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-        enrollment = create(:in_person_enrollment, user: user, profile: profile, sponsor_id: usps_ipp_sponsor_id)
+        enrollment = create(
+          :in_person_enrollment, user: user, profile: profile,
+                                 sponsor_id: usps_ipp_sponsor_id
+        )
 
         expect(enrollment.enhanced_ipp?).to be false
       end
