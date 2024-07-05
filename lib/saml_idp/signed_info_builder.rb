@@ -18,17 +18,13 @@ module SamlIdp
       'sha512' => 'http://www.w3.org/2001/04/xmlenc#sha512',
     }
 
-    attr_accessor :reference_id, :digest_value, :raw_algorithm, :cloudhsm_key_label
+    attr_accessor :reference_id, :digest_value, :raw_algorithm
 
-    def initialize(
-      reference_id, digest_value, raw_algorithm,
-      secret_key:, cloudhsm_key_label:
-    )
+    def initialize(reference_id, digest_value, raw_algorithm, secret_key:)
       self.reference_id = reference_id
       self.digest_value = digest_value
       self.raw_algorithm = raw_algorithm
       @secret_key = secret_key
-      self.cloudhsm_key_label = cloudhsm_key_label
     end
 
     def raw
@@ -69,29 +65,11 @@ module SamlIdp
 
     def encoded
       config = SamlIdp.config
-      if config.cloudhsm_enabled && cloudhsm_key_label.present?
-        cloudhsm_encoded(config)
-      else
-        key = OpenSSL::PKey::RSA.new(@secret_key, password)
-        Base64.strict_encode64(key.sign(algorithm.new, raw))
-      end
+
+      key = OpenSSL::PKey::RSA.new(@secret_key, password)
+      Base64.strict_encode64(key.sign(algorithm.new, raw))
     end
     private :encoded
-
-    def cloudhsm_encoded(config)
-      config.pkcs11.active_slots.first.open do |session|
-        session.login(:USER, config.cloudhsm_pin)
-        begin
-          key = session.find_objects(LABEL: cloudhsm_key_label).first
-          raise "cloudhsm key not found for label: #{cloudhsm_key_label}" unless key
-
-          Base64.strict_encode64(session.sign(:SHA256_RSA_PKCS, key, raw))
-        ensure
-          session.logout
-        end
-      end
-    end
-    private :cloudhsm_encoded
 
     def using_config_secret_key?
       @secret_key == SamlIdp.config.secret_key

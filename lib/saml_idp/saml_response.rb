@@ -5,7 +5,7 @@ module SamlIdp
     attr_accessor :assertion_with_signature, :reference_id, :response_id, :issuer_uri, :principal,
                   :audience_uri, :saml_request_id, :saml_acs_url, :algorithm,
                   :authn_context_classref, :name_id_format, :x509_certificate, :secret_key,
-                  :cloudhsm_key_label, :expiry, :encryption_opts
+                  :expiry, :encryption_opts
 
     # rubocop:disable Metrics/ParameterLists
     def initialize(
@@ -21,7 +21,6 @@ module SamlIdp
       name_id_format,
       x509_certificate = nil,
       secret_key = nil,
-      cloudhsm_key_label = nil,
       expiry = 60 * 60,
       encryption_opts = nil
     )
@@ -36,7 +35,6 @@ module SamlIdp
       self.algorithm = algorithm
       self.secret_key = secret_key
       self.x509_certificate = x509_certificate
-      self.cloudhsm_key_label = cloudhsm_key_label
       self.authn_context_classref = authn_context_classref
       self.name_id_format = name_id_format
       self.expiry = expiry
@@ -70,7 +68,6 @@ module SamlIdp
         algorithm,
         x509_certificate,
         secret_key,
-        cloudhsm_key_label
       )
     end
     private :response_builder
@@ -88,7 +85,6 @@ module SamlIdp
         name_id_format,
         x509_certificate,
         secret_key,
-        cloudhsm_key_label,
         expiry,
         encryption_opts
       )

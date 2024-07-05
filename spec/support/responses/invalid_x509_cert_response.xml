@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:4567/consume" Destination="http://localhost:3000/api/saml/auth2022" ID="_5a77352f-ca5c-479d-9ce6-f738207ae369" IssueInstant="2022-03-21T21:06:22Z" Version="2.0">
+  <saml:Issuer>urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost</saml:Issuer>
+  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:SignedInfo>
+      <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+      <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+      <ds:Reference URI="#_5a77352f-ca5c-479d-9ce6-f738207ae369">
+        <ds:Transforms>
+          <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+          <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default samlp saml ds xs xsi md"/>
+          </ds:Transform>
+        </ds:Transforms>
+        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+        <ds:DigestValue>YIqJZQASQX3pSrdvgvnDTGYOaxutVwaPeoJWkExnSF8=</ds:DigestValue>
+      </ds:Reference>
+    </ds:SignedInfo>
+    <ds:SignatureValue>lV2Zr8v60C3QoNxSlectqICH+sj2pLtKDkAOTDJlcuwspbdX9mF8/QaWJLxsETDF3eGtMfrP++wxTKM7ZGfeJSqnv4JFab+KUidx9Ir3y7TfWFhQ5HuGBRsWLsCEFuHke5aKnfqKMxZwL3DhWcYUSM+Ox0d18tnK6Z8yq6SpLKSHzez6h5MY699Axo+HiA0KLj348JmqwGDE18u87XwbCAaM3xKoOMfdC7isGpgChoXt/Q+AvAm/v6jB/5U9iX9BYlBIGoTdS6CmacXN4+nwJhYANyUh1mWH9LfHsvZX6WKb+RuFYYuLul0rAte4bc1dKzPmXqav+3OxX87QywhQXQ==</ds:SignatureValue>
+    <ds:KeyInfo>
+      <ds:X509Data>
+        <ds:X509Certificate>MIIDgDCCAmgCCQCwpieA9CKuDDANBgkqhkiG9w0BAQUFADCBgTEYMBYGA1UEAwwPU1AgU2luYXRyYSBEZW1vMQwwCgYDVQQKDANHU0ExDDAKBgNVBAsMAzE4ZjETMBEGA1UEBwwKV2FzaGluZ3RvbjELMAkGA1UECAwCREMxCzAJBgNVBAYTAlVTMRowGAYJKoZIhvcNAQkBFgsxOGZAZ3NhLmdvdjAeFw0xNjA4MTgyMDI5MTFaFw0yNjA4MTYyMDI5MTFaMIGBMRgwFgYDVQQDDA9TUCBTaW5hdHJhIERlbW8xDDAKBgNVBAoMA0dTQTEMMAoGA1UECwwDMThmMRMwEQYDVQQHDApXYXNoaW5ndG9uMQswCQYDVQQIDAJEQzELMAkGA1UEBhMCxGjAYBgkqhkiG9w0BCQEWCzE4ZkBnc2EuZ292MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxh42KlIlEGtl/6NOfN+5tSg/eggUsW0dYdWIhshawe7h/9EhJemABXGI+VIiYHOt9QPE3HZ9ky2rUv7iC0MslIvI2sdQ0aPPaYYCXbh8iU2kYEcRPIU9g5NNlKHyUS6jp5HDWeRmN2lF03/dBcnRl9VWPOmHC9iS44xihTimcTZjlMfd59WXSNSbUACGR7vNjAA4N/DnqEUCWd9h016QgtRll6QjjSVBGmaHZjpOWsP+2I7evx51rUinGsgHuihxFT5dL/EcJ3RsncKYku47ekyAMMsm2sJecLgUk4YPvdQzafK/7jeyCtBFcyRTvBs7yapgcuW+LW8PUfu7NT+vTQIDAQABMA0GCSqGSIb3DQEBBQUAA4IBAQBO3eTacRFKnFjQ9OCLXzJx0nt64jlQeiiElePei3l6t8YYYf81Lt2PG8kqs2/NJ1enKSFIH9bHM2chv82zKXgLUumCsLLo45MbxLEQfZfzbRYDxKWcOuf4yLrjL4bp7Bv0onnG9hSCLT9yTFskwEP6W9XW44W50RhrOfYNBfrscg6b8uq15y5WrH+A9wzDlZfvH7ouNAnWrp0GXI6LN8vVPYX0vBfZuiOqI32HIYOalU+bIBpQt6EGN/mWBu7yZtgxKULZamJUUpd5xpcPcGKwf59etPVMTSxgeeQYMFjibtIlMmAweHgIqDyF2s8Etz8hlcKrXIUAK5CoMvgUn41V</ds:X509Certificate>
+      </ds:X509Data>
+    </ds:KeyInfo>
+  </ds:Signature>
+  <samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:1.1:nameid-format:persistent"/>
+  <samlp:RequestedAuthnContext Comparison="exact">
+    <saml:AuthnContextClassRef>http://idmanagement.gov/ns/assurance/ial/1</saml:AuthnContextClassRef>
+    <saml:AuthnContextClassRef>http://idmanagement.gov/ns/assurance/aal/2</saml:AuthnContextClassRef>
+  </samlp:RequestedAuthnContext>
+</samlp:AuthnRequest>

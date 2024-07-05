@@ -18,7 +18,6 @@ module SamlIdp
         assertion_and_signature,
         OpenSSL::Digest::SHA256,
         Default::X509_CERTIFICATE,
-        nil,
         nil
       )
     end

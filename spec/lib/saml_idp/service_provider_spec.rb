@@ -127,7 +127,7 @@ module SamlIdp
 
             describe 'multiple certs' do
               let(:other_cert) do
-                OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert)
+                OpenSSL::X509::Certificate.new(custom_idp_x509_cert)
               end
 
               describe 'the valid cert is registered in the idp' do

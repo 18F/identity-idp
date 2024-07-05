@@ -459,7 +459,7 @@ module SamlIdp
           end
 
           describe 'the cert does not match the assertion cert' do
-            let(:cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+            let(:cert) { OpenSSL::X509::Certificate.new(custom_idp_x509_cert) }
 
             it 'returns nil' do
               expect(subject.matching_cert).to be_nil
@@ -468,7 +468,7 @@ module SamlIdp
         end
 
         describe 'multiple certs' do
-          let(:not_matching_cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+          let(:not_matching_cert) { OpenSSL::X509::Certificate.new(custom_idp_x509_cert) }
 
           before { subject.service_provider.certs = [not_matching_cert, invalid_cert, cert] }
 
@@ -582,7 +582,7 @@ module SamlIdp
 
           describe 'the cert does not match the assertion cert' do
             describe 'returns a fingerprint mismatch error' do
-              let(:cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+              let(:cert) { OpenSSL::X509::Certificate.new(custom_idp_x509_cert) }
               let(:error_code) { :fingerprint_mismatch }
 
               it 'returns nil' do
@@ -593,7 +593,7 @@ module SamlIdp
         end
 
         describe 'sp has multiple certs' do
-          let(:not_matching_cert) { OpenSSL::X509::Certificate.new(cloudhsm_idp_x509_cert) }
+          let(:not_matching_cert) { OpenSSL::X509::Certificate.new(custom_idp_x509_cert) }
 
           before { subject.service_provider.certs = [not_matching_cert, invalid_cert, cert] }
           describe 'there is a matching cert' do

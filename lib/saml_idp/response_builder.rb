@@ -14,8 +14,7 @@ module SamlIdp
       assertion_and_signature,
       algorithm,
       x509_certificate,
-      secret_key,
-      cloudhsm_key_label
+      secret_key
     )
       self.response_id = response_id
       self.issuer_uri = issuer_uri
@@ -25,7 +24,6 @@ module SamlIdp
       self.algorithm = algorithm
       self.x509_certificate = x509_certificate
       self.secret_key = secret_key
-      self.cloudhsm_key_label = cloudhsm_key_label
     end
 
     def encoded

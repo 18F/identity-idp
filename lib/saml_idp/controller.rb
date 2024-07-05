@@ -61,7 +61,6 @@ module SamlIdp
         response_name_id_format,
         signature_opts[:x509_certificate],
         signature_opts[:secret_key],
-        signature_opts[:cloudhsm_key_label],
         expiry,
         encryption_opts
       )
@@ -84,7 +83,6 @@ module SamlIdp
         (opts[:algorithm] || algorithm || default_algorithm),
         signature_opts[:x509_certificate],
         signature_opts[:secret_key],
-        signature_opts[:cloudhsm_key_label]
       ).raw
     end
 

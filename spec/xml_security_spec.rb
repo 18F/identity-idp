@@ -3,10 +3,10 @@ require 'xml_security'
 
 module SamlIdp
   describe XMLSecurity, :security do
-    let(:document) { XMLSecurity::SignedDocument.new(Base64.decode64(response_document)) }
+    let(:document) { XMLSecurity::SignedDocument.new(Base64.decode64(valid_response_document)) }
 
     let(:document_with_invalid_certificate) do
-      XMLSecurity::SignedDocument.new(Base64.decode64(response_document_7))
+      XMLSecurity::SignedDocument.new(Base64.decode64(invalid_x509_cert_response))
     end
 
     let(:base64cert) { document.elements['//ds:X509Certificate'].text }
@@ -46,7 +46,7 @@ module SamlIdp
         end
 
         it 'raises Key validation error' do
-          response = Base64.decode64(response_document)
+          response = Base64.decode64(valid_response_document)
           response.sub!('<ds:DigestValue>pJQ7MS/ek4KRRWGmv/H43ReHYMs=</ds:DigestValue>',
                         '<ds:DigestValue>b9xsAXLsynugg3Wc1CI3kpWku+0=</ds:DigestValue>')
           document = XMLSecurity::SignedDocument.new(response)
@@ -95,7 +95,7 @@ module SamlIdp
         end
 
         it 'raises validation error when the X509Certificate is missing' do
-          response = Base64.decode64(response_document)
+          response = Base64.decode64(valid_response_document)
           response.sub!(%r{<ds:X509Certificate>.*</ds:X509Certificate>}, '')
           document = XMLSecurity::SignedDocument.new(response)
           expect { document.validate('a fingerprint', false) }.to(
@@ -107,7 +107,7 @@ module SamlIdp
         end
 
         it 'raises a validation error when find_base64_cert returns nil' do
-          response = Base64.decode64(response_document)
+          response = Base64.decode64(valid_response_document)
           document = XMLSecurity::SignedDocument.new(response)
           REXML::XPath.first(document, '//ds:X509Certificate',
                              { 'ds' => 'http://www.w3.org/2000/09/xmldsig#' }).text = nil
@@ -121,6 +121,9 @@ module SamlIdp
       end
 
       describe '#digest_method_algorithm' do
+        let(:document) do
+          XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace_request, false))
+        end
         let(:sig_namespace_hash) { { 'ds' => 'http://www.w3.org/2000/09/xmldsig#' } }
 
         let(:el) do
@@ -144,7 +147,7 @@ module SamlIdp
 
           context 'document does not have ds namespace for Signature elements' do
             let(:document) do
-              XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace, false))
+              XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace_request, false))
             end
 
             it 'returns the value in the DigestMethod node' do
@@ -204,7 +207,7 @@ module SamlIdp
 
           context 'document does not have ds namespace for Signature elements' do
             let(:document) do
-              XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace, false))
+              XMLSecurity::SignedDocument.new(fixture(:no_ds_namespace_request, false))
             end
 
             it 'returns the default algorithm type' do
@@ -311,35 +314,6 @@ module SamlIdp
         inclusive_namespaces = document.send(:extract_inclusive_namespaces)
 
         expect(inclusive_namespaces).to be_empty
-      end
-    end
-
-    describe 'StarfieldTMS' do
-      let(:response) { ::OneLogin::RubySaml::Response.new(fixture(:starfield_response)) }
-
-      before do
-        response.settings = ::OneLogin::RubySaml::Settings.new(
-          idp_cert_fingerprint: '8D:BA:53:8E:A3:B6:F9:F1:69:6C:BB:D9:D8:BD:41:B3:AC:4F:9D:4D'
-        )
-      end
-
-      it 'be able to validate a good response' do
-        Timecop.freeze Time.parse('2012-11-28 17:55:00 UTC') do
-          allow(response).to receive(:validate_subject_confirmation).and_return(true)
-          expect(response).to be_is_valid
-        end
-      end
-
-      it 'fail before response is valid' do
-        Timecop.freeze Time.parse('2012-11-20 17:55:00 UTC') do
-          expect(response).not_to be_is_valid
-        end
-      end
-
-      it 'fail after response expires' do
-        Timecop.freeze Time.parse('2012-11-30 17:55:00 UTC') do
-          expect(response).not_to be_is_valid
-        end
       end
     end
   end

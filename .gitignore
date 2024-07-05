@@ -7,5 +7,6 @@
 /doc
 /pkg
 /tags
+/tmp
 vendor
 clacks*.gem

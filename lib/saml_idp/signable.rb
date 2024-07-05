@@ -12,7 +12,6 @@ module SamlIdp
       base.send :attr_accessor, :reference_id
       base.send :attr_writer, :x509_certificate
       base.send :attr_writer, :secret_key
-      base.send :attr_accessor, :cloudhsm_key_label
     end
 
     def signed
@@ -75,7 +74,7 @@ module SamlIdp
     def signed_info_builder
       SignedInfoBuilder.new(
         get_reference_id, get_digest, get_algorithm,
-        secret_key:, cloudhsm_key_label:
+        secret_key:
       )
     end
     private :signed_info_builder

@@ -5,7 +5,7 @@ module SamlIdp
                   :organization_url, :base_saml_location, :entity_id, :reference_id_generator,
                   :attribute_service_location, :single_service_post_location,
                   :single_logout_service_post_location, :remote_logout_service_post_location,
-                  :attributes, :service_provider, :pkcs11, :cloudhsm_enabled, :cloudhsm_pin
+                  :attributes, :service_provider, :pkcs11
 
     def initialize
       self.x509_certificate = Default::X509_CERTIFICATE
