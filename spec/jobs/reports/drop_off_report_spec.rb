@@ -43,9 +43,18 @@ RSpec.describe Reports::DropOffReport do
       subject.perform(report_date)
     end
 
-    it 'accepts a string for issuers instead of an array' do
-      report_config[0]['issuers'] = 'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name'
-      subject.perform(report_date)
+    context 'with a single issuer instead of an array' do
+      let(:report_config) do
+        [
+          {
+            'issuers' => 'urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name',
+            'emails' => ['test+test@gsa.gov'],
+          },
+        ]
+      end
+      it 'generates a report' do
+        subject.perform(report_date)
+      end
     end
   end
 
@@ -69,12 +78,24 @@ RSpec.describe Reports::DropOffReport do
     it 'sends a mailer with the log data' do
       subject.perform(report_date)
       sent_mail = ActionMailer::Base.deliveries.last
-      csv_data = CSV.parse(sent_mail.parts.last.body.to_s)
-      phone_finder_row = csv_data.find_index { |row| row[0] == 'Phone finder (page view)' }
+      csv_data = CSV.parse(sent_mail.parts.last.body.to_s, headers: true)
+      expect(csv_data.headers).to eq(
+        [
+          'Step',
+          'Unique user count',
+          'Users lost',
+          'Dropoff from last step',
+          'Users left from start',
+        ],
+      )
 
-      expect(csv_data[0][2]).to eq('Users lost') # make sure the headers are still in the same order
-      expect(csv_data[phone_finder_row][2]).to eq('0')
-      expect(csv_data[phone_finder_row + 1][2]).to eq('1')
+      phone_finder_index = csv_data.find_index { |row| row['Step'] == 'Phone finder (page view)' }
+      phone_finder_row = csv_data[phone_finder_index]
+      next_row = csv_data[phone_finder_index + 1]
+      expect(phone_finder_row['Users lost']).to eq('0')
+      expect(phone_finder_row['Dropoff from last step'].to_i).to eq(0)
+      expect(next_row['Users lost']).to eq('1')
+      expect(next_row['Dropoff from last step'].to_i).to eq(1)
     end
   end
 
