@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe InPersonEnrollment, type: :model do
+  let(:usps_ipp_sponsor_id) { '12345' }
+  let(:usps_eipp_sponsor_id) { '98765' }
+
   describe 'Associations' do
     it { is_expected.to belong_to :user }
     it { is_expected.to belong_to :profile }
@@ -489,6 +492,32 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(expired_enrollment.eligible_for_notification?).to eq(false)
       expect(passed_enrollment_without_notification.eligible_for_notification?).to eq(false)
       expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
+    end
+  end
+
+  describe 'enhanced_ipp?' do
+    before do
+      allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
+    end
+
+    context 'when IdentityConfig.store.usps_eipp_sponsor_id equals the sponsor_id' do
+      it 'returns true' do
+        user = create(:user)
+        profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
+        enrollment = create(:in_person_enrollment, user: user, profile: profile, sponsor_id: usps_eipp_sponsor_id)
+        
+        expect(enrollment.enhanced_ipp?).to be true
+      end
+    end
+
+    context 'when IdentityConfig.store.usps_eipp_sponsor_id does not equals the sponsor_id' do
+      it 'returns false' do
+        user = create(:user)
+        profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
+        enrollment = create(:in_person_enrollment, user: user, profile: profile, sponsor_id: usps_ipp_sponsor_id)
+
+        expect(enrollment.enhanced_ipp?).to be false
+      end
     end
   end
 end
