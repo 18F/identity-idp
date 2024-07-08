@@ -32,6 +32,7 @@ module Idv
       FormResponse.new(
         success: validation_success,
         errors: cleaned_errors,
+        extra: extra_analytics_attributes(params),
       )
     end
 
@@ -42,6 +43,10 @@ module Idv
         raise_invalid_state_id_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
         send(:"#{key}=", value)
       end
+    end
+
+    def extra_analytics_attributes(params)
+      { birth_year: params.dig(:dob, :year) }
     end
 
     def raise_invalid_state_id_parameter_error(key)
