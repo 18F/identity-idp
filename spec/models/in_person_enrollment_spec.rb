@@ -500,7 +500,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
     end
 
-    context 'when IdentityConfig.store.usps_eipp_sponsor_id equals the enrollment sponsor_id' do
+    context 'when the enrollment sponsor ID is equal to the EIPP sponsor ID' do
       it 'returns true' do
         user = create(:user)
         profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
@@ -513,10 +513,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
 
-    context <<~STR.squish do
-      when IdentityConfig.store.usps_eipp_sponsor_id does
-       not equals the enrollment sponsor_id
-    STR
+    context 'when the enrollment sponsor ID does not equal the EIPP sponsor ID' do
       it 'returns false' do
         user = create(:user)
         profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
