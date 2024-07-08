@@ -339,32 +339,6 @@ js_tests:
     - *yarn_install
     - yarn test
 
-# Can be removed once pinpoint_check_scheduled is confirmed
-pinpoint-check:
-  needs:
-    - job: install
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint_country_dialing_codes
-
-# Can be removed once audit_packages_scheduled is confirmed
-audit_packages:
-  needs:
-    - job: install
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make audit
-
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing
   stage: test

@@ -18,18 +18,12 @@ class PersonalKeyForm
 
     reset_sensitive_fields unless success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:)
   end
 
   private
 
   attr_reader :user, :success
-
-  def extra_analytics_attributes
-    {
-      multi_factor_auth_method: 'personal key',
-    }
-  end
 
   def reset_sensitive_fields
     self.personal_key = nil

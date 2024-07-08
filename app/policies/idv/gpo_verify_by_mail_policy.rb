@@ -2,10 +2,11 @@
 
 module Idv
   class GpoVerifyByMailPolicy
-    attr_reader :user
+    attr_reader :user, :resolved_authn_context_result
 
-    def initialize(user)
+    def initialize(user, resolved_authn_context_result)
       @user = user
+      @resolved_authn_context_result = resolved_authn_context_result
     end
 
     def resend_letter_available?
@@ -16,6 +17,8 @@ module Idv
 
     def send_letter_available?
       @send_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
+                                 !disabled_for_biometric_comparison? &&
+                                 !disabled_for_ipp? &&
                                  !rate_limited?
     end
 
@@ -33,6 +36,18 @@ module Idv
     end
 
     private
+
+    def disabled_for_biometric_comparison?
+      return false unless IdentityConfig.store.no_verify_by_mail_for_biometric_comparison_enabled
+
+      resolved_authn_context_result.two_pieces_of_fair_evidence?
+    end
+
+    def disabled_for_ipp?
+      return false unless IdentityConfig.store.no_verify_by_mail_for_biometric_comparison_enabled
+
+      user.has_in_person_enrollment?
+    end
 
     def window_limit_enabled?
       IdentityConfig.store.max_mail_events != 0 &&

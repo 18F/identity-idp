@@ -23,21 +23,27 @@ module TwoFactorAuthentication
     def create
       result = otp_verification_form.submit
       post_analytics(result)
+
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        handle_verification_for_authentication_context(
+          result:,
+          auth_method: params[:otp_delivery_preference],
+          extra_analytics: analytics_properties,
+        )
+      end
+
       if result.success?
         handle_remember_device_preference(params[:remember_device])
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp
         else
-          handle_valid_verification_for_authentication_context(
-            auth_method: params[:otp_delivery_preference],
-          )
           redirect_to after_sign_in_path_for(current_user)
         end
 
         reset_otp_session_data
       else
-        handle_invalid_otp(context: context, type: 'otp')
+        handle_invalid_otp(type: 'otp')
       end
     end
 
@@ -133,10 +139,8 @@ module TwoFactorAuthentication
     end
 
     def post_analytics(result)
-      properties = result.to_h.merge(analytics_properties, new_device: new_device?)
+      properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
-
-      analytics.multi_factor_auth(**properties)
     end
 
     def analytics_properties

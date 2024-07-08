@@ -27,18 +27,18 @@ module Idv
           zip_code: search_params['zip_code']
         )
         is_enhanced_ipp = resolved_authn_context_result.enhanced_ipp?
-        locations = proofer.request_facilities(candidate, is_enhanced_ipp)
-        if locations.length > 0
+        response = proofer.request_facilities(candidate, is_enhanced_ipp)
+        if response.length > 0
           analytics.idv_in_person_locations_searched(
             success: true,
-            result_total: locations.length,
+            result_total: response.length,
           )
         else
           analytics.idv_in_person_locations_searched(
             success: false, errors: 'No USPS locations found',
           )
         end
-        render json: localized_locations(locations).to_json
+        render json: response.to_json
       end
 
       # save the Post Office location the user selected to an enrollment
@@ -62,13 +62,6 @@ module Idv
         ProofingComponent.
           create_or_find_by(user: current_or_hybrid_user).
           update(document_check: Idp::Constants::Vendors::USPS)
-      end
-
-      def localized_locations(locations)
-        return nil if locations.nil?
-        locations.map do |location|
-          EnrollmentHelper.localized_location(location)
-        end
       end
 
       def handle_error(err)

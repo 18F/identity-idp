@@ -45,6 +45,7 @@ module IdentityConfig
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
+    config.add(:allowed_biometric_ial_providers, type: :json)
     config.add(:allowed_ialmax_providers, type: :json)
     config.add(:allowed_verified_within_providers, type: :json)
     config.add(:asset_host, type: :string)
@@ -64,6 +65,7 @@ module IdentityConfig
     config.add(:aws_logo_bucket, type: :string)
     config.add(:aws_region, type: :string)
     config.add(:backup_code_cost, type: :string)
+    config.add(:biometric_ial_enabled, type: :boolean)
     config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:broken_personal_key_window_start, type: :timestamp)
     config.add(:check_user_password_compromised_enabled, type: :boolean)
@@ -239,6 +241,7 @@ module IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:no_verify_by_mail_for_biometric_comparison_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
