@@ -24,7 +24,6 @@ RSpec.describe PivCacRecommendedPresenter do
           expect(presenter.info).to eq(
             t(
               'two_factor_authentication.piv_cac_upsell.new_user_info',
-              email_type: '.gov',
             ),
           )
         end
@@ -50,7 +49,6 @@ RSpec.describe PivCacRecommendedPresenter do
           expect(presenter.info).to eq(
             t(
               'two_factor_authentication.piv_cac_upsell.new_user_info',
-              email_type: '.mil',
             ),
           )
         end
