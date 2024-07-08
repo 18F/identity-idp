@@ -21,7 +21,7 @@ RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
     # Need to do this because getting rack session changes the url.
     visit new_user_session_path
     2.times do
-      freeze_time do 
+      freeze_time do
         fill_in_credentials_and_submit(user.email, bad_password)
 
         expect(page).to have_current_path(new_user_session_path)
@@ -35,9 +35,9 @@ RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
         )
       end
     end
-    freeze_time do 
+    freeze_time do
       fill_in_credentials_and_submit(user.email, user.password)
-    
+
       expect(page).to have_current_path(new_user_session_path)
       new_time = Time.zone.at(locked_at) + window
       time_left = distance_of_time_in_words(Time.zone.now, new_time, true)

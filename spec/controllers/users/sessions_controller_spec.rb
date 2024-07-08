@@ -126,7 +126,8 @@ RSpec.describe Users::SessionsController, devise: true do
         session[:max_bad_passwords_at] = locked_at.to_i
       end
 
-      it 'renders an error letting user know they are locked out for a period of time', :freeze_time do
+      it 'renders an error letting user know they are locked out for a period of time',
+         :freeze_time do
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
         current_time = Time.zone.now
         time_in_hours = distance_of_time_in_words(
