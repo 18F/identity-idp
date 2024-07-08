@@ -37,15 +37,15 @@ class TwoFactorLoginOptionsForm
     [selection, configuration_id]
   end
 
-  def mfa_user
+  def mfa_context
     MfaContext.new(user)
   end
 
   def extra_analytics_attributes
     {
       selection: selection,
-      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      mfa_method_counts: mfa_user.enabled_two_factor_configuration_counts_hash,
+      enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
     }
   end
