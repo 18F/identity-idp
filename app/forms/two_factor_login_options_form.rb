@@ -46,6 +46,7 @@ class TwoFactorLoginOptionsForm
       selection: selection,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       mfa_method_counts: mfa_user.enabled_two_factor_configuration_counts_hash,
+      pii_like_keypaths: [[:mfa_method_counts, :phone]],
     }
   end
 end
