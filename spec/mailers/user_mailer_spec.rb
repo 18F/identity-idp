@@ -724,9 +724,16 @@ RSpec.describe UserMailer, type: :mailer do
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
         let(:is_enhanced_ipp) { true }
+        let(:enhanced_ipp_enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            :enhanced_ipp,
+          )
+        end
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-            enrollment: enrollment,
+            enrollment: enhanced_ipp_enrollment,
             is_enhanced_ipp:,
           )
         end
@@ -833,6 +840,34 @@ RSpec.describe UserMailer, type: :mailer do
           to have_content(
             t('in_person_proofing.process.state_id.heading'),
           )
+      end
+
+      context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
+        let(:is_enhanced_ipp) { true }
+        let(:enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            :enhanced_ipp,
+            status_updated_at: Time.zone.now - 2.hours,
+            selected_location_details: { name: 'FRIENDSHIP' },
+            current_address_matches_id: current_address_matches_id,
+          )
+        end
+
+        it 'renders content that is applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
+          aggregate_failures do
+            [
+              t('in_person_proofing.headings.barcode_eipp'),
+              t('in_person_proofing.process.state_id.heading_eipp'),
+              t('in_person_proofing.process.state_id.info_eipp'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(mail.html_part.body).to have_content(part)
+              end
+            end
+          end
+        end
       end
     end
 

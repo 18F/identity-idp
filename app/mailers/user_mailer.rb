@@ -322,10 +322,13 @@ class UserMailer < ActionMailer::Base
       code: enrollment.enrollment_code,
     ).image_data
 
+    @is_enhanced_ipp = enrollment.sponsor_id === IdentityConfig.store.usps_eipp_sponsor_id
+
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
+        is_enhanced_ipp: @is_enhanced_ipp,
       )
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
