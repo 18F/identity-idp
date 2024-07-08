@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ResetPasswordForm, type: :model do
-  subject { ResetPasswordForm.new(build_stubbed(:user, uuid: '123')) }
+  subject { ResetPasswordForm.new(user: build_stubbed(:user, uuid: '123')) }
 
   let(:password) { 'a good and powerful password' }
   let(:password_confirmation) { password }
