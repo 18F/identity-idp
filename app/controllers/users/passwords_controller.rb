@@ -14,13 +14,14 @@ module Users
         required_password_change: required_password_change?,
       )
       analytics.edit_password_visit(required_password_change: required_password_change?)
-      @update_user_password_form = UpdateUserPasswordForm.new(current_user)
+      @update_user_password_form = UpdateUserPasswordForm.new(user: current_user)
     end
 
     def update
       @update_user_password_form = UpdateUserPasswordForm.new(
-        current_user, user_session,
-        required_password_change?
+        user: current_user,
+        user_session: user_session,
+        required_password_change: required_password_change?,
       )
 
       result = @update_user_password_form.submit(user_password_params)

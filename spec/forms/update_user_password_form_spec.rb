@@ -11,7 +11,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
     }
   end
   let(:subject) do
-    UpdateUserPasswordForm.new(user, user_session)
+    UpdateUserPasswordForm.new(user: user, user_session: user_session)
   end
 
   it_behaves_like 'password validation'

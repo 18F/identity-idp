@@ -32,7 +32,7 @@ RSpec.describe UpdatePasswordPresenter do
       let(:required_password_change) { true }
 
       it 'returns empty hash' do
-        expect(presenter.aria_described_by_if_eligible).to be_falsey
+        expect(presenter.aria_described_by_if_eligible).to be_empty
       end
     end
 

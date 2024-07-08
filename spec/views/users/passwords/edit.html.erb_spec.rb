@@ -6,7 +6,7 @@ RSpec.describe 'users/passwords/edit.html.erb' do
   before do
     user = User.new
     allow(view).to receive(:current_user).and_return(user)
-    @update_user_password_form = UpdateUserPasswordForm.new(user)
+    @update_user_password_form = UpdateUserPasswordForm.new(user: user)
     @update_password_presenter = UpdatePasswordPresenter.new(
       user: user,
       required_password_change: required_password_change,
