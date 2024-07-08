@@ -1825,7 +1825,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: If you need 
 user_mailer.in_person_failed_suspected_fraud.body.intro: We understand that you were attempting to verify your identity through %{app_name}, however your identity could not be verified at the %{location} Post Office on %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: Hello,
 user_mailer.in_person_failed_suspected_fraud.subject: Your identity could not be verified in person
-user_mailer.in_person_failed.body.with_cta: Click the button or copy the link below to try verifying your identity online again through %{sp_or_app_name}. If you are still experiencing issues, please contact the agency you are trying to access.
+user_mailer.in_person_failed.body.with_cta: Click the button or copy the link below to try verifying your identity again through %{sp_or_app_name}. If you are still experiencing issues, please contact the agency you are trying to access.
 user_mailer.in_person_failed.body.without_cta: Please try verifying your identity again from %{sp_name}’s website. If you are still experiencing issues, please contact the agency you are trying to access.
 user_mailer.in_person_failed.intro: Your identity could not be verified at the %{location} Post Office on %{date}.
 user_mailer.in_person_failed.subject: Your identity could not be verified in person

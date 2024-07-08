@@ -1840,7 +1840,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: 如需要更
 user_mailer.in_person_failed_suspected_fraud.body.intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed_suspected_fraud.greeting: 你好，
 user_mailer.in_person_failed_suspected_fraud.subject: 你的身份未能亲身被验证。
-user_mailer.in_person_failed.body.with_cta: 点击按钮或者复制下面的链接来再次在网上通过 %{sp_or_app_name}验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
+user_mailer.in_person_failed.body.with_cta: 点击按钮或复制下面的链接，尝试通过 %{sp_or_app_name} 再次验证你的身份。
 user_mailer.in_person_failed.body.without_cta: 请尝试从 %{sp_name}的网站再次验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
 user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。

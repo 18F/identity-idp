@@ -1836,7 +1836,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: Si necesita 
 user_mailer.in_person_failed_suspected_fraud.body.intro: Entendemos que estaba intentando verificar su identidad usando %{app_name}; sin embargo, su identidad no pudo ser verificada en la oficina de correos de %{location} el %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: 'Hola:'
 user_mailer.in_person_failed_suspected_fraud.subject: No se pudo verificar su identidad en persona
-user_mailer.in_person_failed.body.with_cta: Haga clic en el botón o copie el vínculo siguiente para volver a intentar verificar su identidad en línea con %{sp_or_app_name}. Si sigue teniendo problemas, contacte con la agencia a la que está intentando acceder.
+user_mailer.in_person_failed.body.with_cta: Haga clic en el botón o copie el vínculo siguiente para volver a intentar verificar su identidad con %{sp_or_app_name}. Si sigue teniendo problemas, póngase en contacto con la agencia a la que intenta acceder.
 user_mailer.in_person_failed.body.without_cta: Vuelva a intentar verificar su identidad en el sitio web de %{sp_name}. Si sigue teniendo problemas, contacte con la agencia a la que está intentando acceder.
 user_mailer.in_person_failed.intro: No se pudo verificar su identidad en la oficina de correos de %{location} el %{date}.
 user_mailer.in_person_failed.subject: No se pudo verificar su identidad en persona
