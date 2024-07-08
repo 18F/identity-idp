@@ -1692,7 +1692,8 @@ two_factor_authentication.piv_cac_header_text: Presente su tarjeta PIV o CAC
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Elegir otros métodos
 two_factor_authentication.piv_cac_upsell.existing_user_info: Dado que utiliza un correo electrónico %{email_type}, le recomendamos que añada su identificación de empleado del gobierno como uno de sus métodos de autenticación. Esto aumentará en gran medida la seguridad de su cuenta.
-two_factor_authentication.piv_cac_upsell.new_user_info: Dado que utiliza un correo electrónico %{email_type}, le recomendamos que añada su identificación de empleado del gobierno como uno de sus métodos de autenticación. Esto agrega un nivel adicional de seguridad a su cuenta.
+two_factor_authentication.piv_cac_upsell.explain: Esto hará que su cuenta sea más segura y no tendrá que ingresar su correo electrónico ni su contraseña cuando inicie sesión.
+two_factor_authentication.piv_cac_upsell.new_user_info: Si su empleador le emitió una tarjeta PIV o CAC, le recomendamos que la agregue como uno de sus métodos de autenticación.
 two_factor_authentication.piv_cac_upsell.skip: Omitir
 two_factor_authentication.piv_cac.change_nickname: Cambiar apodo
 two_factor_authentication.piv_cac.delete: Eliminar este método

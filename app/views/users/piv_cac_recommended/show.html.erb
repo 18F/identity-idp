@@ -8,6 +8,10 @@
   <%= @recommended_presenter.info %>
 </p>
 
+<p class='margin-bottom-0'>
+  <%= @recommended_presenter.piv_cac_upsell %>
+</p>
+
 <%= render ButtonComponent.new(
       url: login_piv_cac_recommended_add_path,
       method: :post,

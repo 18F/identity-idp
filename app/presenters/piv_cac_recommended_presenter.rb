@@ -10,8 +10,12 @@ class PivCacRecommendedPresenter
     if MfaPolicy.new(user).two_factor_enabled?
       I18n.t('two_factor_authentication.piv_cac_upsell.existing_user_info', email_type: email_type)
     else
-      I18n.t('two_factor_authentication.piv_cac_upsell.new_user_info', email_type: email_type)
+      I18n.t('two_factor_authentication.piv_cac_upsell.new_user_info')
     end
+  end
+
+  def piv_cac_upsell
+    I18n.t('two_factor_authentication.piv_cac_upsell.explain') if !MfaPolicy.new(user).two_factor_enabled?
   end
 
   def email_type
