@@ -5403,6 +5403,10 @@ module AnalyticsEvents
     track_event('Second MFA Reminder Visited')
   end
 
+  def security_check_failed_visited
+    track_event(:security_check_failed_visited)
+  end
+
   # Tracks when security event is received
   # @param [Boolean] success Whether form validation was successful
   # @param [String] error_code

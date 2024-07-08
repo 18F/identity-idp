@@ -99,10 +99,9 @@ module Users
     end
 
     def process_failed_captcha
-      flash[:error] = t('errors.messages.invalid_recaptcha_token')
       warden.logout(:user)
       warden.lock!
-      redirect_to root_url
+      redirect_to security_check_failed_url
     end
 
     def recaptcha_form_args
