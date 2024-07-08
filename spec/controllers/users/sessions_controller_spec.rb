@@ -233,6 +233,19 @@ RSpec.describe Users::SessionsController, devise: true do
       )
     end
 
+    it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
+      user = create(:user, :fully_registered)
+
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+      stub_analytics
+
+      post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
+
+      expect(response).to redirect_to security_check_failed_url
+    end
+
     it 'tracks count of multiple unsuccessful authentication attempts' do
       user = create(
         :user,
