@@ -8,13 +8,17 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_img) { nil }
   let(:state_id_number) { 'S59397998' }
+  let(:user) { create(:user) }
+
+  before do
+    stub_sign_in(user) if user
+  end
 
   describe '#create' do
     subject(:action) do
       post :create, params: params
     end
 
-    let(:user) { create(:user) }
     let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
     let(:flow_path) { 'standard' }
     let(:params) do
@@ -34,6 +38,14 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
       Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
       allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
         and_return(false)
+    end
+
+    context 'doc auth result is saved to idv session' do
+      it 'saves doc auth result to idv_session' do
+        action
+
+        expect(controller.idv_session.doc_auth_result).to_not be_empty
+      end
     end
 
     context 'when fields are missing' do
