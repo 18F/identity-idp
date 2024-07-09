@@ -1,0 +1,9 @@
+@forward 'usa-tooltip';
+
+// The USWDS tooltip component does not handle child elements gracefully. Prevent non-interactive
+// child elements from triggering event handlers to avoid errors.
+//
+// See: https://github.com/uswds/uswds/pull/5263#issuecomment-2191808834
+lg-tooltip .usa-icon {
+  pointer-events: none;
+}

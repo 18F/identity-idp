@@ -72,9 +72,27 @@ account.index.reactivation.instructions: Su perfil fue desactivado recientemente
 account.index.reactivation.link: Reactive su perfil ahora.
 account.index.sign_in_location_and_ip: Desde %{ip} (la dirección IP se encuentra posiblemente en %{location})
 account.index.unknown_location: ubicación desconocida
-account.index.verification.instructions: Su cuenta requiere un código de verificación para poderla verificar.
-account.index.verification.reactivate_button: Ingrese el código que recibió por correo de los EE. UU.
+account.index.verification.continue_idv: Continuar la verificación de identidad
+account.index.verification.finish_verifying_html: Termine de verificar su identidad para acceder a la <strong>%{sp_name}</strong>.
+account.index.verification.finish_verifying_no_sp: Termine el proceso de verificación de identidad para obtener acceso a todos los asociados de %{app_name}.
+account.index.verification.identity_verification: Verificación de identidad
+account.index.verification.in_person_instructions_html: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del <strong>%{deadline}</strong>.
+account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
+account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
+account.index.verification.nonbiometric_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
+account.index.verification.pending_badge: Pendiente
+account.index.verification.pending_badge_tooltip: La verificación de su identidad está pendiente
+account.index.verification.reactivate_button: Ingrese el código de verificación que recibió por correo de los EE. UU.
+account.index.verification.show_bar_code: Mostrar mi código de barras de %{app_name}
 account.index.verification.success: Verificamos su información
+account.index.verification.unverified_badge: No verificada
+account.index.verification.unverified_badge_tooltip: Termine de verificar su identidad.
+account.index.verification.verified_badge: Verificada
+account.index.verification.verified_badge_tooltip: Se verificó su identidad.
+account.index.verification.verified_biometric_badge_tooltip: Se verificó tanto su identidad como su fotografía.
+account.index.verification.verify_with_biometric_html: Para acceder a la <strong>%{sp_name}</strong>, verifique su identidad de nuevo usando una foto de usted.
+account.index.verification.you_verified_your_biometric_identity: Usted verificó su identidad con la información siguiente y verificó una fotografía suya, lo cual le da acceso a todos los asociados de %{app_name}.
+account.index.verification.you_verified_your_identity_html: Usted verificó su identidad para <strong>%{sp_name}</strong> con la información siguiente.
 account.index.webauthn: Clave de seguridad
 account.index.webauthn_add: Agregar clave de seguridad
 account.index.webauthn_platform: Desbloqueo facial o táctil
@@ -898,8 +916,6 @@ headings.account.login_info: Su cuenta
 headings.account.reactivate: Reactive su cuenta
 headings.account.two_factor: Sus métodos de autenticación
 headings.account.unphishable: No vulnerable al phishing
-headings.account.verified_account: Cuenta verificada
-headings.account.verified_information: Información verificada
 headings.add_email: Agregar una nueva dirección de correo electrónico
 headings.add_info.phone: Agregar un número de teléfono
 headings.cancellations.login_cancel_prompt: '¿Está seguro de que desea cancelar y salir de %{app_name}?'
