@@ -968,6 +968,23 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     end
   end
 
+  context 'Recaptcha check fails' do
+    let(:user) { create(:user, :fully_registered) }
+    before do
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+    end
+
+    it 'redirects user to security check failed page' do
+      visit new_user_session_path
+      fill_in :user_recaptcha_mock_score, with: '0.1'
+      fill_in_credentials_and_submit(user.email, user.password)
+
+      expect(current_path).to eq security_check_failed_path
+    end
+  end
+
   context 'check_password_compromised feature toggle is true' do
     before do
       allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
