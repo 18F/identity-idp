@@ -8,9 +8,11 @@
   <%= @recommended_presenter.info %>
 </p>
 
-<p class='margin-bottom-0'>
-  <%= @recommended_presenter.piv_cac_upsell %>
-</p>
+<% if !MfaPolicy.new(current_user).two_factor_enabled? %>
+  <p class='margin-bottom-0'>
+    <%= @recommended_presenter.piv_cac_upsell %>
+  </p>
+<% end %>
 
 <%= render ButtonComponent.new(
       url: login_piv_cac_recommended_add_path,
