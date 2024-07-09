@@ -182,6 +182,7 @@ RSpec.describe Idv::InPerson::StateIdController do
                                :state_id_jurisdiction]],
           same_address_as_id: true,
           birth_year: dob[:year],
+          document_zip_code: identity_doc_zipcode&.slice(0, 5),
         }.merge(ab_test_args)
       end
 
@@ -227,6 +228,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(pii_from_user[:first_name]).to eq first_name
         expect(pii_from_user[:last_name]).to eq last_name
         expect(pii_from_user[:dob]).to eq formatted_dob
+        expect(pii_from_user[:identity_doc_zipcode]).to eq identity_doc_zipcode
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
         expect(pii_from_user[:state_id_number]).to eq state_id_number
       end
