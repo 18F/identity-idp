@@ -41,6 +41,10 @@ class CompletionsPresenter
     @requested_attributes = requested_attributes
     @ial2_requested = ial2_requested
     @completion_context = completion_context
+
+    current_user.email_addresses.each do |e|
+      puts e.email
+    end
   end
 
   def ial2_requested?
@@ -100,6 +104,10 @@ class CompletionsPresenter
     displayable_attribute_keys.index_with do |attribute_name|
       displayable_pii[attribute_name]
     end
+  end
+
+  def multiple_emails?
+    current_user.email_addresses.count > 1
   end
 
   private

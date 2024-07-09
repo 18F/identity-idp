@@ -44,6 +44,9 @@
             ) %>
       <% else %>
         <%= attribute_value.to_s %>
+        <% if attribute_key == :email && @presenter.multiple_emails? %>
+          <%= link_to t('help_text.requested_attributes.change_email_link'), sign_up_select_email_path %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

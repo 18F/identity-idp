@@ -959,6 +959,7 @@ help_text.requested_attributes.address: Address
 help_text.requested_attributes.all_emails: Email addresses on your account
 help_text.requested_attributes.birthdate: Date of birth
 help_text.requested_attributes.consent_reminder_html: You must consent each year to share your information with %{sp_html}.
+help_text.requested_attributes.change_email_link: Change
 help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial2_reverified_consent_info_html: 'Because you verified your identity again, we need your permission to share this information with %{sp_html}:'
