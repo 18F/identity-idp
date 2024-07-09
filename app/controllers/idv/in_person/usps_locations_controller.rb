@@ -13,6 +13,7 @@ module Idv
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
       before_action :confirm_authenticated_for_api, only: [:update]
+      include IdvSessionConcern
 
       rescue_from ActionController::InvalidAuthenticityToken,
                   Faraday::Error,
@@ -46,6 +47,7 @@ module Idv
         enrollment.update!(
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
+          doc_auth_result: idv_session.doc_auth_result,
         )
         add_proofing_component
 
