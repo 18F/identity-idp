@@ -4032,6 +4032,7 @@ module AnalyticsEvents
   # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
   # @param [Integer] piv_cac_configuration_id Database ID of PIV/CAC configuration
+  # @param [String] piv_cac_configuration_dn_uuid PIV/CAC X509 distinguished name UUID
   # @param [Integer] key_id PIV/CAC key_id
   # @param [Integer] webauthn_configuration_id Database ID of WebAuthn configuration
   # @param [Integer] phone_configuration_id Database ID of phone configuration
@@ -4045,14 +4046,16 @@ module AnalyticsEvents
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
+    multi_factor_auth_method:,
+    enabled_mfa_methods_count:,
+    new_device:,
     errors: nil,
     error_details: nil,
     context: nil,
-    new_device: nil,
-    multi_factor_auth_method: nil,
     multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
+    piv_cac_configuration_dn_uuid: nil,
     key_id: nil,
     webauthn_configuration_id: nil,
     confirmation_for_add_phone: nil,
@@ -4063,7 +4066,6 @@ module AnalyticsEvents
     phone_fingerprint: nil,
     frontend_error: nil,
     in_account_creation_flow: nil,
-    enabled_mfa_methods_count: nil,
     **extra
   )
     track_event(
@@ -4078,6 +4080,7 @@ module AnalyticsEvents
         multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
         auth_app_configuration_id: auth_app_configuration_id,
         piv_cac_configuration_id: piv_cac_configuration_id,
+        piv_cac_configuration_dn_uuid:,
         key_id: key_id,
         webauthn_configuration_id: webauthn_configuration_id,
         confirmation_for_add_phone: confirmation_for_add_phone,
@@ -4222,11 +4225,13 @@ module AnalyticsEvents
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
+  # @param [Boolean] new_device Whether the user is authenticating from a new device
   # User used a PIV/CAC as their mfa
   def multi_factor_auth_enter_piv_cac(
     context:,
     multi_factor_auth_method:,
     piv_cac_configuration_id:,
+    new_device:,
     **extra
   )
     track_event(
@@ -4234,6 +4239,7 @@ module AnalyticsEvents
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
+      new_device:,
       **extra,
     )
   end

@@ -222,6 +222,53 @@ RSpec.describe SamlRequestValidator do
           )
         end
       end
+
+      shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
+        let(:authn_context) { [biometric_ial] }
+
+        context "when the IAL requested is #{biometric_ial}" do
+          context 'when the service provider is allowed to use biometric ials' do
+            before do
+              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+                and_return(true)
+            end
+
+            it 'returns a successful response' do
+              expect(response.to_h).to include(
+                success: true,
+                errors: {},
+                **extra,
+              )
+            end
+          end
+
+          context 'when the service provider is not allowed to use biometric ials' do
+            before do
+              allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+                and_return(false)
+            end
+
+            it 'fails with an unauthorized error' do
+              errors = {
+                authn_context: [t('errors.messages.unauthorized_authn_context')],
+              }
+
+              expect(response.to_h).to include(
+                success: false,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                **extra,
+              )
+            end
+          end
+        end
+      end
+
+      it_behaves_like 'allows biometric IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+
+      it_behaves_like 'allows biometric IAL only if sp is authorized',
+                      Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
     end
 
     context 'invalid authn context and invalid sp and authorized nameID format' do

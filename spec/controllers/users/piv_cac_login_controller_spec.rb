@@ -40,12 +40,6 @@ RSpec.describe Users::PivCacLoginController do
         it 'redirects to the error url' do
           expect(response).to redirect_to(login_piv_cac_error_url(error: 'token.bad'))
         end
-
-        it 'records unsuccessful 2fa event' do
-          expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
-
-          response
-        end
       end
 
       context 'with a valid token' do

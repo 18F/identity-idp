@@ -158,6 +158,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             context: 'authentication',
             multi_factor_auth_method: 'webauthn',
             success: true,
+            enabled_mfa_methods_count: 1,
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
             new_device: true,
@@ -216,6 +217,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               context: 'authentication',
               multi_factor_auth_method: 'webauthn_platform',
               success: true,
+              enabled_mfa_methods_count: 1,
               webauthn_configuration_id: webauthn_configuration.id,
               multi_factor_auth_method_created_at: webauthn_configuration.created_at.
                 strftime('%s%L'),
@@ -247,6 +249,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           multi_factor_auth_method: 'webauthn',
           success: false,
           error_details: { authenticator_data: { invalid_authenticator_data: true } },
+          enabled_mfa_methods_count: 1,
           webauthn_configuration_id: webauthn_configuration.id,
           multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
           new_device: true,
@@ -310,6 +313,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               webauthn_error: { present: true },
             },
             context: UserSessionContext::AUTHENTICATION_CONTEXT,
+            enabled_mfa_methods_count: 2,
             multi_factor_auth_method: 'webauthn_platform',
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
