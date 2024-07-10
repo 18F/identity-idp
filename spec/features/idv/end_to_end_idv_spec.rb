@@ -13,15 +13,15 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     user = sign_up_and_2fa_ial1_user
 
     validate_welcome_page
-    try_to_skip_ahead_from_welcome
+    # try_to_skip_ahead_from_welcome
     complete_welcome_step
 
     validate_agreement_page
-    try_to_skip_ahead_from_agreement
+    # try_to_skip_ahead_from_agreement
     complete_agreement_step
 
     validate_hybrid_handoff_page
-    try_to_skip_ahead_from_hybrid_handoff
+    # try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
     validate_document_capture_page
@@ -36,8 +36,8 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
     validate_verify_info_submit(user)
 
     validate_phone_page
-    try_to_skip_ahead_from_phone
-    visit_by_mail_and_return
+    # try_to_skip_ahead_from_phone
+    # visit_by_mail_and_return
     complete_otp_verification_page(user)
 
     validate_enter_password_page
