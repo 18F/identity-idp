@@ -307,6 +307,21 @@ RSpec.describe ActionAccount do
         expect(result.subtask).to eq('reinstate-user')
         expect(result.uuids).to match_array([user.uuid, suspended_user.uuid])
       end
+
+      context 'with a reinstated user' do
+        let(:user) { create(:user, :reinstated) }
+        let(:args) { [user.uuid] }
+
+        it 'gives a helpful error if the user has been reinstated' do
+          message = "User has already been reinstated (at #{user.reinstated_at})"
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, message, 'INV1234'],
+            ],
+          )
+        end
+      end
     end
   end
 
