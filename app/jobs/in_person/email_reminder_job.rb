@@ -32,7 +32,8 @@ module InPerson
 
     def send_emails_for_enrollments(enrollments:, email_type:)
       enrollments.each do |enrollment|
-        send_reminder_email(enrollment.user, enrollment)
+        is_enhanced_ipp = enrollment.sponsor_id == IdentityConfig.usps_eipp_sponsor_id
+        send_reminder_email(enrollment.user, enrollment, is_enhanced_ipp)
       rescue StandardError => err
         NewRelic::Agent.notice_error(err)
         analytics(user: enrollment.user).idv_in_person_email_reminder_job_exception(
@@ -70,7 +71,7 @@ module InPerson
       calculate_interval(IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days)
     end
 
-    def send_reminder_email(user, enrollment)
+    def send_reminder_email(user, enrollment, is_enhanced_ipp)
       user.confirmed_email_addresses.each do |email_address|
         # rubocop:disable IdentityIdp/MailLaterLinter
         UserMailer.with(
@@ -78,6 +79,7 @@ module InPerson
           email_address: email_address,
         ).in_person_ready_to_verify_reminder(
           enrollment: enrollment,
+          is_enhanced_ipp: is_enhanced_ipp,
         ).deliver_later
         # rubocop:enable IdentityIdp/MailLaterLinter
       end

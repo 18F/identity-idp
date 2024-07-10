@@ -823,12 +823,14 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     describe '#in_person_ready_to_verify_reminder' do
+      let(:is_enhanced_ipp) { false }
       let(:mail) do
         UserMailer.with(
           user: user,
           email_address: email_address,
         ).in_person_ready_to_verify_reminder(
           enrollment: enrollment,
+          is_enhanced_ipp: is_enhanced_ipp,
         )
       end
 
@@ -854,13 +856,20 @@ RSpec.describe UserMailer, type: :mailer do
             current_address_matches_id: current_address_matches_id,
           )
         end
-
         it 'renders content that is applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
           aggregate_failures do
             [
-              t('in_person_proofing.headings.barcode_eipp'),
-              t('in_person_proofing.process.state_id.heading_eipp'),
-              t('in_person_proofing.process.state_id.info_eipp'),
+              t('in_person_proofing.headings.barcode_what_to_bring'),
+              t('in_person_proofing.body.barcode.what_to_bring'),
+              t('in_person_proofing.process.eipp_bring_id.heading'),
+              t('in_person_proofing.process.eipp_bring_id.info'),
+              t('in_person_proofing.process.eipp_state_id_passport.heading'),
+              t('in_person_proofing.process.eipp_state_id_passport.info'),
+              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+              t('in_person_proofing.process.eipp_state_id_military_id.info'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+
             ].each do |copy|
               Array(copy).each do |part|
                 expect(mail.html_part.body).to have_content(part)
