@@ -45,7 +45,7 @@ RSpec.describe PivCacRecommendedPresenter do
 
       context 'when user has no mfa methods yet' do
         let(:user) { create(:user, email: 'example@example.mil') }
-        it 'should match new user .mil text' do
+        it 'should show text recommending piv usage' do
           expect(presenter.info).to eq(
             t(
               'two_factor_authentication.piv_cac_upsell.new_user_info',
