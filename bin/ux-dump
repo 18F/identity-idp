@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+base_filename = ARGV[0]
+
+script_file = "ux-dumper/#{base_filename}_spec.rb"
+markdown_file = "#{base_filename}.md"
+html_file = "#{base_filename}.html"
+screenshots_dir = "#{base_filename}-screenshots"
+
+puts "script_file: #{script_file}"
+puts "markdown_file: #{markdown_file}"
+puts "html_file: #{html_file}"
+puts "screenshots_dir: #{screenshots_dir}"
+
+system "bundle exec rspec #{script_file}"
+system "markdown #{markdown_file} >#{html_file}"
+system "zip -r #{base_filename} #{html_file} #{screenshots_dir}"
+system "rm -rf #{markdown_file} #{html_file} #{screenshots_dir}"

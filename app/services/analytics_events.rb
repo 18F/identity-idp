@@ -5994,7 +5994,6 @@ module AnalyticsEvents
     track_event('Password Reset: Email Form Visited')
   end
 
-  # Pending account reset cancelled
   def pending_account_reset_cancelled
     track_event('Pending account reset cancelled')
   end
