@@ -600,6 +600,13 @@ RSpec.describe UserMailer, type: :mailer do
         current_address_matches_id: current_address_matches_id,
       )
     end
+    let(:enhanced_ipp_enrollment) do
+      create(
+        :in_person_enrollment,
+        :pending,
+        :enhanced_ipp,
+      )
+    end
 
     describe '#in_person_ready_to_verify' do
       let(:mail) do
@@ -724,13 +731,6 @@ RSpec.describe UserMailer, type: :mailer do
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
         let(:is_enhanced_ipp) { true }
-        let(:enhanced_ipp_enrollment) do
-          create(
-            :in_person_enrollment,
-            :pending,
-            :enhanced_ipp,
-          )
-        end
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enhanced_ipp_enrollment,
@@ -846,16 +846,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
         let(:is_enhanced_ipp) { true }
-        let(:enrollment) do
-          create(
-            :in_person_enrollment,
-            :pending,
-            :enhanced_ipp,
-            status_updated_at: Time.zone.now - 2.hours,
-            selected_location_details: { name: 'FRIENDSHIP' },
-            current_address_matches_id: current_address_matches_id,
-          )
-        end
+        let(:enrollment) { enhanced_ipp_enrollment }
         it 'renders content that is applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
           aggregate_failures do
             [

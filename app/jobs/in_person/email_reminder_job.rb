@@ -32,8 +32,7 @@ module InPerson
 
     def send_emails_for_enrollments(enrollments:, email_type:)
       enrollments.each do |enrollment|
-        is_enhanced_ipp = enrollment.sponsor_id == IdentityConfig.usps_eipp_sponsor_id
-        send_reminder_email(enrollment.user, enrollment, is_enhanced_ipp)
+        send_reminder_email(enrollment.user, enrollment, enrollment.is_enhanced_ipp?)
       rescue StandardError => err
         NewRelic::Agent.notice_error(err)
         analytics(user: enrollment.user).idv_in_person_email_reminder_job_exception(
