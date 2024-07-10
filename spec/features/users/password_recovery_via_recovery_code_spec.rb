@@ -43,7 +43,7 @@ RSpec.feature 'Password recovery via personal key', allowed_extra_analytics: [:*
 
     visit account_path
 
-    expect(page).not_to have_content(t('headings.account.verified_account'))
+    expect(page).not_to have_content(t('account.index.verification.verified_badge'))
 
     click_link t('account.index.reactivation.link')
     click_on t('links.account.reactivate.without_key')
@@ -58,7 +58,7 @@ RSpec.feature 'Password recovery via personal key', allowed_extra_analytics: [:*
 
     visit account_path
 
-    expect(page).to have_content(t('headings.account.verified_account'))
+    expect(page).to have_content(t('account.index.verification.verified_badge'))
     expect(current_path).to eq(account_path)
   end
 

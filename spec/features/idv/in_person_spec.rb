@@ -313,7 +313,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
 
         click_idv_continue
         expect(page).to have_current_path(account_path)
-        expect(page).not_to have_content(t('headings.account.verified_account'))
+        expect(page).not_to have_content(t('account.index.verification.verified_badge'))
         click_on t('account.index.verification.reactivate_button')
         expect_in_person_gpo_step_indicator_current_step(
           t('step_indicator.flows.idv.verify_address'),
