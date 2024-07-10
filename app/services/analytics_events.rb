@@ -4845,6 +4845,11 @@ module AnalyticsEvents
     track_event('Password Reset: Email Form Visited')
   end
 
+  # Path visited (for investigation only)
+  def path_visited(path)
+    track_event("Path visited", method: request.method, path: request.fullpath)
+  end
+
   # Pending account reset cancelled
   def pending_account_reset_cancelled
     track_event('Pending account reset cancelled')
