@@ -1680,9 +1680,8 @@ two_factor_authentication.phone.delete.success: Votre téléphone a été suppri
 two_factor_authentication.piv_cac_header_text: Présenter votre carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: Ajouter une carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choisir plutôt d’autres méthodes
-two_factor_authentication.piv_cac_upsell.existing_user_info: Comme vous utilisez une adresse e-mail avec le suffixe %{email_type}, nous vous recommandons d’ajouter votre carte d’employé fédéral parmi vos méthodes d’authentification. Ceci renforcera considérablement la sécurité de votre compte.
 two_factor_authentication.piv_cac_upsell.explain: Ceci permettra de renforcer la sécurité de votre compte et de sauter l’étape de saisie de votre e-mail et mot de passe quand vous vous connecterez.
-two_factor_authentication.piv_cac_upsell.new_user_info: Si votre employeur vous a délivré une carte PIV/CAC, vous vous recommandons de l’ajouter parmi vos méthodes d’authentification.
+two_factor_authentication.piv_cac_upsell.recommendation: Si votre employeur vous a délivré une carte PIV/CAC, vous vous recommandons de l’ajouter parmi vos méthodes d’authentification.
 two_factor_authentication.piv_cac_upsell.skip: Ignorer
 two_factor_authentication.piv_cac.change_nickname: Changer de pseudo
 two_factor_authentication.piv_cac.delete: Supprimer cette méthode
