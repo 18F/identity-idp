@@ -1566,7 +1566,7 @@ titles.personal_key: Juste au cas où
 titles.piv_cac_login.add: Ajouter votre carte PIV ou CAC
 titles.piv_cac_login.new: Utiliser votre carte PIV/CAC pour vous connecter à votre compte
 titles.piv_cac_setup.new: Utiliser votre carte PIV/CAC pour sécuriser votre compte
-titles.piv_cac_setup.upsell: Renforcer la sécurité de votre compte avec une carte d’employé fédéral
+titles.piv_cac_setup.upsell: Ajouter votre carte d’employé fédéral pour vous connecter plus rapidement et en toute sécurité
 titles.present_piv_cac: Présenter votre carte PIV/CAC
 titles.present_webauthn: Brancher votre clé de sécurité physique
 titles.reactivate_account: Réactiver votre compte

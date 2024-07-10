@@ -1577,7 +1577,7 @@ titles.personal_key: Por si acaso
 titles.piv_cac_login.add: Agregue su tarjeta PIV o CAC
 titles.piv_cac_login.new: Use su tarjeta PIV o CAC para iniciar sesión en su cuenta
 titles.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-titles.piv_cac_setup.upsell: Aumente la seguridad de su cuenta con una identificación de empleado del gobierno.
+titles.piv_cac_setup.upsell: Agregue su identificación de empleado del gobierno para un inicio de sesión más rápido y más seguro.
 titles.present_piv_cac: Presente su tarjeta PIV o CAC
 titles.present_webauthn: Conecte su clave de seguridad de hardware
 titles.reactivate_account: Reactive su cuenta
