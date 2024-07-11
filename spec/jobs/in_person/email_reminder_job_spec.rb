@@ -49,8 +49,7 @@ RSpec.describe InPerson::EmailReminderJob do
             job.perform(Time.zone.now)
           end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
             params: { user: user, email_address: user.email_addresses.first },
-            args: [{ enrollment: pending_enrollment_needing_late_reminder,
-                     is_enhanced_ipp: pending_enrollment_needing_late_reminder.enhanced_ipp? }],
+            args: [{ enrollment: pending_enrollment_needing_late_reminder }],
           )
           pending_enrollment_needing_late_reminder.reload
           expect(pending_enrollment_needing_late_reminder.late_reminder_sent).to be_truthy
@@ -81,8 +80,7 @@ RSpec.describe InPerson::EmailReminderJob do
             job.perform(Time.zone.now)
           end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
             params: { user: user, email_address: user.email_addresses.first },
-            args: [{ enrollment: pending_enrollment_needing_early_reminder,
-                     is_enhanced_ipp: pending_enrollment_needing_early_reminder.enhanced_ipp? }],
+            args: [{ enrollment: pending_enrollment_needing_early_reminder }],
           )
           pending_enrollment_needing_early_reminder.reload
           expect(pending_enrollment_needing_early_reminder.early_reminder_sent).to be_truthy
@@ -99,8 +97,7 @@ RSpec.describe InPerson::EmailReminderJob do
             job.perform(Time.zone.now)
           end.not_to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
             params: { user: user, email_address: user.email_addresses.first },
-            args: [{ enrollment: pending_enrollment_received_early_reminder,
-                     is_enhanced_ipp: pending_enrollment_received_early_reminder.enhanced_ipp? }],
+            args: [{ enrollment: pending_enrollment_received_early_reminder }],
           )
           expect(pending_enrollment_received_early_reminder.early_reminder_sent).to be_truthy
         end
