@@ -66,7 +66,8 @@ module Users
       if session_email.blank?
         redirect_to add_email_url
       else
-        render :verify, locals: { email: session_email }
+        email_address = EmailAddress.where(user_id: current_user.id).find_with_email(session_email)
+        render :verify, locals: { email: email_address.email, confirmation_token: email_address.confirmation_token }
       end
     end
 

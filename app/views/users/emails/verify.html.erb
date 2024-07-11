@@ -1,5 +1,4 @@
 <% self.title = t('titles.verify_email') %>
-
 <% if @resend_confirmation %>
   <%= render AlertComponent.new(
         type: :success,
@@ -7,30 +6,40 @@
         message: t('notices.resend_confirmation_email.success'),
       ) %>
 <% end %>
-
-<%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
-
-<p><%= t('notices.signed_up_and_confirmed.first_paragraph_start') %>
-   <strong><%= email %></strong>
-   <%= t('notices.signed_up_and_confirmed.first_paragraph_end') %>
-</p>
-
-<div class="width-10">
-  <hr class="margin-y-4 border-width-05 border-info">
-</div>
-
-<%= t('notices.signed_up_and_confirmed.no_email_sent_explanation_start') %>
-<%= button_to(add_email_resend_path, method: :post, class: 'usa-button usa-button--unstyled', form_class: 'display-inline-block padding-left-1') { t('links.resend') } %>
-
-<p><%= t('notices.use_diff_email.text_html', link_html: link_to(t('notices.use_diff_email.link'), add_email_path)) %></p>
-<p><%= t('devise.registrations.close_window') %></p>
-
-<% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
-  <%= link_to(
+<% if IdentityConfig.store.dexcom_skip_email_confirmation %>
+  <%= render PageHeadingComponent.new.with_content("Click the link below!") %>
+  <%
+  # Dexcom Change:
+  # We are using the add_email_confirmation_url helper to generate the link to verify the email address. Otherwise we have to send an email, and this isn't hooked up to the emailer.
+%>
+  <p>
+    Click the link below to verify your email address: <%= email %>
+  </p>
+  <p>
+    <%= link_to('Confirm Email',add_email_confirmation_url(confirmation_token: confirmation_token, locale: locale_url_param)) %>
+  </p>
+  <div class="width-10">
+    <hr class="margin-y-4 border-width-05 border-info">
+  </div>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
+  <p><%= t('notices.signed_up_and_confirmed.first_paragraph_start') %>
+    <strong><%= email %></strong>
+    <%= t('notices.signed_up_and_confirmed.first_paragraph_end') %>
+  </p>
+  <div class="width-10">
+    <hr class="margin-y-4 border-width-05 border-info">
+  </div>
+  <%= t('notices.signed_up_and_confirmed.no_email_sent_explanation_start') %>
+  <%= button_to(add_email_resend_path, method: :post, class: 'usa-button usa-button--unstyled', form_class: 'display-inline-block padding-left-1') { t('links.resend') } %>
+  <p><%= t('notices.use_diff_email.text_html', link_html: link_to(t('notices.use_diff_email.link'), add_email_path)) %></p>
+  <p><%= t('devise.registrations.close_window') %></p>
+  <% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
+    <%= link_to(
         'CONFIRM NOW',
         sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
         id: 'confirm-now',
       ) %>
+  <% end %>
+  <%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), account_path %>
 <% end %>
-
-<%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), account_path %>

@@ -15,7 +15,16 @@
             <%= email.email %>
           </span>
           <% unless email.confirmed_at %>
-            &nbsp;<%= t('email_addresses.unconfirmed') %>
+            <% if IdentityConfig.store.dexcom_skip_email_confirmation %>
+              <%
+                # Dexcom Change
+                # This is a shortcut to quickly confirm the email. This is being used for testing
+                # so this is a workaround to avoid sending an email.
+              %>
+              &nbsp;(<%= link_to('Confirm Email',add_email_confirmation_url(confirmation_token: email.confirmation_token, locale: locale_url_param)) %>)
+            <% else %>
+              &nbsp;<%= t('email_addresses.unconfirmed') %>
+            <% end %>
           <% end %>
         </div>
         <% if EmailPolicy.new(current_user).can_delete_email?(email) %>
