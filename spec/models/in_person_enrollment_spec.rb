@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe InPersonEnrollment, type: :model do
-  let(:usps_ipp_sponsor_id) { '11111' }
-  let(:usps_eipp_sponsor_id) { '22222' }
-
   describe 'Associations' do
     it { is_expected.to belong_to :user }
     it { is_expected.to belong_to :profile }
@@ -496,15 +493,6 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'enhanced_ipp?' do
-    before do
-      allow(IdentityConfig.store).to receive(
-        :usps_eipp_sponsor_id,
-      ).and_return(usps_eipp_sponsor_id)
-      allow(IdentityConfig.store).to receive(
-        :usps_ipp_sponsor_id,
-      ).and_return(usps_ipp_sponsor_id)
-    end
-
     context 'when the enrollment sponsor ID is equal to the EIPP sponsor ID' do
       let(:enrollment) do
         create(:in_person_enrollment, :enhanced_ipp)
@@ -517,7 +505,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     context 'when the enrollment sponsor ID does not equal the EIPP sponsor ID' do
       let(:enrollment) do
-        create(:in_person_enrollment, :with_sponsor_id)
+        create(:in_person_enrollment)
       end
 
       it 'returns false' do
