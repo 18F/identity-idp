@@ -419,6 +419,8 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
+  usps_eipp_sponsor_id: '222222222222222'
+  usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: "/gsa_order"
   usps_upload_sftp_host: localhost
