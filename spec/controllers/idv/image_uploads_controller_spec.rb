@@ -40,14 +40,6 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         and_return(false)
     end
 
-    context 'doc auth result is saved to idv session' do
-      it 'saves doc auth result to idv_session' do
-        action
-
-        expect(controller.idv_session.doc_auth_result).to_not be_empty
-      end
-    end
-
     context 'when fields are missing' do
       before { params.delete(:front) }
 

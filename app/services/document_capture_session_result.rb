@@ -4,6 +4,7 @@
 DocumentCaptureSessionResult = RedactedStruct.new(
   :id,
   :success,
+  :doc_auth_result,
   :pii,
   :attention_with_barcode,
   :failed_front_image_fingerprints,

@@ -8,7 +8,6 @@ module Idv
     def create
       image_upload_form_response = image_upload_form.submit
 
-      idv_session.doc_auth_result = image_upload_form_response.to_h[:doc_auth_result]
       presenter = ImageUploadResponsePresenter.new(
         form_response: image_upload_form_response,
         url_options: url_options,
