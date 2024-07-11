@@ -106,7 +106,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       it 'requests enhanced ipp locations' do
         expect(AuthnContextResolver).to receive(:new).with(
           user: user, service_provider: sp,
-          vtr: vtr, acr_values: nil
+          vtr: vtr, acr_values: nil,
+          saml: false
         ).and_call_original
         expect(proofer).to receive(:request_facilities).with(address, true)
 

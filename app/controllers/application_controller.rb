@@ -111,6 +111,7 @@ class ApplicationController < ActionController::Base
         service_provider: service_provider,
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
+        saml: !!sp_session[:request_url]&.include?('?SAMLRequest='),
       ).resolve
     end
   end

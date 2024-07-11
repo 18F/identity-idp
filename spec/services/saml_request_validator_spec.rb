@@ -41,6 +41,20 @@ RSpec.describe SamlRequestValidator do
         )
       end
 
+      context 'valid authn context and also an unknown authncontext' do
+        before do
+          authn_context.push('unknown/authn/context')
+        end
+
+        it 'returns FormResponse with success: true' do
+          expect(response.to_h).to include(
+            success: true,
+            errors: {},
+            **extra,
+          )
+        end
+      end
+
       context 'ialmax authncontext and ialmax provider' do
         let(:authn_context) { [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF] }
         before do

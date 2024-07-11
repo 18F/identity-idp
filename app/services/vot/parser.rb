@@ -38,11 +38,12 @@ module Vot
       end
     end.freeze
 
-    attr_reader :vector_of_trust, :acr_values
+    attr_reader :vector_of_trust, :acr_values, :saml
 
-    def initialize(vector_of_trust: nil, acr_values: nil)
+    def initialize(vector_of_trust: nil, acr_values: nil, saml: nil)
       @vector_of_trust = vector_of_trust
       @acr_values = acr_values
+      @saml = saml
     end
 
     def parse
@@ -76,8 +77,9 @@ module Vot
       @initial_components ||= component_string.split(component_separator).map do |component_name|
         component_map.fetch(component_name)
       rescue KeyError
+        next if saml
         raise_unsupported_component_exception(component_name)
-      end
+      end.compact
     end
 
     def component_separator
@@ -104,9 +106,10 @@ module Vot
 
     def raise_unsupported_component_exception(component_value_name)
       if vector_of_trust.present?
-        raise ParseException, "#{vector_of_trust} contains unkown component #{component_value_name}"
+        raise ParseException,
+              "#{vector_of_trust} contains unknown component #{component_value_name}"
       else
-        raise ParseException, "#{acr_values} contains unkown acr value #{component_value_name}"
+        raise ParseException, "#{acr_values} contains unknown acr value #{component_value_name}"
       end
     end
 
@@ -114,7 +117,7 @@ module Vot
       if vector_of_trust.present?
         raise ParseException, "#{vector_of_trust} contains duplicate components"
       else
-        raise ParseException, "#{acr_values} ontains duplicate acr values"
+        raise ParseException, "#{acr_values} contains duplicate acr values"
       end
     end
   end
