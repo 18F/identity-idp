@@ -830,7 +830,6 @@ RSpec.describe UserMailer, type: :mailer do
           email_address: email_address,
         ).in_person_ready_to_verify_reminder(
           enrollment: enrollment,
-          is_enhanced_ipp: is_enhanced_ipp,
         )
       end
 

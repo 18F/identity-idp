@@ -317,12 +317,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify_reminder(enrollment:, is_enhanced_ipp:)
+  def in_person_ready_to_verify_reminder(enrollment:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
 
-    @is_enhanced_ipp = is_enhanced_ipp
+    @is_enhanced_ipp = enrollment.enhanced_ipp?
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
