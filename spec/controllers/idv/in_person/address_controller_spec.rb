@@ -117,7 +117,7 @@ RSpec.describe Idv::InPerson::AddressController do
       let(:address1) { '1 FAKE RD' }
       let(:address2) { 'APT 1B' }
       let(:city) { 'GREAT FALLS' }
-      let(:zipcode) { '59010' }
+      let(:zipcode) { '59010-4444' }
       let(:state) { 'Montana' }
       let(:params) do
         { in_person_address: {
@@ -141,6 +141,7 @@ RSpec.describe Idv::InPerson::AddressController do
                                :state_id_jurisdiction]],
           same_address_as_id: false,
           skip_hybrid_handoff: nil,
+          current_address_zip_code: '59010',
         }
       end
 
@@ -156,7 +157,7 @@ RSpec.describe Idv::InPerson::AddressController do
         )
       end
 
-      it 'logs idv_in_person_proofing_address_visited' do
+      it 'logs idv_in_person_proofing_address_submitted with 5-digit zipcode' do
         put :update, params: params
 
         expect(@analytics).to have_received(
@@ -228,13 +229,19 @@ RSpec.describe Idv::InPerson::AddressController do
                                :state_id_jurisdiction]],
           same_address_as_id: false,
           skip_hybrid_handoff: nil,
+          current_address_zip_code: '59010',
         }
       end
 
-      it 'does not proceed to next page' do
+      before do
         put :update, params: params
+      end
 
+      it 'does not proceed to next page' do
         expect(response).to have_rendered(:show)
+      end
+
+      it 'logs idv_in_person_proofing_address_submitted without zipcode' do
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end
