@@ -39,6 +39,7 @@ module UspsInPersonProofing
           service_provider: enrollment.service_provider&.issuer,
           opted_in_to_in_person_proofing: opt_in,
           tmx_status: enrollment.profile&.tmx_status,
+          enhanced_ipp: enrollment.enhanced_ipp?,
         )
 
         send_ready_to_verify_email(user, enrollment, is_enhanced_ipp: is_enhanced_ipp)
