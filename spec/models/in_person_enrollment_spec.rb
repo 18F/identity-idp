@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe InPersonEnrollment, type: :model do
-  let(:usps_ipp_sponsor_id) { '12345' }
-  let(:usps_eipp_sponsor_id) { '98765' }
+  let(:usps_ipp_sponsor_id) { '11111' }
+  let(:usps_eipp_sponsor_id) { '22222' }
 
   describe 'Associations' do
     it { is_expected.to belong_to :user }
@@ -497,31 +497,30 @@ RSpec.describe InPersonEnrollment, type: :model do
 
   describe 'enhanced_ipp?' do
     before do
-      allow(IdentityConfig.store).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
+      allow(IdentityConfig.store).to receive(
+        :usps_eipp_sponsor_id,
+      ).and_return(usps_eipp_sponsor_id)
+      allow(IdentityConfig.store).to receive(
+        :usps_ipp_sponsor_id,
+      ).and_return(usps_ipp_sponsor_id)
     end
 
     context 'when the enrollment sponsor ID is equal to the EIPP sponsor ID' do
-      it 'returns true' do
-        user = create(:user)
-        profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-        enrollment = create(
-          :in_person_enrollment, user: user, profile: profile,
-                                 sponsor_id: usps_eipp_sponsor_id
-        )
+      let(:enrollment) do
+        create(:in_person_enrollment, :enhanced_ipp)
+      end
 
+      it 'returns true' do
         expect(enrollment.enhanced_ipp?).to be true
       end
     end
 
     context 'when the enrollment sponsor ID does not equal the EIPP sponsor ID' do
-      it 'returns false' do
-        user = create(:user)
-        profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-        enrollment = create(
-          :in_person_enrollment, user: user, profile: profile,
-                                 sponsor_id: usps_ipp_sponsor_id
-        )
+      let(:enrollment) do
+        create(:in_person_enrollment, sponsor_id: usps_ipp_sponsor_id)
+      end
 
+      it 'returns false' do
         expect(enrollment.enhanced_ipp?).to be false
       end
     end

@@ -43,7 +43,11 @@ FactoryBot.define do
     end
 
     trait :with_sponsor_id do
-      sponsor_id { '123458' }
+      sponsor_id  { IdentityConfig.store.usps_ipp_sponsor_id }
+    end
+
+    trait :enhanced_ipp do
+      sponsor_id { IdentityConfig.store.usps_eipp_sponsor_id }
     end
   end
 end
