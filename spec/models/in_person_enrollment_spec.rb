@@ -517,7 +517,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     context 'when the enrollment sponsor ID does not equal the EIPP sponsor ID' do
       let(:enrollment) do
-        create(:in_person_enrollment, sponsor_id: usps_ipp_sponsor_id)
+        create(:in_person_enrollment, :with_sponsor_id)
       end
 
       it 'returns false' do
