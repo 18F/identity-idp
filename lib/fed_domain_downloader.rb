@@ -6,7 +6,7 @@ require 'pry'
 class PwnedPasswordDownloader
   DOT_GOV_DOWNLOAD_PATH = 'https://raw.githubusercontent.com/cisagov/dotgov-data/main/current-full.csv'
   
-  def initialize(destination: 'tmp/fed_download_path')
+  def initialize(destination: 'tmp/fed_download_path/fed_domain_downloaded')
     @destination = destination
   end
 
@@ -17,9 +17,11 @@ class PwnedPasswordDownloader
 
   def run!
     csv ||= CSV.parse(dot_gov_csv_path, col_sep: ",", headers: true)
-    csv.each do |row|
-      binding.pry
-      row['Domain Name']
+    File.open(destination, 'wb') do |file|
+      csv.each do |row|
+        if row['Domain type'].include?('Federal')
+        new_csv << row['Domain Name']
+      end
     end
   end
 end
