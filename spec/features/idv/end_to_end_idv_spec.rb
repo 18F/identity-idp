@@ -8,7 +8,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
   let(:sp_name) { 'Test SP' }
 
   scenario 'Unsupervised proofing happy path desktop' do
-    try_to_skip_ahead_before_signing_in
+    # try_to_skip_ahead_before_signing_in
     visit_idp_from_sp_with_ial2(sp)
     user = sign_up_and_2fa_ial1_user
 
