@@ -151,6 +151,10 @@ class InPersonEnrollment < ApplicationRecord
     user.uuid.delete('-').slice(0, 18)
   end
 
+  def enhanced_ipp?
+    IdentityConfig.store.usps_eipp_sponsor_id == sponsor_id
+  end
+
   private
 
   def on_notification_sent_at_updated
