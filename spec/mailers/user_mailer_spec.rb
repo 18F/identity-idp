@@ -823,7 +823,6 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     describe '#in_person_ready_to_verify_reminder' do
-      let(:is_enhanced_ipp) { false }
       let(:mail) do
         UserMailer.with(
           user: user,
@@ -844,7 +843,6 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
-        let(:is_enhanced_ipp) { true }
         let(:enrollment) { enhanced_ipp_enrollment }
         it 'renders content that is applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
           aggregate_failures do
