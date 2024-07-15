@@ -1598,7 +1598,7 @@ titles.personal_key: 万一
 titles.piv_cac_login.add: 添加你的 PIV 或者 CAC
 titles.piv_cac_login.new: 用 PIV/CAC 登入你的账户
 titles.piv_cac_setup.new: 用 PIV/CAC 卡来保护你账户安全
-titles.piv_cac_setup.upsell: 使用政府雇员ID增强帐户安全性
+titles.piv_cac_setup.upsell: 添加你的政府雇员身份证件更快、更安全地登录
 titles.present_piv_cac: 提供你的 PIV/CAC
 titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
@@ -1711,8 +1711,8 @@ two_factor_authentication.phone.delete.success: 你的电话已被去掉。
 two_factor_authentication.piv_cac_header_text: 提供你的 PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
-two_factor_authentication.piv_cac_upsell.existing_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这将大大增强你账户的安全性。
-two_factor_authentication.piv_cac_upsell.new_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这为你的帐户增加了另一层安全保障。
+two_factor_authentication.piv_cac_upsell.explain: 这将改善你账户安全，而且你在登录时无需再输入电邮和密码。
+two_factor_authentication.piv_cac_upsell.recommendation: 如果你的PIV/CAC是雇主发的，我们建议你将其作为一种身份证实方法添加到你账户上。
 two_factor_authentication.piv_cac_upsell.skip: 跳过
 two_factor_authentication.piv_cac.change_nickname: 更改昵称
 two_factor_authentication.piv_cac.delete: 删除此方法

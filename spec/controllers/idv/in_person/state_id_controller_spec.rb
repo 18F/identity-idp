@@ -27,6 +27,13 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe 'before_actions' do
+    it 'includes correct before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :set_usps_form_presenter,
+      )
+    end
+
     context '#render_404_if_controller_not_enabled' do
       context 'flag not set' do
         before do
@@ -75,6 +82,11 @@ RSpec.describe Idv::InPerson::StateIdController do
                             [:proofing_results, :context, :stages, :state_id,
                              :state_id_jurisdiction]],
       }.merge(ab_test_args)
+    end
+
+    it 'has non-nil presenter' do
+      get :show
+      expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
     end
 
     it 'renders the show template' do

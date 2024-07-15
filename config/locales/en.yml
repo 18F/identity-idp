@@ -1582,7 +1582,7 @@ titles.personal_key: Just in case
 titles.piv_cac_login.add: Add your PIV or CAC
 titles.piv_cac_login.new: Use your PIV/CAC to sign in to your account
 titles.piv_cac_setup.new: Use your PIV/CAC card to secure your account
-titles.piv_cac_setup.upsell: Enhance your account security with a government employee ID
+titles.piv_cac_setup.upsell: Add your government employee ID for a faster, more secure sign in
 titles.present_piv_cac: Present your PIV/CAC
 titles.present_webauthn: Connect your hardware security key
 titles.reactivate_account: Reactivate your account
@@ -1696,8 +1696,8 @@ two_factor_authentication.phone.delete.success: Your phone has been removed.
 two_factor_authentication.piv_cac_header_text: Present your PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: Add PIV/CAC card
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choose other methods instead
-two_factor_authentication.piv_cac_upsell.existing_user_info: Because you are using a %{email_type} email, we recommend you add your government employee ID as one of your authentication methods. This will greatly enhance your account security.
-two_factor_authentication.piv_cac_upsell.new_user_info: Because you are using a %{email_type} email, we recommend you add your government employee ID as one of your authentication methods. This adds another layer of security to your account.
+two_factor_authentication.piv_cac_upsell.explain: This will improve your account security and let you skip entering your email and password when signing in.
+two_factor_authentication.piv_cac_upsell.recommendation: If your employer issued you a PIV/CAC, we recommend adding it as one of your authentication methods.
 two_factor_authentication.piv_cac_upsell.skip: Skip
 two_factor_authentication.piv_cac.change_nickname: Change nickname
 two_factor_authentication.piv_cac.delete: Delete this method
