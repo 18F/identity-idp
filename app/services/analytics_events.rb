@@ -5815,12 +5815,13 @@ module AnalyticsEvents
 
   # Tracks when user submits registration email
   # @param [Boolean] success Whether form validation was successful
-  # @param [Boolean] rate_limited
+  # @param [Boolean] rate_limited Whether form submission was prevented by rate-limiting
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] user_id
-  # @param [Boolean] email_already_exists
-  # @param [String] domain_name
+  # @param [String] user_id ID of user associated with existing user, or current user
+  # @param [Boolean] email_already_exists Whether an account with the email address already exists
+  # @param [String] domain_name Domain name of email address submitted
+  # @param [String] email_language Preferred language for email communication
   def user_registration_email(
     success:,
     rate_limited:,
