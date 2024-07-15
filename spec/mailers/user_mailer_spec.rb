@@ -831,15 +831,22 @@ RSpec.describe UserMailer, type: :mailer do
           enrollment: enrollment,
         )
       end
+      context 'For Informed Delivery IPP (ID-IPP)' do
+        it_behaves_like 'a system email'
+        it_behaves_like 'an email that respects user email locale preference'
 
-      it_behaves_like 'a system email'
-      it_behaves_like 'an email that respects user email locale preference'
-
-      it 'renders the body' do
-        expect(mail.html_part.body).
-          to have_content(
-            t('in_person_proofing.process.state_id.heading'),
-          )
+        it 'renders the body' do
+          aggregate_failures do
+            [
+              t('in_person_proofing.process.state_id.info'),
+              t('in_person_proofing.process.state_id.heading'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(mail.html_part.body).to have_content(part)
+              end
+            end
+          end
+        end
       end
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
