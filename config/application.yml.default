@@ -592,8 +592,6 @@ test:
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_root_url: 'http://localhost:1000'
-  usps_ipp_sponsor_id: '111111111111111'
-  usps_eipp_sponsor_id: '222222222222222'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass
