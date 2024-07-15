@@ -121,8 +121,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
   end
 
-  def passed_with_unsupported_secondary_id_type?(response)
-    return response['secondaryIdType'].present? &&
+  def passed_with_unsupported_secondary_id_type?(enrollment, response)
+    return !enrollment.enhanced_ipp? && response['secondaryIdType'].present? &&
            SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
   end
 
@@ -483,7 +483,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     when IPP_STATUS_PASSED
       if fraud_result_pending?(enrollment)
         handle_passed_with_fraud_review_pending(enrollment, response)
-      elsif passed_with_unsupported_secondary_id_type?(response)
+      elsif passed_with_unsupported_secondary_id_type?(enrollment, response)
         handle_unsupported_secondary_id(enrollment, response)
       elsif passed_with_primary_id_check?(enrollment, response)
         handle_successful_status_update(enrollment, response)
