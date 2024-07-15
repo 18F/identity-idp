@@ -47,7 +47,7 @@ module Idv
         enrollment.update!(
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
-          doc_auth_result: idv_session.doc_auth_result,
+          doc_auth_result: stored_result&.doc_auth_result,
         )
         add_proofing_component
 
@@ -55,6 +55,11 @@ module Idv
       end
 
       private
+
+      def stored_result
+        return @stored_result if defined?(@stored_result)
+        document_capture_session&.load_result
+      end
 
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer

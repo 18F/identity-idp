@@ -51,6 +51,7 @@ module Idv
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
+      response.extra[:doc_auth_result] = client_response.extra[:doc_auth_result]
       response
     end
 
