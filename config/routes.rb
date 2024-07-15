@@ -142,8 +142,6 @@ Rails.application.routes.draw do
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
-      get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
-      post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
       get 'login/piv_cac_recommended' => 'users/piv_cac_recommended#show'
       post 'login/piv_cac_recommended/add' => 'users/piv_cac_recommended#confirm'
       post 'login/piv_cac_recommended/skip' => 'users/piv_cac_recommended#skip'

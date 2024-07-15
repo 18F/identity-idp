@@ -9,7 +9,6 @@ module Users
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_recently_authenticated_2fa
-    before_action :apply_secure_headers_override, only: :success
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :prompt
 
     def prompt
@@ -18,12 +17,6 @@ module Users
       else
         render_prompt
       end
-    end
-
-    def success; end
-
-    def next
-      redirect_to after_sign_in_path_for(current_user)
     end
 
     def decline
