@@ -5825,24 +5825,24 @@ module AnalyticsEvents
     success:,
     rate_limited:,
     errors:,
+    user_id:,
+    email_already_exists:,
+    domain_name:,
+    email_language:,
     error_details: nil,
-    user_id: nil,
-    email_already_exists: nil,
-    domain_name: nil,
     **extra
   )
     track_event(
       'User Registration: Email Submitted',
-      {
-        success:,
-        rate_limited:,
-        errors:,
-        error_details:,
-        user_id:,
-        email_already_exists:,
-        domain_name:,
-        **extra,
-      }.compact,
+      success:,
+      rate_limited:,
+      errors:,
+      error_details:,
+      user_id:,
+      email_already_exists:,
+      domain_name:,
+      email_language:,
+      **extra,
     )
   end
 

@@ -120,6 +120,7 @@ class RegisterUserEmailForm
       user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
       rate_limited: rate_limited?,
+      email_language:,
     }
   end
 
