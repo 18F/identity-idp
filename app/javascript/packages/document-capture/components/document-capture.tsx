@@ -45,12 +45,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     : InPersonLocationPostOfficeSearchStep;
 
   // Define different states to be used in human readable array declaration
-  const documentFormStep = {
+  const documentFormStep: FormStep = {
     name: 'documents',
     form: DocumentsStep,
     title: t('doc_auth.headings.document_capture'),
-  } as FormStep;
-  const reviewFormStep = {
+  };
+  const reviewFormStep: FormStep = {
     name: 'review',
     form:
       submissionError instanceof UploadFormEntriesError
@@ -68,32 +68,24 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
           })(ReviewIssuesStep)
         : ReviewIssuesStep,
     title: t('errors.doc_auth.rate_limited_heading'),
-  } as FormStep;
+  };
 
   // In Person Steps
-  const prepareFormStep = {
+  const prepareFormStep: FormStep = {
     name: 'prepare',
     form: InPersonPrepareStep,
     title: t('in_person_proofing.headings.prepare'),
-  } as FormStep;
-  const locationFormStep = {
+  };
+  const locationFormStep: FormStep = {
     name: 'location',
     form: inPersonLocationPostOfficeSearchForm,
     title: t('in_person_proofing.headings.po_search.location'),
-  } as FormStep;
-  const hybridFormStep = {
+  };
+  const hybridFormStep: FormStep = {
     name: 'switch_back',
     form: InPersonSwitchBackStep,
     title: t('in_person_proofing.headings.switch_back'),
-  } as FormStep;
-
-  const potentionalSteps = [
-    documentFormStep,
-    reviewFormStep,
-    prepareFormStep,
-    locationFormStep,
-    hybridFormStep,
-  ];
+  };
 
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
