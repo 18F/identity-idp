@@ -40,6 +40,60 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
   const appName = getConfigValue('appName');
+  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
+    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
+    : InPersonLocationPostOfficeSearchStep;
+
+  // Define different states to be used in human readable array declaration
+  const documentFormStep = {
+    name: 'documents',
+    form: DocumentsStep,
+    title: t('doc_auth.headings.document_capture'),
+  } as FormStep;
+  const reviewFormStep = {
+    name: 'review',
+    form:
+      submissionError instanceof UploadFormEntriesError
+        ? withProps({
+            remainingSubmitAttempts: submissionError.remainingSubmitAttempts,
+            isResultCodeInvalid: submissionError.isResultCodeInvalid,
+            isFailedResult: submissionError.isFailedResult,
+            isFailedDocType: submissionError.isFailedDocType,
+            isFailedSelfie: submissionError.isFailedSelfie,
+            isFailedSelfieLivenessOrQuality:
+              submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
+            captureHints: submissionError.hints,
+            pii: submissionError.pii,
+            failedImageFingerprints: submissionError.failed_image_fingerprints,
+          })(ReviewIssuesStep)
+        : ReviewIssuesStep,
+    title: t('errors.doc_auth.rate_limited_heading'),
+  } as FormStep;
+
+  // In Person Steps
+  const prepareFormStep = {
+    name: 'prepare',
+    form: InPersonPrepareStep,
+    title: t('in_person_proofing.headings.prepare'),
+  } as FormStep;
+  const locationFormStep = {
+    name: 'location',
+    form: inPersonLocationPostOfficeSearchForm,
+    title: t('in_person_proofing.headings.po_search.location'),
+  } as FormStep;
+  const hybridFormStep = {
+    name: 'switch_back',
+    form: InPersonSwitchBackStep,
+    title: t('in_person_proofing.headings.switch_back'),
+  } as FormStep;
+
+  const potentionalSteps = [
+    documentFormStep,
+    reviewFormStep,
+    prepareFormStep,
+    locationFormStep,
+    hybridFormStep,
+  ];
 
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
@@ -80,62 +134,16 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     initialValues = formValues;
   }
 
-  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
-    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
-    : InPersonLocationPostOfficeSearchStep;
-
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
-      : ([
-          {
-            name: 'prepare',
-            form: InPersonPrepareStep,
-            title: t('in_person_proofing.headings.prepare'),
-          },
-          {
-            name: 'location',
-            form: inPersonLocationPostOfficeSearchForm,
-            title: t('in_person_proofing.headings.po_search.location'),
-          },
-          flowPath === 'hybrid' && {
-            name: 'switch_back',
-            form: InPersonSwitchBackStep,
-            title: t('in_person_proofing.headings.switch_back'),
-          },
-        ].filter(Boolean) as FormStep[]);
+      : ([prepareFormStep, locationFormStep, flowPath === 'hybrid' && hybridFormStep].filter(
+          Boolean,
+        ) as FormStep[]);
 
   const defaultSteps: FormStep[] = submissionError
-    ? (
-        [
-          {
-            name: 'review',
-            form:
-              submissionError instanceof UploadFormEntriesError
-                ? withProps({
-                    remainingSubmitAttempts: submissionError.remainingSubmitAttempts,
-                    isResultCodeInvalid: submissionError.isResultCodeInvalid,
-                    isFailedResult: submissionError.isFailedResult,
-                    isFailedDocType: submissionError.isFailedDocType,
-                    isFailedSelfie: submissionError.isFailedSelfie,
-                    isFailedSelfieLivenessOrQuality:
-                      submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
-                    captureHints: submissionError.hints,
-                    pii: submissionError.pii,
-                    failedImageFingerprints: submissionError.failed_image_fingerprints,
-                  })(ReviewIssuesStep)
-                : ReviewIssuesStep,
-            title: t('doc_auth.errors.rate_limited_heading'),
-          },
-        ] as FormStep[]
-      ).concat(inPersonSteps)
-    : ([
-        {
-          name: 'documents',
-          form: DocumentsStep,
-          title: t('doc_auth.headings.document_capture'),
-        },
-      ].filter(Boolean) as FormStep[]);
+    ? ([reviewFormStep] as FormStep[]).concat(inPersonSteps)
+    : ([documentFormStep].filter(Boolean) as FormStep[]);
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps
