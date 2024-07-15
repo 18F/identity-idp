@@ -301,7 +301,8 @@ class OpenidConnectAuthorizeForm
   def validate_privileges
     if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
        (ialmax_requested? && !ialmax_allowed_for_sp?) ||
-       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?)
+       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
+       (fsa_feds_idv_exception_requested? && !service_provider.fsa_feds_idv_exception_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
@@ -341,6 +342,10 @@ class OpenidConnectAuthorizeForm
 
   def biometric_ial_requested?
     ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+  end
+
+  def fsa_feds_idv_exception_requested?
+    acr_values.include?(Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF)
   end
 
   def highest_level_aal(aal_values)

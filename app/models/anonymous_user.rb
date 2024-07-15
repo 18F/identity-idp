@@ -60,4 +60,8 @@ class AnonymousUser
   def identity_verified?
     false
   end
+
+  def has_gov_or_mil_email?
+    false
+  end
 end

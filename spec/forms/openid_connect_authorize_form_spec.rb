@@ -247,6 +247,34 @@ RSpec.describe OpenidConnectAuthorizeForm do
     it_behaves_like 'allows biometric IAL only if sp is authorized',
                     Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
 
+    context 'when the FSA feds IdV excpetion is requested' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF }
+
+      context 'when the service provider is allowed to request the acr value' do
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_fsa_feds_idv_exception_providers).
+            and_return([client_id])
+        end
+
+        it 'succeeds validation' do
+          expect(form).to be_valid
+        end
+      end
+
+      context 'when the service provider is not allowed to request the acr value' do
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_fsa_feds_idv_exception_providers).
+            and_return([])
+        end
+
+        it 'failes with a not authorized error' do
+          expect(form).not_to be_valid
+          expect(form.errors[:acr_values]).
+            to include(t('openid_connect.authorization.errors.no_auth'))
+        end
+      end
+    end
+
     context 'with aal but not ial requested via acr_values' do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
       let(:vtr) { nil }

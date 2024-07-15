@@ -75,6 +75,10 @@ class ServiceProvider < ApplicationRecord
       IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
   end
 
+  def fsa_feds_idv_exception_allowed?
+    IdentityConfig.store.allowed_fsa_feds_idv_exception_providers.include?(issuer)
+  end
+
   private
 
   # @return [String,nil]

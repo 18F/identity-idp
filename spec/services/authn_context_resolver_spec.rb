@@ -330,4 +330,88 @@ RSpec.describe AuthnContextResolver do
       end
     end
   end
+
+  context 'when an FSA Feds ACR value is present' do
+    context 'there is no authenticated user' do
+      it 'requires identity proofing' do
+        result = AuthnContextResolver.new(
+          user: nil,
+          service_provider: build(:service_provider),
+          vtr: nil,
+          acr_values: Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+        ).resolve
+
+        expect(result.identity_proofing?).to eq(true)
+      end
+    end
+
+    context 'the user does not have a piv or .gov email address' do
+      it 'requires identity proofing' do
+        result = AuthnContextResolver.new(
+          user: create(:user),
+          service_provider: build(:service_provider),
+          vtr: nil,
+          acr_values: Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+        ).resolve
+
+        expect(result.identity_proofing?).to eq(true)
+      end
+    end
+
+    context 'the user has a .gov email address' do
+      it 'requires identity proofing if the user has proofed' do
+        user = create(:user, :proofed, email: 'test_user@example.gov')
+
+        result = AuthnContextResolver.new(
+          user: user,
+          service_provider: build(:service_provider),
+          vtr: nil,
+          acr_values: Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+        ).resolve
+
+        expect(result.identity_proofing?).to eq(true)
+      end
+
+      it 'does not require identity proofing if the user has not proofed' do
+        user = create(:user, email: 'test_user@example.gov')
+
+        result = AuthnContextResolver.new(
+          user: user,
+          service_provider: build(:service_provider),
+          vtr: nil,
+          acr_values: Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+        ).resolve
+
+        expect(result.identity_proofing?).to eq(false)
+      end
+    end
+
+    context 'the user has configured a PIV or CAC' do
+      it 'requires identity proofing if the user has proofed' do
+        user = create(:user, :proofed, :with_piv_or_cac)
+
+        result = AuthnContextResolver.new(
+          user: user,
+          service_provider: build(:service_provider),
+          vtr: nil,
+          acr_values: Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+        ).resolve
+
+        expect(result.identity_proofing?).to eq(true)
+      end
+
+      it 'does not require identity proofing if the user has not proofed' do
+        user = create(:user, :with_piv_or_cac)
+
+        result = AuthnContextResolver.new(
+          user: user,
+          service_provider: build(:service_provider),
+          vtr: nil,
+          acr_values: Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+        ).resolve
+
+        expect(result.identity_proofing?).to eq(false)
+      end
+    end
+  end
 end

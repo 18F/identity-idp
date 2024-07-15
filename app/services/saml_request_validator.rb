@@ -66,7 +66,8 @@ class SamlRequestValidator
        (identity_proofing_requested? && service_provider&.ial != 2) ||
        (ial_max_requested? &&
         !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer)) ||
-       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?)
+       (biometric_ial_requested? && !service_provider.biometric_ial_allowed?) ||
+       (fsa_feds_idv_exception_requested? && !service_provider.fsa_feds_idv_exception_allowed?)
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
@@ -122,6 +123,12 @@ class SamlRequestValidator
 
   def biometric_ial_requested?
     Array(authn_context).any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+  end
+
+  def fsa_feds_idv_exception_requested?
+    Array(authn_context).include?(
+      Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+    )
   end
 
   def authorized_email_nameid_format

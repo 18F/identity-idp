@@ -269,6 +269,45 @@ RSpec.describe SamlRequestValidator do
 
       it_behaves_like 'allows biometric IAL only if sp is authorized',
                       Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+
+      context 'when the FSA feds IdV excpetion is requested' do
+        let(:authn_context) { [Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF] }
+
+        context 'when the service provider is allowed to request the acr value' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_fsa_feds_idv_exception_providers).
+              and_return([sp.issuer])
+          end
+
+          it 'returns a successful response' do
+            expect(response.to_h).to include(
+              success: true,
+              errors: {},
+              **extra,
+            )
+          end
+        end
+
+        context 'when the service provider is not allowed to request the acr value' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_fsa_feds_idv_exception_providers).
+              and_return([])
+          end
+
+          it 'fails with an unauthorized error' do
+            errors = {
+              authn_context: [t('errors.messages.unauthorized_authn_context')],
+            }
+
+            expect(response.to_h).to include(
+              success: false,
+              errors: errors,
+              error_details: hash_including(*errors.keys),
+              **extra,
+            )
+          end
+        end
+      end
     end
 
     context 'invalid authn context and invalid sp and authorized nameID format' do

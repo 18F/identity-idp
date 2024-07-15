@@ -78,6 +78,13 @@ module Vot
       requirements: [:aal2, :hspd12],
     ).freeze
 
+    FSA_FEDS = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL2_FSA_FEDS_IDV_EXCEPTION_CONTEXT_CLASSREF,
+      description: 'A special ACR value to implement FSA Feds specific IdV exception',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing],
+    ).freeze
+
     NAME_HASH = constants.map do |constant|
       component_value = const_get(constant)
       [component_value.name, component_value]

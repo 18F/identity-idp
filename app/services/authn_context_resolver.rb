@@ -55,6 +55,10 @@ class AuthnContextResolver
   end
 
   def acr_result_with_sp_defaults
+    if fsa_feds_acr_value_present?
+      return fsa_feds_acr_result
+    end
+
     result_with_sp_aal_defaults(
       result_with_sp_ial_defaults(
         acr_result_without_sp_defaults,
@@ -99,5 +103,27 @@ class AuthnContextResolver
     acr_result_without_sp_defaults.component_values.filter do |component_value|
       component_value.name.include?('ial') || component_value.name.include?('loa')
     end
+  end
+
+  def fsa_feds_acr_value_present?
+    acr_result_without_sp_defaults.component_values.include?(
+      Vot::LegacyComponentValues::FSA_FEDS,
+    )
+  end
+
+  def fsa_feds_acr_result
+    if user&.identity_verified?
+      acr_result_without_sp_defaults
+    elsif user_has_fsa_feds_idv_exception?
+      acr_result_without_sp_defaults.with(identity_proofing?: false)
+    else
+      acr_result_without_sp_defaults
+    end
+  end
+
+  def user_has_fsa_feds_idv_exception?
+    return false if user.nil?
+
+    user.has_gov_or_mil_email? || TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
   end
 end
