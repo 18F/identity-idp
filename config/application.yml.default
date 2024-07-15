@@ -589,9 +589,10 @@ test:
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
   usps_eipp_sponsor_id: '222222222222222'
-  usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_root_url: 'http://localhost:1000'
+  usps_ipp_sponsor_id: '111111111111111'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass
   usps_upload_sftp_username: user
+  
