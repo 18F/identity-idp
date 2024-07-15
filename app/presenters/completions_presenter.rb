@@ -41,10 +41,6 @@ class CompletionsPresenter
     @requested_attributes = requested_attributes
     @ial2_requested = ial2_requested
     @completion_context = completion_context
-
-    current_user.email_addresses.each do |e|
-      puts e.email
-    end
   end
 
   def ial2_requested?
