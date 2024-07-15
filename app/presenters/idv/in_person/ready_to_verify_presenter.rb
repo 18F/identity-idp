@@ -47,7 +47,7 @@ module Idv
       end
 
       def outage_message_enabled?
-        IdentityConfig.store.in_person_outage_message_enabled == true && outage_dates_present?
+        IdentityConfig.store.in_person_outage_message_enabled && outage_dates_present?
       end
 
       def formatted_outage_expected_update_date
