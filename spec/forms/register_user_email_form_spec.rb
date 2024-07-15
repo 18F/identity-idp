@@ -97,19 +97,25 @@ RSpec.describe RegisterUserEmailForm do
 
     context 'when email is already taken' do
       let!(:existing_user) { create(*registered_and_confirmed_user) }
+      let(:params) do
+        {
+          email: variation_of_preexisting_email,
+          email_language: 'en',
+          terms_accepted: '1',
+        }
+      end
       let(:extra_params) do
         {
           email_already_exists: true,
           rate_limited: false,
           user_id: existing_user.uuid,
           domain_name: email_domain,
+          email_language: 'en',
         }
       end
 
       it 'sets success to true to prevent revealing account existence' do
-        expect(
-          subject.submit(email: variation_of_preexisting_email, terms_accepted: '1').to_h,
-        ).to eq(success: true, errors: {}, **extra_params)
+        expect(subject.submit(params).to_h).to eq(success: true, errors: {}, **extra_params)
         expect(subject.email).to eq registered_email_address
         expect_delivered_email_count(1)
         expect_delivered_email(
@@ -120,7 +126,7 @@ RSpec.describe RegisterUserEmailForm do
 
       it 'creates rate_limiter events after reaching rate_limiter limit' do
         IdentityConfig.store.reg_confirmed_email_max_attempts.times do
-          subject.submit(email: variation_of_preexisting_email, terms_accepted: '1')
+          subject.submit(params)
         end
 
         expect(analytics).to have_logged_event(
@@ -147,6 +153,7 @@ RSpec.describe RegisterUserEmailForm do
           rate_limited: false,
           user_id: existing_user.uuid,
           domain_name: email_domain,
+          email_language: 'fr',
         }
       end
       let(:send_sign_up_email_confirmation) { instance_double(SendSignUpEmailConfirmation) }
@@ -223,13 +230,18 @@ RSpec.describe RegisterUserEmailForm do
     end
 
     context 'when email is not already taken' do
+      let(:email) { unregistered_email_address }
+      let(:email_language) { 'en' }
+      let(:params) { { email:, terms_accepted: '1', email_language: } }
+
       it 'is valid' do
-        submit_form = subject.submit(email: unregistered_email_address, terms_accepted: '1')
+        submit_form = subject.submit(params)
         extra = {
           email_already_exists: false,
           rate_limited: false,
-          user_id: User.find_with_email(unregistered_email_address).uuid,
+          user_id: User.find_with_email(email).uuid,
           domain_name: email_domain,
+          email_language:,
         }
 
         expect(submit_form.to_h).to eq(
@@ -242,9 +254,7 @@ RSpec.describe RegisterUserEmailForm do
       it 'saves the user email_language for a valid form' do
         form = RegisterUserEmailForm.new(analytics:)
 
-        response = form.submit(
-          email: unregistered_email_address, email_language: 'fr', terms_accepted: '1',
-        )
+        response = form.submit(params.merge(email_language: 'fr'))
         expect(response).to be_success
 
         expect(User.find_with_email(unregistered_email_address).email_language).to eq('fr')
@@ -256,9 +266,7 @@ RSpec.describe RegisterUserEmailForm do
         it 'creates rate_limiter events after reaching rate_limiter limit' do
           1.upto(rate_limit) do |i|
             RegisterUserEmailForm.new(analytics:).
-              submit(
-                email: "taken+#{i}@gmail.com", terms_accepted: '1',
-              )
+              submit(params.merge(email: "taken+#{i}@gmail.com"))
           end
 
           expect(analytics).to have_logged_event(
@@ -353,23 +361,31 @@ RSpec.describe RegisterUserEmailForm do
     end
 
     context 'when terms accepted using castable value' do
+      let(:email) { unregistered_email_address }
+      let(:email_language) { 'en' }
+      let(:params) { { email:, email_language:, terms_accepted: 'true' } }
+
       it 'is successful' do
-        result = subject.submit(email: unregistered_email_address, terms_accepted: 'true')
+        result = subject.submit(params)
 
         expect(result.to_h).to eq(
           success: true,
           errors: {},
           email_already_exists: false,
           rate_limited: false,
-          user_id: User.find_with_email(unregistered_email_address).uuid,
+          user_id: User.find_with_email(email).uuid,
           domain_name: email_domain,
+          email_language:,
         )
       end
     end
 
     context 'when terms not accepted' do
+      let(:email_language) { 'en' }
+      let(:params) { { email: unregistered_email_address, email_language: } }
+
       it 'is unsuccessful with error for terms accepted' do
-        result = subject.submit(email: unregistered_email_address)
+        result = subject.submit(params)
 
         expect(result.to_h).to eq(
           success: false,
@@ -379,6 +395,7 @@ RSpec.describe RegisterUserEmailForm do
           rate_limited: false,
           user_id: 'anonymous-uuid',
           domain_name: email_domain,
+          email_language:,
         )
       end
     end
@@ -413,12 +430,14 @@ RSpec.describe RegisterUserEmailForm do
           email: unregistered_email_address,
           request_id: request_id,
           terms_accepted: '1',
+          email_language: 'en',
         )
         extra = {
           domain_name: email_domain,
           email_already_exists: false,
           rate_limited: false,
           user_id: User.find_with_email(unregistered_email_address).uuid,
+          email_language: 'en',
         }
 
         expect(submit_form.to_h).to eq(
@@ -439,12 +458,14 @@ RSpec.describe RegisterUserEmailForm do
           email: unregistered_email_address,
           request_id: nil,
           terms_accepted: '1',
+          email_language: 'en',
         )
         extra = {
           domain_name: email_domain,
           email_already_exists: false,
           rate_limited: false,
           user_id: User.find_with_email(unregistered_email_address).uuid,
+          email_language: 'en',
         }
 
         expect(submit_form.to_h).to eq(
@@ -458,14 +479,19 @@ RSpec.describe RegisterUserEmailForm do
     context 'when user does not agree to terms' do
       it 'returns failure with errors' do
         errors = { terms_accepted: [t('errors.registration.terms')] }
+        params = {
+          email: unregistered_email_address,
+          email_language: 'en',
+        }
         extra = {
           domain_name: email_domain,
           email_already_exists: false,
           rate_limited: false,
           user_id: anonymous_uuid,
+          email_language: 'en',
         }
 
-        submit_form = subject.submit(email: unregistered_email_address)
+        submit_form = subject.submit(params)
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
@@ -479,14 +505,19 @@ RSpec.describe RegisterUserEmailForm do
           user: build(:user, accepted_terms_at: nil),
         )
         errors = { terms_accepted: [t('errors.registration.terms')] }
+        params = {
+          email: registered_email_address,
+          email_language: 'en',
+        }
         extra = {
           domain_name: email_domain,
           email_already_exists: true,
           rate_limited: false,
           user_id: email_address.user.uuid,
+          email_language: 'en',
         }
 
-        submit_form = subject.submit(email: registered_email_address)
+        submit_form = subject.submit(params)
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
@@ -502,6 +533,7 @@ RSpec.describe RegisterUserEmailForm do
           email_already_exists: false,
           rate_limited: false,
           user_id: anonymous_uuid,
+          email_language: '01234567890',
         }
         submit_form = subject.submit(
           email: unregistered_email_address,
