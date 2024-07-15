@@ -31,7 +31,7 @@ module Idv
       def selected_location_hours(prefix)
         return unless selected_location_details
         hours = selected_location_details["#{prefix}_hours"]
-        return localized_hours(hours) if hours
+        localized_hours(hours)
       end
 
       def service_provider
@@ -108,14 +108,22 @@ module Idv
       end
 
       def localized_hours(hours)
-        case hours
-        when 'Closed'
+        return nil if hours.nil?
+
+        if hours == 'Closed'
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
-        else
+        elsif hours.include?(' - ') # Hyphen
           hours.
             split(' - '). # Hyphen
             map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
             join(' – ') # Endash
+        elsif hours.include?(' – ') # Endash
+          hours.
+            split(' – '). # Endash
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        else
+          hours
         end
       end
 
