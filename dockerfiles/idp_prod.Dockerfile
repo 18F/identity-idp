@@ -47,6 +47,11 @@ ARG LARGE_FILES_USER
 ARG LARGE_FILES_TOKEN
 RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git
 
+# get the service_providers.yml file
+ARG SERVICE_PROVIDERS_USER
+ARG SERVICE_PROVIDERS_TOKEN
+RUN git clone --depth 1 https://$SERVICE_PROVIDERS_USER:$SERVICE_PROVIDERS_TOKEN@gitlab.login.gov/lg/identity-idp-config.git
+
 # Set the working directory
 WORKDIR $RAILS_ROOT
 
@@ -222,6 +227,11 @@ RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_password
 COPY --from=builder /idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/
 COPY --from=builder /idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/
 COPY --from=builder /idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/pwned_passwords.txt
+
+# Copy service_providers.yml and related stuff
+COPY --from=builder /identity-idp-config/*.yml $RAILS_ROOT/config/
+COPY --from=builder /identity-idp-config/certs $RAILS_ROOT/certs
+COPY --from=builder /identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
 
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
