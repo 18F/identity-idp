@@ -2,8 +2,9 @@
 <html>
   <head>
     <title>Component Preview</title>
+    <%= stylesheet_link_tag 'application', nopush: false %>
     <%= render_stylesheet_once_tags %>
-    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= stylesheet_link_tag 'utilties', nopush: false %>
   </head>
   <body class="height-auto padding-2 <%= params.dig(:lookbook, :display, :body_class) %>">
     <% if params.dig(:lookbook, :display, :form) == true %>
