@@ -47,6 +47,7 @@ module Idv
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
         )
+
         if document_capture_session
           enrollment.update!(
             doc_auth_result: document_capture_session.last_doc_auth_result,
