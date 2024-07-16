@@ -63,6 +63,15 @@ RSpec.describe Idv::ByMail::RequestLetterController,
 
       expect(response).to redirect_to idv_enter_password_path
     end
+
+    it 'redirects if the user is not allowed to send mail' do
+      allow(controller.gpo_verify_by_mail_policy).to receive(:send_letter_available?).
+        and_return(false)
+
+      get :index
+
+      expect(response).to redirect_to idv_enter_password_path
+    end
   end
 
   describe '#create' do
