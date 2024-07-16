@@ -1,20 +1,35 @@
 # frozen_string_literal: true
 
 class AuthnContextResolver
+  # @!attribute [r] user
+  #   @return [User]
+  # @!attribute [r] service_provider
+  #   @return [ServiceProvider]
+  # @!attribute [r] vtr
+  #   @return [Array<String>]
+  # @!attribute [r] acr_values
+  #   @return [String]
+
   attr_reader :user, :service_provider, :vtr, :acr_values
 
+  # @param user [User]
+  # @param service_provider [ServiceProvider]
+  # @param vtr [Array<String>]
+  # @param acr_values [String]
   def initialize(user:, service_provider:, vtr:, acr_values:)
+    # @type [User]
     @user = user
+    # @type [ServiceProvider]
     @service_provider = service_provider
+    # @type [Array<String>]
     @vtr = vtr
-    @acr_values = acr_values
+    # @type [String]
+    @acr_values = acr_with_biometric_acr_values(acr_values)
   end
 
   def resolve
     if vtr.present?
       selected_vtr_parser_result_from_vtr_list
-    elsif sp_in_biometric_pilot?
-      acr_with_biometric_acr_values
     else
       acr_result_with_sp_defaults
     end
@@ -22,9 +37,6 @@ class AuthnContextResolver
 
   private
 
-  def selected_acr_parser_result_from_acr_list
-    selected_vtr_parser_result_from_vtr_list
-  end
 
   def selected_vtr_parser_result_from_vtr_list
     if biometric_proofing_vot.present? && user&.identity_verified_with_biometric_comparison?
@@ -62,21 +74,37 @@ class AuthnContextResolver
   end
 
   def acr_result_with_sp_defaults
-    result_with_sp_aal_defaults(
-      result_with_sp_ial_defaults(
-        acr_result_without_sp_defaults,
-      ),
+    decorate_acr_result_with_sp_defaults(
+        acr_result_without_sp_defaults
     )
   end
 
-  def acr_with_biometric_acr_values
-    # code here
+  def decorate_acr_result_with_sp_defaults(result)
+    result_with_sp_aal_defaults(
+      result_with_sp_ial_defaults(
+         result
+        ),
+      )
+  end
+
+  def acr_with_biometric_acr_values(acr_values)
+    biometric_proofing_requested = acr_values.include?(Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF)
+    if sp_in_biometric_pilot? && acr_values.present?
+      if biometric_proofing_requested && user&.identity_verified_with_biometric_comparison?
+        acr_values.gsub(Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF, Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
+      else
+        acr_values.gsub(Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      end
+    else
+      acr_values
+    end
   end
 
   def acr_result_without_sp_defaults
     @acr_result_without_sp_defaults ||= Vot::Parser.new(acr_values: acr_values).parse
   end
 
+  # @param result [Vot::Parser::Result]
   def result_with_sp_aal_defaults(result)
     if acr_aal_component_values.any?
       result
@@ -89,6 +117,7 @@ class AuthnContextResolver
     end
   end
 
+  # @param result [Vot::Parser::Result]
   def result_with_sp_ial_defaults(result)
     if acr_ial_component_values.any?
       result
@@ -113,6 +142,6 @@ class AuthnContextResolver
   end
 
   def sp_in_biometric_pilot?
-    false
+    @service_provider.biometric_ial_allowed?
   end
 end
