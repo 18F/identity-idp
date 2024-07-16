@@ -26,6 +26,13 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe 'before_actions' do
+    it 'includes correct before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :set_usps_form_presenter,
+      )
+    end
+
     context '#confirm_in_person_state_id_step_complete' do
       context 'in_person_state_id_controller_enabled is enabled' do
         before do
@@ -110,6 +117,11 @@ RSpec.describe Idv::InPerson::AddressController do
         :address1,
       )
     end
+
+    it 'has non-nil presenter' do
+      get :show
+      expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
+    end
   end
 
   describe '#update' do
@@ -117,7 +129,7 @@ RSpec.describe Idv::InPerson::AddressController do
       let(:address1) { '1 FAKE RD' }
       let(:address2) { 'APT 1B' }
       let(:city) { 'GREAT FALLS' }
-      let(:zipcode) { '59010' }
+      let(:zipcode) { '59010-4444' }
       let(:state) { 'Montana' }
       let(:params) do
         { in_person_address: {
@@ -141,6 +153,7 @@ RSpec.describe Idv::InPerson::AddressController do
                                :state_id_jurisdiction]],
           same_address_as_id: false,
           skip_hybrid_handoff: nil,
+          current_address_zip_code: '59010',
         }
       end
 
@@ -156,7 +169,7 @@ RSpec.describe Idv::InPerson::AddressController do
         )
       end
 
-      it 'logs idv_in_person_proofing_address_visited' do
+      it 'logs idv_in_person_proofing_address_submitted with 5-digit zipcode' do
         put :update, params: params
 
         expect(@analytics).to have_received(
@@ -228,13 +241,19 @@ RSpec.describe Idv::InPerson::AddressController do
                                :state_id_jurisdiction]],
           same_address_as_id: false,
           skip_hybrid_handoff: nil,
+          current_address_zip_code: '59010',
         }
       end
 
-      it 'does not proceed to next page' do
+      before do
         put :update, params: params
+      end
 
+      it 'does not proceed to next page' do
         expect(response).to have_rendered(:show)
+      end
+
+      it 'logs idv_in_person_proofing_address_submitted without zipcode' do
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end

@@ -72,9 +72,27 @@ account.index.reactivation.instructions: Votre profil a été récemment désact
 account.index.reactivation.link: Réactiver votre profil maintenant.
 account.index.sign_in_location_and_ip: De %{ip} (adresse IP éventuellement située dans %{location})
 account.index.unknown_location: lieu inconnu
-account.index.verification.instructions: Votre compte nécessite un code de vérification pour être vérifié.
-account.index.verification.reactivate_button: Saisissez le code que vous avez reçu par la poste
+account.index.verification.continue_idv: Poursuivre la vérification d’identité
+account.index.verification.finish_verifying_html: Terminez la procédure de vérification d’identité pour pouvoir accéder à <strong>%{sp_name}</strong>.
+account.index.verification.finish_verifying_no_sp: Terminer la procédure de vérification d’identité pour pouvoir accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.identity_verification: Vérification de l’identité
+account.index.verification.in_person_instructions_html: Vous devez vous rendre à un bureau de poste participant d’ici le <strong>%{deadline}</strong> pour terminer la procédure de vérification de votre identité.
+account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
+account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
+account.index.verification.nonbiometric_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.
+account.index.verification.pending_badge: En cours
+account.index.verification.pending_badge_tooltip: Votre identité est en cours de vérification.
+account.index.verification.reactivate_button: Saisissez le code de vérification que vous avez reçu par la poste.
+account.index.verification.show_bar_code: Me montrer mon code-barre %{app_name}
 account.index.verification.success: Nous avons vérifié vos informations
+account.index.verification.unverified_badge: Non vérifiée
+account.index.verification.unverified_badge_tooltip: Terminer la vérification de votre identité.
+account.index.verification.verified_badge: Vérifiée
+account.index.verification.verified_badge_tooltip: Votre identité a été vérifiée.
+account.index.verification.verified_biometric_badge_tooltip: Votre identité et votre photo ont été vérifiées.
+account.index.verification.verify_with_biometric_html: Pour accéder à <strong>%{sp_name}</strong>, confirmez à nouveau votre identité à l’aide d’une photo de vous-même.
+account.index.verification.you_verified_your_biometric_identity: Vous avez confirmé votre identité à l’aide des informations ci-dessous et d’une photo de vous-même, ce qui vous permet d’accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.you_verified_your_identity_html: Vous avez confirmé votre identité auprès de <strong>%{sp_name}</strong> à l’aide des informations ci-dessous.
 account.index.webauthn: Clé de sécurité
 account.index.webauthn_add: Ajouter une clé de sécurité
 account.index.webauthn_platform: Déverrouillage facial ou tactile
@@ -887,8 +905,6 @@ headings.account.login_info: Votre compte
 headings.account.reactivate: Réactiver votre compte
 headings.account.two_factor: Vos méthodes d’authentification
 headings.account.unphishable: Non hameçonnable
-headings.account.verified_account: Compte vérifié
-headings.account.verified_information: Informations vérifiées
 headings.add_email: Ajouter une nouvelle adresse e-mail
 headings.add_info.phone: Ajouter un numéro de téléphone
 headings.cancellations.login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
@@ -1566,7 +1582,7 @@ titles.personal_key: Juste au cas où
 titles.piv_cac_login.add: Ajouter votre carte PIV ou CAC
 titles.piv_cac_login.new: Utiliser votre carte PIV/CAC pour vous connecter à votre compte
 titles.piv_cac_setup.new: Utiliser votre carte PIV/CAC pour sécuriser votre compte
-titles.piv_cac_setup.upsell: Renforcer la sécurité de votre compte avec une carte d’employé fédéral
+titles.piv_cac_setup.upsell: Ajouter votre carte d’employé fédéral pour vous connecter plus rapidement et en toute sécurité
 titles.present_piv_cac: Présenter votre carte PIV/CAC
 titles.present_webauthn: Brancher votre clé de sécurité physique
 titles.reactivate_account: Réactiver votre compte
@@ -1680,8 +1696,8 @@ two_factor_authentication.phone.delete.success: Votre téléphone a été suppri
 two_factor_authentication.piv_cac_header_text: Présenter votre carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: Ajouter une carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choisir plutôt d’autres méthodes
-two_factor_authentication.piv_cac_upsell.existing_user_info: Comme vous utilisez une adresse e-mail avec le suffixe %{email_type}, nous vous recommandons d’ajouter votre carte d’employé fédéral parmi vos méthodes d’authentification. Ceci renforcera considérablement la sécurité de votre compte.
-two_factor_authentication.piv_cac_upsell.new_user_info: Comme vous utilisez une adresse e-mail avec le suffixe %{email_type}, nous vous recommandons d’ajouter votre carte d’employé fédéral parmi vos méthodes d’authentification. Ceci permet d’ajouter une couche supplémentaire de sécurité à votre compte.
+two_factor_authentication.piv_cac_upsell.explain: Ceci permettra de renforcer la sécurité de votre compte et de sauter l’étape de saisie de votre e-mail et mot de passe quand vous vous connecterez.
+two_factor_authentication.piv_cac_upsell.recommendation: Si votre employeur vous a délivré une carte PIV/CAC, vous vous recommandons de l’ajouter parmi vos méthodes d’authentification.
 two_factor_authentication.piv_cac_upsell.skip: Ignorer
 two_factor_authentication.piv_cac.change_nickname: Changer de pseudo
 two_factor_authentication.piv_cac.delete: Supprimer cette méthode

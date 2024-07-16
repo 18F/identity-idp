@@ -19,6 +19,7 @@ RSpec.describe Idv::InPersonController do
         :confirm_two_factor_authenticated,
         :initialize_flow_state_machine,
         :ensure_correct_step,
+        :set_usps_form_presenter,
       )
     end
   end
@@ -26,7 +27,6 @@ RSpec.describe Idv::InPersonController do
   describe '#index' do
     it 'renders 404 not found' do
       get :index
-
       expect(response.status).to eq 404
     end
 
@@ -57,6 +57,11 @@ RSpec.describe Idv::InPersonController do
             get :index
 
             expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+          end
+
+          it 'has non-nil presenter' do
+            get :index
+            expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
           end
 
           context 'with associated service provider' do

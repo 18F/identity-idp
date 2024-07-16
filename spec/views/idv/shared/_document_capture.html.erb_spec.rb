@@ -19,6 +19,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
   let(:opted_in_to_in_person_proofing) { false }
+  let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
 
   before do
     decorated_sp_session = instance_double(
@@ -36,6 +37,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
         issuer == in_person_proofing_enabled_issuer
       end
     end
+
+    assign(:presenter, presenter)
   end
 
   subject(:render_partial) do

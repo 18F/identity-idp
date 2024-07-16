@@ -26,6 +26,7 @@ module Idv
         FormResponse.new(
           success: validation_success,
           errors: cleaned_errors,
+          extra: extra_analytics_attributes(params),
         )
       end
 
@@ -40,6 +41,10 @@ module Idv
 
       def raise_invalid_address_parameter_error(key)
         raise ArgumentError, "#{key} is an invalid address attribute"
+      end
+
+      def extra_analytics_attributes(params)
+        { current_address_zip_code: params.dig(:zipcode)&.slice(0, 5) }
       end
     end
   end

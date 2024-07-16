@@ -5,7 +5,11 @@
 <%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_setup.upsell')) %>
 
 <p>
-  <%= @recommended_presenter.info %>
+  <%= I18n.t('two_factor_authentication.piv_cac_upsell.recommendation') %>
+</p>
+
+<p class='margin-bottom-0'>
+  <%= I18n.t('two_factor_authentication.piv_cac_upsell.explain') %>
 </p>
 
 <%= render ButtonComponent.new(

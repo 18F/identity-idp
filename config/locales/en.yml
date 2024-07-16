@@ -72,9 +72,27 @@ account.index.reactivation.instructions: Your profile was recently deactivated d
 account.index.reactivation.link: Reactivate your profile now.
 account.index.sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
 account.index.unknown_location: unknown location
-account.index.verification.instructions: Your account requires a verification code to be verified.
-account.index.verification.reactivate_button: Enter the code you received via US mail
+account.index.verification.continue_idv: Continue identity verification
+account.index.verification.finish_verifying_html: Finish verifying your identity to access <strong>%{sp_name}</strong>.
+account.index.verification.finish_verifying_no_sp: Finish the identity verification process to gain access to all %{app_name} partners.
+account.index.verification.identity_verification: Identity verification
+account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong> to verify your identity.
+account.index.verification.instructions: Enter your verification code to finish verifying your identity.
+account.index.verification.learn_more_link: Learn more about verifying your identity
+account.index.verification.nonbiometric_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
+account.index.verification.pending_badge: Pending
+account.index.verification.pending_badge_tooltip: Your identity is pending verification.
+account.index.verification.reactivate_button: Enter the verification code you received via US mail
+account.index.verification.show_bar_code: Show me my %{app_name} barcode
 account.index.verification.success: We verified your information
+account.index.verification.unverified_badge: Unverified
+account.index.verification.unverified_badge_tooltip: Finish verifying your identity.
+account.index.verification.verified_badge: Verified
+account.index.verification.verified_badge_tooltip: Your identity has been verified.
+account.index.verification.verified_biometric_badge_tooltip: Your identity and photo have both been verified.
+account.index.verification.verify_with_biometric_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
+account.index.verification.you_verified_your_biometric_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
+account.index.verification.you_verified_your_identity_html: You verified your identity for <strong>%{sp_name}</strong> with the information below.
 account.index.webauthn: Security key
 account.index.webauthn_add: Add security key
 account.index.webauthn_platform: Face or touch unlock
@@ -887,8 +905,6 @@ headings.account.login_info: Your account
 headings.account.reactivate: Reactivate your account
 headings.account.two_factor: Your authentication methods
 headings.account.unphishable: Unphishable
-headings.account.verified_account: Verified Account
-headings.account.verified_information: Verified information
 headings.add_email: Add a new email address
 headings.add_info.phone: Add a phone number
 headings.cancellations.login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?
@@ -1574,7 +1590,7 @@ titles.personal_key: Just in case
 titles.piv_cac_login.add: Add your PIV or CAC
 titles.piv_cac_login.new: Use your PIV/CAC to sign in to your account
 titles.piv_cac_setup.new: Use your PIV/CAC card to secure your account
-titles.piv_cac_setup.upsell: Enhance your account security with a government employee ID
+titles.piv_cac_setup.upsell: Add your government employee ID for a faster, more secure sign in
 titles.present_piv_cac: Present your PIV/CAC
 titles.present_webauthn: Connect your hardware security key
 titles.reactivate_account: Reactivate your account
@@ -1688,8 +1704,8 @@ two_factor_authentication.phone.delete.success: Your phone has been removed.
 two_factor_authentication.piv_cac_header_text: Present your PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: Add PIV/CAC card
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choose other methods instead
-two_factor_authentication.piv_cac_upsell.existing_user_info: Because you are using a %{email_type} email, we recommend you add your government employee ID as one of your authentication methods. This will greatly enhance your account security.
-two_factor_authentication.piv_cac_upsell.new_user_info: Because you are using a %{email_type} email, we recommend you add your government employee ID as one of your authentication methods. This adds another layer of security to your account.
+two_factor_authentication.piv_cac_upsell.explain: This will improve your account security and let you skip entering your email and password when signing in.
+two_factor_authentication.piv_cac_upsell.recommendation: If your employer issued you a PIV/CAC, we recommend adding it as one of your authentication methods.
 two_factor_authentication.piv_cac_upsell.skip: Skip
 two_factor_authentication.piv_cac.change_nickname: Change nickname
 two_factor_authentication.piv_cac.delete: Delete this method
