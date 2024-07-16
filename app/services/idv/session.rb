@@ -7,7 +7,6 @@ module Idv
       address_verification_mechanism
       applicant
       document_capture_session_uuid
-      doc_auth_result
       flow_path
       go_back_path
       gpo_code_verified

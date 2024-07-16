@@ -4,7 +4,6 @@
 DocumentCaptureSessionResult = RedactedStruct.new(
   :id,
   :success,
-  :doc_auth_result,
   :pii,
   :attention_with_barcode,
   :failed_front_image_fingerprints,
@@ -13,10 +12,9 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :captured_at,
   :doc_auth_success, :selfie_status,
   keyword_init: true,
-  allowed_members: [:id, :success, :doc_auth_result, :attention_with_barcode,
-                    :failed_front_image_fingerprints, :failed_back_image_fingerprints,
-                    :failed_selfie_image_fingerprints, :captured_at, :doc_auth_success,
-                    :selfie_status]
+  allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
+                    :failed_back_image_fingerprints, :failed_selfie_image_fingerprints,
+                    :captured_at, :doc_auth_success, :selfie_status]
 ) do
   include DocAuth::SelfieConcern
 

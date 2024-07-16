@@ -2,7 +2,6 @@
 
 module Idv
   class ImageUploadsController < ApplicationController
-    include IdvSessionConcern
     respond_to :json
 
     def create

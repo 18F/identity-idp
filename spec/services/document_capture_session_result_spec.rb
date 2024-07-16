@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe DocumentCaptureSessionResult do
   let(:id) { SecureRandom.uuid }
   let(:success) { true }
-  let(:doc_auth_result) { 'Passed' }
   let(:pii) { { 'first_name' => 'Testy', 'last_name' => 'Testerson' } }
 
   context 'EncryptedRedisStructStorage' do
@@ -11,7 +10,6 @@ RSpec.describe DocumentCaptureSessionResult do
       result = DocumentCaptureSessionResult.new(
         id: id,
         success: success,
-        doc_auth_result: doc_auth_result,
         doc_auth_success: success,
         selfie_status: :success,
         pii: pii,
@@ -22,7 +20,6 @@ RSpec.describe DocumentCaptureSessionResult do
 
       expect(loaded_result.id).to eq(id)
       expect(loaded_result.success?).to eq(success)
-      expect(loaded_result.doc_auth_result).to eq(doc_auth_result)
       expect(loaded_result.pii).to eq(pii.deep_symbolize_keys)
       expect(loaded_result.attention_with_barcode?).to eq(false)
       expect(loaded_result.selfie_status).to eq(:success)
