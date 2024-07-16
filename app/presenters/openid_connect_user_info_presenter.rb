@@ -25,7 +25,11 @@ class OpenidConnectUserInfoPresenter
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
       info[:ial] = if identity_proofing_requested_for_verified_user?
-                     Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+                     if !resolved_authn_context_result.ialmax?
+                       resolved_authn_context_result.identity_proofing_names.first ||  Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+                     else
+                      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+                     end
                    else
                      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
                    end

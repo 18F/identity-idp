@@ -13,9 +13,9 @@ module Saml
       IAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/ial'
       IAL1_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       IAL2_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2".freeze
-      IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
       IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?bio=preferred".freeze
       IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?bio=required".freeze
+      IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
 
       PASSWORD_AUTHN_CONTEXT_CLASSREFS = %w[
         urn:oasis:names:tc:SAML:2.0:ac:classes:Password
@@ -38,7 +38,12 @@ module Saml
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='
 
       VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts.freeze
-      IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
+      IAL2_AUTHN_CONTEXTS = [
+        IAL2_AUTHN_CONTEXT_CLASSREF,
+        IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+        IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+        LOA3_AUTHN_CONTEXT_CLASSREF
+      ].freeze
       BIOMETRIC_IAL_CONTEXTS = [IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
                                 IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF].freeze
 
@@ -47,6 +52,8 @@ module Saml
         LOA3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
         IAL1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,
         IAL2_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
         IALMAX_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL_MAX,
       }.freeze
 

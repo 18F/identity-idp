@@ -142,7 +142,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
         get :create, params: {
           confirmation_token:,
           _request_id: request_id_param,
-          acr_values: Vot::LegacyComponentValues::IAL1,
+          acr_values: Vot::AuthnContextClassRefComponentValues::IAL1,
         }
       end
 

@@ -4,8 +4,9 @@ module Vot
   class Parser
     class ParseException < StandardError; end
 
-    Result = Data.define(
+    class Result < Data.define(
       :component_values,
+      :component_separator,
       :aal2?,
       :phishing_resistant?,
       :hspd12?,
@@ -14,10 +15,11 @@ module Vot
       :two_pieces_of_fair_evidence?,
       :ialmax?,
       :enhanced_ipp?,
-    ) do
+    )
       def self.no_sp_result
         self.new(
           component_values: [],
+          component_separator: ' ',
           aal2?: false,
           phishing_resistant?: false,
           hspd12?: false,
@@ -34,7 +36,12 @@ module Vot
       end
 
       def expanded_component_values
-        component_values.map(&:name).join('.')
+        component_values.map(&:name).join(component_separator)
+      end
+
+      def identity_proofing_names
+        component_values.filter { |c| c.requirements.include?(:identity_proofing) }
+                        .map { |c | c.name }
       end
     end.freeze
 
@@ -56,6 +63,7 @@ module Vot
       requirement_list = expanded_components.flat_map(&:requirements)
       Result.new(
         component_values: expanded_components,
+        component_separator: component_separator,
         aal2?: requirement_list.include?(:aal2),
         phishing_resistant?: requirement_list.include?(:phishing_resistant),
         hspd12?: requirement_list.include?(:hspd12),
@@ -88,11 +96,12 @@ module Vot
       end
     end
 
+    # @return [Hash{String => Vot::ComponentValue}]
     def component_map
       if vector_of_trust.present?
         SupportedComponentValues.by_name
       else
-        LegacyComponentValues.by_name
+        AuthnContextClassRefComponentValues.by_name
       end
     end
 
