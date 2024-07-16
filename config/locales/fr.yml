@@ -1487,6 +1487,14 @@ risc.security_event.errors.typ_error: l’en-tête typ doit être %{expected_typ
 saml_idp.auth.error.title: Erreur
 saml_idp.shared.saml_post_binding.heading: Valider pour continuer
 saml_idp.shared.saml_post_binding.no_js: JavaScript semble être désactivé dans votre navigateur. Normalement, cette étape se produit automatiquement, mais comme vous avez désactivé JavaScript, veuillez cliquer sur le bouton « Valider » pour poursuivre la connexion ou la déconnexion.
+security_check_failed.contact: Contactez l’assistance %{app_name}
+security_check_failed.details_html: Nous ne reconnaissons pas l’appareil ou le navigateur à partir duquel vous vous connectez.
+security_check_failed.info_p1: 'Utilisez le même appareil et le même navigateur que ceux avec lesquels vous aviez créé votre compte %{app_name}.'
+security_check_failed.info_p2_link: Essayez de vous connecter avec votre carte d’employé fédéral
+security_check_failed.info_p2_part2: si vous êtes employé fédéral.
+security_check_failed.info_p3: Désactivez tout éventuel VPN ou bloqueur de publicité et videz votre cache.
+security_check_failed.learn_more: En savoir plus sur les tests de sécurité de %{app_name}
+security_check_failed.title: Échec du test de sécurité
 service_providers.errors.generic_sp_name: Cet organisme
 service_providers.errors.inactive.button_text: Voir mon compte %{app_name}
 service_providers.errors.inactive.heading: '%{sp_name} n’utilise plus %{app_name}'

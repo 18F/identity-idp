@@ -1498,6 +1498,14 @@ risc.security_event.errors.typ_error: encabezado de tipo debe ser %{expected_typ
 saml_idp.auth.error.title: Error
 saml_idp.shared.saml_post_binding.heading: Enviar para continuar
 saml_idp.shared.saml_post_binding.no_js: JavaScript parece estar desactivado en su navegador. Por lo general, este paso es automático, pero, debido a que tiene JavaScript desactivado, haga clic en el botón Enviar para continuar iniciando sesión o cerrándola.
+security_check_failed.contact: Contacte con el servicio de asistencia de %{app_name}
+security_check_failed.details_html: No reconocemos el dispositivo o el navegador desde el que está iniciando sesión.
+security_check_failed.info_p1: 'Utilice el mismo dispositivo y navegador con el que creó su cuenta en %{app_name}.'
+security_check_failed.info_p2_link: Intente iniciar sesión con su identificación de empleado del gobierno
+security_check_failed.info_p2_part2: si es un empleado del gobierno.
+security_check_failed.info_p3: Desactive cualquier VPN, bloqueador de anuncios y borre su caché.
+security_check_failed.learn_more: Obtenga más información sobre las comprobaciones de seguridad de %{app_name}
+security_check_failed.title: Falló la comprobación de seguridad
 service_providers.errors.generic_sp_name: Esta agencia
 service_providers.errors.inactive.button_text: Ver mi cuenta de %{app_name}
 service_providers.errors.inactive.heading: '%{sp_name} ya no utiliza %{app_name}'

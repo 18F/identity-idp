@@ -5,7 +5,7 @@
 <p>
   <%= t('security_check_failed.details_html') %>
   <%= new_tab_link_to(
-        t('security_check_failed.learn_more'),
+        t('security_check_failed.learn_more', app_name: APP_NAME),
         help_center_redirect_path(
           category: 'trouble-signing-in',
           article: 'security-check-failed',
@@ -14,12 +14,12 @@
 </p>
 
 <ul class="usa-list margin-top-0">
-  <li><%=  t('security_check_failed.info_p1') %></li>
+  <li><%= t('security_check_failed.info_p1', app_name: APP_NAME) %></li>
   <li><%= link_to(
-        t('security_check_failed.info_p2_link'),
-        login_piv_cac_url
-      ) + " "+ t('security_check_failed.info_p2_part2') %></li> 
-  <li><%=  t('security_check_failed.info_p3') %></li> 
+            t('security_check_failed.info_p2_link'),
+            login_piv_cac_url,
+          ) + ' ' + t('security_check_failed.info_p2_part2') %></li> 
+  <li><%= t('security_check_failed.info_p3') %></li> 
 </ul>
 
 <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>

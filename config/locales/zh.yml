@@ -1503,6 +1503,14 @@ risc.security_event.errors.typ_error: 类型标头必须是 %{expected_typ}
 saml_idp.auth.error.title: 错误
 saml_idp.shared.saml_post_binding.heading: 提交来继续
 saml_idp.shared.saml_post_binding.no_js: 你浏览器中的 JavaScript 似乎已关闭。该步骤通常会自动发生，但因为你把 JavaScript 关闭，请点击提交按钮来继续登入或登出。
+security_check_failed.contact: 请联系 %{app_name}支持
+security_check_failed.details_html: 我们不认识您登录正在使用的设备或浏览器。
+security_check_failed.info_p1: '使用您设立自己 %{app_name} 账户时的同一设备和浏览器。'
+security_check_failed.info_p2_link: 尝试用您的政府雇员身份证件登录。
+security_check_failed.info_p2_part2: 如果您是政府雇员.
+security_check_failed.info_p3: 关闭任何 VPN 和广告拦截器并清除缓存。
+security_check_failed.learn_more: 了解 %{app_name} 安全检查的更多信息
+security_check_failed.title: 安全检查未通过
 service_providers.errors.generic_sp_name: 该机构
 service_providers.errors.inactive.button_text: 查看我的 %{app_name} 账户
 service_providers.errors.inactive.heading: '%{sp_name} 不再使用 %{app_name}'

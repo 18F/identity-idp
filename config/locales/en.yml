@@ -1487,14 +1487,14 @@ risc.security_event.errors.typ_error: typ header must be %{expected_typ}
 saml_idp.auth.error.title: Error
 saml_idp.shared.saml_post_binding.heading: Submit to continue
 saml_idp.shared.saml_post_binding.no_js: JavaScript seems to be turned off in your browser. Normally this step happens automatically, but because you have JavaScript turned off, please click the submit button to continue signing in or signing out.
+security_check_failed.contact: Contact %{app_name} support
 security_check_failed.details_html: We don’t recognize the device or browser you’re signing in from.
-security_check_failed.info_p1: 'Use the same device and browser you created your Login.gov account with.'
+security_check_failed.info_p1: 'Use the same device and browser you created your %{app_name} account with.'
 security_check_failed.info_p2_link: Try signing in with your government employee ID
 security_check_failed.info_p2_part2: if you are a government employee.
 security_check_failed.info_p3: Turn off any VPN, ad blockers, and clear your cache.
-security_check_failed.learn_more: Learn more about Login.gov’s security checks
+security_check_failed.learn_more: Learn more about %{app_name}’s security checks
 security_check_failed.title: Security check failed
-security_check_failed.contact: Contact %{app_name} support
 service_providers.errors.generic_sp_name: This agency
 service_providers.errors.inactive.button_text: View my %{app_name} account
 service_providers.errors.inactive.heading: '%{sp_name} no longer uses %{app_name}'
