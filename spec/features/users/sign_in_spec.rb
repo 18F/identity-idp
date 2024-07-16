@@ -132,14 +132,8 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
     stub_piv_cac_service
-    nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-    visit_piv_cac_service(
-      current_url,
-      nonce: nonce,
-      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-      uuid: SecureRandom.uuid,
-      subject: 'SomeIgnoredSubject',
-    )
+    click_on t('forms.piv_cac_login.submit')
+    follow_piv_cac_redirect
 
     expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit sign_up_email_path
