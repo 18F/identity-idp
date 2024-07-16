@@ -24,7 +24,7 @@ class AuthnContextResolver
     # @type [Array<String>]
     @vtr = vtr
     # @type [String]
-    @acr_values = acr_with_biometric_acr_values(acr_values)
+    @acr_values = initialize_acr_values(acr_values)
   end
 
   def resolve
@@ -87,13 +87,22 @@ class AuthnContextResolver
       )
   end
 
-  def acr_with_biometric_acr_values(acr_values)
-    biometric_proofing_requested = acr_values.include?(Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF)
+  # Returns a copy of acr_values where the appropriate IAL authentication context class reference
+  # name replaces <tt>Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF</tt>.
+  # @param [String] acr_values
+  def initialize_acr_values(acr_values)
     if sp_in_biometric_pilot? && acr_values.present?
+      biometric_proofing_requested = acr_values.include?(Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF)
       if biometric_proofing_requested && user&.identity_verified_with_biometric_comparison?
-        acr_values.gsub(Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF, Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
-      else
-        acr_values.gsub(Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+        acr_values.gsub(
+          Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+        )
+      elsif biometric_proofing_requested && user&.identity_verified?
+        acr_values.gsub(
+          Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+        )
       end
     else
       acr_values
