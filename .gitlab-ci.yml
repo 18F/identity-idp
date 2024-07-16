@@ -191,6 +191,8 @@ build-idp-image:
       --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
       --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}"
       --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
+      --build-arg "SERVICE_PROVIDERS_TOKEN=${SERVICE_PROVIDERS_TOKEN}"
+      --build-arg "SERVICE_PROVIDERS_USER=${SERVICE_PROVIDERS_USER}"
 
 check_changelog:
   stage: test
