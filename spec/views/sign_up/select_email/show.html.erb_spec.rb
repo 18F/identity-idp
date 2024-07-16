@@ -6,9 +6,6 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
   let(:user) { create(:user) }
 
   before do
-    allow(IdentityConfig.store).to receive(
-      :feature_select_email_to_share_enabled,
-    ).and_return(true)
     user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
     user.email_addresses.create(email: email2, confirmed_at: Time.zone.now)
     user.reload
