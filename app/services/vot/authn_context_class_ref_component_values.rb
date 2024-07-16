@@ -27,12 +27,6 @@ module Vot
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing],
     ).freeze
-    IAL2_BIO_PREFERRED = ComponentValue.new(
-      name: Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
-      description: 'IAL2 - identity proof with biometric comparison used if available',
-      implied_component_values: [Vot::AuthnContextClassRefComponentValues::IAL2.name],
-      requirements: [],
-      ).freeze
     IAL2_BIO_REQUIRED = ComponentValue.new(
       name: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
       description: 'IAL2 - identity proofing with required biometric comparison',
