@@ -3,39 +3,43 @@
 module Vot
   module AuthnContextClassRefComponentValues
     ## Identity proofing ACR values
+
+    # @deprecated - Use IAL1
     LOA1 = ComponentValue.new(
       name: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy LOA1',
+      description: 'Legacy LOA1 - no identity proofing',
       implied_component_values: [],
       requirements: [],
     ).freeze
+    # @deprecated - Use IAL2
     LOA3 = ComponentValue.new(
       name: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy LOA3',
+      description: 'Legacy LOA3 - identity proofing is performed',
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing],
     ).freeze
+
     IAL1 = ComponentValue.new(
       name: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy IAL1',
+      description: 'IAL1 - no identity proofing (rev 3)',
       implied_component_values: [],
       requirements: [],
     ).freeze
     IAL2 = ComponentValue.new(
       name: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-      description: 'IAL2 - identity proofing is performed',
+      description: 'IAL2 - identity proofing is performed (rev3)',
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing],
     ).freeze
     IAL2_BIO_REQUIRED = ComponentValue.new(
       name: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
-      description: 'IAL2 - identity proofing with required biometric comparison',
-      implied_component_values: [Vot::AuthnContextClassRefComponentValues::IAL2.name],
-      requirements: [:biometric_comparison, :two_pieces_of_fair_evidence],
+      description: 'IAL2 - identity proofing with biometric comparison (rev3)',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing, :biometric_comparison, :two_pieces_of_fair_evidence],
     ).freeze
     IALMAX = ComponentValue.new(
       name: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy IALMAX',
+      description: 'IALMAX - internal step-up flow from IAL1 to IAL2',
       implied_component_values: [],
       requirements: [:aal2, :ialmax],
     ).freeze
@@ -67,7 +71,7 @@ module Vot
     ).freeze
     AAL2_HSPD12 = ComponentValue.new(
       name: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy AAL2 with HSPD12',
+      description: 'Legacy AAL2 with HSPD12 (PIV/CAC card)',
       implied_component_values: [],
       requirements: [:aal2, :hspd12],
     ).freeze
@@ -79,7 +83,7 @@ module Vot
     ).freeze
     AAL3_HSPD12 = ComponentValue.new(
       name: Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy AAL3 with HSPD12',
+      description: 'Legacy AAL3 with HSPD12 (PIV/CAC card)',
       implied_component_values: [],
       requirements: [:aal2, :hspd12],
     ).freeze

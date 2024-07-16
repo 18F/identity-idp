@@ -73,22 +73,10 @@ class AuthnContextResolver
     end
   end
 
-  def acr_result_with_sp_defaults
-    decorate_acr_result_with_sp_defaults(
-        acr_result_without_sp_defaults
-    )
-  end
-
-  def decorate_acr_result_with_sp_defaults(result)
-    result_with_sp_aal_defaults(
-      result_with_sp_ial_defaults(
-         result
-        ),
-      )
-  end
-
   # Returns a copy of acr_values where the appropriate IAL authentication context class reference
   # name replaces <tt>Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF</tt>.
+  # @note This implementation will be replaced with a more robust long-term
+  # solution.
   # @param [String] acr_values
   def initialize_acr_values(acr_values)
     if sp_in_biometric_pilot? && acr_values.present?
@@ -107,6 +95,22 @@ class AuthnContextResolver
     else
       acr_values
     end
+  end
+
+  def acr_result_with_sp_defaults
+    decorate_acr_result_with_sp_defaults(
+        acr_result_without_sp_defaults
+    )
+  end
+
+  # @param [Vot::Parser::Result] result Parser result to decorate.
+  # @return [Vot::Parser::Result]
+  def decorate_acr_result_with_sp_defaults(result)
+    result_with_sp_aal_defaults(
+      result_with_sp_ial_defaults(
+         result
+        ),
+      )
   end
 
   def acr_result_without_sp_defaults
