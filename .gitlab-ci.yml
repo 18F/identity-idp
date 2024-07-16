@@ -194,6 +194,7 @@ build-idp-image:
       --build-arg "SERVICE_PROVIDERS_TOKEN=${SERVICE_PROVIDERS_TOKEN}"
       --build-arg "SERVICE_PROVIDERS_USER=${SERVICE_PROVIDERS_USER}"
 
+
 check_changelog:
   stage: test
   variables:
