@@ -144,7 +144,7 @@ class AttributeAsserter
     requested_context = authn_request.requested_aal_authn_context
     requested_aal_level = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_context]
     aal_level = requested_aal_level || service_provider.default_aal || ::Idp::Constants::DEFAULT_AAL
-    context = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[aal_level]
+    context = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_DEFAULT_CLASSREF[aal_level]
     attrs[:aal] = { getter: aal_getter_function(context) } if context
   end
 
@@ -164,7 +164,7 @@ class AttributeAsserter
   end
 
   def sp_ial
-    Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[service_provider.ial]
+    Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_DEFAULT_CLASSREF[service_provider.ial]
   end
 
   def add_x509(attrs)

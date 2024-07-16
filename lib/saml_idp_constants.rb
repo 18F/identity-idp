@@ -54,7 +54,7 @@ module Saml
         IALMAX_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL_MAX,
       }.freeze
 
-      AUTHN_CONTEXT_IAL_TO_CLASSREF = {
+      AUTHN_CONTEXT_IAL_TO_DEFAULT_CLASSREF = {
         ::Idp::Constants::IAL1 => IAL1_AUTHN_CONTEXT_CLASSREF,
         ::Idp::Constants::IAL2 => IAL2_AUTHN_CONTEXT_CLASSREF,
         ::Idp::Constants::IAL_MAX => IALMAX_AUTHN_CONTEXT_CLASSREF,
@@ -70,7 +70,7 @@ module Saml
         AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL3,
       }.freeze
 
-      AUTHN_CONTEXT_AAL_TO_CLASSREF = {
+      AUTHN_CONTEXT_AAL_TO_DEFAULT_CLASSREF = {
         ::Idp::Constants::DEFAULT_AAL => DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
         ::Idp::Constants::AAL1 => AAL1_AUTHN_CONTEXT_CLASSREF,
         ::Idp::Constants::AAL2 => AAL2_AUTHN_CONTEXT_CLASSREF,
