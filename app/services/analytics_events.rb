@@ -670,8 +670,8 @@ module AnalyticsEvents
     )
   end
 
-  # @params [Boolean] success Whether records were successfully uploaded
-  # @params [String] exception The exception that occured if an exception did occur
+  # @param [Boolean] success Whether records were successfully uploaded
+  # @param [String] exception The exception that occured if an exception did occur
   # @param [Number] gpo_confirmation_count The number of GPO Confirmation records uplaoded
   # GPO confirmation records were uploaded for letter sends
   def gpo_confirmation_upload(
