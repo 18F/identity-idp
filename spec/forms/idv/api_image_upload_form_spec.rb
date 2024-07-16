@@ -452,7 +452,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         DocAuth::Response.new(
           success: false,
           errors: errors,
-          extra: { remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
+          extra: {
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            doc_auth_result: 'Failed',
+          },
         )
       end
       let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
@@ -470,7 +473,15 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq(nil)
+      end
+
+      it 'saves the doc_auth_result to document_capture_session' do
+        response = form.submit
+
+        expect(response).to be_a_kind_of DocAuth::Response
+        expect(response.success?).to eq(false)
         expect(response.doc_auth_success?).to eq(false)
+        expect(document_capture_session.last_doc_auth_result).to eq('Failed')
       end
 
       it 'includes remaining_submit_attempts' do
