@@ -670,6 +670,25 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success Whether records were successfully uploaded
+  # @param [String] exception The exception that occured if an exception did occur
+  # @param [Number] gpo_confirmation_count The number of GPO Confirmation records uploaded
+  # GPO confirmation records were uploaded for letter sends
+  def gpo_confirmation_upload(
+    success:,
+    exception:,
+    gpo_confirmation_count:,
+    **extra
+  )
+    track_event(
+      :gpo_confirmation_upload,
+      success: success,
+      exception: exception,
+      gpo_confirmation_count: gpo_confirmation_count,
+      **extra,
+    )
+  end
+
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
