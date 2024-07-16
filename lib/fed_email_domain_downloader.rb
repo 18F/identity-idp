@@ -1,12 +1,15 @@
 require 'csv'
 require 'faraday'
 require 'pry'
+require 'fileutils'
 
 
-class PwnedPasswordDownloader
+class FedEmailDomainDownloader
+  attr_reader :destination
+
   DOT_GOV_DOWNLOAD_PATH = 'https://raw.githubusercontent.com/cisagov/dotgov-data/main/current-full.csv'
   
-  def initialize(destination: 'tmp/fed_download_path/fed_domain_downloaded')
+  def initialize(destination: 'tmp/fed_download_path')
     @destination = destination
   end
 
@@ -16,15 +19,17 @@ class PwnedPasswordDownloader
   end
 
   def run!
+    FileUtils.mkdir_p(destination)
     csv ||= CSV.parse(dot_gov_csv_path, col_sep: ",", headers: true)
-    File.open(destination, 'wb') do |file|
+    File.open("#{destination}/fed_email_domains.txt", 'w') do |file|
       csv.each do |row|
         if row['Domain type'].include?('Federal')
-        new_csv << row['Domain Name']
+          file.write("#{row['Domain name']}\n")
+        end
       end
     end
   end
 end
 
 
-PwnedPasswordDownloader.new.run!
+FedEmailDomainDownloader.new.run!

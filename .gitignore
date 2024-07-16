@@ -68,6 +68,8 @@ Vagrantfile
 /public/user_flows
 /pwned_passwords/*
 !/pwned_passwords/pwned_passwords.txt.sample
+/fed_email_domains/*
+!/fed_email_domains/fed_email_domains.txt.sample
 /spec/tmp
 /test
 /tmp/*
