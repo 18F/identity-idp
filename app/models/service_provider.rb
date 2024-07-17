@@ -70,6 +70,11 @@ class ServiceProvider < ApplicationRecord
     @allowed_list.include? issuer
   end
 
+  def biometric_ial_allowed?
+    IdentityConfig.store.biometric_ial_enabled &&
+      IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
+  end
+
   private
 
   # @return [String,nil]

@@ -13,6 +13,7 @@ module IdentityConfig
     Identity::Hostdata.config
   end
 
+  # identity-hostdata transforms these configs to the described type
   # rubocop:disable Metrics/BlockLength
   BUILDER = proc do |config|
     #  ______________________________________
@@ -44,6 +45,7 @@ module IdentityConfig
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
+    config.add(:allowed_biometric_ial_providers, type: :json)
     config.add(:allowed_ialmax_providers, type: :json)
     config.add(:allowed_verified_within_providers, type: :json)
     config.add(:asset_host, type: :string)
@@ -63,6 +65,7 @@ module IdentityConfig
     config.add(:aws_logo_bucket, type: :string)
     config.add(:aws_region, type: :string)
     config.add(:backup_code_cost, type: :string)
+    config.add(:biometric_ial_enabled, type: :boolean)
     config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:broken_personal_key_window_start, type: :timestamp)
     config.add(:check_user_password_compromised_enabled, type: :boolean)
@@ -238,6 +241,7 @@ module IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:no_verify_by_mail_for_biometric_comparison_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -334,7 +338,6 @@ module IdentityConfig
     config.add(:reset_password_email_max_attempts, type: :integer)
     config.add(:reset_password_email_window_in_minutes, type: :integer)
     config.add(:reset_password_on_auth_fraud_event, type: :boolean)
-    config.add(:risc_notifications_active_job_enabled, type: :boolean)
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:risc_notifications_rate_limit_interval, type: :integer)
     config.add(:risc_notifications_rate_limit_max_requests, type: :integer)
@@ -367,6 +370,7 @@ module IdentityConfig
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:short_term_phone_otp_max_attempts, type: :integer)
     config.add(:short_term_phone_otp_max_attempt_window_in_seconds, type: :integer)
+    config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)

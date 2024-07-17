@@ -134,7 +134,7 @@ lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
 	@# and you have no options to split that from the common bundles. If you need to increase this
 	@# budget and accept the fact that this will force end-users to endure longer load times, you
 	@# should set the new budget to within a few thousand bytes of the production-compiled size.
-	find app/assets/builds/application.css -size -185000c | grep .
+	find app/assets/builds/application.css -size -105000c | grep .
 	find public/packs/application-*.digested.js -size -5000c | grep .
 
 lint_migrations:
@@ -147,6 +147,8 @@ lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfile
 	@yarn install --ignore-scripts
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
+	@yarn yarn-deduplicate
+	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are duplicate JS dependencies that were removed after running 'yarn yarn-deduplicate'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 

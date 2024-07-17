@@ -1,22 +1,23 @@
 <% self.title = t('titles.account') %>
 
-<% if @presenter.showing_any_partials? %>
+<%= render 'accounts/header', presenter: @presenter %>
+
+<% if @presenter.showing_alerts? %>
   <div class="margin-bottom-4">
     <% if @presenter.show_password_reset_partial? %>
       <%= render 'accounts/password_reset', presenter: @presenter %>
     <% end %>
-
-    <% if @presenter.show_gpo_partial? %>
-      <%= render 'accounts/pending_profile_gpo' %>
-    <% end %>
-
     <% if @presenter.show_service_provider_continue_partial? %>
       <%= render 'accounts/service_provider_continue', presenter: @presenter %>
     <% end %>
   </div>
 <% end %>
 
-<%= render 'accounts/header', presenter: @presenter %>
+<% if @presenter.show_idv_partial? %>
+  <div class="margin-bottom-4 card profile-info-box">
+    <%= render 'accounts/identity_verification' %>
+  </div>
+<% end %>
 
 <div class="margin-bottom-4 card profile-info-box">
   <h2 class="margin-top-0 margin-bottom-4"><%= t('account.index.email_preferences') %></h2>
@@ -25,7 +26,7 @@
 
   <h3 class="margin-top-3"><%= t('i18n.language') %></h3>
   <div class="grid-row padding-1 border border-primary-light">
-    <div class="grid-col-8">
+    <div class="grid-col-8" lang="<%= @presenter.user.email_language || I18n.default_locale %>">
       <%= @presenter.user.email_language_preference_description %>
     </div>
     <div class="grid-col-4 text-right">
@@ -88,9 +89,4 @@
   <div class="margin-bottom-4 card profile-info-box">
     <%= render 'accounts/backup_codes' %>
   </div>
-<% end %>
-
-<% if @presenter.show_pii_partial? %>
-  <%= render 'accounts/pii', pii: @presenter.pii,
-                             locked_for_session: @presenter.locked_for_session %>
 <% end %>

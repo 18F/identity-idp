@@ -52,7 +52,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       address2: applicant_pii[:identity_doc_address2],
       city: applicant_pii[:identity_doc_city],
       state: applicant_pii[:identity_doc_address_state],
-      state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
       zipcode: applicant_pii[:identity_doc_zipcode],
     }
   end
@@ -63,7 +62,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       address2: applicant_pii[:address2],
       city: applicant_pii[:city],
       state: applicant_pii[:state],
-      state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
       zipcode: applicant_pii[:zipcode],
     }
   end
@@ -77,7 +75,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       address2: '2nd Address Line',
       city: 'Best City',
       zipcode: '12345',
-      state_id_jurisdiction: 'Virginia',
+      state_id_jurisdiction: 'VA',
       address_state: 'VA',
       state_id_number: '1111111111111',
       same_address_as_id: 'true',
@@ -120,7 +118,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         applicant_pii: applicant_pii,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         request_ip: Faker::Internet.ip_v4_address,
-        should_proof_state_id: true,
         threatmetrix_session_id: threatmetrix_session_id,
         timer: JobHelpers::Timer.new,
         user_email: Faker::Internet.email,

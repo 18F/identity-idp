@@ -72,14 +72,12 @@ RSpec.describe Reporting::ProtocolsReport do
         'issuer' => 'Issuer3',
       },
     ]
-    cloudwatch_client = instance_double('Reporting::CloudwatchClient')
-    allow(cloudwatch_client).to receive(:fetch).and_return(
+
+    stub_multiple_cloudwatch_logs(
       protocol_query_response,
       saml_signature_query_response,
       loa_issuers_query_response,
     )
-
-    allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
   describe '#as_tables' do
@@ -120,7 +118,7 @@ RSpec.describe Reporting::ProtocolsReport do
     let(:default_args) do
       {
         num_threads: 10,
-        ensure_complete_logs: true,
+        ensure_complete_logs: false,
         slice_interval: 1.day,
         progress: false,
         logger: nil,

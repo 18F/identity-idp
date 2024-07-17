@@ -10,6 +10,7 @@ module Idv
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
       before_action :confirm_document_capture_needed, only: :show
+      before_action :set_usps_form_presenter
 
       def show
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -86,6 +87,10 @@ module Idv
         return unless document_capture_session.requested_at
 
         document_capture_session.requested_at > stored_result.captured_at
+      end
+
+      def set_usps_form_presenter
+        @presenter = Idv::InPerson::UspsFormPresenter.new
       end
     end
   end

@@ -5,15 +5,14 @@ import type { AlertType } from './alert';
 
 describe('Alert', () => {
   describe('role', () => {
-    (
-      [
-        ['success', 'status'],
-        ['warning', 'status'],
-        ['error', 'alert'],
-        ['info', 'status'],
-        ['other', 'status'],
-      ] as [AlertType, 'alert' | 'status'][]
-    ).forEach(([type, role]) => {
+    const variants: [AlertType, 'alert' | 'status'][] = [
+      ['success', 'status'],
+      ['warning', 'status'],
+      ['error', 'alert'],
+      ['info', 'status'],
+    ];
+
+    variants.forEach(([type, role]) => {
       context(`with ${type} type`, () => {
         it(`should apply ${role} role`, () => {
           const { getByRole } = render(<Alert type={type} />);

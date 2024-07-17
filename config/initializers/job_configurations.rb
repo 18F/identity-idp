@@ -6,7 +6,7 @@ cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 cron_24h_1am = '0 1 * * *' # 1am UTC is 8pm EST/9pm EDT
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
-cron_1w = '0 0 * * 0'
+cron_every_monday = 'every Monday at 0:00 UTC' # equivalent to '0 0 * * 1'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -211,11 +211,11 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send weekly authentication reports to partners
+      # Send previous week's authentication reports to partners
       weekly_authentication_report: {
         class: 'Reports::AuthenticationReport',
-        cron: cron_1w,
-        args: -> { [Time.zone.now] },
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday] },
       },
       # Send fraud metrics to Team Judy
       fraud_metrics_report: {
@@ -223,11 +223,11 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Weekly drop of report
-      drop_off_report: {
+      # Previous week's drop of report
+      weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
-        cron: cron_1w,
-        args: -> { [Time.zone.today] },
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday] },
       },
     }.compact
   end

@@ -313,15 +313,59 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
       expect(response).to redirect_to idv_personal_key_path
     end
 
-    it 'creates Profile with applicant attributes' do
-      put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+    context 'when the vector of trust is undefined' do
+      it 'creates Profile with applicant attributes' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-      profile = subject.idv_session.profile
-      pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+        profile = subject.idv_session.profile
+        pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
 
-      expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+        expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
 
-      expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+        expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+      end
+    end
+
+    context 'when the vector of trust is defined' do
+      context 'when the vector of trust is not Enhanced IPP' do
+        before do
+          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context_result)
+        end
+
+        it 'creates Profile with applicant attributes' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          profile = subject.idv_session.profile
+          pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+
+          expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+
+          expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+        end
+      end
+
+      context 'when the vector of trust is Enhanced IPP' do
+        before do
+          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+
+          allow(controller).to receive(:resolved_authn_context_result).
+            and_return(resolved_authn_context_result)
+        end
+
+        it 'creates Profile with applicant attributes' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          profile = subject.idv_session.profile
+          pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+
+          expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+
+          expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+        end
+      end
     end
 
     context 'user picked phone confirmation' do

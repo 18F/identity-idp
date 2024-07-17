@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include VerifyByMailConcern
 
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
@@ -119,10 +120,6 @@ module Idv
       redirect_to idv_enter_password_url
     end
 
-    def gpo_mail_service
-      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-    end
-
     def init_profile
       idv_session.create_profile_from_applicant_with_password(
         password,
@@ -130,15 +127,7 @@ module Idv
       )
       if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:verify_by_mail_letter_requested)
-        analytics.idv_gpo_address_letter_enqueued(
-          enqueued_at: Time.zone.now,
-          resend: false,
-          phone_step_attempts: gpo_mail_service.phone_step_attempts,
-          first_letter_requested_at: first_letter_requested_at,
-          hours_since_first_letter:
-            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
-          **ab_test_analytics_buckets,
-        )
+        log_letter_enqueued_analytics(resend: false)
       end
 
       if idv_session.profile.active?

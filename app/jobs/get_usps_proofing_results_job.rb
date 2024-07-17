@@ -461,6 +461,12 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment.profile&.fraud_pending_reason.present?
   end
 
+  # By-pass Primary ID check if enrollment is Enhanced IPP else check for supporting doc type
+  def passed_with_primary_id_check?(enrollment, response)
+    enrollment.enhanced_ipp? ||
+      SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
+  end
+
   def process_enrollment_response(enrollment, response)
     unless response.is_a?(Hash)
       handle_response_is_not_a_hash(enrollment)
@@ -479,7 +485,7 @@ class GetUspsProofingResultsJob < ApplicationJob
         handle_passed_with_fraud_review_pending(enrollment, response)
       elsif passed_with_unsupported_secondary_id_type?(response)
         handle_unsupported_secondary_id(enrollment, response)
-      elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
+      elsif passed_with_primary_id_check?(enrollment, response)
         handle_successful_status_update(enrollment, response)
       else
         handle_unsupported_id_type(enrollment, response)

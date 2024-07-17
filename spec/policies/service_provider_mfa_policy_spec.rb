@@ -14,6 +14,7 @@ RSpec.describe ServiceProviderMfaPolicy do
       phishing_resistant?: phishing_resistant,
       identity_proofing?: false,
       biometric_comparison?: false,
+      two_pieces_of_fair_evidence?: false,
       ialmax?: false,
       enhanced_ipp?: false,
     )

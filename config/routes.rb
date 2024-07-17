@@ -2,7 +2,6 @@
 
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
-  get '/api/analytics-events' => 'analytics_events#index'
   get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
@@ -53,11 +52,6 @@ Rails.application.routes.draw do
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
-
-  get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  get '/openid_connect/logout' => 'openid_connect/logout#show'
-  post '/openid_connect/logout' => 'openid_connect/logout#create'
-  delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
   get '/robots.txt' => 'robots#index'
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
@@ -276,6 +270,11 @@ Rails.application.routes.draw do
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
+    get '/openid_connect/authorize' => 'openid_connect/authorization#index'
+    get '/openid_connect/logout' => 'openid_connect/logout#show'
+    post '/openid_connect/logout' => 'openid_connect/logout#create'
+    delete '/openid_connect/logout' => 'openid_connect/logout#delete'
+
     get '/otp/send' => 'users/two_factor_authentication#send_code'
 
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
@@ -429,6 +428,8 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
         put '/by_mail/request_letter' => 'by_mail/request_letter#create'
+        get '/by_mail/resend_letter' => 'by_mail/resend_letter#new', as: :resend_letter
+        put '/by_mail/resend_letter' => 'by_mail/resend_letter#create'
       end
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued

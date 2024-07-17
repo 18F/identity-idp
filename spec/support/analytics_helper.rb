@@ -3,8 +3,8 @@ module AnalyticsHelper
     analytics = FakeAnalytics.new
 
     if user
-      allow(controller).to receive(:analytics) do
-        expect(controller.analytics_user).to eq(user)
+      allow(controller).to receive(:analytics).and_wrap_original do |original|
+        expect(original.call.user).to eq(user)
         analytics
       end
     else

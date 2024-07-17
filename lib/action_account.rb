@@ -80,6 +80,7 @@ class ActionAccount
         user_reinstated: 'User has been reinstated and the user has been emailed',
         user_already_suspended: 'User has already been suspended',
         user_is_not_suspended: 'User is not suspended',
+        user_already_reinstated: 'User has already been reinstated',
       }
     end
   end
@@ -108,6 +109,8 @@ class ActionAccount
           if user.suspended?
             user.reinstate!
             log_texts << log_text[:user_reinstated]
+          elsif user.reinstated?
+            log_texts << (log_text[:user_already_reinstated] + " (at #{user.reinstated_at})")
           else
             log_texts << log_text[:user_is_not_suspended]
           end

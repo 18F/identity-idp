@@ -1,38 +1,33 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { getAssetPath } from '@18f/identity-assets';
 import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
-import {
-  defineObservableProperty,
-  stopObservingProperty,
-} from '../higher-order/observable-property';
+import { useObservableProperty } from '../hooks/use-observable-property';
 
 function AcuantCaptureCanvas() {
   const { isReady, acuantCaptureMode, setAcuantCaptureMode } = useContext(AcuantContext);
   const { t } = useI18n();
   const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  const [canvas, setCanvas] = useState(/** @type {HTMLElement? } */ (null));
 
   useEffect(() => {
-    function onAcuantCameraCreated() {
-      const canvas = document.getElementById('acuant-ui-canvas');
-      // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
-      // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
-      defineObservableProperty(canvas, 'callback', (callback) => {
-        setAcuantCaptureMode(callback ? 'TAP' : 'AUTO');
-      });
-    }
-
+    const onAcuantCameraCreated = () => setCanvas(document.getElementById('acuant-ui-canvas'));
     cameraRef.current?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
-    return () => {
-      const canvas = document.getElementById('acuant-ui-canvas');
-      if (canvas) {
-        stopObservingProperty(canvas, 'callback');
-      }
-
+    return () =>
       cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
-    };
-  }, []);
+  }, [cameraRef.current]);
+
+  const onCallback = useCallback(
+    (callback) => {
+      setAcuantCaptureMode(callback ? 'TAP' : 'AUTO');
+    },
+    [setAcuantCaptureMode],
+  );
+
+  // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
+  // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
+  useObservableProperty(canvas, 'callback', onCallback);
 
   const clickCanvas = () => document.getElementById('acuant-ui-canvas')?.click();
 

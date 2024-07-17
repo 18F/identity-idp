@@ -8,9 +8,8 @@ RSpec.describe Reporting::AuthenticationReport do
   subject(:report) { Reporting::AuthenticationReport.new(issuers: [issuer], time_range:) }
 
   before do
-    cloudwatch_client = double(
-      'Reporting::CloudwatchClient',
-      fetch: [
+    stub_cloudwatch_logs(
+      [
         # finishes funnel
         { 'user_id' => 'user1', 'name' => 'OpenID Connect: authorization request' },
         { 'user_id' => 'user1', 'name' => 'User Registration: Email Confirmation' },
@@ -38,8 +37,6 @@ RSpec.describe Reporting::AuthenticationReport do
         { 'user_id' => 'user5', 'name' => 'SP redirect initiated' },
       ],
     )
-
-    allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
   describe '#as_tables' do

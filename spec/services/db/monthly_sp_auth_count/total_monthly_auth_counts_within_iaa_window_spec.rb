@@ -102,6 +102,24 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,
           },
+          {
+            year_month: partial_month_date.strftime('%Y%m'),
+            ial: :all,
+            issuer: service_provider.issuer,
+            iaa: service_provider.iaa,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            unique_users: 1,
+          },
+          {
+            year_month: full_month_date.strftime('%Y%m'),
+            ial: :all,
+            issuer: service_provider.issuer,
+            iaa: service_provider.iaa,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            unique_users: 1,
+          },
         ]
 
         expect(result).to match_array(rows)

@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'reporting/fraud_metrics_lg99_report'
 
 RSpec.describe Reporting::FraudMetricsLg99Report do
-  let(:time_range) { Date.new(2022, 1, 1).all_month }
+  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
   let(:expected_lg99_metrics_table) do
     [
       ['Metric', 'Total'],
@@ -13,9 +13,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   subject(:report) { Reporting::FraudMetricsLg99Report.new(time_range:) }
 
   before do
-    cloudwatch_client = double(
-      'Reporting::CloudwatchClient',
-      fetch: [
+    stub_cloudwatch_logs(
+      [
         { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: Verify setup errors visited' },
@@ -32,8 +31,6 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
         { 'user_id' => 'user5', 'name' => 'IdV: Verify setup errors visited' },
       ],
     )
-
-    allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
   describe '#lg99_metrics_table' do

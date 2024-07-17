@@ -15,9 +15,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
     end
 
     context 'with data generates reports by iaa + order number, issuer and year_month' do
-      let(:user1) { create(:user, profiles: [profile1]) }
-      let(:profile1) { build(:profile, verified_at: DateTime.new(2019, 10, 15).utc) }
-
       context 'with an IAA with a single issuer in April 2020' do
         let(:partner_account1) { create(:partner_account) }
         let(:iaa1_range) { DateTime.new(2020, 4, 15).utc..DateTime.new(2021, 4, 14).utc }
@@ -49,11 +46,11 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
         let(:inside_iaa1) { iaa1_range.begin + 1.day }
 
+        let(:user1) { create(:user, profiles: [profile1]) }
+        let(:profile1) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
+
         let(:user2) { create(:user, profiles: [profile2]) }
         let(:profile2) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
-
-        let(:user3) { create(:user, profiles: [profile3]) }
-        let(:profile3) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
 
         let(:csv) { CSV.parse(report.perform(Time.zone.today), headers: true) }
 
@@ -67,16 +64,21 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
           # 1 new unique user in month 1 at IAA 1 sp @ IAL 1
           7.times do
             create_sp_return_log(
-              user: user1, issuer: iaa1_sp.issuer, ial: 1,
-              returned_at: inside_iaa1
+              user: user1,
+              issuer: iaa1_sp.issuer,
+              ial: 1,
+              returned_at: inside_iaa1,
             )
           end
 
           # 2 new unique users in month 1 at IAA 1 sp @ IAL 2 with profile age 2
-          [user2, user3].each do |user|
+          # user1 is both IAL1 and IAL2
+          [user1, user2].each do |user|
             create_sp_return_log(
-              user: user, issuer: iaa1_sp.issuer, ial: 2,
-              returned_at: inside_iaa1
+              user: user,
+              issuer: iaa1_sp.issuer,
+              ial: 2,
+              returned_at: inside_iaa1,
             )
           end
         end
@@ -98,7 +100,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['iaa_ial1_unique_users'].to_i).to eq(1)
             expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
-            expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(3)
+            expect(row['iaa_unique_users'].to_i).to eq(2)
             expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(0)
             expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(2)
             expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
@@ -135,7 +137,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['issuer_ial1_unique_users'].to_i).to eq(1)
             expect(row['issuer_ial2_unique_users'].to_i).to eq(2)
-            expect(row['issuer_ial1_plus_2_unique_users'].to_i).to eq(3)
+            expect(row['issuer_unique_users'].to_i).to eq(2)
           end
         end
       end
@@ -179,6 +181,9 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
         end
 
         let(:inside_iaa2) { iaa2_range.begin + 1.day }
+
+        let(:user1) { create(:user, profiles: [profile1]) }
+        let(:profile1) { build(:profile, verified_at: DateTime.new(2019, 10, 15).utc) }
 
         let(:user4) { create(:user, profiles: [profile4]) }
         let(:profile4) { build(:profile, verified_at: nil) }
@@ -278,7 +283,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
             expect(row['iaa_ial2_unique_users'].to_i).to eq(8)
-            expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(8)
+            expect(row['iaa_unique_users'].to_i).to eq(8)
             expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(1)
             expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(2)
             expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(1)
@@ -315,7 +320,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
             expect(row['issuer_ial2_unique_users'].to_i).to eq(4)
-            expect(row['issuer_ial1_plus_2_unique_users'].to_i).to eq(4)
+            expect(row['issuer_unique_users'].to_i).to eq(4)
           end
 
           aggregate_failures do
@@ -334,7 +339,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
             expect(row['iaa_ial2_unique_users'].to_i).to eq(8)
-            expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(8)
+            expect(row['iaa_unique_users'].to_i).to eq(8)
             expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(1)
             expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(2)
             expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(1)
@@ -371,7 +376,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
             expect(row['issuer_ial2_unique_users'].to_i).to eq(4)
-            expect(row['issuer_ial1_plus_2_unique_users'].to_i).to eq(4)
+            expect(row['issuer_unique_users'].to_i).to eq(4)
           end
         end
       end
@@ -473,7 +478,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
             expect(row['iaa_ial2_unique_users'].to_i).to eq(1)
-            expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(1)
+            expect(row['iaa_unique_users'].to_i).to eq(1)
             expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(1)
             expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(0)
             expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
@@ -510,7 +515,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
             expect(row['issuer_ial2_unique_users'].to_i).to eq(1)
-            expect(row['issuer_ial1_plus_2_unique_users'].to_i).to eq(1)
+            expect(row['issuer_unique_users'].to_i).to eq(1)
           end
 
           aggregate_failures do
@@ -529,7 +534,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
             expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
-            expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(2)
+            expect(row['iaa_unique_users'].to_i).to eq(2)
             expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(2)
             expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(1)
             expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
@@ -566,7 +571,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
 
             expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
             expect(row['issuer_ial2_unique_users'].to_i).to eq(2)
-            expect(row['issuer_ial1_plus_2_unique_users'].to_i).to eq(2)
+            expect(row['issuer_unique_users'].to_i).to eq(2)
           end
         end
       end

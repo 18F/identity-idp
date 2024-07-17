@@ -3,9 +3,11 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta content="<%= APP_NAME %>" name="description" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta content="telephone=no" name="format-detection" />
+  <meta name="description" content="<%= APP_NAME %>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="og:site_name" content="<%= APP_NAME %>" />
 
   <% if content_for?(:meta_refresh) %>
   <meta content="<%= yield(:meta_refresh) %>" http-equiv="refresh" />
@@ -18,8 +20,9 @@
   <% end %>
   <%= preload_link_tag font_path('public-sans/PublicSans-Bold.woff2') %>
   <%= preload_link_tag font_path('public-sans/PublicSans-Regular.woff2') %>
-  <%= render_stylesheet_once_tags %>
   <%= stylesheet_link_tag 'application', nopush: false %>
+  <%= render_stylesheet_once_tags %>
+  <%= stylesheet_link_tag 'utilities', nopush: false %>
   <%= stylesheet_link_tag 'print', media: :print, preload_links_header: false %>
   <%= csrf_meta_tags %>
 
@@ -47,7 +50,6 @@
         color: '#e21c3d',
         type: nil,
       ) %>
-  <meta content="#ffffff" name="theme-color" />
 
   <%# Prelude script for error tracking (see `track-errors`) %>
   <%= javascript_tag(nonce: true) do %>

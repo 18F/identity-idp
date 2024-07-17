@@ -20,6 +20,12 @@ module UspsInPersonProofing
         enrollment_code = create_usps_enrollment(enrollment, pii, is_enhanced_ipp)
         return unless enrollment_code
 
+        if is_enhanced_ipp
+          enrollment.sponsor_id = IdentityConfig.store.usps_eipp_sponsor_id
+        else
+          enrollment.sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id
+        end
+
         # update the enrollment to status pending
         enrollment.enrollment_code = enrollment_code
         enrollment.status = :pending
@@ -33,15 +39,17 @@ module UspsInPersonProofing
           service_provider: enrollment.service_provider&.issuer,
           opted_in_to_in_person_proofing: opt_in,
           tmx_status: enrollment.profile&.tmx_status,
+          enhanced_ipp: enrollment.enhanced_ipp?,
         )
 
-        send_ready_to_verify_email(user, enrollment)
+        send_ready_to_verify_email(user, enrollment, is_enhanced_ipp: is_enhanced_ipp)
       end
 
-      def send_ready_to_verify_email(user, enrollment)
+      def send_ready_to_verify_email(user, enrollment, is_enhanced_ipp:)
         user.confirmed_email_addresses.each do |email_address|
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,
+            is_enhanced_ipp: is_enhanced_ipp,
           ).deliver_now_or_later
         end
       end

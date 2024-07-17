@@ -6,6 +6,7 @@ RSpec.describe 'Idv::FlowPolicy' do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:is_enhanced_ipp) { false }
 
   let(:user_session) { { 'idv/in_person' => {} } }
 

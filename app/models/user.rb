@@ -53,6 +53,7 @@ class User < ApplicationRecord
   has_many :sign_in_restrictions, dependent: :destroy
   has_many :in_person_enrollments, dependent: :destroy
   has_many :fraud_review_requests, dependent: :destroy
+  has_many :gpo_confirmation_codes, through: :profiles
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
@@ -424,7 +425,10 @@ class User < ApplicationRecord
 
   def authenticated_device?(cookie_uuid:)
     return false if cookie_uuid.blank?
-    devices.joins(:events).exists?(cookie_uuid:, events: { event_type: :sign_in_after_2fa })
+    devices.joins(:events).exists?(
+      cookie_uuid:,
+      events: { event_type: [:account_created, :sign_in_after_2fa] },
+    )
   end
 
   # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`

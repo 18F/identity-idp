@@ -12,7 +12,13 @@ class GpoConfirmationUploader
     upload_export(export)
     LetterRequestsToGpoFtpLog.create(ftp_at: @now, letter_requests_count: confirmations.count)
     clear_confirmations(confirmations)
+    analytics.gpo_confirmation_upload(
+      success: true, exception: nil, gpo_confirmation_count: confirmations.count,
+    )
   rescue StandardError => error
+    analytics.gpo_confirmation_upload(
+      success: false, exception: error.to_s, gpo_confirmation_count: 0,
+    )
     NewRelic::Agent.notice_error(error)
     raise error
   end
@@ -43,8 +49,14 @@ class GpoConfirmationUploader
   def upload_export(export)
     return unless FeatureManagement.gpo_upload_enabled?
     io = StringIO.new(export)
-    Net::SFTP.start(*sftp_config) do |sftp|
-      sftp.upload!(io, remote_path)
+
+    with_retries(
+      max_tries: 5,
+      rescue: [Net::SFTP::Exception, Net::SSH::Exception],
+    ) do
+      Net::SFTP.start(*sftp_config) do |sftp|
+        sftp.upload!(io, remote_path)
+      end
     end
   end
 
@@ -64,5 +76,9 @@ class GpoConfirmationUploader
       password: IdentityConfig.store.usps_upload_sftp_password,
       timeout: IdentityConfig.store.usps_upload_sftp_timeout,
     ]
+  end
+
+  def analytics
+    Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
   end
 end

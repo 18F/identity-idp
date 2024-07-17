@@ -11,11 +11,11 @@ module Idv
 
       delegate :selected_location_details, :enrollment_code, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_eipp: false)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_enhanced_ipp: false)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
         @sp_name = sp_name
-        @is_eipp = is_eipp
+        @is_enhanced_ipp = is_enhanced_ipp
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
@@ -31,7 +31,7 @@ module Idv
       def selected_location_hours(prefix)
         return unless selected_location_details
         hours = selected_location_details["#{prefix}_hours"]
-        return localized_hours(hours) if hours
+        localized_hours(hours)
       end
 
       def service_provider
@@ -47,7 +47,7 @@ module Idv
       end
 
       def outage_message_enabled?
-        IdentityConfig.store.in_person_outage_message_enabled == true && outage_dates_present?
+        IdentityConfig.store.in_person_outage_message_enabled && outage_dates_present?
       end
 
       def formatted_outage_expected_update_date
@@ -68,7 +68,7 @@ module Idv
       end
 
       def barcode_heading_text
-        if @is_eipp
+        if @is_enhanced_ipp
           t('in_person_proofing.headings.barcode_eipp')
         else
           t('in_person_proofing.headings.barcode')
@@ -76,7 +76,7 @@ module Idv
       end
 
       def state_id_heading_text
-        if @is_eipp
+        if @is_enhanced_ipp
           t('in_person_proofing.process.state_id.heading_eipp')
         else
           t('in_person_proofing.process.state_id.heading')
@@ -84,7 +84,7 @@ module Idv
       end
 
       def state_id_info
-        if @is_eipp
+        if @is_enhanced_ipp
           t('in_person_proofing.process.state_id.info_eipp')
         else
           t('in_person_proofing.process.state_id.info')
@@ -108,14 +108,22 @@ module Idv
       end
 
       def localized_hours(hours)
-        case hours
-        when 'Closed'
+        return nil if hours.nil?
+
+        if hours == 'Closed'
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
-        else
+        elsif hours.include?(' - ') # Hyphen
           hours.
             split(' - '). # Hyphen
             map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
             join(' – ') # Endash
+        elsif hours.include?(' – ') # Endash
+          hours.
+            split(' – '). # Endash
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        else
+          hours
         end
       end
 

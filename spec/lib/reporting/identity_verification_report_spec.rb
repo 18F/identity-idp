@@ -11,9 +11,8 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   # rubocop:disable Layout/LineLength
   before do
-    cloudwatch_client = double(
-      'Reporting::CloudwatchClient',
-      fetch: [
+    stub_cloudwatch_logs(
+      [
         # Online verification user (failed each vendor once, then succeeded once)
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
@@ -62,8 +61,6 @@ RSpec.describe Reporting::IdentityVerificationReport do
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
       ],
     )
-
-    allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
   describe '#as_csv' do
@@ -80,11 +77,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Image Submitted', 5],
         [],
         ['Workflow completed', 4],
-        ['Workflow completed - Verified', 1],
-        ['Workflow completed - Total Pending', 3],
+        ['Workflow completed - With Phone Number', 1],
+        ['Workflow completed - With Phone Number - Fraud Review', 1],
         ['Workflow completed - GPO Pending', 1],
+        ['Workflow completed - GPO Pending - Fraud Review', 0],
         ['Workflow completed - In-Person Pending', 1],
-        ['Workflow completed - Fraud Review Pending', 1],
+        ['Workflow completed - In-Person Pending - Fraud Review', 0],
+        ['Workflow completed - GPO + In-Person Pending', 0],
+        ['Workflow completed - GPO + In-Person Pending - Fraud Review', 0],
         [],
         ['Fraud review rejected', 1],
         ['Successfully Verified', 4],
@@ -123,11 +123,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Image Submitted', '5'],
         [],
         ['Workflow completed', '4'],
-        ['Workflow completed - Verified', '1'],
-        ['Workflow completed - Total Pending', '3'],
+        ['Workflow completed - With Phone Number', '1'],
+        ['Workflow completed - With Phone Number - Fraud Review', '1'],
         ['Workflow completed - GPO Pending', '1'],
+        ['Workflow completed - GPO Pending - Fraud Review', '0'],
         ['Workflow completed - In-Person Pending', '1'],
-        ['Workflow completed - Fraud Review Pending', '1'],
+        ['Workflow completed - In-Person Pending - Fraud Review', '0'],
+        ['Workflow completed - GPO + In-Person Pending', '0'],
+        ['Workflow completed - GPO + In-Person Pending - Fraud Review', '0'],
         [],
         ['Fraud review rejected', '1'],
         ['Successfully Verified', '4'],

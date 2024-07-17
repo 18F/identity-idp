@@ -72,9 +72,27 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.instructions: 你账户的验证需要一个验证码。
-account.index.verification.reactivate_button: 输入你通过邮局邮件收到的代码。
+account.index.verification.continue_idv: 继续身份验证
+account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
+account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
+account.index.verification.identity_verification: 身份验证
+account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
+account.index.verification.instructions: 输入你的验证码来完成身份验证。
+account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
+account.index.verification.nonbiometric_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
+account.index.verification.pending_badge: 待验证
+account.index.verification.pending_badge_tooltip: 你的身份有待验证。
+account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
+account.index.verification.show_bar_code: 显示我的%{app_name} 条形码
 account.index.verification.success: 我们验证了你的信息
+account.index.verification.unverified_badge: 未验证
+account.index.verification.unverified_badge_tooltip: 完成验证你的身份。
+account.index.verification.verified_badge: 已验证
+account.index.verification.verified_badge_tooltip: 你的身份已经验证。
+account.index.verification.verified_biometric_badge_tooltip: 你的身份和照片都已验证。
+account.index.verification.verify_with_biometric_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
+account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
+account.index.verification.you_verified_your_identity_html: 你使用以下信息向 <strong>%{sp_name}</strong> 验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
 account.index.webauthn_platform: 人脸或触摸解锁
@@ -632,7 +650,7 @@ doc_auth.info.verify_at_post_office_description_selfie: 如果你没有手机可
 doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
-doc_auth.info.verify_identity: 我们会要求获得你的个人信息并通过与公共记录核对来验证你的身份。
+doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
 doc_auth.info.verify_online_description_selfie: 如果你有手机可以拍照，请选择该选项。
 doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
@@ -728,7 +746,7 @@ errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否
 errors.messages.missing_field: 请填写这一字段。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
-errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
+errors.messages.otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
 errors.messages.password_incorrect: 密码不对。
 errors.messages.password_mismatch: 你的密码不一致
 errors.messages.personal_key_incorrect: 个人密钥不对
@@ -755,7 +773,7 @@ errors.messages.wrong_length.one: 长度不对（应当是 1 个字符）
 errors.messages.wrong_length.other: 长度不对（应当是 %{count} 个字符）
 errors.piv_cac_setup.unique_name: 这个名字已被使用。请选择一个不同的名字。
 errors.registration.terms: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。
+errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
 errors.two_factor_auth_setup.must_select_additional_option: 请选择一个额外的身份证实方法。
 errors.two_factor_auth_setup.must_select_option: 选择一个身份证实方法。
 errors.verify_personal_key.rate_limited: 你尝试了太多次。请在 %{timeout}后再试。
@@ -902,8 +920,6 @@ headings.account.login_info: 你的账户
 headings.account.reactivate: 重新激活你的账户
 headings.account.two_factor: 你的身份证实方法。
 headings.account.unphishable: 无法网络钓鱼
-headings.account.verified_account: 验证过的账户
-headings.account.verified_information: 验证过的信息
 headings.add_email: 添加一个新电邮地址
 headings.add_info.phone: 添加一个电话号码
 headings.cancellations.login_cancel_prompt: 你确定要取消并退出 %{app_name} 吗？
@@ -1028,7 +1044,7 @@ idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网�
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
-idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>5 到 10 天</strong>
+idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
 idv.failure.phone.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
@@ -1036,10 +1052,10 @@ idv.failure.phone.warning.attempts_html.other: 出于安全考虑，你只能再
 idv.failure.phone.warning.gpo.button: 通过普通邮件验证
 idv.failure.phone.warning.gpo.explanation: 如果你没有别的电话号码可以尝试，那请通过普通邮件验证。
 idv.failure.phone.warning.gpo.heading: 通过普通邮件验证
-idv.failure.phone.warning.gpo.how_long_it_takes_html: 这需要<strong>5 到 10 天</strong>。
+idv.failure.phone.warning.gpo.how_long_it_takes_html: 这需要<strong>五到十天</strong>。
 idv.failure.phone.warning.heading: 我们无法将你与该号码匹配。
 idv.failure.phone.warning.learn_more_link: 了解有关使用什么号码的更多信息。
-idv.failure.phone.warning.next_steps_html: 尝试 <strong>a另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
+idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
 idv.failure.phone.warning.you_entered: 你输入了：
 idv.failure.sessions.exception: 处理你的请求时内部出错。
@@ -1086,9 +1102,9 @@ idv.gpo.did_not_receive_letter.title: 没收到信？
 idv.gpo.form.otp_label: 验证码
 idv.gpo.form.submit: 提交
 idv.gpo.intro: 欢迎回来输入你收到信中的由 10 个字符组成的代码。
-idv.gpo.last_letter_request_message_html: 你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>。如果你的信件还没到，请耐心一点，因为信件有可能需要<strong>10 days</strong>才能送到。感谢你的耐心。
+idv.gpo.last_letter_request_message_html: 你最近一次要求我们发信是<strong>%{date_letter_was_sent}</strong>。如果你的信件还没到，请耐心一点，因为信件有可能需要<strong>十天</strong>才能送到。感谢你的耐心。
 idv.gpo.request_another_letter.button: 要求再发一封信
-idv.gpo.request_another_letter.instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>5 到 10 天</strong>到达。
+idv.gpo.request_another_letter.instructions_html: 如果你目前的信有问题或者从未收到，请再要求发一封信。信件需要<strong>五到十天</strong>到达。
 idv.gpo.request_another_letter.learn_more_link: 对通过邮件验证你地址获得更多了解
 idv.gpo.request_another_letter.title: 要求再发一封信？
 idv.gpo.return_to_profile: 返回你的用户资料
@@ -1183,7 +1199,7 @@ in_person_proofing.body.barcode.learn_more: 了解有关携带物品的更多信
 in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？
 in_person_proofing.body.barcode.retail_hours: 营业时间
-in_person_proofing.body.barcode.retail_hours_closed: 已关闭
+in_person_proofing.body.barcode.retail_hours_closed: 关闭
 in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
 in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
 in_person_proofing.body.barcode.what_to_bring: 取决于你身份证件或驾照的类型，你可能会被要求出示支持性文件。请仔细阅读以下选项：
@@ -1331,7 +1347,7 @@ instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户�
 instructions.mfa.piv_cac.please_try_again: 再试一次
 instructions.mfa.piv_cac.sign_in_html: 确保 <strong>你有 %{app_name} 账户</strong> 而且 <strong> PIV/CAC</strong> 已被你设置为一个双因素身份证实方法。
 instructions.mfa.piv_cac.step_1: 给它一个昵称
-instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CA 话，你就能把它们分辨开来。
+instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CAC 话，你就能把它们分辨开来。
 instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
 instructions.mfa.piv_cac.step_3: 添加 PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: 你将需要<strong>选择一个证书</strong> （恰当的证书可能会有你的名字）而且<strong>输入你的个人识别号码（PIN）</strong> (你的个人识别号码（PIN）是在设置 PIV/CAC 时设立的)。
@@ -1415,15 +1431,15 @@ notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
 notices.session_cleared: 为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，我们会清除你输入的内容。
 notices.session_timedout: 我们已将你登出。为了你的安全，如果你在 %{minutes} 分钟内不移动到一个新页面，%{app_name} 会结束你此次访问。
-notices.signed_up_and_confirmed.first_paragraph_end: 带有重设你密码的链接。点击链接去继续把这个电邮添加到你的账户。
+notices.signed_up_and_confirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接去继续把这个电邮添加到你的账户。
 notices.signed_up_and_confirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_and_confirmed.no_email_sent_explanation_start: 没有收到电邮？
-notices.signed_up_but_unconfirmed.first_paragraph_end: 带有确认你电邮的链接。点击链接来继续设立你的账户。
+notices.signed_up_but_unconfirmed.first_paragraph_end: 带有确认你的电邮地址的链接。点击链接来继续设立你的账户。
 notices.signed_up_but_unconfirmed.first_paragraph_start: 我们已发电邮到
 notices.signed_up_but_unconfirmed.resend_confirmation_email: 重新发送确认电邮
 notices.timeout_warning.partially_signed_in.continue: 继续登录
 notices.timeout_warning.partially_signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
-notices.timeout_warning.partially_signed_in.message_html: 为了你的安全， %{time_left_in_session_html} 后我们将取消你的登录。
+notices.timeout_warning.partially_signed_in.message_html: 为了你的安全， %{time_left_in_session_html}分钟后我们将取消你的登录。
 notices.timeout_warning.partially_signed_in.sign_out: 取消登录
 notices.timeout_warning.signed_in.continue: 保持我登录状态
 notices.timeout_warning.signed_in.live_region_message_html: '%{time_left_in_session_html} 后你会被登出。选择“保持我登录状态”保持登录；选择“把我登出”来登出。'
@@ -1531,7 +1547,7 @@ time.am: 上午
 time.formats.event_date: '%B %-d, %Y'
 time.formats.event_time: '%-l:%M %p'
 time.formats.event_timestamp: '%B %-d, %Y at %-l:%M %p'
-time.formats.event_timestamp_js: '%{year} %{month} %{day}, %{hour}:%{minute} %{day_period}'
+time.formats.event_timestamp_js: '%{year}年%{month}月%{day}日, %{hour}:%{minute} %{day_period}'
 time.formats.event_timestamp_utc: '%B %-d, %Y， %-l:%M %p UTC'
 time.formats.event_timestamp_with_zone: '%B %-d, %Y，%-l:%M %p %Z'
 time.formats.full_date: '%Y 年 %B %-d 日'
@@ -1582,7 +1598,7 @@ titles.personal_key: 万一
 titles.piv_cac_login.add: 添加你的 PIV 或者 CAC
 titles.piv_cac_login.new: 用 PIV/CAC 登入你的账户
 titles.piv_cac_setup.new: 用 PIV/CAC 卡来保护你账户安全
-titles.piv_cac_setup.upsell: 使用政府雇员ID增强帐户安全性
+titles.piv_cac_setup.upsell: 添加你的政府雇员身份证件更快、更安全地登录
 titles.present_piv_cac: 提供你的 PIV/CAC
 titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
@@ -1695,8 +1711,8 @@ two_factor_authentication.phone.delete.success: 你的电话已被去掉。
 two_factor_authentication.piv_cac_header_text: 提供你的 PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
-two_factor_authentication.piv_cac_upsell.existing_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这将大大增强你账户的安全性。
-two_factor_authentication.piv_cac_upsell.new_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这为你的帐户增加了另一层安全保障。
+two_factor_authentication.piv_cac_upsell.explain: 这将改善你账户安全，而且你在登录时无需再输入电邮和密码。
+two_factor_authentication.piv_cac_upsell.recommendation: 如果你的PIV/CAC是雇主发的，我们建议你将其作为一种身份证实方法添加到你账户上。
 two_factor_authentication.piv_cac_upsell.skip: 跳过
 two_factor_authentication.piv_cac.change_nickname: 更改昵称
 two_factor_authentication.piv_cac.delete: 删除此方法
@@ -1937,7 +1953,7 @@ users.rules_of_use.details_html: |-
   <ul>
   <li>解释 %{app_name} 服务原理以及你应有的期望,</li>
   <li>我们给你提供 %{app_name} 服务的服务条款,</li>
-  <li>我们如何使用你的信息以及你对此信息拥有的权力，以及 and</li>
+  <li>我们如何使用你的信息以及你对此信息拥有的权力，以及</li>
   <li>你同意的在 %{app_name} 采取某些行动的前提条件。</li>
   </ul>
 users.rules_of_use.overview_html: 我们已更新了我们的 %{link_html}。请审阅并在下面方框里打勾来继续。
@@ -1954,7 +1970,7 @@ vendor_outage.alerts.phone.idv: 我们目前无法验证电话。请等一会再
 vendor_outage.alerts.pinpoint.idv.header: 我们正在争取解决错误。
 vendor_outage.alerts.pinpoint.idv.message_html: '%{sp_name_html}需要确保你是你，而不是别人冒充你。'
 vendor_outage.alerts.pinpoint.idv.options_html:
-  - 现在继续并通过普通邮件验证，这需要<strong>5 到 10 天</strong>。
+  - 现在继续并通过普通邮件验证，这需要<strong>五到十天</strong>。
   - 退出 %{app_name}，稍后再试。
 vendor_outage.alerts.pinpoint.idv.options_prompt: 你可以：
 vendor_outage.alerts.pinpoint.idv.status_page_html: 遗憾的是，我们目前遇到技术困难。到 %{link_html} 了解错误何时能解决。
