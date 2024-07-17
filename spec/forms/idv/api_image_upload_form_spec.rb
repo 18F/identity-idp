@@ -477,11 +477,12 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
       it 'saves the doc_auth_result to document_capture_session' do
         response = form.submit
+        session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
 
         expect(response).to be_a_kind_of DocAuth::Response
         expect(response.success?).to eq(false)
         expect(response.doc_auth_success?).to eq(false)
-        expect(document_capture_session.last_doc_auth_result).to eq('Failed')
+        expect(session.last_doc_auth_result).to eq('Failed')
       end
 
       it 'includes remaining_submit_attempts' do
@@ -509,7 +510,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
           hash_including(
-            doc_auth_result: nil,
+            doc_auth_result: 'Failed',
             errors: { front: 'glare' },
             success: false,
             doc_type_supported: boolean,
