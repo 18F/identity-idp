@@ -38,11 +38,6 @@ module Vot
       def expanded_component_values
         component_values.map(&:name).join(component_separator)
       end
-
-      def identity_proofing_names
-        component_values.filter { |c| c.requirements.include?(:identity_proofing) }
-                        .map { |c | c.name }
-      end
     end.freeze
 
     attr_reader :vector_of_trust, :acr_values

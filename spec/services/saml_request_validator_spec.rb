@@ -225,6 +225,9 @@ RSpec.describe SamlRequestValidator do
 
       shared_examples 'allows biometric IAL only if sp is authorized' do |biometric_ial|
         let(:authn_context) { [biometric_ial] }
+        before do
+          sp.update(ial: 2)
+        end
 
         context "when the IAL requested is #{biometric_ial}" do
           context 'when the service provider is allowed to use biometric ials' do

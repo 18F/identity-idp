@@ -292,41 +292,181 @@ RSpec.describe AuthnContextResolver do
     end
 
     context 'IAL2 service provider' do
-      it 'uses the IAL ACR if one is present' do
-        service_provider = build(:service_provider, ial: 2)
-
-        acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/1',
-          'http://idmanagement.gov/ns/assurance/ial/1',
-        ].join(' ')
-
-        result = AuthnContextResolver.new(
+      let(:service_provider) { build(:service_provider, ial: 2) }
+      subject do
+        AuthnContextResolver.new(
           user: user,
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        )
+      end
+      let(:result) { subject.resolve }
 
-        expect(result.identity_proofing?).to eq(false)
-        expect(result.aal2?).to eq(false)
+      context 'IAL ACR value is present' do
+        let(:acr_values) do
+          [
+            'http://idmanagement.gov/ns/assurance/ial/1',
+            'http://idmanagement.gov/ns/assurance/aal/1',
+          ].join(' ')
+        end
+
+        it 'uses the IAL ACR if one is present' do
+          expect(result.identity_proofing?).to be false
+          expect(result.aal2?).to be false
+        end
       end
 
-      it 'uses the defaul IAL if no IAL ACR is present' do
-        service_provider = build(:service_provider, ial: 2)
+      context 'No IAL ACR is present' do
+        let(:acr_values) do
+          [
+            'http://idmanagement.gov/ns/assurance/aal/1',
+          ].join(' ')
+        end
 
-        acr_values = [
+        it 'uses the defaul IAL' do
+          expect(result.identity_proofing?).to be true
+          expect(result.aal2?).to be true
+        end
+      end
+
+      context 'Requesting biometric comparison' do
+        let(:bio_value) { 'required' }
+        let(:acr_values) do
+          [
+            "http://idmanagement.gov/ns/assurance/ial/2?bio=#{bio_value}",
+            'http://idmanagement.gov/ns/assurance/aal/1',
+          ].join(' ')
+        end
+
+        context 'biometric comparison is required' do
+          it 'sets biometric_comparison to true' do
+            expect(result.identity_proofing?).to be true
+            expect(result.biometric_comparison?).to be true
+            expect(result.aal2?).to be true
+          end
+        end
+
+        context 'biometric comparison is preferred' do
+          let(:bio_value) { 'preferred' }
+
+          context 'the user is already verified' do
+            context 'without biometric comparison' do
+              let(:user) { build(:user, :proofed) }
+
+              it 'falls back on proofing without biometric comparison' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be false
+                expect(result.aal2?).to be true
+              end
+
+            end
+
+            context 'with biometric comparison' do
+              let(:user) { build(:user, :proofed_with_selfie) }
+
+              it 'asserts biometric comparison' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be true
+                expect(result.aal2?).to be true
+              end
+            end
+          end
+
+          context 'the user has not yet been verified' do
+            it 'asserts biometric comparison' do
+              expect(result.identity_proofing?).to be true
+              expect(result.biometric_comparison?).to be true
+              expect(result.aal2?).to be true
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#asserted_ial_value' do
+    let(:service_provider) { build(:service_provider, ial: 2) }
+    subject do
+      AuthnContextResolver.new(
+        user: user,
+        service_provider: service_provider,
+        vtr: nil,
+        acr_values: acr_values,
+      )
+    end
+
+    context 'biometric comparison is requested' do
+      let(:bio_value) { 'required' }
+      let(:acr_values) do
+        [
+          "http://idmanagement.gov/ns/assurance/ial/2?bio=#{bio_value}",
           'http://idmanagement.gov/ns/assurance/aal/1',
         ].join(' ')
+      end
 
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
-          vtr: nil,
-          acr_values: acr_values,
-        ).resolve
+      context 'biometric comparison is required' do
+        it 'returns the biometric comparison authn context' do
+          expect(subject.asserted_ial_value).to eq(
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
 
-        expect(result.identity_proofing?).to eq(true)
-        expect(result.aal2?).to eq(true)
+      context 'biometric comparison is preferred' do
+        let(:bio_value) { 'preferred' }
+
+        context 'the user is already verified' do
+          context 'without biometric comparison' do
+            let(:user) { build(:user, :proofed) }
+
+            it 'returns the base ial2 authn context' do
+              expect(subject.asserted_ial_value).to eq(
+                Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+
+          context 'with biometric comparison' do
+            let(:user) { build(:user, :proofed_with_selfie) }
+
+            it 'returns the biometric comparison authn context' do
+              expect(subject.asserted_ial_value).to eq(
+                Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+        end
+      end
+    end
+
+    context 'base idv proofing' do
+      let(:acr_values) do
+        [
+          'http://idmanagement.gov/ns/assurance/ial/2',
+          'http://idmanagement.gov/ns/assurance/aal/1',
+        ].join(' ')
+      end
+
+      it 'returns the base ial2 authn context' do
+        expect(subject.asserted_ial_value).to eq(
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        )
+      end
+    end
+
+    context 'authentication only' do
+      let(:acr_values) do
+        [
+          'http://idmanagement.gov/ns/assurance/ial/1',
+          'http://idmanagement.gov/ns/assurance/aal/1',
+        ].join(' ')
+      end
+
+      it 'returns the base ial2 authn context' do
+        expect(subject.asserted_ial_value).to eq(
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        )
       end
     end
   end

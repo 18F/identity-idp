@@ -24,6 +24,24 @@ RSpec.describe Vot::Parser do
         expect(result.ialmax?).to eq(false)
         expect(result.enhanced_ipp?).to eq(false)
       end
+
+      context 'with acr_values' do
+        let(:acr_values) do
+          [
+            'http://idmanagement.gov/ns/assurance/aal/1',
+            'http://idmanagement.gov/ns/assurance/ial/1',
+          ].join(' ')
+        end
+
+        subject { Vot::Parser.new(acr_values:) }
+
+        it 'returns the vector with the correct requirements' do
+          result = subject.parse
+          expect(result.expanded_component_values).to eq(
+            acr_values,
+          )
+        end
+      end
     end
 
     context 'when a component value has implied components' do

@@ -35,7 +35,15 @@ module Vot
       name: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
       description: 'IAL2 - identity proofing with biometric comparison (rev3)',
       implied_component_values: [],
-      requirements: [:aal2, :identity_proofing, :biometric_comparison, :two_pieces_of_fair_evidence],
+      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+                     :two_pieces_of_fair_evidence, :biometric_comparison_required],
+    ).freeze
+    IAL2_BIO_PREFERRED = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+      description: 'IAL2 - identity proofing with biometric comparison (rev3) preferred',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+                     :two_pieces_of_fair_evidence],
     ).freeze
     IALMAX = ComponentValue.new(
       name: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,

@@ -166,6 +166,7 @@ RSpec.describe Analytics do
           sp_request: {
             aal2: true,
             component_values: { 'C1' => true, 'C2' => true, 'P1' => true },
+            component_separator: '.',
             identity_proofing: true,
           },
         }
@@ -194,6 +195,7 @@ RSpec.describe Analytics do
               'P1' => true,
               'Pb' => true,
             },
+            component_separator: '.',
             identity_proofing: true,
             phishing_resistant: true,
           },
@@ -216,6 +218,7 @@ RSpec.describe Analytics do
         {
           sp_request: {
             component_values: { 'ial/1' => true },
+            component_separator: ' ',
           },
         }
       end
@@ -235,6 +238,7 @@ RSpec.describe Analytics do
           sp_request: {
             aal2: true,
             component_values: { 'ial/2' => true },
+            component_separator: ' ',
             identity_proofing: true,
           },
         }
@@ -255,6 +259,7 @@ RSpec.describe Analytics do
           sp_request: {
             aal2: true,
             component_values: { 'ial/0' => true },
+            component_separator: ' ',
             ialmax: true,
           },
         }

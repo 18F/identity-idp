@@ -14,6 +14,7 @@ module Vot
       initial_components.each do |component|
         expand_and_add_component(component)
       end
+      expanded_components.sort_by(&:name)
     end
 
     private
