@@ -33,12 +33,17 @@ class EmailAddress < ApplicationRecord
     Time.zone.now > expiration_time
   end
 
+  def domain
+    email&.split('@')&.last
+  end
+
   def gov_or_mil?
     email.end_with?('.gov', '.mil')
   end
 
-  def has_fed_email_domain?
-    FedEmailDomains.new.call(email)
+  def is_fed_email_domain?
+    return false unless domain
+    FedEmailDomains.email_is_fed_domain?(domain)
   end
 
   class << self
