@@ -91,6 +91,13 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         :check_for_mail_only_outage,
       )
     end
+
+    it 'includes setup_usps_form_presenter before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :set_usps_form_presenter,
+      )
+    end
   end
 
   describe '#show' do
@@ -105,6 +112,11 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled,
       }.merge(ab_test_args)
+    end
+
+    it 'has non-nil presenter' do
+      get :show
+      expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
     end
 
     it 'renders the show template' do

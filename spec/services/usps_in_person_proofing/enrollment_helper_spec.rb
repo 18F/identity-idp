@@ -206,6 +206,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               second_address_line_present: false,
               service_provider: nil,
               tmx_status: nil,
+              enhanced_ipp: false,
             )
           end
         end
@@ -214,18 +215,40 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
           let(:issuer) { 'this-is-an-issuer' }
           let(:service_provider) { build(:service_provider, issuer: issuer) }
 
-          it 'logs event' do
-            subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+          context 'when the enrollment is enhanced_ipp' do
+            let(:is_enhanced_ipp) { true }
 
-            expect(subject_analytics).to have_logged_event(
-              'USPS IPPaaS enrollment created',
-              enrollment_code: user.in_person_enrollments.first.enrollment_code,
-              enrollment_id: user.in_person_enrollments.first.id,
-              opted_in_to_in_person_proofing: nil,
-              second_address_line_present: false,
-              service_provider: issuer,
-              tmx_status: nil,
-            )
+            it 'logs event' do
+              subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+
+              expect(subject_analytics).to have_logged_event(
+                'USPS IPPaaS enrollment created',
+                enrollment_code: user.in_person_enrollments.first.enrollment_code,
+                enrollment_id: user.in_person_enrollments.first.id,
+                opted_in_to_in_person_proofing: nil,
+                second_address_line_present: false,
+                service_provider: issuer,
+                tmx_status: nil,
+                enhanced_ipp: true,
+              )
+            end
+          end
+
+          context 'when the enrollment is not enhanced_ipp' do
+            it 'logs event' do
+              subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+
+              expect(subject_analytics).to have_logged_event(
+                'USPS IPPaaS enrollment created',
+                enrollment_code: user.in_person_enrollments.first.enrollment_code,
+                enrollment_id: user.in_person_enrollments.first.id,
+                opted_in_to_in_person_proofing: nil,
+                second_address_line_present: false,
+                service_provider: issuer,
+                tmx_status: nil,
+                enhanced_ipp: false,
+              )
+            end
           end
         end
 
@@ -252,6 +275,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               second_address_line_present: false,
               service_provider: nil,
               tmx_status: nil,
+              enhanced_ipp: false,
             )
           end
 
@@ -272,6 +296,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
                 second_address_line_present: true,
                 service_provider: nil,
                 tmx_status: nil,
+                enhanced_ipp: false,
               )
             end
           end
@@ -291,6 +316,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
               second_address_line_present: false,
               service_provider: nil,
               tmx_status: nil,
+              enhanced_ipp: false,
             )
           end
         end

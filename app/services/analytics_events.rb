@@ -4286,13 +4286,25 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
-  def multi_factor_auth_option_list(success:, errors:, selection:, error_details: nil, **extra)
+  # @param [integer] enabled_mfa_methods_count
+  # @param [Hash] mfa_method_counts
+  def multi_factor_auth_option_list(
+    success:,
+    errors:,
+    selection:,
+    enabled_mfa_methods_count:,
+    mfa_method_counts:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication: option list',
       success:,
       errors:,
       error_details:,
       selection:,
+      enabled_mfa_methods_count:,
+      mfa_method_counts:,
       **extra,
     )
   end
@@ -5803,34 +5815,35 @@ module AnalyticsEvents
 
   # Tracks when user submits registration email
   # @param [Boolean] success Whether form validation was successful
-  # @param [Boolean] rate_limited
+  # @param [Boolean] rate_limited Whether form submission was prevented by rate-limiting
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] user_id
-  # @param [Boolean] email_already_exists
-  # @param [String] domain_name
+  # @param [String] user_id ID of user associated with existing user, or current user
+  # @param [Boolean] email_already_exists Whether an account with the email address already exists
+  # @param [String] domain_name Domain name of email address submitted
+  # @param [String] email_language Preferred language for email communication
   def user_registration_email(
     success:,
     rate_limited:,
     errors:,
+    user_id:,
+    email_already_exists:,
+    domain_name:,
+    email_language:,
     error_details: nil,
-    user_id: nil,
-    email_already_exists: nil,
-    domain_name: nil,
     **extra
   )
     track_event(
       'User Registration: Email Submitted',
-      {
-        success:,
-        rate_limited:,
-        errors:,
-        error_details:,
-        user_id:,
-        email_already_exists:,
-        domain_name:,
-        **extra,
-      }.compact,
+      success:,
+      rate_limited:,
+      errors:,
+      error_details:,
+      user_id:,
+      email_already_exists:,
+      domain_name:,
+      email_language:,
+      **extra,
     )
   end
 
