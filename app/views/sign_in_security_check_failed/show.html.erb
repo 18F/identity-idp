@@ -22,9 +22,9 @@
   <%= render TroubleshootingOptionsComponent.new do |c| %>
     <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
     <% c.with_option(
-        url: contact_redirect_url,
-        new_tab: true,
-      ).with_content(t('security_check_failed.contact', app_name: APP_NAME)) %>
+         url: contact_redirect_url,
+         new_tab: true,
+       ).with_content(t('security_check_failed.contact', app_name: APP_NAME)) %>
   <% end %>
 <% end %>
 
