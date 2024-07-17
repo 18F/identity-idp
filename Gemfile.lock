@@ -573,7 +573,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     retries (0.0.5)
-    rexml (3.3.1)
+    rexml (3.3.2)
       strscan
     rotp (6.3.0)
     rouge (4.2.0)
@@ -832,6 +832,7 @@ DEPENDENCIES
   redis (>= 3.2.0)
   redis-session-store!
   retries
+  rexml (~> 3.3)
   rotp (~> 6.3, >= 6.3.0)
   rqrcode
   rspec (~> 3.13.0)
