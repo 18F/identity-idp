@@ -93,7 +93,6 @@ RSpec.describe SignUp::CompletionsController do
           expect(assigns(:presenter).ial2_requested?).to eq true
         end
 
-
         context 'user is not identity verified' do
           let(:user) { create(:user) }
           it 'redirects to idv_url' do
