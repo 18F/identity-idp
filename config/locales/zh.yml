@@ -1619,8 +1619,12 @@ titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
 titles.registrations.new: 设立账户
 titles.revoke_consent: 撤销同意
+<<<<<<< HEAD
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你比较愿意分享的电邮
+=======
+titles.rules_of_use: 选择你比较愿意分享的电邮
+>>>>>>> f288fb266d (fix duplicate key entry)
 titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
 titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}
