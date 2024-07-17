@@ -77,7 +77,8 @@ RSpec.describe TwoFactorAuthentication::OptionsController do
     end
 
     it 'tracks analytics event' do
-      stub_sign_in_before_2fa
+      user = build(:user, :with_phone, :with_piv_or_cac)
+      stub_sign_in_before_2fa(user)
       stub_analytics
 
       post :create, params: { two_factor_options_form: { selection: 'sms' } }
@@ -88,6 +89,8 @@ RSpec.describe TwoFactorAuthentication::OptionsController do
         success: true,
         errors: {},
         error_details: nil,
+        enabled_mfa_methods_count: 2,
+        mfa_method_counts: { phone: 1, piv_cac: 1 },
       )
     end
   end

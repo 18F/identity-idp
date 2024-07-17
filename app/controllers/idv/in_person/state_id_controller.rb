@@ -8,6 +8,7 @@ module Idv
 
       before_action :render_404_if_controller_not_enabled
       before_action :redirect_unless_enrollment # confirm previous step is complete
+      before_action :set_usps_form_presenter
 
       def show
         flow_session[:pii_from_user] ||= {}
@@ -164,6 +165,10 @@ module Idv
 
       def form
         @form ||= Idv::StateIdForm.new(current_user)
+      end
+
+      def set_usps_form_presenter
+        @presenter = Idv::InPerson::UspsFormPresenter.new
       end
     end
   end

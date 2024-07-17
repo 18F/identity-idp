@@ -11,6 +11,7 @@ module Idv
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
     before_action :override_csp_to_allow_acuant
+    before_action :set_usps_form_presenter
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -130,6 +131,10 @@ module Idv
       idv_session.skip_doc_auth_from_handoff = true
       idv_session.skip_hybrid_handoff = nil
       true
+    end
+
+    def set_usps_form_presenter
+      @presenter = Idv::InPerson::UspsFormPresenter.new
     end
   end
 end

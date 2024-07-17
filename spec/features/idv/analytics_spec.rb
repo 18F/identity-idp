@@ -460,9 +460,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
         proofing_components: base_proofing_components
       },
-      'IdV: request letter visited' => {
-        letter_already_sent: false,
-      },
+      'IdV: request letter visited' => {},
       :idv_enter_password_visited => {
         address_verification_method: 'gpo', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         active_profile_idv_level: nil, pending_profile_idv_level: nil,
@@ -544,13 +542,13 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, error_details: nil, same_address_as_id: false, opted_in_to_in_person_proofing: nil
+        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', errors: {}, error_details: nil, same_address_as_id: false, opted_in_to_in_person_proofing: nil, birth_year: '1938', document_zip_code: '12345'
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', same_address_as_id: false, opted_in_to_in_person_proofing: nil, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', errors: {}, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, current_address_zip_code: '59010'
       },
       'IdV: doc auth ssn visited' => {
         analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
@@ -675,7 +673,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, error_details: nil, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed'),
       'IdV: doc auth image upload vendor pii validation' => {
         success: true, errors: {}, error_details: nil, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present'
       },
@@ -776,6 +774,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       and_return(proofing_device_profiling)
     allow_any_instance_of(ApplicationController).to receive(:analytics) do |controller|
       fake_analytics.user = controller.analytics_user
+      fake_analytics.session = controller.session
       fake_analytics
     end
     allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).

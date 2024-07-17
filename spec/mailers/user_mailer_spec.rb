@@ -600,6 +600,13 @@ RSpec.describe UserMailer, type: :mailer do
         current_address_matches_id: current_address_matches_id,
       )
     end
+    let(:enhanced_ipp_enrollment) do
+      create(
+        :in_person_enrollment,
+        :pending,
+        :enhanced_ipp,
+      )
+    end
 
     describe '#in_person_ready_to_verify' do
       let(:mail) do
@@ -726,7 +733,7 @@ RSpec.describe UserMailer, type: :mailer do
         let(:is_enhanced_ipp) { true }
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-            enrollment: enrollment,
+            enrollment: enhanced_ipp_enrollment,
             is_enhanced_ipp:,
           )
         end
@@ -824,15 +831,47 @@ RSpec.describe UserMailer, type: :mailer do
           enrollment: enrollment,
         )
       end
+      context 'For Informed Delivery IPP (ID-IPP)' do
+        it_behaves_like 'a system email'
+        it_behaves_like 'an email that respects user email locale preference'
 
-      it_behaves_like 'a system email'
-      it_behaves_like 'an email that respects user email locale preference'
+        it 'renders the body' do
+          aggregate_failures do
+            [
+              t('in_person_proofing.process.state_id.info'),
+              t('in_person_proofing.process.state_id.heading'),
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(mail.html_part.body).to have_content(part)
+              end
+            end
+          end
+        end
+      end
 
-      it 'renders the body' do
-        expect(mail.html_part.body).
-          to have_content(
-            t('in_person_proofing.process.state_id.heading'),
-          )
+      context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
+        let(:enrollment) { enhanced_ipp_enrollment }
+        it 'renders content that is applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
+          aggregate_failures do
+            [
+              t('in_person_proofing.headings.barcode_what_to_bring'),
+              t('in_person_proofing.body.barcode.what_to_bring'),
+              t('in_person_proofing.process.eipp_bring_id.heading'),
+              t('in_person_proofing.process.eipp_bring_id.info'),
+              t('in_person_proofing.process.eipp_state_id_passport.heading'),
+              t('in_person_proofing.process.eipp_state_id_passport.info'),
+              t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+              t('in_person_proofing.process.eipp_state_id_military_id.info'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+
+            ].each do |copy|
+              Array(copy).each do |part|
+                expect(mail.html_part.body).to have_content(part)
+              end
+            end
+          end
+        end
       end
     end
 

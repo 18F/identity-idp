@@ -66,6 +66,7 @@ gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.1-18f'
 gem 'retries'
+gem 'rexml', '~> 3.3'
 gem 'rotp', '~> 6.3', '>= 6.3.0'
 gem 'rqrcode'
 gem 'ruby-progressbar'
@@ -102,7 +103,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
-  gem 'erb_lint', '~> 0.4.0', require: false
+  gem 'erb_lint', '~> 0.5.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'

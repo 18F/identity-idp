@@ -47,7 +47,7 @@ RSpec.describe UriService do
     end
 
     it 'is nil with a bad uri' do
-      uri = UriService.add_params('https://example.com/new.2;;9429"{+![$]`}9839')
+      uri = UriService.add_params('https://example.com/new.2;;9429"{+![$]`}9839', foo: 'bar')
 
       expect(uri).to be_nil
     end

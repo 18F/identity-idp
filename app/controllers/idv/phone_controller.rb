@@ -7,6 +7,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
+    include Idv::VerifyByMailConcern
 
     attr_reader :idv_form
 
@@ -35,11 +36,15 @@ module Idv
         analytics.idv_phone_of_record_visited(
           **ab_test_analytics_buckets,
         )
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       end
     end
 
@@ -56,7 +61,9 @@ module Idv
         redirect_to idv_phone_path
       else
         flash.now[:error] = result.first_error_message
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render(
+          :new, locals: { gpo_letter_available: gpo_verify_by_mail_policy.send_letter_available? }
+        )
       end
     end
 
@@ -221,12 +228,6 @@ module Idv
       PhoneFormatter.format(
         idv_session.previous_phone_step_params&.fetch('phone'),
       )
-    end
-
-    def gpo_letter_available
-      return @gpo_letter_available if defined?(@gpo_letter_available)
-      @gpo_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
-                                !Idv::GpoMail.new(current_user).rate_limited?
     end
 
     # Migrated from otp_delivery_method_controller

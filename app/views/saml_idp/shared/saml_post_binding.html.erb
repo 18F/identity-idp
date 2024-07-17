@@ -7,8 +7,9 @@
       document.documentElement.classList.replace('no-js', 'js');
     <% end %>
     <%= csrf_meta_tags %>
-    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= stylesheet_link_tag 'application', nopush: false %>
     <%= render_stylesheet_once_tags %>
+    <%= stylesheet_link_tag 'utilities', nopush: false %>
   </head>
   <body>
     <div class="grid-container tablet:padding-y-6 no-js">

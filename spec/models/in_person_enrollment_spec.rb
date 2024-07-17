@@ -491,4 +491,26 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
     end
   end
+
+  describe 'enhanced_ipp?' do
+    context 'when the enrollment sponsor ID is equal to the EIPP sponsor ID' do
+      let(:enrollment) do
+        create(:in_person_enrollment, :enhanced_ipp)
+      end
+
+      it 'returns true' do
+        expect(enrollment.enhanced_ipp?).to be true
+      end
+    end
+
+    context 'when the enrollment sponsor ID does not equal the EIPP sponsor ID' do
+      let(:enrollment) do
+        create(:in_person_enrollment)
+      end
+
+      it 'returns false' do
+        expect(enrollment.enhanced_ipp?).to be false
+      end
+    end
+  end
 end

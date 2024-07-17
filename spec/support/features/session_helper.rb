@@ -137,9 +137,9 @@ module Features
     end
 
     def sign_up
-      user = create(:user, :unconfirmed)
+      email = Faker::Internet.safe_email
+      sign_up_with(email)
       confirm_last_user
-      user
     end
 
     def sign_up_and_set_password
@@ -232,15 +232,18 @@ module Features
     end
 
     def confirm_last_user
+      user = User.last
       @raw_confirmation_token, = Devise.token_generator.generate(EmailAddress, :confirmation_token)
 
-      User.last.email_addresses.first.update(
+      user.email_addresses.first.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
 
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )
+
+      user
     end
 
     def click_send_one_time_code
@@ -556,7 +559,7 @@ module Features
       click_submit_default
     end
 
-    def stub_piv_cac_service
+    def stub_piv_cac_service(error: nil)
       allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
       allow(IdentityConfig.store).to receive(:piv_cac_service_url).
         and_return('http://piv.example.com/')
@@ -567,6 +570,34 @@ module Features
           body: CGI.unescape(request.body.sub(/^token=/, '')),
         }
       end
+
+      stub_request(:post, 'piv.example.com').
+        with(query: hash_including('nonce', 'redirect_uri')).
+        to_return do |request|
+          query = UriService.params(request.uri)
+          {
+            status: 302,
+            headers: {
+              location: UriService.add_params(
+                query['redirect_uri'],
+                token: {
+                  dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                  uuid: SecureRandom.uuid,
+                  subject: 'SomeIgnoredSubject',
+                  nonce: query['nonce'],
+                  error:,
+                }.compact.to_json,
+              ),
+            },
+          }
+        end
+    end
+
+    def follow_piv_cac_redirect
+      # RackTest won't do an external redirect to the stubbed PKI service, but we can manually
+      # submit a request to the `current_url` and get the redirect header.
+      redirect_url = Faraday.post(current_url).headers['location']
+      visit redirect_url
     end
 
     def visit_piv_cac_service(idp_url, token_data)

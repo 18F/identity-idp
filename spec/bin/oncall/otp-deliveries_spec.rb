@@ -86,12 +86,8 @@ RSpec.describe OtpDeliveries do
     let(:stdout) { StringIO.new }
     subject(:run) { instance.run(out: stdout) }
 
-    let(:cloudwatch_client) { instance_double('Reporting::CloudwatchClient') }
-
     before do
-      allow(instance).to receive(:cloudwatch_client).and_return(cloudwatch_client)
-
-      allow(cloudwatch_client).to receive(:fetch).and_return(
+      stub_cloudwatch_logs(
         [
           {
             'properties.user_id' => 'aaa',

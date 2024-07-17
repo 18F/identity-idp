@@ -34,7 +34,7 @@
       in_person_full_address_entry_enabled: IdentityConfig.store.in_person_full_address_entry_enabled,
       in_person_outage_message_enabled: IdentityConfig.store.in_person_outage_message_enabled,
       in_person_outage_expected_update_date: IdentityConfig.store.in_person_outage_expected_update_date,
-      us_states_territories: us_states_territories,
+      us_states_territories: @presenter.usps_states_territories,
       doc_auth_selfie_capture: doc_auth_selfie_capture,
       doc_auth_selfie_desktop_test_mode: IdentityConfig.store.doc_auth_selfie_desktop_test_mode,
       skip_doc_auth: skip_doc_auth,
@@ -42,6 +42,8 @@
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       how_to_verify_url: idv_how_to_verify_url,
       previous_step_url: @previous_step_url,
+      locations_url: idv_in_person_usps_locations_url,
+      address_search_url: '',
     } %>
   <%= simple_form_for(
         :doc_auth,

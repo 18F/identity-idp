@@ -23,8 +23,11 @@ RSpec.describe GpoConfirmationUploader do
     ]
   end
 
+  let(:job_analytics) { FakeAnalytics.new }
+
   before do
     allow(IdentityConfig.store).to receive(:usps_upload_enabled).and_return(true)
+    allow(uploader).to receive(:analytics).and_return(job_analytics)
   end
 
   describe '#generate_export' do
@@ -71,6 +74,28 @@ RSpec.describe GpoConfirmationUploader do
 
       subject
     end
+
+    context 'when an SSH error occurs' do
+      it 'retries the upload' do
+        expect(Net::SFTP).to receive(:start).twice.with(*sftp_options).and_yield(sftp_connection)
+        expect(sftp_connection).to receive(:upload!).once.and_raise(Net::SSH::ConnectionTimeout)
+        expect(sftp_connection).to receive(:upload!).once
+
+        subject
+      end
+
+      it 'raises after 5 unsuccessful retries' do
+        expect(Net::SFTP).to receive(:start).
+          exactly(5).times.
+          with(*sftp_options).
+          and_yield(sftp_connection)
+        expect(sftp_connection).to receive(:upload!).
+          exactly(5).times.
+          and_raise(Net::SSH::ConnectionTimeout)
+
+        expect { subject }.to raise_error(Net::SSH::ConnectionTimeout)
+      end
+    end
   end
 
   describe '#run' do
@@ -89,13 +114,20 @@ RSpec.describe GpoConfirmationUploader do
         log = logs.first
         expect(log.ftp_at).to be_present
         expect(log.letter_requests_count).to eq(1)
+        expect(job_analytics).to have_logged_event(
+          :gpo_confirmation_upload,
+          success: true,
+          exception: nil,
+          gpo_confirmation_count: confirmations.count,
+        )
       end
     end
 
     context 'when there is an error' do
       it 'notifies NewRelic and does not clear confirmations if SFTP fails' do
         expect(uploader).to receive(:generate_export).with(confirmations).and_return(export)
-        expect(uploader).to receive(:upload_export).with(export).and_raise(StandardError)
+        expect(uploader).to receive(:upload_export).with(export).
+          and_raise(StandardError, 'test error')
         expect(uploader).not_to receive(:clear_confirmations)
 
         expect(NewRelic::Agent).to receive(:notice_error)
@@ -103,6 +135,12 @@ RSpec.describe GpoConfirmationUploader do
         expect { subject }.to raise_error
 
         expect(GpoConfirmation.count).to eq 1
+        expect(job_analytics).to have_logged_event(
+          :gpo_confirmation_upload,
+          success: false,
+          exception: 'test error',
+          gpo_confirmation_count: 0,
+        )
       end
     end
 

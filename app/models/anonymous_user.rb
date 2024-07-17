@@ -5,6 +5,10 @@ class AnonymousUser
     'anonymous-uuid'
   end
 
+  def establishing_in_person_enrollment; end
+
+  def pending_in_person_enrollment; end
+
   def second_factor_locked_at
     nil
   end

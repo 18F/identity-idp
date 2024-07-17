@@ -116,6 +116,36 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'locked out session' do
+      let(:locked_at) { Time.zone.now }
+      let(:user) { create(:user, :fully_registered) }
+      let(:bad_password_window) { IdentityConfig.store.max_bad_passwords_window_in_seconds }
+
+      before do
+        session[:bad_password_count] = IdentityConfig.store.max_bad_passwords + 1
+        session[:max_bad_passwords_at] = locked_at.to_i
+      end
+
+      it 'renders an error letting user know they are locked out for a period of time',
+         :freeze_time do
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        current_time = Time.zone.now
+        time_in_hours = distance_of_time_in_words(
+          current_time,
+          (locked_at + bad_password_window.seconds),
+          true,
+        )
+
+        expect(response).to redirect_to root_url
+        expect(flash[:error]).to eq(
+          t(
+            'errors.sign_in.bad_password_limit',
+            time_left: time_in_hours,
+          ),
+        )
+      end
+    end
+
     it 'tracks the unsuccessful authentication for existing user' do
       user = create(:user, :fully_registered)
 
@@ -155,13 +185,6 @@ RSpec.describe Users::SessionsController, devise: true do
         with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
-    end
-
-    it 'tracks unsuccessful authentication for too many auth failures' do
-      allow(subject).to receive(:session_bad_password_count_max_exceeded?).and_return(true)
-      mock_email_parameter = { email: 'bob@example.com' }
-
-      post :create, params: { user: { **mock_email_parameter, password: 'eatCake!' } }
     end
 
     it 'tracks unsuccessful authentication for locked out user' do

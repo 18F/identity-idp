@@ -72,9 +72,27 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.instructions: 你账户的验证需要一个验证码。
-account.index.verification.reactivate_button: 输入你通过邮局邮件收到的代码。
+account.index.verification.continue_idv: 继续身份验证
+account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
+account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
+account.index.verification.identity_verification: 身份验证
+account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
+account.index.verification.instructions: 输入你的验证码来完成身份验证。
+account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
+account.index.verification.nonbiometric_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
+account.index.verification.pending_badge: 待验证
+account.index.verification.pending_badge_tooltip: 你的身份有待验证。
+account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
+account.index.verification.show_bar_code: 显示我的%{app_name} 条形码
 account.index.verification.success: 我们验证了你的信息
+account.index.verification.unverified_badge: 未验证
+account.index.verification.unverified_badge_tooltip: 完成验证你的身份。
+account.index.verification.verified_badge: 已验证
+account.index.verification.verified_badge_tooltip: 你的身份已经验证。
+account.index.verification.verified_biometric_badge_tooltip: 你的身份和照片都已验证。
+account.index.verification.verify_with_biometric_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
+account.index.verification.you_verified_your_biometric_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
+account.index.verification.you_verified_your_identity_html: 你使用以下信息向 <strong>%{sp_name}</strong> 验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
 account.index.webauthn_platform: 人脸或触摸解锁
@@ -728,7 +746,7 @@ errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否
 errors.messages.missing_field: 请填写这一字段。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
 errors.messages.not_a_number: 不是数字
-errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
+errors.messages.otp_format: 输入发送到你手机的一次性代码。请勿使用空格或特殊字符。
 errors.messages.password_incorrect: 密码不对。
 errors.messages.password_mismatch: 你的密码不一致
 errors.messages.personal_key_incorrect: 个人密钥不对
@@ -755,7 +773,7 @@ errors.messages.wrong_length.one: 长度不对（应当是 1 个字符）
 errors.messages.wrong_length.other: 长度不对（应当是 %{count} 个字符）
 errors.piv_cac_setup.unique_name: 这个名字已被使用。请选择一个不同的名字。
 errors.registration.terms: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。
+errors.sign_in.bad_password_limit: 你已超出登录尝试允许最多次数。你必须等待 %{time_left} 才能重试。
 errors.two_factor_auth_setup.must_select_additional_option: 请选择一个额外的身份证实方法。
 errors.two_factor_auth_setup.must_select_option: 选择一个身份证实方法。
 errors.verify_personal_key.rate_limited: 你尝试了太多次。请在 %{timeout}后再试。
@@ -902,8 +920,6 @@ headings.account.login_info: 你的账户
 headings.account.reactivate: 重新激活你的账户
 headings.account.two_factor: 你的身份证实方法。
 headings.account.unphishable: 无法网络钓鱼
-headings.account.verified_account: 验证过的账户
-headings.account.verified_information: 验证过的信息
 headings.add_email: 添加一个新电邮地址
 headings.add_info.phone: 添加一个电话号码
 headings.cancellations.login_cancel_prompt: 你确定要取消并退出 %{app_name} 吗？
@@ -1582,7 +1598,7 @@ titles.personal_key: 万一
 titles.piv_cac_login.add: 添加你的 PIV 或者 CAC
 titles.piv_cac_login.new: 用 PIV/CAC 登入你的账户
 titles.piv_cac_setup.new: 用 PIV/CAC 卡来保护你账户安全
-titles.piv_cac_setup.upsell: 使用政府雇员ID增强帐户安全性
+titles.piv_cac_setup.upsell: 添加你的政府雇员身份证件更快、更安全地登录
 titles.present_piv_cac: 提供你的 PIV/CAC
 titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
@@ -1695,8 +1711,8 @@ two_factor_authentication.phone.delete.success: 你的电话已被去掉。
 two_factor_authentication.piv_cac_header_text: 提供你的 PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
-two_factor_authentication.piv_cac_upsell.existing_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这将大大增强你账户的安全性。
-two_factor_authentication.piv_cac_upsell.new_user_info: 由于你使用的是 %{email_type} 电子邮件，我们建议你将政府雇员身份证件添加为你的身份证实方法之一。这为你的帐户增加了另一层安全保障。
+two_factor_authentication.piv_cac_upsell.explain: 这将改善你账户安全，而且你在登录时无需再输入电邮和密码。
+two_factor_authentication.piv_cac_upsell.recommendation: 如果你的PIV/CAC是雇主发的，我们建议你将其作为一种身份证实方法添加到你账户上。
 two_factor_authentication.piv_cac_upsell.skip: 跳过
 two_factor_authentication.piv_cac.change_nickname: 更改昵称
 two_factor_authentication.piv_cac.delete: 删除此方法

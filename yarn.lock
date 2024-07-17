@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@18f/identity-design-system@^9.2.0":
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-9.2.0.tgz#36f1e4c4c68cae52c0cd4d5256ac33e6ef872763"
-  integrity sha512-gzzcRtxRPKdxcbdgYKBS+IEmBielCwbxB9KkUTwNyXTqDMJoWmscSODPEpmegIEB8Tg/LXwxJQfr+LyEePYewQ==
+"@18f/identity-design-system@^9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-9.3.0.tgz#990089ea93c5ac773cf87ac61d175d739ec89ae7"
+  integrity sha512-vOhBNu20rtSUUIx0bpyLjUTcOzyzLpq9/Oyot+vWPYxyatTg2m+7dpQK8xSNVDtnNtpVEwOhf1GnOGF+v7n+nA==
   dependencies:
     "@types/uswds__uswds" "^3.8.0"
-    "@uswds/uswds" "^3.8.0"
+    "@uswds/uswds" "^3.8.1"
 
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
@@ -1895,10 +1895,10 @@
     "@typescript-eslint/types" "6.7.5"
     eslint-visitor-keys "^3.4.1"
 
-"@uswds/uswds@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.8.0.tgz#dba0b0b38182053779276f9ae6809474bd31d548"
-  integrity sha512-rMwCXe/u4HGkfskvS1Iuabapi/EXku3ChaIFW7y/dUhc7R1TXQhbbfp8YXEjmXPF0yqJnv9T08WPgS0fQqWZ8w==
+"@uswds/uswds@^3.8.1":
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.8.1.tgz#3d834559498ae1bb7d3a618f3f85a5f4e9818497"
+  integrity sha512-bKG/B9mJF1v0yoqth48wQDzST5Xyu3OxxpePIPDyhKWS84oDrCehnu3Z88JhSjdIAJMl8dtjtH8YvdO9kZUpAg==
   dependencies:
     classlist-polyfill "1.2.0"
     object-assign "4.1.1"
