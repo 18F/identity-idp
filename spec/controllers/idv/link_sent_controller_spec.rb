@@ -185,7 +185,7 @@ RSpec.describe Idv::LinkSentController do
             it 'flashes an error and does not redirect' do
               put :update
 
-              expect(flash[:error]).to eq t('errors.doc_auth.phone_step_incomplete')
+              expect(flash[:error]).to eq t('doc_auth.errors.phone_step_incomplete')
               expect(response.status).to eq(204)
             end
           end
@@ -204,7 +204,7 @@ RSpec.describe Idv::LinkSentController do
 
       context 'document capture session canceled' do
         let(:session_canceled_at) { Time.zone.now }
-        let(:error_message) { t('errors.doc_auth.document_capture_canceled') }
+        let(:error_message) { t('doc_auth.errors.document_capture_canceled') }
 
         before do
           expect(FormResponse).to receive(:new).with(
@@ -228,7 +228,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
-          expect(flash[:error]).to eq(t('errors.doc_auth.phone_step_incomplete'))
+          expect(flash[:error]).to eq(t('doc_auth.errors.phone_step_incomplete'))
         end
       end
     end

@@ -64,7 +64,7 @@ RSpec.describe ImageUploadResponsePresenter do
         FormResponse.new(
           success: false,
           errors: {
-            limit: t('errors.doc_auth.rate_limited_heading'),
+            limit: t('doc_auth.errors.rate_limited_heading'),
           },
         )
       end
@@ -115,7 +115,7 @@ RSpec.describe ImageUploadResponsePresenter do
         FormResponse.new(
           success: false,
           errors: {
-            limit: t('errors.doc_auth.rate_limited_heading'),
+            limit: t('doc_auth.errors.rate_limited_heading'),
           },
           extra: extra_attributes,
         )
@@ -126,7 +126,7 @@ RSpec.describe ImageUploadResponsePresenter do
           success: false,
           result_code_invalid: true,
           result_failed: false,
-          errors: [{ field: :limit, message: t('errors.doc_auth.rate_limited_heading') }],
+          errors: [{ field: :limit, message: t('doc_auth.errors.rate_limited_heading') }],
           redirect: idv_session_errors_rate_limited_url,
           remaining_submit_attempts: 0,
           ocr_pii: nil,
@@ -149,7 +149,7 @@ RSpec.describe ImageUploadResponsePresenter do
             success: false,
             result_code_invalid: true,
             result_failed: false,
-            errors: [{ field: :limit, message: t('errors.doc_auth.rate_limited_heading') }],
+            errors: [{ field: :limit, message: t('doc_auth.errors.rate_limited_heading') }],
             redirect: idv_hybrid_mobile_capture_complete_url,
             remaining_submit_attempts: 0,
             ocr_pii: nil,
