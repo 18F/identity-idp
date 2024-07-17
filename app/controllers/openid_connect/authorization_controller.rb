@@ -138,7 +138,8 @@ module OpenidConnect
     end
 
     def biometric_comparison_needed?
-      resolved_authn_context_result.biometric_comparison? &&
+      (resolved_authn_context_result.biometric_comparison? ||
+        @authorize_form.biometric_comparison_requested?) &&
         !current_user.identity_verified_with_biometric_comparison?
     end
 

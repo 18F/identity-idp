@@ -24,7 +24,7 @@ class OpenidConnectUserInfoPresenter
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
-      info[:ial] = authn_context.asserted_ial_value
+      info[:ial] = asserted_ial_value
       info[:aal] = identity.requested_aal_value
     else
       info[:vot] = vot_values
@@ -137,10 +137,6 @@ class OpenidConnectUserInfoPresenter
     resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
   end
 
-  def resolved_authn_context_result
-    @resolved_authn_context_result ||= authn_context.resolve
-  end
-
   def authn_context
     @authn_context ||= AuthnContextResolver.new(
       user: identity.user,
@@ -148,6 +144,19 @@ class OpenidConnectUserInfoPresenter
       vtr: identity.vtr.presence && JSON.parse(identity.vtr),
       acr_values: identity.acr_values,
     )
+  end
+
+  def resolved_authn_context_result
+    @resolved_authn_context_result ||= authn_context.resolve
+  end
+
+  # Expose the resolved IAL ACR value
+  def asserted_ial_value
+    if active_profile.present?
+      authn_context.asserted_ial_acr
+    else
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    end
   end
 
   def ial2_session?

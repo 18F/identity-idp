@@ -23,7 +23,7 @@ class SamlRequestValidator
   end
 
   def biometric_comparison_requested?
-    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
+    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?) || biometric_ial_requested?
   end
 
   private
@@ -121,7 +121,9 @@ class SamlRequestValidator
   end
 
   def biometric_ial_requested?
-    Array(authn_context).any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+    Array(authn_context).any? do |ial|
+      Saml::Idp::Constants::BIOMETRIC_PROOFING_AUTHN_CONTEXTS.include? ial
+    end
   end
 
   def authorized_email_nameid_format

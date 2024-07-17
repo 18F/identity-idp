@@ -5,12 +5,14 @@ RSpec.describe IdTokenBuilder do
 
   let(:code) { SecureRandom.hex }
   let(:user) { create(:user) }
+  let(:service_provider_ial) { 2 }
+  let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
   let(:identity) do
     build(
       :service_provider_identity,
       nonce: SecureRandom.hex,
       uuid: SecureRandom.uuid,
-      ial: 2,
+      service_provider: service_provider.issuer,
       rails_session_id: '123',
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
@@ -81,8 +83,8 @@ RSpec.describe IdTokenBuilder do
       end
     end
 
-    context 'context sp requests ACR values' do
-      context 'aal and ial request' do
+    context 'when sp requests ACR values' do
+      context 'with aal and ial' do
         before do
           identity.aal = 2
           acr_values = [
@@ -136,6 +138,77 @@ RSpec.describe IdTokenBuilder do
 
           it 'sets the acr to the ial2 constant' do
             expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+          end
+        end
+      end
+
+      context 'with ial2?bio=preferred' do
+        before do
+          identity.ial = 2
+          identity.acr_values = Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
+          allow(IdentityConfig.store).to receive(:biometric_ial_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+            and_return([identity.service_provider])
+        end
+
+        context 'if non-verified user' do
+          it 'sets the acr to the ial2 constant' do
+            expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+          end
+        end
+
+        context 'if verified user' do
+          let(:user) { create(:user, profiles: [create(:profile, :verified, :active)]) }
+
+          it 'sets the acr to the ial2 constant' do
+            expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+          end
+        end
+
+        context 'if proofed user' do
+          let(:user) { create(:user, :proofed_with_selfie) }
+
+          it 'sets the IAL acr to the ial2?bio=required constant' do
+            expect(decoded_payload[:acr]).to eq(
+              Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+        end
+      end
+      context 'with ial2?bio=required' do
+        before do
+          identity.ial = 2
+          identity.acr_values = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+          allow(IdentityConfig.store).to receive(:biometric_ial_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers).
+            and_return([identity.service_provider])
+        end
+
+        context 'if non-verified user' do
+          it 'sets the acr to the ial2?bio=required constant' do
+            expect(decoded_payload[:acr]).to eq(
+              Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+        end
+
+        context 'if verified user' do
+          let(:user) { create(:user, profiles: [create(:profile, :verified, :active)]) }
+
+          it 'sets the acr to the ial2?bio=required constant' do
+            expect(decoded_payload[:acr]).to eq(
+              Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+        end
+
+        context 'if proofed user' do
+          let(:user) { create(:user, :proofed_with_selfie) }
+
+          it 'sets the IAL acr to the ial2?bio=required constant' do
+            expect(decoded_payload[:acr]).to eq(
+              Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            )
           end
         end
       end

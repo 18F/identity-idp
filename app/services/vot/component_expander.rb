@@ -10,6 +10,7 @@ module Vot
       @expanded_components = []
     end
 
+    # @return [Array<Vot::ComponentValue>]
     def expand
       initial_components.each do |component|
         expand_and_add_component(component)

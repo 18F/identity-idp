@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Vot
-
   # @deprecated Please use AuthnContextClassRefComponentValues
   module SupportedComponentValues
     C1 = ComponentValue.new(

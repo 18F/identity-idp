@@ -117,11 +117,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_values
-    acr_values.filter { |acr| acr.include?('ial') || acr.include?('loa') }
+    acr_values.filter { |acr| Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL.include?(acr) }
   end
 
   def aal_values
-    acr_values.filter { |acr| acr.include?('aal') }
+    acr_values.filter { |acr| Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL.include?(acr) }
   end
 
   def requested_aal_value
@@ -133,21 +133,23 @@ class OpenidConnectAuthorizeForm
     !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
   end
 
+  private
+
+  attr_reader :identity, :success
+
   def parsed_vectors_of_trust
     return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
 
     @parsed_vectors_of_trust = begin
       if vtr.is_a?(Array) && !vtr.empty?
         vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+      elsif biometric_ial_requested?
+        ial_values.map { |acr| Vot::Parser.new(acr_values: acr).parse }
       end
     rescue Vot::Parser::ParseException
       nil
     end
   end
-
-  private
-
-  attr_reader :identity, :success
 
   def code
     identity&.session_uuid
@@ -176,6 +178,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_acr_values
     return if vtr.present?
+    return if parsed_vectors_of_trust.present?
 
     if acr_values.empty?
       errors.add(
@@ -340,7 +343,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def biometric_ial_requested?
-    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_PROOFING_AUTHN_CONTEXTS.include? ial }
   end
 
   def highest_level_aal(aal_values)

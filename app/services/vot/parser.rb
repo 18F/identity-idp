@@ -4,7 +4,7 @@ module Vot
   class Parser
     class ParseException < StandardError; end
 
-    class Result < Data.define(
+    Result = Data.define(
       :component_values,
       :component_separator,
       :aal2?,
@@ -15,7 +15,7 @@ module Vot
       :two_pieces_of_fair_evidence?,
       :ialmax?,
       :enhanced_ipp?,
-    )
+    ) do
       def self.no_sp_result
         self.new(
           component_values: [],
@@ -35,8 +35,12 @@ module Vot
         identity_proofing? || ialmax?
       end
 
+      def component_names
+        component_values.map(&:name)
+      end
+
       def expanded_component_values
-        component_values.map(&:name).join(component_separator)
+        component_names.join(component_separator)
       end
     end.freeze
 
@@ -91,7 +95,6 @@ module Vot
       end
     end
 
-    # @return [Hash{String => Vot::ComponentValue}]
     def component_map
       if vector_of_trust.present?
         SupportedComponentValues.by_name
@@ -110,7 +113,7 @@ module Vot
       if vector_of_trust.present?
         raise ParseException, "#{vector_of_trust} contains unkown component #{component_value_name}"
       else
-        raise ParseException, "#{acr_values} contains unkown acr value #{component_value_name}"
+        raise ParseException, "#{acr_values} contains unknown acr value #{component_value_name}"
       end
     end
 
@@ -118,7 +121,7 @@ module Vot
       if vector_of_trust.present?
         raise ParseException, "#{vector_of_trust} contains duplicate components"
       else
-        raise ParseException, "#{acr_values} ontains duplicate acr values"
+        raise ParseException, "#{acr_values} contains duplicate acr values"
       end
     end
   end

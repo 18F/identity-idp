@@ -21,33 +21,34 @@ module Vot
 
     IAL1 = ComponentValue.new(
       name: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      description: 'IAL1 - no identity proofing (rev 3)',
+      description: 'IAL1 - no identity proofing (NIST SP 800-63-3)',
       implied_component_values: [],
       requirements: [],
     ).freeze
     IAL2 = ComponentValue.new(
       name: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-      description: 'IAL2 - identity proofing is performed (rev3)',
+      description: 'IAL2 - identity proofing is performed (NIST SP 800-63-3)',
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing],
     ).freeze
     IAL2_BIO_REQUIRED = ComponentValue.new(
       name: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
-      description: 'IAL2 - identity proofing with biometric comparison (rev3)',
+      description: 'IAL2 - require identity proofing with biometric comparison (NIST SP 800-63-3)',
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing, :biometric_comparison,
-                     :two_pieces_of_fair_evidence, :biometric_comparison_required],
+                     :two_pieces_of_fair_evidence],
     ).freeze
     IAL2_BIO_PREFERRED = ComponentValue.new(
       name: Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
-      description: 'IAL2 - identity proofing with biometric comparison (rev3) preferred',
+      description:
+        'IAL2 - use identity proofing with biometric comparison if completed (NIST SP 800-63-3)',
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing, :biometric_comparison,
                      :two_pieces_of_fair_evidence],
     ).freeze
     IALMAX = ComponentValue.new(
       name: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-      description: 'IALMAX - internal step-up flow from IAL1 to IAL2',
+      description: 'IALMAX - internal step-up flow from IAL1 to IAL2 (deprecated)',
       implied_component_values: [],
       requirements: [:aal2, :ialmax],
     ).freeze
@@ -67,19 +68,19 @@ module Vot
     ).freeze
     AAL2 = ComponentValue.new(
       name: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy AAL2',
+      description: 'AAL2 conformant features are engaged (NIST SP 800-63-3)',
       implied_component_values: [],
       requirements: [:aal2],
     ).freeze
     AAL2_PHISHING_RESISTANT = ComponentValue.new(
       name: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy AAL2 with phishing resistance',
+      description: 'AAL2 with phishing resistant authenticator is required (NIST SP 800-63-3)',
       implied_component_values: [],
       requirements: [:aal2, :phishing_resistant],
     ).freeze
     AAL2_HSPD12 = ComponentValue.new(
       name: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy AAL2 with HSPD12 (PIV/CAC card)',
+      description: 'AAL2 with HSPD12 conformant authenticator (PIV/CAC card)',
       implied_component_values: [],
       requirements: [:aal2, :hspd12],
     ).freeze
@@ -91,7 +92,7 @@ module Vot
     ).freeze
     AAL3_HSPD12 = ComponentValue.new(
       name: Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
-      description: 'Legacy AAL3 with HSPD12 (PIV/CAC card)',
+      description: 'Legacy AAL3 with HSPD12 conformant authenticator (PIV/CAC card)',
       implied_component_values: [],
       requirements: [:aal2, :hspd12],
     ).freeze

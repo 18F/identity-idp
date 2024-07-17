@@ -419,9 +419,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP requests biometric_comparison_required' do
-              let(:vtr) { ['Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               before do
+                stub_const(
+                  'Saml::Idp::Constants::VALID_AUTHN_CONTEXTS',
+                  [
+                    *IdentityConfig.store.valid_authn_contexts,
+                    *Saml::Idp::Constants::BIOMETRIC_PROOFING_AUTHN_CONTEXTS,
+                  ].uniq,
+                )
+                allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).
+                  and_return(true)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
                 IdentityLinker.new(user, service_provider).link_identity(ial: 3)

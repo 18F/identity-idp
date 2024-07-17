@@ -63,11 +63,10 @@ class IdTokenBuilder
 
   def acr
     return nil unless identity.acr_values.present?
-
     if resolved_authn_context_result.ialmax?
       determine_ial_max_acr.name
     elsif resolved_authn_context_result.identity_proofing?
-      Vot::AuthnContextClassRefComponentValues::IAL2.name
+      authn_context.asserted_ial_acr
     else
       Vot::AuthnContextClassRefComponentValues::IAL1.name
     end
@@ -91,13 +90,17 @@ class IdTokenBuilder
     end
   end
 
-  def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
+  def authn_context
+    @authn_context ||= AuthnContextResolver.new(
       user: identity.user,
-      service_provider: identity.service_provider_record,
-      vtr: parsed_vtr_value,
+      service_provider: identity&.service_provider_record,
+      vtr: identity.vtr.presence && JSON.parse(identity.vtr),
       acr_values: identity.acr_values,
-    ).resolve
+    )
+  end
+
+  def resolved_authn_context_result
+    @resolved_authn_context_result ||= authn_context.resolve
   end
 
   def parsed_vtr_value

@@ -122,20 +122,19 @@ RSpec.describe SignUp::CompletionsController do
           get :show
         end
 
-        it 'tracks page visit' do
-          expect(@analytics).to have_received(:track_event).with(
-            'User registration: agency handoff visited',
-            ial2: false,
-            ialmax: true,
-            service_provider_name: subject.decorated_sp_session.sp_name,
-            page_occurence: '',
-            needs_completion_screen_reason: :new_sp,
-            sp_session_requested_attributes: [:email],
-            in_account_creation_flow: false,
-          )
-        end
-
         context 'verified user' do
+          it 'tracks page visit' do
+            expect(@analytics).to have_received(:track_event).with(
+              'User registration: agency handoff visited',
+              ial2: true,
+              ialmax: true,
+              service_provider_name: subject.decorated_sp_session.sp_name,
+              page_occurence: '',
+              needs_completion_screen_reason: :new_sp,
+              sp_session_requested_attributes: [:email],
+              in_account_creation_flow: false,
+            )
+          end
           it 'creates a presenter object that is requesting ial2' do
             expect(assigns(:presenter).ial2_requested?).to eq true
           end
@@ -143,6 +142,20 @@ RSpec.describe SignUp::CompletionsController do
 
         context 'unverified user' do
           let(:user) { create(:user) }
+
+          it 'tracks page visit' do
+            expect(@analytics).to have_received(:track_event).with(
+              'User registration: agency handoff visited',
+              ial2: false,
+              ialmax: true,
+              service_provider_name: subject.decorated_sp_session.sp_name,
+              page_occurence: '',
+              needs_completion_screen_reason: :new_sp,
+              sp_session_requested_attributes: [:email],
+              in_account_creation_flow: false,
+            )
+          end
+
           it 'creates a presenter object that is requesting ial2' do
             expect(assigns(:presenter).ial2_requested?).to eq false
           end

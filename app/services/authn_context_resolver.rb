@@ -23,17 +23,23 @@ class AuthnContextResolver
   def resolve
     if vtr.present?
       selected_vtr_parser_result_from_vtr_list
+    elsif acr_values.present?
+      acr_result
     else
-      acr_results
+      Vot::Parser::Result.no_sp_result
     end
   end
 
-  def asserted_ial_value
-    if acr_results.biometric_comparison?
+  def result
+    @result ||= resolve
+  end
+
+  def asserted_ial_acr
+    return if vtr.present?
+
+    if result.biometric_comparison?
       Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
-    elsif acr_results.ialmax?
-      Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    elsif acr_results.identity_proofing?
+    elsif result.identity_proofing?
       Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     else
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
@@ -77,14 +83,14 @@ class AuthnContextResolver
     end
   end
 
-  def acr_results
-    decorate_acr_result_with_user_context(
+  def acr_result
+    @acr_result ||= decorate_acr_result_with_user_context(
       acr_result_with_sp_defaults,
     )
   end
 
   def acr_result_with_sp_defaults
-    decorate_acr_result_with_sp_defaults(
+    @acr_result_with_sp_defaults ||= decorate_acr_result_with_sp_defaults(
       acr_result_without_sp_defaults,
     )
   end
@@ -99,22 +105,54 @@ class AuthnContextResolver
     )
   end
 
+  # With a given {User}, assert the resolved IAL ACR value and corollary requirements
+  #   1. If biometric proofing was requested and performed,
+  #      then we return a value to indicate we performed biometric comparison.
+  #   2. If identity proofing was requested and performed,
+  #      then we return a value to indicate we performed identity proofing
+  #   3. If we did not perform identity proofing,
+  #      then it is IAL1
   # @param [Vot::Parser::Result] result Parser result to decorate.
   # @return [Vot::Parser::Result]
   def decorate_acr_result_with_user_context(result)
-    return result unless result.biometric_comparison?
-
-    if result.component_values.map(&:name).include?(
-      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
-    )
-      result.with(biometric_comparison?: true)
-    elsif user&.identity_verified_with_biometric_comparison?
-      result.with(biometric_comparison?: true)
-    elsif user&.identity_verified?
-      result.with(biometric_comparison?: false)
+    if result.biometric_comparison? &&
+       (user&.identity_verified_with_biometric_comparison? ||
+         biometrics_comparison_required?)
+      biometrics_proofing_acr_result(result)
+    elsif result.identity_proofing_or_ialmax? && user&.identity_verified? ||
+          result.identity_proofing? && sp_requires_identity_proofing?
+      non_biometric_identity_proofing_acr_result(result)
+    elsif no_identity_proofing_acr_component_values.any?
+      no_identity_proofing_acr_result(result)
     else
-      result.with(biometric_comparison?: true)
+      result
     end
+  end
+
+  def biometrics_proofing_acr_result(result)
+    result.with(
+      aal2?: true,
+      identity_proofing?: true,
+      biometric_comparison?: true,
+      two_pieces_of_fair_evidence?: true,
+    )
+  end
+
+  def non_biometric_identity_proofing_acr_result(result)
+    result.with(
+      aal2?: true,
+      identity_proofing?: true,
+      biometric_comparison?: false,
+      two_pieces_of_fair_evidence?: false,
+    )
+  end
+
+  def no_identity_proofing_acr_result(result)
+    result.with(
+      identity_proofing?: false,
+      biometric_comparison?: false,
+      two_pieces_of_fair_evidence?: false,
+    )
   end
 
   def acr_result_without_sp_defaults
@@ -138,23 +176,46 @@ class AuthnContextResolver
   def result_with_sp_ial_defaults(result)
     if acr_ial_component_values.any?
       result
-    elsif service_provider&.ial.to_i >= 2
+    elsif sp_requires_identity_proofing?
       result.with(identity_proofing?: true, aal2?: true)
     else
       result
     end
   end
 
+  def assert_ial_with_loa_acr?
+    acr_loa_component_values.any? &&
+      acr_ial_component_values.length === acr_loa_component_values.size
+  end
+
   def acr_aal_component_values
-    acr_result_without_sp_defaults.component_values.filter do |component_value|
-      component_value.name.include?('aal') ||
-        component_value.name == Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+    @acr_aal_component_values ||=
+      acr_result_without_sp_defaults.component_values.filter do |component_value|
+        Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL.include?(component_value.name)
+      end
+  end
+
+  # @return [Array]
+  def acr_ial_component_values
+    @acr_ial_component_values ||=
+      acr_result_without_sp_defaults.component_values.filter do |component_value|
+        Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL.include?(component_value.name)
+      end
+  end
+
+  def no_identity_proofing_acr_component_values
+    @no_identity_proofing_acr_component_values ||= acr_ial_component_values.filter do |c|
+      Saml::Idp::Constants::NO_IDENTITY_PROOFING_AUTHN_CONTEXTS.include?(c.name)
     end
   end
 
-  def acr_ial_component_values
-    acr_result_without_sp_defaults.component_values.filter do |component_value|
-      component_value.name.include?('ial') || component_value.name.include?('loa')
+  def sp_requires_identity_proofing?
+    service_provider&.ial.to_i >= 2
+  end
+
+  def biometrics_comparison_required?
+    acr_ial_component_values.any? do |c|
+      c.name == Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
     end
   end
 end

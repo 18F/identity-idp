@@ -130,7 +130,6 @@ module SamlIdpAuthConcern
     end
   end
 
-  # @todo Update saml_request IAL handling
   def requested_ial_authn_context
     saml_request.requested_ial_authn_context || default_ial_context
   end

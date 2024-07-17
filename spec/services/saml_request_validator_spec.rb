@@ -230,6 +230,15 @@ RSpec.describe SamlRequestValidator do
         end
 
         context "when the IAL requested is #{biometric_ial}" do
+          before do
+            stub_const(
+              'Saml::Idp::Constants::VALID_AUTHN_CONTEXTS',
+              [
+                *IdentityConfig.store.valid_authn_contexts,
+                *Saml::Idp::Constants::BIOMETRIC_PROOFING_AUTHN_CONTEXTS,
+              ].uniq,
+            )
+          end
           context 'when the service provider is allowed to use biometric ials' do
             before do
               allow_any_instance_of(ServiceProvider).to receive(:biometric_ial_allowed?).

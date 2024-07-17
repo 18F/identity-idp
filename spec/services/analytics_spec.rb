@@ -163,6 +163,7 @@ RSpec.describe Analytics do
       let(:session) { { sp: { vtr: ['C1.P1'] } } }
       let(:expected_attributes) do
         {
+          **request_attributes,
           sp_request: {
             aal2: true,
             component_values: { 'C1' => true, 'C2' => true, 'P1' => true },
@@ -225,7 +226,7 @@ RSpec.describe Analytics do
 
       it 'includes the sp_request' do
         expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(expected_attributes))
+          with('Trackable Event', hash_including({ **expected_attributes }))
 
         analytics.track_event('Trackable Event')
       end
@@ -235,6 +236,7 @@ RSpec.describe Analytics do
       let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF } } }
       let(:expected_attributes) do
         {
+
           sp_request: {
             aal2: true,
             component_values: { 'ial/2' => true },

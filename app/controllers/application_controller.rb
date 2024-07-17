@@ -99,6 +99,15 @@ class ApplicationController < ActionController::Base
     super
   end
 
+  def authn_context
+    @authn_context ||= AuthnContextResolver.new(
+      user: current_user,
+      service_provider: sp_from_sp_session,
+      vtr: sp_session[:vtr],
+      acr_values: sp_session[:acr_values],
+    )
+  end
+
   def resolved_authn_context_result
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
@@ -106,12 +115,7 @@ class ApplicationController < ActionController::Base
     if service_provider.nil?
       @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
     else
-      @resolved_authn_context_result = AuthnContextResolver.new(
-        user: current_user,
-        service_provider: service_provider,
-        vtr: sp_session[:vtr],
-        acr_values: sp_session[:acr_values],
-      ).resolve
+      @resolved_authn_context_result = authn_context.resolve
     end
   end
 
