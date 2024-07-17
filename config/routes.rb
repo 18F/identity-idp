@@ -53,11 +53,6 @@ Rails.application.routes.draw do
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
 
-  get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  get '/openid_connect/logout' => 'openid_connect/logout#show'
-  post '/openid_connect/logout' => 'openid_connect/logout#create'
-  delete '/openid_connect/logout' => 'openid_connect/logout#delete'
-
   get '/robots.txt' => 'robots#index'
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 
@@ -274,6 +269,11 @@ Rails.application.routes.draw do
     delete '/manage/auth_app/:id' => 'users/auth_app#destroy', as: nil
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
+
+    get '/openid_connect/authorize' => 'openid_connect/authorization#index'
+    get '/openid_connect/logout' => 'openid_connect/logout#show'
+    post '/openid_connect/logout' => 'openid_connect/logout#create'
+    delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
 
