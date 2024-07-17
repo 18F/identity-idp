@@ -101,7 +101,7 @@ module Users
     def process_failed_captcha
       warden.logout(:user)
       warden.lock!
-      redirect_to security_check_failed_url
+      redirect_to sign_in_security_check_failed_url
     end
 
     def recaptcha_form_args

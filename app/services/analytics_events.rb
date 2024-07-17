@@ -5415,6 +5415,7 @@ module AnalyticsEvents
     track_event('Second MFA Reminder Visited')
   end
 
+  # User lands on security check failed page
   def security_check_failed_visited
     track_event(:security_check_failed_visited)
   end

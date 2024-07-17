@@ -981,7 +981,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
       fill_in :user_recaptcha_mock_score, with: '0.1'
       fill_in_credentials_and_submit(user.email, user.password)
 
-      expect(current_path).to eq security_check_failed_path
+      expect(current_path).to eq sign_in_security_check_failed_path
     end
   end
 
