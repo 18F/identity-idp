@@ -4144,12 +4144,17 @@ module AnalyticsEvents
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
-                                      **extra)
+  # @param ['piv_cac'] method_name Authentication method added
+  def multi_factor_auth_added_piv_cac(
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
+    method_name: :piv_cac,
+    **extra
+  )
     track_event(
       :multi_factor_auth_added_piv_cac,
       {
-        method_name: :piv_cac,
+        method_name:,
         enabled_mfa_methods_count:,
         in_account_creation_flow:,
         **extra,
