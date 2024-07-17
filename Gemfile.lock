@@ -832,6 +832,7 @@ DEPENDENCIES
   redis (>= 3.2.0)
   redis-session-store!
   retries
+  rexml (~> 3.3)
   rotp (~> 6.3, >= 6.3.0)
   rqrcode
   rspec (~> 3.13.0)
