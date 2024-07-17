@@ -4846,8 +4846,8 @@ module AnalyticsEvents
   end
 
   # Path visited (for investigation only)
-  def path_visited(path)
-    track_event("Path visited", method: request.method, path: request.fullpath)
+  def path_visited(method:, path:)
+    track_event(:path_visited, method:, path:)
   end
 
   # Pending account reset cancelled

@@ -206,6 +206,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
       it 'proceeds to the next page with valid info, excluding a selfie image' do
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
+
           sign_in_and_2fa_user(@user)
           complete_doc_auth_steps_before_document_capture_step
 
@@ -241,11 +242,22 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         end
 
         context 'with a passing selfie' do
+          SCREENSHOT_DIR = 'screenshots'
+
+          def take_screenshot
+            Dir.mkdir(SCREENSHOT_DIR) unless Dir.exist?(SCREENSHOT_DIR)
+            path = page.driver.current_url.gsub(/http:\/\/[0-9.]+:[0-9]+/, '').tr('/',':')
+            page.driver.browser.save_screenshot("#{SCREENSHOT_DIR}/#{path}.png")
+          end
+
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
+              take_screenshot
               sign_in_and_2fa_user(@user)
+              take_screenshot
               complete_doc_auth_steps_before_document_capture_step
+              take_screenshot
 
               expect(page).to have_current_path(idv_document_capture_url)
               expect(max_capture_attempts_before_native_camera.to_i).
@@ -257,7 +269,9 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               expect_doc_capture_id_subheader
               expect_doc_capture_selfie_subheader
               attach_liveness_images
+              take_screenshot
               submit_images
+              take_screenshot
 
               expect(page).to have_current_path(idv_ssn_url)
               expect_costing_for_document

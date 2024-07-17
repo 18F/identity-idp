@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   before_action :cache_issuer_in_cookie
 
   def track_path
-    analytics.path_visited(request.fullpath)
+    analytics.path_visited(method: request.method, path: request.fullpath)
   end
 
   def session_expires_at
