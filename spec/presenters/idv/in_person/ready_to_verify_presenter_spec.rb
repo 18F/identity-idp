@@ -121,6 +121,18 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
         )
       end
     end
+
+    context 'with Chinese locale' do
+      before { I18n.locale = :zh }
+
+      it 'returns localized location hours for weekdays and weekends by prefix' do
+        expect(presenter.selected_location_hours(:weekday)).to eq '9:00 AM – 5:00 PM'
+        expect(presenter.selected_location_hours(:saturday)).to eq '9:00 AM – 1:00 PM'
+        expect(presenter.selected_location_hours(:sunday)).to eq(
+          I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
+        )
+      end
+    end
   end
 
   describe '#sp_name' do
