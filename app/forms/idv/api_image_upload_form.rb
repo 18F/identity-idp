@@ -30,6 +30,7 @@ module Idv
     end
 
     def submit
+      puts "\n#{'=' * 10} ApiImageUploadForm#submit"
       form_response = validate_form
 
       client_response = nil
@@ -37,10 +38,13 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
+        puts "#{'=' * 4} client_response.extra[:doc_auth_result]: #{client_response.extra[:doc_auth_result]}\n\n"
 
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
+        puts "#{'=' * 4} document_capture_session.uuid: #{document_capture_session.uuid}\n\n"
+        puts "#{'=' * 4} document_capture_session.last_doc_auth_result: #{document_capture_session.last_doc_auth_result}\n\n"
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)

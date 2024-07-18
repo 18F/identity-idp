@@ -43,11 +43,20 @@ module Idv
 
       # save the Post Office location the user selected to an enrollment
       def update
+        # byebug
+        puts "\n#{'~' * 10} UspsLocationsController#update"
+        puts "#{'~' * 4} document_capture_session_uuid: #{document_capture_session_uuid}"
+        puts "#{'~' * 4} document_capture_session.uuid: #{document_capture_session&.uuid.inspect}"
+        puts "#{'~' * 4} document_capture_session.last_doc_auth_result: #{document_capture_session&.last_doc_auth_result}"
+
         enrollment.update!(
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
           doc_auth_result: document_capture_session&.last_doc_auth_result,
         )
+
+        enrollment.reload
+        puts "#{'~' * 4} enrollment.doc_auth_result: #{enrollment.doc_auth_result}\n"
 
         add_proofing_component
 

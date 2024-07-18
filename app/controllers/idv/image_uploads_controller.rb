@@ -5,7 +5,9 @@ module Idv
     respond_to :json
 
     def create
+      puts "\n#{'+' * 10} ImageUploadsController#create"
       image_upload_form_response = image_upload_form.submit
+      puts "#{'+' * 4} image_upload_form_response[:doc_auth_result]: #{image_upload_form_response.to_h[:doc_auth_result]}\n\n"
 
       presenter = ImageUploadResponsePresenter.new(
         form_response: image_upload_form_response,
