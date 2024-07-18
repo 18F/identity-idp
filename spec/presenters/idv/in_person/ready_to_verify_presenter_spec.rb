@@ -66,33 +66,44 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   end
 
   describe '#selected_location_hours' do
-    let(:hours_open) { '8:00 AM - 4:30 PM' }
-    let(:hours_closed) { 'Closed' }
-
-    before do
-      allow(presenter).to receive(:selected_location_details).and_return(
-        {
-          'weekday_hours' => hours_open,
-          'saturday_hours' => hours_open,
-          'sunday_hours' => hours_closed,
-        },
-      )
-    end
-
     it 'returns localized location hours for weekdays and weekends by prefix' do
-      expect(presenter.selected_location_hours(:weekday)).to eq '8:00 AM – 4:30 PM'
-      expect(presenter.selected_location_hours(:saturday)).to eq '8:00 AM – 4:30 PM'
+      expect(presenter.selected_location_hours(:weekday)).to eq '9:00 AM – 5:00 PM'
+      expect(presenter.selected_location_hours(:saturday)).to eq '9:00 AM – 1:00 PM'
       expect(presenter.selected_location_hours(:sunday)).to eq(
         I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
       )
+    end
+
+    context 'with previously localized hours' do
+      let(:enrollment_selected_location_details) do
+        json = JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
+        json['weekday_hours'] = UspsInPersonProofing::EnrollmentHelper.localized_hours(
+          json['weekday_hours'],
+        )
+        json['saturday_hours'] = UspsInPersonProofing::EnrollmentHelper.localized_hours(
+          json['saturday_hours'],
+        )
+        json['sunday_hours'] = UspsInPersonProofing::EnrollmentHelper.localized_hours(
+          json['sunday_hours'],
+        )
+        json
+      end
+
+      it 'localizes appropriately' do
+        expect(presenter.selected_location_hours(:weekday)).to eq '9:00 AM – 5:00 PM'
+        expect(presenter.selected_location_hours(:saturday)).to eq '9:00 AM – 1:00 PM'
+        expect(presenter.selected_location_hours(:sunday)).to eq(
+          I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
+        )
+      end
     end
 
     context 'with Spanish locale' do
       before { I18n.locale = :es }
 
       it 'returns localized location hours for weekdays and weekends by prefix' do
-        expect(presenter.selected_location_hours(:weekday)).to eq '8:00 AM – 4:30 PM'
-        expect(presenter.selected_location_hours(:saturday)).to eq '8:00 AM – 4:30 PM'
+        expect(presenter.selected_location_hours(:weekday)).to eq '9:00 AM – 5:00 PM'
+        expect(presenter.selected_location_hours(:saturday)).to eq '9:00 AM – 1:00 PM'
         expect(presenter.selected_location_hours(:sunday)).to eq(
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
         )
@@ -103,8 +114,20 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       before { I18n.locale = :fr }
 
       it 'returns localized location hours for weekdays and weekends by prefix' do
-        expect(presenter.selected_location_hours(:weekday)).to eq '8 h 00 AM – 4 h 30 PM'
-        expect(presenter.selected_location_hours(:saturday)).to eq '8 h 00 AM – 4 h 30 PM'
+        expect(presenter.selected_location_hours(:weekday)).to eq '9 h 00 AM – 5 h 00 PM'
+        expect(presenter.selected_location_hours(:saturday)).to eq '9 h 00 AM – 1 h 00 PM'
+        expect(presenter.selected_location_hours(:sunday)).to eq(
+          I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
+        )
+      end
+    end
+
+    context 'with Chinese locale' do
+      before { I18n.locale = :zh }
+
+      it 'returns localized location hours for weekdays and weekends by prefix' do
+        expect(presenter.selected_location_hours(:weekday)).to eq '9:00 AM – 5:00 PM'
+        expect(presenter.selected_location_hours(:saturday)).to eq '9:00 AM – 1:00 PM'
         expect(presenter.selected_location_hours(:sunday)).to eq(
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
         )
