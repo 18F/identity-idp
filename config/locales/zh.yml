@@ -873,9 +873,7 @@ forms.piv_cac_login.submit: 插入 PIV/CAC 卡
 forms.piv_cac_mfa.submit: 提供 PIV/CAC 卡
 forms.piv_cac_setup.nickname: PIV/CAC 卡昵称
 forms.piv_cac_setup.no_thanks: 不用，谢谢。
-forms.piv_cac_setup.piv_cac_intro_html:
-  "<strong>每次你登录时</strong>，作为双因素身份证实的一部分，\
-  我们会要你提供你的 PIV/CAC 卡。<br><br>点击“添加 PIV/CAC”后，你的浏览器会提示要你的 PIV/CAC 并要你选择一个证书。"
+forms.piv_cac_setup.piv_cac_intro_html: '<strong>每次你登录时</strong>，作为双因素身份证实的一部分，我们会要你提供你的 PIV/CAC 卡。<br><br>点击“添加 PIV/CAC”后，你的浏览器会提示要你的 PIV/CAC 并要你选择一个证书。'
 forms.piv_cac_setup.submit: 添加 PIV/CAC 卡
 forms.registration.labels.email: 输入你的电邮地址
 forms.registration.labels.email_language: 选择你的电邮语言偏好
@@ -892,9 +890,7 @@ forms.two_factor.try_again: 使用另一个电话号码
 forms.validation.required_checkbox: 请在这一框里打勾来继续。
 forms.webauthn_platform_setup.continue: 继续
 forms.webauthn_platform_setup.info_text: 你设置人脸或触摸解锁后需要再设置另一个身份证实方法。
-forms.webauthn_platform_setup.intro_html:
-  "<p>就像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或\
-  者其他方法。</p><p>如果你使用iCloud Keychain 或 Google Password Manager 这样的密码管理器，管理器可能会要保存一个通行密钥。这会使你能使用那个密码管理器在任何设备上证实身份。%{link}</p>"
+forms.webauthn_platform_setup.intro_html: '<p>就像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p><p>如果你使用iCloud Keychain 或 Google Password Manager 这样的密码管理器，管理器可能会要保存一个通行密钥。这会使你能使用那个密码管理器在任何设备上证实身份。%{link}</p>'
 forms.webauthn_platform_setup.intro_link_text: 了解关于使用不同设备的更多信息。
 forms.webauthn_platform_setup.nickname: 设备昵称
 forms.webauthn_platform_setup.nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
@@ -971,8 +967,7 @@ help_text.requested_attributes.email: 电邮地址
 help_text.requested_attributes.full_name: 姓名
 help_text.requested_attributes.ial1_consent_reminder_html: 你每年都必须授权同意与 <strong>%{sp}</strong> 分享信息。我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
 help_text.requested_attributes.ial1_intro_html: 我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息："
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息：'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息：'
 help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。'
 help_text.requested_attributes.phone: 电话号码
@@ -1356,8 +1351,7 @@ instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短�
 instructions.mfa.voice.number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
 instructions.mfa.webauthn_platform.learn_more_help: 了解更多有关人脸或触摸解锁的信息
 instructions.mfa.webauthn.confirm_webauthn: 提供与你账户相关的安全密钥。
-instructions.mfa.webauthn.confirm_webauthn_platform_html: "<p>你可以像解锁你的设备一样来做身份证\
-  实，无论是用你的面孔还是指纹、密码或者其他方法。</p> <p>如果你用一个密码管理器设置了人脸或触摸解锁，则可以从使用那一密码管理器的任何设备进行身份证实。否则的话，使用你设置人脸或触摸解锁的同一设备。</p>"
+instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>你可以像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p> <p>如果你用一个密码管理器设置了人脸或触摸解锁，则可以从使用那一密码管理器的任何设备进行身份证实。否则的话，使用你设置人脸或触摸解锁的同一设备。</p>'
 instructions.mfa.wrong_number: 输入的电话号码不对？
 instructions.password.forgot: 不知道你的密码？确认你的电邮地址后重设密码。
 instructions.password.help_text: 避免重复使用你其他网上账户（比如银行、电邮和社交媒体）的密码。请勿包括你电邮地址中的单词。
@@ -1865,8 +1859,7 @@ user_mailer.in_person_verified.next_sign_in.without_sp: 接下来请点击按钮
 user_mailer.in_person_verified.sign_in: 登录
 user_mailer.in_person_verified.subject: 你在 %{app_name} 成功地验证了身份
 user_mailer.in_person_verified.warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href="%{reset_password_url}"> 重设密码</a>。要报告这件事，<a href="%{contact_us_url}">联系 %{app_name} 支持 %{app_name}</a>。
-user_mailer.letter_reminder_14_days.body_html: "<p><strong>%{date_letter_was_se\
-  nt} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>"
+user_mailer.letter_reminder_14_days.body_html: '<p><strong>%{date_letter_was_sent} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>'
 user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: 如果你没有收到这封信， %{another_letter_link_html}。
 user_mailer.letter_reminder_14_days.finish: 完成验证你的身份
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: 登录要求再发一封信

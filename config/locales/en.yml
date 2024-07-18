@@ -956,8 +956,7 @@ help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial1_consent_reminder_html: You must consent each year to share your information with <strong>%{sp}</strong>. We’ll share your information with <strong>%{sp}</strong> to connect your account.
 help_text.requested_attributes.ial1_intro_html: We’ll share your information with <strong>%{sp}</strong> to connect your account.
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:"
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> needs to know who you are to connect your account. We’ll share this information with %{sp}:'
 help_text.requested_attributes.ial2_reverified_consent_info: 'Because you verified your identity again, we need your permission to share this information with %{sp}:'
 help_text.requested_attributes.phone: Phone number
@@ -1603,8 +1602,7 @@ titles.verify_email: Check your email
 titles.visitors.index: Welcome
 titles.webauthn_setup: Add your security key
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requires a high-security authentication method, such as face or touch unlock, a security key or a government employee ID.'
-two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
-  strong> requires your government employee ID, a high-security authentication method."
+two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government employee ID, a high-security authentication method.'
 two_factor_authentication.account_reset.cancel_link: Cancel your request
 two_factor_authentication.account_reset.link: deleting your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.
