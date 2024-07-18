@@ -5415,11 +5415,6 @@ module AnalyticsEvents
     track_event('Second MFA Reminder Visited')
   end
 
-  # User lands on security check failed page
-  def security_check_failed_visited
-    track_event(:security_check_failed_visited)
-  end
-
   # Tracks when security event is received
   # @param [Boolean] success Whether form validation was successful
   # @param [String] error_code
@@ -5475,6 +5470,11 @@ module AnalyticsEvents
   # tracks when a user visits the sign in page
   def sign_in_page_visit(flash:, **extra)
     track_event('Sign in page visited', flash:, **extra)
+  end
+
+  # User lands on security check failed page
+  def sign_in_security_check_failed_visited
+    track_event(:sign_in_security_check_failed_visited)
   end
 
   # @param [Boolean] success

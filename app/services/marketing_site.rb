@@ -10,6 +10,7 @@ class MarketingSite
     manage-your-account/add-or-change-your-authentication-method
     manage-your-account/personal-key
     trouble-signing-in/face-or-touch-unlock
+    trouble-signing-in/security-check-failed
     verify-your-identity/accepted-identification-documents
     verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id

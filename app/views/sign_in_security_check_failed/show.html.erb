@@ -13,15 +13,15 @@
         ) %>
   </p>
 
-  <ul class="usa-list margin-top-0">
+  <ul class="usa-list">
     <li><%= t('security_check_failed.info_p1', app_name: APP_NAME) %></li>
     <li><%= t('security_check_failed.info_p2_html', piv_cac_url: login_piv_cac_url) %></li> 
     <li><%= t('security_check_failed.info_p3') %></li> 
   </ul>
 
-  <%= render TroubleshootingOptionsComponent.new do |c| %>
-    <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-    <% c.with_option(
+  <%= tc.with_troubleshooting_options.new do |tc| %>
+    <% tc.with_header { t('components.troubleshooting_options.default_heading') } %>
+    <% tc.with_option(
          url: contact_redirect_url,
          new_tab: true,
        ).with_content(t('security_check_failed.contact', app_name: APP_NAME)) %>

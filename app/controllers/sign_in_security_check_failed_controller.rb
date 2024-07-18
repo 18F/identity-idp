@@ -2,6 +2,6 @@
 
 class SignInSecurityCheckFailedController < ApplicationController
   def show
-    analytics.security_check_failed_visited
+    analytics.sign_in_security_check_failed_visited
   end
 end
