@@ -176,7 +176,6 @@ module Users
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
-        new_device: success ? new_device? : nil,
       )
     end
 

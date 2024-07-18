@@ -404,8 +404,6 @@ module AnalyticsEvents
   # @param [String] bad_password_count represents number of prior login failures
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
-  # @param [Boolean, nil] new_device Whether the user is authenticating from a new device. Nil if
-  # there is the attempt was unsuccessful, since it cannot be known whether it's a new device.
   # Tracks authentication attempts at the email/password screen
   def email_and_password_auth(
     success:,
@@ -415,7 +413,6 @@ module AnalyticsEvents
     bad_password_count:,
     sp_request_url_present:,
     remember_device:,
-    new_device:,
     **extra
   )
     track_event(
@@ -427,7 +424,6 @@ module AnalyticsEvents
       bad_password_count:,
       sp_request_url_present:,
       remember_device:,
-      new_device:,
       **extra,
     )
   end
