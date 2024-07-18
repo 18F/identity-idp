@@ -216,7 +216,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: false,
           errors: {
-            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
+            limit: [I18n.t('doc_auth.errors.rate_limited_heading')],
           },
           error_details: {
             limit: { rate_limited: true },

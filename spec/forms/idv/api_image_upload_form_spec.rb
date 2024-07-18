@@ -87,7 +87,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         form.submit
 
         expect(form.valid?).to eq(false)
-        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.rate_limited_heading')])
+        expect(form.errors[:limit]).to eq([I18n.t('doc_auth.errors.rate_limited_heading')])
       end
     end
 
