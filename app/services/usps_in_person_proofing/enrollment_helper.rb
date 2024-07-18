@@ -102,6 +102,42 @@ module UspsInPersonProofing
         end
       end
 
+      def localized_location(location)
+        {
+          address: location.address,
+          city: location.city,
+          distance: location.distance,
+          name: location.name,
+          saturday_hours: EnrollmentHelper.localized_hours(location.saturday_hours),
+          state: location.state,
+          sunday_hours: EnrollmentHelper.localized_hours(location.sunday_hours),
+          weekday_hours: EnrollmentHelper.localized_hours(location.weekday_hours),
+          zip_code_4: location.zip_code_4,
+          zip_code_5: location.zip_code_5,
+          is_pilot: location.is_pilot,
+        }
+      end
+
+      def localized_hours(hours)
+        return nil if hours.nil?
+
+        if hours == 'Closed'
+          I18n.t('in_person_proofing.body.barcode.retail_hours_closed')
+        elsif hours.include?(' - ') # Hyphen
+          hours.
+            split(' - '). # Hyphen
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        elsif hours.include?(' – ') # Endash
+          hours.
+            split(' – '). # Endash
+            map { |time| Time.zone.parse(time).strftime(I18n.t('time.formats.event_time')) }.
+            join(' – ') # Endash
+        else
+          hours
+        end
+      end
+
       private
 
       SECONDARY_ID_ADDRESS_MAP = {
