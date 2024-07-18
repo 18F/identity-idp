@@ -305,6 +305,7 @@ module IdentityConfig
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
     )
+    config.add(:protocols_report_config, type: :json)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:pwned_passwords_file_path, type: :string)
     config.add(:rack_mini_profiler, type: :boolean)

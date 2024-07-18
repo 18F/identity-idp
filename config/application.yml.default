@@ -219,6 +219,7 @@ participate_in_dap: false
 password_max_attempts: 3
 personal_key_retired: true
 phone_carrier_registration_blocklist_array: '[]'
+protocols_report_config: '[]'
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 phone_confirmation_max_attempts: 20
