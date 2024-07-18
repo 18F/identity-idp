@@ -46,19 +46,33 @@ module Idv
         enrollment.update!(
           selected_location_details: update_params.as_json,
           issuer: current_sp&.issuer,
+          doc_auth_result: document_capture_session&.last_doc_auth_result,
         )
 
-        if document_capture_session
-          enrollment.update!(
-            doc_auth_result: document_capture_session.last_doc_auth_result,
-          )
-        end
         add_proofing_component
 
         render json: { success: true }, status: :ok
       end
 
       private
+
+      def idv_session
+        if user_session && current_user
+          @idv_session ||= Idv::Session.new(
+            user_session: user_session,
+            current_user: current_user,
+            service_provider: current_sp,
+          )
+        end
+      end
+
+      def document_capture_session
+        if idv_session&.document_capture_session_uuid # standard flow
+          DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
+        else # hybrid flow
+          super
+        end
+      end
 
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer
