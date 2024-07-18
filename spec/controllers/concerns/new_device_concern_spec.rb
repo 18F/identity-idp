@@ -5,12 +5,25 @@ RSpec.describe NewDeviceConcern, type: :controller do
     Class.new do
       include NewDeviceConcern
 
-      attr_reader :current_user, :user_session, :cookies
+      attr_reader :current_user, :user_session, :cookies, :authenticated
 
-      def initialize(current_user:, user_session:, cookies:)
+      def initialize(current_user:, user_session:, cookies:, authenticated:)
         @current_user = current_user
         @user_session = user_session
         @cookies = cookies
+        @authenticated = authenticated
+      end
+
+      def warden
+        warden = Class.new do
+          attr_accessor :authenticated
+
+          def authenticated?(_scope)
+            @authenticated
+          end
+        end.new
+        warden.authenticated = authenticated
+        warden
       end
     end
   end
@@ -18,7 +31,8 @@ RSpec.describe NewDeviceConcern, type: :controller do
   let(:cookies) { {} }
   let(:current_user) { create(:user) }
   let(:user_session) { {} }
-  let(:instance) { test_class.new(current_user:, user_session:, cookies:) }
+  let(:authenticated) { true }
+  let(:instance) { test_class.new(current_user:, user_session:, cookies:, authenticated:) }
 
   describe '#set_new_device_session' do
     context 'with new device' do
@@ -74,6 +88,13 @@ RSpec.describe NewDeviceConcern, type: :controller do
       let(:user_session) { { new_device: false } }
 
       it { expect(new_device?).to eq(false) }
+    end
+
+    context 'unauthenticated user' do
+      let(:user_session) { nil }
+      let(:authenticated) { false }
+
+      it { expect(new_device?).to be_nil }
     end
   end
 end
