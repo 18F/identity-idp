@@ -869,8 +869,8 @@ forms.personal_key.instructions: 请在下面输入你的个人密钥，以确�
 forms.personal_key.required_checkbox: 我将个人密钥存放到了一个安全的地方。
 forms.personal_key.title: 输入你的个人密钥
 forms.phone.buttons.delete: 去掉电话
-forms.piv_cac_login.submit: 插入 PIV/CAC 卡
-forms.piv_cac_mfa.submit: 提供 PIV/CAC 卡
+forms.piv_cac_login.submit: 插入您的政府雇员ID
+forms.piv_cac_mfa.submit: 插入 PIV/CAC
 forms.piv_cac_setup.nickname: PIV/CAC 卡昵称
 forms.piv_cac_setup.no_thanks: 不用，谢谢。
 forms.piv_cac_setup.piv_cac_intro_html:
@@ -932,16 +932,16 @@ headings.passwords.change: 更改密码
 headings.passwords.confirm: 确认你目前密码以继续
 headings.passwords.confirm_for_personal_key: 输入密码并获得一个新个人密钥
 headings.passwords.forgot: 忘了你的密码?
-headings.piv_cac_login.account_not_found: 你的 PIV/CAC 没有连接账户
-headings.piv_cac_login.add: 把你的 PIV 或 CAC 设为一个双因素身份证实方法，这样你可以用其登录。
-headings.piv_cac_login.new: 使用你的 PIV 或 CAC 登录
+headings.piv_cac_login.account_not_found: 您的政府雇员ID未与帐户连接
+headings.piv_cac_login.add: 使用智能卡读卡器设置您的个人身份验证 (PIV) 或通用访问卡 (CAC)。您可以使用其中任何一种作为双因素身份证实方法来登录。
+headings.piv_cac_login.new: 插入您的政府雇员ID
 headings.piv_cac_login.success: 你已成功把 PIV/CAC 设为一个身份证实方法
 headings.piv_cac_setup.already_associated: 你提供的 PIV/CAC 与另外一个用户相关。
 headings.piv_cac_setup.new: 用你的 PIV/CAC 卡来保护你的账户安全
 headings.piv_cac.certificate.bad: 你选择的 PIV/CAC 证书有误
 headings.piv_cac.certificate.expired: 你选择的 PIV/CAC 证书已过期
 headings.piv_cac.certificate.invalid: 你选择的 PIV/CAC 证书有误
-headings.piv_cac.certificate.none: 我们在你的 PIV/CAC 卡上探查不到证书
+headings.piv_cac.certificate.none: 我们在您政府雇员ID上探查不到证书
 headings.piv_cac.certificate.not_auth_cert: 请给你的PIV/CAC 卡选择另外一个证书
 headings.piv_cac.certificate.revoked: 你选择的 PIV/CAC 证书已从你的卡上撤销
 headings.piv_cac.certificate.unverified: 你选择的 PIV/CAC 证书有误
@@ -1335,14 +1335,14 @@ instructions.forgot_password.close_window: 重设你的密码后，你就可以�
 instructions.go_back_to_mobile_app: 要继续的话，请回到 %{friendly_name}应用程序并登录。
 instructions.mfa.authenticator.confirm_code_html: 输入来自你身份证实应用程序的代码。如果你在应用程序中设了几个账户，请输入与在 %{app_name_html}对应的代码。
 instructions.mfa.authenticator.manual_entry: 或者动手将这个密码输入你的身份证实应用程序。
-instructions.mfa.piv_cac.account_not_found_html: 用你的电邮地址和密码 <p><strong>%{sign_in}</strong>。然后把你的 PIV/CAC 添加到账户。</p> <p><strong>没有%{app_name} 账户？</strong> %{create_account}</p>
+instructions.mfa.piv_cac.account_not_found_html: '<p>使用您的电子邮件地址和密码 %{sign_in}。然后将您的 PIV/CAC 插入智能卡读卡器以添加到您的帐户。</p><p>没有 %{app_name} 帐户？%{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong> （恰当的证书可能会有你的名字）而且<strong>输入你的个人识别号码（PIN）</strong> (你的个人识别号码（PIN）是在设置 PIV/CAC 时设立的)。'
 instructions.mfa.piv_cac.already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
 instructions.mfa.piv_cac.back_to_sign_in: 返回去登录
-instructions.mfa.piv_cac.confirm_piv_cac: 提供与你账户相关的 PIV/CAC。
+instructions.mfa.piv_cac.confirm_piv_cac: 将与您的帐户关联的 PIV/CAC 插入智能卡读卡器。
 instructions.mfa.piv_cac.did_not_work_html: 请 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
 instructions.mfa.piv_cac.http_failure: 服务器反应时间过长。请再试一次。
-instructions.mfa.piv_cac.no_certificate_html: 请确保你的 PIV/CAC 是连上的并 %{try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
+instructions.mfa.piv_cac.no_certificate_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
 instructions.mfa.piv_cac.please_try_again: 再试一次
 instructions.mfa.piv_cac.sign_in_html: 确保 <strong>你有 %{app_name} 账户</strong> 而且 <strong> PIV/CAC</strong> 已被你设置为一个双因素身份证实方法。
@@ -1425,7 +1425,7 @@ notices.forgot_password.no_email_sent_explanation_start: 没有收到电邮？
 notices.forgot_password.resend_email_success: 我们发了另外一个重设密码的电邮。
 notices.password_changed: 你更改了密码。
 notices.phone_confirmed: 你账户添加了一个电话。
-notices.piv_cac_configured: 你账户添加了一个 PIV/CAC 卡。
+notices.piv_cac_configured: 添加您的政府雇员ID
 notices.privacy.privacy_act_statement: 隐私法声明
 notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
@@ -1595,11 +1595,11 @@ titles.openid_connect.logout: OpenID Connect 登出
 titles.passwords.change: 更改你账户密码
 titles.passwords.forgot: 重设密码
 titles.personal_key: 万一
-titles.piv_cac_login.add: 添加你的 PIV 或者 CAC
+titles.piv_cac_login.add: 添加您的政府雇员ID
 titles.piv_cac_login.new: 用 PIV/CAC 登入你的账户
 titles.piv_cac_setup.new: 用 PIV/CAC 卡来保护你账户安全
 titles.piv_cac_setup.upsell: 添加你的政府雇员身份证件更快、更安全地登录
-titles.present_piv_cac: 提供你的 PIV/CAC
+titles.present_piv_cac: 插入您的政府雇员ID
 titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
 titles.registrations.new: 设立账户
@@ -1708,7 +1708,7 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: 使�
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: 我没收到一次性代码
 two_factor_authentication.phone.delete.failure: 无法去掉你的电话。
 two_factor_authentication.phone.delete.success: 你的电话已被去掉。
-two_factor_authentication.piv_cac_header_text: 提供你的 PIV/CAC
+two_factor_authentication.piv_cac_header_text: 插入您的政府雇员ID
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
 two_factor_authentication.piv_cac_upsell.explain: 这将改善你账户安全，而且你在登录时无需再输入电邮和密码。

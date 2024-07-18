@@ -858,8 +858,8 @@ forms.personal_key.instructions: Please confirm you have a copy of your personal
 forms.personal_key.required_checkbox: I saved my personal key in a safe place.
 forms.personal_key.title: Enter your personal key
 forms.phone.buttons.delete: Remove phone
-forms.piv_cac_login.submit: Insert your PIV/CAC
-forms.piv_cac_mfa.submit: Present PIV/CAC card
+forms.piv_cac_login.submit: Insert your government employee ID
+forms.piv_cac_mfa.submit: Insert PIV/CAC
 forms.piv_cac_setup.nickname: PIV/CAC nickname
 forms.piv_cac_setup.no_thanks: No thanks
 forms.piv_cac_setup.piv_cac_intro_html: We’ll ask you to present your PIV/CAC card <strong>each time you sign in</strong> as part of two-factor authentication.<br><br>After clicking “Add PIV/CAC” your browser will prompt you for your PIV/CAC PIN and have you select a certificate.
@@ -917,16 +917,16 @@ headings.passwords.change: Change your password
 headings.passwords.confirm: Confirm your current password to continue
 headings.passwords.confirm_for_personal_key: Enter password and get a new personal key
 headings.passwords.forgot: Forgot your password?
-headings.piv_cac_login.account_not_found: Your PIV/CAC is not connected to an account
-headings.piv_cac_login.add: Set up your PIV or CAC as a two-factor authentication method so you can use it to sign in.
-headings.piv_cac_login.new: Sign in with your PIV or CAC
+headings.piv_cac_login.account_not_found: Your government employee ID is not connected to an account
+headings.piv_cac_login.add: Use your smart card reader to set up your Personal Identity Verification (PIV) or Common Access Card (CAC). You can use any of these as a two-factor authentication method to sign in.
+headings.piv_cac_login.new: Sign in with your government employee ID
 headings.piv_cac_login.success: You successfully set up PIV/CAC as an authentication method.
 headings.piv_cac_setup.already_associated: The PIV/CAC you presented is associated with another user.
 headings.piv_cac_setup.new: Use your PIV/CAC card to secure your account
 headings.piv_cac.certificate.bad: The PIV/CAC certificate you selected is invalid
 headings.piv_cac.certificate.expired: The PIV/CAC certificate you selected has expired
 headings.piv_cac.certificate.invalid: The PIV/CAC certificate you selected is invalid
-headings.piv_cac.certificate.none: We cannot detect a certificate on your PIV/CAC card
+headings.piv_cac.certificate.none: We cannot detect a certificate on your government employee ID
 headings.piv_cac.certificate.not_auth_cert: Please choose a different certificate for your PIV/CAC card
 headings.piv_cac.certificate.revoked: The PIV/CAC certificate you selected has been revoked from your card
 headings.piv_cac.certificate.unverified: The PIV/CAC certificate you selected is invalid
@@ -1320,14 +1320,14 @@ instructions.forgot_password.close_window: You can close this browser window onc
 instructions.go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app and sign in.
 instructions.mfa.authenticator.confirm_code_html: Enter the code from your authenticator app. If you have several accounts set up in your app, enter the code corresponding to %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: Or enter this code manually into your authentication app
-instructions.mfa.piv_cac.account_not_found_html: '<p><strong>%{sign_in}</strong> with your email address and password. Then add your PIV/CAC to your account.</p> <p><strong>Don’t have a %{app_name} account?</strong> %{create_account}</p>'
+instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email address and password. Then insert your PIV/CAC into a smart card reader to add to your account.</p><p>Don’t have a %{app_name} account? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong> (the right one likely has your name of it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Please choose a certificate from a different PIV/CAC, contact your administrator to ensure your PIV/CAC is up to date. If you think this is an error, %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Go back to sign in
-instructions.mfa.piv_cac.confirm_piv_cac: Present the PIV/CAC that you associated with your account.
+instructions.mfa.piv_cac.confirm_piv_cac: Insert your PIV/CAC that you associated with your account into a smart card reader.
 instructions.mfa.piv_cac.did_not_work_html: Please %{please_try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
-instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is connected and %{try_again_html}. If this problem continues, contact your agency administrator.
+instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.please_try_again: try again
 instructions.mfa.piv_cac.sign_in_html: Make sure <strong>you have a %{app_name} account</strong> and <strong>you’ve set up PIV/CAC</strong> as a two-factor authentication method.
@@ -1409,7 +1409,7 @@ notices.forgot_password.no_email_sent_explanation_start: Didn’t receive an ema
 notices.forgot_password.resend_email_success: We sent another password reset email.
 notices.password_changed: You changed your password.
 notices.phone_confirmed: A phone was added to your account.
-notices.piv_cac_configured: A PIV/CAC card was added to your account.
+notices.piv_cac_configured: A government employee ID was added to your account.
 notices.privacy.privacy_act_statement: Privacy Act Statement
 notices.privacy.security_and_privacy_practices: Security Practices and Privacy Act Statement
 notices.resend_confirmation_email.success: We sent another confirmation email.
@@ -1579,11 +1579,11 @@ titles.openid_connect.logout: OpenID Connect Logout
 titles.passwords.change: Change the password for your account
 titles.passwords.forgot: Reset password
 titles.personal_key: Just in case
-titles.piv_cac_login.add: Add your PIV or CAC
+titles.piv_cac_login.add: Add your government employee ID
 titles.piv_cac_login.new: Use your PIV/CAC to sign in to your account
 titles.piv_cac_setup.new: Use your PIV/CAC card to secure your account
 titles.piv_cac_setup.upsell: Add your government employee ID for a faster, more secure sign in
-titles.present_piv_cac: Present your PIV/CAC
+titles.present_piv_cac: Insert your government employee ID
 titles.present_webauthn: Connect your hardware security key
 titles.reactivate_account: Reactivate your account
 titles.registrations.new: Create your account
@@ -1693,7 +1693,7 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: Use 
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: I didn’t receive my one-time code
 two_factor_authentication.phone.delete.failure: Unable to remove your phone.
 two_factor_authentication.phone.delete.success: Your phone has been removed.
-two_factor_authentication.piv_cac_header_text: Present your PIV/CAC
+two_factor_authentication.piv_cac_header_text: Insert your government employee ID
 two_factor_authentication.piv_cac_upsell.add_piv: Add PIV/CAC card
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choose other methods instead
 two_factor_authentication.piv_cac_upsell.explain: This will improve your account security and let you skip entering your email and password when signing in.
