@@ -1823,7 +1823,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: Si vous avez
 user_mailer.in_person_failed_suspected_fraud.body.intro: Vous avez tenté de confirmer votre identité par le biais de %{app_name}, mais votre identité n’a pas pu être confirmée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: Bonjour,
 user_mailer.in_person_failed_suspected_fraud.subject: Votre identité n’a pas pu être vérifiée en personne
-user_mailer.in_person_failed.body.with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour réessayer de confirmer votre identité en ligne par le biais de %{sp_or_app_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
+user_mailer.in_person_failed.body.with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour réessayer de confirmer votre identité par le biais de %{sp_or_app_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
 user_mailer.in_person_failed.body.without_cta: Veuillez réessayer de confirmer votre identité sur le site Web de %{sp_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
 user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne
