@@ -41,7 +41,7 @@ class EmailAddress < ApplicationRecord
     email.end_with?('.gov', '.mil')
   end
 
-  def is_fed_email_domain?
+  def is_fed_email?
     return false unless domain
     FedEmailDomains.email_is_fed_domain?(domain)
   end
