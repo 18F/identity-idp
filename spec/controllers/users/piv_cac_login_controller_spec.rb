@@ -34,6 +34,7 @@ RSpec.describe Users::PivCacLoginController do
             errors: {},
             key_id: nil,
             success: false,
+            new_device: nil,
           )
         end
 
@@ -85,6 +86,7 @@ RSpec.describe Users::PivCacLoginController do
               },
               key_id: nil,
               success: false,
+              new_device: nil,
             )
           end
 
@@ -125,6 +127,7 @@ RSpec.describe Users::PivCacLoginController do
               errors: {},
               key_id: nil,
               success: true,
+              new_device: true,
             )
           end
 
@@ -168,6 +171,26 @@ RSpec.describe Users::PivCacLoginController do
               presented: true,
             }
             expect(controller.user_session[:decrypted_x509]).to eq session_info.to_json
+          end
+
+          context 'with authenticated device' do
+            let(:user) { create(:user, :with_authenticated_device) }
+
+            before do
+              cookies[:device] = user.devices.last.cookie_uuid
+            end
+
+            it 'tracks the login attempt' do
+              response
+
+              expect(@analytics).to have_logged_event(
+                :piv_cac_login,
+                errors: {},
+                key_id: nil,
+                success: true,
+                new_device: false,
+              )
+            end
           end
 
           context 'when the user has not accepted the most recent terms of use' do
