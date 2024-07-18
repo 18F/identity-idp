@@ -1614,8 +1614,7 @@ titles.verify_email: Revise su correo electrónico
 titles.visitors.index: Bienvenido
 titles.webauthn_setup: Añada su clave de seguridad
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requiere un método de autenticación de alta seguridad, como desbloqueo facial o táctil, una clave de seguridad o una identificación de empleado de gobierno.'
-two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
-  strong> requiere su identificación de empleado de gobierno, un método de autenticación de alta seguridad."
+two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de empleado de gobierno, un método de autenticación de alta seguridad.'
 two_factor_authentication.account_reset.cancel_link: Cancelar su solicitud
 two_factor_authentication.account_reset.link: eliminando su cuenta
 two_factor_authentication.account_reset.pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se necesitan %{interval} desde el momento en que realizó la solicitud para completar el proceso. Por favor, vuelva más tarde.

@@ -956,8 +956,7 @@ help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial1_consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec <strong>%{sp}</strong>. Nous partagerons vos informations avec <strong>%{sp}</strong> pour connecter votre compte.
 help_text.requested_attributes.ial1_intro_html: Nous partagerons vos informations avec <strong>%{sp}</strong> pour connecter votre compte.
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> a besoin de savoir qui vous êtes pour se connecter à votre compte. Vous devez consentir chaque année à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous partagerons ces informations :"
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour se connecter à votre compte. Vous devez consentir chaque année à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous partagerons ces informations :'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour connecter votre compte. Nous partagerons ces informations avec %{sp} :'
 help_text.requested_attributes.ial2_reverified_consent_info: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp} :'
 help_text.requested_attributes.phone: Numéro de téléphone
@@ -1603,8 +1602,7 @@ titles.verify_email: Consulter vos e-mails
 titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
-two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
-  strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité."
+two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.
