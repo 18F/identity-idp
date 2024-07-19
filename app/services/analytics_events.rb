@@ -1067,7 +1067,7 @@ module AnalyticsEvents
     errors:,
     step:,
     analytics_id:,
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1092,7 +1092,7 @@ module AnalyticsEvents
   def idv_doc_auth_agreement_visited(
     step:,
     analytics_id:,
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1115,24 +1115,24 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
-  # warning
   # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
   # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
+  # warning
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   def idv_doc_auth_document_capture_submitted(
     success:,
     errors:,
     step:,
     analytics_id:,
-    redo_document_capture:,
     liveness_checking_required:,
     selfie_check_required:,
-    acuant_sdk_upgrade_ab_test_bucket:,
     flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    redo_document_capture: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1159,9 +1159,9 @@ module AnalyticsEvents
   # warning
   # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
   # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
-  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   def idv_doc_auth_document_capture_visited(
     step:,
@@ -1169,8 +1169,8 @@ module AnalyticsEvents
     redo_document_capture:,
     liveness_checking_required:,
     selfie_check_required:,
-    acuant_sdk_upgrade_ab_test_bucket:,
     flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1229,10 +1229,10 @@ module AnalyticsEvents
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
   # warning
   # @param [Boolean] selfie_check_required Whether biometric selfie check is required
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # SDK upgrades
   # @param ["document_capture","send_link"] destination Where user is sent after submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   def idv_doc_auth_hybrid_handoff_submitted(
     success:,
@@ -1241,9 +1241,9 @@ module AnalyticsEvents
     analytics_id:,
     redo_document_capture:,
     selfie_check_required:,
-    acuant_sdk_upgrade_ab_test_bucket:,
     destination:,
     flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1278,7 +1278,7 @@ module AnalyticsEvents
     analytics_id:,
     redo_document_capture:,
     selfie_check_required:,
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1321,16 +1321,16 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   def idv_doc_auth_ssn_submitted(
     success:,
     errors:,
     step:,
     analytics_id:,
-    acuant_sdk_upgrade_ab_test_bucket:,
     flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1351,14 +1351,14 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing ssn visited
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   def idv_doc_auth_ssn_visited(
     step:,
     analytics_id:,
-    acuant_sdk_upgrade_ab_test_bucket:,
     flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1727,14 +1727,14 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing verify submitted
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   def idv_doc_auth_verify_submitted(
     step:,
     analytics_id:,
-    acuant_sdk_upgrade_ab_test_bucket:,
     flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1753,14 +1753,14 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   def idv_doc_auth_verify_visited(
     step:,
     analytics_id:,
-    acuant_sdk_upgrade_ab_test_bucket:,
     flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
   )
@@ -1841,7 +1841,7 @@ module AnalyticsEvents
     fraud_rejection:,
     gpo_verification_pending:,
     in_person_verification_pending:,
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     deactivation_reason: nil,
     proofing_components: nil,
@@ -1883,7 +1883,7 @@ module AnalyticsEvents
   # User visited IDV password confirm page
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     proofing_components: nil,
     address_verification_method: nil,
@@ -1931,7 +1931,7 @@ module AnalyticsEvents
     fraud_rejection:,
     gpo_verification_pending:,
     in_person_verification_pending:,
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     deactivation_reason: nil,
     proofing_components: nil,
@@ -3388,7 +3388,7 @@ module AnalyticsEvents
     carrier:,
     country_code:,
     area_code:,
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     error_details: nil,
     proofing_components: nil,
@@ -3635,7 +3635,7 @@ module AnalyticsEvents
     otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     error_details: nil,
     proofing_components: nil,
@@ -3790,7 +3790,7 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited idv phone of record
   def idv_phone_of_record_visited(
-    acuant_sdk_upgrade_ab_test_bucket:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
