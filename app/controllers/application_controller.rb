@@ -30,13 +30,8 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
-  prepend_before_action :track_path
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
-
-  def track_path
-    analytics.path_visited(method: request.method, path: request.fullpath)
-  end
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
