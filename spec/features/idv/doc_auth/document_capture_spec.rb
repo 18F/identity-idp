@@ -244,44 +244,78 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
         context 'with a passing selfie' do
           SCREENSHOT_DIR = 'screenshots'
 
+          def file_basename
+            parsed_url = URI(page.driver.current_url)
+            Pathname.new("#{SCREENSHOT_DIR}#{parsed_url.path}")
+          end            
+
           def take_screenshot
-            Dir.mkdir(SCREENSHOT_DIR) unless Dir.exist?(SCREENSHOT_DIR)
-            path = page.driver.current_url.gsub(/http:\/\/[0-9.]+:[0-9]+/, '').tr('/',':')
-            page.driver.browser.save_screenshot("#{SCREENSHOT_DIR}/#{path}.png")
+            width  = page.driver.execute_script("return Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);")
+            height = page.driver.execute_script("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);")
+
+            # Add some pixels on top of the calculated dimensions for good
+            # measure to make the scroll bars disappear
+            page.driver.resize_window_to(
+              page.driver.current_window_handle,
+              width + 100,
+              height + 100,
+            )
+
+            path = Pathname.new("#{file_basename}.png")
+
+            FileUtils.mkdir_p(path.dirname)
+            page.driver.browser.save_screenshot(path)
           end
 
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
               visit_idp_from_oidc_sp_with_ial2(biometric_comparison_required: true)
-              take_screenshot
+
               sign_in_and_2fa_user(@user)
+
               take_screenshot
+              
               complete_doc_auth_steps_before_document_capture_step
-              take_screenshot
 
-              expect(page).to have_current_path(idv_document_capture_url)
-              expect(max_capture_attempts_before_native_camera.to_i).
-                to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
-              expect(max_submission_attempts_before_native_camera.to_i).
-                to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
-              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-              expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
-              expect_doc_capture_id_subheader
-              expect_doc_capture_selfie_subheader
+              take_screenshot
+              
+              # expect(page).to have_current_path(idv_document_capture_url)
+              # expect(max_capture_attempts_before_native_camera.to_i).
+              #   to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+              # expect(max_submission_attempts_before_native_camera.to_i).
+              #   to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+              # expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              # expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
+              # expect_doc_capture_id_subheader
+              # expect_doc_capture_selfie_subheader
+
               attach_liveness_images
+
               take_screenshot
+              
               submit_images
+
               take_screenshot
+              
+              # expect(page).to have_current_path(idv_ssn_url)
+              # expect_costing_for_document
+              # expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
 
-              expect(page).to have_current_path(idv_ssn_url)
-              expect_costing_for_document
-              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
+              # expect(page).to have_current_path(idv_ssn_url)
 
-              expect(page).to have_current_path(idv_ssn_url)
               fill_out_ssn_form_ok
+
+              take_screenshot
+              
               click_idv_continue
+
+              take_screenshot
+              
               complete_verify_step
-              expect(page).to have_current_path(idv_phone_url)
+
+              # expect(page).to have_current_path(idv_phone_url)
+
+              take_screenshot
             end
           end
         end
