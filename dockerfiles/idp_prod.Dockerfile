@@ -102,7 +102,9 @@ COPY config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yml
 COPY config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
 COPY config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY certs.example $RAILS_ROOT/certs
-COPY config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
+COPY /identity-idp-config/*.yml $RAILS_ROOT/config/
+COPY /identity-idp-config/certs $RAILS_ROOT/certs
+COPY /identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
 
 # bundle install
 COPY .ruby-version $RAILS_ROOT/.ruby-version
