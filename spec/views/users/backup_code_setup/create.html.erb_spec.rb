@@ -1,14 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe 'users/backup_code_setup/create.html.erb' do
-  let(:user) { create(:user, :fully_registered) }
   let(:number_of_codes) { 10 }
 
   before do
-    allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
     stub_const('BackupCodeGenerator::NUMBER_OF_CODES', number_of_codes)
-    @codes = BackupCodeGenerator.new(user).delete_and_regenerate
+    @codes = BackupCodeGenerator.new(nil).send(:generate_new_codes)
   end
 
   it 'has a localized title' do
@@ -78,9 +76,7 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
 
   context 'during account creation' do
     before do
-      allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(true)
-      @codes = BackupCodeGenerator.new(user).delete_and_regenerate
     end
 
     it 'shows a link to cancel backup code creation and choose another mfa option' do
