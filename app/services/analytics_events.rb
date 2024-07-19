@@ -3694,6 +3694,8 @@ module AnalyticsEvents
   # @param [Hash,nil] proofing_components User's current proofing components
   # @param [Hash] vendor Vendor response payload
   # @param [Boolean] new_phone_added Whether phone number was added to account in submission
+  # @param [Boolean] hybrid_handoff_phone_used Whether phone is the same as what was used for hybrid
+  # document capture
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint Fingerprint of submitted phone number
