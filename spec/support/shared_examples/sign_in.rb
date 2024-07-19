@@ -106,13 +106,13 @@ RSpec.shared_examples 'signing in as IAL2 with personal key' do |sp|
 end
 
 RSpec.shared_examples 'signing in as IAL2 with piv/cac' do |sp|
-  it 'redirects to the SP after authenticating and getting the password', :email, js: true do
+  it 'redirects to the SP after authenticating and getting the password', :email do
     ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 
   if sp == :saml
     context 'no authn_context specified' do
-      it 'redirects to the SP after authenticating and getting the password', :email, js: true do
+      it 'redirects to the SP after authenticating and getting the password', :email do
         no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
       end
     end
@@ -355,8 +355,7 @@ def ial1_sign_in_with_piv_cac_goes_to_sp(sp)
 end
 
 def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
-  user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
-  user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
+  user = create(:user, :proofed, :with_piv_or_cac)
 
   visit_idp_from_sp_with_ial2(sp)
 
@@ -365,15 +364,21 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
 
   # capture password before redirecting to SP
   expect(current_url).to eq capture_password_url
-
   fill_in_password_and_submit(user.password)
 
+  # With JavaScript disabled, user needs to manually click button to proceed
+  click_submit_default if sp == :saml
+
+  expect(page).to have_current_path(sign_up_completed_path)
+  click_agree_and_continue
+
+  # With JavaScript disabled, user needs to manually click button to proceed
+  click_submit_default
+
   if sp == :saml
-    if javascript_enabled?
-      expect(current_path).to eq(test_saml_decode_assertion_path)
-    else
-      expect(current_url).to include(@saml_authn_request)
-    end
+    expect(page).to have_current_path(
+      api_saml_finalauthpost_path(path_year: SamlAuthHelper::PATH_YEAR),
+    )
   elsif sp == :oidc
     redirect_uri = URI(current_url)
 
@@ -384,8 +389,7 @@ end
 def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
   raise NotImplementedError if sp == :oidc
 
-  user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
-  user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
+  user = create(:user, :proofed, :with_piv_or_cac)
 
   visit_saml_authn_request_url(
     overrides: {
@@ -399,25 +403,24 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
 
   # capture password before redirecting to SP
   expect(current_url).to eq capture_password_url
-
   fill_in_password_and_submit(user.password)
 
-  # needed because the SP default attribute bundle includes the zip_code
-  # attribute which wasn't originally requested, so consent is required
+  # With JavaScript disabled, user needs to manually click button to proceed
+  click_submit_default
+
   expect(page).to have_current_path(sign_up_completed_path)
   click_agree_and_continue
 
-  if javascript_enabled?
-    expect(current_path).to eq(test_saml_decode_assertion_path)
-  else
-    expect(current_url).to eq @saml_authn_request
-  end
+  # With JavaScript disabled, user needs to manually click button to proceed
+  click_submit_default
+
+  expect(page).to have_current_path(
+    api_saml_finalauthpost_path(path_year: SamlAuthHelper::PATH_YEAR),
+  )
 end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
-  user = create(:user, :fully_registered)
-  _profile = create(:profile, :active, :verified, :with_pii, user: user)
-  user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
+  user = create(:user, :proofed, :with_piv_or_cac)
 
   visit_idp_from_sp_with_ial2(sp)
 
