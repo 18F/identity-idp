@@ -11,7 +11,6 @@ class MarketingSite
     manage-your-account/personal-key
     trouble-signing-in/face-or-touch-unlock
     verify-your-identity/accepted-identification-documents
-    verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
     verify-your-identity/verify-your-identity-in-person
     verify-your-identity/phone-number
