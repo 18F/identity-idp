@@ -1725,7 +1725,7 @@ two_factor_authentication.two_factor_choice: Configuration de la méthode d’au
 two_factor_authentication.two_factor_choice_options.auth_app: Application d’authentification
 two_factor_authentication.two_factor_choice_options.auth_app_info: Télécharger ou utiliser une appli d’authentification de votre choix pour générer des codes sécurisés.
 two_factor_authentication.two_factor_choice_options.backup_code: Codes de sauvegarde
-two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de 5 codes que vous pouvez imprimer ou enregistrer sur votre appareil. Lorsque vous utilisez le dernier code, nous générerons une nouvelle liste. Gardez à l’esprit que les codes de sauvegarde sont faciles à perdre.
+two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de cinq codes que vous pouvez imprimer ou enregistrer sur votre appareil. Comme les codes de sauvegarde se perdent facilement, ne choisir cette option qu’en dernier recours.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Ajouté
