@@ -49,7 +49,7 @@ RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.logi
 
 # get the service_providers.yml file
 ARG SERVICE_PROVIDERS_KEY
-RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file
+RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file ; chmod 600 private_key_file
 RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git clone --depth 1 git@github.com:18F/identity-idp-config.git
 
 # Set the working directory
