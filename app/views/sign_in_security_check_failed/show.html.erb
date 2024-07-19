@@ -19,7 +19,7 @@
     <li><%= t('security_check_failed.info_p3') %></li> 
   </ul>
 
-  <%= c.with_troubleshooting_options.new do |tc| %>
+  <% c.with_troubleshooting_options do |tc| %>
     <% tc.with_header { t('components.troubleshooting_options.default_heading') } %>
     <% tc.with_option(
          url: contact_redirect_url,
