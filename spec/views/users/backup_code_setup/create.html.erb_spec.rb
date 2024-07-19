@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe 'users/backup_code_setup/create.html.erb' do
   let(:user) { create(:user, :fully_registered) }
+  let(:number_of_codes) { 10 }
 
   before do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
+    stub_const('BackupCodeGenerator::NUMBER_OF_CODES', number_of_codes)
     @codes = BackupCodeGenerator.new(user).delete_and_regenerate
   end
 
@@ -56,6 +58,22 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
     render
 
     expect(rendered).to have_button t('forms.buttons.continue')
+  end
+
+  it 'displays all backup codes' do
+    render
+
+    expect(rendered).to have_css('code', count: number_of_codes)
+  end
+
+  context 'with odd number of generated backup codes' do
+    let(:number_of_codes) { 5 }
+
+    it 'displays all backup codes' do
+      render
+
+      expect(rendered).to have_css('code', count: number_of_codes)
+    end
   end
 
   context 'during account creation' do
