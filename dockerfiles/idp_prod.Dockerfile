@@ -48,9 +48,9 @@ ARG LARGE_FILES_TOKEN
 RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git
 
 # get the service_providers.yml file
-ARG SERVICE_PROVIDERS_USER
-ARG SERVICE_PROVIDERS_TOKEN
-RUN git clone --depth 1 https://$SERVICE_PROVIDERS_USER:$SERVICE_PROVIDERS_TOKEN@gitlab.login.gov/lg/identity-idp-config.git
+ARG SERVICE_PROVIDERS_KEY
+RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file
+RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes' git clone --depth 1 git@github.com:18F/identity-idp-config.git
 
 # Set the working directory
 WORKDIR $RAILS_ROOT
