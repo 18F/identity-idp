@@ -233,6 +233,10 @@ COPY --from=builder /identity-idp-config/*.yml $RAILS_ROOT/config/
 COPY --from=builder /identity-idp-config/certs $RAILS_ROOT/certs
 COPY --from=builder /identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
 
+# copy keys in
+COPY --from=builder $RAILS_ROOT/keys/localhost.key $RAILS_ROOT/keys/
+COPY --from=builder $RAILS_ROOT/keys/localhost.crt $RAILS_ROOT/keys/
+
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
