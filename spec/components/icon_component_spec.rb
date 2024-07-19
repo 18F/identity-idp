@@ -24,9 +24,9 @@ RSpec.describe IconComponent, type: :component do
   end
 
   context 'with invalid icon' do
-    it 'raises an error' do
-      expect { render_inline IconComponent.new(icon: :foo) }.to raise_error(ArgumentError)
-    end
+    subject(:rendered) { render_inline IconComponent.new(icon: :foo) }
+
+    it { expect { rendered }.to raise_error(ActiveModel::ValidationError) }
   end
 
   context 'with size' do

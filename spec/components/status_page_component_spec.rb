@@ -59,21 +59,21 @@ RSpec.describe StatusPageComponent, type: :component do
     expect(rendered).to have_link('Option', href: '/')
   end
 
-  it 'raises error for unknown status' do
+  it 'validates status' do
     expect do
       render_inline StatusPageComponent.new(status: :foo)
-    end.to raise_error(ArgumentError)
+    end.to raise_error(ActiveModel::ValidationError)
   end
 
-  it 'raises error for unknown status icon' do
+  it 'validates status icon' do
     expect do
       render_inline StatusPageComponent.new(status: :warning, icon: :foo)
-    end.to raise_error(ArgumentError)
+    end.to raise_error(ActiveModel::ValidationError)
   end
 
-  it 'raises error if no default icon associated with status' do
+  it 'validates missing default icon associated with status' do
     expect do
       render_inline StatusPageComponent.new(status: :info)
-    end.to raise_error(ArgumentError)
+    end.to raise_error(ActiveModel::ValidationError)
   end
 end
