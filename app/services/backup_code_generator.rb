@@ -40,6 +40,7 @@ class BackupCodeGenerator
     query_result = BackupCodeConfiguration.transaction do
       sql = <<~SQL
         UPDATE backup_code_configurations
+
         SET
           used_at = NOW()
         WHERE user_id = ? AND salted_code_fingerprint IN (?) AND used_at IS NULL

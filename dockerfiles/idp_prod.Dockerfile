@@ -10,7 +10,6 @@ FROM ruby:3.3.1-slim as builder
 ENV RAILS_ROOT /app
 ENV RAILS_ENV production
 ENV NODE_ENV production
-ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
@@ -19,8 +18,8 @@ ENV NODE_VERSION 20.10.0
 ENV BUNDLER_VERSION 2.5.6
 
 # Install dependencies
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
     git-core \
     build-essential \
     git-lfs \
@@ -47,15 +46,6 @@ ARG LARGE_FILES_USER
 ARG LARGE_FILES_TOKEN
 RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git
 
-# get service_providers.yml and related files
-ARG SERVICE_PROVIDERS_KEY
-RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file ; chmod 600 private_key_file
-RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git clone --depth 1 git@github.com:18F/identity-idp-config.git
-RUN mkdir -p $RAILS_ROOT/config/ $RAILS_ROOT/public/assets/images
-RUN cp identity-idp-config/*.yml $RAILS_ROOT/config/
-RUN cp -rp identity-idp-config/certs $RAILS_ROOT/
-RUN cp -rp identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/
-
 # Set the working directory
 WORKDIR $RAILS_ROOT
 
@@ -68,7 +58,23 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 # Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn=1.22.5-1
+RUN apt-get update -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/yarn.list && apt-get install -y yarn=1.22.5-1
+
+# bundle install
+COPY .ruby-version $RAILS_ROOT/.ruby-version
+COPY Gemfile $RAILS_ROOT/Gemfile
+COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
+RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set --local deployment 'true'
+RUN bundle config set --local path $BUNDLE_PATH
+RUN bundle config set --local without 'deploy development doc test'
+RUN bundle install --jobs $(nproc)
+RUN bundle binstubs --all
+
+# yarn install
+COPY package.json $RAILS_ROOT/package.json
+COPY yarn.lock $RAILS_ROOT/yarn.lock
+RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
 # Add the application code
 COPY ./lib ./lib
@@ -96,24 +102,17 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 # Copy application.yml.default to application.yml
 COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
 
-# bundle install
-COPY .ruby-version $RAILS_ROOT/.ruby-version
-COPY Gemfile $RAILS_ROOT/Gemfile
-COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
-RUN bundle config build.nokogiri --use-system-libraries
-RUN bundle config set --local deployment 'true'
-RUN bundle config set --local path $BUNDLE_PATH
-RUN bundle config set --local without 'deploy development doc test'
-RUN bundle install --jobs $(nproc)
-RUN bundle binstubs --all
-
-# yarn install
-COPY package.json $RAILS_ROOT/package.json
-COPY yarn.lock $RAILS_ROOT/yarn.lock
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
-
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
+
+# get service_providers.yml and related files
+ARG SERVICE_PROVIDERS_KEY
+RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file ; chmod 600 private_key_file
+RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git clone --depth 1 git@github.com:18F/identity-idp-config.git
+RUN mkdir -p $RAILS_ROOT/config/ $RAILS_ROOT/public/assets/images
+RUN cp identity-idp-config/*.yml $RAILS_ROOT/config/
+RUN cp -rp identity-idp-config/certs $RAILS_ROOT/
+RUN cp -rp identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/
 
 # set up deploy.json
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
@@ -121,18 +120,17 @@ ARG ARG_CI_COMMIT_SHA="sha_placeholder"
 RUN mkdir -p $RAILS_ROOT/public/api/
 RUN echo "{\"branch\":\"$ARG_CI_COMMIT_BRANCH\",\"git_sha\":\"$ARG_CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/api/deploy.json
 
+# Download RDS Combined CA Bundle
+RUN mkdir -p /usr/local/share/aws \
+  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
+  && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
+
 # Generate and place SSL certificates for puma
 RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
     -keyout $RAILS_ROOT/keys/localhost.key \
     -out $RAILS_ROOT/keys/localhost.crt \
     -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost" && \
     chmod 644 $RAILS_ROOT/keys/localhost.key $RAILS_ROOT/keys/localhost.crt
-
-# Download RDS Combined CA Bundle
-RUN mkdir -p /usr/local/share/aws \
-  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
-  && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
-
 
 #########################################################################
 # This is the main image.
@@ -147,8 +145,6 @@ ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
-ENV YARN_VERSION 1.22.5
-ENV NODE_VERSION 20.10.0
 ENV BUNDLER_VERSION 2.5.6
 ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_NAME idp
@@ -170,8 +166,8 @@ ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/
 ENV REMOTE_ADDRESS_HEADER X-Forwarded-For
 
 # Install dependencies
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
     git-core \
     curl \
     zlib1g-dev \
@@ -204,9 +200,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Create the working directory
 WORKDIR $RAILS_ROOT
 
-# copy in all the stuff from the builder image and exclude extra stuff
-COPY --from=builder $RAILS_ROOT $RAILS_ROOT
-
 # set bundler up
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
@@ -219,6 +212,9 @@ RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_password
 COPY --from=builder /idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/
 COPY --from=builder /idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/
 COPY --from=builder /idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/pwned_passwords.txt
+
+# copy in all the stuff from the builder image
+COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 # copy keys in
 COPY --from=builder $RAILS_ROOT/keys/localhost.key $RAILS_ROOT/keys/
