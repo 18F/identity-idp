@@ -1643,7 +1643,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>Solo ha configurad
 two_factor_authentication.choose_another_option: '‹ Elija otro método de autenticación'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>Los códigos de recuperación son el método de autenticación menos utilizado,</strong> ya que se pueden perder con facilidad. Pruebe una opción más segura, como una aplicación de autenticación o una clave de seguridad.'
-  - Le enviaremos 10 códigos que puede descargar, imprimir, copiar o anotar. Ingresará un código cada vez que inicie sesión.
+  - Le enviaremos %{number_of_codes} códigos que puede descargar, imprimir, copiar o anotar. Ingresará un código cada vez que inicie sesión.
 two_factor_authentication.confirm_backup_code_setup_title: ¿Está seguro de que desea usar códigos de recuperación?
 two_factor_authentication.form_legend: Elija sus métodos de autenticación
 two_factor_authentication.header_text: Introduzca su código de un solo uso

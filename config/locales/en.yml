@@ -1631,7 +1631,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>You’ve only set 
 two_factor_authentication.choose_another_option: '‹ Choose another authentication method'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>Backup codes are the least preferred authentication method</strong> because the codes can easily be lost. Try a safer option, like an authentication application or a security key.'
-  - We’ll give you 10 codes that you can download, print, copy or write down. You’ll enter one code every time you sign in.
+  - We’ll give you %{number_of_codes} codes that you can download, print, copy or write down. You’ll enter one code every time you sign in.
 two_factor_authentication.confirm_backup_code_setup_title: Are you sure you want to use backup codes?
 two_factor_authentication.form_legend: Choose your authentication methods
 two_factor_authentication.header_text: Enter your one-time code

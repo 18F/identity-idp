@@ -1642,7 +1642,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>你只在自己账
 two_factor_authentication.choose_another_option: '‹ 选择另一个身份证实方法'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
-  - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+  - 我们会给你 %{number_of_codes} 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
 two_factor_authentication.confirm_backup_code_setup_title: 你确定要使用备用代码吗？
 two_factor_authentication.form_legend: 选择你的身份证实方法
 two_factor_authentication.header_text: 输入一次性代码

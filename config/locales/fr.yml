@@ -1631,7 +1631,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>Vous n’avez conf
 two_factor_authentication.choose_another_option: '‹ Choisir une autre méthode d’authentification'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - <strong>Les codes de sauvegarde sont la méthode d’authentification la moins recommandée,</strong> car les codes peuvent facilement se perdre. Essayez une option plus sûre, comme une application d’authentification ou une clé de sécurité.
-  - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
+  - Nous vous donnerons %{number_of_codes} codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
 two_factor_authentication.confirm_backup_code_setup_title: 'Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?'
 two_factor_authentication.form_legend: Choisissez vos méthodes d’authentification
 two_factor_authentication.header_text: Saisissez votre code à usage unique
