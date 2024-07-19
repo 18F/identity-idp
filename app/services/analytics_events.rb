@@ -1122,7 +1122,6 @@ module AnalyticsEvents
   # @param [Boolean] selfie_check_required Whether biometric selfie check is required
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
-  # @param ["document_capture","send_link"] destination Where user is sent after submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   def idv_doc_auth_document_capture_submitted(
     success:,
@@ -1163,7 +1162,6 @@ module AnalyticsEvents
   # @param [Boolean] selfie_check_required Whether biometric selfie check is required
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # SDK upgrades
-  # @param ["document_capture","send_link"] destination Where user is sent after submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   def idv_doc_auth_document_capture_visited(
     step:,
