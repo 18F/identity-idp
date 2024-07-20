@@ -47,10 +47,13 @@ ARG LARGE_FILES_USER
 ARG LARGE_FILES_TOKEN
 RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.login.gov/lg-public/idp-large-files.git
 
-# get the service_providers.yml file
+# get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
 RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file ; chmod 600 private_key_file
 RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git clone --depth 1 git@github.com:18F/identity-idp-config.git
+COPY identity-idp-config/*.yml $RAILS_ROOT/config/
+COPY identity-idp-config/certs $RAILS_ROOT/certs
+COPY identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
 
 # Set the working directory
 WORKDIR $RAILS_ROOT
@@ -102,9 +105,6 @@ COPY config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yml
 COPY config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
 COPY config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY certs.example $RAILS_ROOT/certs
-COPY /identity-idp-config/*.yml $RAILS_ROOT/config/
-COPY /identity-idp-config/certs $RAILS_ROOT/certs
-COPY /identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
 
 # bundle install
 COPY .ruby-version $RAILS_ROOT/.ruby-version
