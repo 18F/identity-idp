@@ -307,10 +307,10 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
     end
 
     context 'with hybrid user' do
-      let(:hybrid_user) { user }
+      let(:user) { nil }
+      let(:hybrid_user) { create(:user) }
 
       before do
-        allow(controller).to receive(:current_user).and_return nil
         session[:doc_capture_user_id] = hybrid_user.id
       end
 
