@@ -34,7 +34,7 @@ describe('document-capture/components/review-issues-step', () => {
         value={
           new I18n({
             strings: {
-              'errors.doc_auth.rate_limited_heading': 'We couldn’t verify your ID',
+              'doc_auth.errors.rate_limited_heading': 'We couldn’t verify your ID',
             },
           })
         }
@@ -80,7 +80,7 @@ describe('document-capture/components/review-issues-step', () => {
       </I18nContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
+    expect(getByText('doc_auth.errors.rate_limited_heading')).to.be.ok();
     expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
     expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
@@ -114,7 +114,7 @@ describe('document-capture/components/review-issues-step', () => {
       </InPersonContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
+    expect(getByText('doc_auth.errors.rate_limited_heading')).to.be.ok();
     expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
     expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
@@ -156,7 +156,7 @@ describe('document-capture/components/review-issues-step', () => {
       </I18nContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
+    expect(getByText('doc_auth.errors.rate_limited_heading')).to.be.ok();
     expect(getByText('One attempt remaining')).to.be.ok();
     expect(getByText('An unknown error occurred')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
@@ -234,7 +234,7 @@ describe('document-capture/components/review-issues-step', () => {
                   one: '<strong>One attempt</strong> remaining to add your ID online',
                   other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
-                'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
+                'doc_auth.errors.doc_type_not_supported_heading': 'doc type not supported',
                 'doc_auth.errors.doc.wrong_id_type_html':
                   "We only accept a driver's license or a state ID card at this time.",
               },
@@ -289,7 +289,7 @@ describe('document-capture/components/review-issues-step', () => {
                   one: '<strong>One attempt</strong> remaining to add your ID online',
                   other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
-                'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
+                'doc_auth.errors.doc_type_not_supported_heading': 'doc type not supported',
                 'doc_auth.errors.doc.wrong_id_type_html':
                   "We only accept a driver's license or a state ID card at this time.",
               },

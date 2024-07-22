@@ -72,9 +72,27 @@ account.index.reactivation.instructions: Your profile was recently deactivated d
 account.index.reactivation.link: Reactivate your profile now.
 account.index.sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
 account.index.unknown_location: unknown location
-account.index.verification.instructions: Your account requires a verification code to be verified.
-account.index.verification.reactivate_button: Enter the code you received via US mail
+account.index.verification.continue_idv: Continue identity verification
+account.index.verification.finish_verifying_html: Finish verifying your identity to access <strong>%{sp_name}</strong>.
+account.index.verification.finish_verifying_no_sp: Finish the identity verification process to gain access to all %{app_name} partners.
+account.index.verification.identity_verification: Identity verification
+account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong> to verify your identity.
+account.index.verification.instructions: Enter your verification code to finish verifying your identity.
+account.index.verification.learn_more_link: Learn more about verifying your identity
+account.index.verification.nonbiometric_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
+account.index.verification.pending_badge: Pending
+account.index.verification.pending_badge_tooltip: Your identity is pending verification.
+account.index.verification.reactivate_button: Enter the verification code you received via US mail
+account.index.verification.show_bar_code: Show me my %{app_name} barcode
 account.index.verification.success: We verified your information
+account.index.verification.unverified_badge: Unverified
+account.index.verification.unverified_badge_tooltip: Finish verifying your identity.
+account.index.verification.verified_badge: Verified
+account.index.verification.verified_badge_tooltip: Your identity has been verified.
+account.index.verification.verified_biometric_badge_tooltip: Your identity and photo have both been verified.
+account.index.verification.verify_with_biometric_html: To access <strong>%{sp_name}</strong>, verify your identity again using a photo of yourself.
+account.index.verification.you_verified_your_biometric_identity: You have verified your identity with the information below and verified a photo of yourself which gives you access to all %{app_name} partners.
+account.index.verification.you_verified_your_identity_html: You verified your identity for <strong>%{sp_name}</strong> with the information below.
 account.index.webauthn: Security key
 account.index.webauthn_add: Add security key
 account.index.webauthn_platform: Face or touch unlock
@@ -505,9 +523,12 @@ doc_auth.errors.camera.blocked: Your camera is blocked
 doc_auth.errors.camera.blocked_detail_html: '<strong>Allow access to your camera to take photos for %{app_name}.</strong><span>Try taking photos again and allowing permission. If that doesn’t work, you may need to check your device settings to allow access.</span>'
 doc_auth.errors.camera.failed: Camera failed to start, please try again.
 doc_auth.errors.card_type: Try again with your driver’s license or state ID card.
+doc_auth.errors.consent_form: Before you can continue, you must give us permission. Please check the box below and then click continue.
+doc_auth.errors.doc_type_not_supported_heading: We only accept a driver’s license or a state ID
 doc_auth.errors.doc.doc_type_check: Your driver’s license or state ID must be issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs.
 doc_auth.errors.doc.resubmit_failed_image: You already tried this image, and it failed. Please try adding a different image.
 doc_auth.errors.doc.wrong_id_type_html: We only accept a driver’s license or a state ID issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs. <a>Learn more about accepted IDs</a>
+doc_auth.errors.document_capture_canceled: You have canceled uploading photos of your ID on your phone.
 doc_auth.errors.dpi.failed_short: Image is too small or blurry, please try again.
 doc_auth.errors.dpi.top_msg: We couldn’t read your ID. Your image size may be too small, or your ID is too small or blurry in the photo. Make sure your ID is large within the image frame and try taking a new picture.
 doc_auth.errors.dpi.top_msg_plural: We couldn’t read your ID. Your image sizes may be too small, or your ID is too small or blurry in the photos. Make sure your ID is large within the image frame and try taking new pictures.
@@ -522,6 +543,7 @@ doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taki
 doc_auth.errors.glare.failed_short: Image has glare, please try again.
 doc_auth.errors.glare.top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
 doc_auth.errors.glare.top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
+doc_auth.errors.how_to_verify_form: Select a way to verify your identity.
 doc_auth.errors.http.image_load.failed_short: Image file is not supported, please try again.
 doc_auth.errors.http.image_load.top_msg: The image file that you added is not supported. Please take new photos of your ID and try again.
 doc_auth.errors.http.image_size.failed_short: Image file is not supported, please try again.
@@ -529,7 +551,14 @@ doc_auth.errors.http.image_size.top_msg: Your image size is too large or too sma
 doc_auth.errors.http.pixel_depth.failed_short: Image file is not supported, please try again.
 doc_auth.errors.http.pixel_depth.top_msg: The pixel depth of your image file is not supported. Please take new photos of your ID and try again. Supported image pixel depth is 24-bit RGB.
 doc_auth.errors.not_a_file: The selection was not a valid file.
+doc_auth.errors.phone_step_incomplete: You must go to your phone and upload photos of your ID before continuing. We sent you a link with instructions.
 doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum age requirement.
+doc_auth.errors.rate_limited_heading: We couldn’t verify your ID
+doc_auth.errors.rate_limited_subheading: Try taking new pictures
+doc_auth.errors.rate_limited_text_html: For your security, we limit the number of times you can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
+doc_auth.errors.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
+doc_auth.errors.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
 doc_auth.errors.sharpness.failed_short: Image is blurry, please try again.
 doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
 doc_auth.errors.sharpness.top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
@@ -678,17 +707,6 @@ errors.attributes.password.too_short.one: Password must be at least one characte
 errors.attributes.password.too_short.other: Password must be at least %{count} characters long
 errors.capture_doc.invalid_link: This link is expired or not valid. Please request another link to verify your identity on a mobile phone.
 errors.confirm_password_incorrect: Incorrect password.
-errors.doc_auth.consent_form: Before you can continue, you must give us permission. Please check the box below and then click continue.
-errors.doc_auth.doc_type_not_supported_heading: We only accept a driver’s license or a state ID
-errors.doc_auth.document_capture_canceled: You have canceled uploading photos of your ID on your phone.
-errors.doc_auth.how_to_verify_form: Select a way to verify your identity.
-errors.doc_auth.phone_step_incomplete: You must go to your phone and upload photos of your ID before continuing. We sent you a link with instructions.
-errors.doc_auth.rate_limited_heading: We couldn’t verify your ID
-errors.doc_auth.rate_limited_subheading: Try taking new pictures
-errors.doc_auth.rate_limited_text_html: For your security, we limit the number of times you can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
-errors.doc_auth.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
-errors.doc_auth.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
 errors.enter_code.rate_limited_html: You entered an incorrect verification code too many times. <strong>Try again in %{timeout}.</strong>
 errors.general: Oops, something went wrong. Please try again.
 errors.invalid_totp: Invalid code. Please try again.
@@ -887,8 +905,6 @@ headings.account.login_info: Your account
 headings.account.reactivate: Reactivate your account
 headings.account.two_factor: Your authentication methods
 headings.account.unphishable: Unphishable
-headings.account.verified_account: Verified Account
-headings.account.verified_information: Verified information
 headings.add_email: Add a new email address
 headings.add_info.phone: Add a phone number
 headings.cancellations.login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?
@@ -940,8 +956,7 @@ help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial1_consent_reminder_html: You must consent each year to share your information with <strong>%{sp}</strong>. We’ll share your information with <strong>%{sp}</strong> to connect your account.
 help_text.requested_attributes.ial1_intro_html: We’ll share your information with <strong>%{sp}</strong> to connect your account.
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:"
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> needs to know who you are to connect your account. We’ll share this information with %{sp}:'
 help_text.requested_attributes.ial2_reverified_consent_info: 'Because you verified your identity again, we need your permission to share this information with %{sp}:'
 help_text.requested_attributes.phone: Phone number
@@ -1566,7 +1581,7 @@ titles.personal_key: Just in case
 titles.piv_cac_login.add: Add your PIV or CAC
 titles.piv_cac_login.new: Use your PIV/CAC to sign in to your account
 titles.piv_cac_setup.new: Use your PIV/CAC card to secure your account
-titles.piv_cac_setup.upsell: Enhance your account security with a government employee ID
+titles.piv_cac_setup.upsell: Add your government employee ID for a faster, more secure sign in
 titles.present_piv_cac: Present your PIV/CAC
 titles.present_webauthn: Connect your hardware security key
 titles.reactivate_account: Reactivate your account
@@ -1587,8 +1602,7 @@ titles.verify_email: Check your email
 titles.visitors.index: Welcome
 titles.webauthn_setup: Add your security key
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requires a high-security authentication method, such as face or touch unlock, a security key or a government employee ID.'
-two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
-  strong> requires your government employee ID, a high-security authentication method."
+two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government employee ID, a high-security authentication method.'
 two_factor_authentication.account_reset.cancel_link: Cancel your request
 two_factor_authentication.account_reset.link: deleting your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.
@@ -1680,8 +1694,8 @@ two_factor_authentication.phone.delete.success: Your phone has been removed.
 two_factor_authentication.piv_cac_header_text: Present your PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: Add PIV/CAC card
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choose other methods instead
-two_factor_authentication.piv_cac_upsell.existing_user_info: Because you are using a %{email_type} email, we recommend you add your government employee ID as one of your authentication methods. This will greatly enhance your account security.
-two_factor_authentication.piv_cac_upsell.new_user_info: Because you are using a %{email_type} email, we recommend you add your government employee ID as one of your authentication methods. This adds another layer of security to your account.
+two_factor_authentication.piv_cac_upsell.explain: This will improve your account security and let you skip entering your email and password when signing in.
+two_factor_authentication.piv_cac_upsell.recommendation: If your employer issued you a PIV/CAC, we recommend adding it as one of your authentication methods.
 two_factor_authentication.piv_cac_upsell.skip: Skip
 two_factor_authentication.piv_cac.change_nickname: Change nickname
 two_factor_authentication.piv_cac.delete: Delete this method
@@ -1809,7 +1823,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: If you need 
 user_mailer.in_person_failed_suspected_fraud.body.intro: We understand that you were attempting to verify your identity through %{app_name}, however your identity could not be verified at the %{location} Post Office on %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: Hello,
 user_mailer.in_person_failed_suspected_fraud.subject: Your identity could not be verified in person
-user_mailer.in_person_failed.body.with_cta: Click the button or copy the link below to try verifying your identity online again through %{sp_or_app_name}. If you are still experiencing issues, please contact the agency you are trying to access.
+user_mailer.in_person_failed.body.with_cta: Click the button or copy the link below to try verifying your identity again through %{sp_or_app_name}. If you are still experiencing issues, please contact the agency you are trying to access.
 user_mailer.in_person_failed.body.without_cta: Please try verifying your identity again from %{sp_name}’s website. If you are still experiencing issues, please contact the agency you are trying to access.
 user_mailer.in_person_failed.intro: Your identity could not be verified at the %{location} Post Office on %{date}.
 user_mailer.in_person_failed.subject: Your identity could not be verified in person

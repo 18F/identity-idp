@@ -26,6 +26,13 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe 'before_actions' do
+    it 'includes correct before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :set_usps_form_presenter,
+      )
+    end
+
     context '#confirm_in_person_state_id_step_complete' do
       context 'in_person_state_id_controller_enabled is enabled' do
         before do
@@ -109,6 +116,11 @@ RSpec.describe Idv::InPerson::AddressController do
       expect(subject.extra_view_variables[:pii]).to_not have_key(
         :address1,
       )
+    end
+
+    it 'has non-nil presenter' do
+      get :show
+      expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
     end
   end
 

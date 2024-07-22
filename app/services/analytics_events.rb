@@ -670,6 +670,25 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success Whether records were successfully uploaded
+  # @param [String] exception The exception that occured if an exception did occur
+  # @param [Number] gpo_confirmation_count The number of GPO Confirmation records uploaded
+  # GPO confirmation records were uploaded for letter sends
+  def gpo_confirmation_upload(
+    success:,
+    exception:,
+    gpo_confirmation_count:,
+    **extra
+  )
+    track_event(
+      :gpo_confirmation_upload,
+      success: success,
+      exception: exception,
+      gpo_confirmation_count: gpo_confirmation_count,
+      **extra,
+    )
+  end
+
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -4125,12 +4144,17 @@ module AnalyticsEvents
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
-                                      **extra)
+  # @param ['piv_cac'] method_name Authentication method added
+  def multi_factor_auth_added_piv_cac(
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
+    method_name: :piv_cac,
+    **extra
+  )
     track_event(
       :multi_factor_auth_added_piv_cac,
       {
-        method_name: :piv_cac,
+        method_name:,
         enabled_mfa_methods_count:,
         in_account_creation_flow:,
         **extra,
@@ -4286,13 +4310,25 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
-  def multi_factor_auth_option_list(success:, errors:, selection:, error_details: nil, **extra)
+  # @param [integer] enabled_mfa_methods_count
+  # @param [Hash] mfa_method_counts
+  def multi_factor_auth_option_list(
+    success:,
+    errors:,
+    selection:,
+    enabled_mfa_methods_count:,
+    mfa_method_counts:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication: option list',
       success:,
       errors:,
       error_details:,
       selection:,
+      enabled_mfa_methods_count:,
+      mfa_method_counts:,
       **extra,
     )
   end
@@ -4951,14 +4987,16 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [String,nil] key_id
+  # @param [String,nil] key_id PIV/CAC key_id from PKI service
+  # @param [Boolean] new_device Whether the user is authenticating from a new device
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id:, **extra)
+  def piv_cac_login(success:, errors:, key_id:, new_device:, **extra)
     track_event(
       :piv_cac_login,
       success:,
       errors:,
       key_id:,
+      new_device:,
       **extra,
     )
   end
@@ -5803,34 +5841,35 @@ module AnalyticsEvents
 
   # Tracks when user submits registration email
   # @param [Boolean] success Whether form validation was successful
-  # @param [Boolean] rate_limited
+  # @param [Boolean] rate_limited Whether form submission was prevented by rate-limiting
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] user_id
-  # @param [Boolean] email_already_exists
-  # @param [String] domain_name
+  # @param [String] user_id ID of user associated with existing user, or current user
+  # @param [Boolean] email_already_exists Whether an account with the email address already exists
+  # @param [String] domain_name Domain name of email address submitted
+  # @param [String] email_language Preferred language for email communication
   def user_registration_email(
     success:,
     rate_limited:,
     errors:,
+    user_id:,
+    email_already_exists:,
+    domain_name:,
+    email_language:,
     error_details: nil,
-    user_id: nil,
-    email_already_exists: nil,
-    domain_name: nil,
     **extra
   )
     track_event(
       'User Registration: Email Submitted',
-      {
-        success:,
-        rate_limited:,
-        errors:,
-        error_details:,
-        user_id:,
-        email_already_exists:,
-        domain_name:,
-        **extra,
-      }.compact,
+      success:,
+      rate_limited:,
+      errors:,
+      error_details:,
+      user_id:,
+      email_already_exists:,
+      domain_name:,
+      email_language:,
+      **extra,
     )
   end
 

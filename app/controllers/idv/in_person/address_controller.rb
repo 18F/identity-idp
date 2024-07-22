@@ -9,6 +9,7 @@ module Idv
       before_action :confirm_in_person_state_id_step_complete
       ## before_action :confirm_step_allowed # pending FSM removal of state id step
       before_action :confirm_in_person_address_step_needed, only: :show
+      before_action :set_usps_form_presenter
 
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
@@ -120,6 +121,10 @@ module Idv
                   !pii_from_user.has_key?(:address1)
         return if request.referer == idv_in_person_verify_info_url
         redirect_to idv_in_person_ssn_url
+      end
+
+      def set_usps_form_presenter
+        @presenter = Idv::InPerson::UspsFormPresenter.new
       end
     end
   end

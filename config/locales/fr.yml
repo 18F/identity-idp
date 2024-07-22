@@ -72,9 +72,27 @@ account.index.reactivation.instructions: Votre profil a été récemment désact
 account.index.reactivation.link: Réactiver votre profil maintenant.
 account.index.sign_in_location_and_ip: De %{ip} (adresse IP éventuellement située dans %{location})
 account.index.unknown_location: lieu inconnu
-account.index.verification.instructions: Votre compte nécessite un code de vérification pour être vérifié.
-account.index.verification.reactivate_button: Saisissez le code que vous avez reçu par la poste
+account.index.verification.continue_idv: Poursuivre la vérification d’identité
+account.index.verification.finish_verifying_html: Terminez la procédure de vérification d’identité pour pouvoir accéder à <strong>%{sp_name}</strong>.
+account.index.verification.finish_verifying_no_sp: Terminer la procédure de vérification d’identité pour pouvoir accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.identity_verification: Vérification de l’identité
+account.index.verification.in_person_instructions_html: Vous devez vous rendre à un bureau de poste participant d’ici le <strong>%{deadline}</strong> pour terminer la procédure de vérification de votre identité.
+account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
+account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
+account.index.verification.nonbiometric_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.
+account.index.verification.pending_badge: En cours
+account.index.verification.pending_badge_tooltip: Votre identité est en cours de vérification.
+account.index.verification.reactivate_button: Saisissez le code de vérification que vous avez reçu par la poste.
+account.index.verification.show_bar_code: Me montrer mon code-barre %{app_name}
 account.index.verification.success: Nous avons vérifié vos informations
+account.index.verification.unverified_badge: Non vérifiée
+account.index.verification.unverified_badge_tooltip: Terminer la vérification de votre identité.
+account.index.verification.verified_badge: Vérifiée
+account.index.verification.verified_badge_tooltip: Votre identité a été vérifiée.
+account.index.verification.verified_biometric_badge_tooltip: Votre identité et votre photo ont été vérifiées.
+account.index.verification.verify_with_biometric_html: Pour accéder à <strong>%{sp_name}</strong>, confirmez à nouveau votre identité à l’aide d’une photo de vous-même.
+account.index.verification.you_verified_your_biometric_identity: Vous avez confirmé votre identité à l’aide des informations ci-dessous et d’une photo de vous-même, ce qui vous permet d’accéder à tous les organismes partenaires de %{app_name}.
+account.index.verification.you_verified_your_identity_html: Vous avez confirmé votre identité auprès de <strong>%{sp_name}</strong> à l’aide des informations ci-dessous.
 account.index.webauthn: Clé de sécurité
 account.index.webauthn_add: Ajouter une clé de sécurité
 account.index.webauthn_platform: Déverrouillage facial ou tactile
@@ -505,9 +523,12 @@ doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
 doc_auth.errors.camera.blocked_detail_html: '<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>'
 doc_auth.errors.camera.failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
 doc_auth.errors.card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un État.
+doc_auth.errors.consent_form: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
+doc_auth.errors.doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou les cartes d’identité délivrées par un État
 doc_auth.errors.doc.doc_type_check: Votre permis de conduire ou votre carte d’identité doit être délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires.
 doc_auth.errors.doc.resubmit_failed_image: Vous avez déjà essayé cette image et elle a échoué. Veuillez essayer d’ajouter une image différente.
 doc_auth.errors.doc.wrong_id_type_html: Nous n’acceptons qu’un permis de conduire ou une carte d’identité délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires. <a>En savoir plus sur les pièces d’identité acceptées</a>
+doc_auth.errors.document_capture_canceled: Vous avez annulé le téléchargement de vos photos d’identité sur votre téléphone.
 doc_auth.errors.dpi.failed_short: Image trop petite ou floue, veuillez réessayer.
 doc_auth.errors.dpi.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre image soit de trop petite taille ou que votre pièce d’identité soit trop petite ou floue sur la photo. Assurez-vous que votre pièce d’identité remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
 doc_auth.errors.dpi.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre image soit de trop petite taille ou que votre pièce d’identité soit trop petite ou floue sur les photos. Assurez-vous que votre pièce d’identité remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
@@ -522,6 +543,7 @@ doc_auth.errors.general.selfie_failure_help_link_text: Consultez plus de conseil
 doc_auth.errors.glare.failed_short: L’image a des reflets, veuillez réessayer.
 doc_auth.errors.glare.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
 doc_auth.errors.glare.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
+doc_auth.errors.how_to_verify_form: Sélectionnez un moyen de vérifier votre identité.
 doc_auth.errors.http.image_load.failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
 doc_auth.errors.http.image_load.top_msg: Le fichier image que vous avez ajouté n’est pas pris en charge. Veuillez prendre de nouvelles photos de votre pièce d’identité et réessayer.
 doc_auth.errors.http.image_size.failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
@@ -529,7 +551,14 @@ doc_auth.errors.http.image_size.top_msg: La taille de votre image est trop grand
 doc_auth.errors.http.pixel_depth.failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
 doc_auth.errors.http.pixel_depth.top_msg: La profondeur de pixel de votre fichier image n’est pas prise en charge. Veuillez prendre de nouvelles photos de votre pièce d’identité et réessayer. La profondeur de pixel de l’image prise en charge est de 24 bits RGB.
 doc_auth.errors.not_a_file: La sélection n’était pas un fichier valide.
+doc_auth.errors.phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des photos de votre pièce d’identité avant de continuer. Nous vous avons envoyé un lien avec des instructions.
 doc_auth.errors.pii.birth_date_min_age: Votre anniversaire ne correspond pas à l’âge minimum requis.
+doc_auth.errors.rate_limited_heading: Nous n’avons pas pu vérifier votre pièce d’identité.
+doc_auth.errors.rate_limited_subheading: Essayez de prendre de nouvelles photos.
+doc_auth.errors.rate_limited_text_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier un document en ligne. <strong>Réessayez dans %{timeout}.</strong>
+doc_auth.errors.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à celle figurant sur votre pièce d’identité.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
+doc_auth.errors.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur à la place.
 doc_auth.errors.sharpness.failed_short: L’image est floue, veuillez réessayer.
 doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit bien éclairé.
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
@@ -678,17 +707,6 @@ errors.attributes.password.too_short.one: Le mot de passe doit comporter au moin
 errors.attributes.password.too_short.other: Le mot de passe doit comporter au moins %{count} caractères
 errors.capture_doc.invalid_link: Ce lien a expiré ou n’est pas valide. Veuillez demander un autre lien pour vérifier votre identité sur un téléphone mobile.
 errors.confirm_password_incorrect: Mot de passe incorrect.
-errors.doc_auth.consent_form: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
-errors.doc_auth.doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou les cartes d’identité délivrées par un État
-errors.doc_auth.document_capture_canceled: Vous avez annulé le téléchargement de vos photos d’identité sur votre téléphone.
-errors.doc_auth.how_to_verify_form: Sélectionnez un moyen de vérifier votre identité.
-errors.doc_auth.phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des photos de votre pièce d’identité avant de continuer. Nous vous avons envoyé un lien avec des instructions.
-errors.doc_auth.rate_limited_heading: Nous n’avons pas pu vérifier votre pièce d’identité.
-errors.doc_auth.rate_limited_subheading: Essayez de prendre de nouvelles photos.
-errors.doc_auth.rate_limited_text_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier un document en ligne. <strong>Réessayez dans %{timeout}.</strong>
-errors.doc_auth.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à celle figurant sur votre pièce d’identité.
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
-errors.doc_auth.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur à la place.
 errors.enter_code.rate_limited_html: Vous avez saisi un code de vérification inexact à trop de reprises. <strong>Réessayez dans %{timeout}.</strong>
 errors.general: Oups, une erreur s’est produite. Veuillez réessayer.
 errors.invalid_totp: Code non valide. Veuillez réessayer.
@@ -887,8 +905,6 @@ headings.account.login_info: Votre compte
 headings.account.reactivate: Réactiver votre compte
 headings.account.two_factor: Vos méthodes d’authentification
 headings.account.unphishable: Non hameçonnable
-headings.account.verified_account: Compte vérifié
-headings.account.verified_information: Informations vérifiées
 headings.add_email: Ajouter une nouvelle adresse e-mail
 headings.add_info.phone: Ajouter un numéro de téléphone
 headings.cancellations.login_cancel_prompt: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
@@ -940,8 +956,7 @@ help_text.requested_attributes.email: Adresse e-mail
 help_text.requested_attributes.full_name: Nom complet
 help_text.requested_attributes.ial1_consent_reminder_html: Vous devez consentir chaque année au partage de vos informations avec <strong>%{sp}</strong>. Nous partagerons vos informations avec <strong>%{sp}</strong> pour connecter votre compte.
 help_text.requested_attributes.ial1_intro_html: Nous partagerons vos informations avec <strong>%{sp}</strong> pour connecter votre compte.
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> a besoin de savoir qui vous êtes pour se connecter à votre compte. Vous devez consentir chaque année à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous partagerons ces informations :"
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour se connecter à votre compte. Vous devez consentir chaque année à partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous partagerons ces informations :'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour connecter votre compte. Nous partagerons ces informations avec %{sp} :'
 help_text.requested_attributes.ial2_reverified_consent_info: 'Étant donné que vous avez revérifié votre identité, nous avons besoin de votre autorisation pour partager ces informations avec %{sp} :'
 help_text.requested_attributes.phone: Numéro de téléphone
@@ -1566,7 +1581,7 @@ titles.personal_key: Juste au cas où
 titles.piv_cac_login.add: Ajouter votre carte PIV ou CAC
 titles.piv_cac_login.new: Utiliser votre carte PIV/CAC pour vous connecter à votre compte
 titles.piv_cac_setup.new: Utiliser votre carte PIV/CAC pour sécuriser votre compte
-titles.piv_cac_setup.upsell: Renforcer la sécurité de votre compte avec une carte d’employé fédéral
+titles.piv_cac_setup.upsell: Ajouter votre carte d’employé fédéral pour vous connecter plus rapidement et en toute sécurité
 titles.present_piv_cac: Présenter votre carte PIV/CAC
 titles.present_webauthn: Brancher votre clé de sécurité physique
 titles.reactivate_account: Réactiver votre compte
@@ -1587,8 +1602,7 @@ titles.verify_email: Consulter vos e-mails
 titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
-two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
-  strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité."
+two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.
@@ -1680,8 +1694,8 @@ two_factor_authentication.phone.delete.success: Votre téléphone a été suppri
 two_factor_authentication.piv_cac_header_text: Présenter votre carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.add_piv: Ajouter une carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choisir plutôt d’autres méthodes
-two_factor_authentication.piv_cac_upsell.existing_user_info: Comme vous utilisez une adresse e-mail avec le suffixe %{email_type}, nous vous recommandons d’ajouter votre carte d’employé fédéral parmi vos méthodes d’authentification. Ceci renforcera considérablement la sécurité de votre compte.
-two_factor_authentication.piv_cac_upsell.new_user_info: Comme vous utilisez une adresse e-mail avec le suffixe %{email_type}, nous vous recommandons d’ajouter votre carte d’employé fédéral parmi vos méthodes d’authentification. Ceci permet d’ajouter une couche supplémentaire de sécurité à votre compte.
+two_factor_authentication.piv_cac_upsell.explain: Ceci permettra de renforcer la sécurité de votre compte et de sauter l’étape de saisie de votre e-mail et mot de passe quand vous vous connecterez.
+two_factor_authentication.piv_cac_upsell.recommendation: Si votre employeur vous a délivré une carte PIV/CAC, vous vous recommandons de l’ajouter parmi vos méthodes d’authentification.
 two_factor_authentication.piv_cac_upsell.skip: Ignorer
 two_factor_authentication.piv_cac.change_nickname: Changer de pseudo
 two_factor_authentication.piv_cac.delete: Supprimer cette méthode
@@ -1809,7 +1823,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: Si vous avez
 user_mailer.in_person_failed_suspected_fraud.body.intro: Vous avez tenté de confirmer votre identité par le biais de %{app_name}, mais votre identité n’a pas pu être confirmée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: Bonjour,
 user_mailer.in_person_failed_suspected_fraud.subject: Votre identité n’a pas pu être vérifiée en personne
-user_mailer.in_person_failed.body.with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour réessayer de confirmer votre identité en ligne par le biais de %{sp_or_app_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
+user_mailer.in_person_failed.body.with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour réessayer de confirmer votre identité par le biais de %{sp_or_app_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
 user_mailer.in_person_failed.body.without_cta: Veuillez réessayer de confirmer votre identité sur le site Web de %{sp_name}. Si vous rencontrez toujours des difficultés, veuillez contacter l’organisme auquel vous essayez d’accéder.
 user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne

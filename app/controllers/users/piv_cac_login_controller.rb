@@ -54,7 +54,7 @@ module Users
       else
         process_invalid_submission
       end
-      analytics.piv_cac_login(**result.to_h)
+      analytics.piv_cac_login(**result.to_h, new_device: @new_device)
     end
 
     def piv_cac_login_form
@@ -75,7 +75,7 @@ module Users
         presented: true,
       )
 
-      set_new_device_session(nil)
+      @new_device = set_new_device_session(nil)
       handle_verification_for_authentication_context(
         result:,
         auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,

@@ -134,7 +134,7 @@ lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
 	@# and you have no options to split that from the common bundles. If you need to increase this
 	@# budget and accept the fact that this will force end-users to endure longer load times, you
 	@# should set the new budget to within a few thousand bytes of the production-compiled size.
-	find app/assets/builds/application.css -size -185000c | grep .
+	find app/assets/builds/application.css -size -105000c | grep .
 	find public/packs/application-*.digested.js -size -5000c | grep .
 
 lint_migrations:
@@ -228,6 +228,7 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the developme
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
 	find ./config/locales/transliterate -type f -name '*.yml' -exec yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
+	yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation config/application.yml.default
 	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
 	find ./config/locales -not \( -path "./config/locales/telephony*" -o -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
 	xargs yarn normalize-yaml \

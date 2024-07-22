@@ -4,9 +4,11 @@ RSpec.describe 'idv/in_person/state_id.html.erb' do
   let(:pii) { {} }
   let(:form) { Idv::StateIdForm.new(pii) }
   let(:parsed_dob) { Date.new(1970, 1, 1) }
+  let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
 
   before do
     allow(view).to receive(:url_for).and_return('https://example.com/')
+    assign(:presenter, presenter)
   end
 
   subject(:render_template) do
