@@ -42,6 +42,10 @@ class EmailAddress < ApplicationRecord
     FedEmailDomains.email_is_fed_domain?(domain)
   end
 
+  def gov_or_mil?
+    email.end_with?('.gov', '.mil')
+  end
+
   class << self
     def find_with_email(email)
       return nil if !email.is_a?(String) || email.empty?
