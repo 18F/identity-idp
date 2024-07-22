@@ -96,17 +96,6 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 # Copy application.yml.default to application.yml
 COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
 
-# Setup config files
-COPY config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml
-COPY config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yml
-COPY config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yml
-COPY config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yml
-COPY config/integration_statuses.localdev.yml $RAILS_ROOT/config/integration_statuses.yml
-COPY config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yml
-COPY config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
-COPY config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
-COPY certs.example $RAILS_ROOT/certs
-
 # bundle install
 COPY .ruby-version $RAILS_ROOT/.ruby-version
 COPY Gemfile $RAILS_ROOT/Gemfile
