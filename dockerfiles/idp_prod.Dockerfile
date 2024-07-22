@@ -51,10 +51,9 @@ RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.logi
 ARG SERVICE_PROVIDERS_KEY
 RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file ; chmod 600 private_key_file
 RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git clone --depth 1 git@github.com:18F/identity-idp-config.git
-RUN ls ; echo XXXXXX ; ls /identity-idp-config
-COPY identity-idp-config/*.yml $RAILS_ROOT/config/
-COPY identity-idp-config/certs $RAILS_ROOT/certs
-COPY identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
+COPY /identity-idp-config/*.yml $RAILS_ROOT/config/
+COPY /identity-idp-config/certs $RAILS_ROOT/certs
+COPY /identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
 
 # Set the working directory
 WORKDIR $RAILS_ROOT
