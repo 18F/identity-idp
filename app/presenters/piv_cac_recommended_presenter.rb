@@ -15,7 +15,7 @@ class PivCacRecommendedPresenter
   end
 
   def email_type
-    address = user.confirmed_email_addresses.find { |address| address.is_fed_email? }
+    user.confirmed_email_addresses.find { |address| address.is_fed_email? }
   end
 
   def skip_text
