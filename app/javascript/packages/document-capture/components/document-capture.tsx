@@ -73,7 +73,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             failedImageFingerprints: submissionError.failed_image_fingerprints,
           })(ReviewIssuesStep)
         : ReviewIssuesStep,
-    title: t('errors.doc_auth.rate_limited_heading'),
+    title: t('doc_auth.errors.rate_limited_heading'),
   };
 
   // In Person Steps
