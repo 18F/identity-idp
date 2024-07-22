@@ -51,9 +51,10 @@ RUN git clone --depth 1 https://$LARGE_FILES_USER:$LARGE_FILES_TOKEN@gitlab.logi
 ARG SERVICE_PROVIDERS_KEY
 RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file ; chmod 600 private_key_file
 RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git clone --depth 1 git@github.com:18F/identity-idp-config.git
-COPY /identity-idp-config/*.yml $RAILS_ROOT/config/
-COPY /identity-idp-config/certs $RAILS_ROOT/certs
-COPY /identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
+RUN mkdir -p $RAILS_ROOT/config/ $RAILS_ROOT/public/assets/images
+RUN cp identity-idp-config/*.yml $RAILS_ROOT/config/
+RUN cp -rp identity-idp-config/certs $RAILS_ROOT/
+RUN cp -rp identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/
 
 # Set the working directory
 WORKDIR $RAILS_ROOT
@@ -229,11 +230,6 @@ RUN mkdir -p $RAILS_ROOT/pwned_passwords && chmod 755 $RAILS_ROOT/pwned_password
 COPY --from=builder /idp-large-files/GeoIP2-City.mmdb $RAILS_ROOT/geo_data/
 COPY --from=builder /idp-large-files/GeoLite2-City.mmdb $RAILS_ROOT/geo_data/
 COPY --from=builder /idp-large-files/pwned-passwords.txt $RAILS_ROOT/pwned_passwords/pwned_passwords.txt
-
-# Copy service_providers.yml and related stuff
-COPY --from=builder /identity-idp-config/*.yml $RAILS_ROOT/config/
-COPY --from=builder /identity-idp-config/certs $RAILS_ROOT/certs
-COPY --from=builder /identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/images/sp-logos
 
 # copy keys in
 COPY --from=builder $RAILS_ROOT/keys/localhost.key $RAILS_ROOT/keys/
