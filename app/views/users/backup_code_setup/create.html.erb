@@ -22,7 +22,7 @@
   </div>
 
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
-    <%= t('forms.backup_code.caution_codes') %>
+    <%= t('forms.backup_code.caution_codes', count: t(BackupCodeGenerator::NUMBER_OF_CODES, scope: :numbers_spelled_out)) %>
   <% end %>
 
   <div class="margin-top-1">

@@ -32,7 +32,10 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
 
     expect(rendered).to have_selector(
       '.usa-alert',
-      text: t('forms.backup_code.caution_codes'),
+      text: t(
+        'forms.backup_code.caution_codes',
+        count: t(BackupCodeGenerator::NUMBER_OF_CODES, scope: :numbers_spelled_out),
+      ),
     )
   end
 

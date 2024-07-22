@@ -814,7 +814,7 @@ forms.backup_code_reminder.body_info: If you ever lose access to your primary au
 forms.backup_code_reminder.have_codes: I have my codes
 forms.backup_code_reminder.heading: Do you still have your backup codes?
 forms.backup_code_reminder.need_new_codes: I need a new set of backup codes
-forms.backup_code.caution_codes: Each code can only be used once. We’ll give you new codes after you use all five.
+forms.backup_code.caution_codes: Each code can only be used once. We’ll give you new codes after you use all %{count}.
 forms.backup_code.caution_delete: If you delete your backup codes you will no longer be able to use them to sign in.
 forms.backup_code.confirm_delete: Are you sure you want to delete your backup codes?
 forms.backup_code.generate: Get codes
@@ -1433,6 +1433,7 @@ notices.use_diff_email.link: use a different email address
 notices.use_diff_email.text_html: Or, %{link_html}
 notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
+numbers_spelled_out.5: five
 openid_connect.authorization.errors.bad_client_id: Bad client_id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: value must be at least %{count} day or older
 openid_connect.authorization.errors.invalid_verified_within_duration.other: value must be at least %{count} days or older
@@ -1725,7 +1726,7 @@ two_factor_authentication.two_factor_choice: Authentication method setup
 two_factor_authentication.two_factor_choice_options.auth_app: Authentication application
 two_factor_authentication.two_factor_choice_options.auth_app_info: Download or use an authentication app of your choice to generate secure codes.
 two_factor_authentication.two_factor_choice_options.backup_code: Backup codes
-two_factor_authentication.two_factor_choice_options.backup_code_info: A list of five codes you can print or save to your device. Because backup codes are easy to lose, choose this option only as a last resort.
+two_factor_authentication.two_factor_choice_options.backup_code_info: A list of %{count} codes you can print or save to your device. Because backup codes are easy to lose, choose this option only as a last resort.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} added'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} added'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Added

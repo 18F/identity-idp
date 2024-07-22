@@ -825,7 +825,7 @@ forms.backup_code_reminder.body_info: 如果你无法使用自己的主要身份
 forms.backup_code_reminder.have_codes: 我有代码
 forms.backup_code_reminder.heading: 你的备用代码还有吗？
 forms.backup_code_reminder.need_new_codes: 我需要新的一套备用代码。
-forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 5 个代码后我们会给你新代码。
+forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 %{count} 个代码后我们会给你新代码。
 forms.backup_code.caution_delete: 如果你删除自己的备用代码，就无法用其来登录了。
 forms.backup_code.confirm_delete: 你确定要删除备用代码吗？
 forms.backup_code.generate: 获得代码
@@ -1444,6 +1444,7 @@ notices.use_diff_email.link: 使用一个不同的电邮地址
 notices.use_diff_email.text_html: 或者，%{link_html}
 notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
+numbers_spelled_out.5: 5
 openid_connect.authorization.errors.bad_client_id: 坏的client_id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_duration.other: 值必须至少为 %{count} 天或以上
@@ -1736,7 +1737,7 @@ two_factor_authentication.two_factor_choice: 身份证实方法设置
 two_factor_authentication.two_factor_choice_options.auth_app: 身份证实应用程序
 two_factor_authentication.two_factor_choice_options.auth_app_info: 下载或使用你选择的身份证实应用程序来生成安全代码。
 two_factor_authentication.two_factor_choice_options.backup_code: 备用代码
-two_factor_authentication.two_factor_choice_options.backup_code_info: 您可以打印或保存到自己设备上的5个代码清单。由于备用代码容易丢失，请将此选项作为不得已的选择
+two_factor_authentication.two_factor_choice_options.backup_code_info: 您可以打印或保存到自己设备上的%{count}个代码清单。由于备用代码容易丢失，请将此选项作为不得已的选择
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: 添加了
