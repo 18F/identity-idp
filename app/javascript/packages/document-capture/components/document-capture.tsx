@@ -135,7 +135,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
 
   const defaultSteps: FormStep[] = submissionError
     ? ([reviewFormStep] as FormStep[]).concat(inPersonSteps)
-    : ([documentFormStep].filter(Boolean) as FormStep[]);
+    : ([documentFormStep] as FormStep[]);
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
   // then set steps to inPersonSteps
