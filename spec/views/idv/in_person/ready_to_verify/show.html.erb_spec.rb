@@ -189,11 +189,11 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
           t('in_person_proofing.process.state_id.heading_eipp'),
           t('in_person_proofing.process.state_id.info_eipp'),
           t('in_person_proofing.headings.barcode_what_to_bring'),
-          t('in_person_proofing.body.barcode.what_to_bring'),
+          t('in_person_proofing.body.barcode.eipp_what_to_bring'),
           t('in_person_proofing.process.eipp_bring_id.heading'),
           t('in_person_proofing.process.eipp_bring_id.info'),
-          t('in_person_proofing.process.eipp_what_to_bring.heading'),
-          t('in_person_proofing.process.eipp_what_to_bring.info'),
+          t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+          t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
           t('in_person_proofing.process.eipp_state_id_passport.heading'),
           t('in_person_proofing.process.eipp_state_id_passport.info'),
           t('in_person_proofing.process.eipp_state_id_military_id.heading'),
@@ -256,7 +256,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
         render
 
         expect(rendered).to have_content(t('in_person_proofing.headings.barcode_what_to_bring'))
-        expect(rendered).to have_content(t('in_person_proofing.body.barcode.what_to_bring'))
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_what_to_bring'))
       end
 
       it 'renders Option 1 content' do
@@ -271,8 +271,8 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
         aggregate_failures do
           [
-            t('in_person_proofing.process.eipp_what_to_bring.heading'),
-            t('in_person_proofing.process.eipp_what_to_bring.info'),
+            t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+            t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
             t('in_person_proofing.process.eipp_state_id_passport.heading'),
             t('in_person_proofing.process.eipp_state_id_passport.info'),
             t('in_person_proofing.process.eipp_state_id_military_id.heading'),

@@ -1178,6 +1178,7 @@ in_person_proofing.body.barcode.cancel_link_text: Annuler votre code-barres
 in_person_proofing.body.barcode.close_window: Vous pouvez maintenant fermer cette fenêtre
 in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}
 in_person_proofing.body.barcode.deadline_restart: Si vous y allez après cette date limite, vos informations ne seront pas sauvegardées et vous devrez recommencer le processus.
+in_person_proofing.body.barcode.eipp_what_to_bring: 'Selon la pièce d’identité dont vous disposez, il pourra vous être demandé de présenter des documents complémentaires. Étudiez attentivement les options suivantes:'
 in_person_proofing.body.barcode.email_sent: Nous avons envoyé ces informations à l’adresse e-mail que vous avez utilisée pour vous connecter.
 in_person_proofing.body.barcode.learn_more: En savoir davantage sur ce qu’il faut apporter.
 in_person_proofing.body.barcode.location_details: Détails de l’emplacement
@@ -1186,7 +1187,6 @@ in_person_proofing.body.barcode.retail_hours: Heures d’ouverture
 in_person_proofing.body.barcode.retail_hours_closed: Fermé
 in_person_proofing.body.barcode.return_to_partner_html: Vous pouvez maintenant %{link_html} afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez accéder jusqu’à ce que votre identité ait été vérifiée.
 in_person_proofing.body.barcode.return_to_partner_link: vous déconnecter et retourner à %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 'Selon la pièce d’identité dont vous disposez, il pourra vous être demandé de présenter des documents complémentaires. Étudiez attentivement les options suivantes:'
 in_person_proofing.body.barcode.what_to_expect: À quoi s’attendre au bureau de poste
 in_person_proofing.body.cta.button: Essayer en personne
 in_person_proofing.body.cta.prompt_detail: Vous pourrez peut-être confirmer votre identité dans un bureau de poste participant près de chez vous.
@@ -1281,6 +1281,8 @@ in_person_proofing.headings.update_state_id: Mettez à jour les informations fig
 in_person_proofing.process.barcode.caption_label: Code d’inscription
 in_person_proofing.process.barcode.heading: Montrez votre code-barres %{app_name}
 in_person_proofing.process.barcode.info: Le préposé doit scanner votre code-barres en haut de cette page. Vous pouvez imprimer cette page ou la montrer sur votre appareil mobile.
+in_person_proofing.process.eipp_bring_id_plus_documents.heading: 'Option 2: Apporter une pièce d’identité délivrée par l’État ainsi que des documents complémentaires'
+in_person_proofing.process.eipp_bring_id_plus_documents.info: 'Vous pouvez présenter votre permis de conduire standard ou une carte d’identité délivrée par un État, en l’accompagnant de documents complémentaires parmi ceux figurant aux options A, B ou C. UNE seule option doit être choisie:'
 in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Apporter une pièce d’identité REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
 in_person_proofing.process.eipp_bring_id.info: Si vous présentez une carte d’identité ou un permis de conduire d’un État de type Real ID, vous n’avez pas besoin de présenter des documents complémentaires.
@@ -1301,8 +1303,6 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Carte d’immatriculation d’un véhicule
   - Attestation d’assurance habitation
   - Attestation d’assurance automobile/deux roues
-in_person_proofing.process.eipp_what_to_bring.heading: 'Option 2: Apporter une pièce d’identité délivrée par l’État ainsi que des documents complémentaires'
-in_person_proofing.process.eipp_what_to_bring.info: 'Vous pouvez présenter votre permis de conduire standard ou une carte d’identité délivrée par un État, en l’accompagnant de documents complémentaires parmi ceux figurant aux options A, B ou C. UNE seule option doit être choisie:'
 in_person_proofing.process.state_id.heading: Présentez votre permis de conduire ou votre carte d’identité de l’État
 in_person_proofing.process.state_id.heading_eipp: Présenter votre pièce d’identité et les documents complémentaires
 in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
