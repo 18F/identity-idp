@@ -858,7 +858,7 @@ forms.personal_key.instructions: Please confirm you have a copy of your personal
 forms.personal_key.required_checkbox: I saved my personal key in a safe place.
 forms.personal_key.title: Enter your personal key
 forms.phone.buttons.delete: Remove phone
-forms.piv_cac_login.submit: Insert your government employee ID
+forms.piv_cac_login.submit: Insert PIV/CAC
 forms.piv_cac_mfa.submit: Insert PIV/CAC
 forms.piv_cac_setup.nickname: PIV/CAC nickname
 forms.piv_cac_setup.no_thanks: No thanks
@@ -1330,7 +1330,7 @@ instructions.mfa.piv_cac.http_failure: The server took too long to respond. Plea
 instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.please_try_again: try again
-instructions.mfa.piv_cac.sign_in_html: Make sure <strong>you have a %{app_name} account</strong> and <strong>you’ve set up PIV/CAC</strong> as a two-factor authentication method.
+instructions.mfa.piv_cac.sign_in_html: Make sure you have a %{app_name} account and you've set up your Personal Identity Verification (PIV) or Common Access Card (CAC) as a two-factor authentication method.
 instructions.mfa.piv_cac.step_1: Give it a nickname
 instructions.mfa.piv_cac.step_1_info: If you add more than one PIV/CAC, you’ll know which one’s which.
 instructions.mfa.piv_cac.step_2: Insert your PIV/CAC into your card reader
