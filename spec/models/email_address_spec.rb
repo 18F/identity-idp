@@ -110,4 +110,20 @@ RSpec.describe EmailAddress do
       it { expect(result).to eq(true) }
     end
   end
+
+  describe '#is_fed_email?' do
+    subject(:result) { email_address.is_fed_email? }
+
+    context 'with an email domain not a fed email' do
+      let(:email) { 'example@example.gov' }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with an email domain ending in a fed domain email' do
+      let(:email) { 'example@gsa.gov' }
+
+      it { expect(result).to eq(true) }
+    end
+  end
 end
