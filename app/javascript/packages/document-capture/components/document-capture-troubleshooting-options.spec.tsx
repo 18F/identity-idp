@@ -49,7 +49,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       'idv.troubleshooting.options.supported_documentslinks.new_tab',
     );
     expect(links[1].getAttribute('href')).to.equal(
-      'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=document_capture_troubleshooting_options',
+      'https://example.com/redirect/?category=verify-your-identity&article=accepted-identification-documents&location=document_capture_troubleshooting_options',
     );
     expect(links[1].target).to.equal('_blank');
   });
