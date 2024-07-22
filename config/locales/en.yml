@@ -1186,7 +1186,7 @@ in_person_proofing.body.barcode.retail_hours: Retail hours
 in_person_proofing.body.barcode.retail_hours_closed: Closed
 in_person_proofing.body.barcode.return_to_partner_html: You may now %{link_html} to complete any next steps you can access until your identity has been verified.
 in_person_proofing.body.barcode.return_to_partner_link: sign out and return to %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 'Depending on the type of ID or Driver’s License you have, you may be required to show supporting documents. Review the following options carefully:'
+in_person_proofing.body.barcode.what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully'
 in_person_proofing.body.barcode.what_to_expect: What to expect at the Post Office
 in_person_proofing.body.cta.button: Try in person
 in_person_proofing.body.cta.prompt_detail: You may be able to verify your identity at a participating Post Office near you.
@@ -1281,18 +1281,18 @@ in_person_proofing.headings.update_state_id: Update the information on your ID
 in_person_proofing.process.barcode.caption_label: Enrollment code
 in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
 in_person_proofing.process.barcode.info: The retail associate needs to scan your barcode at the top of this page. You can print this page or show it on your mobile device.
-in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Bring a Real ID'
+in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Bring a REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
 in_person_proofing.process.eipp_bring_id.info: 'If you present a Real State ID or Driver’s license, you don’t need to show supporting documents.'
-in_person_proofing.process.eipp_state_id_military_id.heading: B. State ID + Military ID
+in_person_proofing.process.eipp_state_id_military_id.heading: B. State-issued ID + military ID
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: State ID and Military ID
-in_person_proofing.process.eipp_state_id_military_id.info: 'Present a standard State ID or Driver’s License, along with a Military ID.'
-in_person_proofing.process.eipp_state_id_passport.heading: A. State ID + Passport
+in_person_proofing.process.eipp_state_id_military_id.info: 'Present a standard driver’s license or state ID card, along with a military ID.'
+in_person_proofing.process.eipp_state_id_passport.heading: A. State-issued ID + passport
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: State ID and passport
-in_person_proofing.process.eipp_state_id_passport.info: 'Present a standard State ID or Driver’s License, along with a Passport or Passport card.'
-in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. State ID + two supporting documents
+in_person_proofing.process.eipp_state_id_passport.info: 'Present a standard driver’s license or state ID card, along with a passport or passport card.'
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. State-issued ID + two supporting documents
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: State ID and two documents
-in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Present a standard State ID or Driver’s License, along with two supporting documents from this list:'
+in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Present a standard driver’s license or state ID card, along with two supporting documents from this list:'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Lease
   - Mortgage
@@ -1301,12 +1301,12 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Vehicle registration card
   - Home insurance policy
   - Vehicle insurance policy
-in_person_proofing.process.eipp_what_to_bring.heading: 'Option 2: Bring a standard State ID or Driver’s License plus supporting documents'
-in_person_proofing.process.eipp_what_to_bring.info: 'You can present your standard State ID or Driver’s license along with supporting documents from the following options A, B or C. You only need to pick ONE option:'
+in_person_proofing.process.eipp_what_to_bring.heading: 'Option 2: Bring a standard state-issued ID plus supporting documents'
+in_person_proofing.process.eipp_what_to_bring.info: 'You can present your standard driver’s license or state ID card, along with supporting documents from the following options A, B or C. You only need to pick ONE option:'
 in_person_proofing.process.state_id.heading: Show your State Driver’s License or State Non-Driver’s Identification Card
 in_person_proofing.process.state_id.heading_eipp: Show your ID and supporting documents
 in_person_proofing.process.state_id.info: This must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
-in_person_proofing.process.state_id.info_eipp: The retail associate will scan your ID. This must not be expired. Depending on the type of ID or Driver’s License that you present, you may need to present supporting documents. See the requirements on the What to bring to the Post Office section.
+in_person_proofing.process.state_id.info_eipp: The retail associate will scan your ID. This must not be expired. Depending on the type of ID that you present, you may need to show supporting documents. See the requirements in the “What to bring to the Post Office” section.
 in_person_proofing.process.what_to_do.heading: Stand in any line
 in_person_proofing.process.what_to_do.info: Tell the Post Office retail associate you are here to verify your identity with %{app_name}.
 instructions.account.reactivate.begin: Let’s get started.

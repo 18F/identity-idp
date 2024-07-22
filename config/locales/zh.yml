@@ -1197,7 +1197,7 @@ in_person_proofing.body.barcode.retail_hours: 营业时间
 in_person_proofing.body.barcode.retail_hours_closed: 关闭
 in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
 in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 取决于你身份证件或驾照的类型，你可能会被要求出示支持性文件。请仔细阅读以下选项：
+in_person_proofing.body.barcode.what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
 in_person_proofing.body.barcode.what_to_expect: 在邮局会发生什么
 in_person_proofing.body.cta.button: 尝试亲身去
 in_person_proofing.body.cta.prompt_detail: 你也许可以到附近一个参与本项目的邮局去亲身验证你的身份证件。
@@ -1295,15 +1295,15 @@ in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶
 in_person_proofing.process.eipp_bring_id.heading: 携带REAL身份证件
 in_person_proofing.process.eipp_bring_id.image_alt_text: REAL身份证件
 in_person_proofing.process.eipp_bring_id.info: '如果你出示一个州的REAL身份证件或驾照，则无需出示支持性文件'
-in_person_proofing.process.eipp_state_id_military_id.heading: B.州身份证件+军人证件
+in_person_proofing.process.eipp_state_id_military_id.heading: B.州颁发的标准身份+军人证件
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: 州身份证和军人证件
-in_person_proofing.process.eipp_state_id_military_id.info: 出示州的普通身份证件或驾照，以及军人证件。
-in_person_proofing.process.eipp_state_id_passport.heading: A.州身份证件+护照
+in_person_proofing.process.eipp_state_id_military_id.info: 出示标准驾照或州颁发的身份卡, 以及军人证件。
+in_person_proofing.process.eipp_state_id_passport.heading: A.州颁发的标准身份+护照
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: 州身份证件和护照
-in_person_proofing.process.eipp_state_id_passport.info: 出示州的普通身份证件或驾照，以及护照或护照卡。
-in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州身份证件+两种支持文件
+in_person_proofing.process.eipp_state_id_passport.info: 出示标准驾照或州颁发的身份卡, 以及护照或护照卡。
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州颁发的标准身份+两种支持文件
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: 州身份证件和两份证明文件
-in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示州的普通身份证件或驾照，以及以下清单中两个支持性文件：'
+in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示标准驾照或州颁发的身份卡, 以及以下清单中两个支持性文件：'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 租约
   - 房贷
@@ -1312,12 +1312,12 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 车辆登记卡
   - 房屋保险单
   - 车辆保险单
-in_person_proofing.process.eipp_what_to_bring.heading: 选项2：携带州颁发的普通身份证件或驾照以及支持性文件
-in_person_proofing.process.eipp_what_to_bring.info: '你可以出示州颁发的普通身份证件或驾照以及下列A、B或C选项中的支持性文件。你只需选择下列选项之一：'
+in_person_proofing.process.eipp_what_to_bring.heading: 选项2：请携带州颁发的标准身份证件和支持性文件
+in_person_proofing.process.eipp_what_to_bring.info: '您可以出示标准驾照或者州颁发的身份卡以及以下A、B、C选项的支持文件。你只需选择下列选项之一：'
 in_person_proofing.process.state_id.heading: 出示你州驾照或州非驾照身份卡。
 in_person_proofing.process.state_id.heading_eipp: 出示你的身份证件以及支持性文件
 in_person_proofing.process.state_id.info: 该证件必须在有效期内。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于你出示的身份证件或驾照的类型，你可能需要出示支持性文件。参见“到邮局要带什么”部分中的要求。
+in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于您出示的身份证件类型，您也许需要显示支持文件。参见“到邮局要带什么”部分中的规定。
 in_person_proofing.process.what_to_do.heading: 请排在任何一队里
 in_person_proofing.process.what_to_do.info: 告诉邮局工作人员你是为了%{app_name}验证你的身份。
 instructions.account.reactivate.begin: 我们开始吧。

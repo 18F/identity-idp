@@ -1197,7 +1197,7 @@ in_person_proofing.body.barcode.retail_hours: Horario de atención al público
 in_person_proofing.body.barcode.retail_hours_closed: Cerrado
 in_person_proofing.body.barcode.return_to_partner_html: Ahora puede %{link_html} para completar los pasos siguientes a los que tenga acceso hasta que se haya verificado su identidad.
 in_person_proofing.body.barcode.return_to_partner_link: cerrar sesión y volver a %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 'Según el tipo de identificación o de licencia de conducir que tenga, es posible que deba mostrar documentos comprobatorios. Lea con atención las opciones siguientes:'
+in_person_proofing.body.barcode.what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
 in_person_proofing.body.barcode.what_to_expect: Qué esperar en la oficina de correos
 in_person_proofing.body.cta.button: Intentar en persona
 in_person_proofing.body.cta.prompt_detail: Es posible que pueda verificar su identidad en una oficina de correos participante cercana.
@@ -1292,18 +1292,18 @@ in_person_proofing.headings.update_state_id: Actualice la información de su ide
 in_person_proofing.process.barcode.caption_label: Código de registro
 in_person_proofing.process.barcode.heading: Muestre su código de barras de %{app_name}
 in_person_proofing.process.barcode.info: El empleado debe escanear el código de barras que aparece en la parte superior de esta página. Puede imprimir esta página o mostrarla en su dispositivo móvil.
-in_person_proofing.process.eipp_bring_id.heading: 'Opción 1: Llevar una Real ID'
+in_person_proofing.process.eipp_bring_id.heading: 'Opción 1: Llevar una REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
 in_person_proofing.process.eipp_bring_id.info: Si presenta una Real ID estatal o licencia de conducir auténtica, no necesita mostrar documentos comprobatorios.
-in_person_proofing.process.eipp_state_id_military_id.heading: B. Identificación estatal + identificación militar
+in_person_proofing.process.eipp_state_id_military_id.heading: B. Identificación emitida por el estado + identificación militar
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: Identificación estatal e identificación militar
-in_person_proofing.process.eipp_state_id_military_id.info: Presente una identificación estatal o licencia de conducir estándar, junto con una identificación militar.
-in_person_proofing.process.eipp_state_id_passport.heading: A. Identificación estatal + pasaporte
+in_person_proofing.process.eipp_state_id_military_id.info: Presente una licencia de conducir o una tarjeta de identificación estatal estándar, junto con una identificación militar.
+in_person_proofing.process.eipp_state_id_passport.heading: A. Identificación emitida por el estado + pasaporte
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: Identificación estatal y pasaporte
-in_person_proofing.process.eipp_state_id_passport.info: Presente una identificación estatal o licencia de conducir estándar, junto con un pasaporte o tarjeta de pasaporte.
-in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. Identificación estatal + dos documentos comprobatorios
+in_person_proofing.process.eipp_state_id_passport.info: Presente una licencia de conducir o una tarjeta de identificación estatal estándar, junto con un pasaporte o tarjeta de pasaporte.
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.  Identificación emitida por el estado + dos documentos comprobatorios
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: Identificación estatal y dos documentos comprobatorios
-in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Presente una identificación estatal o licencia de conducir estándar, junto con dos documentos comprobatorios de esta lista:'
+in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Presente una licencia de conducir o una tarjeta de identificación estatal estándar, junto con dos documentos comprobatorios de esta lista:'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Contrato de arrendamiento
   - Escritura de su hipoteca
@@ -1312,12 +1312,12 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Tarjeta de registro de su vehículo
   - Póliza de seguro de su vivienda
   - Póliza de seguro de su vehículo
-in_person_proofing.process.eipp_what_to_bring.heading: 'Opción 2: Llevar una identificación estatal o licencia de conducir estándar, junto con los documentos comprobatorios'
-in_person_proofing.process.eipp_what_to_bring.info: 'Puede presentar su identificación estatal o licencia de conducir estándar junto con los documentos comprobatorios de las opciones A, B o C siguientes. Solo debe escoger UNA opción:'
+in_person_proofing.process.eipp_what_to_bring.heading: 'Opción 2: Llevar una identificación estatal estándar emitida por el estado, junto con los documentos comprobatorios'
+in_person_proofing.process.eipp_what_to_bring.info: 'Puede presentar su licencia de conducir o identificación estatal estándar, junto con los documentos comprobatorios de las opciones A, B o C siguientes. Solo debe escoger UNA opción:'
 in_person_proofing.process.state_id.heading: Muestre su licencia de conducir estatal o su tarjeta de identificación estatal que no sea una licencia de conducir
 in_person_proofing.process.state_id.heading_eipp: Muestre su identificación y los documentos comprobatorios
 in_person_proofing.process.state_id.info: No debe estar vencida. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
-in_person_proofing.process.state_id.info_eipp: El empleado escaneará su identificación. No debe estar vencida. Según el tipo de identificación o de licencia de conducir que presente, es posible que deba presentar documentos comprobatorios. Consulte los requisitos en la sección Lo que debe llevar a la oficina de correos.
+in_person_proofing.process.state_id.info_eipp: El empleado escaneará su identificación. No debe estar vencida. Según el tipo de identificación que presente, es posible que deba mostrar documentos comprobatorios. Consulte los requisitos en la sección “Lo que debe llevar a la oficina de correos”.
 in_person_proofing.process.what_to_do.heading: Colóquese en cualquier fila
 in_person_proofing.process.what_to_do.info: Diga al empleado de la oficina de correos que desea verificar su identidad con %{app_name}.
 instructions.account.reactivate.begin: Empecemos.
