@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SignInSecurityCheckFailedController do
-  let(:user) { build_stubbed(:user, :fully_registered) }
-
-  before do
-    stub_sign_in(user)
-  end
-
   describe '#show' do
     it 'logs an event' do
       stub_analytics
