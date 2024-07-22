@@ -5,7 +5,7 @@ require 'digest'
 class BackupCodeGenerator
   attr_reader :num_words
 
-  NUMBER_OF_CODES = 5
+  NUMBER_OF_CODES = 10
 
   def initialize(user, num_words: BackupCodeConfiguration::NUM_WORDS)
     @num_words = num_words
