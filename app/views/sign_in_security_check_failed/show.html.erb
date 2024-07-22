@@ -28,4 +28,6 @@
   <% end %>
 <% end %>
 
-<%= render 'shared/cancel', link: root_url %>
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('forms.buttons.back'), root_url %>
+<% end %>
