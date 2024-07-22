@@ -37,10 +37,6 @@ class EmailAddress < ApplicationRecord
     email&.split('@')&.last
   end
 
-  def gov_or_mil?
-    email.end_with?('.gov', '.mil')
-  end
-
   def is_fed_email?
     return false unless domain
     FedEmailDomains.email_is_fed_domain?(domain)

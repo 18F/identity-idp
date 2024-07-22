@@ -16,7 +16,7 @@ module Users
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
-        gov_or_mil_email: gov_or_mil_email?,
+        gov_or_mil_email: is_fed_email?,
       )
     end
 
@@ -44,8 +44,8 @@ module Users
 
     private
 
-    def gov_or_mil_email?
-      current_user.confirmed_email_addresses.any?(&:gov_or_mil?)
+    def is_fed_email?
+      current_user.confirmed_email_addresses.any?(&:is_fed_email?)
     end
 
     def mfa_context
