@@ -39,6 +39,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, skipDocAuthFromHandoff } =
     useContext(InPersonContext);
+  useDidUpdateEffect(onStepChange, [stepName]);
+  useEffect(() => {
+    if (stepName) {
+      trackVisitEvent(stepName);
+    }
+  }, [stepName]);
   const appName = getConfigValue('appName');
   const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
     ? InPersonLocationFullAddressEntryPostOfficeSearchStep
@@ -86,13 +92,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     form: InPersonSwitchBackStep,
     title: t('in_person_proofing.headings.switch_back'),
   };
-
-  useDidUpdateEffect(onStepChange, [stepName]);
-  useEffect(() => {
-    if (stepName) {
-      trackVisitEvent(stepName);
-    }
-  }, [stepName]);
 
   /**
    * Clears error state and sets form values for submission.
