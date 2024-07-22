@@ -1568,7 +1568,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
         context 'By passes the Secondary ID check when enrollment is Enhanced IPP' do
           before do
-            stub_request_passed_proofing_secondary_id_type_results
+            stub_request_passed_proofing_secondary_id_type_results_ial_2
           end
 
           it_behaves_like(
@@ -1577,7 +1577,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             email_type: 'Success',
             enrollment_status: InPersonEnrollment::STATUS_PASSED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
-              request_passed_proofing_secondary_id_type_results_response,
+            request_passed_proofing_secondary_id_type_results_response_ial_2,
           )
         end
       end
