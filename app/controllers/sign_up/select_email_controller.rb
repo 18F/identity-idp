@@ -21,6 +21,8 @@ module SignUp
           user_id: current_user.id,
           email: form_params[:selection],
         )
+
+        session[:sp_email] = EmailContext.new(current_user).last_sign_in_email_address.id
         redirect_to sign_up_completed_path
       else
         render :show
