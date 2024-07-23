@@ -217,6 +217,24 @@ RSpec.describe 'New device tracking' do
         expect_delivered_email_count(0)
       end
     end
+
+    context 'reauthenticating after new account creation' do
+      before do
+        sign_up_and_2fa_ial1_user
+        reset_email
+        expire_reauthn_window
+      end
+
+      it 'does not send a second user notification' do
+        within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+        expect(page).to have_current_path(login_two_factor_options_path)
+        click_on t('forms.buttons.continue')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        expect_delivered_email_count(0)
+      end
+    end
   end
 
   context 'user does not have existing devices' do
