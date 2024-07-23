@@ -48,6 +48,7 @@ Dir.chdir APP_ROOT do
 
   puts "== Copying sample pwned passwords list =="
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
+  run "cp fed_email_domains/fed_email_domains.txt.sample fed_email_domains/fed_email_domains.txt"
 
   puts "\n== Installing dependencies =="
   brew_installed = system "brew -v 2>&1"
