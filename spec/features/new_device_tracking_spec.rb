@@ -225,7 +225,7 @@ RSpec.describe 'New device tracking' do
         expire_reauthn_window
       end
 
-      it 'does not send a second user notification' do
+      it 'does not send a new device sign-in notification' do
         within('.sidenav') { click_on t('account.navigation.add_phone_number') }
         expect(page).to have_current_path(login_two_factor_options_path)
         click_on t('forms.buttons.continue')
