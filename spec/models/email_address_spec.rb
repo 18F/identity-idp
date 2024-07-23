@@ -115,7 +115,7 @@ RSpec.describe EmailAddress do
     subject(:result) { email_address.is_fed_email? }
 
     context 'with an email domain not a fed email' do
-      let(:email) { 'example@example.gov' }
+      let(:email) { 'example@bad.gov' }
 
       it { expect(result).to eq(false) }
     end
