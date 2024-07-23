@@ -9,10 +9,7 @@ module NewDeviceConcern
     user_session[:new_device] = new_device
   end
 
-  # @return [Boolean,nil] Whether current user session is from a new device. Returns nil if there is
-  # no active user session.
   def new_device?
-    return nil unless warden.authenticated?(:user)
     user_session[:new_device] != false
   end
 end
