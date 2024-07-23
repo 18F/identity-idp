@@ -191,16 +191,6 @@ module InPersonHelper
     )
   end
 
-  def expect_in_person_gpo_step_indicator_current_step(text)
-    # Ensure that GPO letter step is shown in the step indicator.
-    expect(page).to have_css(
-      '.step-indicator__step',
-      text: t('step_indicator.flows.idv.verify_address'),
-    )
-
-    expect_in_person_step_indicator_current_step(text)
-  end
-
   def make_pii(same_address_as_id: 'true')
     pii_from_user[:same_address_as_id] = same_address_as_id
     pii_from_user[:identity_doc_address1] = identity_doc_address1
