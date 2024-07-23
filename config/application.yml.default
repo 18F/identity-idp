@@ -219,6 +219,7 @@ participate_in_dap: false
 password_max_attempts: 3
 personal_key_retired: true
 phone_carrier_registration_blocklist_array: '[]'
+protocols_report_config: '[]'
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 phone_confirmation_max_attempts: 20
@@ -422,7 +423,7 @@ development:
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
-  usps_upload_sftp_directory: "/gsa_order"
+  usps_upload_sftp_directory: '/gsa_order'
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
   usps_upload_sftp_username: brady
@@ -591,8 +592,7 @@ test:
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_root_url: 'http://localhost:1000'
   usps_ipp_sponsor_id: '111111111111111'
-  usps_upload_sftp_directory: "/directory"
+  usps_upload_sftp_directory: '/directory'
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass
   usps_upload_sftp_username: user
-  

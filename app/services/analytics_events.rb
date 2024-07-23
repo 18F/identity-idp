@@ -4987,14 +4987,16 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [String,nil] key_id
+  # @param [String,nil] key_id PIV/CAC key_id from PKI service
+  # @param [Boolean] new_device Whether the user is authenticating from a new device
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id:, **extra)
+  def piv_cac_login(success:, errors:, key_id:, new_device:, **extra)
     track_event(
       :piv_cac_login,
       success:,
       errors:,
       key_id:,
+      new_device:,
       **extra,
     )
   end

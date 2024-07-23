@@ -534,9 +534,12 @@ doc_auth.errors.camera.blocked: 你的镜头被遮住了。
 doc_auth.errors.camera.blocked_detail_html: '<strong>允许 %{app_name} 进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>'
 doc_auth.errors.camera.failed: 相机未开启，请再试一次。
 doc_auth.errors.card_type: 再用你的驾照或州政府颁发的身份证件试一次。
+doc_auth.errors.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
+doc_auth.errors.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
 doc_auth.errors.doc.doc_type_check: 你的驾照或身份证件必须是美国一个州或属地颁发的。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。
 doc_auth.errors.doc.resubmit_failed_image: 你已经试过这张图像，该图像不行。请尝试添加一个不同的图像。
 doc_auth.errors.doc.wrong_id_type_html: 我们只接受由美国的一个州或属地颁发的驾照或身份证件。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。<a> 了解更多有关我们接受的身份证件的信息 </a>
+doc_auth.errors.document_capture_canceled: 你已取消了用手机上传身份证件照片。
 doc_auth.errors.dpi.failed_short: 图像太小或模糊，请再试一次。
 doc_auth.errors.dpi.top_msg: 我们无法辨认你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或太模糊。确保你的身份证件在图框中比较大，然后试着重拍一下。
 doc_auth.errors.dpi.top_msg_plural: 我们无法读取你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或模糊。确保你的身份证件在图片框中很大，然后试着拍一张新照片。
@@ -551,6 +554,7 @@ doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄�
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
 doc_auth.errors.glare.top_msg_plural: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍。
+doc_auth.errors.how_to_verify_form: 选择一个验证身份的方法。
 doc_auth.errors.http.image_load.failed_short: 系统不支持图像文件，请再试一次。
 doc_auth.errors.http.image_load.top_msg: 你添加的图像文件系统不支持。请重拍你的身份证件并再试一次。
 doc_auth.errors.http.image_size.failed_short: 系统不支持图像文件，请再试一次。
@@ -558,7 +562,14 @@ doc_auth.errors.http.image_size.top_msg: 你的图像尺寸太大或太小。请
 doc_auth.errors.http.pixel_depth.failed_short: 系统不支持图像文件，请再试一次。
 doc_auth.errors.http.pixel_depth.top_msg: 你图像文件的像素深度系统不支持。请重拍你的身份证件并再试一次。系统支持的图像像素深度为 24位 RGB。
 doc_auth.errors.not_a_file: 你选择的不是一个正确的文件。
+doc_auth.errors.phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
 doc_auth.errors.pii.birth_date_min_age: 你的生日不满足最低年龄要求。
+doc_auth.errors.rate_limited_heading: 我们无法验证你的身份证件。
+doc_auth.errors.rate_limited_subheading: 尝试再拍照片
+doc_auth.errors.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
+doc_auth.errors.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
+doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 doc_auth.errors.sharpness.failed_short: 图像模糊，请再试一次。
 doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
@@ -707,17 +718,6 @@ errors.attributes.password.too_short.one: 密码必须至少有一个字符
 errors.attributes.password.too_short.other: 密码必须至少有%{count}个字符
 errors.capture_doc.invalid_link: 链接已过期或有误。 请要求另外一个在手机上验证身份的链接。
 errors.confirm_password_incorrect: 密码不对。
-errors.doc_auth.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-errors.doc_auth.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
-errors.doc_auth.document_capture_canceled: 你已取消了用手机上传身份证件照片。
-errors.doc_auth.how_to_verify_form: 选择一个验证身份的方法。
-errors.doc_auth.phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
-errors.doc_auth.rate_limited_heading: 我们无法验证你的身份证件。
-errors.doc_auth.rate_limited_subheading: 尝试再拍照片
-errors.doc_auth.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
-errors.doc_auth.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
-errors.doc_auth.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 errors.enter_code.rate_limited_html: 你输入错误验证码太多次。<strong> %{timeout} 后再试。</strong>
 errors.general: 哎呀，出错了。请再试一次。
 errors.invalid_totp: 代码有误。请再试一次。
@@ -1834,7 +1834,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: 如需要更
 user_mailer.in_person_failed_suspected_fraud.body.intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed_suspected_fraud.greeting: 你好，
 user_mailer.in_person_failed_suspected_fraud.subject: 你的身份未能亲身被验证。
-user_mailer.in_person_failed.body.with_cta: 点击按钮或者复制下面的链接来再次在网上通过 %{sp_or_app_name}验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
+user_mailer.in_person_failed.body.with_cta: 点击按钮或复制下面的链接，尝试通过 %{sp_or_app_name} 再次验证你的身份。
 user_mailer.in_person_failed.body.without_cta: 请尝试从 %{sp_name}的网站再次验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
 user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。

@@ -534,9 +534,12 @@ doc_auth.errors.camera.blocked: Su cámara está bloqueada
 doc_auth.errors.camera.blocked_detail_html: '<strong>Permita el acceso a su cámara para tomar las fotografías de %{app_name}.</strong><span>Intente tomar las fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal vez necesite revisar la configuración de su dispositivo para permitir el acceso.</span>'
 doc_auth.errors.camera.failed: No se pudo activar la cámara; inténtelo de nuevo.
 doc_auth.errors.card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de identificación estatal.
+doc_auth.errors.consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
+doc_auth.errors.doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o una identificación estatal.
 doc_auth.errors.doc.doc_type_check: Su licencia de conducir o identificación estatal debe ser emitida por un estado o territorio de los EE. UU. No aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
 doc_auth.errors.doc.resubmit_failed_image: Ya intentó con esta imagen y no funcionó. Intente añadir una imagen diferente.
 doc_auth.errors.doc.wrong_id_type_html: Solo aceptamos una licencia de conducir o una identificación estatal emitida por un estado o territorio de los EE. UU. No aceptamos otras formas de identificación, como pasaportes o identificaciones militares. <a>Obtenga más información sobre las identificaciones aceptadas</a>
+doc_auth.errors.document_capture_canceled: Ha cancelado la carga de fotos de su identificación en este teléfono.
 doc_auth.errors.dpi.failed_short: La imagen es demasiado pequeña o está borrosa; inténtelo de nuevo.
 doc_auth.errors.dpi.top_msg: No pudimos leer su identificación. Es posible que el tamaño de su imagen o de su identificación sea demasiado pequeño o que la foto esté borrosa. Asegúrese de que su identificación se vea más grande dentro del marco de la imagen e intente tomar una nueva foto.
 doc_auth.errors.dpi.top_msg_plural: No pudimos leer su identificación. Es posible que el tamaño de sus imágenes o de su identificación sea demasiado pequeño o que las fotos estén borrosas. Asegúrese de que su identificación se vea grande dentro del marco de la imagen e intente tomar nuevas fotos.
@@ -551,6 +554,7 @@ doc_auth.errors.general.selfie_failure_help_link_text: Consulte más consejos pa
 doc_auth.errors.glare.failed_short: La imagen tiene reflejos; inténtelo de nuevo.
 doc_auth.errors.glare.top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar una nueva foto.
 doc_auth.errors.glare.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos tengan reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar nuevas fotos.
+doc_auth.errors.how_to_verify_form: Seleccione una forma de verificar su identidad.
 doc_auth.errors.http.image_load.failed_short: El archivo de la imagen no es compatible; inténtelo de nuevo.
 doc_auth.errors.http.image_load.top_msg: El archivo de imagen que añadió no es compatible. Tome nuevas fotos de su identificación e inténtelo de nuevo.
 doc_auth.errors.http.image_size.failed_short: El archivo de la imagen no es compatible; inténtelo de nuevo.
@@ -558,7 +562,14 @@ doc_auth.errors.http.image_size.top_msg: El tamaño de la imagen es demasiado gr
 doc_auth.errors.http.pixel_depth.failed_short: El archivo de la imagen no es compatible; inténtelo de nuevo.
 doc_auth.errors.http.pixel_depth.top_msg: La profundidad de píxel de su archivo de imagen no es compatible. Tome nuevas fotos de su identificación e inténtelo de nuevo. La profundidad de píxel de la imagen admitida es RGB de 24 bits.
 doc_auth.errors.not_a_file: La selección no era un archivo válido.
+doc_auth.errors.phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación antes de continuar. Le enviamos un vínculo con instrucciones.
 doc_auth.errors.pii.birth_date_min_age: Su fecha de nacimiento no cumple con el requisito de edad mínima.
+doc_auth.errors.rate_limited_heading: No pudimos verificar su identificación
+doc_auth.errors.rate_limited_subheading: Intente tomar nuevas fotos
+doc_auth.errors.rate_limited_text_html: Por su seguridad, limitamos el número de veces que puede intentar verificar un documento en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
+doc_auth.errors.selfie_fail_heading: No hemos podido cotejar su foto con su identificación.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: No pudimos verificar su foto
+doc_auth.errors.send_link_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}. También puede volver atrás y elegir utilizar su computadora.
 doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de nuevo.
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
 doc_auth.errors.sharpness.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar iluminado.
@@ -707,17 +718,6 @@ errors.attributes.password.too_short.one: La contraseña debe tener al menos un 
 errors.attributes.password.too_short.other: La contraseña debe tener al menos %{count} caracteres.
 errors.capture_doc.invalid_link: Este enlace ha caducado o no es válido. Solicite otro enlace para verificar su identidad en un teléfono móvil.
 errors.confirm_password_incorrect: La contraseña es incorrecta.
-errors.doc_auth.consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
-errors.doc_auth.doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o una identificación estatal.
-errors.doc_auth.document_capture_canceled: Ha cancelado la carga de fotos de su identificación en este teléfono.
-errors.doc_auth.how_to_verify_form: Seleccione una forma de verificar su identidad.
-errors.doc_auth.phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación antes de continuar. Le enviamos un vínculo con instrucciones.
-errors.doc_auth.rate_limited_heading: No pudimos verificar su identificación
-errors.doc_auth.rate_limited_subheading: Intente tomar nuevas fotos
-errors.doc_auth.rate_limited_text_html: Por su seguridad, limitamos el número de veces que puede intentar verificar un documento en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
-errors.doc_auth.selfie_fail_heading: No hemos podido cotejar su foto con su identificación.
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: No pudimos verificar su foto
-errors.doc_auth.send_link_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}. También puede volver atrás y elegir utilizar su computadora.
 errors.enter_code.rate_limited_html: Ingresó un código de verificación incorrecto demasiadas veces. <strong>Vuelva a intentarlo en %{timeout}.</strong>
 errors.general: Algo salió mal. Vuelva a intentarlo.
 errors.invalid_totp: El código no es válido. Vuelva a intentarlo.
@@ -1835,7 +1835,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: Si necesita 
 user_mailer.in_person_failed_suspected_fraud.body.intro: Entendemos que estaba intentando verificar su identidad usando %{app_name}; sin embargo, su identidad no pudo ser verificada en la oficina de correos de %{location} el %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: 'Hola:'
 user_mailer.in_person_failed_suspected_fraud.subject: No se pudo verificar su identidad en persona
-user_mailer.in_person_failed.body.with_cta: Haga clic en el botón o copie el vínculo siguiente para volver a intentar verificar su identidad en línea con %{sp_or_app_name}. Si sigue teniendo problemas, contacte con la agencia a la que está intentando acceder.
+user_mailer.in_person_failed.body.with_cta: Haga clic en el botón o copie el vínculo siguiente para volver a intentar verificar su identidad con %{sp_or_app_name}. Si sigue teniendo problemas, póngase en contacto con la agencia a la que intenta acceder.
 user_mailer.in_person_failed.body.without_cta: Vuelva a intentar verificar su identidad en el sitio web de %{sp_name}. Si sigue teniendo problemas, contacte con la agencia a la que está intentando acceder.
 user_mailer.in_person_failed.intro: No se pudo verificar su identidad en la oficina de correos de %{location} el %{date}.
 user_mailer.in_person_failed.subject: No se pudo verificar su identidad en persona

@@ -40,7 +40,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           ),
         )
         submit_images
-        message = strip_tags(t('errors.doc_auth.doc_type_not_supported_heading'))
+        message = strip_tags(t('doc_auth.errors.doc_type_not_supported_heading'))
         expect(page).to have_content(message)
         detail_message = strip_tags(t('doc_auth.errors.doc.doc_type_check'))
         security_message = strip_tags(
@@ -108,7 +108,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
           timeout = distance_of_time_in_words(
             RateLimiter.attempt_window_in_minutes(:idv_doc_auth).minutes,
           )
-          message = strip_tags(t('errors.doc_auth.rate_limited_text_html', timeout: timeout))
+          message = strip_tags(t('doc_auth.errors.rate_limited_text_html', timeout: timeout))
           expect(page).to have_content(message)
           expect(page).to have_current_path(idv_session_errors_rate_limited_path)
         end
@@ -320,10 +320,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_issues_h1_heading = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_issues_h1_heading = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_issues_h1_heading)
 
-                review_issues_subheading = strip_tags(t('errors.doc_auth.rate_limited_subheading'))
+                review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
                 expect(page).not_to have_selector('h2', text: review_issues_subheading)
 
                 review_issues_body_message = strip_tags(t('doc_auth.errors.general.no_liveness'))
@@ -373,10 +373,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_issues_h1_heading = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_issues_h1_heading = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_issues_h1_heading)
 
-                review_issues_subheading = strip_tags(t('errors.doc_auth.rate_limited_subheading'))
+                review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
                 expect(page).not_to have_selector('h2', text: review_issues_subheading)
 
                 review_issues_body_message = strip_tags(
@@ -427,10 +427,10 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_issues_h1_heading = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_issues_h1_heading = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_issues_h1_heading)
 
-                review_issues_subheading = strip_tags(t('errors.doc_auth.rate_limited_subheading'))
+                review_issues_subheading = strip_tags(t('doc_auth.errors.rate_limited_subheading'))
                 expect(page).not_to have_selector('h2', text: review_issues_subheading)
 
                 review_issues_body_message = strip_tags(
@@ -496,7 +496,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
@@ -547,7 +547,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 review_page_h1_copy = strip_tags(
-                  t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+                  t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
                 )
                 expect(page).to have_content(review_page_h1_copy)
 
@@ -594,7 +594,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
@@ -638,7 +638,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.dpi.top_msg'))
@@ -682,7 +682,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.selfie_fail_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
@@ -728,7 +728,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(
@@ -776,7 +776,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(
@@ -824,7 +824,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.general.no_liveness'))
@@ -869,7 +869,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
                 submit_images
 
                 review_page_h1_copy = strip_tags(
-                  t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+                  t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
                 )
                 expect(page).to have_content(review_page_h1_copy)
 
@@ -916,7 +916,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.rate_limited_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.alerts.address_check'))
@@ -962,7 +962,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
                 submit_images
 
-                review_page_h1_copy = strip_tags(t('errors.doc_auth.selfie_fail_heading'))
+                review_page_h1_copy = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
                 expect(page).to have_content(review_page_h1_copy)
 
                 review_page_body_copy = strip_tags(t('doc_auth.errors.general.selfie_failure'))
@@ -1011,7 +1011,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               ),
             )
             submit_images
-            message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+            message = strip_tags(t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
@@ -1022,7 +1022,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             )
             expect(page).to have_content(detail_message << "\n" << security_message)
             review_issues_header = strip_tags(
-              t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+              t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
             )
             expect(page).to have_content(review_issues_header)
             expect(page).to have_current_path(idv_document_capture_path)
@@ -1049,7 +1049,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               ),
             )
             submit_images
-            message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+            message = strip_tags(t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
@@ -1060,7 +1060,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             )
             expect(page).to have_content(detail_message << "\n" << security_message)
             review_issues_header = strip_tags(
-              t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+              t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
             )
             expect(page).to have_content(review_issues_header)
             expect(page).to have_current_path(idv_document_capture_path)
@@ -1087,7 +1087,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               ),
             )
             submit_images
-            message = strip_tags(t('errors.doc_auth.selfie_fail_heading'))
+            message = strip_tags(t('doc_auth.errors.selfie_fail_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.general.selfie_failure'))
             security_message = strip_tags(
@@ -1098,7 +1098,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             )
             expect(page).to have_content(detail_message << "\n" << security_message)
             review_issues_header = strip_tags(
-              t('errors.doc_auth.selfie_fail_heading'),
+              t('doc_auth.errors.selfie_fail_heading'),
             )
             expect(page).to have_content(review_issues_header)
             expect(page).to have_current_path(idv_document_capture_path)
@@ -1126,7 +1126,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
               ),
             )
             submit_images
-            message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+            message = strip_tags(t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'))
             expect(page).to have_content(message)
             detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_or_poor_quality'))
             security_message = strip_tags(
@@ -1138,7 +1138,7 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
 
             expect(page).to have_content(detail_message << "\n" << security_message)
             review_issues_header = strip_tags(
-              t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+              t('doc_auth.errors.selfie_not_live_or_poor_quality_heading'),
             )
             expect(page).to have_content(review_issues_header)
             expect(page).to have_current_path(idv_document_capture_path)

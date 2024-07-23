@@ -122,7 +122,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
       freeze_time do
         idv_send_link_max_attempts.times do
           expect(page).to_not have_content(
-            I18n.t('errors.doc_auth.send_link_limited', timeout: timeout),
+            I18n.t('doc_auth.errors.send_link_limited', timeout: timeout),
           )
 
           fill_in :doc_auth_phone, with: '415-555-0199'
@@ -139,7 +139,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', allowed_extra_analytic
         expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         expect(page).to have_content(
           I18n.t(
-            'errors.doc_auth.send_link_limited',
+            'doc_auth.errors.send_link_limited',
             timeout: timeout,
           ),
         )
