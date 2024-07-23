@@ -135,7 +135,7 @@ RSpec.describe 'Identity verification', :js, allowed_extra_analytics: [:*] do
       complete_all_in_person_proofing_steps(user)
       test_restart_in_person_flow(user)
       complete_otp_verification_page(user)
-      
+
       test_go_back_in_person_flow
 
       complete_enter_password_step(user)

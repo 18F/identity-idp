@@ -265,7 +265,6 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
     end
   end
 
-
   context 'verify by mail not allowed for in-person' do
     it 'does not present gpo as an option', allow_browser_log: true do
       sign_in_and_2fa_user
