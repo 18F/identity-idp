@@ -205,7 +205,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR $RAILS_ROOT
 
 # copy in all the stuff from the builder image and exclude extra stuff
-COPY --from=builder --exclude=$RAILS_ROOT/node_modules $RAILS_ROOT $RAILS_ROOT
+COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 # set bundler up
 RUN bundle config build.nokogiri --use-system-libraries
