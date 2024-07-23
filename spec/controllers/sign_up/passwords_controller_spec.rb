@@ -130,7 +130,7 @@ RSpec.describe SignUp::PasswordsController do
     context 'with an with an invalid confirmation_token' do
       let(:token) { 'new token' }
       let(:invalid_confirmation_sent_at) do
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
       end
       let!(:user) do
         create(
@@ -161,7 +161,7 @@ RSpec.describe SignUp::PasswordsController do
 
     it 'rejects when confirmation_token is invalid' do
       invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
       create(
         :user,
         :unconfirmed,

@@ -23,7 +23,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.selfie_status = doc_auth_response.selfie_status
     EncryptedRedisStructStorage.store(
       session_result,
-      expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,
+      expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.in_seconds,
     )
     self.ocr_confirmation_pending = doc_auth_response.attention_with_barcode?
     save!
@@ -45,7 +45,7 @@ class DocumentCaptureSession < ApplicationRecord
 
     EncryptedRedisStructStorage.store(
       session_result,
-      expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,
+      expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.in_seconds,
     )
     save!
   end
