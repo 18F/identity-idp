@@ -34,7 +34,7 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
       '.usa-alert',
       text: t(
         'forms.backup_code.caution_codes',
-        count: t(BackupCodeGenerator::NUMBER_OF_CODES, scope: :numbers_spelled_out),
+        count: t("numbers_spelled_out.#{BackupCodeGenerator::NUMBER_OF_CODES}"),
       ),
     )
   end
