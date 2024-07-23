@@ -89,6 +89,11 @@ module SignUp
         needs_completion_screen_reason: needs_completion_screen_reason,
       }
 
+      if (last_enrollment = current_user.in_person_enrollments.last)
+        attributes[:in_person_proofing_status] = last_enrollment.status
+        attributes[:doc_auth_result] = last_enrollment.doc_auth_result
+      end
+
       if page_occurence.present? && DisposableEmailDomain.disposable?(email_domain)
         attributes[:disposable_email_domain] = email_domain
       end

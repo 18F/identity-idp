@@ -38,6 +38,10 @@ module Idv
       if form_response.success?
         client_response = post_images_to_client
 
+        document_capture_session.update!(
+          last_doc_auth_result: client_response.extra[:doc_auth_result],
+        )
+
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
         end
