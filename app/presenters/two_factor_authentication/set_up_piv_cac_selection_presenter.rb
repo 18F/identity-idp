@@ -19,7 +19,6 @@ module TwoFactorAuthentication
     end
 
     def recommended?
-      # Not sure yet if we want to allow just fed emails? 
       user.confirmed_email_addresses.any?(&:is_fed_email?)
     end
 
