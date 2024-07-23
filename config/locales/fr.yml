@@ -1330,7 +1330,7 @@ instructions.mfa.piv_cac.http_failure: Le serveur a mis trop de temps à répond
 instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide pour ce compte. Veuillez %{please_try_again_html} avec un autre certificat. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.please_try_again: réessayer
-instructions.mfa.piv_cac.sign_in_html: Assurez-vous que vous disposez d’un compte %{app_name} et que vous avez configuré votre carte PIV (personal identity verification, vérification d'identité personnelle) ou CAC (common access card, carte d'accès commun) comme méthode d’authentification à deux facteurs.
+instructions.mfa.piv_cac.sign_in: Assurez-vous que vous disposez d’un compte %{app_name} et que vous avez configuré votre carte PIV (personal identity verification, vérification d'identité personnelle) ou CAC (common access card, carte d'accès commun) comme méthode d’authentification à deux facteurs.
 instructions.mfa.piv_cac.step_1: Donnez-lui un surnom
 instructions.mfa.piv_cac.step_1_info: Si vous ajoutez plus d’une carte PIV/CAC, vous saurez laquelle.
 instructions.mfa.piv_cac.step_2: Insérez votre PIV/CAC dans votre lecteur de carte

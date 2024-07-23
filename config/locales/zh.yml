@@ -1345,7 +1345,7 @@ instructions.mfa.piv_cac.http_failure: 服务器反应时间过长。请再试�
 instructions.mfa.piv_cac.no_certificate_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
 instructions.mfa.piv_cac.please_try_again: 再试一次
-instructions.mfa.piv_cac.sign_in_html: 确保您有 %{app_name} 帐户并且已设置个人身份验证 (PIV) 或通用访问卡 (CAC) 作为双因素身份证实方法。
+instructions.mfa.piv_cac.sign_in: 确保您有 %{app_name} 帐户并且已设置个人身份验证 (PIV) 或通用访问卡 (CAC) 作为双因素身份证实方法。
 instructions.mfa.piv_cac.step_1: 给它一个昵称
 instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CAC 话，你就能把它们分辨开来。
 instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
