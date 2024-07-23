@@ -49,7 +49,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         OutOfBandSessionAccessor.new(rails_session_id).put_pii(
           profile_id: profile.id,
           pii: pii,
-          expiration: 5.minutes.to_i,
+          expiration: 5.minutes.in_seconds,
         )
       end
     end
@@ -284,7 +284,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
       context 'when the piv/cac was used as a second factor' do
         before do
-          OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.to_i)
+          OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.in_seconds)
         end
 
         it 'includes the x509 claims' do
