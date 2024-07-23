@@ -122,8 +122,10 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def passed_with_unsupported_secondary_id_type?(enrollment, response)
-    return !enrollment.enhanced_ipp? && response['secondaryIdType'].present? &&
-           SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
+    return false if enrollment.enhanced_ipp?
+
+    response['secondaryIdType'].present? &&
+      SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
   end
 
   def analytics(user: AnonymousUser.new)
