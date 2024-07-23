@@ -102,8 +102,8 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
-  scenario 'User with gov/mil email directed to recommended PIV page' do
-    user = create(:user, :with_phone, { email: 'example@example.gov' })
+  scenario 'User with fed email directed to recommended PIV page and goes to add piv page' do
+    user = create(:user, :with_phone, { email: 'example@gsa.gov' })
 
     visit new_user_session_path
     fill_in_credentials_and_submit(user.email, user.password)
@@ -114,7 +114,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     expect(page).to have_current_path(setup_piv_cac_path)
   end
 
-  scenario 'User with gov/mil email and skips recommendation page' do
+  scenario 'User with fed email and skips recommendation page' do
     user = create(:user, :with_phone, { email: 'example@example.gov' })
 
     visit new_user_session_path
