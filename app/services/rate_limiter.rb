@@ -79,7 +79,7 @@ class RateLimiter
         multi.incr(key)
         multi.expireat(
           key,
-          now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.to_i,
+          now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
         )
       end
     end
@@ -132,7 +132,7 @@ class RateLimiter
       client.set(
         key,
         value,
-        exat: now.to_i + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.to_i,
+        exat: now.to_i + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
       )
     end
 
