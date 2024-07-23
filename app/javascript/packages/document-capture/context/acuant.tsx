@@ -8,8 +8,6 @@ import SelfieCaptureContext from './selfie-capture';
 /**
  * Global declarations
  */
-declare let AcuantCamera: AcuantCameraInterface;
-
 declare global {
   interface AcuantJavascriptWebSdkInterface {
     setUnexpectedErrorCallback(arg0: (error: string) => void): unknown;
@@ -171,26 +169,6 @@ const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
   return window.AcuantJavascriptWebSdk;
 };
 
-/**
- * Returns a found AcuantCamera
- * object, if one is available.
- * This function normalizes differences between
- * the 11.5.0 and 11.7.0 SDKs. The former attached
- * the object to the global window, while the latter
- * sets the object in the global (but non-window)
- * scope.
- */
-const getActualAcuantCamera = (): AcuantCameraInterface => {
-  if (window.AcuantCamera) {
-    return window.AcuantCamera;
-  }
-  if (typeof AcuantCamera === 'undefined') {
-    // eslint-disable-next-line no-console
-    console.error('AcuantCamera is not defined in the global scope');
-  }
-  return AcuantCamera;
-};
-
 function AcuantContextProvider({
   sdkSrc,
   cameraSrc,
@@ -264,7 +242,6 @@ function AcuantContextProvider({
       window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
           window.AcuantJavascriptWebSdk.start?.(() => {
-            window.AcuantCamera = getActualAcuantCamera();
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             trackEvent('IdV: Acuant SDK loaded', {
               success: true,
