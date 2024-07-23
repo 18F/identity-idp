@@ -20,7 +20,7 @@ module TwoFactorAuthentication
 
     def recommended?
       # Not sure yet if we want to change the recommended for this since that list only does .gov not mil emails
-      user.confirmed_email_addresses.any?(&:has_fed_email?)
+      user.confirmed_email_addresses.any?(&:is_fed_email?)
     end
 
     def desktop_only?
