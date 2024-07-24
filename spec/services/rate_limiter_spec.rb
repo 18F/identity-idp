@@ -203,47 +203,58 @@ RSpec.describe RateLimiter do
   end
 
   context 'with exponential factor rate limit configuration' do
-    let(:rate_limit_type) { :sign_in_user_id_per_ip }
-    let(:max_attempts) { 50 }
-    let(:attempt_window) { 720 }
-    let(:exponential_factor) { 1.1 }
-    let(:attempt_window_max) { 30.days.in_minutes }
+    let(:rate_limit_type) { :example_type }
 
     subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type:) }
 
     before do
-      allow(IdentityConfig.store).to receive(:sign_in_user_id_per_ip_max_attempts).
-        and_return(max_attempts)
-      allow(IdentityConfig.store).to receive(:sign_in_user_id_per_ip_attempt_window_in_minutes).
-        and_return(attempt_window)
-      allow(IdentityConfig.store).to receive(
-        :sign_in_user_id_per_ip_attempt_window_exponential_factor,
-      ).and_return(exponential_factor)
+      allow(RateLimiter).to receive(:rate_limit_config).and_return(
+        example_type: {
+          max_attempts: 10,
+          attempt_window: 60,
+          attempt_window_exponential_factor: 2,
+          attempt_window_max: 24.hours.in_minutes,
+        },
+      )
     end
 
     it 'increases expiration exponentially by attempts', :freeze_time do
+      # Attempt: 1
+      # Assert default expiration
       rate_limiter.increment!
-      expect(rate_limiter.expires_at).to eq(12.hours.from_now)
-      rate_limiter.increment!
-      expect(rate_limiter.expires_at.round(2)).to eq(13.2.hours.from_now)
-      rate_limiter.increment!
-      expect(rate_limiter.expires_at.round(2)).to eq(14.52.hours.from_now)
-      rate_limiter.increment!
-      expect(rate_limiter.expires_at.round(2)).to eq(15.972.hours.from_now.round(2))
+      expect(rate_limiter.expires_at).to eq(1.hour.from_now)
 
-      39.times { rate_limiter.increment! }
-      expect(rate_limiter.expires_at.round(2)).to eq(657.164390849917.hours.from_now.round(2))
-
+      # Attempt: 2
+      # Assert exponential growth
       rate_limiter.increment!
-      expect(rate_limiter.expires_at.round(2)).to eq(720.hours.from_now)
+      expect(rate_limiter.expires_at).to eq(2.hours.from_now)
+
+      # Attempt: 3
+      # Assert exponential growth
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(4.hours.from_now)
+
+      # Attempt: 4, 5
+      # Assert last expiration before reaching maximum
+      2.times { rate_limiter.increment! }
+      expect(rate_limiter.expires_at).to eq(16.hours.from_now)
+
+      # Attempt: 6
+      # Assert expiration upon reaching maximum
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(false)
 
-      5.times { rate_limiter.increment! }
-      expect(rate_limiter.expires_at.round(2)).to eq(720.hours.from_now)
+      # Attempt: 7, 8, 9
+      # Assert expiration upon reaching limited
+      3.times { rate_limiter.increment! }
+      expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(false)
 
+      # Attempt: 10
+      # Assert limited upon reaching max
       rate_limiter.increment!
-      expect(rate_limiter.expires_at.round(2)).to eq(720.hours.from_now)
+      expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(true)
     end
   end
