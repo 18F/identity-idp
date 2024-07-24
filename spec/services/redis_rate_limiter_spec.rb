@@ -53,7 +53,7 @@ RSpec.describe RedisRateLimiter do
     end
   end
 
-  describe '#maxed?' do
+  describe '#limited?' do
     context 'when the key does not exist in redis' do
       it 'is false' do
         expect(rate_limiter.maxed?(now)).to eq(false)

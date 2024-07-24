@@ -30,43 +30,18 @@ class RateLimiter
   end
 
   def attempts
-    return @redis_attempts.to_i if defined?(@redis_attempts)
-
-    fetch_state!
-
-    @redis_attempts.to_i
+    fetch_state! if !defined?(@redis_attempts)
+    @redis_attempts
   end
 
   def limited?
-    !expired? && maxed?
-  end
-
-  def attempted_at
-    return @redis_attempted_at if defined?(@redis_attempted_at)
-
-    fetch_state!
-
-    @redis_attempted_at
-  end
-
-  def expires_at
-    return nil if attempted_at.blank?
-    attempted_at + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
+    attempts >= RateLimiter.max_attempts(rate_limit_type)
   end
 
   def remaining_count
     return 0 if limited?
 
     RateLimiter.max_attempts(rate_limit_type) - attempts
-  end
-
-  def expired?
-    return nil if expires_at.nil?
-    expires_at <= Time.zone.now
-  end
-
-  def maxed?
-    attempts && attempts >= RateLimiter.max_attempts(rate_limit_type)
   end
 
   def increment!
@@ -85,7 +60,6 @@ class RateLimiter
     end
 
     @redis_attempts = value.to_i
-    @redis_attempted_at = now
 
     attempts
   end
@@ -93,26 +67,9 @@ class RateLimiter
   # Retrieve the current state of the rate limit from Redis
   # We use EXPIRETIME to calculate when the action was last attempted.
   def fetch_state!
-    value = nil
-    expiretime = nil
     REDIS_THROTTLE_POOL.with do |client|
-      value, expiretime = client.multi do |multi|
-        multi.get(key)
-        multi.expiretime(key)
-      end
+      @redis_attempts = client.get(key).to_i
     end
-
-    @redis_attempts = value.to_i
-
-    if expiretime < 0
-      @redis_attempted_at = nil
-    else
-      @redis_attempted_at =
-        ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
-        RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
-    end
-
-    self
   end
 
   def reset!
@@ -121,7 +78,6 @@ class RateLimiter
     end
 
     @redis_attempts = 0
-    @redis_attempted_at = nil
   end
 
   def increment_to_limited!
@@ -137,7 +93,6 @@ class RateLimiter
     end
 
     @redis_attempts = value.to_i
-    @redis_attempted_at = now
 
     attempts
   end

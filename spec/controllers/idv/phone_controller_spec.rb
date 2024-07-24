@@ -202,7 +202,9 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
 
             expect(response).to redirect_to(idv_otp_verification_url)
             expect(Telephony::Test::Message.messages.length).to eq(1)
-            expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
+            expect(
+              RateLimiter.new(user: user, rate_limit_type: :proof_address).limited?,
+            ).to eq(true)
           end
         end
       end
@@ -228,7 +230,9 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
 
             expect(response).to redirect_to(idv_phone_errors_failure_url)
             expect(Telephony::Test::Message.messages.length).to eq(0)
-            expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
+            expect(
+              RateLimiter.new(user: user, rate_limit_type: :proof_address).limited?,
+            ).to eq(true)
           end
         end
       end
