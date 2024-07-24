@@ -6,6 +6,10 @@ RSpec.describe FrontendLogger do
       def example_method_handler(ok:, **rest)
         track_event('example', ok: ok, rest: rest)
       end
+
+      def example_method_with_opted_in_to_ipp_property(opted_in_to_in_person_proofing:)
+        track_event('example', opted_in_to_in_person_proofing: opted_in_to_in_person_proofing)
+      end
     end
   end
 
@@ -24,6 +28,8 @@ RSpec.describe FrontendLogger do
       'proc' => lambda do |ok:, other:|
         analytics.track_event('some customized event', 'ok' => ok, 'other' => other, 'custom' => 1)
       end,
+      'example_method_with_opted_in_to_ipp_property' =>
+        analytics.method(:example_method_with_opted_in_to_ipp_property),
     }
   end
   let(:logger) { described_class.new(analytics: analytics, event_map: event_map) }
@@ -63,6 +69,39 @@ RSpec.describe FrontendLogger do
         expect(analytics).to have_logged_event(
           'some customized event', 'ok' => true, 'other' => true, 'custom' => 1
         )
+      end
+    end
+
+    context 'when hash from keyword arguments is built' do
+      let(:name) { 'example_method_with_opted_in_to_ipp_property' }
+
+      context 'when an analytics property has value "true"' do
+        let(:attributes) { { 'opted_in_to_in_person_proofing' => 'true' } }
+        it 'converts the property value to a boolean' do
+          call
+          expect(analytics).to have_logged_event('example', opted_in_to_in_person_proofing: true)
+        end
+      end
+
+      context 'when an analytics property has value "false"' do
+        let(:attributes) { { 'opted_in_to_in_person_proofing' => 'false' } }
+
+        it 'converts the property value to a boolean' do
+          call
+          expect(analytics).to have_logged_event('example', opted_in_to_in_person_proofing: false)
+        end
+      end
+
+      context 'when an analytics property has value "other_value"' do
+        let(:attributes) { { 'opted_in_to_in_person_proofing' => 'other_value' } }
+
+        it 'does not convert the value' do
+          call
+          expect(analytics).to have_logged_event(
+            'example',
+            opted_in_to_in_person_proofing: 'other_value',
+          )
+        end
       end
     end
   end
