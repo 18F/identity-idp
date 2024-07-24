@@ -38,17 +38,24 @@ class RateLimiter
     !expired? && maxed?
   end
 
-  def expires_at
-    if @redis_expires_at.blank?
+  def attempted_at
+    if !defined?(@redis_attempted_at)
       expiretime = REDIS_THROTTLE_POOL.with { |client| client.expiretime(key) }
       if expiretime.positive?
-        @redis_expires_at = expiretime
+        @redis_attempted_at =
+          ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
+          RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
       else
-        @redis_attempted_at = Time.zone.now
+        @redis_attempted_at = nil
       end
     end
 
-    @redis_expires_at
+    @redis_attempted_at
+  end
+
+  def expires_at
+    return nil if attempted_at.blank?
+    attempted_at + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
   end
 
   def remaining_count
@@ -58,7 +65,8 @@ class RateLimiter
   end
 
   def expired?
-    !@redis_expires_at || @redis_expires_at <= Time.zone.now
+    return nil if expires_at.nil?
+    expires_at <= Time.zone.now
   end
 
   def maxed?
@@ -70,16 +78,18 @@ class RateLimiter
     value = nil
 
     now = Time.zone.now
-    expires_at = now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds
     REDIS_THROTTLE_POOL.with do |client|
       value, _success = client.multi do |multi|
         multi.incr(key)
-        multi.expireat(key, expires_at)
+        multi.expireat(
+          key,
+          now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
+        )
       end
     end
 
     @redis_attempts = value.to_i
-    @redis_expires_at = expires_at
+    @redis_attempted_at = now
 
     attempts
   end
@@ -105,14 +115,17 @@ class RateLimiter
   def increment_to_limited!
     value = RateLimiter.max_attempts(rate_limit_type)
     now = Time.zone.now
-    expires_at = now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds
 
     REDIS_THROTTLE_POOL.with do |client|
-      client.set(key, value, exat: expires_at)
+      client.set(
+        key,
+        value,
+        exat: now.to_i + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
+      )
     end
 
     @redis_attempts = value.to_i
-    @redis_expires_at = expires_at
+    @redis_attempted_at = now
 
     attempts
   end

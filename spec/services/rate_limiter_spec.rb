@@ -82,9 +82,11 @@ RSpec.describe RateLimiter do
       rate_limiter.increment!
       expect(rate_limiter.attempts).to eq 1
       expect(rate_limiter.limited?).to eq(true)
+      current_expiration = rate_limiter.expires_at
       travel 5.minutes do # move within 10 minute expiration window
         rate_limiter.increment!
         expect(rate_limiter.attempts).to eq 1
+        expect(rate_limiter.expires_at).to eq current_expiration
       end
     end
   end
@@ -138,9 +140,9 @@ RSpec.describe RateLimiter do
       it 'returns expiration time' do
         rate_limiter.increment!
 
-        travel_to(3.days.from_now) do
+        travel_to(rate_limiter.attempted_at + 3.days) do
           expect(rate_limiter.expires_at).to be_within(1.second).
-            of(3.days.ago + attempt_window.minutes)
+            of(rate_limiter.attempted_at + attempt_window.minutes)
         end
       end
 
@@ -165,7 +167,7 @@ RSpec.describe RateLimiter do
         freeze_time do
           rate_limiter.increment!
           expect(rate_limiter.expires_at).to be_within(1.second).
-            of(attempt_window.minutes.from_now)
+            of(rate_limiter.attempted_at + attempt_window.minutes)
         end
       end
     end
