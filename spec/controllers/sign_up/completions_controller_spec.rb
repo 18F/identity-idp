@@ -247,6 +247,7 @@ RSpec.describe SignUp::CompletionsController do
           verified_attributes: ['email'],
           last_consented_at: now,
           clear_deleted_at: true,
+          email_address_id: nil,
         )
         freeze_time do
           travel_to(now)
@@ -346,6 +347,7 @@ RSpec.describe SignUp::CompletionsController do
           verified_attributes: %w[email first_name verified_at],
           last_consented_at: now,
           clear_deleted_at: true,
+          email_address_id: nil,
         )
         allow(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey).
           with(user, sp.issuer)
