@@ -146,7 +146,7 @@ module SamlIdpAuthConcern
 
   def email_address_id
     return session[:sp_email_id] if session[:sp_email_id].present?
-    sp = @authorize_form.service_provider.issuer
+    sp = sp_session["issuer"]
     identity = current_user.identities.where(service_provider: sp)
     email_id = identity.pluck('email_address_id')[0]
     return email_id if email_id.is_a? Integer
