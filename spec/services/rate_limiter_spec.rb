@@ -235,24 +235,24 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.expires_at).to eq(4.hours.from_now)
 
       # Attempt: 4, 5
-      # Assert last expiration before reaching maximum
+      # Assert last expiration before reaching max attempt window
       2.times { rate_limiter.increment! }
       expect(rate_limiter.expires_at).to eq(16.hours.from_now)
 
       # Attempt: 6
-      # Assert expiration upon reaching maximum, not limited
+      # Assert expiration upon reaching max attempt window, not limited
       rate_limiter.increment!
       expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(false)
 
       # Attempt: 7, 8, 9
-      # Assert expiration before reaching max, not limited
+      # Assert expiration before reaching max attempts, not limited
       3.times { rate_limiter.increment! }
       expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(false)
 
       # Attempt: 10
-      # Assert expiration, limited upon reaching max
+      # Assert expiration, limited upon reaching max attempts
       rate_limiter.increment!
       expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(true)
