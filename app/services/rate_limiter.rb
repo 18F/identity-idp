@@ -51,7 +51,7 @@ class RateLimiter
 
   def expires_at
     return nil if attempted_at.blank?
-    attempted_at + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
+    attempted_at + expiration_minutes.minutes
   end
 
   def remaining_count
@@ -69,6 +69,18 @@ class RateLimiter
     attempts && attempts >= RateLimiter.max_attempts(rate_limit_type)
   end
 
+  def expiration_minutes
+    minutes = self.class.attempt_window_in_minutes(rate_limit_type)
+    exponential_factor = self.class.attempt_window_exponential_factor(rate_limit_type)
+    attempt_window_max = self.class.attempt_window_max_in_minutes(rate_limit_type)
+    minutes *= exponential_factor ** (attempts - 1) if exponential_factor && attempts.positive?
+    if attempt_window_max && minutes > attempt_window_max
+      attempt_window_max
+    else
+      minutes
+    end
+  end
+
   def increment!
     return if limited?
     value = nil
@@ -77,10 +89,7 @@ class RateLimiter
     REDIS_THROTTLE_POOL.with do |client|
       value, _success = client.multi do |multi|
         multi.incr(key)
-        multi.expireat(
-          key,
-          now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
-        )
+        multi.expireat(key, now + expiration_minutes.minutes.in_seconds)
       end
     end
 
@@ -109,7 +118,7 @@ class RateLimiter
     else
       @redis_attempted_at =
         ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
-        RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
+        expiration_minutes.minutes
     end
 
     self
@@ -132,7 +141,7 @@ class RateLimiter
       client.set(
         key,
         value,
-        exat: now.to_i + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
+        exat: now + expiration_minutes.minutes.in_seconds,
       )
     end
 
@@ -153,6 +162,14 @@ class RateLimiter
 
   def self.attempt_window_in_minutes(rate_limit_type)
     rate_limit_config.dig(rate_limit_type, :attempt_window)
+  end
+
+  def self.attempt_window_exponential_factor(rate_limit_type)
+    rate_limit_config.dig(rate_limit_type, :attempt_window_exponential_factor)
+  end
+
+  def self.attempt_window_max_in_minutes(rate_limit_type)
+    rate_limit_config.dig(rate_limit_type, :attempt_window_max)
   end
 
   def self.max_attempts(rate_limit_type)
@@ -221,6 +238,14 @@ class RateLimiter
         max_attempts: IdentityConfig.store.short_term_phone_otp_max_attempts,
         attempt_window: IdentityConfig.store.
           short_term_phone_otp_max_attempt_window_in_seconds.seconds.in_minutes.to_f,
+      },
+      sign_in_user_id_per_ip: {
+        max_attempts: IdentityConfig.store.sign_in_user_id_per_ip_max_attempts,
+        attempt_window: IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_in_minutes,
+        attempt_window_exponential_factor:
+          IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_exponential_factor,
+        attempt_window_max:
+          IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_max_days.days.in_minutes,
       },
     }.with_indifferent_access
   end

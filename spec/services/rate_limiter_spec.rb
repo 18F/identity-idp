@@ -201,4 +201,50 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.remaining_count).to eq(0)
     end
   end
+
+  context 'with exponential factor rate limit configuration' do
+    let(:rate_limit_type) { :sign_in_user_id_per_ip }
+    let(:max_attempts) { 50 }
+    let(:attempt_window) { 720 }
+    let(:exponential_factor) { 1.1 }
+    let(:attempt_window_max) { 30.days.in_minutes }
+
+    subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type:) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:sign_in_user_id_per_ip_max_attempts).
+        and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:sign_in_user_id_per_ip_attempt_window_in_minutes).
+        and_return(attempt_window)
+      allow(IdentityConfig.store).to receive(
+        :sign_in_user_id_per_ip_attempt_window_exponential_factor,
+      ).and_return(exponential_factor)
+    end
+
+    it 'increases expiration exponentially by attempts', :freeze_time do
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(12.hours.from_now)
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at.round(2)).to eq(13.2.hours.from_now)
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at.round(2)).to eq(14.52.hours.from_now)
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at.round(2)).to eq(15.972.hours.from_now.round(2))
+
+      39.times { rate_limiter.increment! }
+      expect(rate_limiter.expires_at.round(2)).to eq(657.164390849917.hours.from_now.round(2))
+
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at.round(2)).to eq(720.hours.from_now)
+      expect(rate_limiter.limited?).to eq(false)
+
+      5.times { rate_limiter.increment! }
+      expect(rate_limiter.expires_at.round(2)).to eq(720.hours.from_now)
+      expect(rate_limiter.limited?).to eq(false)
+
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at.round(2)).to eq(720.hours.from_now)
+      expect(rate_limiter.limited?).to eq(true)
+    end
+  end
 end
