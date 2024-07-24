@@ -140,7 +140,17 @@ module SamlIdpAuthConcern
       link_identity(
         ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
+        email_address_id: email_address_id,
       )
+  end
+
+  def email_address_id
+    return session[:sp_email_id] if session[:sp_email_id].present?
+    sp = @authorize_form.service_provider.issuer
+    identity = current_user.identities.where(service_provider: sp)
+    email_id = identity.pluck('email_address_id')[0]
+    return email_id if email_id.is_a? Integer
+    return current_user.email_addresses.take.id
   end
 
   def identity_needs_verification?

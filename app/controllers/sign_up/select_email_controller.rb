@@ -22,7 +22,7 @@ module SignUp
           email: form_params[:selection],
         )
 
-        session[:sp_email] = EmailContext.new(current_user).last_sign_in_email_address.id
+        session[:sp_email_id] = EmailContext.new(current_user).last_sign_in_email_address.id
         redirect_to sign_up_completed_path
       else
         render :show
