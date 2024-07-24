@@ -35,7 +35,7 @@ class RateLimiter
   end
 
   def limited?
-    attempts >= RateLimiter.max_attempts(rate_limit_type)
+    !expired? && maxed?
   end
 
   def remaining_count
@@ -44,22 +44,29 @@ class RateLimiter
     RateLimiter.max_attempts(rate_limit_type) - attempts
   end
 
+  def expired?
+    !@redis_expires_at || @redis_expires_at <= Time.zone.now
+  end
+
+  def maxed?
+    attempts >= RateLimiter.max_attempts(rate_limit_type)
+  end
+
   def increment!
     return if limited?
     value = nil
 
     now = Time.zone.now
+    expires_at = now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds
     REDIS_THROTTLE_POOL.with do |client|
       value, _success = client.multi do |multi|
         multi.incr(key)
-        multi.expireat(
-          key,
-          now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
-        )
+        multi.expireat(key, expires_at)
       end
     end
 
     @redis_attempts = value.to_i
+    @redis_expires_at = expires_at
 
     attempts
   end
@@ -68,7 +75,8 @@ class RateLimiter
   # We use EXPIRETIME to calculate when the action was last attempted.
   def fetch_state!
     REDIS_THROTTLE_POOL.with do |client|
-      @redis_attempts = client.get(key).to_i
+      value = client.get(key)
+      @redis_attempts = value.to_i
     end
   end
 
@@ -78,21 +86,20 @@ class RateLimiter
     end
 
     @redis_attempts = 0
+    @redis_attempted_at = nil
   end
 
   def increment_to_limited!
     value = RateLimiter.max_attempts(rate_limit_type)
     now = Time.zone.now
+    expires_at = now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds
 
     REDIS_THROTTLE_POOL.with do |client|
-      client.set(
-        key,
-        value,
-        exat: now.to_i + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
-      )
+      client.set(key, value, exat: expires_at)
     end
 
     @redis_attempts = value.to_i
+    @redis_expires_at = expires_at
 
     attempts
   end
