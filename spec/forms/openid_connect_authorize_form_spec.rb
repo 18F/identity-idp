@@ -661,7 +661,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           current_user: user,
           ial: 1,
           rails_session_id: rails_session_id,
-          email_address_id: 4
+          email_address_id: 4,
         )
 
         identity = user.identities.where(service_provider: client_id).first
