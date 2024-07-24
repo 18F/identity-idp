@@ -51,4 +51,11 @@ describe('normalize', () => {
 
     expect(await normalize(original, { exclude: ['smartPunctuation'] })).to.equal(expected);
   });
+
+  it('allows ignoring specific keys for sorting', async () => {
+    const original = '---\na: 1\nc: 3\nd: 4\nb: 2';
+    const expected = '---\na: 1\nc: 3\nb: 2\nd: 4\n';
+
+    expect(await normalize(original, { ignoreKeySort: ['c'] })).to.equal(expected);
+  });
 });

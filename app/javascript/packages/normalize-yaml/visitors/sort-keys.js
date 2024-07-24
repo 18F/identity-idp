@@ -1,4 +1,4 @@
-export default /** @type {import('./').Visitor} */ (options) => ({
+export default /** @type {import('./').Visitor} */ ({ ignoreKeySort }) => ({
   Map(_key, node) {
     node.items.sort(
       /**
@@ -7,11 +7,14 @@ export default /** @type {import('./').Visitor} */ (options) => ({
        * @return {number}
        */
       (a, b) => {
-        if (options.ignoreKeySort && options.ignoreKeySort.includes(a.key.toString())) {
+        const aKey = a.key.toString();
+        const bKey = b.key.toString();
+
+        if (ignoreKeySort && (ignoreKeySort.includes(aKey) || ignoreKeySort.includes(bKey))) {
           return 0;
         }
 
-        return a.key.toString().localeCompare(b.key.toString());
+        return aKey.localeCompare(bKey);
       },
     );
   },
