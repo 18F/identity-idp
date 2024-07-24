@@ -969,7 +969,7 @@ help_text.requested_attributes.social_security_number: Social Security number
 help_text.requested_attributes.verified_at: Updated on
 help_text.requested_attributes.x509_issuer: PIV/CAC Issuer
 help_text.requested_attributes.x509_subject: PIV/CAC Identity
-help_text.select_preferred_email: You may change which email you share with %{sp} since you have multiple emails associated with your Login.gov account.
+help_text.select_preferred_email: You may change which email you share with %{sp} since you have multiple emails associated with your %{app_name} account.
 i18n.language: Language
 i18n.locale.en: English
 i18n.locale.es: Español
