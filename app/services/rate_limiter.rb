@@ -39,7 +39,7 @@ class RateLimiter
   end
 
   def attempted_at
-    if !defined?(@redis_attempted_at) && !@redis_fetched
+    if !defined?(@redis_attempted_at)
       expiretime = REDIS_THROTTLE_POOL.with { |client| client.expiretime(key) }
       if expiretime.positive?
         @redis_attempted_at =
@@ -65,6 +65,7 @@ class RateLimiter
   end
 
   def expired?
+    return false if @redis_fetched
     return nil if expires_at.nil?
     expires_at <= Time.zone.now
   end
