@@ -53,8 +53,17 @@ describe('normalize', () => {
   });
 
   it('allows ignoring specific keys for sorting', async () => {
-    const original = '---\na: 1\nc: 3\nd: 4\nb: 2';
-    const expected = '---\na: 1\nc: 3\nb: 2\nd: 4\n';
+    const original = `---
+a: 1
+c: 3
+d: 4
+b: 2`;
+    const expected = `---
+a: 1
+c: 3
+b: 2
+d: 4
+`;
 
     expect(await normalize(original, { ignoreKeySort: ['c'] })).to.equal(expected);
   });
