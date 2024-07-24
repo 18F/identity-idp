@@ -43,7 +43,7 @@ RSpec.describe SendSignUpEmailConfirmation do
     context 'when the user already has a confirmation token' do
       let(:email_address) do
         invalid_confirmation_sent_at =
-          Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+          Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
 
         create(
           :email_address,
