@@ -106,7 +106,7 @@ account.login.piv_cac: Connectez-vous avec votre identifiant d’employé.
 account.login.tab_navigation: Onglets de création de compte
 account.navigation.add_authentication_apps: Ajouter des applis d’authentification
 account.navigation.add_email: Ajouter une adresse e-mail
-account.navigation.add_federal_id: Ajouter un identifiant d’employé fédéral
+account.navigation.add_federal_id: Ajouter votre carte d’employé fédéral
 account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité

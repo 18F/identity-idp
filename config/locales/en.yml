@@ -106,7 +106,7 @@ account.login.piv_cac: Sign in with your government employee ID
 account.login.tab_navigation: Account creation tabs
 account.navigation.add_authentication_apps: Add authentication apps
 account.navigation.add_email: Add email address
-account.navigation.add_federal_id: Add federal employee ID
+account.navigation.add_federal_id: Add your government employee ID
 account.navigation.add_phone_number: Add phone number
 account.navigation.add_platform_authenticator: Add face or touch unlock
 account.navigation.add_security_key: Add security key

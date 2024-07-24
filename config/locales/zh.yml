@@ -106,7 +106,7 @@ account.login.piv_cac: 使用你的政府雇员身份证件登录
 account.login.tab_navigation: 账户创建标签页
 account.navigation.add_authentication_apps: 添加身份证实应用程序
 account.navigation.add_email: 添加电邮地址
-account.navigation.add_federal_id: 添加政府雇员身份证件
+account.navigation.add_federal_id: 添加您的政府雇员ID
 account.navigation.add_phone_number: 添加电话号码
 account.navigation.add_platform_authenticator: 添加人脸或触摸解锁
 account.navigation.add_security_key: 添加安全密钥
