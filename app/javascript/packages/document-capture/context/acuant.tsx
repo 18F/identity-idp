@@ -157,18 +157,6 @@ const AcuantContext = createContext<AcuantContextInterface>({
 
 AcuantContext.displayName = 'AcuantContext';
 
-/**
- * Returns a found AcuantJavascriptWebSdk
- * object, if one is available.
- */
-const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
-  if (!window.AcuantJavascriptWebSdk) {
-    // eslint-disable-next-line no-console
-    console.error('AcuantJavascriptWebSdk is not defined in the global scope');
-  }
-  return window.AcuantJavascriptWebSdk;
-};
-
 function AcuantContextProvider({
   sdkSrc,
   cameraSrc,
@@ -228,7 +216,6 @@ function AcuantContextProvider({
 
         loadAcuantSdk();
       }
-      window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
 
       // Unclear if/how this is called. Implemented just in case, but this is untested.
       window.AcuantJavascriptWebSdk.setUnexpectedErrorCallback((errorMessage) => {
