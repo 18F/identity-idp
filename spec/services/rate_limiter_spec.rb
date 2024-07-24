@@ -225,12 +225,12 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.expires_at).to eq(1.hour.from_now)
 
       # Attempt: 2
-      # Assert exponential growth
+      # Assert exponential growth of expiration
       rate_limiter.increment!
       expect(rate_limiter.expires_at).to eq(2.hours.from_now)
 
       # Attempt: 3
-      # Assert exponential growth
+      # Assert exponential growth of expiration
       rate_limiter.increment!
       expect(rate_limiter.expires_at).to eq(4.hours.from_now)
 
@@ -240,19 +240,19 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.expires_at).to eq(16.hours.from_now)
 
       # Attempt: 6
-      # Assert expiration upon reaching maximum
+      # Assert expiration upon reaching maximum, not limited
       rate_limiter.increment!
       expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(false)
 
       # Attempt: 7, 8, 9
-      # Assert expiration upon reaching limited
+      # Assert expiration before reaching max, not limited
       3.times { rate_limiter.increment! }
       expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(false)
 
       # Attempt: 10
-      # Assert limited upon reaching max
+      # Assert expiration, limited upon reaching max
       rate_limiter.increment!
       expect(rate_limiter.expires_at).to eq(24.hours.from_now)
       expect(rate_limiter.limited?).to eq(true)
