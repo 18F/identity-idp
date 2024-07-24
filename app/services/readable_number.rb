@@ -12,8 +12,8 @@ class ReadableNumber
     readable_number = catch(:use_number) do
       throw :use_number if FORCED_NUMERIC_LOCALES.include?(I18n.locale)
       throw :use_number if number > MAX_NUMBER_TO_SPELL_OUT
-      throw :use_number if !const_defined?("Humanize::#{I18n.locale.to_s.sub('-', '_').classify}")
-      Humanize.format(number, locale: I18n.locale)
+      throw :use_number if !NumbersAndWords::I18n.languages.include?(I18n.locale)
+      number.to_words
     end
 
     readable_number || number.to_s

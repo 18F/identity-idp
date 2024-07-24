@@ -37,8 +37,8 @@ RSpec.describe ReadableNumber do
           original_available_locales = I18n.available_locales
           original_locale = I18n.locale
           I18n.enforce_available_locales = false
-          I18n.available_locales << :'en-GB'
-          I18n.locale = :'en-GB'
+          I18n.available_locales << :'aa-BB'
+          I18n.locale = :'aa-BB'
 
           expect(result).to eq('1')
         ensure

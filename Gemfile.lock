@@ -357,7 +357,6 @@ GEM
     htmlbeautifier (1.4.3)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
-    humanize (3.1.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     i18n-tasks (1.0.12)
@@ -450,6 +449,8 @@ GEM
     nokogiri (1.16.6)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    numbers_and_words (0.11.12)
+      i18n (<= 2)
     openssl (3.0.2)
     openssl-signature_algorithm (1.2.1)
       openssl (> 2.0, < 3.1)
@@ -785,7 +786,6 @@ DEPENDENCIES
   foundation_emails
   good_job (~> 3.0)
   http_accept_language
-  humanize (~> 3.1)
   i18n-tasks (~> 1.0)
   identity-hostdata!
   identity-logging!
@@ -808,6 +808,7 @@ DEPENDENCIES
   net-sftp
   newrelic_rpm (~> 9.0)
   nokogiri (~> 1.16.0)
+  numbers_and_words (~> 0.11.12)
   pg
   pg_query
   phonelib
