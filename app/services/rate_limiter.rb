@@ -30,7 +30,7 @@ class RateLimiter
   end
 
   def attempts
-    fetch_state! if !defined?(@redis_attempts)
+    fetch_redis_attempts! if !defined?(@redis_attempts)
     @redis_attempts
   end
 
@@ -39,17 +39,7 @@ class RateLimiter
   end
 
   def attempted_at
-    if !defined?(@redis_attempted_at)
-      expiretime = REDIS_THROTTLE_POOL.with { |client| client.expiretime(key) }
-      if expiretime.positive?
-        @redis_attempted_at =
-          ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
-          RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
-      else
-        @redis_attempted_at = nil
-      end
-    end
-
+    fetch_redis_expiration! if !defined?(@redis_attempted_at)
     @redis_attempted_at
   end
 
@@ -65,7 +55,7 @@ class RateLimiter
   end
 
   def expired?
-    return false if @redis_fetched
+    return false if @redis_key_present
     return nil if expires_at.nil?
     expires_at <= Time.zone.now
   end
@@ -95,13 +85,21 @@ class RateLimiter
     attempts
   end
 
-  # Retrieve the current state of the rate limit from Redis
-  # We use EXPIRETIME to calculate when the action was last attempted.
-  def fetch_state!
-    REDIS_THROTTLE_POOL.with do |client|
-      value = client.get(key)
-      @redis_attempts = value.to_i
-      @redis_fetched = true
+  def fetch_redis_attempts!
+    value = REDIS_THROTTLE_POOL.with { |client| client.get(key) }
+    @redis_attempts = value.to_i
+    @redis_key_present = value.present?
+  end
+
+  def fetch_redis_expiration!
+    expiretime = REDIS_THROTTLE_POOL.with { |client| client.expiretime(key) }
+    @redis_key_present = expiretime.positive?
+    if @redis_key_present
+      @redis_attempted_at =
+        ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
+        RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
+    else
+      @redis_attempted_at = nil
     end
   end
 
