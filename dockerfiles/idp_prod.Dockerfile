@@ -19,7 +19,7 @@ ENV BUNDLER_VERSION 2.5.6
 
 # Install dependencies
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y \
     git-core \
     build-essential \
     git-lfs \
