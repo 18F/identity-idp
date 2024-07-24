@@ -176,11 +176,11 @@ module Users
     end
 
     def last_email_from_sp
-      sp = sp_session["issuer"]
+      sp = sp_session['issuer']
       if sp.present?
         identity = current_user.identities.where(service_provider: sp)
-        email_id = identity.pluck('email_address_id').first
-        return current_user.email_addresses.find(email_id).email
+        email_id = identity.pick('email_address_id')
+        return current_user.email_addresses.find(email_id).email if email_id.is_a? Integer
       end
       return auth_params[:email]
     end
