@@ -7,6 +7,7 @@
 ### New Features
 
 - Added new punctuation formatter to collapse multiple spaces to a single space.
+- Added new option `--ignore-key-sort` to preserve ordering of keys.
 
 ## v2.0.0
 
