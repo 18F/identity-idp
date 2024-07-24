@@ -57,7 +57,7 @@ function DocumentCaptureTroubleshootingOptions({
             showDocumentTips && {
               url: getHelpCenterURL({
                 category: 'verify-your-identity',
-                article: 'accepted-state-issued-identification',
+                article: 'accepted-identification-documents',
                 location,
               }),
               text: t('idv.troubleshooting.options.supported_documents'),
