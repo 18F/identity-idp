@@ -90,7 +90,7 @@ module OpenidConnect
 
     def email_address_id
       return session[:sp_email_id] unless session[:sp_email_id].nil?
-      sp = @authorize_form.service_provider.issuer
+      sp = sp_session["issuer"]
       identity = current_user.identities.where(service_provider: sp)
       email_id = identity.pluck('email_address_id').first
       return email_id if email_id.is_a? Integer
