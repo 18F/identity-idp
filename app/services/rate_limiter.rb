@@ -38,6 +38,19 @@ class RateLimiter
     !expired? && maxed?
   end
 
+  def expires_at
+    if @redis_expires_at.blank?
+      expiretime = REDIS_THROTTLE_POOL.with { |client| client.expiretime(key) }
+      if expiretime.positive?
+        @redis_expires_at = expiretime
+      else
+        @redis_attempted_at = Time.zone.now
+      end
+    end
+
+    @redis_expires_at
+  end
+
   def remaining_count
     return 0 if limited?
 

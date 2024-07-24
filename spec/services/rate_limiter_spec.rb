@@ -124,6 +124,53 @@ RSpec.describe RateLimiter do
     end
   end
 
+  describe '#expires_at' do
+    let(:attempted_at) { nil }
+    let(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
+
+    context 'without having attempted' do
+      it 'returns nil' do
+        expect(rate_limiter.expires_at).to eq(nil)
+      end
+    end
+
+    context 'with expired rate_limiter' do
+      it 'returns expiration time' do
+        rate_limiter.increment!
+
+        travel_to(3.days.from_now) do
+          expect(rate_limiter.expires_at).to be_within(1.second).
+            of(3.days.ago + attempt_window.minutes)
+        end
+      end
+
+      context 'when we are out of sync with Redis' do
+        it 'expires at the correct time' do
+          fake_attempt_time = 1.year.ago
+          travel_to(fake_attempt_time) do
+            # Redis should immediately delete the rate limiter because
+            # we're supplying an expiration time which has long since
+            # passed.
+            rate_limiter.increment!
+          end
+
+          new_rate_limiter = RateLimiter.new(target: '1', rate_limit_type: rate_limit_type)
+          expect(new_rate_limiter.expires_at).to be_nil
+        end
+      end
+    end
+
+    context 'with active rate_limiter' do
+      it 'returns expiration time' do
+        freeze_time do
+          rate_limiter.increment!
+          expect(rate_limiter.expires_at).to be_within(1.second).
+            of(attempt_window.minutes.from_now)
+        end
+      end
+    end
+  end
+
   describe '#reset' do
     let(:target) { '1' }
     let(:subject) { described_class }
