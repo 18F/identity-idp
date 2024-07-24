@@ -1433,7 +1433,6 @@ notices.use_diff_email.link: use a different email address
 notices.use_diff_email.text_html: Or, %{link_html}
 notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
-numbers_spelled_out.10: ten
 openid_connect.authorization.errors.bad_client_id: Bad client_id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: value must be at least %{count} day or older
 openid_connect.authorization.errors.invalid_verified_within_duration.other: value must be at least %{count} days or older

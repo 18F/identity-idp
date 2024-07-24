@@ -11,10 +11,9 @@ module TwoFactorAuthentication
     end
 
     def info
-      # i18n-tasks-use t('numbers_spelled_out.10')
       t(
         'two_factor_authentication.two_factor_choice_options.backup_code_info',
-        count: t("numbers_spelled_out.#{BackupCodeGenerator::NUMBER_OF_CODES}"),
+        count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES),
       )
     end
 

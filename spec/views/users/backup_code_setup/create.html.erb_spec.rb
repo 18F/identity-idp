@@ -34,7 +34,7 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
       '.usa-alert',
       text: t(
         'forms.backup_code.caution_codes',
-        count: t("numbers_spelled_out.#{BackupCodeGenerator::NUMBER_OF_CODES}"),
+        count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES),
       ),
     )
   end
@@ -69,11 +69,6 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
 
   context 'with odd number of generated backup codes' do
     let(:number_of_codes) { 5 }
-
-    before do
-      allow(view).to receive(:t).and_call_original
-      allow(view).to receive(:t).with("numbers_spelled_out.#{number_of_codes}").and_return('five')
-    end
 
     it 'displays all backup codes' do
       render

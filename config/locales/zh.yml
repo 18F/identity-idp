@@ -1444,7 +1444,6 @@ notices.use_diff_email.link: 使用一个不同的电邮地址
 notices.use_diff_email.text_html: 或者，%{link_html}
 notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
-numbers_spelled_out.10: '10'
 openid_connect.authorization.errors.bad_client_id: 坏的client_id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_duration.other: 值必须至少为 %{count} 天或以上

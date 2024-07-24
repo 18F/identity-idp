@@ -357,6 +357,7 @@ GEM
     htmlbeautifier (1.4.3)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
+    humanize (3.1.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     i18n-tasks (1.0.12)
@@ -784,6 +785,7 @@ DEPENDENCIES
   foundation_emails
   good_job (~> 3.0)
   http_accept_language
+  humanize (~> 3.1)
   i18n-tasks (~> 1.0)
   identity-hostdata!
   identity-logging!

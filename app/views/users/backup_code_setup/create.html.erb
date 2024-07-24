@@ -22,8 +22,7 @@
   </div>
 
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
-    <%# i18n-tasks-use t('numbers_spelled_out.10') %>
-    <%= t('forms.backup_code.caution_codes', count: t("numbers_spelled_out.#{BackupCodeGenerator::NUMBER_OF_CODES}")) %>
+    <%= t('forms.backup_code.caution_codes', count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES)) %>
   <% end %>
 
   <div class="margin-top-1">
