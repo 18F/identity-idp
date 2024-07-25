@@ -42,7 +42,7 @@ class EmailAddress < ApplicationRecord
   end
 
   def is_fed_email?
-    if IdentityConfig.use_fed_domain_file
+    if IdentityConfig.store.use_fed_domain_file
       return false unless domain
       FedEmailDomains.email_is_fed_domain?(domain)
     else
