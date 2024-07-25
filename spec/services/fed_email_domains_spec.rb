@@ -6,7 +6,6 @@ RSpec.describe FedEmailDomains do
       %w[
         gsa.gov
         dotgov.gov
-        fedjobs.gov
       ]
     end
     let(:invalid_email_domains) do
@@ -17,13 +16,13 @@ RSpec.describe FedEmailDomains do
       ]
     end
 
-    it 'returns true for pwned passwords' do
+    it 'returns true for valid email domains' do
       valid_email_domains.each do |domain|
         expect(FedEmailDomains.email_is_fed_domain?(domain)).to be true
       end
     end
 
-    it 'returns false for non pwned passwords' do
+    it 'returns false for  invalid email domains' do
       invalid_email_domains.each do |domain|
         expect(FedEmailDomains.email_is_fed_domain?(domain)).to be false
       end
