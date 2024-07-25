@@ -146,7 +146,7 @@ RSpec.describe EmailAddress do
   describe '#is_fed_email?' do
     subject(:result) { email_address.is_fed_email? }
 
-    context 'use_domain file set to true' do
+    context 'use_fed_domain_file set to true' do
       before do
         allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(true)
       end
