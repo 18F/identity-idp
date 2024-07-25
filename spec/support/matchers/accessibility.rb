@@ -193,16 +193,16 @@ RSpec::Matchers.define :tag_decorative_svgs_with_role do
   end
 
   match do |page|
-    expect(decorative_svgs(page)).to all satisfy { |img| img[:role] == 'img' }
+    expect(decorative_svgs(page)).to all satisfy { |img| img.key?(:'aria-hidden') }
   end
 
   failure_message do |page|
-    img_tags = decorative_svgs(page).reject { |img| img[:role] == 'img' }.
+    img_tags = decorative_svgs(page).reject { |img| img.key?(:'aria-hidden') }.
       map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }.
       join("\n")
 
     <<~STR
-      Expect all decorative SVGs to have role="img", but found ones without:
+      Expect all decorative SVGs to have aria-hidden, but found ones without:
       #{img_tags}
     STR
   end
@@ -327,10 +327,7 @@ class AccessibleName
 end
 
 def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
-  expect(page).to be_axe_clean.according_to(:wcag22aa, :"best-practice").
-    # Axe flags redundant img role on img elements, but is necessary for a Safari bug
-    # See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#identifying_svg_as_an_image
-    excluding('img[alt=""][src$=".svg" i]')
+  expect(page).to be_axe_clean.according_to(:wcag22aa, :"best-practice")
   expect(page).to have_unique_ids
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
