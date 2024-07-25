@@ -326,6 +326,23 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
       end
     end
 
+    context 'with failed doc_auth_result' do
+      before do
+        allow(controller).to receive(:document_capture_session).and_return(
+          OpenStruct.new({ last_doc_auth_result: 'Failed' }),
+        )
+      end
+
+      it 'updates the doc_auth_result in the enrollment' do
+        response
+
+        enrollment = user.reload.establishing_in_person_enrollment
+
+        expect(enrollment.selected_location_details).to_not be_nil
+        expect(enrollment.doc_auth_result).to eq('Failed')
+      end
+    end
+
     context 'with feature disabled' do
       let(:in_person_proofing_enabled) { false }
 

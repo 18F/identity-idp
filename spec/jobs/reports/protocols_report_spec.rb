@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::ProtocolsReport do
-  let(:report_date) { Date.new(2024, 7, 5) }
+  let(:report_date) { Date.new(2024, 7, 5).in_time_zone('UTC') }
   let(:email) { 'team@example.com' }
 
   let(:report_configs) do
@@ -38,6 +38,18 @@ RSpec.describe Reports::ProtocolsReport do
       ).and_call_original
 
       subject.perform(report_date)
+    end
+  end
+
+  describe 'with empty logs' do
+    before do
+      stub_cloudwatch_logs([])
+    end
+
+    it 'sends an email with at least 1 attachment' do
+      subject.perform(report_date)
+      sent_mail = ActionMailer::Base.deliveries.last
+      expect(sent_mail.parts.attachments.count).to be >= 1
     end
   end
 end

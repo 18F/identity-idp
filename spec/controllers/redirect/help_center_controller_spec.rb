@@ -27,7 +27,7 @@ RSpec.describe Redirect::HelpCenterController do
 
     context 'with valid help center article' do
       let(:category) { 'verify-your-identity' }
-      let(:article) { 'accepted-state-issued-identification' }
+      let(:article) { 'accepted-identification-documents' }
       let(:params) { super().merge(category:, article:) }
 
       it 'redirects to the help center article and logs' do
