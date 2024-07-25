@@ -182,6 +182,7 @@ module Users
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        rate_limited: rate_limited?,
         valid_captcha_result: valid_captcha_result?,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
