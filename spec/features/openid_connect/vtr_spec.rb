@@ -94,7 +94,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     follow_piv_cac_redirect
 
     click_agree_and_continue
-    click_on 'Continue'
+    click_submit_default
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
