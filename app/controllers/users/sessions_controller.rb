@@ -38,14 +38,9 @@ module Users
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
-      rate_limiter&.reset!
       handle_valid_authentication
     ensure
-      if rate_limit_password_failure && !current_user
-        rate_limiter&.increment!
-        increment_session_bad_password_count
-      end
-
+      handle_invalid_authentication if rate_limit_password_failure && !current_user
       track_authentication_attempt(auth_params[:email])
     end
 
@@ -158,7 +153,13 @@ module Users
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
     end
 
+    def handle_invalid_authentication
+      rate_limiter&.increment!
+      increment_session_bad_password_count
+    end
+
     def handle_valid_authentication
+      rate_limiter&.reset!
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
       set_new_device_session(nil)
