@@ -37,16 +37,7 @@ class FrontendLogger
   # @param [Proc,Method] callable
   # @return [Hash<Symbol,Object>]
   def hash_from_kwargs(hash, callable)
-    kwargs(callable).index_with do |key|
-      value = hash[key.to_s]
-      key == :opted_in_to_in_person_proofing ? convert_to_boolean(value) : value
-    end
-  end
-
-  def convert_to_boolean(value)
-    return true if value == 'true'
-    return false if value == 'false'
-    value
+    kwargs(callable).index_with { |key| hash[key.to_s] }
   end
 
   # @param [Proc,Method] callable
