@@ -152,9 +152,9 @@ in_person_send_proofing_notifications_enabled: false
 in_person_state_id_controller_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
+# LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account
-# LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
 lexisnexis_hmac_auth_enabled: false
 lexisnexis_hmac_key_id: pf_iv_hmac_key_id
@@ -165,9 +165,9 @@ lexisnexis_password: test_password
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_request_mode: testing
-lexisnexis_threatmetrix_js_signing_cert: ''
 ###################################################################
 # LexisNexis DDP/ThreatMetrix #####################################
+lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
