@@ -5,45 +5,44 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
   include OidcAuthHelper
 
   context 'with the email scope' do
-    scenario 'signing in with OIDC sends the email address used to sign in' do
+    scenario 'signing in with OIDC sends the user last email address' do
       user = create(:user, :fully_registered, :with_multiple_emails)
-      emails = user.reload.email_addresses.map(&:email)
+      emails = user.reload.email_addresses
 
       expect(emails.count).to eq(2)
-
       emails.each do |email|
         visit_idp_from_oidc_sp(scope: 'openid email')
-        signin(email, user.password)
+        signin(email.email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_agree_and_continue if current_path == sign_up_completed_path
-
+        identity_email_address_id = user.identities.last.email_address_id
         decoded_id_token = fetch_oidc_id_token_info
-        expect(decoded_id_token[:email]).to eq(email)
+        expect(identity_email_address_id).to eq(emails.last.id)
+
         expect(decoded_id_token[:all_emails]).to be_nil
 
         Capybara.reset_session!
       end
     end
 
-    scenario 'signing in with SAML sends the email address used to sign in' do
+    scenario 'signing in with SAML sends the user last email address' do
       user = create(:user, :fully_registered, :with_multiple_emails)
-      emails = user.reload.email_addresses.map(&:email)
+      emails = user.reload.email_addresses
+      last_email_id = emails.last.id
 
       expect(emails.count).to eq(2)
 
       emails.each do |email|
         visit authn_request
-        signin(email, user.password)
+        signin(email.email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default_twice
         click_agree_and_continue if current_path == sign_up_completed_path
         click_submit_default
 
-        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-        email_from_saml_response = xmldoc.attribute_value_for('email')
-
-        expect(email_from_saml_response).to eq(email)
+        identity_email_address_id = user.identities.last.email_address_id
+        expect(identity_email_address_id).to eq(last_email_id)
 
         Capybara.reset_session!
       end
