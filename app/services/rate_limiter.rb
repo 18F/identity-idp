@@ -83,18 +83,18 @@ class RateLimiter
 
   def increment!
     return if limited?
-    value = nil
 
     now = Time.zone.now
+
+    @redis_attempts += 1
+    @redis_attempted_at = now
+
     REDIS_THROTTLE_POOL.with do |client|
-      value, _success = client.multi do |multi|
+      client.multi do |multi|
         multi.incr(key)
         multi.expireat(key, now + expiration_minutes.minutes.in_seconds)
       end
     end
-
-    @redis_attempts = value.to_i
-    @redis_attempted_at = now
 
     attempts
   end
