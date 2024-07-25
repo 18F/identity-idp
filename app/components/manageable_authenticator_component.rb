@@ -43,7 +43,7 @@ class ManageableAuthenticatorComponent < BaseComponent
   private
 
   def validate_configuration_methods
-    [:name, :id, :created_at].all? do |method|
+    [:name, :id, :created_at].each do |method|
       next if configuration.respond_to?(method)
       errors.add(
         :configuration,
