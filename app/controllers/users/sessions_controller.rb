@@ -31,9 +31,9 @@ module Users
 
     def create
       session[:sign_in_flow] = :sign_in
-      return process_locked_out_session if session_bad_password_count_max_exceeded?
+      return process_rate_limited if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
-      return process_locked_out_session if rate_limited?
+      return process_rate_limited if rate_limited?
       return process_failed_captcha if !valid_captcha_result?
 
       rate_limit_password_failure = true
@@ -72,7 +72,7 @@ module Users
       session[:max_bad_passwords_at] ||= Time.zone.now.to_i
     end
 
-    def process_locked_out_session
+    def process_rate_limited
       sign_out(:user)
       warden.lock!
 
