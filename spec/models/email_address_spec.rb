@@ -89,8 +89,8 @@ RSpec.describe EmailAddress do
     end
   end
 
-  describe '#is_fed_or_mil_email?' do
-    subject(:result) { email_address.is_fed_or_mil_email? }
+  describe '#fed_or_mil_email?' do
+    subject(:result) { email_address.fed_or_mil_email? }
 
     context 'with an email domain that is a fed email' do
       before do
@@ -127,8 +127,8 @@ RSpec.describe EmailAddress do
     end
   end
 
-  describe '#is_mil_email?' do
-    subject(:result) { email_address.is_mil_email? }
+  describe '#mil_email?' do
+    subject(:result) { email_address.mil_email? }
 
     context 'with an email domain not a mil email' do
       let(:email) { 'example@example.gov' }
@@ -143,8 +143,8 @@ RSpec.describe EmailAddress do
     end
   end
 
-  describe '#is_fed_email?' do
-    subject(:result) { email_address.is_fed_email? }
+  describe '#fed_email?' do
+    subject(:result) { email_address.fed_email? }
 
     context 'use_fed_domain_file set to true' do
       before do

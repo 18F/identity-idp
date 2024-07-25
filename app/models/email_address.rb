@@ -34,14 +34,14 @@ class EmailAddress < ApplicationRecord
   end
 
   def domain
-    email&.split('@')&.last
+    Mail::Address.new(email).domain
   end
 
-  def is_fed_or_mil_email?
-    is_fed_email? || is_mil_email?
+  def fed_or_mil_email?
+    fed_email? || mil_email?
   end
 
-  def is_fed_email?
+  def fed_email?
     if IdentityConfig.store.use_fed_domain_file
       return false unless domain
       FedEmailDomains.email_is_fed_domain?(domain)
@@ -50,7 +50,7 @@ class EmailAddress < ApplicationRecord
     end
   end
 
-  def is_mil_email?
+  def mil_email?
     email.end_with?('.mil')
   end
 

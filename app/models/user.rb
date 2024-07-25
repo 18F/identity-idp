@@ -80,7 +80,7 @@ class User < ApplicationRecord
   end
 
   def has_fed_or_mil_email?
-    confirmed_email_addresses.any?(&:is_fed_or_mil_email?)
+    confirmed_email_addresses.any?(&:fed_or_mil_email?)
   end
 
   def accepted_rules_of_use_still_valid?
