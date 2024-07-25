@@ -404,6 +404,8 @@ module AnalyticsEvents
   # @param [String] bad_password_count represents number of prior login failures
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
+  # @param [Boolean, nil] new_device Whether the user is authenticating from a new device. Nil if
+  # there is the attempt was unsuccessful, since it cannot be known whether it's a new device.
   # Tracks authentication attempts at the email/password screen
   def email_and_password_auth(
     success:,
@@ -413,6 +415,7 @@ module AnalyticsEvents
     bad_password_count:,
     sp_request_url_present:,
     remember_device:,
+    new_device:,
     **extra
   )
     track_event(
@@ -424,6 +427,7 @@ module AnalyticsEvents
       bad_password_count:,
       sp_request_url_present:,
       remember_device:,
+      new_device:,
       **extra,
     )
   end
@@ -666,6 +670,25 @@ module AnalyticsEvents
       errors: errors,
       exception: exception,
       profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether records were successfully uploaded
+  # @param [String] exception The exception that occured if an exception did occur
+  # @param [Number] gpo_confirmation_count The number of GPO Confirmation records uploaded
+  # GPO confirmation records were uploaded for letter sends
+  def gpo_confirmation_upload(
+    success:,
+    exception:,
+    gpo_confirmation_count:,
+    **extra
+  )
+    track_event(
+      :gpo_confirmation_upload,
+      success: success,
+      exception: exception,
+      gpo_confirmation_count: gpo_confirmation_count,
       **extra,
     )
   end
@@ -4125,12 +4148,17 @@ module AnalyticsEvents
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
-                                      **extra)
+  # @param ['piv_cac'] method_name Authentication method added
+  def multi_factor_auth_added_piv_cac(
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
+    method_name: :piv_cac,
+    **extra
+  )
     track_event(
       :multi_factor_auth_added_piv_cac,
       {
-        method_name: :piv_cac,
+        method_name:,
         enabled_mfa_methods_count:,
         in_account_creation_flow:,
         **extra,
@@ -4963,14 +4991,16 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [String,nil] key_id
+  # @param [String,nil] key_id PIV/CAC key_id from PKI service
+  # @param [Boolean] new_device Whether the user is authenticating from a new device
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id:, **extra)
+  def piv_cac_login(success:, errors:, key_id:, new_device:, **extra)
     track_event(
       :piv_cac_login,
       success:,
       errors:,
       key_id:,
+      new_device:,
       **extra,
     )
   end
@@ -5793,6 +5823,8 @@ module AnalyticsEvents
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration
+  # @param [String, nil] in_person_proofing_status In person proofing status
+  # @param [String, nil] doc_auth_result The doc auth result
   def user_registration_complete(
     ial2:,
     service_provider_name:,
@@ -5802,6 +5834,8 @@ module AnalyticsEvents
     sp_session_requested_attributes:,
     ialmax: nil,
     disposable_email_domain: nil,
+    in_person_proofing_status: nil,
+    doc_auth_result: nil,
     **extra
   )
     track_event(
@@ -5814,6 +5848,8 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       sp_session_requested_attributes:,
       disposable_email_domain:,
+      in_person_proofing_status:,
+      doc_auth_result:,
       **extra,
     )
   end

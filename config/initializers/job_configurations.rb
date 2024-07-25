@@ -215,7 +215,7 @@ else
       weekly_authentication_report: {
         class: 'Reports::AuthenticationReport',
         cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send fraud metrics to Team Judy
       fraud_metrics_report: {
@@ -227,7 +227,13 @@ else
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
         cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous week's protocols report
+      weekly_protocols_report: {
+        class: 'Reports::ProtocolsReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact
   end

@@ -20,7 +20,8 @@ RSpec.describe 'GoodJob.cron' do
 
         freeze_time do
           # Always passes the previous day as the argument
-          expect(report[:args].call).to eq([Time.zone.yesterday])
+          # Our CloudwatchClient requires using DateTime. It won't accept a Date without coercion
+          expect(report[:args].call).to eq([Time.zone.yesterday.end_of_day])
 
           now = Time.zone.now
           next_time = Fugit.parse(report[:cron]).next_time

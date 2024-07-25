@@ -21,18 +21,12 @@ interface DocumentCaptureTroubleshootingOptionsProps {
    * Whether to include tips for taking a good photo.
    */
   showDocumentTips?: boolean;
-
-  /**
-   * Whether to display alternative options for verifying.
-   */
-  showAlternativeProofingOptions?: boolean;
 }
 
 function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
-  showAlternativeProofingOptions,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
@@ -40,7 +34,7 @@ function DocumentCaptureTroubleshootingOptions({
 
   return (
     <>
-      {showAlternativeProofingOptions && inPersonURL && <InPersonCallToAction />}
+      {inPersonURL && <InPersonCallToAction />}
       <TroubleshootingOptions
         heading={heading}
         options={
@@ -57,7 +51,7 @@ function DocumentCaptureTroubleshootingOptions({
             showDocumentTips && {
               url: getHelpCenterURL({
                 category: 'verify-your-identity',
-                article: 'accepted-state-issued-identification',
+                article: 'accepted-identification-documents',
                 location,
               }),
               text: t('idv.troubleshooting.options.supported_documents'),

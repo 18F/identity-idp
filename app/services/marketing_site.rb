@@ -12,7 +12,6 @@ class MarketingSite
     trouble-signing-in/face-or-touch-unlock
     trouble-signing-in/security-check-failed
     verify-your-identity/accepted-identification-documents
-    verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
     verify-your-identity/verify-your-identity-in-person
     verify-your-identity/phone-number

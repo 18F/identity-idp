@@ -37,25 +37,25 @@ function getHeading({
   t,
 }: GetHeadingArguments) {
   if (isFailedDocType) {
-    return t('errors.doc_auth.doc_type_not_supported_heading');
+    return t('doc_auth.errors.doc_type_not_supported_heading');
   }
   if (isResultCodeInvalid) {
-    return t('errors.doc_auth.rate_limited_heading');
+    return t('doc_auth.errors.rate_limited_heading');
   }
   if (isFailedSelfieLivenessOrQuality) {
-    return t('errors.doc_auth.selfie_not_live_or_poor_quality_heading');
+    return t('doc_auth.errors.selfie_not_live_or_poor_quality_heading');
   }
   if (isFailedSelfie) {
-    return t('errors.doc_auth.selfie_fail_heading');
+    return t('doc_auth.errors.selfie_fail_heading');
   }
-  return t('errors.doc_auth.rate_limited_heading');
+  return t('doc_auth.errors.rate_limited_heading');
 }
 
 function getSubheading({ nonIppOrFailedResult, t }) {
   const showSubheading = !nonIppOrFailedResult;
 
   if (showSubheading) {
-    return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
+    return <h2>{t('doc_auth.errors.rate_limited_subheading')}</h2>;
   }
   return undefined;
 }
@@ -118,7 +118,6 @@ function DocumentCaptureWarning({
         troubleshootingOptions={
           <DocumentCaptureTroubleshootingOptions
             location="post_submission_warning"
-            showAlternativeProofingOptions={!isFailedResult}
             heading={t('components.troubleshooting_options.ipp_heading')}
           />
         }

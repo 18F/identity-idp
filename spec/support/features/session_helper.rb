@@ -64,21 +64,14 @@ module Features
     end
 
     def signin_with_piv_error(error)
-      user = user_with_piv_cac
       visit new_user_session_path
       click_on t('account.login.piv_cac')
 
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
-      stub_piv_cac_service
-      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-      visit_piv_cac_service(
-        current_url,
-        nonce: nonce,
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-        subject: 'SomeIgnoredSubject',
-        error: error,
-      )
+      stub_piv_cac_service(error:)
+      click_on t('forms.piv_cac_login.submit')
+      follow_piv_cac_redirect
     end
 
     def signin_with_bad_piv
@@ -93,14 +86,9 @@ module Features
                                                  piv_cac_configurations&.first&.x509_dn_uuid)
       allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 
-      stub_piv_cac_service
-      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-      visit_piv_cac_service(
-        current_url,
-        nonce: nonce,
-        uuid: uuid,
-        subject: 'SomeIgnoredSubject',
-      )
+      stub_piv_cac_service(uuid:)
+      click_on t('forms.piv_cac_login.submit')
+      follow_piv_cac_redirect
     end
 
     def fill_in_bad_piv_cac_credentials_and_submit
@@ -275,7 +263,7 @@ module Features
     end
 
     def click_submit_default
-      click_button t('forms.buttons.submit.default')
+      click_on t('forms.buttons.submit.default')
     end
 
     def click_submit_default_twice
@@ -537,16 +525,9 @@ module Features
     def set_up_2fa_with_piv_cac
       stub_piv_cac_service
       select_2fa_option('piv_cac')
-
-      expect(page).to have_current_path setup_piv_cac_path
-
-      nonce = piv_cac_nonce_from_form_action
-      visit_piv_cac_service(
-        setup_piv_cac_url,
-        nonce: nonce,
-        uuid: SecureRandom.uuid,
-        subject: 'SomeIgnoredSubject',
-      )
+      fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+      click_on t('forms.piv_cac_setup.submit')
+      follow_piv_cac_redirect
     end
 
     def skip_second_mfa_prompt
@@ -559,7 +540,7 @@ module Features
       click_submit_default
     end
 
-    def stub_piv_cac_service
+    def stub_piv_cac_service(error: nil, uuid: Random.uuid)
       allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
       allow(IdentityConfig.store).to receive(:piv_cac_service_url).
         and_return('http://piv.example.com/')
@@ -570,36 +551,34 @@ module Features
           body: CGI.unescape(request.body.sub(/^token=/, '')),
         }
       end
+
+      stub_request(:post, 'piv.example.com').
+        with(query: hash_including('nonce', 'redirect_uri')).
+        to_return do |request|
+          query = UriService.params(request.uri)
+          {
+            status: 302,
+            headers: {
+              location: UriService.add_params(
+                query['redirect_uri'],
+                token: {
+                  dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                  uuid:,
+                  subject: 'SomeIgnoredSubject',
+                  nonce: query['nonce'],
+                  error:,
+                }.compact.to_json,
+              ),
+            },
+          }
+        end
     end
 
-    def visit_piv_cac_service(idp_url, token_data)
-      visit(idp_url + '?token=' + CGI.escape(token_data.to_json))
-    end
-
-    def visit_login_two_factor_piv_cac_and_get_nonce
-      visit login_two_factor_piv_cac_path
-      get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_mfa.submit')))
-    end
-
-    # This is a bit convoluted because we generate a nonce when we visit the
-    # link. The link provides a redirect to the piv/cac service with the nonce.
-    # This way, even if JavaScript fetches the link to grab the nonce, a new nonce
-    # is generated when the user clicks on the link.
-    def get_piv_cac_nonce_from_link(link)
-      go_back = current_path
-      visit link['href']
-      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
-      visit go_back
-      nonce
-    end
-
-    def piv_cac_nonce_from_form_action
-      go_back = current_path
-      fill_in 'name', with: 'Card ' + SecureRandom.uuid
-      click_button t('forms.piv_cac_setup.submit')
-      nonce = Rack::Utils.parse_nested_query(URI(current_url).query)['nonce']
-      visit go_back
-      nonce
+    def follow_piv_cac_redirect
+      # RackTest won't do an external redirect to the stubbed PKI service, but we can manually
+      # submit a request to the `current_url` and get the redirect header.
+      redirect_url = Faraday.post(current_url).headers['location']
+      visit redirect_url
     end
 
     def link_identity(user, service_provider, ial = nil)

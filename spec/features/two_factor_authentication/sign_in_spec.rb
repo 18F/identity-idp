@@ -405,36 +405,24 @@ RSpec.feature 'Two Factor Authentication', allowed_extra_analytics: [:*] do
     end
 
     scenario 'user uses PIV/CAC as their second factor' do
-      stub_piv_cac_service
-
       user = user_with_piv_cac
       sign_in_before_2fa(user)
+      stub_piv_cac_service(uuid: user.piv_cac_configurations.first.x509_dn_uuid)
 
-      nonce = visit_login_two_factor_piv_cac_and_get_nonce
+      click_on t('forms.piv_cac_mfa.submit')
+      follow_piv_cac_redirect
 
-      visit_piv_cac_service(
-        login_two_factor_piv_cac_path,
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        nonce: nonce,
-      )
       expect(current_path).to eq account_path
     end
 
     scenario 'user uses incorrect PIV/CAC as their second factor' do
-      stub_piv_cac_service
-
       user = user_with_piv_cac
       sign_in_before_2fa(user)
+      stub_piv_cac_service(uuid: Random.uuid)
 
-      nonce = visit_login_two_factor_piv_cac_and_get_nonce
+      click_on t('forms.piv_cac_mfa.submit')
+      follow_piv_cac_redirect
 
-      visit_piv_cac_service(
-        login_two_factor_piv_cac_path,
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid + 'X',
-        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
-        nonce: nonce,
-      )
       expect(current_path).to eq login_two_factor_piv_cac_path
       expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
     end

@@ -241,7 +241,6 @@ module IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
-    config.add(:no_verify_by_mail_for_biometric_comparison_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -305,6 +304,7 @@ module IdentityConfig
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
     )
+    config.add(:protocols_report_config, type: :json)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:pwned_passwords_file_path, type: :string)
     config.add(:rack_mini_profiler, type: :boolean)

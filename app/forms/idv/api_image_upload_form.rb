@@ -38,6 +38,10 @@ module Idv
       if form_response.success?
         client_response = post_images_to_client
 
+        document_capture_session.update!(
+          last_doc_auth_result: client_response.extra[:doc_auth_result],
+        )
+
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
         end
@@ -298,7 +302,7 @@ module Idv
     def limit_if_rate_limited
       return unless rate_limited?
 
-      errors.add(:limit, t('errors.doc_auth.rate_limited_heading'), type: :rate_limited)
+      errors.add(:limit, t('doc_auth.errors.rate_limited_heading'), type: :rate_limited)
     end
 
     def track_rate_limited

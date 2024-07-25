@@ -39,7 +39,7 @@ module Idv
         redirect_to rate_limited_url
         DocAuth::Response.new(
           success: false,
-          errors: { limit: I18n.t('errors.doc_auth.rate_limited_heading') },
+          errors: { limit: I18n.t('doc_auth.errors.rate_limited_heading') },
         )
       end
 
