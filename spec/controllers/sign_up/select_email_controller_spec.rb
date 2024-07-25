@@ -15,7 +15,7 @@ RSpec.describe SignUp::SelectEmailController do
     it 'updates selected email address' do
       post :create, params: { selection: email2 }
 
-      expect(user.email_addresses.last_sign_in_email_address.email).
+      expect(user.email_addresses.last.email).
         to include('michael.motorist2@email.com')
     end
   end
