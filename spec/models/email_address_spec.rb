@@ -111,19 +111,72 @@ RSpec.describe EmailAddress do
     end
   end
 
+  describe '#is_fed_or_mil_email?' do
+    subject(:result) { email_address.is_fed_or_mil_email? }
+
+    context 'with an email domain that is a fed email' do
+      before do
+        allow(IdentityConfig.store.to receive(:use_fed_domain_file).and_return(true))
+      end
+      let(:email) { 'example@example.gov' }
+
+      it { expect(result).to eq(true) }
+    end
+
+    context 'with an email that is a mil email' do
+      let(:email) { 'example@example.mil' }
+
+      it { expect(result).to be_truthy }
+    end
+
+    context 'with an email that is not a mil or fed email' do
+      before do
+        allow(IdentityConfig.store.to receive(:use_fed_domain_file).and_return(true))
+      end
+      let(:email) { 'example@bad.gov' }
+
+      it { expect(result).to be_falsey }
+    end
+
+    context 'with a fed email while use_fed_domain_file set to true' do
+      before do
+        allow(IdentityConfig.store.to receive(:use_fed_domain_file).and_return(false))
+      end
+      let(:email) { 'example@good.gov' }
+
+      it { expect(result).to be_truthy }
+    end
+  end
+
+  describe '#is_mil_email?' do
+    subject(:result) { email_address.is_mil_email? }
+
+    context 'with an email domain not a mil email' do
+      let(:email) { 'example@example.gov' }
+
+      it { expect(result).to be_falsey }
+    end
+
+    context 'with an email domain ending in a mil domain email' do
+      let(:email) { 'example@example.mil' }
+
+      it { expect(result).to be_truthy }
+    end
+  end
+
   describe '#is_fed_email?' do
     subject(:result) { email_address.is_fed_email? }
 
     context 'with an email domain not a fed email' do
       let(:email) { 'example@bad.gov' }
 
-      it { expect(result).to eq(false) }
+      it { expect(result).to be_falsey }
     end
 
     context 'with an email domain ending in a fed domain email' do
       let(:email) { 'example@gsa.gov' }
 
-      it { expect(result).to eq(true) }
+      it { expect(result).to be_truthy }
     end
   end
 end

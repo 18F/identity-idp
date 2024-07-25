@@ -260,7 +260,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_recommended_for_piv_cac?
-    current_user.piv_cac_recommended_dismissed_at.nil? && current_user.has_fed_email? &&
+    current_user.piv_cac_recommended_dismissed_at.nil? && current_user.has_fed_or_mil_email? &&
       !user_already_has_piv?
   end
 
