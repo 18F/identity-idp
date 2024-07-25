@@ -193,11 +193,11 @@ RSpec::Matchers.define :tag_decorative_svgs_with_role do
   end
 
   match do |page|
-    expect(decorative_svgs(page)).to all satisfy { |img| img.key?(:'aria-hidden') }
+    expect(decorative_svgs(page)).to all satisfy { |img| !img[:'aria-hidden'].nil? }
   end
 
   failure_message do |page|
-    img_tags = decorative_svgs(page).reject { |img| img.key?(:'aria-hidden') }.
+    img_tags = decorative_svgs(page).reject { |img| !img[:'aria-hidden'].nil? }.
       map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }.
       join("\n")
 
