@@ -651,6 +651,11 @@ doc_auth.info.selfie_capture_status.face_close_to_border: 距离相框太近
 doc_auth.info.selfie_capture_status.face_not_found: 没找到面孔
 doc_auth.info.selfie_capture_status.face_too_small: 面孔太小
 doc_auth.info.selfie_capture_status.too_many_faces: 太多张面孔
+doc_auth.info.selfie_capture.action.capture: 拍照
+doc_auth.info.selfie_capture.action.close: 关闭
+doc_auth.info.selfie_capture.action.retake: 重拍
+doc_auth.info.selfie_capture.action.submit: 使用这张照片
+doc_auth.info.selfie_capture.intro: 相机已打开，准备自拍
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: 再次验证你的身份以使用这项服务。 %{link_html}
 doc_auth.info.tag: 建议
