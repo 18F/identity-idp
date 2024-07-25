@@ -75,6 +75,7 @@ class AttributeAsserter
         service_provider: service_provider,
         vtr: saml.vtr,
         acr_values: saml.acr_values,
+        saml: true,
       ).resolve
     end
   end

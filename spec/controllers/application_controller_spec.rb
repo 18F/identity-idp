@@ -460,8 +460,9 @@ RSpec.describe ApplicationController do
 
   describe '#resolved_authn_context_result' do
     let(:sp) { build(:service_provider, ial: 2) }
+    let(:request_url) { 'http://secure.login.gov/' }
 
-    let(:sp_session) { { vtr: vtr, acr_values: acr_values } }
+    let(:sp_session) { { vtr: vtr, acr_values: acr_values, request_url: } }
 
     let(:result) { subject.resolved_authn_context_result }
 
@@ -489,6 +490,17 @@ RSpec.describe ApplicationController do
 
         it 'returns a no-SP result' do
           expect(result).to eq(Vot::Parser::Result.no_sp_result)
+        end
+      end
+
+      context 'an unknow acr value' do
+        context 'a SAML request' do
+          let(:request_url) { 'https://secure.login.gov/api/saml/auth2023?SAMLRequest=' }
+
+          it 'returns a resolved authn context result' do
+            expect(result.aal2?).to eq(true)
+            expect(result.identity_proofing?).to eq(true)
+          end
         end
       end
     end

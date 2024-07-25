@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class AuthnContextResolver
-  attr_reader :user, :service_provider, :vtr, :acr_values
+  attr_reader :user, :service_provider, :vtr, :acr_values, :saml
 
-  def initialize(user:, service_provider:, vtr:, acr_values:)
+  def initialize(user:, service_provider:, vtr:, acr_values:, saml: false)
     @user = user
     @service_provider = service_provider
     @vtr = vtr
     @acr_values = acr_values
+    @saml = saml
   end
 
   def resolve
@@ -63,7 +64,7 @@ class AuthnContextResolver
   end
 
   def acr_result_without_sp_defaults
-    @acr_result_without_sp_defaults ||= Vot::Parser.new(acr_values: acr_values).parse
+    @acr_result_without_sp_defaults ||= Vot::Parser.new(acr_values:, saml:).parse
   end
 
   def result_with_sp_aal_defaults(result)

@@ -44,7 +44,7 @@ class SamlRequestValidator
 
     @parsed_vectors_of_trust = begin
       if vtr.present?
-        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot, saml: true).parse }
       end
     rescue Vot::Parser::ParseException
       nil
@@ -92,7 +92,8 @@ class SamlRequestValidator
       next true if classref.match?(SamlIdp::Request::VTR_REGEXP) &&
                    IdentityConfig.store.use_vot_in_sp_requests
     end
-    authn_contexts.all? do |classref|
+
+    !authn_contexts.present? || authn_contexts.any? do |classref|
       valid_contexts.include?(classref)
     end
   end

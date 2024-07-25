@@ -172,6 +172,31 @@ RSpec.describe AttributeAsserter do
           uuid_getter = user.asserted_attributes[:uuid][:getter]
           expect(uuid_getter.call(user)).to eq user.last_identity.uuid
         end
+
+        context 'AuthnContext includes an unknown value' do
+          # This test passes without the code change, as the values being passed into the AuthnContextResolver
+          # are sanitized  in the saml_idp gem. However, it will be useful if we ever refactor.
+          let(:raw_ial2_authn_request) do
+            ial2_authnrequest = saml_authn_request_url(
+              overrides: {
+                issuer: sp1_issuer,
+                authn_context: [
+                  Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                  'unknown/authn/context',
+                ],
+              },
+            )
+            CGI.unescape ial2_authnrequest.split('SAMLRequest').last
+          end
+          let(:ial2_authn_request) do
+            SamlIdp::Request.from_deflated_request(raw_ial2_authn_request)
+          end
+
+          it 'includes all requested attributes + uuid' do
+            expect(user.asserted_attributes.keys).
+              to eq(%i[uuid email phone first_name verified_at aal ial])
+          end
+        end
       end
 
       context 'custom bundle includes dob' do

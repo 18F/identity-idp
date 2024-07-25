@@ -67,8 +67,35 @@ RSpec.describe Vot::Parser do
 
         expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
           Vot::Parser::ParseException,
-          'C1.C2.Xx contains unkown component Xx',
+          'C1.C2.Xx contains unknown component Xx',
         )
+      end
+
+      context 'it is a SAML request' do
+        let(:acr_values) { 'unknown/acr/values' }
+
+        it 'raises an exception' do
+          expect { Vot::Parser.new(acr_values:, saml: true).parse }.to raise_exception(
+            Vot::Parser::ParseException,
+            'VoT parser called without VoT or ACR values',
+          )
+        end
+
+        context 'there is at least one valid acr value' do
+          let(:acr_values) do
+            "#{Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF} unknown/acr/values"
+          end
+
+          it 'expands the recognized values' do
+            result = Vot::Parser.new(acr_values:, saml: true).parse
+
+            expect(result.expanded_component_values).to eq('http://idmanagement.gov/ns/assurance/ial/2')
+            expect(result.aal2?).to eq(true)
+            expect(result.phishing_resistant?).to eq(false)
+            expect(result.hspd12?).to eq(false)
+            expect(result.identity_proofing?).to eq(true)
+          end
+        end
       end
     end
 

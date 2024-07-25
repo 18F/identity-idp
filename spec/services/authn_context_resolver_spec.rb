@@ -292,23 +292,60 @@ RSpec.describe AuthnContextResolver do
     end
 
     context 'IAL2 service provider' do
-      it 'uses the IAL ACR if one is present' do
-        service_provider = build(:service_provider, ial: 2)
+      let(:service_provider) { build(:service_provider, ial: 2) }
 
-        acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/1',
-          'http://idmanagement.gov/ns/assurance/ial/1',
-        ].join(' ')
+      context 'IAL ACR is present' do
+        let(:acr_values_arr) do
+          [
+            'http://idmanagement.gov/ns/assurance/aal/1',
+            'http://idmanagement.gov/ns/assurance/ial/1',
+          ]
+        end
+        let(:acr_values) { acr_values_arr.join(' ') }
 
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
-          vtr: nil,
-          acr_values: acr_values,
-        ).resolve
+        it 'uses the passed-in IAL ACR' do
+          result = AuthnContextResolver.new(
+            user: user,
+            service_provider: service_provider,
+            vtr: nil,
+            acr_values: acr_values,
+          ).resolve
 
-        expect(result.identity_proofing?).to eq(false)
-        expect(result.aal2?).to eq(false)
+          expect(result.identity_proofing?).to eq(false)
+          expect(result.aal2?).to eq(false)
+        end
+
+        context 'there is an unknown ACR value' do
+          before do
+            acr_values_arr.push('unknown/acr/value')
+          end
+
+          it 'returns an error' do
+            expect do
+              AuthnContextResolver.new(
+                user: user,
+                service_provider: service_provider,
+                vtr: nil,
+                acr_values: acr_values,
+              ).resolve
+            end.to raise_error(Vot::Parser::ParseException)
+          end
+
+          context 'it is a SAML request' do
+            it 'uses the known passed-in IAL ACR' do
+              result = AuthnContextResolver.new(
+                user: user,
+                service_provider: service_provider,
+                vtr: nil,
+                acr_values: acr_values,
+                saml: true,
+              ).resolve
+
+              expect(result.identity_proofing?).to eq(false)
+              expect(result.aal2?).to eq(false)
+            end
+          end
+        end
       end
 
       it 'uses the defaul IAL if no IAL ACR is present' do

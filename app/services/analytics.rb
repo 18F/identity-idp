@@ -125,6 +125,7 @@ class Analytics
       service_provider:,
       vtr: session[:sp][:vtr],
       acr_values: session[:sp][:acr_values],
+      saml: !!session[:sp][:request_url]&.include?('?SAMLRequest='),
     ).resolve
   rescue Vot::Parser::ParseException
     return
