@@ -3,7 +3,7 @@
 <h1><%= t('titles.select_email') %></h1>
 
 <p class="margin-top-4">
-  <%= I18n.t('help_text.select_preferred_email', sp: @sp_name) %>
+  <%= I18n.t('help_text.select_preferred_email', sp: @sp_name, app_name: APP_NAME) %>
 </p>
 
 <%= simple_form_for(@select_email_form, url: sign_up_select_email_path) do |f| %>
