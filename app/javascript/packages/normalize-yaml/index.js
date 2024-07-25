@@ -9,6 +9,7 @@ import { getUnifiedVisitor } from './visitors/index.js';
  *
  * @prop {Record<string,any>=} prettierConfig Optional Prettier configuration object.
  * @prop {Array<Formatter>=} exclude Formatters to exclude.
+ * @prop {Array<string>=} ignoreKeySort Keys to ignore for sorting.
  */
 
 /**
@@ -19,9 +20,10 @@ import { getUnifiedVisitor } from './visitors/index.js';
  *
  * @return {Promise<string>} Normalized content.
  */
-function normalize(content, { prettierConfig, exclude } = {}) {
+function normalize(content, options = {}) {
+  const { prettierConfig } = options;
   const document = YAML.parseDocument(content);
-  YAML.visit(document, getUnifiedVisitor({ exclude }));
+  YAML.visit(document, getUnifiedVisitor(options));
   return prettier.format(document.toString(), { ...prettierConfig, parser: 'yaml' });
 }
 
