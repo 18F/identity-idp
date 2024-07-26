@@ -22,6 +22,8 @@ class RateLimiter
     return count
   LUA
 
+  INCREMENT_SCRIPT_SHA1 = Digest::SHA1.hexdigest(INCREMENT_SCRIPT).freeze
+
   def initialize(rate_limit_type:, user: nil, target: nil)
     @rate_limit_type = rate_limit_type
     @user = user
@@ -106,11 +108,17 @@ class RateLimiter
     attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
     now = Time.zone.now
     REDIS_THROTTLE_POOL.with do |client|
-      value = client.eval(
-        INCREMENT_SCRIPT,
-        [key],
-        [now.to_i, expiration_seconds, exponential_factor, attempt_window_max].map(&:to_s),
-      )
+      begin
+        value = client.evalsha(
+          INCREMENT_SCRIPT_SHA1,
+          [key],
+          [now.to_i, expiration_seconds, exponential_factor, attempt_window_max].map(&:to_s),
+        )
+      rescue Redis::CommandError => error
+        raise error unless error.message.start_with?('NOSCRIPT')
+        client.script(:load, INCREMENT_SCRIPT)
+        retry
+      end
     end
 
     @redis_attempts = value.to_i
