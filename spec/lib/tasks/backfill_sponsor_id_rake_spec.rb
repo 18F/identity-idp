@@ -21,14 +21,17 @@ RSpec.describe 'in_person_enrollments:backfill_sponsor_id rake task' do
     end
   end
 
-  let(:pending_enrollment) { create(:in_person_enrollment, :pending) }
-  let(:expired_enrollment) { create(:in_person_enrollment, :expired) }
-  let(:failed_enrollment) { create(:in_person_enrollment, :failed) }
-  let(:enrollment_with_service_provider) { create(:in_person_enrollment, :with_service_provider) }
-  let(:enrollment_with_sponsor_id) { create(:in_person_enrollment, :with_sponsor_id) }
+  let(:pending_enrollment) { create(:in_person_enrollment, :pending, :with_nil_sponsor_id) }
+  let(:expired_enrollment) { create(:in_person_enrollment, :expired, :with_nil_sponsor_id) }
+  let(:failed_enrollment) { create(:in_person_enrollment, :failed, :with_nil_sponsor_id) }
+  let(:enrollment_with_service_provider) do
+    create(:in_person_enrollment, :with_service_provider, :with_nil_sponsor_id)
+  end
+  let(:enrollment_with_sponsor_id) { create(:in_person_enrollment) }
 
   before do
     allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return('31459')
+    # binding.pry
     expect(pending_enrollment.sponsor_id).to be_nil
     expect(expired_enrollment.sponsor_id).to be_nil
     expect(failed_enrollment.sponsor_id).to be_nil
