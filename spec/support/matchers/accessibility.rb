@@ -187,7 +187,7 @@ RSpec::Matchers.define :have_unique_ids do
   end
 end
 
-RSpec::Matchers.define :tag_decorative_svgs_with_role do
+RSpec::Matchers.define :tag_decorative_svgs_with_aria_hidden do
   # VoiceOver on Safari will erroneously announce SVG <img> elements with a null text alternative,
   # even with `role="presentation"` (see LG-12465). Assigning `aria-hidden` is equivalent to
   # `role="presentation"` for image elements, and prevents the images from being announced. This
@@ -342,7 +342,7 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
   expect(page).to have_valid_markup if validate_markup
-  expect(page).to tag_decorative_svgs_with_role
+  expect(page).to tag_decorative_svgs_with_aria_hidden
 end
 
 def activate_skip_link
