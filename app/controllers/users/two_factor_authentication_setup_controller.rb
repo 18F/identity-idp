@@ -16,7 +16,7 @@ module Users
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
-        gov_or_mil_email: gov_or_mil_email?,
+        gov_or_mil_email: has_gov_or_mil_email?,
       )
     end
 
