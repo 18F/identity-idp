@@ -140,15 +140,13 @@ module I18n
   end
 end
 
-RSpec.describe 'I18n' do
-  let(:i18n) { I18n::Tasks::BaseTask.new }
-  let(:missing_keys) { i18n.missing_keys }
-  let(:unused_keys) { i18n.unused_keys }
-  let(:untranslated_keys) { i18n.untranslated_keys }
-  let(:leading_or_trailing_whitespace_keys) do
-    i18n.leading_or_trailing_whitespace_keys
-  end
+i18n = I18n::Tasks::BaseTask.new
+missing_keys = i18n.missing_keys
+unused_keys = i18n.unused_keys
+untranslated_keys = i18n.untranslated_keys
+leading_or_trailing_whitespace_keys = i18n.leading_or_trailing_whitespace_keys
 
+RSpec.describe 'I18n' do
   it 'has matching pairs of punctuation' do
     mismatched_punctuation_pairs = {}
     i18n.locales.each do |locale|
