@@ -31,7 +31,7 @@ module Users
     private
 
     def redirect_unless_user_email_is_gov_or_mil
-      redirect_to after_sign_in_path_for(current_user) unless current_user.has_gov_or_mil_email?
+      redirect_to after_sign_in_path_for(current_user) unless current_user.gov_or_mil_email?
     end
   end
 end

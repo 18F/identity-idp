@@ -82,7 +82,7 @@ class Profile < ApplicationRecord
   def pending_reasons
     [
       *(:gpo_verification_pending if gpo_verification_pending?),
-      *(:fraud_check_pending if has_fraud_deactivation_reason?),
+      *(:fraud_check_pending if fraud_deactivation_reason?),
       *(:in_person_verification_pending if in_person_verification_pending?),
     ]
   end
@@ -179,7 +179,7 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
-  def has_fraud_deactivation_reason?
+  def fraud_deactivation_reason?
     fraud_review_pending? || fraud_rejection?
   end
 
