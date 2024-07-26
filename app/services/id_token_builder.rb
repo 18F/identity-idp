@@ -67,9 +67,9 @@ class IdTokenBuilder
     if resolved_authn_context_result.ialmax?
       determine_ial_max_acr.name
     elsif resolved_authn_context_result.identity_proofing?
-      Vot::LegacyComponentValues::IAL2.name
+      Vot::AcrComponentValues::IAL2.name
     else
-      Vot::LegacyComponentValues::IAL1.name
+      Vot::AcrComponentValues::IAL1.name
     end
   end
 
@@ -85,9 +85,9 @@ class IdTokenBuilder
 
   def determine_ial_max_acr
     if identity.user.identity_verified?
-      Vot::LegacyComponentValues::IAL2
+      Vot::AcrComponentValues::IAL2
     else
-      Vot::LegacyComponentValues::IAL1
+      Vot::AcrComponentValues::IAL1
     end
   end
 

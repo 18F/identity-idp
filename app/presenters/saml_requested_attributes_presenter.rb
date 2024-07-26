@@ -43,14 +43,14 @@ class SamlRequestedAttributesPresenter
     if vtr.present?
       parsed_vectors_of_trust.any? { |vot_result| vot_result.identity_proofing? }
     else
-      Vot::LegacyComponentValues.by_name[ial]&.requirements&.include?(
+      Vot::AcrComponentValues.by_name[ial]&.requirements&.include?(
         :identity_proofing,
       )
     end
   end
 
   def ialmax_requested?
-    Vot::LegacyComponentValues.by_name[ial]&.requirements&.include?(:ialmax)
+    Vot::AcrComponentValues.by_name[ial]&.requirements&.include?(:ialmax)
   end
 
   def parsed_vectors_of_trust

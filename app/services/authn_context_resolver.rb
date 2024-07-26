@@ -14,7 +14,7 @@ class AuthnContextResolver
     if vtr.present?
       selected_vtr_parser_result_from_vtr_list
     else
-      acr_result_with_sp_defaults
+      acr_result
     end
   end
 
@@ -54,6 +54,12 @@ class AuthnContextResolver
     end
   end
 
+  def acr_result
+    @acr_result ||= decorate_acr_result_with_user_context(
+      acr_result_with_sp_defaults,
+    )
+  end
+
   def acr_result_with_sp_defaults
     result_with_sp_aal_defaults(
       result_with_sp_ial_defaults(
@@ -75,6 +81,18 @@ class AuthnContextResolver
       result.with(aal2?: true, phishing_resistant?: true)
     else
       result
+    end
+  end
+
+  def decorate_acr_result_with_user_context(result)
+    return result unless result.biometric_comparison?
+
+    return result if user&.identity_verified_with_biometric_comparison?
+
+    if user&.identity_verified?
+      result.with(biometric_comparison?: false, two_pieces_of_fair_evidence?: false)
+    else
+      result.with(biometric_comparison?: true)
     end
   end
 
