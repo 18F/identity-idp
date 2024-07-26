@@ -231,7 +231,7 @@ GEM
     brakeman (6.1.0)
     browser (6.0.0)
     builder (3.3.0)
-    bullet (7.1.4)
+    bullet (7.2.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundler-audit (0.9.1)
@@ -266,7 +266,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    css_parser (1.14.0)
+    css_parser (1.17.1)
       addressable
     cssbundling-rails (1.4.0)
       railties (>= 6.0.0)
@@ -323,10 +323,11 @@ GEM
       railties (>= 5.0.0)
     faker (2.19.0)
       i18n (>= 1.6, < 2)
-    faraday (2.7.10)
-      faraday-net_http (>= 2.0, < 3.1)
-      ruby2_keywords (>= 0.0.4)
-    faraday-net_http (3.0.2)
+    faraday (2.10.0)
+      faraday-net_http (>= 2.0, < 3.2)
+      logger
+    faraday-net_http (3.1.1)
+      net-http
     faraday-retry (2.0.0)
       faraday (~> 2.0)
     ffi (1.15.5)
@@ -422,7 +423,7 @@ GEM
     matrix (0.4.2)
     maxminddb (0.1.22)
     memory_profiler (1.0.1)
-    method_source (1.0.0)
+    method_source (1.1.0)
     mini_histogram (0.3.1)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
@@ -430,6 +431,8 @@ GEM
     msgpack (1.7.2)
     multiset (0.5.3)
     mutex_m (0.2.0)
+    net-http (0.4.1)
+      uri
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
     net-imap (0.4.12)
@@ -460,9 +463,9 @@ GEM
     pg (1.5.6)
     pg_query (4.2.3)
       google-protobuf (>= 3.22.3)
-    phonelib (0.8.9)
+    phonelib (0.9.1)
     pkcs11 (0.3.4)
-    premailer (1.21.0)
+    premailer (1.23.0)
       addressable
       css_parser (>= 1.12.0)
       htmlentities (>= 4.0.0)
@@ -487,11 +490,11 @@ GEM
     pry-doc (1.5.0)
       pry (~> 0.11)
       yard (~> 0.9.11)
-    pry-rails (0.3.9)
-      pry (>= 0.10.4)
+    pry-rails (0.3.11)
+      pry (>= 0.13.0)
     psych (5.1.2)
       stringio
-    public_suffix (6.0.0)
+    public_suffix (6.0.1)
     puma (6.4.2)
       nio4r (~> 2.0)
     raabro (1.4.0)
@@ -500,7 +503,7 @@ GEM
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
-    rack-mini-profiler (3.3.0)
+    rack-mini-profiler (3.3.1)
       rack (>= 1.2.0)
     rack-proxy (0.7.7)
       rack
@@ -639,7 +642,6 @@ GEM
       nokogiri (>= 1.10.5)
       rexml
     ruby-statistics (3.0.2)
-    ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     safe_target_blank (1.0.2)
       rails
@@ -697,6 +699,7 @@ GEM
     unf_ext (0.0.9.1)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
+    uri (0.13.0)
     view_component (3.9.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
