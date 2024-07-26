@@ -236,6 +236,8 @@ RSpec.describe SignUp::CompletionsController do
           sp_session_requested_attributes: nil,
           in_account_creation_flow: true,
           disposable_email_domain: nil,
+          in_person_proofing_status: nil,
+          doc_auth_result: nil,
         )
       end
 
@@ -296,6 +298,8 @@ RSpec.describe SignUp::CompletionsController do
             sp_session_requested_attributes: nil,
             in_account_creation_flow: true,
             disposable_email_domain: 'temporary.com',
+            doc_auth_result: nil,
+            in_person_proofing_status: nil,
           )
         end
       end
@@ -312,6 +316,7 @@ RSpec.describe SignUp::CompletionsController do
         )
         stub_sign_in(user)
         sp = create(:service_provider, issuer: 'https://awesome')
+        create(:in_person_enrollment, status: 'passed', doc_auth_result: 'Passed', user: user)
         subject.session[:sp] = {
           issuer: sp.issuer,
           acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -332,6 +337,8 @@ RSpec.describe SignUp::CompletionsController do
           sp_session_requested_attributes: ['email'],
           in_account_creation_flow: true,
           disposable_email_domain: 'temporary.com',
+          in_person_proofing_status: 'passed',
+          doc_auth_result: 'Passed',
         )
       end
 

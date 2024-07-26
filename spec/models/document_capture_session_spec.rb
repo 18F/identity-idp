@@ -21,6 +21,9 @@ RSpec.describe DocumentCaptureSession do
         zipcode: '12345',
         issuing_country_code: 'USA',
       ),
+      extra: {
+        doc_auth_result: 'Passed',
+      },
     )
   end
 

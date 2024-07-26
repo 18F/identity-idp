@@ -57,8 +57,54 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
       to(include(expected_form_action))
   end
 
+  scenario 'user opts to add piv/cac card and has to reauthenticate on remembered device' do
+    # Authenticate user to ensure remembered device cookie is established
+    user = create(:user, :fully_registered, :with_phone)
+    travel_to (IdentityConfig.store.reauthn_window + 1).seconds.ago do
+      sign_in_user(user)
+      check(t('forms.messages.remember_device'))
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_on t('links.sign_out')
+    end
+
+    # Try signing in with PIV/CAC
+    sign_in_with_piv_cac_user_not_found
+    click_on t('instructions.mfa.piv_cac.back_to_sign_in')
+
+    # Sign in with username and password
+    fill_in_credentials_and_submit(user.email, user.password)
+
+    # Reauthenticate
+    expect(page).to have_content(t('two_factor_authentication.login_intro_reauthentication'))
+    expect(page).to have_current_path(login_two_factor_options_path)
+    click_on t('forms.buttons.continue')
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+
+    # Add PIV/CAC after sign-in
+    expect(current_path).to eq login_add_piv_cac_prompt_path
+    stub_piv_cac_service
+    fill_in 'name', with: 'Card 1'
+    click_on t('forms.piv_cac_setup.submit')
+    follow_piv_cac_redirect
+
+    expect(page).to have_content(t('notices.piv_cac_configured'))
+    expect(current_path).to eq sign_up_completed_path
+  end
+
   def perform_steps_to_get_to_add_piv_cac_during_sign_up(sp: :oidc)
     user = create(:user, :fully_registered, :with_phone)
+    sign_in_with_piv_cac_user_not_found(sp:)
+    click_on t('instructions.mfa.piv_cac.back_to_sign_in')
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    expect(current_path).to eq login_add_piv_cac_prompt_path
+    fill_in 'name', with: 'Card 1'
+  end
+
+  def sign_in_with_piv_cac_user_not_found(sp: :oidc)
     if sp
       visit_idp_from_sp_with_ial1(sp)
     else
@@ -71,12 +117,5 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
 
     follow_piv_cac_redirect
     expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
-    click_on t('instructions.mfa.piv_cac.back_to_sign_in')
-
-    fill_in_credentials_and_submit(user.email, user.password)
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-    expect(current_path).to eq login_add_piv_cac_prompt_path
-    fill_in t('forms.piv_cac_setup.nickname'), with: 'Card 1'
   end
 end

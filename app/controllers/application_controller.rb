@@ -227,9 +227,9 @@ class ApplicationController < ActionController::Base
     return user_please_call_url if current_user.suspended?
     return user_password_compromised_url if session[:redirect_to_password_compromised].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
-    return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
+    return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?

@@ -57,6 +57,7 @@ RSpec.describe Users::SessionsController, devise: true do
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: false,
+          new_device: true,
         )
       end
 
@@ -113,6 +114,24 @@ RSpec.describe Users::SessionsController, devise: true do
 
           response
         end
+
+        it 'tracks as not being from a new device' do
+          stub_analytics
+
+          response
+
+          expect(@analytics).to have_logged_event(
+            'Email and Password Authentication',
+            success: true,
+            user_id: user.uuid,
+            user_locked_out: false,
+            valid_captcha_result: true,
+            bad_password_count: 0,
+            sp_request_url_present: false,
+            remember_device: false,
+            new_device: false,
+          )
+        end
       end
     end
 
@@ -150,7 +169,12 @@ RSpec.describe Users::SessionsController, devise: true do
       user = create(:user, :fully_registered)
 
       stub_analytics
-      analytics_hash = {
+      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
+
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
+
+      expect(@analytics).to have_logged_event(
+        'Email and Password Authentication',
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
@@ -158,19 +182,19 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
-      }
-      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
-
-      expect(@analytics).to receive(:track_event).
-        with('Email and Password Authentication', analytics_hash)
-
-      post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
+        new_device: nil,
+      )
       expect(subject.session[:sign_in_flow]).to eq(:sign_in)
     end
 
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics
-      analytics_hash = {
+      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
+
+      post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
+
+      expect(@analytics).to have_logged_event(
+        'Email and Password Authentication',
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
@@ -178,13 +202,8 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
-      }
-      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
-
-      expect(@analytics).to receive(:track_event).
-        with('Email and Password Authentication', analytics_hash)
-
-      post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
+        new_device: nil,
+      )
     end
 
     it 'tracks unsuccessful authentication for locked out user' do
@@ -195,7 +214,11 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       stub_analytics
-      analytics_hash = {
+
+      post :create, params: { user: { email: user.email.upcase, password: user.password } }
+
+      expect(@analytics).to have_logged_event(
+        'Email and Password Authentication',
         success: false,
         user_id: user.uuid,
         user_locked_out: true,
@@ -203,12 +226,8 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 0,
         sp_request_url_present: false,
         remember_device: false,
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('Email and Password Authentication', analytics_hash)
-
-      post :create, params: { user: { email: user.email.upcase, password: user.password } }
+        new_device: nil,
+      )
     end
 
     it 'tracks unsuccessful authentication for failed reCAPTCHA' do
@@ -229,6 +248,7 @@ RSpec.describe Users::SessionsController, devise: true do
         valid_captcha_result: false,
         bad_password_count: 0,
         remember_device: false,
+        new_device: nil,
         sp_request_url_present: false,
       )
     end
@@ -241,7 +261,10 @@ RSpec.describe Users::SessionsController, devise: true do
 
       stub_analytics
 
-      analytics_hash = {
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+      expect(@analytics).to have_logged_event(
+        'Email and Password Authentication',
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
@@ -249,18 +272,18 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 2,
         sp_request_url_present: false,
         remember_device: false,
-      }
-
-      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
-      expect(@analytics).to receive(:track_event).
-        with('Email and Password Authentication', analytics_hash)
-      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+        new_device: nil,
+      )
     end
 
     it 'tracks the presence of SP request_url in session' do
       subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics
-      analytics_hash = {
+
+      post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
+
+      expect(@analytics).to have_logged_event(
+        'Email and Password Authentication',
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
@@ -268,12 +291,8 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 1,
         sp_request_url_present: true,
         remember_device: false,
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('Email and Password Authentication', analytics_hash)
-
-      post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
+        new_device: nil,
+      )
     end
 
     context 'IAL1 user' do
@@ -431,7 +450,11 @@ RSpec.describe Users::SessionsController, devise: true do
         )
 
         stub_analytics
-        analytics_hash = {
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(@analytics).to have_logged_event(
+          'Email and Password Authentication',
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
@@ -439,19 +462,12 @@ RSpec.describe Users::SessionsController, devise: true do
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: false,
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with('Email and Password Authentication', analytics_hash)
-
-        profile_encryption_error = {
+          new_device: true,
+        )
+        expect(@analytics).to have_logged_event(
+          'Profile Encryption: Invalid',
           error: 'Unable to parse encrypted payload',
-        }
-        expect(@analytics).to receive(:track_event).
-          with('Profile Encryption: Invalid', profile_encryption_error)
-
-        post :create, params: { user: { email: user.email, password: user.password } }
-
+        )
         expect(controller.user_session[:encrypted_profiles]).to be_nil
         expect(profile.reload).to_not be_active
       end
@@ -558,7 +574,11 @@ RSpec.describe Users::SessionsController, devise: true do
         }
 
         stub_analytics
-        analytics_hash = {
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(@analytics).to have_logged_event(
+          'Email and Password Authentication',
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
@@ -566,12 +586,8 @@ RSpec.describe Users::SessionsController, devise: true do
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: true,
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with('Email and Password Authentication', analytics_hash)
-
-        post :create, params: { user: { email: user.email, password: user.password } }
+          new_device: true,
+        )
       end
     end
 
@@ -584,7 +600,11 @@ RSpec.describe Users::SessionsController, devise: true do
         }
 
         stub_analytics
-        analytics_hash = {
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(@analytics).to have_logged_event(
+          'Email and Password Authentication',
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
@@ -592,12 +612,8 @@ RSpec.describe Users::SessionsController, devise: true do
           bad_password_count: 0,
           sp_request_url_present: false,
           remember_device: true,
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with('Email and Password Authentication', analytics_hash)
-
-        post :create, params: { user: { email: user.email, password: user.password } }
+          new_device: true,
+        )
       end
     end
 

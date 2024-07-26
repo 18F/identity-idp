@@ -1498,24 +1498,28 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       end
 
       describe 'Enhanced In-Person Proofing' do
+        let!(:pending_enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            :with_notification_phone_configuration,
+            issuer: 'http://localhost:3000',
+            selected_location_details: { name: 'BALTIMORE' },
+            sponsor_id: usps_eipp_sponsor_id,
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
         context <<~STR.squish do
           When an Enhanced IPP enrollment passess proofing
           with unsupported ID,enrollment by-passes the
           Primary ID check and
         STR
-          let!(:pending_enrollment) do
-            create(
-              :in_person_enrollment,
-              :pending,
-              :with_notification_phone_configuration,
-              issuer: 'http://localhost:3000',
-              selected_location_details: { name: 'BALTIMORE' },
-              sponsor_id: usps_eipp_sponsor_id,
-            )
-          end
 
           before do
-            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
             stub_request_passed_proofing_unsupported_id_results
           end
 
@@ -1560,6 +1564,21 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               job_name: 'GetUspsProofingResultsJob',
             )
           end
+        end
+
+        context 'By passes the Secondary ID check when enrollment is Enhanced IPP' do
+          before do
+            stub_request_passed_proofing_secondary_id_type_results_ial_2
+          end
+
+          it_behaves_like(
+            'enrollment_with_a_status_update',
+            passed: true,
+            email_type: 'Success',
+            enrollment_status: InPersonEnrollment::STATUS_PASSED,
+            response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_passed_proofing_secondary_id_type_results_response_ial_2,
+          )
         end
       end
     end

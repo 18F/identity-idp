@@ -8,13 +8,17 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_img) { nil }
   let(:state_id_number) { 'S59397998' }
+  let(:user) { create(:user) }
+
+  before do
+    stub_sign_in(user) if user
+  end
 
   describe '#create' do
     subject(:action) do
       post :create, params: params
     end
 
-    let(:user) { create(:user) }
     let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
     let(:flow_path) { 'standard' }
     let(:params) do

@@ -72,7 +72,7 @@ module Users
     end
 
     def process_locked_out_session
-      warden.logout(:user)
+      sign_out(:user)
       warden.lock!
 
       flash[:error] = t(
@@ -100,7 +100,7 @@ module Users
 
     def process_failed_captcha
       flash[:error] = t('errors.messages.invalid_recaptcha_token')
-      warden.logout(:user)
+      sign_out(:user)
       warden.lock!
       redirect_to root_url
     end
@@ -176,6 +176,7 @@ module Users
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
+        new_device: success ? new_device? : nil,
       )
     end
 
