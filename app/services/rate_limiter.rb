@@ -70,9 +70,9 @@ class RateLimiter
   end
 
   def expiration_minutes
-    minutes = self.class.attempt_window_in_minutes(rate_limit_type)
-    exponential_factor = self.class.attempt_window_exponential_factor(rate_limit_type)
-    attempt_window_max = self.class.attempt_window_max_in_minutes(rate_limit_type)
+    minutes = RateLimiter.attempt_window_in_minutes(rate_limit_type)
+    exponential_factor = RateLimiter.attempt_window_exponential_factor(rate_limit_type)
+    attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
     minutes *= exponential_factor ** (attempts - 1) if exponential_factor && attempts.positive?
     if attempt_window_max && minutes > attempt_window_max
       attempt_window_max
