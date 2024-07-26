@@ -44,10 +44,10 @@ RSpec.describe LoginButtonComponent, type: :component do
     end
   end
 
-  it 'raises error for unknown color' do
+  it 'validates color' do
     expect do
       render_inline LoginButtonComponent.new(color: 'foo')
-    end.to raise_error(ArgumentError)
+    end.to raise_error(ActiveModel::ValidationError)
   end
 
   context 'with tag options' do

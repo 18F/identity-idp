@@ -12,17 +12,13 @@ RSpec.describe BadgeComponent, type: :component do
   context 'without icon' do
     let(:icon) { nil }
 
-    it 'raises an exception' do
-      expect { rendered }.to raise_error(ArgumentError)
-    end
+    it { expect { rendered }.to raise_error(ActiveModel::ValidationError) }
   end
 
   context 'with invalid icon' do
     let(:icon) { :invalid }
 
-    it 'raises an exception' do
-      expect { rendered }.to raise_error(ArgumentError)
-    end
+    it { expect { rendered }.to raise_error(ActiveModel::ValidationError) }
   end
 
   context 'with valid icon' do
