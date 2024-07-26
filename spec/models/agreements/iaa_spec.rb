@@ -66,7 +66,7 @@ RSpec.describe Agreements::Iaa do
     end
 
     it 'returns false when the order does not match' do
-      other_order = create(:iaa_order, iaa_gtc: gtc)
+      other_order = create(:iaa_order, order_number: 2, iaa_gtc: gtc)
       other = described_class.new(gtc: gtc, order: other_order)
       expect(iaa).not_to eq(other)
     end
