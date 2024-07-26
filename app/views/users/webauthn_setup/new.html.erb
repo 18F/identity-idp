@@ -1,7 +1,7 @@
 <% self.title = @presenter.page_title %>
 
 <% if @platform_authenticator %>
-  <%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', role: 'img' %>
+  <%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', aria: { hidden: true } %>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
