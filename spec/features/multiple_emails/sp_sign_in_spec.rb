@@ -17,7 +17,6 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_agree_and_continue if current_path == sign_up_completed_path
-
         decoded_id_token = fetch_oidc_id_token_info
         expect(decoded_id_token[:email]).to eq(emails.first)
         expect(decoded_id_token[:all_emails]).to be_nil
@@ -42,7 +41,6 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         email_from_saml_response = xmldoc.attribute_value_for('email')
-
         expect(email_from_saml_response).to eq(emails.first)
 
         Capybara.reset_session!
