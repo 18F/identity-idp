@@ -107,17 +107,13 @@ class RateLimiter
     exponential_factor = RateLimiter.attempt_window_exponential_factor(rate_limit_type)
     attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
     now = Time.zone.now
+    script_args = [now.to_i, expiration_seconds, exponential_factor, attempt_window_max].map(&:to_s)
     REDIS_THROTTLE_POOL.with do |client|
       begin
-        value = client.evalsha(
-          INCREMENT_SCRIPT_SHA1,
-          [key],
-          [now.to_i, expiration_seconds, exponential_factor, attempt_window_max].map(&:to_s),
-        )
+        value = client.evalsha(INCREMENT_SCRIPT_SHA1, [key], script_args)
       rescue Redis::CommandError => error
         raise error unless error.message.start_with?('NOSCRIPT')
-        client.script(:load, INCREMENT_SCRIPT)
-        retry
+        value = client.eval(INCREMENT_SCRIPT, [key], script_args)
       end
     end
 
