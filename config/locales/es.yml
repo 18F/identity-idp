@@ -1190,6 +1190,7 @@ in_person_proofing.body.barcode.close_window: Ya puede cerrar esta ventana.
 in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
 in_person_proofing.body.barcode.deadline_restart: Si vence el plazo, su información no se guardará y tendrá que reiniciar el proceso.
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
+in_person_proofing.body.barcode.eipp_tag: Código de barras piloto mejorado GSA 
 in_person_proofing.body.barcode.email_sent: Enviamos esta información al correo electrónico que usó para iniciar sesión.
 in_person_proofing.body.barcode.learn_more: Obtenga más información sobre lo que debe llevar
 in_person_proofing.body.barcode.location_details: Detalles del lugar
@@ -1296,7 +1297,8 @@ in_person_proofing.process.eipp_bring_id_plus_documents.heading: 'Opción 2: Lle
 in_person_proofing.process.eipp_bring_id_plus_documents.info: 'Puede presentar su licencia de conducir o identificación estatal estándar, junto con los documentos comprobatorios de las opciones A, B o C siguientes. Solo debe escoger UNA opción:'
 in_person_proofing.process.eipp_bring_id.heading: 'Opción 1: Llevar una REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
-in_person_proofing.process.eipp_bring_id.info: Si presenta una Real ID estatal o licencia de conducir auténtica, no necesita mostrar documentos comprobatorios.
+in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. REAL ID con dirección actual
+in_person_proofing.process.eipp_bring_id.info: Si presenta una licencia de conducir o una tarjeta de identificación REAL ID con su dirección actual, no necesita mostrar documentos comprobatorios.
 in_person_proofing.process.eipp_state_id_military_id.heading: B. Identificación emitida por el estado + identificación militar
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: Identificación estatal e identificación militar
 in_person_proofing.process.eipp_state_id_military_id.info: Presente una licencia de conducir o una tarjeta de identificación estatal estándar, junto con una identificación militar.
@@ -1320,6 +1322,9 @@ in_person_proofing.process.state_id.info: No debe estar vencida. Actualmente no 
 in_person_proofing.process.state_id.info_eipp: El empleado escaneará su identificación. No debe estar vencida. Según el tipo de identificación que presente, es posible que deba mostrar documentos comprobatorios. Consulte los requisitos en la sección “Lo que debe llevar a la oficina de correos”.
 in_person_proofing.process.what_to_do.heading: Colóquese en cualquier fila
 in_person_proofing.process.what_to_do.info: Diga al empleado de la oficina de correos que desea verificar su identidad con %{app_name}.
+in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + dos documentos comprobatorios
+in_person_proofing.process.real_id_and_supporting_docs.info: 'Si la dirección que figura en su REAL ID no es su dirección actual, presente un REAL ID, junto con dos documentos comprobatorios de esta lista:'
+in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID y dos documentos
 instructions.account.reactivate.begin: Empecemos.
 instructions.account.reactivate.explanation: 'Cuando creó su cuenta, le dimos una lista de palabras y le pedimos que las guardara en un lugar seguro. Era similar a esto:'
 instructions.account.reactivate.intro: Adoptamos medidas adicionales para mantener su información personal segura y privada, por lo que restablecer su contraseña requiere un poco más de trabajo.
