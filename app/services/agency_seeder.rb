@@ -20,8 +20,8 @@ class AgencySeeder
       else
         begin
           Agency.create!(config.merge(id: agency_id))
-        rescue
-          Rails.logger.warn("agency_id=#{agency_id} config=#{config} errormessage=#{error.message} error=#{error}")
+        rescue NameError => e
+          Rails.logger.warn("agency_id=#{agency_id} config=#{config} errormessage=#{e.message} error=#{e}")
         end
       end
     end
