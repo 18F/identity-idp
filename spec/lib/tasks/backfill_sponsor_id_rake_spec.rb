@@ -31,7 +31,6 @@ RSpec.describe 'in_person_enrollments:backfill_sponsor_id rake task' do
 
   before do
     allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return('31459')
-    # binding.pry
     expect(pending_enrollment.sponsor_id).to be_nil
     expect(expired_enrollment.sponsor_id).to be_nil
     expect(failed_enrollment.sponsor_id).to be_nil
