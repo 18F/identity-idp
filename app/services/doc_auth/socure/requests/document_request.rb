@@ -36,7 +36,7 @@ module DocAuth
               language: language,
             },
             customerUserId: document_capture_session_uuid,
-            verificationLevel: verification_level,
+            verificationLevel: verification_level, # not used in v4
           }.to_json
         end
 

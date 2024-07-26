@@ -49,7 +49,7 @@ module DocAuth
       end
 
       def documents_uploaded
-        return if IdentityConfig.store.socure_verification_level > 1
+        # return if IdentityConfig.store.socure_verification_level > 1 not needed in v4 doc request
 
         if (socure_document_uuid = event.dig('data', 'uuid'))
           uploaded_documents_decision(socure_document_uuid)
