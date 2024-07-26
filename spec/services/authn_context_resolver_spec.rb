@@ -355,11 +355,37 @@ RSpec.describe AuthnContextResolver do
         end
 
         context 'with biometric comparison is required' do
-          it 'sets biometric_comparison to true' do
-            expect(result.identity_proofing?).to be true
-            expect(result.biometric_comparison?).to be true
-            expect(result.aal2?).to be true
-            expect(result.two_pieces_of_fair_evidence?).to be true
+          context 'when user is not verified' do
+            it 'sets biometric_comparison to true' do
+              expect(result.identity_proofing?).to be true
+              expect(result.biometric_comparison?).to be true
+              expect(result.aal2?).to be true
+              expect(result.two_pieces_of_fair_evidence?).to be true
+            end
+          end
+
+          context 'when the user is already verified' do
+            context 'without biometric comparison' do
+              let(:user) { build(:user, :proofed) }
+
+              it 'asserts biometric_comparison as true' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be true
+                expect(result.aal2?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
+              end
+            end
+
+            context 'with biometric comparison' do
+              let(:user) { build(:user, :proofed_with_selfie) }
+
+              it 'asserts biometric comparison' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
+                expect(result.aal2?).to be true
+              end
+            end
           end
         end
 
@@ -373,6 +399,7 @@ RSpec.describe AuthnContextResolver do
               it 'falls back on proofing without biometric comparison' do
                 expect(result.identity_proofing?).to be true
                 expect(result.biometric_comparison?).to be false
+                expect(result.two_pieces_of_fair_evidence?).to be false
                 expect(result.aal2?).to be true
               end
             end

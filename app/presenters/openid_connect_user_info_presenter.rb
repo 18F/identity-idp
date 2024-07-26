@@ -46,7 +46,7 @@ class OpenidConnectUserInfoPresenter
     if resolved_authn_context_result.biometric_comparison?
       Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
     elsif resolved_authn_context_result.identity_proofing? ||
-      resolved_authn_context_result.ialmax?
+          resolved_authn_context_result.ialmax?
       Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     else
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF

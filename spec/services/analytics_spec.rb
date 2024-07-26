@@ -257,7 +257,9 @@ RSpec.describe Analytics do
     end
 
     context 'IAL2 with biometric' do
-      let(:session) { { sp: { acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF } } }
+      let(:session) do
+        { sp: { acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF } }
+      end
       let(:expected_attributes) do
         {
           sp_request: {

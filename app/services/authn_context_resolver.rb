@@ -88,7 +88,7 @@ class AuthnContextResolver
     return result unless result.biometric_comparison?
 
     return result if user&.identity_verified_with_biometric_comparison? ||
-      result.component_values.map(&:name).include?(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
+      biometric_is_required?(result)
 
     if user&.identity_verified?
       result.with(biometric_comparison?: false, two_pieces_of_fair_evidence?: false)
@@ -118,5 +118,12 @@ class AuthnContextResolver
     acr_result_without_sp_defaults.component_values.filter do |component_value|
       component_value.name.include?('ial') || component_value.name.include?('loa')
     end
+  end
+
+  def biometric_is_required?(result)
+    result.
+      component_values.
+      map(&:name).
+      include?(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
   end
 end

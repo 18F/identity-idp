@@ -200,7 +200,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:email_verified]).to eq(true)
               expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
               expect(user_info[:ial]).to eq(
-                Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+                Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
               )
               expect(user_info[:aal]).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
               expect(user_info).to_not have_key(:vot)
