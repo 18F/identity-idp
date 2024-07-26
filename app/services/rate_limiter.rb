@@ -6,6 +6,22 @@
 class RateLimiter
   attr_reader :rate_limit_type
 
+  INCREMENT_SCRIPT = <<~LUA
+    local count = redis.call('incr', KEYS[1])
+    local now = tonumber(ARGV[1])
+    local expiration_seconds = tonumber(ARGV[2])
+    local exponential_factor = tonumber(ARGV[3])
+    local attempt_window_max = tonumber(ARGV[4])
+    if exponential_factor then
+      expiration_seconds = expiration_seconds * (exponential_factor ^ (count - 1))
+      if attempt_window_max then
+        expiration_seconds = math.min(expiration_seconds, attempt_window_max)
+      end
+    end
+    redis.call('expireat', KEYS[1], now + expiration_seconds)
+    return count
+  LUA
+
   def initialize(rate_limit_type:, user: nil, target: nil)
     @rate_limit_type = rate_limit_type
     @user = user
@@ -83,18 +99,22 @@ class RateLimiter
 
   def increment!
     return if limited?
+    value = nil
 
+    expiration_seconds = RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds
+    exponential_factor = RateLimiter.attempt_window_exponential_factor(rate_limit_type)
+    attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
     now = Time.zone.now
-
-    @redis_attempts += 1
-    @redis_attempted_at = now
-
     REDIS_THROTTLE_POOL.with do |client|
-      client.multi do |multi|
-        multi.incr(key)
-        multi.expireat(key, now + expiration_minutes.minutes.in_seconds)
-      end
+      value = client.eval(
+        INCREMENT_SCRIPT,
+        [key],
+        [now.to_i, expiration_seconds, exponential_factor, attempt_window_max].map(&:to_s),
+      )
     end
+
+    @redis_attempts = value.to_i
+    @redis_attempted_at = now
 
     attempts
   end
