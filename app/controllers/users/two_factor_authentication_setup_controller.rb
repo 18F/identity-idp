@@ -44,7 +44,7 @@ module Users
 
     private
 
-    def gov_or_mil_email?
+    def has_gov_or_mil_email?
       current_user.confirmed_email_addresses.any?(&:gov_or_mil?)
     end
 
