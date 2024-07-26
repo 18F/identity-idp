@@ -774,7 +774,9 @@ RSpec.describe UserMailer, type: :mailer do
 
         context 'template displays additional Enhanced In-Person Proofing specific content' do
           it 'renders GSA Enhanced Pilot Barcode tag' do
-            expect(mail.html_part.body).to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+            expect(mail.html_part.body).to have_content(
+              t('in_person_proofing.body.barcode.eipp_tag'),
+            )
           end
 
           it 'renders What to bring section' do
@@ -804,9 +806,9 @@ RSpec.describe UserMailer, type: :mailer do
                 end
 
                 t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
-                each do |item|
-                expect(mail.html_part.body).to have_content(strip_tags(item))
-              end
+                  each do |item|
+                  expect(mail.html_part.body).to have_content(strip_tags(item))
+                end
               end
             end
           end

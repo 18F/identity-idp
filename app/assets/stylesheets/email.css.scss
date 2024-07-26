@@ -1,6 +1,6 @@
 @use 'uswds-core' as * with (
   $theme-table-border-color: 'base-lighter',
-  $theme-table-header-background-color: 'base-lightest',
+  $theme-table-header-background-color: 'base-lightest'
 );
 @use 'variables/app' as *;
 @use 'variables/email' as *;

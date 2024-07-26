@@ -1189,8 +1189,8 @@ in_person_proofing.body.barcode.cancel_link_text: 取消你的条形码
 in_person_proofing.body.barcode.close_window: 你现在可以关闭这一窗口。
 in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。
 in_person_proofing.body.barcode.deadline_restart: 如果你在截止日期后才去邮局，你的信息不会被存储，你又得从头开始这一过程。
-in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
 in_person_proofing.body.barcode.eipp_tag: GSA 增强型试行条形码
+in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
 in_person_proofing.body.barcode.email_sent: 我们已将该信息发送到你用来登录的电邮。
 in_person_proofing.body.barcode.learn_more: 了解有关携带物品的更多信息
 in_person_proofing.body.barcode.location_details: 详细地址信息
@@ -1295,9 +1295,9 @@ in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
 in_person_proofing.process.eipp_bring_id_plus_documents.heading: 选项2：请携带州颁发的标准身份证件和支持性文件
 in_person_proofing.process.eipp_bring_id_plus_documents.info: '您可以出示标准驾照或者州颁发的身份卡以及以下A、B、C选项的支持文件。你只需选择下列选项之一：'
+in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. 带有当前地址的REAL身份证
 in_person_proofing.process.eipp_bring_id.heading: 选项1：携带REAL身份证件
 in_person_proofing.process.eipp_bring_id.image_alt_text: REAL身份证件
-in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. 带有当前地址的REAL身份证
 in_person_proofing.process.eipp_bring_id.info: 如果您出示是REAL身份证的驾照或身份卡，并且上面的地址是你当前的地址，则无需出示支持性文件。
 in_person_proofing.process.eipp_state_id_military_id.heading: B.州颁发的标准身份+军人证件
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: 州身份证和军人证件
@@ -1316,15 +1316,15 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 车辆登记卡
   - 房屋保险单
   - 车辆保险单
+in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL身份证 + 两种支持性文件
+in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL身份证和两种文件
+in_person_proofing.process.real_id_and_supporting_docs.info: '如果你的REAL身份证上的地址不是你当前的地址，请出示REAL身份证以及以下清单中的两种支持性文件:'
 in_person_proofing.process.state_id.heading: 出示你州驾照或州非驾照身份卡。
 in_person_proofing.process.state_id.heading_eipp: 出示你的身份证件以及支持性文件
 in_person_proofing.process.state_id.info: 该证件必须在有效期内。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
 in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于您出示的身份证件类型，您也许需要显示支持文件。参见“到邮局要带什么”部分中的规定。
 in_person_proofing.process.what_to_do.heading: 请排在任何一队里
 in_person_proofing.process.what_to_do.info: 告诉邮局工作人员你是为了%{app_name}验证你的身份。
-in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL身份证 + 两种支持性文件
-in_person_proofing.process.real_id_and_supporting_docs.info: '如果你的REAL身份证上的地址不是你当前的地址，请出示REAL身份证以及以下清单中的两种支持性文件:'
-in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL身份证和两种文件
 instructions.account.reactivate.begin: 我们开始吧。
 instructions.account.reactivate.explanation: 你设立账户时，我们给了你一个单词清单并请你将其存放在一个安全的地方。清单像这样：
 instructions.account.reactivate.intro: 我们采取额外步骤来保护你个人信息的安全和私密，所以重设密码需要多花点精力。

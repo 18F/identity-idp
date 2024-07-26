@@ -1178,8 +1178,8 @@ in_person_proofing.body.barcode.cancel_link_text: Cancel your barcode
 in_person_proofing.body.barcode.close_window: You may now close this window.
 in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}.
 in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your information will not be saved and you will need to restart the process.
-in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'
 in_person_proofing.body.barcode.eipp_tag: GSA Enhanced Pilot Barcode
+in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'
 in_person_proofing.body.barcode.email_sent: We have sent this information to the email you used to sign in.
 in_person_proofing.body.barcode.learn_more: Learn more about what to bring
 in_person_proofing.body.barcode.location_details: Location details
@@ -1284,9 +1284,9 @@ in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
 in_person_proofing.process.barcode.info: The retail associate needs to scan your barcode at the top of this page. You can print this page or show it on your mobile device.
 in_person_proofing.process.eipp_bring_id_plus_documents.heading: 'Option 2: Bring a standard state-issued ID plus supporting documents'
 in_person_proofing.process.eipp_bring_id_plus_documents.info: 'You can present your standard driver’s license or state ID card, along with supporting documents from the following options A, B or C. You only need to pick ONE option:'
+in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. REAL ID with current address
 in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Bring a REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
-in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. REAL ID with current address
 in_person_proofing.process.eipp_bring_id.info: 'If you present a REAL ID driver’s license or ID card and the address on it is your current address, you don’t need to show supporting documents.'
 in_person_proofing.process.eipp_state_id_military_id.heading: B. State-issued ID + military ID
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: State ID and Military ID
@@ -1305,15 +1305,15 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Vehicle registration card
   - Home insurance policy
   - Vehicle insurance policy
+in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + two supporting documents
+in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID and two documents
+in_person_proofing.process.real_id_and_supporting_docs.info: 'If the address on your REAL ID is not your current address, present a REAL ID, along with two supporting documents from this list:'
 in_person_proofing.process.state_id.heading: Show your State Driver’s License or State Non-Driver’s Identification Card
 in_person_proofing.process.state_id.heading_eipp: Show your ID and supporting documents
 in_person_proofing.process.state_id.info: This must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
 in_person_proofing.process.state_id.info_eipp: The retail associate will scan your ID. This must not be expired. Depending on the type of ID that you present, you may need to show supporting documents. See the requirements in the “What to bring to the Post Office” section.
 in_person_proofing.process.what_to_do.heading: Stand in any line
 in_person_proofing.process.what_to_do.info: Tell the Post Office retail associate you are here to verify your identity with %{app_name}.
-in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + two supporting documents
-in_person_proofing.process.real_id_and_supporting_docs.info: 'If the address on your REAL ID is not your current address, present a REAL ID, along with two supporting documents from this list:'
-in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID and two documents 
 instructions.account.reactivate.begin: Let’s get started.
 instructions.account.reactivate.explanation: 'When you created your account, we gave you a list of words and asked you to store them in a safe place. It looked similar to this:'
 instructions.account.reactivate.intro: We take extra steps to keep your personal information secure and private, so resetting your password takes a little extra effort.
