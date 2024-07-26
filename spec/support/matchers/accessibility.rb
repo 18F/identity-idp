@@ -187,22 +187,32 @@ RSpec::Matchers.define :have_unique_ids do
   end
 end
 
-RSpec::Matchers.define :tag_decorative_svgs_with_role do
+RSpec::Matchers.define :tag_decorative_svgs_with_aria_hidden do
+  # VoiceOver on Safari will erroneously announce SVG <img> elements with a null text alternative,
+  # even with `role="presentation"` (see LG-12465). Assigning `aria-hidden` is equivalent to
+  # `role="presentation"` for image elements, and prevents the images from being announced. This
+  # should be removed if and when the bug is fixed in a future version of Safari.
+  #
+  # "Consequently, using role="presentation" or role="none" on an HTML img is equivalent to using
+  # aria-hidden="true"."
+  #
+  # See: https://www.w3.org/TR/wai-aria-1.2/#presentation
+
   def decorative_svgs(page)
     page.all(:css, 'img[alt=""][src$=".svg" i]')
   end
 
   match do |page|
-    expect(decorative_svgs(page)).to all satisfy { |img| img[:role] == 'img' }
+    expect(decorative_svgs(page)).to all satisfy { |img| !img[:'aria-hidden'].nil? }
   end
 
   failure_message do |page|
-    img_tags = decorative_svgs(page).reject { |img| img[:role] == 'img' }.
+    img_tags = decorative_svgs(page).select { |img| img[:'aria-hidden'].nil? }.
       map { |img| %(<img alt="#{img[:alt]}" src="#{img[:src]}" class="#{img[:class]}">) }.
       join("\n")
 
     <<~STR
-      Expect all decorative SVGs to have role="img", but found ones without:
+      Expect all decorative SVGs to have aria-hidden, but found ones without:
       #{img_tags}
     STR
   end
@@ -327,15 +337,12 @@ class AccessibleName
 end
 
 def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
-  expect(page).to be_axe_clean.according_to(:wcag22aa, :"best-practice").
-    # Axe flags redundant img role on img elements, but is necessary for a Safari bug
-    # See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#identifying_svg_as_an_image
-    excluding('img[alt=""][src$=".svg" i]')
+  expect(page).to be_axe_clean.according_to(:wcag22aa, :"best-practice")
   expect(page).to have_unique_ids
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
   expect(page).to have_valid_markup if validate_markup
-  expect(page).to tag_decorative_svgs_with_role
+  expect(page).to tag_decorative_svgs_with_aria_hidden
 end
 
 def activate_skip_link
