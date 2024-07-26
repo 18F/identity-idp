@@ -1181,10 +1181,11 @@ module AnalyticsEvents
     )
   end
 
-  def socure_webhook(event_type:, text:)
+  def socure_webhook(event_type:, verification_level:, text:)
     track_event(
       'Socure webhook text',
       event_type: event_type,
+      verification_level: verification_level,
       text: text,
     )
   end

@@ -4,15 +4,14 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :verification_level, :document_type, :redirect_url, :document_capture_session_uuid
+        attr_reader :document_type, :redirect_url, :document_capture_session_uuid
 
         def initialize(
           document_capture_session_uuid:, redirect_url:,
-          verification_level: '2', document_type: 'license'
+          document_type: 'license'
         )
           @document_capture_session_uuid = document_capture_session_uuid
           @redirect_url = redirect_url
-          @verification_level = verification_level
           @document_type = document_type
         end
 
@@ -28,7 +27,7 @@ module DocAuth
               },
             },
             customerUserId: document_capture_session_uuid,
-            verificationLevel: verification_level,
+            verificationLevel: IdentityConfig.store.socure_verification_level,
           }.to_json
         end
 
@@ -41,7 +40,7 @@ module DocAuth
         end
 
         def endpoint
-          IdentityConfig.store.socure_document_endpoint
+          IdentityConfig.store.socure_document_request_endpoint
         end
 
         def metric_name

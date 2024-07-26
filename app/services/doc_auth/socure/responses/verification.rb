@@ -7,12 +7,12 @@ module DocAuth
         include DocPiiReader
         # include ClassificationConcern
 
-        attr_reader :payload
+        attr_reader :verification_data
 
-        def initialize(payload)
-          @payload = payload
+        def initialize(verification_data)
+          @verification_data = verification_data
           @liveness_checking_enabled = false
-          @pii_from_doc = read_pii(document_verification_data)
+          @pii_from_doc = read_pii(verification_data)
           super(
             success: successful_result?,
             errors: error_messages,
@@ -27,7 +27,7 @@ module DocAuth
             exception: e,
             extra: {
               backtrace: e.backtrace,
-              reference: payload['referenceId'],
+              reference: verification_data['referenceId'],
             },
           )
         end
@@ -39,17 +39,17 @@ module DocAuth
         def doc_auth_success?
           return false unless id_type_supported?
 
-          document_verification_data.dig('decision', 'value') == 'accept'
+          verification_data.dig('decision', 'value') == 'accept'
         end
 
         def error_messages
           return {} if successful_result?
 
-          document_verification_data['reasonCodes'] # may need to be hash
+          verification_data['reasonCodes'] # may need to be hash
         end
 
         def extra_attributes
-          document_verification_data.except('documentData')
+          verification_data.except('documentData')
         end
 
         def attention_with_barcode?
@@ -62,9 +62,9 @@ module DocAuth
 
         private
 
-        def document_verification_data
-          payload.dig('data', 'documentVerification')
-        end
+        # def document_verification_data
+        #   payload.dig('data', 'documentVerification') || payload.dig('documentVerification')
+        # end
 
         def id_type_supported?
           true # tbd
