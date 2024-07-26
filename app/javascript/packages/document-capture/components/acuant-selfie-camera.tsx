@@ -146,15 +146,15 @@ function AcuantSelfieCamera({
     };
 
     const faceDetectionStates = {
-      FACE_NOT_FOUND: t('doc_auth.info.selfie_capture_status.face_not_found'),
-      TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
-      FACE_TOO_SMALL: t('doc_auth.info.selfie_capture_status.face_too_small'),
-      FACE_CLOSE_TO_BORDER: t('doc_auth.info.selfie_capture_status.face_close_to_border'),
-      CLOSE_TEXT: t('doc_auth.info.selfie_capture.action.close'),
-      RETAKE_TEXT: t('doc_auth.info.selfie_capture.action.retake'),
-      INTRO_TEXT: t('doc_auth.info.selfie_capture.intro'),
-      SUBMIT_ALT: t('doc_auth.info.selfie_capture.action.submit'),
-      CAPTURE_ALT: t('doc_auth.info.selfie_capture.action.capture'),
+      FACE_NOT_FOUND: 'jaymax ' + t('doc_auth.info.selfie_capture_status.face_not_found'),
+      TOO_MANY_FACES: 'jaymax ' + t('doc_auth.info.selfie_capture_status.too_many_faces'),
+      FACE_TOO_SMALL: 'jaymax ' + t('doc_auth.info.selfie_capture_status.face_too_small'),
+      FACE_CLOSE_TO_BORDER: 'jaymax ' + t('doc_auth.info.selfie_capture_status.face_close_to_border'),
+      CLOSE_TEXT: 'jaymax ' + t('doc_auth.info.selfie_capture.action.close'),
+      RETAKE_TEXT: 'jaymax ' + t('doc_auth.info.selfie_capture.action.retake'),
+      INTRO_TEXT: 'jaymax ' + t('doc_auth.info.selfie_capture.intro'),
+      SUBMIT_ALT: 'jaymax ' + t('doc_auth.info.selfie_capture.action.submit'),
+      CAPTURE_ALT: 'jaymax ' + t('doc_auth.info.selfie_capture.action.capture'),
     };
     const cleanupSelfieCamera = () => {
       window.AcuantPassiveLiveness.end();
