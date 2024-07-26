@@ -17,7 +17,7 @@ module UspsInPersonProofing
   class DateValidator < ActiveModel::Validations::ComparisonValidator
     private
 
-    def prepare_value_for_validation(value, _record, _attr_name) # is this method still used?
+    def prepare_value_for_validation(value, _record, _attr_name)
       val_to_date(value)
     rescue
       nil
