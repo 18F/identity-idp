@@ -694,7 +694,10 @@ Naming/PredicateName:
   Enabled: true
   AllowedMethods:
     - is_a?
-    - has_devices?
+  ForbiddenPrefixes:
+    # overriding to allow "has_"
+    - is_
+    - have_
 
 Naming/VariableName:
   Exclude:
