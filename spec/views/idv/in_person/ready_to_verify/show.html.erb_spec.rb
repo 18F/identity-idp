@@ -185,6 +185,10 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
       aggregate_failures do
         [
+          t('in_person_proofing.body.barcode.eipp_tag'),
+          t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+          t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+          t('in_person_proofing.process.real_id_and_supporting_docs.info'),
           t('in_person_proofing.headings.barcode_eipp'),
           t('in_person_proofing.process.state_id.heading_eipp'),
           t('in_person_proofing.process.state_id.info_eipp'),
@@ -252,6 +256,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
 
     context 'template displays additional (EIPP specific) content' do
+      it 'renders GSA Enhanced Pilot Barcode tag' do
+        render
+
+        expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
+      end
+
       it 'renders What to bring section' do
         render
 
@@ -262,8 +272,23 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       it 'renders Option 1 content' do
         render
 
-        expect(rendered).to have_content(t('in_person_proofing.process.eipp_bring_id.heading'))
-        expect(rendered).to have_content(t('in_person_proofing.process.eipp_bring_id.info'))
+        aggregate_failures do
+          [
+            t('in_person_proofing.process.eipp_bring_id.heading'),
+            t('in_person_proofing.process.eipp_bring_id.info'),
+            t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+            t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+            t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+          ].each do |copy|
+            Array(copy).each do |part|
+              expect(rendered).to have_content(part)
+            end
+          end
+        end
+
+        t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+          expect(rendered).to have_content(strip_tags(item))
+        end
       end
 
       it 'renders Option 2 content' do
