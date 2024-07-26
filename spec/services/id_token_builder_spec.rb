@@ -115,7 +115,9 @@ RSpec.describe IdTokenBuilder do
         end
 
         it 'sets the acr to the ial2 constant' do
-          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
+          expect(decoded_payload[:acr]).to eq(
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
 

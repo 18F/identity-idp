@@ -88,7 +88,7 @@ class AuthnContextResolver
     return result unless result.biometric_comparison?
 
     return result if user&.identity_verified_with_biometric_comparison? ||
-      biometric_is_required?(result)
+                     biometric_is_required?(result)
 
     if user&.identity_verified?
       result.with(biometric_comparison?: false, two_pieces_of_fair_evidence?: false)
