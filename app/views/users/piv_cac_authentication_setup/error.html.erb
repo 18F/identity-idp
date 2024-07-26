@@ -8,6 +8,11 @@
   <%= @presenter.description %>
 </p>
 
+<%= render ButtonComponent.new(
+      url: authenticator_setup_url,
+      class: 'usa-button margin-top-2',
+    ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+
 <%= render PageFooterComponent.new do %>
   <% if MfaPolicy.new(current_user).two_factor_enabled? %>
     <%= link_to t('links.cancel'), account_path %>
