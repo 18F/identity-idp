@@ -87,7 +87,8 @@ class AuthnContextResolver
   def decorate_acr_result_with_user_context(result)
     return result unless result.biometric_comparison?
 
-    return result if user&.identity_verified_with_biometric_comparison?
+    return result if user&.identity_verified_with_biometric_comparison? ||
+      result.component_values.map(&:name).include?(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
 
     if user&.identity_verified?
       result.with(biometric_comparison?: false, two_pieces_of_fair_evidence?: false)
