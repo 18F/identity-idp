@@ -244,8 +244,7 @@ class RateLimiter
         attempt_window: IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_in_minutes,
         attempt_window_exponential_factor:
           IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_exponential_factor,
-        attempt_window_max:
-          IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_max_days.days.in_minutes,
+        attempt_window_max: IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_max_minutes,
       },
     }.with_indifferent_access
   end

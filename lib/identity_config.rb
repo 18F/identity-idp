@@ -374,7 +374,7 @@ module IdentityConfig
     config.add(:short_term_phone_otp_max_attempt_window_in_seconds, type: :integer)
     config.add(:sign_in_user_id_per_ip_attempt_window_exponential_factor, type: :float)
     config.add(:sign_in_user_id_per_ip_attempt_window_in_minutes, type: :integer)
-    config.add(:sign_in_user_id_per_ip_attempt_window_max_days, type: :integer)
+    config.add(:sign_in_user_id_per_ip_attempt_window_max_minutes, type: :integer)
     config.add(:sign_in_user_id_per_ip_max_attempts, type: :integer)
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
