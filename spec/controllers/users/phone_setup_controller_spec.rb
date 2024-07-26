@@ -76,9 +76,7 @@ RSpec.describe Users::PhoneSetupController do
           },
         },
         otp_delivery_preference: 'sms',
-        area_code: nil,
         carrier: 'Test Mobile Carrier',
-        country_code: nil,
         phone_type: :mobile,
         types: [],
       }
@@ -149,7 +147,6 @@ RSpec.describe Users::PhoneSetupController do
         result = {
           success: true,
           errors: {},
-          error_details: nil,
           otp_delivery_preference: 'voice',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
@@ -187,7 +184,6 @@ RSpec.describe Users::PhoneSetupController do
         result = {
           success: true,
           errors: {},
-          error_details: nil,
           otp_delivery_preference: 'sms',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
@@ -224,7 +220,6 @@ RSpec.describe Users::PhoneSetupController do
         result = {
           success: true,
           errors: {},
-          error_details: nil,
           otp_delivery_preference: 'sms',
           area_code: '703',
           carrier: 'Test Mobile Carrier',

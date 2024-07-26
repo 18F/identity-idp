@@ -277,7 +277,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
             fraud_rejection: false,
             gpo_verification_pending: false,
             in_person_verification_pending: false,
-            deactivation_reason: nil,
             **ab_test_args,
           ),
         )
@@ -813,7 +812,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                       fraud_rejection: false,
                       gpo_verification_pending: false,
                       in_person_verification_pending: false,
-                      deactivation_reason: nil,
                       **ab_test_args,
                     ),
                   )
@@ -825,7 +823,6 @@ RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
                       fraud_rejection: false,
                       gpo_verification_pending: false,
                       in_person_verification_pending: false,
-                      deactivation_reason: nil,
                       **ab_test_args,
                     ),
                   )

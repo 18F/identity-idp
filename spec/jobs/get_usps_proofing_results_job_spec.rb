@@ -535,7 +535,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   enrollment_id: pending_enrollment.id,
                   service_provider: pending_enrollment.issuer,
                   timestamp: anything,
-                  wait_until: nil,
                   job_name: 'GetUspsProofingResultsJob',
                 )
               end
@@ -862,8 +861,6 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 'GetUspsProofingResultsJob: Enrollment status updated',
                 hash_including(
                   reason: 'Enrollment has expired',
-                  transaction_end_date_time: nil,
-                  transaction_start_date_time: nil,
                   job_name: 'GetUspsProofingResultsJob',
                   enhanced_ipp: false,
                 ),

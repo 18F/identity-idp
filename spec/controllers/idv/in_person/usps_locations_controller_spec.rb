@@ -146,9 +146,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           success: false,
           errors: 'No USPS locations found',
           result_total: 0,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
       end
     end
@@ -165,11 +162,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
           success: true,
-          errors: nil,
           result_total: 3,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
       end
     end

@@ -117,7 +117,6 @@ RSpec.describe GpoConfirmationUploader do
         expect(job_analytics).to have_logged_event(
           :gpo_confirmation_upload,
           success: true,
-          exception: nil,
           gpo_confirmation_count: confirmations.count,
         )
       end

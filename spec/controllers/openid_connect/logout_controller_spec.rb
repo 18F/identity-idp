@@ -213,7 +213,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 error_details: hash_including(*errors.keys),
                 sp_initiated: true,
                 oidc: true,
-                saml_request_valid: nil,
               ),
             )
           end
@@ -231,14 +230,12 @@ RSpec.describe OpenidConnect::LogoutController do
               'OIDC Logout Requested',
               hash_including(
                 success: false,
-                client_id: nil,
                 client_id_parameter_present: false,
                 id_token_hint_parameter_present: true,
                 errors: hash_including(*errors_keys),
                 error_details: hash_including(*errors_keys),
                 sp_initiated: true,
                 oidc: true,
-                saml_request_valid: nil,
               ),
             )
           end
@@ -359,7 +356,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 error_details: hash_including(*errors.keys),
                 sp_initiated: true,
                 oidc: true,
-                saml_request_valid: nil,
               ),
             )
           end
@@ -485,7 +481,6 @@ RSpec.describe OpenidConnect::LogoutController do
               error_details: hash_including(*errors.keys),
               sp_initiated: true,
               oidc: true,
-              saml_request_valid: nil,
             ),
           )
         end
@@ -525,7 +520,6 @@ RSpec.describe OpenidConnect::LogoutController do
               error_details: hash_including(*errors.keys),
               sp_initiated: true,
               oidc: true,
-              saml_request_valid: nil,
             ),
           )
         end
@@ -788,11 +782,8 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id_parameter_present: true,
               id_token_hint_parameter_present: false,
               errors: {},
-              error_details: nil,
               sp_initiated: true,
               oidc: true,
-              method: nil,
-              saml_request_valid: nil,
             )
             expect(@analytics).to have_logged_event(
               'Logout Initiated',
@@ -801,11 +792,8 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id_parameter_present: true,
               id_token_hint_parameter_present: false,
               errors: {},
-              error_details: nil,
               sp_initiated: true,
               oidc: true,
-              method: nil,
-              saml_request_valid: nil,
             )
           end
         end

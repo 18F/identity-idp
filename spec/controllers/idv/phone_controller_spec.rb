@@ -129,7 +129,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         expect(@analytics).to have_logged_event(
           'IdV: use different phone number',
           step: step,
-          proofing_components: nil,
         )
       end
     end
@@ -304,8 +303,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
             phone: { improbable_phone: true },
             otp_delivery_preference: { inclusion: true },
           },
-          country_code: nil,
-          area_code: nil,
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
           otp_delivery_preference: '🎷',
@@ -348,7 +345,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
         result = {
           success: true,
           errors: {},
-          error_details: nil,
           area_code: '703',
           country_code: 'US',
           carrier: 'Test Mobile Carrier',
@@ -445,7 +441,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
           new_phone_added: true,
           hybrid_handoff_phone_used: false,
           errors: {},
-          error_details: nil,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
           country_code: proofing_phone.country,
           area_code: proofing_phone.area_code,
@@ -540,7 +535,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
           },
-          proofing_components: nil,
         }
 
         put :create, params: { idv_phone_form: { phone: bad_phone } }

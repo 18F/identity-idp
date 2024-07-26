@@ -19,9 +19,7 @@ RSpec.describe RiscDeliveryJob do
     let(:risc_event_payload) do
       {
         client_id: issuer,
-        error: nil,
         event_type: event_type,
-        status: nil,
         success: false,
       }
     end

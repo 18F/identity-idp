@@ -176,7 +176,7 @@ RSpec.describe SamlIdpController do
 
       post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
 
-      result = { service_provider: nil, saml_request_valid: false }
+      result = { saml_request_valid: false }
       expect(@analytics).to have_logged_event('Remote Logout initiated', result)
     end
 
@@ -782,7 +782,6 @@ RSpec.describe SamlIdpController do
           hash_including(
             success: true,
             errors: {},
-            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
             authn_context_comparison: 'exact',
@@ -799,11 +798,9 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           'SP redirect initiated',
           ial: Idp::Constants::IAL2,
-          sign_in_duration_seconds: nil,
           billed_ial: Idp::Constants::IAL2,
           sign_in_flow:,
           acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          vtr: nil,
         )
       end
 
@@ -937,7 +934,6 @@ RSpec.describe SamlIdpController do
           hash_including(
             success: true,
             errors: {},
-            error_details: nil,
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
             authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
             authn_context_comparison: 'minimum',
@@ -954,11 +950,9 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           'SP redirect initiated',
           ial: 0,
-          sign_in_duration_seconds: nil,
           billed_ial: 2,
           sign_in_flow:,
           acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-          vtr: nil,
         )
       end
 
@@ -1218,13 +1212,11 @@ RSpec.describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
-          service_provider: nil,
           request_signed: true,
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
-          matching_cert_serial: nil,
         }
 
         expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
@@ -1265,13 +1257,11 @@ RSpec.describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           authn_context_comparison: 'exact',
-          service_provider: nil,
           request_signed: true,
           requested_ial: 'http://idmanagement.gov/ns/assurance/loa/5',
           endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
-          matching_cert_serial: nil,
         }
 
         expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
@@ -1463,8 +1453,6 @@ RSpec.describe SamlIdpController do
           expect(@analytics).to have_logged_event(
             'SAML Auth', hash_including(
               request_signed: false,
-              matching_cert_serial: nil,
-              encryption_cert_matches_matching_cert: nil,
             )
           )
         end
@@ -1484,7 +1472,6 @@ RSpec.describe SamlIdpController do
                 request_signed: authn_requests_signed,
                 matching_cert_serial: saml_test_sp_cert_serial,
                 encryption_cert_matches_matching_cert: true,
-                cert_error_details: nil,
               )
             )
           end
@@ -1507,7 +1494,6 @@ RSpec.describe SamlIdpController do
               expect(@analytics).to have_logged_event(
                 'SAML Auth', hash_including(
                   request_signed: authn_requests_signed,
-                  matching_cert_serial: nil,
                   encryption_cert_matches_matching_cert: false,
                 )
               )
@@ -1633,7 +1619,6 @@ RSpec.describe SamlIdpController do
           endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
-          matching_cert_serial: nil,
         }
 
         expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
@@ -1670,7 +1655,6 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
           authn_context_comparison: 'exact',
@@ -2329,7 +2313,6 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: [
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -2342,7 +2325,6 @@ RSpec.describe SamlIdpController do
           idv: true,
           finish_profile: false,
           request_signed: false,
-          matching_cert_serial: nil,
         }
 
         get :auth, params: { path_year: path_year }
@@ -2385,7 +2367,6 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -2418,14 +2399,12 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           'SP redirect initiated',
           ial: 1,
-          sign_in_duration_seconds: nil,
           billed_ial: 1,
           sign_in_flow: :sign_in,
           acr_values: [
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           ].join(' '),
-          vtr: nil,
         )
       end
     end
@@ -2442,7 +2421,6 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -2475,14 +2453,12 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to have_logged_event(
           'SP redirect initiated',
           ial: 1,
-          sign_in_duration_seconds: nil,
           billed_ial: 1,
           sign_in_flow: :sign_in,
           acr_values: [
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           ].join(' '),
-          vtr: nil,
         )
       end
     end

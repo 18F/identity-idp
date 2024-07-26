@@ -22,7 +22,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: true,
         errors: {},
-        error_details: nil,
         mfa_method_counts: {
           backup_codes: BackupCodeGenerator::NUMBER_OF_CODES,
           webauthn: 2,

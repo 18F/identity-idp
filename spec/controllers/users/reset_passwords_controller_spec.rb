@@ -30,7 +30,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: { user: ['invalid_token'] },
           error_details: { user: { blank: true } },
-          user_id: nil,
         }
       end
 
@@ -70,7 +69,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             success: false,
             errors: { user: ['invalid_token'] },
             error_details: { user: { blank: true } },
-            user_id: nil,
           }
         end
 

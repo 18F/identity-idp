@@ -329,7 +329,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
           **otp_preference_sms,
           resend: true,
           context: 'authentication',
@@ -496,7 +495,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         analytics_hash = {
           success: true,
           errors: {},
-          error_details: nil,
           otp_delivery_preference: 'voice',
           resend: false,
           context: 'authentication',
