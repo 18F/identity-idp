@@ -199,7 +199,7 @@ module Idv
       end
     end
 
-    def req_from_frontend?
+    def frontend_request?
       request.headers['HTTP_X_FORM_STEPS_WAIT'] == '1'
     end
 
