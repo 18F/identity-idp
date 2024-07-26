@@ -208,7 +208,7 @@ module Idv
     end
 
     def should_keep_flash_success?
-      req_from_frontend? && req_from_verify_step?
+      frontend_request? && req_from_verify_step?
     end
 
     def new_phone_added?
