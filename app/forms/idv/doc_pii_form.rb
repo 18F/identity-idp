@@ -18,7 +18,7 @@ module Idv
     validates_presence_of :state_id_number, { message: proc {
       I18n.t('doc_auth.errors.general.no_liveness')
     } }
-    validate :expired?
+    validate :state_id_expired?
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction, :state_id_number, :state_id_expiration
@@ -108,7 +108,7 @@ module Idv
       end
     end
 
-    def expired?
+    def state_id_expired?
       if !state_id_expiration || DateParser.parse_legacy(state_id_expiration).past?
         errors.add(:state_id_expiration, generic_error, type: :state_id_expiration)
       end

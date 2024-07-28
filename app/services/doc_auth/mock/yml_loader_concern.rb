@@ -8,11 +8,9 @@ module DocAuth
       def parse_yaml(uploaded_file)
         data = YAML.safe_load(uploaded_file, permitted_classes: [Date])
         if data.is_a?(Hash)
-          ['dob', 'state_id_expiration'].each do |dt|
-            if (m = data.dig('document', dt).to_s.
-              match(%r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}))
-              data['document'][dt] =
-                Date.new(m[:year].to_i, m[:month].to_i, m[:day].to_i)
+          ['dob', 'state_id_expiration'].each do |date_key|
+            if (date_s = data.dig('document', date_key))
+              data['document'][date_key] = DateParser.parse_legacy(date_s)
             end
           end
 
