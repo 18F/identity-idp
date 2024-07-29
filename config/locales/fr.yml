@@ -1307,7 +1307,7 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Attestation d’assurance automobile/deux roues
 in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + de deux documents complémentaires
 in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID et deux documents
-in_person_proofing.process.real_id_and_supporting_docs.info: 'Si l’adresse figurant sur votre REAL ID n’est pas votre adresse actuelle, veuillez présenter le document REAL ID accompagné de deux documents complémentaires parmi ceux de la liste ci-dessous : '
+in_person_proofing.process.real_id_and_supporting_docs.info: 'Si l’adresse figurant sur votre REAL ID n’est pas votre adresse actuelle, veuillez présenter le document REAL ID accompagné de deux documents complémentaires parmi ceux de la liste ci-dessous :'
 in_person_proofing.process.state_id.heading: Présentez votre permis de conduire ou votre carte d’identité de l’État
 in_person_proofing.process.state_id.heading_eipp: Présenter votre pièce d’identité et les documents complémentaires
 in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
