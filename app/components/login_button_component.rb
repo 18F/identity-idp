@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 class LoginButtonComponent < BaseComponent
-  VALID_COLORS = ['primary', 'primary-darker', 'primary-lighter'].freeze
-
   attr_reader :color, :big, :width, :height, :tag_options
 
+  validates_inclusion_of :color, in: ['primary', 'primary-darker', 'primary-lighter']
+
   def initialize(color: 'primary', big: false, **tag_options)
-    if !VALID_COLORS.include?(color)
-      raise ArgumentError, "`color` #{color}} is invalid, expected one of #{VALID_COLORS}"
-    end
     @big = big
     @width = big ? '11.1rem' : '7.4rem'
     @height = big ? '1.5rem' : '1rem'

@@ -254,6 +254,7 @@ pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
+raise_on_component_validation_error: true
 raise_on_missing_title: false
 reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
@@ -479,6 +480,7 @@ production:
   participate_in_dap: true
   password_pepper:
   piv_cac_verify_token_secret:
+  raise_on_component_validation_error: false
   recaptcha_mock_validator: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379

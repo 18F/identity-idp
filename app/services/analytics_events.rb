@@ -5502,6 +5502,11 @@ module AnalyticsEvents
     track_event('Sign in page visited', flash:, **extra)
   end
 
+  # User lands on security check failed page
+  def sign_in_security_check_failed_visited
+    track_event(:sign_in_security_check_failed_visited)
+  end
+
   # @param [Boolean] success
   # @param [Boolean] new_user
   # @param [Boolean] has_other_auth_methods
