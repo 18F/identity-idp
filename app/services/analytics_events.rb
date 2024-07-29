@@ -392,9 +392,14 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] required_password_change if user forced to change password
   # When a user views the edit password page
-  def edit_password_visit
-    track_event('Edit Password Page Visited')
+  def edit_password_visit(required_password_change: false, **extra)
+    track_event(
+      'Edit Password Page Visited',
+      required_password_change: required_password_change,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
