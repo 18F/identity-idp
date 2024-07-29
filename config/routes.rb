@@ -183,6 +183,8 @@ Rails.application.routes.draw do
       post '/test/device_profiling' => 'test/device_profiling#create'
     end
 
+    get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
+
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
 
