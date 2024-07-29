@@ -690,6 +690,15 @@ Naming/MemoizedInstanceVariableName:
 Naming/MethodParameterName:
   MinNameLength: 2
 
+Naming/PredicateName:
+  Enabled: true
+  AllowedMethods:
+    - is_a?
+  ForbiddenPrefixes:
+    # overriding to allow "has_"
+    - is_
+    - have_
+
 Naming/VariableName:
   Exclude:
     - spec/services/pii/nist_encryption_spec.rb
