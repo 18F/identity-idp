@@ -89,7 +89,7 @@ module OpenidConnect
     end
 
     def email_address_id
-      return session[:sp_email_id] unless session[:sp_email_id].nil?
+      return session[:sp_email_id] if session[:sp_email_id].present?
       sp = sp_session['issuer']
       identity = current_user.identities.where(service_provider: sp)
       email_id = identity.pick('email_address_id')
