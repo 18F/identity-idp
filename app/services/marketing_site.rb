@@ -60,10 +60,6 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/').to_s
   end
 
-  def self.security_url
-    URI.join(BASE_URL, locale_segment, 'security/').to_s
-  end
-
   def self.accessibility_statement_url
     URI.join(BASE_URL, locale_segment, 'accessibility/').to_s
   end
