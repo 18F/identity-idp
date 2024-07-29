@@ -25,6 +25,26 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       end
     end
 
+    scenario 'signing in with OIDC and selecting an alternative email address at first sign in' do
+      user = create(:user, :fully_registered, :with_multiple_emails)
+      emails = user.reload.email_addresses.map(&:email)
+
+      visit_idp_from_oidc_sp(scope: 'openid email')
+      signin(emails.first, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_link(t('help_text.requested_attributes.change_email_link'))
+
+      choose emails.second
+
+      click_button(t('help_text.requested_attributes.change_email_link'))
+
+      expect(current_path).to eq(sign_up_completed_path)
+      click_agree_and_continue
+      decoded_id_token = fetch_oidc_id_token_info
+      expect(decoded_id_token[:email]).to eq(emails.last)
+    end
+
     scenario 'signing in with SAML sends the email address used to sign in' do
       user = create(:user, :fully_registered, :with_multiple_emails)
       emails = user.reload.email_addresses.map(&:email)
