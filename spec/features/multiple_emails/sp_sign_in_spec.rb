@@ -66,6 +66,29 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
         Capybara.reset_session!
       end
     end
+
+    scenario 'signing in with SAML and selecting an alternative email address at first sign in' do
+      user = create(:user, :fully_registered, :with_multiple_emails)
+      emails = user.reload.email_addresses.map(&:email)
+
+      visit authn_request
+      signin(emails.first, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default_twice
+
+      click_link(t('help_text.requested_attributes.change_email_link'))
+      choose emails.second
+      click_button(t('help_text.requested_attributes.change_email_link'))
+
+      expect(current_path).to eq(sign_up_completed_path)
+
+      click_agree_and_continue
+      click_submit_default
+
+      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+      email_from_saml_response = xmldoc.attribute_value_for('email')
+      expect(email_from_saml_response).to eq(emails.last)
+    end
   end
 
   context 'with the all_emails scope' do
