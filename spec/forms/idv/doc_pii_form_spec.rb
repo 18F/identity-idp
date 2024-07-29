@@ -249,14 +249,12 @@ RSpec.describe Idv::DocPiiForm do
     context 'when the ID expiration is not present' do
       let(:pii) { state_id_expiration_error_pii }
 
-      it 'returns a single state ID expiration error' do
+      it 'the form is valid' do
         result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
-        expect(result.success?).to eq(false)
-        expect(result.errors[:state_id_expiration]).to eq [
-          t('doc_auth.errors.general.no_liveness'),
-        ]
+        expect(result.success?).to eq(true)
+        expect(result.errors[:state_id_expiration]).to be_empty
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,

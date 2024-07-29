@@ -109,7 +109,7 @@ module Idv
     end
 
     def state_id_expired?
-      if !state_id_expiration || DateParser.parse_legacy(state_id_expiration).past?
+      if state_id_expiration && DateParser.parse_legacy(state_id_expiration).past?
         errors.add(:state_id_expiration, generic_error, type: :state_id_expiration)
       end
     end
