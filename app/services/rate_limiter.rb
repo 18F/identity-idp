@@ -12,7 +12,7 @@ class RateLimiter
     local minutes = tonumber(ARGV[2])
     local exponential_factor = tonumber(ARGV[3])
     local attempt_window_max = tonumber(ARGV[4])
-    minutes = minutes * (exponential_factor ^ (count - 1))
+    minutes = math.floor(minutes * (exponential_factor ^ (count - 1)))
     if attempt_window_max then
       minutes = math.min(minutes, attempt_window_max)
     end
