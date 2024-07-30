@@ -116,7 +116,7 @@ RSpec.describe Users::BackupCodeSetupController do
   it 'deletes backup codes' do
     user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)
-    expect(user.backup_code_configurations.length).to eq 10
+    expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
 
     post :delete
 
@@ -142,7 +142,7 @@ RSpec.describe Users::BackupCodeSetupController do
     post :delete
 
     expect(response).to redirect_to(account_two_factor_authentication_path)
-    expect(user.backup_code_configurations.length).to eq 10
+    expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
   end
 
   describe 'multiple MFA handling' do

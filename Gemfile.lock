@@ -449,6 +449,8 @@ GEM
     nokogiri (1.16.6)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    numbers_and_words (0.11.12)
+      i18n (<= 2)
     openssl (3.0.2)
     openssl-signature_algorithm (1.2.1)
       openssl (> 2.0, < 3.1)
@@ -806,6 +808,7 @@ DEPENDENCIES
   net-sftp
   newrelic_rpm (~> 9.0)
   nokogiri (~> 1.16.0)
+  numbers_and_words (~> 0.11.12)
   pg
   pg_query
   phonelib

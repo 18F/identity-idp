@@ -825,7 +825,7 @@ forms.backup_code_reminder.body_info: 如果你无法使用自己的主要身份
 forms.backup_code_reminder.have_codes: 我有代码
 forms.backup_code_reminder.heading: 你的备用代码还有吗？
 forms.backup_code_reminder.need_new_codes: 我需要新的一套备用代码。
-forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 10 个代码后我们会给你新代码。
+forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 %{count} 个代码后我们会给你新代码。
 forms.backup_code.caution_delete: 如果你删除自己的备用代码，就无法用其来登录了。
 forms.backup_code.confirm_delete: 你确定要删除备用代码吗？
 forms.backup_code.generate: 获得代码
@@ -1642,7 +1642,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>你只在自己账
 two_factor_authentication.choose_another_option: '‹ 选择另一个身份证实方法'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
-  - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+  - 我们会给你 %{number_of_codes} 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
 two_factor_authentication.confirm_backup_code_setup_title: 你确定要使用备用代码吗？
 two_factor_authentication.form_legend: 选择你的身份证实方法
 two_factor_authentication.header_text: 输入一次性代码
@@ -1736,7 +1736,7 @@ two_factor_authentication.two_factor_choice: 身份证实方法设置
 two_factor_authentication.two_factor_choice_options.auth_app: 身份证实应用程序
 two_factor_authentication.two_factor_choice_options.auth_app_info: 下载或使用你选择的身份证实应用程序来生成安全代码。
 two_factor_authentication.two_factor_choice_options.backup_code: 备用代码
-two_factor_authentication.two_factor_choice_options.backup_code_info: 你可以打印或存到你设备里一套 10 个代码。你使用最后一个代码时，我们会生成一套新的。谨记备用代码容易丢失
+two_factor_authentication.two_factor_choice_options.backup_code_info: 您可以打印或保存到自己设备上的%{count}个代码清单。由于备用代码容易丢失，请将此选项作为不得已的选择
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: 添加了

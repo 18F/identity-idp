@@ -814,7 +814,7 @@ forms.backup_code_reminder.body_info: Si vous perdez l’accès à votre méthod
 forms.backup_code_reminder.have_codes: J’ai mes codes
 forms.backup_code_reminder.heading: Avez-vous toujours vos codes de sauvegarde ?
 forms.backup_code_reminder.need_new_codes: J’ai besoin d’un nouvel ensemble de codes de sauvegarde
-forms.backup_code.caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous donnerons de nouveaux codes une fois que vous aurez utilisé les dix fournis.
+forms.backup_code.caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous donnerons de nouveaux codes une fois que vous aurez utilisé les %{count} fournis.
 forms.backup_code.caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus les utiliser pour vous connecter.
 forms.backup_code.confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
 forms.backup_code.generate: Obtenir des codes
@@ -1631,7 +1631,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>Vous n’avez conf
 two_factor_authentication.choose_another_option: '‹ Choisir une autre méthode d’authentification'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - <strong>Les codes de sauvegarde sont la méthode d’authentification la moins recommandée,</strong> car les codes peuvent facilement se perdre. Essayez une option plus sûre, comme une application d’authentification ou une clé de sécurité.
-  - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
+  - Nous vous donnerons %{number_of_codes} codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
 two_factor_authentication.confirm_backup_code_setup_title: 'Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?'
 two_factor_authentication.form_legend: Choisissez vos méthodes d’authentification
 two_factor_authentication.header_text: Saisissez votre code à usage unique
@@ -1725,7 +1725,7 @@ two_factor_authentication.two_factor_choice: Configuration de la méthode d’au
 two_factor_authentication.two_factor_choice_options.auth_app: Application d’authentification
 two_factor_authentication.two_factor_choice_options.auth_app_info: Télécharger ou utiliser une appli d’authentification de votre choix pour générer des codes sécurisés.
 two_factor_authentication.two_factor_choice_options.backup_code: Codes de sauvegarde
-two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de 10 codes que vous pouvez imprimer ou enregistrer sur votre appareil. Lorsque vous utilisez le dernier code, nous générerons une nouvelle liste. Gardez à l’esprit que les codes de sauvegarde sont faciles à perdre.
+two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de %{count} codes que vous pouvez imprimer ou enregistrer sur votre appareil. Comme les codes de sauvegarde se perdent facilement, ne choisir cette option qu’en dernier recours.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Ajouté
