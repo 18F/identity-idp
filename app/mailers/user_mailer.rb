@@ -271,7 +271,12 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
       @privacy_url = MarketingSite.security_and_privacy_practices_url
-      @survey_url = IdentityConfig.store.in_person_completion_survey_url
+      if locale == :en
+        @survey_url = IdentityConfig.store.in_person_opt_in_available_completion_survey_url
+      else
+        @survey_url = IdentityConfig.store.in_person_completion_survey_url
+      end
+
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
