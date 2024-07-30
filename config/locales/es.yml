@@ -1039,6 +1039,7 @@ idv.failure.phone.rate_limited.body: Por motivos de seguridad, limitamos el núm
 idv.failure.phone.rate_limited.gpo.button: Verificar por correo
 idv.failure.phone.rate_limited.heading: No pudimos verificar su identidad por teléfono
 idv.failure.phone.rate_limited.option_try_again_later_html: Cancelar y empezar de nuevo en <strong>%{time_left}</strong>
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: Puede volver a intentarlo después de <strong>%{time_left}</strong>.
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Verificar por correo, lo que tarda de <strong>5 a 10 días</strong>
 idv.failure.phone.rate_limited.options_header: 'Usted puede:'
 idv.failure.phone.timeout: Terminó el tiempo de nuestra solicitud para verificar su información. Vuelva a intentarlo.
