@@ -8,7 +8,7 @@
 
 <div class="margin-y-4">
   <div class="grid-row">
-    <% [@codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
+    <% [@codes.first((@codes.length / 2.0).ceil), @codes.last(@codes.length / 2)].each do |section| %>
       <div class="grid-col-12 tablet:grid-col-6">
         <% section.each do |code| %>
           <div class="margin-bottom-2">
@@ -22,7 +22,7 @@
   </div>
 
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
-    <%= t('forms.backup_code.caution_codes') %>
+    <%= t('forms.backup_code.caution_codes', count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES)) %>
   <% end %>
 
   <div class="margin-top-1">
