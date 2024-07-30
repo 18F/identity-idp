@@ -17,6 +17,7 @@
 aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
+aamva_state_daily_maintenance_windows: '{"DC": {"start_time": "00:00", "end_time": "06:00", "tz": "America/New_York"}, "KY": {"start_time": "02:50", "end_time": "06:40", "tz": "America/New_York"}}'
 aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","NV","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
