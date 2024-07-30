@@ -11,7 +11,7 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       it 'logs an event' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: session error visited',
           hash_including(type: action.to_s),
         ).once
@@ -28,8 +28,7 @@ RSpec.describe Idv::SessionErrorsController do
           expect(response).to have_http_status(204)
         end
         it 'does not log an event' do
-          expect(@analytics).not_to receive(:track_event).
-            with('IdV: session error visited', anything)
+          expect(@analytics).not_to have_logged_event('IdV: session error visited', anything)
           get action
         end
       end
@@ -45,7 +44,7 @@ RSpec.describe Idv::SessionErrorsController do
         expect(response).to redirect_to(idv_phone_url)
       end
       it 'does not log an event' do
-        expect(@analytics).not_to receive(:track_event).with(
+        expect(@analytics).not_to have_logged_event(
           'IdV: session error visited',
           hash_including(type: action.to_s),
         )
@@ -65,7 +64,7 @@ RSpec.describe Idv::SessionErrorsController do
         expect(response).to render_template(template)
       end
       it 'logs an event' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: session error visited',
           hash_including(type: action.to_s),
         ).once
@@ -82,8 +81,7 @@ RSpec.describe Idv::SessionErrorsController do
           expect(response).to have_http_status(204)
         end
         it 'does not log an event' do
-          expect(@analytics).not_to receive(:track_event).
-            with('IdV: session error visited', anything)
+          expect(@analytics).not_to have_logged_event('IdV: session error visited', anything)
           get action
         end
       end
@@ -96,7 +94,7 @@ RSpec.describe Idv::SessionErrorsController do
         expect(response).to redirect_to(new_user_session_url)
       end
       it 'does not log an event' do
-        expect(@analytics).not_to receive(:track_event).with(
+        expect(@analytics).not_to have_logged_event(
           'IdV: session error visited',
           hash_including(type: action.to_s),
         )
@@ -181,7 +179,7 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       it 'logs an event with attempts remaining' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
@@ -261,7 +259,7 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       it 'logs an event with attempts remaining' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
@@ -302,7 +300,7 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       it 'logs an event with attempts remaining' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: session error visited',
           hash_including(
             type: 'ssn_failure',
@@ -335,7 +333,7 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       it 'logs an event with attempts remaining' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'IdV: session error visited',
           hash_including(
             type: action.to_s,

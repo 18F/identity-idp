@@ -47,13 +47,12 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
         stub_sign_in
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).
-          with(
-            'WebAuthn Setup Visited',
-            platform_authenticator: false,
-            enabled_mfa_methods_count: 0,
-            in_account_creation_flow: false,
-          )
+        expect(@analytics).to have_logged_event(
+          'WebAuthn Setup Visited',
+          platform_authenticator: false,
+          enabled_mfa_methods_count: 0,
+          in_account_creation_flow: false,
+        )
 
         expect(controller.send(:mobile?)).to be false
 
@@ -344,7 +343,7 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
           allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
 
-          expect(@analytics).to receive(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication Setup',
             {
               enabled_mfa_methods_count: 0,

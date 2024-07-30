@@ -22,8 +22,9 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
       stub_analytics
       analytics_hash = { context: 'authentication' }
 
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: enter personal key visited', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: enter personal key visited', analytics_hash
+      )
 
       get :show
     end

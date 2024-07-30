@@ -19,7 +19,7 @@ RSpec.describe AccountReset::CancelController, allowed_extra_analytics: [:*] do
         request_id: 'fake-message-request-id',
       }
 
-      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
+      expect(@analytics).to have_logged_event('Account Reset: cancel', analytics_hash)
 
       post :create
     end
@@ -35,7 +35,7 @@ RSpec.describe AccountReset::CancelController, allowed_extra_analytics: [:*] do
         user_id: 'anonymous-uuid',
       }
 
-      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
+      expect(@analytics).to have_logged_event('Account Reset: cancel', analytics_hash)
       session[:cancel_token] = 'FOO'
 
       post :create
@@ -50,7 +50,7 @@ RSpec.describe AccountReset::CancelController, allowed_extra_analytics: [:*] do
         user_id: 'anonymous-uuid',
       }
 
-      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
+      expect(@analytics).to have_logged_event('Account Reset: cancel', analytics_hash)
 
       post :create
     end
@@ -94,8 +94,7 @@ RSpec.describe AccountReset::CancelController, allowed_extra_analytics: [:*] do
           token: { cancel_token_invalid: true },
         },
       }
-      expect(@analytics).to receive(:track_event).
-        with('Account Reset: cancel token validation', properties)
+      expect(@analytics).to have_logged_event('Account Reset: cancel token validation', properties)
 
       get :show, params: { token: 'FOO' }
 

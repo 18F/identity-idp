@@ -25,9 +25,10 @@ RSpec.describe Users::PhoneSetupController do
       end
 
       it 'renders the index view' do
-        expect(@analytics).to receive(:track_event).
-          with('User Registration: phone setup visited',
-               { enabled_mfa_methods_count: 0 })
+        expect(@analytics).to have_logged_event(
+          'User Registration: phone setup visited',
+          { enabled_mfa_methods_count: 0 },
+        )
         expect(NewPhoneForm).to receive(:new).with(
           user:,
           analytics: kind_of(Analytics),
@@ -83,8 +84,7 @@ RSpec.describe Users::PhoneSetupController do
         pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: phone setup', result)
+      expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
 
       post :create, params: {
         new_phone_form: {
@@ -161,8 +161,7 @@ RSpec.describe Users::PhoneSetupController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: phone setup', result)
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
 
         post(
           :create,
@@ -202,8 +201,7 @@ RSpec.describe Users::PhoneSetupController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: phone setup', result)
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
 
         post(
           :create,
@@ -242,8 +240,7 @@ RSpec.describe Users::PhoneSetupController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: phone setup', result)
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
 
         patch(
           :create,

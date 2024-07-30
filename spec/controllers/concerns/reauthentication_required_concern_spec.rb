@@ -62,7 +62,7 @@ RSpec.describe ReauthenticationRequiredConcern, type: :controller do
 
       it 'records analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'User 2FA Reauthentication Required',
           authenticated_at: travel_time.ago,
           auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,

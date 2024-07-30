@@ -34,11 +34,11 @@ RSpec.describe SignUp::PasswordsController do
       end
 
       it 'tracks analytics' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'User Registration: Email Confirmation',
           analytics_hash.merge({ error_details: nil }),
         )
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Password Creation',
           analytics_hash.merge({ request_id_present: false }),
         )

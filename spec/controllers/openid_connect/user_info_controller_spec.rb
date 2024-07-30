@@ -19,13 +19,14 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: bearer token authentication',
-               success: false,
-               client_id: nil,
-               ial: nil,
-               errors: hash_including(:access_token),
-               error_details: hash_including(:access_token))
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: bearer token authentication',
+          success: false,
+          client_id: nil,
+          ial: nil,
+          errors: hash_including(:access_token),
+          error_details: hash_including(:access_token),
+        )
 
         action
       end
@@ -43,13 +44,14 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: bearer token authentication',
-               success: false,
-               client_id: nil,
-               ial: nil,
-               errors: hash_including(:access_token),
-               error_details: hash_including(:access_token))
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: bearer token authentication',
+          success: false,
+          client_id: nil,
+          ial: nil,
+          errors: hash_including(:access_token),
+          error_details: hash_including(:access_token),
+        )
 
         action
       end
@@ -66,13 +68,14 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: bearer token authentication',
-               success: false,
-               errors: hash_including(:access_token),
-               client_id: nil,
-               ial: nil,
-               error_details: hash_including(:access_token))
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: bearer token authentication',
+          success: false,
+          errors: hash_including(:access_token),
+          client_id: nil,
+          ial: nil,
+          error_details: hash_including(:access_token),
+        )
 
         action
       end
@@ -127,7 +130,7 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: true,
           client_id: identity.service_provider,

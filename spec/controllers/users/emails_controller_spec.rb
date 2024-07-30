@@ -55,7 +55,7 @@ RSpec.describe Users::EmailsController do
       it 'sends email' do
         email = Faker::Internet.safe_email
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Add Email Requested',
           success: true,
           errors: {},
@@ -64,7 +64,7 @@ RSpec.describe Users::EmailsController do
           domain_name: email.split('@').last,
         )
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Resend Add Email Requested',
           { success: true },
         )
@@ -85,7 +85,7 @@ RSpec.describe Users::EmailsController do
 
     context 'no valid email exists in session' do
       it 'shows an error and redirects to add email page' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Resend Add Email Requested',
           { success: false },
         )

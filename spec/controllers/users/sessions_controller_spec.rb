@@ -18,7 +18,7 @@ RSpec.describe Users::SessionsController, devise: true do
   describe 'DELETE /logout' do
     it 'tracks a logout event' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'Logout Initiated',
         hash_including(
           sp_initiated: false,
@@ -491,8 +491,7 @@ RSpec.describe Users::SessionsController, devise: true do
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 
@@ -506,8 +505,7 @@ RSpec.describe Users::SessionsController, devise: true do
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
 
       request.env['HTTP_REFERER'] = '@@@'
       post :create, params: { user: { email: user.email, password: user.password } }
@@ -725,7 +723,7 @@ RSpec.describe Users::SessionsController, devise: true do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Sign in page visited',
           flash: 'hello',
         )

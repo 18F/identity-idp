@@ -54,10 +54,10 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
       it 'renders rate limited page' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form visited',
         ).once
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :verify_personal_key,
         ).once
@@ -104,7 +104,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
       it 'stores that the personal key was entered in the user session' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form submitted',
           errors: {},
           error_details: nil,
@@ -112,7 +112,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Personal key reactivation: Account reactivated with personal key',
         ).once
 
@@ -138,14 +138,14 @@ RSpec.describe Users::VerifyPersonalKeyController do
     context 'with rate limit reached' do
       it 'renders rate limited page' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form submitted',
           errors: { personal_key: ['Please fill in this field.', error_text] },
           error_details: { personal_key: { blank: true, personal_key: true } },
           success: false,
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :verify_personal_key,
         ).once

@@ -149,32 +149,30 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'tracks events' do
             stub_analytics
-            expect(@analytics).to receive(:track_event).
-              with(
-                'OIDC Logout Requested',
-                hash_including(
-                  success: true,
-                  client_id: service_provider.issuer,
-                  client_id_parameter_present: false,
-                  id_token_hint_parameter_present: true,
-                  errors: {},
-                  sp_initiated: true,
-                  oidc: true,
-                ),
-              )
-            expect(@analytics).to receive(:track_event).
-              with(
-                'Logout Initiated',
-                hash_including(
-                  success: true,
-                  client_id: service_provider.issuer,
-                  client_id_parameter_present: false,
-                  id_token_hint_parameter_present: true,
-                  errors: {},
-                  sp_initiated: true,
-                  oidc: true,
-                ),
-              )
+            expect(@analytics).to have_logged_event(
+              'OIDC Logout Requested',
+              hash_including(
+                success: true,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: false,
+                id_token_hint_parameter_present: true,
+                errors: {},
+                sp_initiated: true,
+                oidc: true,
+              ),
+            )
+            expect(@analytics).to have_logged_event(
+              'Logout Initiated',
+              hash_including(
+                success: true,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: false,
+                id_token_hint_parameter_present: true,
+                errors: {},
+                sp_initiated: true,
+                oidc: true,
+              ),
+            )
 
             action
           end
@@ -201,21 +199,20 @@ RSpec.describe OpenidConnect::LogoutController do
             errors = {
               redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
             }
-            expect(@analytics).to receive(:track_event).
-              with(
-                'OIDC Logout Requested',
-                hash_including(
-                  success: false,
-                  client_id: service_provider.issuer,
-                  client_id_parameter_present: false,
-                  id_token_hint_parameter_present: true,
-                  errors: errors,
-                  error_details: hash_including(*errors.keys),
-                  sp_initiated: true,
-                  oidc: true,
-                  saml_request_valid: nil,
-                ),
-              )
+            expect(@analytics).to have_logged_event(
+              'OIDC Logout Requested',
+              hash_including(
+                success: false,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: false,
+                id_token_hint_parameter_present: true,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                sp_initiated: true,
+                oidc: true,
+                saml_request_valid: nil,
+              ),
+            )
 
             action
           end
@@ -227,21 +224,20 @@ RSpec.describe OpenidConnect::LogoutController do
             stub_analytics
             errors_keys = [:id_token_hint]
 
-            expect(@analytics).to receive(:track_event).
-              with(
-                'OIDC Logout Requested',
-                hash_including(
-                  success: false,
-                  client_id: nil,
-                  client_id_parameter_present: false,
-                  id_token_hint_parameter_present: true,
-                  errors: hash_including(*errors_keys),
-                  error_details: hash_including(*errors_keys),
-                  sp_initiated: true,
-                  oidc: true,
-                  saml_request_valid: nil,
-                ),
-              )
+            expect(@analytics).to have_logged_event(
+              'OIDC Logout Requested',
+              hash_including(
+                success: false,
+                client_id: nil,
+                client_id_parameter_present: false,
+                id_token_hint_parameter_present: true,
+                errors: hash_including(*errors_keys),
+                error_details: hash_including(*errors_keys),
+                sp_initiated: true,
+                oidc: true,
+                saml_request_valid: nil,
+              ),
+            )
             action
           end
         end
@@ -295,32 +291,30 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'renders logout confirmation page' do
             stub_analytics
-            expect(@analytics).to receive(:track_event).
-              with(
-                'OIDC Logout Requested',
-                hash_including(
-                  success: true,
-                  client_id: service_provider.issuer,
-                  client_id_parameter_present: true,
-                  id_token_hint_parameter_present: false,
-                  errors: {},
-                  sp_initiated: true,
-                  oidc: true,
-                ),
-              )
-            expect(@analytics).to receive(:track_event).
-              with(
-                'OIDC Logout Page Visited',
-                hash_including(
-                  success: true,
-                  client_id: service_provider.issuer,
-                  client_id_parameter_present: true,
-                  id_token_hint_parameter_present: false,
-                  errors: {},
-                  sp_initiated: true,
-                  oidc: true,
-                ),
-              )
+            expect(@analytics).to have_logged_event(
+              'OIDC Logout Requested',
+              hash_including(
+                success: true,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: false,
+                errors: {},
+                sp_initiated: true,
+                oidc: true,
+              ),
+            )
+            expect(@analytics).to have_logged_event(
+              'OIDC Logout Page Visited',
+              hash_including(
+                success: true,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: false,
+                errors: {},
+                sp_initiated: true,
+                oidc: true,
+              ),
+            )
 
             action
             expect(response).to render_template(:confirm_logout)
@@ -349,21 +343,20 @@ RSpec.describe OpenidConnect::LogoutController do
             errors = {
               redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
             }
-            expect(@analytics).to receive(:track_event).
-              with(
-                'OIDC Logout Requested',
-                hash_including(
-                  success: false,
-                  client_id: service_provider.issuer,
-                  client_id_parameter_present: true,
-                  id_token_hint_parameter_present: false,
-                  errors: errors,
-                  error_details: hash_including(*errors.keys),
-                  sp_initiated: true,
-                  oidc: true,
-                  saml_request_valid: nil,
-                ),
-              )
+            expect(@analytics).to have_logged_event(
+              'OIDC Logout Requested',
+              hash_including(
+                success: false,
+                client_id: service_provider.issuer,
+                client_id_parameter_present: true,
+                id_token_hint_parameter_present: false,
+                errors: errors,
+                error_details: hash_including(*errors.keys),
+                sp_initiated: true,
+                oidc: true,
+                saml_request_valid: nil,
+              ),
+            )
 
             action
           end
@@ -425,33 +418,31 @@ RSpec.describe OpenidConnect::LogoutController do
 
         it 'tracks events' do
           stub_analytics
-          expect(@analytics).to receive(:track_event).
-            with(
-              'OIDC Logout Requested',
-              hash_including(
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: false,
-                errors: {},
-                sp_initiated: true,
-                oidc: true,
-              ),
-            )
+          expect(@analytics).to have_logged_event(
+            'OIDC Logout Requested',
+            hash_including(
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: false,
+              errors: {},
+              sp_initiated: true,
+              oidc: true,
+            ),
+          )
 
-          expect(@analytics).to receive(:track_event).
-            with(
-              'OIDC Logout Page Visited',
-              hash_including(
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: false,
-                errors: {},
-                sp_initiated: true,
-                oidc: true,
-              ),
-            )
+          expect(@analytics).to have_logged_event(
+            'OIDC Logout Page Visited',
+            hash_including(
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: false,
+              errors: {},
+              sp_initiated: true,
+              oidc: true,
+            ),
+          )
 
           action
         end
@@ -478,21 +469,20 @@ RSpec.describe OpenidConnect::LogoutController do
           errors = {
             id_token_hint: [t('openid_connect.logout.errors.id_token_hint_present')],
           }
-          expect(@analytics).to receive(:track_event).
-            with(
-              'OIDC Logout Requested',
-              hash_including(
-                success: false,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: true,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
-                sp_initiated: true,
-                oidc: true,
-                saml_request_valid: nil,
-              ),
-            )
+          expect(@analytics).to have_logged_event(
+            'OIDC Logout Requested',
+            hash_including(
+              success: false,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: true,
+              errors: errors,
+              error_details: hash_including(*errors.keys),
+              sp_initiated: true,
+              oidc: true,
+              saml_request_valid: nil,
+            ),
+          )
 
           action
         end
@@ -519,21 +509,20 @@ RSpec.describe OpenidConnect::LogoutController do
           errors = {
             redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
           }
-          expect(@analytics).to receive(:track_event).
-            with(
-              'OIDC Logout Requested',
-              hash_including(
-                success: false,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: false,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
-                sp_initiated: true,
-                oidc: true,
-                saml_request_valid: nil,
-              ),
-            )
+          expect(@analytics).to have_logged_event(
+            'OIDC Logout Requested',
+            hash_including(
+              success: false,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: false,
+              errors: errors,
+              error_details: hash_including(*errors.keys),
+              sp_initiated: true,
+              oidc: true,
+              saml_request_valid: nil,
+            ),
+          )
 
           action
         end
@@ -787,34 +776,32 @@ RSpec.describe OpenidConnect::LogoutController do
           it 'tracks events' do
             stub_analytics
 
-            expect(@analytics).to receive(:track_event).
-              with(
-                'OIDC Logout Submitted',
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: false,
-                errors: {},
-                error_details: nil,
-                sp_initiated: true,
-                oidc: true,
-                method: nil,
-                saml_request_valid: nil,
-              )
-            expect(@analytics).to receive(:track_event).
-              with(
-                'Logout Initiated',
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: false,
-                errors: {},
-                error_details: nil,
-                sp_initiated: true,
-                oidc: true,
-                method: nil,
-                saml_request_valid: nil,
-              )
+            expect(@analytics).to have_logged_event(
+              'OIDC Logout Submitted',
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: false,
+              errors: {},
+              error_details: nil,
+              sp_initiated: true,
+              oidc: true,
+              method: nil,
+              saml_request_valid: nil,
+            )
+            expect(@analytics).to have_logged_event(
+              'Logout Initiated',
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: false,
+              errors: {},
+              error_details: nil,
+              sp_initiated: true,
+              oidc: true,
+              method: nil,
+              saml_request_valid: nil,
+            )
 
             action
           end

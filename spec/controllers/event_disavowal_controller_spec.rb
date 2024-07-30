@@ -16,7 +16,7 @@ RSpec.describe EventDisavowalController do
   describe '#new' do
     context 'with a valid disavowal_token' do
       it 'tracks an analytics event' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal visited',
           build_analytics_hash,
         )
@@ -25,7 +25,7 @@ RSpec.describe EventDisavowalController do
       end
 
       it 'assigns forbidden passwords' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal visited',
           build_analytics_hash,
         )
@@ -40,7 +40,7 @@ RSpec.describe EventDisavowalController do
       it 'tracks an analytics event' do
         event.update!(disavowed_at: Time.zone.now)
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
@@ -54,7 +54,7 @@ RSpec.describe EventDisavowalController do
       it 'does not assign forbidden passwords' do
         event.update!(disavowed_at: Time.zone.now)
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
@@ -72,7 +72,7 @@ RSpec.describe EventDisavowalController do
   describe '#create' do
     context 'with a valid password' do
       it 'tracks an analytics event' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
           build_analytics_hash,
         )
@@ -86,7 +86,7 @@ RSpec.describe EventDisavowalController do
 
     context 'with an invalid password' do
       it 'tracks an analytics event' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
           build_analytics_hash(
             success: false,
@@ -109,7 +109,7 @@ RSpec.describe EventDisavowalController do
       end
 
       it 'assigns forbidden passwords' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
           build_analytics_hash(
             success: false,
@@ -132,7 +132,7 @@ RSpec.describe EventDisavowalController do
       it 'tracks an analytics event' do
         event.update!(disavowed_at: Time.zone.now)
 
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
@@ -155,7 +155,7 @@ RSpec.describe EventDisavowalController do
       end
 
       it 'errors' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
             success: false,

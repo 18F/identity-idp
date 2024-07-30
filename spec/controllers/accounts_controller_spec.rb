@@ -73,7 +73,7 @@ RSpec.describe AccountsController do
 
         sign_in user
 
-        expect(@analytics).to receive(:track_event).with('Account Page Visited')
+        expect(@analytics).to have_logged_event('Account Page Visited')
 
         get :show
 

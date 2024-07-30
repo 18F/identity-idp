@@ -25,7 +25,7 @@ RSpec.describe SignOutController do
       allow(controller.decorated_sp_session).to receive(:cancel_link_url).and_return('foo')
 
       expect(@analytics).
-        to receive(:track_event).with('Logout Initiated', hash_including(method: 'cancel link'))
+        to have_logged_event('Logout Initiated', hash_including(method: 'cancel link'))
 
       get :destroy
     end

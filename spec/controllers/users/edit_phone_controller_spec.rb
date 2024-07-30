@@ -21,8 +21,7 @@ RSpec.describe Users::EditPhoneController do
           phone_configuration_id: phone_configuration.id,
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Phone Number Change: Form submitted', attributes)
+        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
 
         put :update, params: {
           id: phone_configuration.id,
@@ -45,8 +44,7 @@ RSpec.describe Users::EditPhoneController do
           phone_configuration_id: phone_configuration.id,
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Phone Number Change: Form submitted', attributes)
+        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
         put :update, params: {
           id: phone_configuration.id,
           edit_phone_form: { delivery_preference: 'noise' },
@@ -71,8 +69,7 @@ RSpec.describe Users::EditPhoneController do
         phone_configuration_id: phone_configuration.id,
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('Phone Number Deletion: Submitted', attributes)
+      expect(@analytics).to have_logged_event('Phone Number Deletion: Submitted', attributes)
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
       delete :destroy, params: { id: phone_configuration.id }

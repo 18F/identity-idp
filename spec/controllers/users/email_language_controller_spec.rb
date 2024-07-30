@@ -27,7 +27,7 @@ RSpec.describe Users::EmailLanguageController do
 
     it 'logs an analytics event for visiting' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('Email Language: Visited')
+      expect(@analytics).to have_logged_event('Email Language: Visited')
 
       action
     end
@@ -55,8 +55,10 @@ RSpec.describe Users::EmailLanguageController do
 
       it 'logs a successful analytics event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('Email Language: Updated', hash_including(success: true))
+        expect(@analytics).to have_logged_event(
+          'Email Language: Updated',
+          hash_including(success: true),
+        )
 
         action
       end
@@ -78,8 +80,10 @@ RSpec.describe Users::EmailLanguageController do
 
       it 'logs an unsuccessful analytics event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('Email Language: Updated', hash_including(success: false))
+        expect(@analytics).to have_logged_event(
+          'Email Language: Updated',
+          hash_including(success: false),
+        )
 
         action
       end

@@ -177,7 +177,7 @@ RSpec.describe FrontendLogController do
         end
 
         it 'logs the analytics event' do
-          expect(fake_analytics).to receive(:track_event).with(
+          expect(fake_analytics).to have_logged_event(
             'IdV: Native camera forced after failed attempts',
             field: field,
             failed_capture_attempts: failed_capture_attempts,

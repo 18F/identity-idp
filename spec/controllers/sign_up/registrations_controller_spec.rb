@@ -28,7 +28,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
     it 'tracks visit event' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('User Registration: enter email visited')
+      expect(@analytics).to have_logged_event('User Registration: enter email visited')
 
       get :new
     end
@@ -37,7 +37,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       it 'tracks visit event' do
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with('User Registration: enter email visited')
+        expect(@analytics).to have_logged_event('User Registration: enter email visited')
 
         get :new
       end

@@ -33,7 +33,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         account_confirmed_at: user.confirmed_at,
       }
       expect(@analytics).
-        to receive(:track_event).with('Account Reset: delete', properties)
+        to have_logged_event('Account Reset: delete', properties)
 
       delete :delete
 
@@ -52,7 +52,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
+      expect(@analytics).to have_logged_event('Account Reset: delete', properties)
 
       delete :delete
 
@@ -71,7 +71,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         account_age_in_days: 0,
         account_confirmed_at: kind_of(Time),
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
+      expect(@analytics).to have_logged_event('Account Reset: delete', properties)
 
       delete :delete
 
@@ -97,7 +97,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         account_age_in_days: 2,
         account_confirmed_at: kind_of(Time),
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
+      expect(@analytics).to have_logged_event('Account Reset: delete', properties)
 
       travel_to(Time.zone.now + 2.days) do
         session[:granted_token] = AccountResetRequest.first.granted_token
@@ -119,8 +119,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
       }
-      expect(@analytics).to receive(:track_event).
-        with('Account Reset: granted token validation', properties)
+      expect(@analytics).to have_logged_event('Account Reset: granted token validation', properties)
 
       get :show, params: { token: 'FOO' }
 
@@ -139,8 +138,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
         error_details: { token: { granted_token_expired: true } },
       }
-      expect(@analytics).to receive(:track_event).
-        with('Account Reset: granted token validation', properties)
+      expect(@analytics).to have_logged_event('Account Reset: granted token validation', properties)
 
       travel_to(Time.zone.now + 2.days) do
         get :show, params: { token: AccountResetRequest.first.granted_token }

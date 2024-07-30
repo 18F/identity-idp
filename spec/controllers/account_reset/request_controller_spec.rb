@@ -29,7 +29,7 @@ RSpec.describe AccountReset::RequestController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('Account deletion and reset visited')
+      expect(@analytics).to have_logged_event('Account deletion and reset visited')
 
       get :show
     end
@@ -106,7 +106,7 @@ RSpec.describe AccountReset::RequestController do
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
+      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
 
       post :create
     end
@@ -126,7 +126,7 @@ RSpec.describe AccountReset::RequestController do
         message_id: 'fake-message-id',
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
+      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
 
       post :create
     end
@@ -144,7 +144,7 @@ RSpec.describe AccountReset::RequestController do
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
+      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
 
       post :create
     end

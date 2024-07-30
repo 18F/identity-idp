@@ -16,8 +16,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks nil email confirmation token' do
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_token_error_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_token_error_hash,
+      )
 
       get :create, params: { confirmation_token: nil }
 
@@ -26,8 +28,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks blank email confirmation token' do
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_token_error_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_token_error_hash,
+      )
 
       get :create, params: { confirmation_token: '' }
 
@@ -36,8 +40,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_token_error_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_token_error_hash,
+      )
 
       get :create, params: { confirmation_token: "''" }
 
@@ -46,8 +52,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_token_error_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_token_error_hash,
+      )
 
       get :create, params: { confirmation_token: '""' }
 
@@ -65,8 +73,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user_id: email_address.user.uuid,
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_hash,
+      )
 
       get :create, params: { confirmation_token: 'foo' }
     end
@@ -89,8 +99,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user_id: email_address.user.uuid,
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_hash,
+      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -115,8 +127,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user_id: user.uuid,
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_hash,
+      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -183,8 +197,10 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user_id: user.uuid,
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Confirmation', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Confirmation',
+        analytics_hash,
+      )
 
       get :create, params: { confirmation_token: 'foo' }
     end

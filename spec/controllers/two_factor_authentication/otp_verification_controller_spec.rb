@@ -62,8 +62,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         in_account_creation_flow: false,
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: enter OTP visited', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: enter OTP visited',
+        analytics_hash,
+      )
 
       get :show, params: { otp_delivery_preference: 'sms' }
     end

@@ -28,8 +28,7 @@ RSpec.describe Users::PersonalKeysController do
       stub_analytics
       analytics_hash = { personal_key_present: true }
 
-      expect(@analytics).to receive(:track_event).
-        with('Personal key viewed', analytics_hash)
+      expect(@analytics).to have_logged_event('Personal key viewed', analytics_hash)
 
       get :show
     end
@@ -39,8 +38,7 @@ RSpec.describe Users::PersonalKeysController do
       stub_analytics
       analytics_hash = { personal_key_present: false }
 
-      expect(@analytics).to receive(:track_event).
-        with('Personal key viewed', analytics_hash)
+      expect(@analytics).to have_logged_event('Personal key viewed', analytics_hash)
 
       get :show
     end
@@ -124,8 +122,7 @@ RSpec.describe Users::PersonalKeysController do
       }
       allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
 
       post :update
 

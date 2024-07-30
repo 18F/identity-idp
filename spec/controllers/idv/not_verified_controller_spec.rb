@@ -10,7 +10,7 @@ RSpec.describe Idv::NotVerifiedController do
   it 'renders the show template' do
     stub_analytics
 
-    expect(@analytics).to receive(:track_event).with(
+    expect(@analytics).to have_logged_event(
       'IdV: Not verified visited',
     )
 

@@ -16,7 +16,7 @@ RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] d
       stub_sign_in(create(:user, :with_phone))
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('Profile: Visited new personal key')
+      expect(@analytics).to have_logged_event('Profile: Visited new personal key')
 
       get :new
     end
@@ -32,8 +32,8 @@ RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] d
         with(subject.current_user).and_return(generator)
 
       expect(generator).to receive(:create)
-      expect(@analytics).to receive(:track_event).with('Profile: Created new personal key')
-      expect(@analytics).to receive(:track_event).with(
+      expect(@analytics).to have_logged_event('Profile: Created new personal key')
+      expect(@analytics).to have_logged_event(
         'Profile: Created new personal key notifications',
         hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
       )
@@ -53,8 +53,7 @@ RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] d
       }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
 
       post :create
 

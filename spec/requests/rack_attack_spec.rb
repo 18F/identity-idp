@@ -254,7 +254,7 @@ RSpec.describe 'throttling requests' do
 
         Rack::Attack::SIGN_IN_PATHS.each do |path|
           expect(analytics).
-            to receive(:track_event).with('Rate Limit Triggered', type: 'logins/ip').once
+            to have_logged_event('Rate Limit Triggered', type: 'logins/ip').once
           headers = { REMOTE_ADDR: '1.2.3.4' }
           first_email = 'test1@example.com'
           second_email = 'test2@example.com'
@@ -321,7 +321,7 @@ RSpec.describe 'throttling requests' do
 
         Rack::Attack::SIGN_IN_PATHS.each do |path|
           expect(analytics).
-            to receive(:track_event).with('Rate Limit Triggered', analytics_hash).once
+            to have_logged_event('Rate Limit Triggered', analytics_hash).once
           (logins_per_email_and_ip_limit + 1).times do |index|
             post path, params: {
               user: { email: index.even? ? 'test@example.com' : ' test@EXAMPLE.com   ' },
@@ -388,7 +388,7 @@ RSpec.describe 'throttling requests' do
           fourth_email = 'test4@example.com'
 
           expect(analytics).
-            to receive(:track_event).with(
+            to have_logged_event(
               'Rate Limit Triggered',
               type: 'email_registrations/ip',
             )

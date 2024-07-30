@@ -136,8 +136,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         errors: {},
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: 2FA Setup', result)
+      expect(@analytics).to have_logged_event('User Registration: 2FA Setup', result)
 
       patch :create, params: {
         two_factor_options_form: {

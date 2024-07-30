@@ -7,7 +7,7 @@ RSpec.describe SignUp::CancellationsController do
       stub_analytics
       properties = { request_came_from: 'no referer' }
 
-      expect(@analytics).to receive(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'User registration: cancellation visited', properties
       )
 
@@ -20,7 +20,7 @@ RSpec.describe SignUp::CancellationsController do
       request.env['HTTP_REFERER'] = 'http://example.com/'
       properties = { request_came_from: 'users/sessions#new' }
 
-      expect(@analytics).to receive(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'User registration: cancellation visited', properties
       )
 
@@ -110,7 +110,7 @@ RSpec.describe SignUp::CancellationsController do
       stub_analytics
       properties = { request_came_from: 'no referer' }
 
-      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
+      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
 
       delete :destroy
     end
@@ -122,7 +122,7 @@ RSpec.describe SignUp::CancellationsController do
       request.env['HTTP_REFERER'] = 'http://example.com/'
       properties = { request_came_from: 'users/sessions#new' }
 
-      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
+      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
 
       delete :destroy
     end
