@@ -1039,6 +1039,7 @@ idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网�
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: 您可以在<strong>%{time_left}</strong>后重试。
 idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
