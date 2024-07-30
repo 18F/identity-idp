@@ -85,13 +85,6 @@ RSpec.describe Users::VerifyPersonalKeyController do
     let(:personal_key_bad_params) { { personal_key: 'baaad' } }
     let(:personal_key_error) { { personal_key: [error_text] } }
     let(:failure_properties) { { success: false } }
-    let(:pii_like_keypaths_errors) do
-      [
-        [:errors, :personal_key],
-        [:error_details, :personal_key],
-        [:error_details, :personal_key, :personal_key],
-      ]
-    end
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }
     let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
 
@@ -112,7 +105,6 @@ RSpec.describe Users::VerifyPersonalKeyController do
           errors: {},
           error_details: nil,
           success: true,
-          pii_like_keypaths: pii_like_keypaths_errors,
         )
         expect(@analytics).to have_logged_event(
           'Personal key reactivation: Account reactivated with personal key',
@@ -146,7 +138,6 @@ RSpec.describe Users::VerifyPersonalKeyController do
           errors: { personal_key: ['Please fill in this field.', error_text] },
           error_details: { personal_key: { blank: true, personal_key: true } },
           success: false,
-          pii_like_keypaths: pii_like_keypaths_errors,
         )
         expect(@analytics).to have_logged_event(
           'Rate Limit Reached',

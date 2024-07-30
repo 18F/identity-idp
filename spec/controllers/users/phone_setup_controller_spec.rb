@@ -80,7 +80,6 @@ RSpec.describe Users::PhoneSetupController do
         country_code: nil,
         phone_type: :mobile,
         types: [],
-        pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
       }
 
       post :create, params: {
@@ -156,7 +155,6 @@ RSpec.describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         post(
@@ -195,7 +193,6 @@ RSpec.describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         post(
@@ -233,7 +230,6 @@ RSpec.describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
-          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         patch(

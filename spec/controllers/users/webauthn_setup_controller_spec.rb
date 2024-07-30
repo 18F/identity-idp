@@ -356,7 +356,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
               in_account_creation_flow: false,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',
-              pii_like_keypaths: [[:mfa_method_counts, :phone]],
               success: false,
             },
           )
