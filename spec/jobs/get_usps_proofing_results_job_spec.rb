@@ -3,9 +3,10 @@ require 'rails_helper'
 RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
                                                             email_type:,
                                                             enrollment_status:,
-                                                            response_json:|
+                                                            response_json:,
+                                                            enhanced_ipp_enrollment: false|
 
-  it 'logs a message with common attributes' do
+  it 'logs an enrollment status update analytics event' do
     date_far_from_daylight_savings_changes = Time.zone.parse('2023-11-30T10:00:00Z')
     travel_to date_far_from_daylight_savings_changes do
       pending_enrollment.update(
@@ -45,6 +46,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         transaction_start_date_time: anything,
         job_name: 'GetUspsProofingResultsJob',
         tmx_status: :threatmetrix_pass,
+        enhanced_ipp: enhanced_ipp_enrollment,
       )
     end
   end
@@ -689,6 +691,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   reason: 'Successful status update',
                   passed: true,
                   job_name: 'GetUspsProofingResultsJob',
+                  enhanced_ipp: false,
                 ),
               )
               expect(job_analytics).to have_logged_event(
@@ -732,6 +735,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   passed: false,
                   reason: 'Failed status',
                   job_name: 'GetUspsProofingResultsJob',
+                  enhanced_ipp: false,
                 ),
               )
               expect(job_analytics).to have_logged_event(
@@ -776,6 +780,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   passed: false,
                   reason: 'Failed status',
                   job_name: 'GetUspsProofingResultsJob',
+                  enhanced_ipp: false,
                 ),
               )
               expect(job_analytics).to have_logged_event(
@@ -819,6 +824,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   passed: false,
                   reason: 'Unsupported ID type',
                   job_name: 'GetUspsProofingResultsJob',
+                  enhanced_ipp: false,
                 ),
               )
 
@@ -859,6 +865,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   transaction_end_date_time: nil,
                   transaction_start_date_time: nil,
                   job_name: 'GetUspsProofingResultsJob',
+                  enhanced_ipp: false,
                 ),
               )
             end
@@ -912,6 +919,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   passed: false,
                   reason: 'Enrollment has expired',
                   job_name: 'GetUspsProofingResultsJob',
+                  enhanced_ipp: false,
                 ),
               )
 
@@ -1306,6 +1314,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                       passed: true,
                       reason: 'Passed with fraud pending',
                       job_name: 'GetUspsProofingResultsJob',
+                      enhanced_ipp: false,
                     ),
                   )
                 end
@@ -1397,6 +1406,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   passed: false,
                   reason: 'Provided secondary proof of address',
                   job_name: 'GetUspsProofingResultsJob',
+                  enhanced_ipp: false,
                 ),
               )
             end
@@ -1498,24 +1508,28 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
       end
 
       describe 'Enhanced In-Person Proofing' do
+        let!(:pending_enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            :with_notification_phone_configuration,
+            issuer: 'http://localhost:3000',
+            selected_location_details: { name: 'BALTIMORE' },
+            sponsor_id: usps_eipp_sponsor_id,
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
         context <<~STR.squish do
           When an Enhanced IPP enrollment passess proofing
           with unsupported ID,enrollment by-passes the
           Primary ID check and
         STR
-          let!(:pending_enrollment) do
-            create(
-              :in_person_enrollment,
-              :pending,
-              :with_notification_phone_configuration,
-              issuer: 'http://localhost:3000',
-              selected_location_details: { name: 'BALTIMORE' },
-              sponsor_id: usps_eipp_sponsor_id,
-            )
-          end
 
           before do
-            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
             stub_request_passed_proofing_unsupported_id_results
           end
 
@@ -1526,6 +1540,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             enrollment_status: InPersonEnrollment::STATUS_PASSED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_unsupported_id_results_response,
+            enhanced_ipp_enrollment: true,
           )
 
           it 'invokes the SendProofingNotificationJob and logs details about the success' do
@@ -1548,6 +1563,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                 reason: 'Successful status update',
                 passed: true,
                 job_name: 'GetUspsProofingResultsJob',
+                enhanced_ipp: true,
               ),
             )
             expect(job_analytics).to have_logged_event(
@@ -1560,6 +1576,22 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               job_name: 'GetUspsProofingResultsJob',
             )
           end
+        end
+
+        context 'By passes the Secondary ID check when enrollment is Enhanced IPP' do
+          before do
+            stub_request_passed_proofing_secondary_id_type_results_ial_2
+          end
+
+          it_behaves_like(
+            'enrollment_with_a_status_update',
+            passed: true,
+            email_type: 'Success',
+            enrollment_status: InPersonEnrollment::STATUS_PASSED,
+            response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_passed_proofing_secondary_id_type_results_response_ial_2,
+            enhanced_ipp_enrollment: true,
+          )
         end
       end
     end

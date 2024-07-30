@@ -10,6 +10,7 @@ module Idv
 
       before_action :confirm_mail_not_rate_limited
       before_action :confirm_step_allowed
+      before_action :confirm_letter_sends_allowed
 
       def index
         @applicant = idv_session.applicant
@@ -33,7 +34,7 @@ module Idv
           action: :index,
           next_steps: [:enter_password],
           preconditions: ->(idv_session:, user:) do
-            idv_session.verify_info_step_complete? || user.gpo_verification_pending_profile?
+            idv_session.verify_info_step_complete?
           end,
           undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
         )
@@ -53,6 +54,10 @@ module Idv
 
       def confirm_mail_not_rate_limited
         redirect_to idv_enter_password_url if gpo_verify_by_mail_policy.rate_limited?
+      end
+
+      def confirm_letter_sends_allowed
+        redirect_to idv_enter_password_url if !gpo_verify_by_mail_policy.send_letter_available?
       end
 
       def step_indicator_steps

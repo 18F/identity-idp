@@ -72,7 +72,7 @@ module Users
     end
 
     def process_locked_out_session
-      warden.logout(:user)
+      sign_out(:user)
       warden.lock!
 
       flash[:error] = t(
@@ -99,10 +99,9 @@ module Users
     end
 
     def process_failed_captcha
-      flash[:error] = t('errors.messages.invalid_recaptcha_token')
-      warden.logout(:user)
+      sign_out(:user)
       warden.lock!
-      redirect_to root_url
+      redirect_to sign_in_security_check_failed_url
     end
 
     def recaptcha_form_args
@@ -158,9 +157,9 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
-      check_password_compromised
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
+      check_password_compromised
       redirect_to next_url_after_valid_authentication
     end
 
@@ -176,6 +175,7 @@ module Users
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
+        new_device: success ? new_device? : nil,
       )
     end
 
@@ -243,7 +243,7 @@ module Users
       return if current_user.password_compromised_checked_at.present? ||
                 !eligible_for_password_lookup?
 
-      session[:redirect_to_password_compromised] =
+      session[:redirect_to_change_password] =
         PwnedPasswords::LookupPassword.call(auth_params[:password])
       update_user_password_compromised_checked_at
     end

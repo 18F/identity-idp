@@ -9,17 +9,22 @@ module Users
     before_action :confirm_recently_authenticated_2fa
 
     def edit
-      analytics.edit_password_visit
-      @update_user_password_form = UpdateUserPasswordForm.new(current_user)
-      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
-        ForbiddenPasswords.new(email_address.email).call
-      end
+      @update_password_presenter = UpdatePasswordPresenter.new(
+        user: current_user,
+        required_password_change: required_password_change?,
+      )
+      analytics.edit_password_visit(required_password_change: required_password_change?)
+      @update_user_password_form = UpdateUserPasswordForm.new(user: current_user)
     end
 
     def update
-      @update_user_password_form = UpdateUserPasswordForm.new(current_user, user_session)
+      @update_user_password_form = UpdateUserPasswordForm.new(
+        user: current_user,
+        user_session: user_session,
+        required_password_change: required_password_change?,
+      )
 
-      result = @update_user_password_form.submit(user_params)
+      result = @update_user_password_form.submit(user_password_params)
 
       analytics.password_changed(**result.to_h)
 
@@ -39,8 +44,8 @@ module Users
       redirect_to capture_password_url
     end
 
-    def user_params
-      params.require(:update_user_password_form).permit(:password, :password_confirmation)
+    def required_password_change?
+      session[:redirect_to_change_password] == true
     end
 
     def handle_valid_password
@@ -54,9 +59,25 @@ module Users
       if @update_user_password_form.personal_key.present?
         user_session[:personal_key] = @update_user_password_form.personal_key
         redirect_to manage_personal_key_url
+      elsif required_password_change?
+        session.delete(:redirect_to_change_password)
+        redirect_to after_sign_in_path_for(current_user)
       else
-        redirect_to account_url
+        redirect_to account_path
       end
+    end
+
+    def handle_invalid_password
+      # If the form is submitted with a password that's too short (based on
+      # our Devise config) but that zxcvbn treats as strong enough, then we
+      # need to provide our custom forbidden passwords data that zxcvbn needs,
+      # otherwise the JS will throw an exception and the password strength
+      # meter will not appear.
+      @update_password_presenter = UpdatePasswordPresenter.new(
+        user: current_user,
+        required_password_change: required_password_change?,
+      )
+      render :edit
     end
 
     def send_password_reset_risc_event
@@ -69,16 +90,8 @@ module Users
       UserAlerts::AlertUserAboutPasswordChange.call(current_user, disavowal_token)
     end
 
-    def handle_invalid_password
-      # If the form is submitted with a password that's too short (based on
-      # our Devise config) but that zxcvbn treats as strong enough, then we
-      # need to provide our custom forbidden passwords data that zxcvbn needs,
-      # otherwise the JS will throw an exception and the password strength
-      # meter will not appear.
-      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
-        ForbiddenPasswords.new(email_address.email).call
-      end
-      render :edit
+    def user_password_params
+      params.require(:update_user_password_form).permit(:password, :password_confirmation)
     end
   end
 end

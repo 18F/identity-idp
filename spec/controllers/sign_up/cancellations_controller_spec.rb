@@ -74,7 +74,7 @@ RSpec.describe SignUp::CancellationsController do
     it 'redirects if confirmation_token is expired' do
       confirmation_token = '1'
       invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
 
       create(
         :user, email_addresses: [

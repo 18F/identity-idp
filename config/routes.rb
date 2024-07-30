@@ -53,11 +53,6 @@ Rails.application.routes.draw do
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
 
-  get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  get '/openid_connect/logout' => 'openid_connect/logout#show'
-  post '/openid_connect/logout' => 'openid_connect/logout#create'
-  delete '/openid_connect/logout' => 'openid_connect/logout#delete'
-
   get '/robots.txt' => 'robots#index'
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 
@@ -142,8 +137,6 @@ Rails.application.routes.draw do
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
-      get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
-      post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
       get 'login/piv_cac_recommended' => 'users/piv_cac_recommended#show'
       post 'login/piv_cac_recommended/add' => 'users/piv_cac_recommended#confirm'
       post 'login/piv_cac_recommended/skip' => 'users/piv_cac_recommended#skip'
@@ -189,6 +182,8 @@ Rails.application.routes.draw do
           as: :test_device_profiling_iframe
       post '/test/device_profiling' => 'test/device_profiling#create'
     end
+
+    get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
@@ -275,6 +270,11 @@ Rails.application.routes.draw do
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
+    get '/openid_connect/authorize' => 'openid_connect/authorization#index'
+    get '/openid_connect/logout' => 'openid_connect/logout#show'
+    post '/openid_connect/logout' => 'openid_connect/logout#create'
+    delete '/openid_connect/logout' => 'openid_connect/logout#delete'
+
     get '/otp/send' => 'users/two_factor_authentication#send_code'
 
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
@@ -295,7 +295,6 @@ Rails.application.routes.draw do
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
     get '/user_please_call' => 'users/please_call#show'
-    get '/user_password_compromised' => 'users/password_compromised#show'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',

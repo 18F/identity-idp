@@ -53,6 +53,17 @@ RSpec.describe SignUp::PasswordsController do
         expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
         expect(user.confirmed?).to eq true
       end
+
+      it 'initializes user session' do
+        response
+
+        expect(controller.user_session).to match(
+          'unique_session_id' => kind_of(String),
+          'last_request_at' => kind_of(Numeric),
+          new_device: false,
+          in_account_creation_flow: true,
+        )
+      end
     end
 
     context 'with an invalid password' do
@@ -130,7 +141,7 @@ RSpec.describe SignUp::PasswordsController do
     context 'with an with an invalid confirmation_token' do
       let(:token) { 'new token' }
       let(:invalid_confirmation_sent_at) do
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
       end
       let!(:user) do
         create(
@@ -161,7 +172,7 @@ RSpec.describe SignUp::PasswordsController do
 
     it 'rejects when confirmation_token is invalid' do
       invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
       create(
         :user,
         :unconfirmed,

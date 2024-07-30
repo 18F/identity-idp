@@ -73,7 +73,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
     it 'tracks expired token' do
       invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
       email_address = create(
         :email_address,
         :unconfirmed,
@@ -142,7 +142,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
         get :create, params: {
           confirmation_token:,
           _request_id: request_id_param,
-          acr_values: Vot::LegacyComponentValues::IAL1,
+          acr_values: Vot::AcrComponentValues::IAL1,
         }
       end
 

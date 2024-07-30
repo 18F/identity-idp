@@ -175,6 +175,7 @@ module IdentityConfig
     config.add(:in_person_enrollments_ready_job_visibility_timeout_seconds, type: :integer)
     config.add(:in_person_enrollments_ready_job_wait_time_seconds, type: :integer)
     config.add(:in_person_full_address_entry_enabled, type: :boolean)
+    config.add(:in_person_opt_in_available_completion_survey_url, type: :string)
     config.add(:in_person_outage_emailed_by_date, type: :string)
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_message_enabled, type: :boolean)
@@ -241,7 +242,6 @@ module IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
-    config.add(:no_verify_by_mail_for_biometric_comparison_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -305,11 +305,13 @@ module IdentityConfig
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
     )
+    config.add(:protocols_report_config, type: :json)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:pwned_passwords_file_path, type: :string)
     config.add(:rack_mini_profiler, type: :boolean)
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
+    config.add(:raise_on_component_validation_error, type: :boolean)
     config.add(:raise_on_missing_title, type: :boolean)
     config.add(:reauthn_window, type: :integer)
     config.add(:recaptcha_enterprise_api_key, type: :string)

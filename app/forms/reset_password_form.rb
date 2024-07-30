@@ -8,7 +8,7 @@ class ResetPasswordForm
 
   validate :valid_token
 
-  def initialize(user)
+  def initialize(user:)
     @user = user
     @reset_password_token = @user.reset_password_token
     @validate_confirmation = true

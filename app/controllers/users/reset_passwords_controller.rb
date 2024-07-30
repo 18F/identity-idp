@@ -32,7 +32,7 @@ module Users
 
         analytics.password_reset_token(**result.to_h)
         if result.success?
-          @reset_password_form = ResetPasswordForm.new(build_user)
+          @reset_password_form = ResetPasswordForm.new(user: build_user)
           @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
         else
           handle_invalid_or_expired_token(result)
@@ -43,7 +43,7 @@ module Users
     # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-      @reset_password_form = ResetPasswordForm.new(resource)
+      @reset_password_form = ResetPasswordForm.new(user: resource)
 
       result = @reset_password_form.submit(user_params)
 

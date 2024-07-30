@@ -116,16 +116,11 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect(page).to have_content(t('two_factor_authentication.two_factor_hspd12_choice_intro'))
 
     # User must setup PIV/CAC before continuing
-    visit setup_piv_cac_path
-    nonce = piv_cac_nonce_from_form_action
-    visit_piv_cac_service(
-      setup_piv_cac_url,
-      nonce: nonce,
-      uuid: SecureRandom.uuid,
-      subject: 'SomeIgnoredSubject',
-    )
+    select_2fa_option('piv_cac')
+    fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+    click_on t('forms.piv_cac_setup.submit')
+    follow_piv_cac_redirect
 
-    click_submit_default
     click_agree_and_continue
     click_submit_default
     expect_successful_saml_redirect

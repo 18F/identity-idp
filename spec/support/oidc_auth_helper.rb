@@ -6,7 +6,7 @@ module OidcAuthHelper
   def sign_in_oidc_user(user)
     visit_idp_from_ial1_oidc_sp
     fill_in_credentials_and_submit(user.email, user.password)
-    click_continue
+    click_submit_default
   end
 
   def visit_idp_from_ial1_oidc_sp(**args)
@@ -151,7 +151,7 @@ module OidcAuthHelper
   end
 
   def extract_redirect_url
-    page.find_link(t('forms.buttons.continue'))[:href]
+    page.find_link(t('forms.buttons.submit.default'))[:href]
   end
 
   def oidc_redirect_url

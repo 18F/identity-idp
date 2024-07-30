@@ -8,6 +8,8 @@ module Reports
 
     attr_accessor :report_date
 
+    # Generate a drop off report for the week including the passed timestamp
+    # @param [DateTime]
     def perform(report_date)
       self.report_date = report_date
 
