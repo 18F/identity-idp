@@ -24,11 +24,7 @@ class OpenidConnectUserInfoPresenter
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
-      info[:ial] = if identity_proofing_requested_for_verified_user?
-                     Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-                   else
-                     Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-                   end
+      info[:ial] = asserted_ial_value
       info[:aal] = identity.requested_aal_value
     else
       info[:vot] = vot_values
@@ -43,6 +39,19 @@ class OpenidConnectUserInfoPresenter
   end
 
   private
+
+  def asserted_ial_value
+    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless active_profile.present?
+
+    if resolved_authn_context_result.biometric_comparison?
+      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+    elsif resolved_authn_context_result.identity_proofing? ||
+          resolved_authn_context_result.ialmax?
+      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+    else
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    end
+  end
 
   def vot_values
     AuthnContextResolver.new(

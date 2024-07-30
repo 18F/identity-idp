@@ -392,9 +392,14 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] required_password_change if user forced to change password
   # When a user views the edit password page
-  def edit_password_visit
-    track_event('Edit Password Page Visited')
+  def edit_password_visit(required_password_change: false, **extra)
+    track_event(
+      'Edit Password Page Visited',
+      required_password_change: required_password_change,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -5500,6 +5505,11 @@ module AnalyticsEvents
   # tracks when a user visits the sign in page
   def sign_in_page_visit(flash:, **extra)
     track_event('Sign in page visited', flash:, **extra)
+  end
+
+  # User lands on security check failed page
+  def sign_in_security_check_failed_visited
+    track_event(:sign_in_security_check_failed_visited)
   end
 
   # @param [Boolean] success

@@ -814,7 +814,7 @@ forms.backup_code_reminder.body_info: Si vous perdez l’accès à votre méthod
 forms.backup_code_reminder.have_codes: J’ai mes codes
 forms.backup_code_reminder.heading: Avez-vous toujours vos codes de sauvegarde ?
 forms.backup_code_reminder.need_new_codes: J’ai besoin d’un nouvel ensemble de codes de sauvegarde
-forms.backup_code.caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous donnerons de nouveaux codes une fois que vous aurez utilisé les dix fournis.
+forms.backup_code.caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous donnerons de nouveaux codes une fois que vous aurez utilisé les %{count} fournis.
 forms.backup_code.caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus les utiliser pour vous connecter.
 forms.backup_code.confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
 forms.backup_code.generate: Obtenir des codes
@@ -1028,6 +1028,7 @@ idv.failure.phone.rate_limited.body: Pour des raisons de sécurité, nous limito
 idv.failure.phone.rate_limited.gpo.button: Vérifier par courrier
 idv.failure.phone.rate_limited.heading: Nous n’avons pas pu confirmer votre identité par téléphone
 idv.failure.phone.rate_limited.option_try_again_later_html: Annuler et recommencer après <strong>%{time_left}</strong>
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: Vous pourrez réessayer d’ici <strong>%{time_left}</strong>.
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Vérifier par courrier, ce qui prend <strong>5 à 10 jours</strong>.
 idv.failure.phone.rate_limited.options_header: 'Vous pouvez :'
 idv.failure.phone.timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez réessayer.
@@ -1486,6 +1487,13 @@ risc.security_event.errors.typ_error: l’en-tête typ doit être %{expected_typ
 saml_idp.auth.error.title: Erreur
 saml_idp.shared.saml_post_binding.heading: Valider pour continuer
 saml_idp.shared.saml_post_binding.no_js: JavaScript semble être désactivé dans votre navigateur. Normalement, cette étape se produit automatiquement, mais comme vous avez désactivé JavaScript, veuillez cliquer sur le bouton « Valider » pour poursuivre la connexion ou la déconnexion.
+security_check_failed.contact: Contactez l’assistance %{app_name}
+security_check_failed.details: Nous ne reconnaissons pas l’appareil ou le navigateur à partir duquel vous vous connectez.
+security_check_failed.info_p1: 'Utilisez le même appareil et le même navigateur que ceux avec lesquels vous aviez créé votre compte %{app_name}.'
+security_check_failed.info_p2_html: Essayez <a href="%{piv_cac_url}">de vous connecter avec votre carte d’employé fédéral</a> si vous êtes employé fédéral.
+security_check_failed.info_p3: Désactivez tout éventuel VPN ou bloqueur de publicité et videz votre cache.
+security_check_failed.learn_more: En savoir plus sur les tests de sécurité de %{app_name}
+security_check_failed.title: Échec du test de sécurité
 service_providers.errors.generic_sp_name: Cet organisme
 service_providers.errors.inactive.button_text: Voir mon compte %{app_name}
 service_providers.errors.inactive.heading: '%{sp_name} n’utilise plus %{app_name}'
@@ -1624,7 +1632,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>Vous n’avez conf
 two_factor_authentication.choose_another_option: '‹ Choisir une autre méthode d’authentification'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - <strong>Les codes de sauvegarde sont la méthode d’authentification la moins recommandée,</strong> car les codes peuvent facilement se perdre. Essayez une option plus sûre, comme une application d’authentification ou une clé de sécurité.
-  - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
+  - Nous vous donnerons %{number_of_codes} codes que vous pourrez télécharger, imprimer, copier ou noter. Vous saisirez un code chaque fois que vous vous connecterez.
 two_factor_authentication.confirm_backup_code_setup_title: 'Êtes-vous sûr de vouloir utiliser des codes de sauvegarde ?'
 two_factor_authentication.form_legend: Choisissez vos méthodes d’authentification
 two_factor_authentication.header_text: Saisissez votre code à usage unique
@@ -1718,7 +1726,7 @@ two_factor_authentication.two_factor_choice: Configuration de la méthode d’au
 two_factor_authentication.two_factor_choice_options.auth_app: Application d’authentification
 two_factor_authentication.two_factor_choice_options.auth_app_info: Télécharger ou utiliser une appli d’authentification de votre choix pour générer des codes sécurisés.
 two_factor_authentication.two_factor_choice_options.backup_code: Codes de sauvegarde
-two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de 10 codes que vous pouvez imprimer ou enregistrer sur votre appareil. Lorsque vous utilisez le dernier code, nous générerons une nouvelle liste. Gardez à l’esprit que les codes de sauvegarde sont faciles à perdre.
+two_factor_authentication.two_factor_choice_options.backup_code_info: Une liste de %{count} codes que vous pouvez imprimer ou enregistrer sur votre appareil. Comme les codes de sauvegarde se perdent facilement, ne choisir cette option qu’en dernier recours.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} ajouté'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Ajouté
@@ -1924,6 +1932,7 @@ users.delete.bullet_4: Nous informerons les organismes auxquels vous accédez av
 users.delete.heading: Êtes-vous sûr de vouloir supprimer votre compte ?
 users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez supprimer votre compte.
 users.delete.subheading: 'Si vous supprimez votre compte :'
+users.password_compromised.warning: Nous avons trouvé votre mot de passe dans le cadre d’une fuite de données sur un autre site Web ou une application. %{app_name} vous demande de modifier votre mot de passe pour protéger votre compte.
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle
 users.personal_key.confirmation_error: Vous avez saisi une clé personnelle erronée.

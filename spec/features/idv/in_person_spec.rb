@@ -210,7 +210,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
            allow_browser_log: true do
           expect(last_email.html_part.body).
             to have_selector(
-              "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
+              "a[href='#{IdentityConfig.store.in_person_opt_in_available_completion_survey_url}']",
             )
         end
       end

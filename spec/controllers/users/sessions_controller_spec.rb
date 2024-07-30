@@ -253,6 +253,18 @@ RSpec.describe Users::SessionsController, devise: true do
       )
     end
 
+    it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
+      user = create(:user, :fully_registered)
+
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+
+      post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
+
+      expect(response).to redirect_to sign_in_security_check_failed_url
+    end
+
     it 'tracks count of multiple unsuccessful authentication attempts' do
       user = create(
         :user,
@@ -332,7 +344,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'stores in session redirect to check compromise' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_truthy
+            expect(controller.session[:redirect_to_change_password]).to be_truthy
           end
         end
 
@@ -350,7 +362,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not update the user ' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
       end
@@ -377,7 +389,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'stores in session false to attempt to redirect password compromised' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
 
@@ -395,7 +407,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not update the user ' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
       end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
-  context 'user visits add an email address page' do
+  context 'user visits edit password page' do
     let(:user) { create(:user) }
     before do
       stub_sign_in(user)
@@ -10,6 +10,27 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
     it 'renders the index view' do
       get :edit
       expect(@analytics).to have_logged_event('Edit Password Page Visited')
+    end
+
+    context 'redirect_to_change_password is set to true' do
+      before do
+        stub_sign_in(user)
+        stub_analytics
+        session[:redirect_to_change_password] = true
+      end
+
+      it 'renders password compromised with required_password_change set to true' do
+        get :edit
+        expect(response).to render_template(:edit)
+      end
+
+      it 'logs analytics for password compromised visited' do
+        get :edit
+        expect(@analytics).to have_logged_event(
+          'Edit Password Page Visited',
+          required_password_change: true,
+        )
+      end
     end
   end
 
@@ -34,6 +55,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
           pending_profile_present: false,
           active_profile_present: false,
           user_id: subject.current_user.uuid,
+          required_password_change: false,
         )
         expect(response).to redirect_to account_url
         expect(flash[:info]).to eq t('notices.password_changed')
@@ -110,6 +132,53 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
           subject: t('devise.mailer.password_updated.subject'),
         )
       end
+      context 'redirect_to_change_password is set to true' do
+        let(:user) { create(:user) }
+        let(:password) { 'salty new password' }
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: password,
+          }
+        end
+        before do
+          stub_sign_in(user)
+          stub_analytics
+          session[:redirect_to_change_password] = true
+        end
+
+        it 'updates the user password and logs analytic event' do
+          allow(@analytics).to receive(:track_event)
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_received(:track_event).with(
+            'Password Changed',
+            success: true,
+            errors: {},
+            error_details: nil,
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
+            required_password_change: true,
+          )
+          expect(response).to redirect_to account_url
+          expect(flash[:info]).to eq t('notices.password_changed')
+        end
+
+        it 'sends email notifying user of password change' do
+          allow(@analytics).to receive(:track_event)
+
+          patch :update, params: { update_user_password_form: params }
+          expect_delivered_email_count(1)
+        end
+
+        it 'sends a security event' do
+          security_event = PushNotification::PasswordResetEvent.new(user: user)
+          expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
+
+          patch :update, params: { update_user_password_form: params }
+        end
+      end
     end
 
     context 'form returns failure' do
@@ -127,6 +196,54 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         expect(controller).to_not receive(:create_user_event)
 
         patch :update, params: { update_user_password_form: params }
+      end
+
+      context 'redirect_to_change_password is set to true' do
+        let(:user) { create(:user) }
+        let(:password) { 'false' }
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: 'false',
+          }
+        end
+
+        before do
+          stub_sign_in(user)
+          stub_analytics
+          session[:redirect_to_change_password] = true
+        end
+
+        it 'renders edit' do
+          allow(@analytics).to receive(:track_event)
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_received(:track_event).with(
+            'Password Changed',
+            success: false,
+            errors: {
+              password: [
+                t(
+                  'errors.attributes.password.too_short.other',
+                  count: Devise.password_length.first,
+                ),
+              ],
+              password_confirmation: [t(
+                'errors.messages.too_short.other',
+                count: Devise.password_length.first,
+              )],
+            },
+            error_details: {
+              password: { too_short: true },
+              password_confirmation: { too_short: true },
+            },
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
+            required_password_change: true,
+          )
+          expect(response).to render_template(:edit)
+        end
       end
 
       context 'when password is too short' do
@@ -161,6 +278,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
             pending_profile_present: false,
             active_profile_present: false,
             user_id: subject.current_user.uuid,
+            required_password_change: false,
           )
           expect(response).to render_template(:edit)
         end
@@ -198,6 +316,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
             pending_profile_present: false,
             active_profile_present: false,
             user_id: subject.current_user.uuid,
+            required_password_change: false,
           )
           expect(response).to render_template(:edit)
         end

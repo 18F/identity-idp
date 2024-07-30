@@ -204,7 +204,10 @@ module Features
     end
 
     def user_with_totp_2fa
-      create(:user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD)
+      create(
+        :user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD,
+                                                            email_language: 'en'
+      )
     end
 
     def user_with_phishing_resistant_2fa
