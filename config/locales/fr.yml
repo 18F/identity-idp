@@ -1179,7 +1179,7 @@ in_person_proofing.body.barcode.close_window: Vous pouvez maintenant fermer cett
 in_person_proofing.body.barcode.deadline: Vous devez vous rendre dans un bureau de poste participant avant le %{deadline}
 in_person_proofing.body.barcode.deadline_restart: Si vous y allez après cette date limite, vos informations ne seront pas sauvegardées et vous devrez recommencer le processus.
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Selon la pièce d’identité dont vous disposez, il pourra vous être demandé de présenter des documents complémentaires. Étudiez attentivement les options suivantes:'
-in_person_proofing.body.barcode.email_sent: Nous avons envoyé ces informations à l’adresse e-mail que vous avez utilisée pour vous connecter.
+in_person_proofing.body.barcode.email_sent: Nous avons envoyé votre code-barre et les informations ci-dessous à l’adresse e-mail que vous avez utilisée pour vous connecter
 in_person_proofing.body.barcode.learn_more: En savoir davantage sur ce qu’il faut apporter.
 in_person_proofing.body.barcode.location_details: Détails de l’emplacement
 in_person_proofing.body.barcode.questions: Des questions ?

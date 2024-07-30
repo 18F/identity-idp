@@ -1190,7 +1190,7 @@ in_person_proofing.body.barcode.close_window: Ya puede cerrar esta ventana.
 in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
 in_person_proofing.body.barcode.deadline_restart: Si vence el plazo, su información no se guardará y tendrá que reiniciar el proceso.
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
-in_person_proofing.body.barcode.email_sent: Enviamos esta información al correo electrónico que usó para iniciar sesión.
+in_person_proofing.body.barcode.email_sent: Enviamos el código de barras y la información más abajo al correo electrónico que usó para iniciar sesión
 in_person_proofing.body.barcode.learn_more: Obtenga más información sobre lo que debe llevar
 in_person_proofing.body.barcode.location_details: Detalles del lugar
 in_person_proofing.body.barcode.questions: '¿Tiene alguna pregunta?'
