@@ -22,10 +22,6 @@ class SamlRequestValidator
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end
 
-  def biometric_comparison_requested?
-    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
-  end
-
   private
 
   attr_accessor :service_provider, :authn_context, :authn_context_comparison, :nameid_format

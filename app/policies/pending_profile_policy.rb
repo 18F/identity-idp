@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 class PendingProfilePolicy
-  def initialize(user:, resolved_authn_context_result:, biometric_comparison_requested:)
+  def initialize(user:, resolved_authn_context_result:)
     @user = user
     @resolved_authn_context_result = resolved_authn_context_result
-    @biometric_comparison_requested = biometric_comparison_requested
   end
 
   def user_has_pending_profile?
@@ -19,14 +18,14 @@ class PendingProfilePolicy
 
   private
 
-  attr_reader :user, :resolved_authn_context_result, :biometric_comparison_requested
+  attr_reader :user, :resolved_authn_context_result
 
   def pending_biometric_profile?
     user.pending_profile&.idv_level == 'unsupervised_with_selfie'
   end
 
   def biometric_comparison_requested?
-    resolved_authn_context_result.biometric_comparison? || biometric_comparison_requested
+    resolved_authn_context_result.biometric_comparison?
   end
 
   def pending_legacy_profile?
