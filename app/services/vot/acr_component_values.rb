@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Vot
-  module LegacyComponentValues
+  module AcrComponentValues
     ## Identity proofing ACR values
     LOA1 = ComponentValue.new(
       name: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
@@ -26,6 +26,21 @@ module Vot
       description: 'Legacy IAL2',
       implied_component_values: [],
       requirements: [:aal2, :identity_proofing],
+    ).freeze
+    IAL2_BIO_REQUIRED = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+      description: 'IAL2 - require identity proofing with biometric comparison (NIST SP 800-63-3)',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+                     :two_pieces_of_fair_evidence],
+    ).freeze
+    IAL2_BIO_PREFERRED = ComponentValue.new(
+      name: Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+      description:
+        'IAL2 - use identity proofing with biometric comparison if completed (NIST SP 800-63-3)',
+      implied_component_values: [],
+      requirements: [:aal2, :identity_proofing, :biometric_comparison,
+                     :two_pieces_of_fair_evidence],
     ).freeze
     IALMAX = ComponentValue.new(
       name: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,

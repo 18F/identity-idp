@@ -37,14 +37,14 @@ class InPersonEnrollment < ApplicationRecord
 
   class << self
     def needs_early_email_reminder(early_benchmark, late_benchmark)
-      is_pending_and_established_between(
+      pending_and_established_between(
         early_benchmark,
         late_benchmark,
       ).where(early_reminder_sent: false)
     end
 
     def needs_late_email_reminder(early_benchmark, late_benchmark)
-      is_pending_and_established_between(
+      pending_and_established_between(
         early_benchmark,
         late_benchmark,
       ).where(late_reminder_sent: false)
@@ -84,7 +84,7 @@ class InPersonEnrollment < ApplicationRecord
 
     private
 
-    def is_pending_and_established_between(early_benchmark, late_benchmark)
+    def pending_and_established_between(early_benchmark, late_benchmark)
       where(status: :pending).
         and(
           where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),

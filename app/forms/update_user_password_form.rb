@@ -6,9 +6,10 @@ class UpdateUserPasswordForm
 
   delegate :personal_key, to: :encryptor
 
-  def initialize(user, user_session = nil)
+  def initialize(user:, user_session: nil, required_password_change: false)
     @user = user
     @user_session = user_session
+    @required_password_change = required_password_change
     @validate_confirmation = true
   end
 
@@ -22,7 +23,7 @@ class UpdateUserPasswordForm
 
   private
 
-  attr_reader :user, :user_session
+  attr_reader :user, :user_session, :required_password_change
 
   def process_valid_submission
     user.update!(password: password)
@@ -48,6 +49,7 @@ class UpdateUserPasswordForm
       active_profile_present: user.active_profile.present?,
       pending_profile_present: user.pending_profile.present?,
       user_id: user.uuid,
+      required_password_change: required_password_change,
     }
   end
 end

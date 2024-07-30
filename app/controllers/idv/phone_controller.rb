@@ -199,16 +199,16 @@ module Idv
       end
     end
 
-    def is_req_from_frontend?
+    def frontend_request?
       request.headers['HTTP_X_FORM_STEPS_WAIT'] == '1'
     end
 
-    def is_req_from_verify_step?
+    def verify_step_request?
       request.referer == idv_verify_info_url
     end
 
     def should_keep_flash_success?
-      is_req_from_frontend? && is_req_from_verify_step?
+      frontend_request? && verify_step_request?
     end
 
     def new_phone_added?
