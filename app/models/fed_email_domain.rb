@@ -5,4 +5,3 @@ class FedEmailDomain < ApplicationRecord
     exists?(name: domain)
   end
 end
-  

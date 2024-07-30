@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'csv'
+
+# rubocop:disable Rails/SkipsModelValidations
 namespace :fed_email_domains do
   task :load, %i[s3_secrets_path] => [:environment] do |_task, args|
     # Need to increase statement timeout since command takes a long time.
