@@ -129,10 +129,6 @@ class OpenidConnectAuthorizeForm
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
-  def biometric_comparison_requested?
-    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
-  end
-
   def parsed_vectors_of_trust
     return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
 
