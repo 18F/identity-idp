@@ -89,6 +89,7 @@ module OpenidConnect
     end
 
     def email_address_id
+      return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
       return session[:sp_email_id] if session[:sp_email_id].present?
       sp = sp_session['issuer']
       identity = current_user.identities.where(service_provider: sp)

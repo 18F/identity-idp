@@ -176,6 +176,7 @@ module Users
     end
 
     def last_email_from_sp
+      return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
       sp = sp_session['issuer']
       if sp.present?
         identity = current_user.identities.where(service_provider: sp)
