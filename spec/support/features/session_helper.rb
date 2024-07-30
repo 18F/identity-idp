@@ -263,7 +263,7 @@ module Features
     end
 
     def click_submit_default
-      click_button t('forms.buttons.submit.default')
+      click_on t('forms.buttons.submit.default')
     end
 
     def click_submit_default_twice

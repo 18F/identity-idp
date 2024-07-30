@@ -47,6 +47,8 @@ module Saml
         LOA3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
         IAL1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,
         IAL2_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
         IALMAX_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL_MAX,
       }.freeze
 

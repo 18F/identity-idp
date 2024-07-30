@@ -241,7 +241,6 @@ module IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
-    config.add(:no_verify_by_mail_for_biometric_comparison_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
@@ -311,6 +310,7 @@ module IdentityConfig
     config.add(:rack_mini_profiler, type: :boolean)
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
+    config.add(:raise_on_component_validation_error, type: :boolean)
     config.add(:raise_on_missing_title, type: :boolean)
     config.add(:reauthn_window, type: :integer)
     config.add(:recaptcha_enterprise_api_key, type: :string)

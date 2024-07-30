@@ -14,7 +14,7 @@ class AuthnContextResolver
     if vtr.present?
       selected_vtr_parser_result_from_vtr_list
     else
-      acr_result_with_sp_defaults
+      acr_result
     end
   end
 
@@ -54,6 +54,12 @@ class AuthnContextResolver
     end
   end
 
+  def acr_result
+    @acr_result ||= decorate_acr_result_with_user_context(
+      acr_result_with_sp_defaults,
+    )
+  end
+
   def acr_result_with_sp_defaults
     result_with_sp_aal_defaults(
       result_with_sp_ial_defaults(
@@ -78,6 +84,19 @@ class AuthnContextResolver
     end
   end
 
+  def decorate_acr_result_with_user_context(result)
+    return result unless result.biometric_comparison?
+
+    return result if user&.identity_verified_with_biometric_comparison? ||
+                     biometric_is_required?(result)
+
+    if user&.identity_verified?
+      result.with(biometric_comparison?: false, two_pieces_of_fair_evidence?: false)
+    else
+      result.with(biometric_comparison?: true)
+    end
+  end
+
   def result_with_sp_ial_defaults(result)
     if acr_ial_component_values.any?
       result
@@ -99,5 +118,12 @@ class AuthnContextResolver
     acr_result_without_sp_defaults.component_values.filter do |component_value|
       component_value.name.include?('ial') || component_value.name.include?('loa')
     end
+  end
+
+  def biometric_is_required?(result)
+    result.
+      component_values.
+      map(&:name).
+      include?(Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF)
   end
 end

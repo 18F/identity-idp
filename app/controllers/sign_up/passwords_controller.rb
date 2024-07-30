@@ -63,7 +63,7 @@ module SignUp
     end
 
     def password_form
-      @password_form ||= PasswordForm.new(@user)
+      @password_form ||= PasswordForm.new(user: @user)
     end
 
     def process_unsuccessful_password_creation

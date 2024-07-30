@@ -1,5 +1,15 @@
 <% self.title = t('titles.edit_info.password') %>
 
+<% if @update_password_presenter.required_password_change? %>
+  <%= render AlertComponent.new(
+        type: :warning,
+        class: 'margin-bottom-4',
+      ) do
+        t('users.password_compromised.warning', app_name: APP_NAME)
+      end
+  %>
+<% end %>
+
 <%= render PageHeadingComponent.new.with_content(t('headings.edit_info.password')) %>
 
 <p id="password-description">
@@ -11,16 +21,14 @@
   <%= render PasswordConfirmationComponent.new(
         form: f,
         password_label: t('forms.passwords.edit.labels.password'),
-        forbidden_passwords: @forbidden_passwords,
-        field_options: {
-          input_html: {
-            aria: { describedby: 'password-description' },
-          },
-        },
+        forbidden_passwords: @update_password_presenter.forbidden_passwords,
+        field_options: @update_password_presenter.aria_described_by_if_eligible,
       ) %>
-  <%= f.submit t('forms.buttons.submit.update'), class: 'display-block margin-top-5 margin-bottom-4' %>
+  <%= f.submit @update_password_presenter.submit_text, class: 'display-block margin-top-5 margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>
 
-<%= render 'shared/cancel', link: account_path %>
+<% unless @update_password_presenter.required_password_change? %>
+  <%= render 'shared/cancel', link: account_path %>
+<% end %>

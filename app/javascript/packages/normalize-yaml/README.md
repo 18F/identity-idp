@@ -29,11 +29,12 @@ yarn add @18f/identity-normalize-yaml prettier
 
 ### CLI
 
-The included `normalize-yaml` binary receives files as an argument, with optional flags:
+The included `normalize-yaml` binary receives files as an argument, with optional configuration:
 
 - `--disable-sort-keys`: Disable the default behavior to sort keys.
 - `--disable-smart-punctuation`: Disable the default behavior to apply smart punctuation.
 - `--disable-collapse-spacing`: Disable the default behavior to collapse multiple spaces to a single space.
+- `--ignore-key-sort`: Specify key(s) whose ordering should be preserved as-is. This can be passed multiple times, or as a comma-separated value.
 
 **Example:**
 
@@ -59,6 +60,7 @@ Given an input YAML string and optional options, resolves to a normalized YAML s
 
 - `prettierConfig` (`Record<string, any>`): Optional Prettier configuration object.
 - `exclude` (`Formatter[]`) Formatters to exclude.
+- `ignoreKeySort` (`string[]`) Keys whose order should be preserved in sorting.
 
 ## License
 

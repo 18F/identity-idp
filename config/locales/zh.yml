@@ -1189,6 +1189,7 @@ in_person_proofing.body.barcode.cancel_link_text: 取消你的条形码
 in_person_proofing.body.barcode.close_window: 你现在可以关闭这一窗口。
 in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。
 in_person_proofing.body.barcode.deadline_restart: 如果你在截止日期后才去邮局，你的信息不会被存储，你又得从头开始这一过程。
+in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
 in_person_proofing.body.barcode.email_sent: 我们已将该信息发送到你用来登录的电邮。
 in_person_proofing.body.barcode.learn_more: 了解有关携带物品的更多信息
 in_person_proofing.body.barcode.location_details: 详细地址信息
@@ -1197,7 +1198,6 @@ in_person_proofing.body.barcode.retail_hours: 营业时间
 in_person_proofing.body.barcode.retail_hours_closed: 关闭
 in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
 in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 取决于你身份证件或驾照的类型，你可能会被要求出示支持性文件。请仔细阅读以下选项：
 in_person_proofing.body.barcode.what_to_expect: 在邮局会发生什么
 in_person_proofing.body.cta.button: 尝试亲身去
 in_person_proofing.body.cta.prompt_detail: 你也许可以到附近一个参与本项目的邮局去亲身验证你的身份证件。
@@ -1292,18 +1292,20 @@ in_person_proofing.headings.update_state_id: 更新你身份证件上的信息
 in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
-in_person_proofing.process.eipp_bring_id.heading: 携带REAL身份证件
+in_person_proofing.process.eipp_bring_id_plus_documents.heading: 选项2：请携带州颁发的标准身份证件和支持性文件
+in_person_proofing.process.eipp_bring_id_plus_documents.info: '您可以出示标准驾照或者州颁发的身份卡以及以下A、B、C选项的支持文件。你只需选择下列选项之一：'
+in_person_proofing.process.eipp_bring_id.heading: 选项1：携带REAL身份证件
 in_person_proofing.process.eipp_bring_id.image_alt_text: REAL身份证件
 in_person_proofing.process.eipp_bring_id.info: '如果你出示一个州的REAL身份证件或驾照，则无需出示支持性文件'
-in_person_proofing.process.eipp_state_id_military_id.heading: B.州身份证件+军人证件
+in_person_proofing.process.eipp_state_id_military_id.heading: B.州颁发的标准身份+军人证件
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: 州身份证和军人证件
-in_person_proofing.process.eipp_state_id_military_id.info: 出示州的普通身份证件或驾照，以及军人证件。
-in_person_proofing.process.eipp_state_id_passport.heading: A.州身份证件+护照
+in_person_proofing.process.eipp_state_id_military_id.info: 出示标准驾照或州颁发的身份卡, 以及军人证件。
+in_person_proofing.process.eipp_state_id_passport.heading: A.州颁发的标准身份+护照
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: 州身份证件和护照
-in_person_proofing.process.eipp_state_id_passport.info: 出示州的普通身份证件或驾照，以及护照或护照卡。
-in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州身份证件+两种支持文件
+in_person_proofing.process.eipp_state_id_passport.info: 出示标准驾照或州颁发的身份卡, 以及护照或护照卡。
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州颁发的标准身份+两种支持文件
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: 州身份证件和两份证明文件
-in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示州的普通身份证件或驾照，以及以下清单中两个支持性文件：'
+in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示标准驾照或州颁发的身份卡, 以及以下清单中两个支持性文件：'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 租约
   - 房贷
@@ -1312,12 +1314,10 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 车辆登记卡
   - 房屋保险单
   - 车辆保险单
-in_person_proofing.process.eipp_what_to_bring.heading: 选项2：携带州颁发的普通身份证件或驾照以及支持性文件
-in_person_proofing.process.eipp_what_to_bring.info: '你可以出示州颁发的普通身份证件或驾照以及下列A、B或C选项中的支持性文件。你只需选择下列选项之一：'
 in_person_proofing.process.state_id.heading: 出示你州驾照或州非驾照身份卡。
 in_person_proofing.process.state_id.heading_eipp: 出示你的身份证件以及支持性文件
 in_person_proofing.process.state_id.info: 该证件必须在有效期内。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于你出示的身份证件或驾照的类型，你可能需要出示支持性文件。参见“到邮局要带什么”部分中的要求。
+in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于您出示的身份证件类型，您也许需要显示支持文件。参见“到邮局要带什么”部分中的规定。
 in_person_proofing.process.what_to_do.heading: 请排在任何一队里
 in_person_proofing.process.what_to_do.info: 告诉邮局工作人员你是为了%{app_name}验证你的身份。
 instructions.account.reactivate.begin: 我们开始吧。
@@ -1497,6 +1497,13 @@ risc.security_event.errors.typ_error: 类型标头必须是 %{expected_typ}
 saml_idp.auth.error.title: 错误
 saml_idp.shared.saml_post_binding.heading: 提交来继续
 saml_idp.shared.saml_post_binding.no_js: 你浏览器中的 JavaScript 似乎已关闭。该步骤通常会自动发生，但因为你把 JavaScript 关闭，请点击提交按钮来继续登入或登出。
+security_check_failed.contact: 请联系 %{app_name}支持
+security_check_failed.details: 我们不认识您登录正在使用的设备或浏览器。
+security_check_failed.info_p1: '使用您设立自己 %{app_name} 账户时的同一设备和浏览器。'
+security_check_failed.info_p2_html: '如果您是政府雇员，尝试<a href="%{piv_cac_url}">用您的政府雇员身份证件登录。</a>'
+security_check_failed.info_p3: 关闭任何 VPN 和广告拦截器并清除缓存。
+security_check_failed.learn_more: 了解 %{app_name} 安全检查的更多信息
+security_check_failed.title: 安全检查未通过
 service_providers.errors.generic_sp_name: 该机构
 service_providers.errors.inactive.button_text: 查看我的 %{app_name} 账户
 service_providers.errors.inactive.heading: '%{sp_name} 不再使用 %{app_name}'
@@ -1935,6 +1942,7 @@ users.delete.bullet_4: 我们将通知你使用 %{app_name} 访问的政府机�
 users.delete.heading: 你确定要删除账户吗？
 users.delete.instructions: 输入密码来确认你要删除账户。
 users.delete.subheading: 如果你删除自己的账户：
+users.password_compromised.warning: 另一个网站或应用程序的数据泄露中我们发现有你的密码。%{app_name} 要求你更改密码来保护你的账户。
 users.personal_key.accessible_labels.code_example: 有 16 个字符的个人密钥示例
 users.personal_key.accessible_labels.preview: 个人密钥预览
 users.personal_key.confirmation_error: 你输入的个人密钥不对
