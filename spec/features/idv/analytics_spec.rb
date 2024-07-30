@@ -524,19 +524,19 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean),
       'IdV: verify in person troubleshooting option clicked' => {
-        flow_path: 'standard', opted_in_to_in_person_proofing: nil
+        flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing location visited' => {
-        flow_path: 'standard', opted_in_to_in_person_proofing: nil
+        flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing location submitted' => {
-        flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998', opted_in_to_in_person_proofing: nil
+        flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing prepare visited' => {
-        flow_path: 'standard', opted_in_to_in_person_proofing: nil
+        flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing prepare submitted' => {
-        flow_path: 'standard', opted_in_to_in_person_proofing: nil
+        flow_path: 'standard', opted_in_to_in_person_proofing: false
       },
       'IdV: in person proofing state_id visited' => {
         step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', opted_in_to_in_person_proofing: nil
