@@ -47,6 +47,9 @@ RSpec.describe Risc::SecurityEventsController, allowed_extra_analytics: [:*] do
 
     it 'tracks an successful in analytics' do
       stub_analytics
+
+      action
+
       expect(@analytics).to have_logged_event(
         'RISC: Security event received',
         client_id: service_provider.issuer,
@@ -58,8 +61,6 @@ RSpec.describe Risc::SecurityEventsController, allowed_extra_analytics: [:*] do
         success: true,
         user_id: user.uuid,
       )
-
-      action
     end
 
     context 'with a bad request' do
@@ -79,6 +80,9 @@ RSpec.describe Risc::SecurityEventsController, allowed_extra_analytics: [:*] do
 
       it 'tracks an error event in analytics' do
         stub_analytics
+
+        action
+
         expect(@analytics).to have_logged_event(
           'RISC: Security event received',
           client_id: service_provider.issuer,
@@ -90,8 +94,6 @@ RSpec.describe Risc::SecurityEventsController, allowed_extra_analytics: [:*] do
           success: false,
           user_id: user.uuid,
         )
-
-        action
       end
     end
   end

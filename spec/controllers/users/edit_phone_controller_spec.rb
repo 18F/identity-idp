@@ -21,12 +21,12 @@ RSpec.describe Users::EditPhoneController do
           phone_configuration_id: phone_configuration.id,
         }
 
-        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
-
         put :update, params: {
           id: phone_configuration.id,
           edit_phone_form: { delivery_preference: 'voice' },
         }
+
+        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
         expect(response).to redirect_to(account_url)
         expect(phone_configuration.reload.delivery_preference).to eq('voice')
       end
@@ -44,12 +44,12 @@ RSpec.describe Users::EditPhoneController do
           phone_configuration_id: phone_configuration.id,
         }
 
-        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
         put :update, params: {
           id: phone_configuration.id,
           edit_phone_form: { delivery_preference: 'noise' },
         }
 
+        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
         expect(response).to render_template(:edit)
         expect(phone_configuration.reload.delivery_preference).to eq('sms')
       end
@@ -69,11 +69,11 @@ RSpec.describe Users::EditPhoneController do
         phone_configuration_id: phone_configuration.id,
       }
 
-      expect(@analytics).to have_logged_event('Phone Number Deletion: Submitted', attributes)
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
       delete :destroy, params: { id: phone_configuration.id }
 
+      expect(@analytics).to have_logged_event('Phone Number Deletion: Submitted', attributes)
       expect(response).to redirect_to(account_url)
       expect(flash[:success]).to eq(t('two_factor_authentication.phone.delete.success'))
       expect(PhoneConfiguration.find_by(id: phone_configuration.id)).to eq(nil)

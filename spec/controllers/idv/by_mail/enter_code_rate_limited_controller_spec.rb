@@ -19,14 +19,13 @@ RSpec.describe Idv::ByMail::EnterCodeRateLimitedController do
 
   describe '#index' do
     it 'renders the rate limited page' do
-      expect(@analytics).to have_logged_event(
-        'Rate Limit Reached',
-        limiter_type: :verify_gpo_key,
-      ).once
-
       get :index
 
       expect(response).to render_template :index
+      expect(@analytics).to have_logged_event(
+        'Rate Limit Reached',
+        limiter_type: :verify_gpo_key,
+      )
     end
   end
 end

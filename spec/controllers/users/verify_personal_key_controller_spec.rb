@@ -54,16 +54,16 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
       it 'renders rate limited page' do
         stub_analytics
-        expect(@analytics).to have_logged_event(
-          'Personal key reactivation: Personal key form visited',
-        ).once
-        expect(@analytics).to have_logged_event(
-          'Rate Limit Reached',
-          limiter_type: :verify_personal_key,
-        ).once
 
         get :new
 
+        expect(@analytics).to have_logged_event(
+          'Personal key reactivation: Personal key form visited',
+        )
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :verify_personal_key,
+        )
         expect(response).to render_template(:rate_limited)
       end
     end
@@ -104,20 +104,19 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
       it 'stores that the personal key was entered in the user session' do
         stub_analytics
+
+        post :create, params: { personal_key: profiles.first.personal_key }
+
         expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form submitted',
           errors: {},
           error_details: nil,
           success: true,
           pii_like_keypaths: pii_like_keypaths_errors,
-        ).once
-
+        )
         expect(@analytics).to have_logged_event(
           'Personal key reactivation: Account reactivated with personal key',
-        ).once
-
-        post :create, params: { personal_key: profiles.first.personal_key }
-
+        )
         expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
       end
     end
@@ -138,21 +137,21 @@ RSpec.describe Users::VerifyPersonalKeyController do
     context 'with rate limit reached' do
       it 'renders rate limited page' do
         stub_analytics
+
+        max_attempts = RateLimiter.max_attempts(:verify_personal_key)
+        max_attempts.times { post :create, params: personal_key_bad_params }
+
         expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form submitted',
           errors: { personal_key: ['Please fill in this field.', error_text] },
           error_details: { personal_key: { blank: true, personal_key: true } },
           success: false,
           pii_like_keypaths: pii_like_keypaths_errors,
-        ).once
+        )
         expect(@analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :verify_personal_key,
-        ).once
-
-        max_attempts = RateLimiter.max_attempts(:verify_personal_key)
-        max_attempts.times { post :create, params: personal_key_bad_params }
-
+        )
         expect(response).to render_template(:rate_limited)
       end
     end

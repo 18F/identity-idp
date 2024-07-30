@@ -33,9 +33,10 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs an analytics event for visiting' do
         stub_analytics
-        expect(@analytics).to have_logged_event('Rules of Use Visited')
 
         action
+
+        expect(@analytics).to have_logged_event('Rules of Use Visited')
       end
     end
 
@@ -64,9 +65,10 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs an analytics event for visiting' do
         stub_analytics
-        expect(@analytics).to have_logged_event('Rules of Use Visited')
 
         action
+
+        expect(@analytics).to have_logged_event('Rules of Use Visited')
       end
     end
 
@@ -116,12 +118,13 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs a successful analytics event' do
         stub_analytics
+
+        action
+
         expect(@analytics).to have_logged_event(
           'Rules of Use Submitted',
           hash_including(success: true),
         )
-
-        action
       end
 
       it 'includes service provider URIs in form-action CSP header when enabled' do
@@ -194,12 +197,13 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs a failure analytics event' do
         stub_analytics
+
+        action
+
         expect(@analytics).to have_logged_event(
           'Rules of Use Submitted',
           hash_including(success: false),
         )
-
-        action
       end
     end
   end

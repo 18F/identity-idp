@@ -34,6 +34,8 @@ RSpec.describe SignUp::PasswordsController do
       end
 
       it 'tracks analytics' do
+        subject
+
         expect(@analytics).to have_logged_event(
           'User Registration: Email Confirmation',
           analytics_hash.merge({ error_details: nil }),
@@ -42,8 +44,6 @@ RSpec.describe SignUp::PasswordsController do
           'Password Creation',
           analytics_hash.merge({ request_id_present: false }),
         )
-
-        subject
       end
 
       it 'confirms the user' do

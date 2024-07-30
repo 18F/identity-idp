@@ -28,18 +28,19 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
     it 'tracks visit event' do
       stub_analytics
-      expect(@analytics).to have_logged_event('User Registration: enter email visited')
 
       get :new
+
+      expect(@analytics).to have_logged_event('User Registration: enter email visited')
     end
 
     context 'with source parameter' do
       it 'tracks visit event' do
         stub_analytics
 
-        expect(@analytics).to have_logged_event('User Registration: enter email visited')
-
         get :new
+
+        expect(@analytics).to have_logged_event('User Registration: enter email visited')
       end
     end
 

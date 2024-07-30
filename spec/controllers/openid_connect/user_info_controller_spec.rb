@@ -19,6 +19,9 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
+
+        action
+
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: false,
@@ -27,8 +30,6 @@ RSpec.describe OpenidConnect::UserInfoController do
           errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
         )
-
-        action
       end
     end
 
@@ -44,6 +45,9 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
+
+        action
+
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: false,
@@ -52,8 +56,6 @@ RSpec.describe OpenidConnect::UserInfoController do
           errors: hash_including(:access_token),
           error_details: hash_including(:access_token),
         )
-
-        action
       end
     end
 
@@ -68,6 +70,9 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
+
+        action
+
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: false,
@@ -76,8 +81,6 @@ RSpec.describe OpenidConnect::UserInfoController do
           ial: nil,
           error_details: hash_including(:access_token),
         )
-
-        action
       end
     end
 
@@ -130,6 +133,9 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
+
+        action
+
         expect(@analytics).to have_logged_event(
           'OpenID Connect: bearer token authentication',
           success: true,
@@ -138,8 +144,6 @@ RSpec.describe OpenidConnect::UserInfoController do
           errors: {},
           error_details: nil,
         )
-
-        action
       end
 
       it 'only changes the paths visited in session' do

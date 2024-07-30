@@ -29,9 +29,9 @@ RSpec.describe AccountReset::RequestController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to have_logged_event('Account deletion and reset visited')
-
       get :show
+
+      expect(@analytics).to have_logged_event('Account deletion and reset visited')
     end
 
     context 'non-fraud user' do
@@ -106,9 +106,10 @@ RSpec.describe AccountReset::RequestController do
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
 
       post :create
+
+      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
     end
 
     it 'logs sms user in the analytics' do
@@ -126,9 +127,10 @@ RSpec.describe AccountReset::RequestController do
         message_id: 'fake-message-id',
         errors: {},
       }
-      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
 
       post :create
+
+      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
     end
 
     it 'logs PIV/CAC user in the analytics' do
@@ -144,9 +146,10 @@ RSpec.describe AccountReset::RequestController do
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
 
       post :create
+
+      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
     end
 
     it 'redirects to root if user not signed in' do

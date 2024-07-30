@@ -10,12 +10,11 @@ RSpec.describe Users::PleaseCallController do
   it 'renders the show template' do
     stub_analytics
 
+    get :show
+
     expect(@analytics).to have_logged_event(
       'User Suspension: Please call visited',
     )
-
-    get :show
-
     expect(response).to render_template :show
   end
 end

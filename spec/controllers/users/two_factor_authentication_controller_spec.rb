@@ -121,6 +121,8 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
         }
 
         travel_to(time1 + 1.second) do
+          get :show
+
           expect(@analytics).to have_logged_event(
             'User marked authenticated',
             { authentication_type: :device_remembered },
@@ -129,7 +131,6 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
             'Remembered device used for authentication',
             { cookie_created_at: time1, cookie_age_seconds: 1 },
           )
-          get :show
         end
 
         expect(Telephony::Test::Message.messages.length).to eq(0)

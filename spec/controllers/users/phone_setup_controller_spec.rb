@@ -25,6 +25,8 @@ RSpec.describe Users::PhoneSetupController do
       end
 
       it 'renders the index view' do
+        get :index
+
         expect(@analytics).to have_logged_event(
           'User Registration: phone setup visited',
           { enabled_mfa_methods_count: 0 },
@@ -34,9 +36,6 @@ RSpec.describe Users::PhoneSetupController do
           analytics: kind_of(Analytics),
           setup_voice_preference: false,
         )
-
-        get :index
-
         expect(response).to render_template(:index)
       end
     end
@@ -84,8 +83,6 @@ RSpec.describe Users::PhoneSetupController do
         pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
       }
 
-      expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
-
       post :create, params: {
         new_phone_form: {
           phone: '703-555-010',
@@ -93,6 +90,7 @@ RSpec.describe Users::PhoneSetupController do
         },
       }
 
+      expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
       expect(response).to render_template(:index)
       expect(flash[:error]).to be_blank
     end
@@ -161,8 +159,6 @@ RSpec.describe Users::PhoneSetupController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
-
         post(
           :create,
           params: {
@@ -171,6 +167,7 @@ RSpec.describe Users::PhoneSetupController do
           },
         )
 
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'voice',
@@ -201,8 +198,6 @@ RSpec.describe Users::PhoneSetupController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
-
         post(
           :create,
           params: {
@@ -211,6 +206,7 @@ RSpec.describe Users::PhoneSetupController do
           },
         )
 
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'sms',
@@ -240,8 +236,6 @@ RSpec.describe Users::PhoneSetupController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
-
         patch(
           :create,
           params: {
@@ -250,6 +244,7 @@ RSpec.describe Users::PhoneSetupController do
           },
         )
 
+        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'sms',

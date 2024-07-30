@@ -16,22 +16,21 @@ RSpec.describe EventDisavowalController do
   describe '#new' do
     context 'with a valid disavowal_token' do
       it 'tracks an analytics event' do
+        get :new, params: { disavowal_token: disavowal_token }
+
         expect(@analytics).to have_logged_event(
           'Event disavowal visited',
           build_analytics_hash,
         )
-
-        get :new, params: { disavowal_token: disavowal_token }
       end
 
       it 'assigns forbidden passwords' do
+        get :new, params: { disavowal_token: disavowal_token }
+
         expect(@analytics).to have_logged_event(
           'Event disavowal visited',
           build_analytics_hash,
         )
-
-        get :new, params: { disavowal_token: disavowal_token }
-
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
       end
     end
@@ -40,6 +39,8 @@ RSpec.describe EventDisavowalController do
       it 'tracks an analytics event' do
         event.update!(disavowed_at: Time.zone.now)
 
+        get :new, params: { disavowal_token: disavowal_token }
+
         expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
@@ -47,13 +48,13 @@ RSpec.describe EventDisavowalController do
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
           ),
         )
-
-        get :new, params: { disavowal_token: disavowal_token }
       end
 
       it 'does not assign forbidden passwords' do
         event.update!(disavowed_at: Time.zone.now)
 
+        get :new, params: { disavowal_token: disavowal_token }
+
         expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
@@ -61,9 +62,6 @@ RSpec.describe EventDisavowalController do
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
           ),
         )
-
-        get :new, params: { disavowal_token: disavowal_token }
-
         expect(assigns(:forbidden_passwords)).to be_nil
       end
     end
@@ -72,20 +70,27 @@ RSpec.describe EventDisavowalController do
   describe '#create' do
     context 'with a valid password' do
       it 'tracks an analytics event' do
-        expect(@analytics).to have_logged_event(
-          'Event disavowal password reset',
-          build_analytics_hash,
-        )
-
         post :create, params: {
           disavowal_token: disavowal_token,
           event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
         }
+
+        expect(@analytics).to have_logged_event(
+          'Event disavowal password reset',
+          build_analytics_hash,
+        )
       end
     end
 
     context 'with an invalid password' do
       it 'tracks an analytics event' do
+        params = {
+          disavowal_token: disavowal_token,
+          event_disavowal_password_reset_from_disavowal_form: { password: 'too short' },
+        }
+
+        post :create, params: params
+
         expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
           build_analytics_hash(
@@ -99,16 +104,16 @@ RSpec.describe EventDisavowalController do
             },
           ),
         )
+      end
 
+      it 'assigns forbidden passwords' do
         params = {
           disavowal_token: disavowal_token,
           event_disavowal_password_reset_from_disavowal_form: { password: 'too short' },
         }
 
         post :create, params: params
-      end
 
-      it 'assigns forbidden passwords' do
         expect(@analytics).to have_logged_event(
           'Event disavowal password reset',
           build_analytics_hash(
@@ -116,14 +121,6 @@ RSpec.describe EventDisavowalController do
             errors: { password: ['Password must be at least 12 characters long'] },
           ),
         )
-
-        params = {
-          disavowal_token: disavowal_token,
-          event_disavowal_password_reset_from_disavowal_form: { password: 'too short' },
-        }
-
-        post :create, params: params
-
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
       end
     end
@@ -132,6 +129,13 @@ RSpec.describe EventDisavowalController do
       it 'tracks an analytics event' do
         event.update!(disavowed_at: Time.zone.now)
 
+        params = {
+          disavowal_token: disavowal_token,
+          event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
+        }
+
+        post :create, params: params
+
         expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
@@ -139,13 +143,6 @@ RSpec.describe EventDisavowalController do
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
           ),
         )
-
-        params = {
-          disavowal_token: disavowal_token,
-          event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
-        }
-
-        post :create, params: params
       end
     end
 
@@ -155,6 +152,11 @@ RSpec.describe EventDisavowalController do
       end
 
       it 'errors' do
+        post :create, params: {
+          disavowal_token: disavowal_token,
+          event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
+        }
+
         expect(@analytics).to have_logged_event(
           'Event disavowal token invalid',
           build_analytics_hash(
@@ -164,11 +166,6 @@ RSpec.describe EventDisavowalController do
             },
           ),
         )
-
-        post :create, params: {
-          disavowal_token: disavowal_token,
-          event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
-        }
       end
     end
   end

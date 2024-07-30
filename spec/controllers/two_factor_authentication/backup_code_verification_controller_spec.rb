@@ -13,11 +13,11 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       stub_analytics
       analytics_hash = { context: 'authentication' }
 
+      get :show
+
       expect(@analytics).to have_logged_event(
         'Multi-Factor Authentication: enter backup code visited', analytics_hash
       )
-
-      get :show
     end
   end
 

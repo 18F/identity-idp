@@ -176,6 +176,9 @@ RSpec.describe OutageStatus do
   describe '#track_event' do
     it 'logs status of all vendors' do
       analytics = FakeAnalytics.new
+
+      vendor_status.track_event(analytics)
+
       expect(analytics).to have_logged_event(
         'Vendor Outage',
         redirect_from: nil,
@@ -183,8 +186,6 @@ RSpec.describe OutageStatus do
           satisfy { |status| IdentityConfig::VENDOR_STATUS_OPTIONS.include?(status) }
         end,
       )
-
-      vendor_status.track_event(analytics)
     end
   end
 end

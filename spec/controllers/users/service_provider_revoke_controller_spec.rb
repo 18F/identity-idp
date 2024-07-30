@@ -31,12 +31,13 @@ RSpec.describe Users::ServiceProviderRevokeController do
 
     it 'logs an analytics event for visiting' do
       stub_analytics
+
+      subject
+
       expect(@analytics).to have_logged_event(
         'SP Revoke Consent: Visited',
         issuer: service_provider.issuer,
       )
-
-      subject
     end
 
     context 'when the sp_id is not valid' do
@@ -76,12 +77,13 @@ RSpec.describe Users::ServiceProviderRevokeController do
 
     it 'logs an analytics event for revoking' do
       stub_analytics
+
+      subject
+
       expect(@analytics).to have_logged_event(
         'SP Revoke Consent: Revoked',
         issuer: service_provider.issuer,
       )
-
-      subject
     end
 
     context 'when the sp_id is not valid' do

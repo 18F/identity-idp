@@ -149,6 +149,9 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'tracks events' do
             stub_analytics
+
+            action
+
             expect(@analytics).to have_logged_event(
               'OIDC Logout Requested',
               hash_including(
@@ -173,8 +176,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 oidc: true,
               ),
             )
-
-            action
           end
         end
 
@@ -213,8 +214,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 saml_request_valid: nil,
               ),
             )
-
-            action
           end
         end
 
@@ -223,6 +222,8 @@ RSpec.describe OpenidConnect::LogoutController do
           it 'tracks events' do
             stub_analytics
             errors_keys = [:id_token_hint]
+
+            action
 
             expect(@analytics).to have_logged_event(
               'OIDC Logout Requested',
@@ -238,7 +239,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 saml_request_valid: nil,
               ),
             )
-            action
           end
         end
       end
@@ -291,6 +291,9 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'renders logout confirmation page' do
             stub_analytics
+
+            action
+
             expect(@analytics).to have_logged_event(
               'OIDC Logout Requested',
               hash_including(
@@ -315,8 +318,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 oidc: true,
               ),
             )
-
-            action
             expect(response).to render_template(:confirm_logout)
             expect(response.body).to include service_provider.friendly_name
           end
@@ -340,6 +341,8 @@ RSpec.describe OpenidConnect::LogoutController do
           it 'tracks events' do
             stub_analytics
 
+            action
+
             errors = {
               redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
             }
@@ -357,8 +360,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 saml_request_valid: nil,
               ),
             )
-
-            action
           end
         end
       end
@@ -418,6 +419,9 @@ RSpec.describe OpenidConnect::LogoutController do
 
         it 'tracks events' do
           stub_analytics
+
+          action
+
           expect(@analytics).to have_logged_event(
             'OIDC Logout Requested',
             hash_including(
@@ -430,7 +434,6 @@ RSpec.describe OpenidConnect::LogoutController do
               oidc: true,
             ),
           )
-
           expect(@analytics).to have_logged_event(
             'OIDC Logout Page Visited',
             hash_including(
@@ -443,8 +446,6 @@ RSpec.describe OpenidConnect::LogoutController do
               oidc: true,
             ),
           )
-
-          action
         end
       end
 
@@ -466,6 +467,8 @@ RSpec.describe OpenidConnect::LogoutController do
         it 'tracks events' do
           stub_analytics
 
+          action
+
           errors = {
             id_token_hint: [t('openid_connect.logout.errors.id_token_hint_present')],
           }
@@ -483,8 +486,6 @@ RSpec.describe OpenidConnect::LogoutController do
               saml_request_valid: nil,
             ),
           )
-
-          action
         end
       end
 
@@ -506,6 +507,8 @@ RSpec.describe OpenidConnect::LogoutController do
         it 'tracks events' do
           stub_analytics
 
+          action
+
           errors = {
             redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
           }
@@ -523,8 +526,6 @@ RSpec.describe OpenidConnect::LogoutController do
               saml_request_valid: nil,
             ),
           )
-
-          action
         end
       end
     end
@@ -776,6 +777,8 @@ RSpec.describe OpenidConnect::LogoutController do
           it 'tracks events' do
             stub_analytics
 
+            action
+
             expect(@analytics).to have_logged_event(
               'OIDC Logout Submitted',
               success: true,
@@ -802,8 +805,6 @@ RSpec.describe OpenidConnect::LogoutController do
               method: nil,
               saml_request_valid: nil,
             )
-
-            action
           end
         end
 

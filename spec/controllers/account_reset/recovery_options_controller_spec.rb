@@ -21,9 +21,9 @@ RSpec.describe AccountReset::RecoveryOptionsController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to have_logged_event('Account Reset: Recovery Options Visited')
-
       get :show
+
+      expect(@analytics).to have_logged_event('Account Reset: Recovery Options Visited')
     end
   end
 
@@ -40,9 +40,9 @@ RSpec.describe AccountReset::RecoveryOptionsController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to have_logged_event('Account Reset: Cancel Account Recovery Options')
-
       post :cancel
+
+      expect(@analytics).to have_logged_event('Account Reset: Cancel Account Recovery Options')
     end
   end
 end

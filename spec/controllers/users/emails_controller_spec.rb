@@ -17,8 +17,9 @@ RSpec.describe Users::EmailsController do
       stub_analytics
     end
     it 'renders the index view' do
-      get :show
       expect(@analytics).to have_logged_event('Add Email Address Page Visited')
+
+      get :show
     end
   end
 
@@ -55,6 +56,8 @@ RSpec.describe Users::EmailsController do
       it 'sends email' do
         email = Faker::Internet.safe_email
 
+        post :add, params: { user: { email: email } }
+
         expect(@analytics).to have_logged_event(
           'Add Email Requested',
           success: true,
@@ -68,8 +71,6 @@ RSpec.describe Users::EmailsController do
           'Resend Add Email Requested',
           { success: true },
         )
-
-        post :add, params: { user: { email: email } }
         expect(last_email_sent).to have_subject(
           t('user_mailer.email_confirmation_instructions.subject'),
         )
@@ -85,12 +86,12 @@ RSpec.describe Users::EmailsController do
 
     context 'no valid email exists in session' do
       it 'shows an error and redirects to add email page' do
+        post :resend
+
         expect(@analytics).to have_logged_event(
           'Resend Add Email Requested',
           { success: false },
         )
-
-        post :resend
         expect(flash[:error]).to eq t('errors.general')
         expect(response).to redirect_to(add_email_url)
         expect(ActionMailer::Base.deliveries.count).to eq 0

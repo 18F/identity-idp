@@ -17,29 +17,29 @@ RSpec.describe SamlIdpController do
     it 'tracks the event when idp initiated' do
       stub_analytics
 
+      delete :logout, params: { path_year: path_year }
+
       result = { sp_initiated: false, oidc: false, saml_request_valid: true }
       expect(@analytics).to have_logged_event('Logout Initiated', hash_including(result))
-
-      delete :logout, params: { path_year: path_year }
     end
 
     it 'tracks the event when sp initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlLogoutRequest.new)
       stub_analytics
 
+      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
+
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
       expect(@analytics).to have_logged_event('Logout Initiated', hash_including(result))
-
-      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     it 'tracks the event when the saml request is invalid' do
       stub_analytics
 
+      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
+
       result = { sp_initiated: true, oidc: false, saml_request_valid: false }
       expect(@analytics).to have_logged_event('Logout Initiated', hash_including(result))
-
-      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     let(:service_provider) do
@@ -174,10 +174,10 @@ RSpec.describe SamlIdpController do
     it 'tracks the event when the saml request is invalid' do
       stub_analytics
 
+      post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
+
       result = { service_provider: nil, saml_request_valid: false }
       expect(@analytics).to have_logged_event('Remote Logout initiated', result)
-
-      post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     let(:agency) { create(:agency) }
@@ -764,6 +764,10 @@ RSpec.describe SamlIdpController do
 
       it 'tracks IAL2 authentication events' do
         stub_analytics
+
+        allow(controller).to receive(:identity_needs_verification?).and_return(false)
+        saml_get_auth(ial2_settings)
+
         expect(@analytics).to have_logged_event(
           'SAML Auth Request', {
             authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
@@ -801,9 +805,6 @@ RSpec.describe SamlIdpController do
           acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           vtr: nil,
         )
-
-        allow(controller).to receive(:identity_needs_verification?).and_return(false)
-        saml_get_auth(ial2_settings)
       end
 
       context 'profile is not in session' do
@@ -918,6 +919,10 @@ RSpec.describe SamlIdpController do
 
       it 'tracks IAL2 authentication events' do
         stub_analytics
+
+        allow(controller).to receive(:identity_needs_verification?).and_return(false)
+        saml_get_auth(ialmax_settings)
+
         expect(@analytics).to have_logged_event(
           'SAML Auth Request', {
             authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
@@ -955,9 +960,6 @@ RSpec.describe SamlIdpController do
           acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
           vtr: nil,
         )
-
-        allow(controller).to receive(:identity_needs_verification?).and_return(false)
-        saml_get_auth(ialmax_settings)
       end
 
       context 'profile is not in session' do
@@ -1168,6 +1170,9 @@ RSpec.describe SamlIdpController do
 
       it 'logs SAML Auth Request' do
         stub_analytics
+
+        saml_get_auth(saml_settings(overrides: { force_authn: true }))
+
         expect(@analytics).to have_logged_event(
           'SAML Auth Request', {
             authn_context: request_authn_contexts,
@@ -1178,8 +1183,6 @@ RSpec.describe SamlIdpController do
             user_fully_authenticated: false,
           }
         )
-
-        saml_get_auth(saml_settings(overrides: { force_authn: true }))
       end
     end
 
@@ -1902,6 +1905,9 @@ RSpec.describe SamlIdpController do
 
       it 'logs SAML Auth Request but does not log SAML Auth' do
         stub_analytics
+
+        saml_get_auth(saml_settings)
+
         expect(@analytics).to have_logged_event(
           'SAML Auth Request', {
             authn_context: request_authn_contexts,
@@ -1912,8 +1918,6 @@ RSpec.describe SamlIdpController do
             user_fully_authenticated: false,
           }
         )
-
-        saml_get_auth(saml_settings)
       end
     end
 
@@ -2351,6 +2355,8 @@ RSpec.describe SamlIdpController do
           matching_cert_serial: nil,
         }
 
+        get :auth, params: { path_year: path_year }
+
         expect(@analytics).to have_logged_event(
           'SAML Auth Request', {
             authn_context: [
@@ -2365,8 +2371,6 @@ RSpec.describe SamlIdpController do
           }
         )
         expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
-
-        get :auth, params: { path_year: path_year }
       end
     end
 
@@ -2405,6 +2409,8 @@ RSpec.describe SamlIdpController do
           encryption_cert_matches_matching_cert: true,
         }
 
+        generate_saml_response(user)
+
         expect(@analytics).to have_logged_event(
           'SAML Auth Request', {
             authn_context: request_authn_contexts,
@@ -2431,8 +2437,6 @@ RSpec.describe SamlIdpController do
           ].join(' '),
           vtr: nil,
         )
-
-        generate_saml_response(user)
       end
     end
 
@@ -2462,6 +2466,8 @@ RSpec.describe SamlIdpController do
           encryption_cert_matches_matching_cert: true,
         }
 
+        generate_saml_response(user)
+
         expect(@analytics).to have_logged_event(
           'SAML Auth Request', {
             authn_context: request_authn_contexts,
@@ -2488,8 +2494,6 @@ RSpec.describe SamlIdpController do
           ].join(' '),
           vtr: nil,
         )
-
-        generate_saml_response(user)
       end
     end
   end
