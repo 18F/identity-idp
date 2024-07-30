@@ -6,23 +6,21 @@
 class RateLimiter
   attr_reader :rate_limit_type
 
-  INCREMENT_SCRIPT = <<~LUA
+  EXPONENTIAL_INCREMENT_SCRIPT = <<~LUA
     local count = redis.call('incr', KEYS[1])
     local now = tonumber(ARGV[1])
     local minutes = tonumber(ARGV[2])
     local exponential_factor = tonumber(ARGV[3])
     local attempt_window_max = tonumber(ARGV[4])
-    if exponential_factor then
-      minutes = minutes * (exponential_factor ^ (count - 1))
-      if attempt_window_max then
-        minutes = math.min(minutes, attempt_window_max)
-      end
+    minutes = minutes * (exponential_factor ^ (count - 1))
+    if attempt_window_max then
+      minutes = math.min(minutes, attempt_window_max)
     end
     redis.call('expireat', KEYS[1], now + (minutes * 60))
     return count
   LUA
 
-  INCREMENT_SCRIPT_SHA1 = Digest::SHA1.hexdigest(INCREMENT_SCRIPT).freeze
+  EXPONENTIAL_INCREMENT_SCRIPT_SHA1 = Digest::SHA1.hexdigest(EXPONENTIAL_INCREMENT_SCRIPT).freeze
 
   def initialize(rate_limit_type:, user: nil, target: nil)
     @rate_limit_type = rate_limit_type
@@ -111,10 +109,10 @@ class RateLimiter
         attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
         script_args = [now.to_i, minutes, exponential_factor, attempt_window_max].map(&:to_s)
         begin
-          value = client.evalsha(INCREMENT_SCRIPT_SHA1, [key], script_args)
+          value = client.evalsha(EXPONENTIAL_INCREMENT_SCRIPT_SHA1, [key], script_args)
         rescue Redis::CommandError => error
           raise error unless error.message.start_with?('NOSCRIPT')
-          value = client.eval(INCREMENT_SCRIPT, [key], script_args)
+          value = client.eval(EXPONENTIAL_INCREMENT_SCRIPT, [key], script_args)
         end
       else
         value, _success = client.multi do |multi|
