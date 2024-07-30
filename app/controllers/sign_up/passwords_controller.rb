@@ -3,6 +3,7 @@
 module SignUp
   class PasswordsController < ApplicationController
     include UnconfirmedUserConcern
+    include NewDeviceConcern
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
@@ -76,6 +77,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
+      set_new_device_session(false)
       user_session[:in_account_creation_flow] = true
       if current_user.accepted_rules_of_use_still_valid?
         redirect_to authentication_methods_setup_url
