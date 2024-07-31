@@ -11,7 +11,6 @@ class TwoFactorOptionsPresenter
               :user_agent
 
   delegate :two_factor_enabled?, to: :mfa_policy
-  delegate :has_gov_or_mil_email?, to: :user, prefix: :user
 
   def initialize(
     user_agent:,
@@ -40,9 +39,9 @@ class TwoFactorOptionsPresenter
       TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
       TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
       TwoFactorAuthentication::SetUpPhoneSelectionPresenter,
-      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
       TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
       TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
     ].map do |klass|
       klass.new(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
     end.

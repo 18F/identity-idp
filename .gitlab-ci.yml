@@ -226,7 +226,7 @@ migrate:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:13.9
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
@@ -258,10 +258,10 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.9
+    - name: public.ecr.aws/docker/library/postgres:13.9
       alias: db-postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
-    - name: redis:7.0
+    - name: public.ecr.aws/docker/library/redis:7.0
       alias: db-redis
   artifacts:
     expire_in: 31d
@@ -288,7 +288,7 @@ specs:
     - cp -a keys.example keys
     - cp -a certs.example certs
     - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\" > config/application.yml"
+    - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\n  redis_throttle_url: 'redis://db-redis:6379/1'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
@@ -446,16 +446,16 @@ trigger_devops:
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
+        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
+        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
         "loginDatacenter": "true",
         "loginDomain": "identitysandbox.gov",
         "loginEnv": "$CI_ENVIRONMENT_SLUG",
         "loginHostRole": "idp",
         "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-        "dashboardUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
+        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
+        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
+        "dashboardUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov"
       }
       EOF
       )
@@ -478,15 +478,15 @@ trigger_devops:
           "throttleUrl": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1",
           "url": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"
         },
-        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
+        "assetHost": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
+        "domainName": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
         "loginDatacenter": "true",
         "loginDomain": "identitysandbox.gov",
         "loginEnv": "$CI_ENVIRONMENT_SLUG",
         "loginHostRole": "worker",
         "loginSkipRemoteConfig": "true",
-        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/",
-        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov/"
+        "pivcacServiceUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/",
+        "pivcacVerifyTokenUrl": "https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov/"
       }
       EOF
       )
@@ -494,14 +494,14 @@ trigger_devops:
       export PIVCAC_CONFIG=$(cat <<EOF
       {
         "kubernetesReviewApp": "true",
-        "clientCertS3Bucket": "login-gov-pivcac-public-cert-reviewapp.894947205914-us-west-2",
+        "clientCertS3Bucket": "login-gov-pivcac-public-cert-reviewapps.894947205914-us-west-2",
         "postgres": {
           "sslmode": "prefer",
           "name": "idp",
           "host": "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"
         },
-        "idpHost": "$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov"
+        "idpHost": "$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
+        "domainName": "$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov"
       }
       EOF
       )
@@ -517,11 +517,11 @@ trigger_devops:
         "newrelic": {
           "enabled": "false"
         },
-        "samlSpIssuer": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov",
-        "idpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "idpSpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov",
-        "postLogoutUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov",
-        "domainName": "$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov"
+        "samlSpIssuer": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov",
+        "idpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
+        "idpSpUrl": "https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov",
+        "postLogoutUrl": "https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov",
+        "domainName": "$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov"
       }
       EOF
       )
@@ -529,7 +529,7 @@ trigger_devops:
     - >-
       helm upgrade --install --namespace review-apps
       --debug
-      --set env="reviewapp-$CI_ENVIRONMENT_SLUG"
+      --set env="reviewapps-$CI_ENVIRONMENT_SLUG"
       --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set idp.image.tag="${CI_COMMIT_SHA}"
       --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
@@ -545,19 +545,19 @@ trigger_devops:
       --set-json idp.config="$IDP_CONFIG"
       --set-json worker.config="$WORKER_CONFIG"
       --set-json pivcac.config="$PIVCAC_CONFIG"
-      --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
-      --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
+      --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
+      --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
+      --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       $CI_ENVIRONMENT_SLUG ./identity-idp-helm-chart
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name reviewapp'"
     - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-login-chart-idp -n review-apps -- /app/bin/rails console"
     - echo "Address of IDP review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov
     - echo "Address of Dashboard review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapp.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
 
 
 review-app:
@@ -565,11 +565,11 @@ review-app:
   allow_failure: true
   needs:
     - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   extends: .deploy
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+    url: https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
     on_stop: stop-review-app
     auto_stop_in: 2 days
   rules:
@@ -578,7 +578,7 @@ review-app:
       when: never
 
 stop-review-app:
-  resource_group: $CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   script:
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
@@ -602,12 +602,12 @@ deploy_production:
   allow_failure: true
   needs:
     - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+  resource_group: $CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   extends: .deploy
   environment:
     name: production
     deployment_tier: production
-    url: https://$CI_ENVIRONMENT_SLUG.reviewapp.identitysandbox.gov
+    url: https://$CI_ENVIRONMENT_SLUG.reviewapps.identitysandbox.gov
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
 

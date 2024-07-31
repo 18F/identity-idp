@@ -83,7 +83,7 @@ class RecaptchaForm
     end
 
     success, score, error_codes = response.body.values_at('success', 'score', 'error-codes')
-    errors, reasons = error_codes.to_a.partition { |error_code| is_result_error?(error_code) }
+    errors, reasons = error_codes.to_a.partition { |error_code| result_error?(error_code) }
     RecaptchaResult.new(success:, score:, errors:, reasons:)
   end
 
@@ -105,7 +105,7 @@ class RecaptchaForm
     end
   end
 
-  def is_result_error?(error_code)
+  def result_error?(error_code)
     RESULT_ERRORS.include?(error_code)
   end
 

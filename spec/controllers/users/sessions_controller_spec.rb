@@ -18,17 +18,17 @@ RSpec.describe Users::SessionsController, devise: true do
   describe 'DELETE /logout' do
     it 'tracks a logout event' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(
+      sign_in_as_user
+
+      delete :destroy
+
+      expect(@analytics).to have_logged_event(
         'Logout Initiated',
         hash_including(
           sp_initiated: false,
           oidc: false,
         ),
       )
-
-      sign_in_as_user
-
-      delete :destroy
       expect(controller.current_user).to be nil
     end
   end
@@ -253,6 +253,18 @@ RSpec.describe Users::SessionsController, devise: true do
       )
     end
 
+    it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
+      user = create(:user, :fully_registered)
+
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+
+      post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
+
+      expect(response).to redirect_to sign_in_security_check_failed_url
+    end
+
     it 'tracks count of multiple unsuccessful authentication attempts' do
       user = create(
         :user,
@@ -332,7 +344,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'stores in session redirect to check compromise' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_truthy
+            expect(controller.session[:redirect_to_change_password]).to be_truthy
           end
         end
 
@@ -350,7 +362,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not update the user ' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
       end
@@ -377,7 +389,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'stores in session false to attempt to redirect password compromised' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
 
@@ -395,7 +407,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
           it 'does not update the user ' do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_password_compromised]).to be_falsey
+            expect(controller.session[:redirect_to_change_password]).to be_falsey
           end
         end
       end
@@ -479,11 +491,9 @@ RSpec.describe Users::SessionsController, devise: true do
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
-
       post :create, params: { user: { email: user.email, password: user.password } }
 
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end
@@ -494,12 +504,10 @@ RSpec.describe Users::SessionsController, devise: true do
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
-
       request.env['HTTP_REFERER'] = '@@@'
       post :create, params: { user: { email: user.email, password: user.password } }
 
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end
@@ -713,12 +721,12 @@ RSpec.describe Users::SessionsController, devise: true do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
 
-        expect(@analytics).to receive(:track_event).with(
+        get :new
+
+        expect(@analytics).to have_logged_event(
           'Sign in page visited',
           flash: 'hello',
         )
-
-        get :new
         expect(subject.session[:sign_in_page_visited_at]).to_not be(nil)
       end
 

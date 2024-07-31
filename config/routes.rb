@@ -183,6 +183,8 @@ Rails.application.routes.draw do
       post '/test/device_profiling' => 'test/device_profiling#create'
     end
 
+    get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
+
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
 
@@ -293,7 +295,6 @@ Rails.application.routes.draw do
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
     get '/user_please_call' => 'users/please_call#show'
-    get '/user_password_compromised' => 'users/password_compromised#show'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',

@@ -902,6 +902,23 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     end
   end
 
+  context 'Recaptcha check fails' do
+    let(:user) { create(:user, :fully_registered) }
+    before do
+      allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
+      allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
+    end
+
+    it 'redirects user to security check failed page' do
+      visit new_user_session_path
+      fill_in :user_recaptcha_mock_score, with: '0.1'
+      fill_in_credentials_and_submit(user.email, user.password)
+
+      expect(current_path).to eq sign_in_security_check_failed_path
+    end
+  end
+
   context 'check_password_compromised feature toggle is true' do
     before do
       allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
@@ -915,13 +932,31 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
           allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold).
             and_return(2)
         end
-        it 'should bring user to compromised password page' do
-          visit new_user_session_path
+        it 'should bring user to manage password page with warning' do
+          visit_idp_from_sp_with_ial1(:oidc)
           fill_in_credentials_and_submit(user.email, user.password)
           fill_in_code_with_last_phone_otp
           click_submit_default
 
-          expect(current_path).to eq user_password_compromised_path
+          expect(current_path).to eq manage_password_path
+        end
+
+        it 'should redirect user to after_sign_in_path after editing password' do
+          visit_idp_from_sp_with_ial1(:oidc)
+          fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+
+          expect(current_path).to eq manage_password_path
+
+          password = 'salty pickles'
+          fill_in t('forms.passwords.edit.labels.password'), with: password
+          fill_in t('components.password_confirmation.confirm_label'), with: password
+          click_button t('forms.passwords.edit.buttons.submit')
+
+          click_agree_and_continue
+
+          expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
         end
       end
 

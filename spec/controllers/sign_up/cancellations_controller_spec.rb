@@ -7,11 +7,11 @@ RSpec.describe SignUp::CancellationsController do
       stub_analytics
       properties = { request_came_from: 'no referer' }
 
-      expect(@analytics).to receive(:track_event).with(
+      get :new
+
+      expect(@analytics).to have_logged_event(
         'User registration: cancellation visited', properties
       )
-
-      get :new
     end
 
     it 'tracks the event in analytics when referer is present' do
@@ -20,11 +20,11 @@ RSpec.describe SignUp::CancellationsController do
       request.env['HTTP_REFERER'] = 'http://example.com/'
       properties = { request_came_from: 'users/sessions#new' }
 
-      expect(@analytics).to receive(:track_event).with(
+      get :new
+
+      expect(@analytics).to have_logged_event(
         'User registration: cancellation visited', properties
       )
-
-      get :new
     end
   end
 
@@ -110,9 +110,9 @@ RSpec.describe SignUp::CancellationsController do
       stub_analytics
       properties = { request_came_from: 'no referer' }
 
-      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
-
       delete :destroy
+
+      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
     end
 
     it 'tracks the event in analytics when referer is present' do
@@ -122,13 +122,14 @@ RSpec.describe SignUp::CancellationsController do
       request.env['HTTP_REFERER'] = 'http://example.com/'
       properties = { request_came_from: 'users/sessions#new' }
 
-      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
-
       delete :destroy
+
+      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
     end
 
     it 'calls ParseControllerFromReferer' do
       user = create(:user)
+
       stub_sign_in_before_2fa(user)
       expect_any_instance_of(ParseControllerFromReferer).to receive(:call).and_call_original
 

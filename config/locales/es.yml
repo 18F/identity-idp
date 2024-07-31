@@ -825,7 +825,7 @@ forms.backup_code_reminder.body_info: Si no puede acceder a su método de autent
 forms.backup_code_reminder.have_codes: Tengo mis códigos
 forms.backup_code_reminder.heading: '¿Todavía tiene sus códigos de recuperación?'
 forms.backup_code_reminder.need_new_codes: Necesito un conjunto nuevo de códigos de recuperación
-forms.backup_code.caution_codes: Cada código solo se puede usar una vez. Cuando haya usado los 10 códigos, le enviaremos códigos nuevos.
+forms.backup_code.caution_codes: Cada código solo se puede usar una vez. Cuando haya usado los %{count} códigos, le enviaremos códigos nuevos.
 forms.backup_code.caution_delete: Si elimina sus códigos de recuperación, ya no podrá usarlos para iniciar sesión.
 forms.backup_code.confirm_delete: '¿Está seguro de que desea eliminar sus códigos de recuperación?'
 forms.backup_code.generate: Obtener códigos
@@ -1039,6 +1039,7 @@ idv.failure.phone.rate_limited.body: Por motivos de seguridad, limitamos el núm
 idv.failure.phone.rate_limited.gpo.button: Verificar por correo
 idv.failure.phone.rate_limited.heading: No pudimos verificar su identidad por teléfono
 idv.failure.phone.rate_limited.option_try_again_later_html: Cancelar y empezar de nuevo en <strong>%{time_left}</strong>
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: Puede volver a intentarlo después de <strong>%{time_left}</strong>.
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Verificar por correo, lo que tarda de <strong>5 a 10 días</strong>
 idv.failure.phone.rate_limited.options_header: 'Usted puede:'
 idv.failure.phone.timeout: Terminó el tiempo de nuestra solicitud para verificar su información. Vuelva a intentarlo.
@@ -1503,6 +1504,13 @@ risc.security_event.errors.typ_error: encabezado de tipo debe ser %{expected_typ
 saml_idp.auth.error.title: Error
 saml_idp.shared.saml_post_binding.heading: Enviar para continuar
 saml_idp.shared.saml_post_binding.no_js: JavaScript parece estar desactivado en su navegador. Por lo general, este paso es automático, pero, debido a que tiene JavaScript desactivado, haga clic en el botón Enviar para continuar iniciando sesión o cerrándola.
+security_check_failed.contact: Contacte con el servicio de asistencia de %{app_name}
+security_check_failed.details: No reconocemos el dispositivo o el navegador desde el que está iniciando sesión.
+security_check_failed.info_p1: 'Utilice el mismo dispositivo y navegador con el que creó su cuenta en %{app_name}.'
+security_check_failed.info_p2_html: Intente <a href="%{piv_cac_url}">iniciar sesión con su identificación de empleado del gobierno</a> si es un empleado del gobierno.
+security_check_failed.info_p3: Desactive cualquier VPN, bloqueador de anuncios y borre su caché.
+security_check_failed.learn_more: Obtenga más información sobre las comprobaciones de seguridad de %{app_name}
+security_check_failed.title: Falló la comprobación de seguridad
 service_providers.errors.generic_sp_name: Esta agencia
 service_providers.errors.inactive.button_text: Ver mi cuenta de %{app_name}
 service_providers.errors.inactive.heading: '%{sp_name} ya no utiliza %{app_name}'
@@ -1641,7 +1649,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>Solo ha configurad
 two_factor_authentication.choose_another_option: '‹ Elija otro método de autenticación'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>Los códigos de recuperación son el método de autenticación menos utilizado,</strong> ya que se pueden perder con facilidad. Pruebe una opción más segura, como una aplicación de autenticación o una clave de seguridad.'
-  - Le enviaremos 10 códigos que puede descargar, imprimir, copiar o anotar. Ingresará un código cada vez que inicie sesión.
+  - Le enviaremos %{number_of_codes} códigos que puede descargar, imprimir, copiar o anotar. Ingresará un código cada vez que inicie sesión.
 two_factor_authentication.confirm_backup_code_setup_title: ¿Está seguro de que desea usar códigos de recuperación?
 two_factor_authentication.form_legend: Elija sus métodos de autenticación
 two_factor_authentication.header_text: Introduzca su código de un solo uso
@@ -1735,7 +1743,7 @@ two_factor_authentication.two_factor_choice: Configuración del método de auten
 two_factor_authentication.two_factor_choice_options.auth_app: Aplicación de autenticación
 two_factor_authentication.two_factor_choice_options.auth_app_info: Descargue o use la aplicación de autenticación que prefiera para generar códigos seguros.
 two_factor_authentication.two_factor_choice_options.backup_code: Códigos de recuperación
-two_factor_authentication.two_factor_choice_options.backup_code_info: Una lista de 10 códigos que puede imprimir o guardar en su dispositivo. Cuando haya usado el último código, generaremos una lista nueva. Recuerde que los códigos de recuperación se pierden con facilidad.
+two_factor_authentication.two_factor_choice_options.backup_code_info: Una lista de %{count} códigos que puede imprimir o guardar en su dispositivo. Debido a que los códigos de recuperación son fáciles de perder, elija esta opción como último recurso.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} añadida'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} añadida'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Añadida
@@ -1941,6 +1949,7 @@ users.delete.bullet_4: Notificaremos a las agencias a las que acceda con %{app_n
 users.delete.heading: '¿Está seguro de que desea eliminar su cuenta?'
 users.delete.instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
 users.delete.subheading: 'Si elimina su cuenta:'
+users.password_compromised.warning: Hemos encontrado su contraseña en una filtración de datos en otro sitio o aplicación. %{app_name} requiere que cambie su contraseña para proteger su cuenta.
 users.personal_key.accessible_labels.code_example: Un ejemplo de clave personal con 16 caracteres
 users.personal_key.accessible_labels.preview: Vista previa de la clave personal
 users.personal_key.confirmation_error: Ingresó una clave personal incorrecta.

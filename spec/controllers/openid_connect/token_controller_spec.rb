@@ -52,8 +52,11 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
 
       it 'tracks a successful event in analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: token', {
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: token', {
             success: true,
             client_id: client_id,
             user_id: user.uuid,
@@ -63,8 +66,8 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
             service_provider_pkce: nil,
             expires_in: 0,
             ial: 1,
-          })
-        action
+          }
+        )
       end
     end
 
@@ -82,8 +85,11 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
 
       it 'tracks an unsuccessful event in analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: token', {
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: token', {
             success: false,
             client_id: client_id,
             user_id: user.uuid,
@@ -94,9 +100,8 @@ RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
             error_details: hash_including(:grant_type),
             expires_in: nil,
             ial: 1,
-          })
-
-        action
+          }
+        )
       end
     end
 

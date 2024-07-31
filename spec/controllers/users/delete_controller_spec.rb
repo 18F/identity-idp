@@ -16,10 +16,9 @@ RSpec.describe Users::DeleteController do
       stub_analytics
       stub_signed_in_user
 
-      expect(@analytics).to receive(:track_event).with('Account Delete visited')
-
       get :show
 
+      expect(@analytics).to have_logged_event('Account Delete visited')
       expect(response).to render_template(:show)
     end
   end

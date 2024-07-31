@@ -68,9 +68,9 @@ RSpec.describe AlertComponent, type: :component do
     expect(rendered).to have_selector('.usa-alert[role="alert"]')
   end
 
-  it 'raises error for unknown type' do
+  it 'validates type' do
     expect do
       render_inline AlertComponent.new(type: 'alert', message: 'Attention!')
-    end.to raise_error(ArgumentError)
+    end.to raise_error(ActiveModel::ValidationError)
   end
 end
