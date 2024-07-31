@@ -18,17 +18,17 @@ RSpec.describe Users::SessionsController, devise: true do
   describe 'DELETE /logout' do
     it 'tracks a logout event' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(
+      sign_in_as_user
+
+      delete :destroy
+
+      expect(@analytics).to have_logged_event(
         'Logout Initiated',
         hash_including(
           sp_initiated: false,
           oidc: false,
         ),
       )
-
-      sign_in_as_user
-
-      delete :destroy
       expect(controller.current_user).to be nil
     end
   end
@@ -491,11 +491,9 @@ RSpec.describe Users::SessionsController, devise: true do
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
-
       post :create, params: { user: { email: user.email, password: user.password } }
 
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end
@@ -506,12 +504,10 @@ RSpec.describe Users::SessionsController, devise: true do
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
-
       request.env['HTTP_REFERER'] = '@@@'
       post :create, params: { user: { email: user.email, password: user.password } }
 
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end
@@ -725,12 +721,12 @@ RSpec.describe Users::SessionsController, devise: true do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
 
-        expect(@analytics).to receive(:track_event).with(
+        get :new
+
+        expect(@analytics).to have_logged_event(
           'Sign in page visited',
           flash: 'hello',
         )
-
-        get :new
         expect(subject.session[:sign_in_page_visited_at]).to_not be(nil)
       end
 

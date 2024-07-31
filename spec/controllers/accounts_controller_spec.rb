@@ -73,10 +73,9 @@ RSpec.describe AccountsController do
 
         sign_in user
 
-        expect(@analytics).to receive(:track_event).with('Account Page Visited')
-
         get :show
 
+        expect(@analytics).to have_logged_event('Account Page Visited')
         expect(response).to_not be_redirect
       end
     end

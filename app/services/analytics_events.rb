@@ -138,6 +138,7 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
+  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean] sms_phone does the user have a phone factor configured?
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
@@ -147,6 +148,7 @@ module AnalyticsEvents
   # An account reset has been requested
   def account_reset_request(
     success:,
+    errors:,
     sms_phone:,
     totp:,
     piv_cac:,
@@ -159,6 +161,7 @@ module AnalyticsEvents
       'Account Reset: request',
       {
         success: success,
+        errors:,
         sms_phone: sms_phone,
         totp: totp,
         piv_cac: piv_cac,
@@ -190,13 +193,15 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] domain_name Domain name of email address submitted
   # Tracks request for adding new emails to an account
-  def add_email_request(success:, errors:, error_details: nil, **extra)
+  def add_email_request(success:, errors:, domain_name:, error_details: nil, **extra)
     track_event(
       'Add Email Requested',
       success:,
       errors:,
       error_details:,
+      domain_name:,
       **extra,
     )
   end
