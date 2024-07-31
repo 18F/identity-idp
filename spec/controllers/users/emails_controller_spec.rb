@@ -49,7 +49,6 @@ RSpec.describe Users::EmailsController do
     before do
       stub_sign_in(user)
       stub_analytics
-      allow(@analytics).to receive(:track_event)
     end
 
     context 'valid email exists in session' do

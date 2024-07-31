@@ -376,7 +376,6 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         Rack::Attack::EMAIL_REGISTRATION_PATHS.each do |path|
           headers = { REMOTE_ADDR: '1.2.3.4' }
