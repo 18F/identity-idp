@@ -24,7 +24,7 @@ class OpenidConnectUserInfoPresenter
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     if identity.vtr.nil?
-      info[:ial] = asserted_ial_value
+      info[:ial] = authn_context_resolver.asserted_ial_acr
       info[:aal] = identity.requested_aal_value
     else
       info[:vot] = vot_values
@@ -40,26 +40,13 @@ class OpenidConnectUserInfoPresenter
 
   private
 
-  def asserted_ial_value
-    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless active_profile.present?
-
-    if resolved_authn_context_result.biometric_comparison?
-      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
-    elsif resolved_authn_context_result.identity_proofing? ||
-          resolved_authn_context_result.ialmax?
-      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    else
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    end
-  end
-
   def vot_values
     AuthnContextResolver.new(
       user: identity.user,
       vtr: JSON.parse(identity.vtr),
       service_provider: identity&.service_provider_record,
       acr_values: nil,
-    ).resolve.expanded_component_values
+    ).result.expanded_component_values
   end
 
   def uuid_from_sp_identity(identity)
@@ -151,12 +138,16 @@ class OpenidConnectUserInfoPresenter
   end
 
   def resolved_authn_context_result
-    @resolved_authn_context_result ||= AuthnContextResolver.new(
+    authn_context_resolver.result
+  end
+
+  def authn_context_resolver
+    @authn_context_resolver ||= AuthnContextResolver.new(
       user: identity.user,
       service_provider: identity&.service_provider_record,
       vtr: identity.vtr.presence && JSON.parse(identity.vtr),
       acr_values: identity.acr_values,
-    ).resolve
+    )
   end
 
   def ial2_session?

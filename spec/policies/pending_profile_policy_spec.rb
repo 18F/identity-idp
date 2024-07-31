@@ -8,7 +8,7 @@ RSpec.describe PendingProfilePolicy do
       service_provider: nil,
       vtr: vtr,
       acr_values: acr_values,
-    ).resolve
+    ).result
   end
   let(:vtr) { nil }
   let(:acr_values) { nil }
