@@ -7,7 +7,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
         success: false,
         error_details: { confirmation_token: { not_found: true } },
         errors: { confirmation_token: ['not found'] },
-        user_id: nil,
       }
     end
 
