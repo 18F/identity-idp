@@ -14,4 +14,4 @@ namespace :federal_email_domains do
     end
   end
 end
-# rake "fed_email_domains:load_to_database"
+# rake "fed_email_domains:load_to_db"
