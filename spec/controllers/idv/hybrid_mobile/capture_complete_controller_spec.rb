@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridMobile::CaptureCompleteController do
+RSpec.describe Idv::HybridMobile::CaptureCompleteController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do
@@ -28,7 +28,6 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:confirm_document_capture_session_complete).
       and_return(true)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
@@ -63,7 +62,7 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog capture_complete_view_count' do

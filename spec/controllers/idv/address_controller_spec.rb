@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::AddressController do
+RSpec.describe Idv::AddressController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   let(:pii_from_doc) { Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT) }
