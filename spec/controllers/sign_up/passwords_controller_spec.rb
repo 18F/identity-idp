@@ -20,13 +20,6 @@ RSpec.describe SignUp::PasswordsController do
 
     context 'with valid password' do
       let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
-      let(:analytics_hash) do
-        {
-          success: true,
-          errors: {},
-          user_id: user.uuid,
-        }
-      end
 
       before do
         stub_analytics
@@ -37,11 +30,16 @@ RSpec.describe SignUp::PasswordsController do
 
         expect(@analytics).to have_logged_event(
           'User Registration: Email Confirmation',
-          analytics_hash,
+          success: true,
+          errors: {},
+          user_id: user.uuid,
         )
         expect(@analytics).to have_logged_event(
           'Password Creation',
-          analytics_hash.merge({ request_id_present: false }),
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+          request_id_present: false,
         )
       end
 

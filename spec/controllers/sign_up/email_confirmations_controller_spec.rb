@@ -61,17 +61,13 @@ RSpec.describe SignUp::EmailConfirmationsController do
     it 'tracks already confirmed token' do
       email_address = create(:email_address, confirmation_token: 'foo')
 
-      analytics_hash = {
-        success: false,
-        errors: { email: [t('errors.messages.already_confirmed')] },
-        user_id: email_address.user.uuid,
-      }
-
       get :create, params: { confirmation_token: 'foo' }
 
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
-        analytics_hash,
+        success: false,
+        errors: { email: [t('errors.messages.already_confirmed')] },
+        user_id: email_address.user.uuid,
       )
     end
 
@@ -86,18 +82,14 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user: build(:user, email: nil),
       )
 
-      analytics_hash = {
-        success: false,
-        errors: { confirmation_token: [t('errors.messages.expired')] },
-        error_details: { confirmation_token: { expired: true } },
-        user_id: email_address.user.uuid,
-      }
-
       get :create, params: { confirmation_token: 'foo' }
 
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
-        analytics_hash,
+        success: false,
+        errors: { confirmation_token: [t('errors.messages.expired')] },
+        error_details: { confirmation_token: { expired: true } },
+        user_id: email_address.user.uuid,
       )
       expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
       expect(response).to redirect_to sign_up_register_url
@@ -113,18 +105,14 @@ RSpec.describe SignUp::EmailConfirmationsController do
       )
       user = email_address.user
 
-      analytics_hash = {
-        success: false,
-        errors: { confirmation_token: [t('errors.messages.expired')] },
-        error_details: { confirmation_token: { expired: true } },
-        user_id: user.uuid,
-      }
-
       get :create, params: { confirmation_token: 'foo' }
 
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
-        analytics_hash,
+        success: false,
+        errors: { confirmation_token: [t('errors.messages.expired')] },
+        error_details: { confirmation_token: { expired: true } },
+        user_id: user.uuid,
       )
       expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
       expect(response).to redirect_to sign_up_register_url
@@ -179,20 +167,15 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user: build(:user, email: nil),
       )
       user = email_address.user
-
       stub_analytics
-
-      analytics_hash = {
-        success: true,
-        errors: {},
-        user_id: user.uuid,
-      }
 
       get :create, params: { confirmation_token: 'foo' }
 
       expect(@analytics).to have_logged_event(
         'User Registration: Email Confirmation',
-        analytics_hash,
+        success: true,
+        errors: {},
+        user_id: user.uuid,
       )
     end
   end

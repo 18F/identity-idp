@@ -45,13 +45,11 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController,
 
         it 'tracks an analytics event' do
           get :show, params: { platform: true }
-          result = {
-            context: 'authentication',
-            multi_factor_auth_method: 'webauthn_platform',
-          }
+
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication: enter webAuthn authentication visited',
-            result,
+            context: 'authentication',
+            multi_factor_auth_method: 'webauthn_platform',
           )
         end
 
