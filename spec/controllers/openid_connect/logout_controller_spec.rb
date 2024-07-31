@@ -197,6 +197,8 @@ RSpec.describe OpenidConnect::LogoutController do
           it 'tracks events' do
             stub_analytics
 
+            action
+
             errors = {
               redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
             }

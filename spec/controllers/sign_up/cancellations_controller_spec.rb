@@ -130,10 +130,10 @@ RSpec.describe SignUp::CancellationsController do
     it 'calls ParseControllerFromReferer' do
       user = create(:user)
 
-      delete :destroy
-
       stub_sign_in_before_2fa(user)
       expect_any_instance_of(ParseControllerFromReferer).to receive(:call).and_call_original
+
+      delete :destroy
     end
   end
 end
