@@ -4,6 +4,7 @@
 require 'csv'
 namespace :disposable_email_domains do
   task :load, %i[s3_secrets_path] => [:environment] do |_task, args|
+    binding.pry
     # Need to increase statement timeout since command takes a long time.
     ActiveRecord::Base.connection.execute 'SET statement_timeout = 200000'
     file = Identity::Hostdata.secrets_s3.read_file(args[:s3_secrets_path])
