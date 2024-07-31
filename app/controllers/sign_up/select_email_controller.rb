@@ -50,6 +50,5 @@ module SignUp
     def form_params
       params.fetch(:select_email_form, {}).permit(:selection)
     end
-    ## method to update user selected sp email
   end
 end
