@@ -42,7 +42,6 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
             to receive(:[]).and_wrap_original do |impl, param_name|
             param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
           end
-
         end
 
         context 'with a passing selfie' do

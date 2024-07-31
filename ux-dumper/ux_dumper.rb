@@ -67,6 +67,7 @@ class UxDumper
     (links + forms).
       reject { |url| URI(url).scheme == 'https' }.
       map { |url| URI(url).path }.
+      compact.
       sort.
       uniq
   end
