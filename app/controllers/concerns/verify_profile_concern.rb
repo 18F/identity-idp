@@ -18,7 +18,6 @@ module VerifyProfileConcern
     @pending_profile_policy ||= PendingProfilePolicy.new(
       user: current_user,
       resolved_authn_context_result: resolved_authn_context_result,
-      biometric_comparison_requested: nil,
     )
   end
 
