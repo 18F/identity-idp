@@ -186,6 +186,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       ).once
     end
 
+    it 'renders the email sent success alert' do
+      render
+
+      expect(rendered).to have_content(t('in_person_proofing.body.barcode.email_sent'))
+    end
+
     it 'template does not display Enhanced In-Person Proofing specific content' do
       render
 
@@ -259,6 +265,12 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
           article: 'verify-your-identity-in-person',
         ),
       ).once
+    end
+
+    it 'renders the email sent success alert' do
+      render
+
+      expect(rendered).to have_content(t('in_person_proofing.body.barcode.email_sent'))
     end
 
     context 'template displays additional (EIPP specific) content' do

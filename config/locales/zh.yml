@@ -1192,7 +1192,7 @@ in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任�
 in_person_proofing.body.barcode.deadline_restart: 如果你在截止日期后才去邮局，你的信息不会被存储，你又得从头开始这一过程。
 in_person_proofing.body.barcode.eipp_tag: GSA 增强型试行条形码
 in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
-in_person_proofing.body.barcode.email_sent: 我们已将该信息发送到你用来登录的电邮。
+in_person_proofing.body.barcode.email_sent: 我们已将条形码和以下信息发到了您用来登录的电邮地址
 in_person_proofing.body.barcode.learn_more: 了解有关携带物品的更多信息
 in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？

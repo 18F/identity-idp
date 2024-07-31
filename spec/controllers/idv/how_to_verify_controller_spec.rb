@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HowToVerifyController do
+RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
   let(:enabled) { true }
   let(:ab_test_args) do
@@ -15,7 +15,6 @@ RSpec.describe Idv::HowToVerifyController do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
     stub_sign_in(user)
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
     subject.idv_session.welcome_visited = true
@@ -130,7 +129,7 @@ RSpec.describe Idv::HowToVerifyController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     context 'agreement step not completed' do
@@ -164,7 +163,7 @@ RSpec.describe Idv::HowToVerifyController do
       it 'logs the invalid value and re-renders the page' do
         put :update, params: params
 
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         expect(response).to render_template :show
       end
 
@@ -236,7 +235,7 @@ RSpec.describe Idv::HowToVerifyController do
       it 'sends analytics_submitted event when remote proofing is selected' do
         put :update, params: params
 
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
 
@@ -263,7 +262,7 @@ RSpec.describe Idv::HowToVerifyController do
       it 'sends analytics_submitted event when remote proofing is selected' do
         put :update, params: params
 
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
   end

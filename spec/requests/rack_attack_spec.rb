@@ -92,7 +92,6 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         (requests_per_ip_limit + 1).times do
           get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
@@ -102,8 +101,7 @@ RSpec.describe 'throttling requests' do
         expect(response.body).
           to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
-        expect(analytics).
-          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'req/ip')
       end
 
       it 'does not throttle if the path is in the allowlist' do
@@ -111,7 +109,6 @@ RSpec.describe 'throttling requests' do
           and_return(['/account'])
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         (requests_per_ip_limit + 1).times do
           get '/account', headers: { REMOTE_ADDR: '1.2.3.4' }
@@ -120,14 +117,12 @@ RSpec.describe 'throttling requests' do
         expect(response.status).to eq(302)
         expect(response.body).
           to_not include('Please wait a few minutes before you try again.')
-        expect(analytics).
-          to_not have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to_not have_logged_event('Rate Limit Triggered')
       end
 
       it 'does not throttle if the ip is in the CIDR block allowlist' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         (requests_per_ip_limit + 1).times do
           get '/', headers: { REMOTE_ADDR: '172.18.100.100' }
@@ -136,8 +131,7 @@ RSpec.describe 'throttling requests' do
         expect(response.status).to eq(200)
         expect(response.body).
           to_not include('Please wait a few minutes before you try again.')
-        expect(analytics).
-          to_not have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to_not have_logged_event('Rate Limit Triggered')
       end
     end
 
@@ -149,7 +143,6 @@ RSpec.describe 'throttling requests' do
       it 'logs the user UUID' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         user = create(:user, :fully_registered)
 
@@ -169,8 +162,7 @@ RSpec.describe 'throttling requests' do
         expect(Analytics).to have_received(:new).twice do |arguments|
           expect(arguments[:user]).to eq user
         end
-        expect(analytics).
-          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'req/ip')
       end
 
       it 'logs the service provider' do

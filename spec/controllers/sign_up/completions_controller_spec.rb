@@ -9,7 +9,6 @@ RSpec.describe SignUp::CompletionsController do
     context 'user signed in, sp info present' do
       before do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
       end
 
       it 'redirects to account page when SP request URL is not present' do
@@ -40,7 +39,7 @@ RSpec.describe SignUp::CompletionsController do
         end
 
         it 'tracks page visit' do
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'User registration: agency handoff visited',
             ial2: false,
             ialmax: false,
@@ -77,7 +76,7 @@ RSpec.describe SignUp::CompletionsController do
         end
 
         it 'tracks page visit' do
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'User registration: agency handoff visited',
             ial2: true,
             ialmax: false,
@@ -123,7 +122,7 @@ RSpec.describe SignUp::CompletionsController do
         end
 
         it 'tracks page visit' do
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'User registration: agency handoff visited',
             ial2: false,
             ialmax: true,
@@ -207,7 +206,6 @@ RSpec.describe SignUp::CompletionsController do
 
     before do
       stub_analytics
-      allow(@analytics).to receive(:track_event)
       @linker = instance_double(IdentityLinker)
       allow(@linker).to receive(:link_identity).and_return(true)
       allow(IdentityLinker).to receive(:new).and_return(@linker)
@@ -226,7 +224,7 @@ RSpec.describe SignUp::CompletionsController do
 
         patch :update
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'User registration: complete',
           ial2: false,
           ialmax: false,
@@ -288,7 +286,7 @@ RSpec.describe SignUp::CompletionsController do
 
           patch :update
 
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'User registration: complete',
             ial2: false,
             ialmax: false,
@@ -327,7 +325,7 @@ RSpec.describe SignUp::CompletionsController do
 
         patch :update
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'User registration: complete',
           ial2: true,
           ialmax: false,

@@ -975,7 +975,6 @@ RSpec.describe SamlIdpController do
     context 'authn_context is invalid' do
       it 'renders an error page' do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
 
         saml_get_auth(
           saml_settings(
@@ -1003,8 +1002,7 @@ RSpec.describe SamlIdpController do
           matching_cert_serial: saml_test_sp_cert_serial,
         }
 
-        expect(@analytics).to have_received(:track_event).
-          with('SAML Auth', hash_including(analytics_hash))
+        expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
       end
     end
 
@@ -1206,7 +1204,6 @@ RSpec.describe SamlIdpController do
         user = create(:user, :fully_registered)
 
         stub_analytics
-        allow(@analytics).to receive(:track_event)
 
         generate_saml_response(user, saml_settings(overrides: { issuer: 'invalid_provider' }))
 
@@ -1230,8 +1227,7 @@ RSpec.describe SamlIdpController do
           matching_cert_serial: nil,
         }
 
-        expect(@analytics).to have_received(:track_event).
-          with('SAML Auth', hash_including(analytics_hash))
+        expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
       end
     end
 
@@ -1240,7 +1236,6 @@ RSpec.describe SamlIdpController do
         user = create(:user, :fully_registered)
 
         stub_analytics
-        allow(@analytics).to receive(:track_event)
 
         generate_saml_response(
           user,
@@ -1279,8 +1274,7 @@ RSpec.describe SamlIdpController do
           matching_cert_serial: nil,
         }
 
-        expect(@analytics).to have_received(:track_event).
-          with('SAML Auth', hash_including(analytics_hash))
+        expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
       end
     end
 
@@ -1576,7 +1570,6 @@ RSpec.describe SamlIdpController do
 
       before do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
       end
 
       # the RubySAML library won't let us pass an empty string in as the certificate
@@ -1643,8 +1636,7 @@ RSpec.describe SamlIdpController do
           matching_cert_serial: nil,
         }
 
-        expect(@analytics).to have_received(:track_event).
-          with('SAML Auth', hash_including(analytics_hash))
+        expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
       end
 
       it 'returns a 400' do
@@ -1660,7 +1652,6 @@ RSpec.describe SamlIdpController do
 
       before do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
       end
 
       it 'notes that in the analytics event' do
@@ -1693,8 +1684,7 @@ RSpec.describe SamlIdpController do
           encryption_cert_matches_matching_cert: true,
         }
 
-        expect(@analytics).to have_received(:track_event).
-          with('SAML Auth', hash_including(analytics_hash))
+        expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
       end
     end
 

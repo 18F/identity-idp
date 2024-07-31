@@ -402,38 +402,4 @@ RSpec.describe SamlRequestValidator do
       end
     end
   end
-
-  describe '#biometric_comparison_requested?' do
-    let(:sp) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
-    let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
-    let(:authn_context) { [] }
-
-    subject(:validator) do
-      validator = SamlRequestValidator.new
-      validator.call(
-        service_provider: sp,
-        authn_context: authn_context,
-        nameid_format: name_id_format,
-      )
-      validator
-    end
-
-    context 'biometric comparison was requested' do
-      let(:authn_context) { ['C1.C2.P1.Pb'] }
-
-      it { expect(subject.biometric_comparison_requested?).to eq(true) }
-    end
-
-    context 'biometric comparison was not requested' do
-      let(:authn_context) { ['C1.C2.P1'] }
-
-      it { expect(subject.biometric_comparison_requested?).to eq(false) }
-    end
-
-    context 'biometric comparison requested with multiple vectors of trust' do
-      let(:authn_context) { ['C1.C2.P1', 'C1.C2.P1.Pb'] }
-
-      it { expect(subject.biometric_comparison_requested?).to eq(true) }
-    end
-  end
 end
