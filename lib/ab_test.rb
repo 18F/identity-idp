@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AbTestBucket
+class AbTest
   attr_reader :buckets, :experiment_name, :default_bucket
 
   MAX_SHA = (16 ** 64) - 1

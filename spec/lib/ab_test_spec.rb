@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe AbTestBucket do
+RSpec.describe AbTest do
   context 'configured with buckets adding up to less than 100 percent' do
     let(:foo_percent) { 30 }
     let(:bar_percent) { 20 }
     let(:baz_percent) { 40 }
     let(:default_percent) { 10 }
     let(:subject) do
-      AbTestBucket.new(
+      AbTest.new(
         experiment_name: 'test',
         buckets: { foo: foo_percent, bar: bar_percent, baz: baz_percent },
       )
@@ -33,7 +33,7 @@ RSpec.describe AbTestBucket do
 
   context 'configured with buckets adding up to exactly 100 percent' do
     let(:subject) do
-      AbTestBucket.new(experiment_name: 'test', buckets: { foo: 20, bar: 30, baz: 50 })
+      AbTest.new(experiment_name: 'test', buckets: { foo: 20, bar: 30, baz: 50 })
     end
 
     it 'divides random uuids into the buckets with no automatic default' do
@@ -48,7 +48,7 @@ RSpec.describe AbTestBucket do
   end
 
   context 'configured with no buckets' do
-    let(:subject) { AbTestBucket.new(experiment_name: 'test') }
+    let(:subject) { AbTest.new(experiment_name: 'test') }
 
     it 'returns :default' do
       bucket = subject.bucket(SecureRandom.uuid)
@@ -58,7 +58,7 @@ RSpec.describe AbTestBucket do
   end
 
   context 'configured with buckets with string percentages' do
-    let(:subject) { AbTestBucket.new(experiment_name: 'test', buckets: { foo: '100' }) }
+    let(:subject) { AbTest.new(experiment_name: 'test', buckets: { foo: '100' }) }
 
     it 'converts string percentages to numbers and returns the correct result' do
       bucket = subject.bucket(SecureRandom.uuid)
@@ -68,7 +68,7 @@ RSpec.describe AbTestBucket do
   end
 
   context 'configured with buckets with random strings' do
-    let(:subject) { AbTestBucket.new(experiment_name: 'test', buckets: { foo: 'foo', bar: 'bar' }) }
+    let(:subject) { AbTest.new(experiment_name: 'test', buckets: { foo: 'foo', bar: 'bar' }) }
 
     it 'converts string to zero percent and returns :default' do
       bucket = subject.bucket(SecureRandom.uuid)
@@ -78,7 +78,7 @@ RSpec.describe AbTestBucket do
   end
 
   context 'configured with buckets adding up to more than 100 percent' do
-    let(:subject) { AbTestBucket.new(experiment_name: 'test', buckets: { foo: 60, bar: 60 }) }
+    let(:subject) { AbTest.new(experiment_name: 'test', buckets: { foo: 60, bar: 60 }) }
 
     it 'raises a RuntimeError' do
       expect { subject }.to raise_error(RuntimeError, 'bucket percentages exceed 100')
@@ -86,7 +86,7 @@ RSpec.describe AbTestBucket do
   end
 
   context 'misconfigured with buckets in the wrong data structure' do
-    let(:subject) { AbTestBucket.new(experiment_name: 'test', buckets: [[:foo, 10], [:bar, 20]]) }
+    let(:subject) { AbTest.new(experiment_name: 'test', buckets: [[:foo, 10], [:bar, 20]]) }
 
     it 'raises a RuntimeError' do
       expect { subject }.to raise_error(RuntimeError, 'invalid bucket data structure')
