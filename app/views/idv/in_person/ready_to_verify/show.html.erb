@@ -15,6 +15,10 @@
   <% end %>
 <% end %>
 
+<%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
+  <%= t('in_person_proofing.body.barcode.email_sent') %>
+<% end %>
+
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
   <%= @presenter.barcode_heading_text %>
 <% end %>
@@ -189,8 +193,6 @@
 
 <h2 class="margin-bottom-2"><%= t('in_person_proofing.body.expect.heading') %></h2>
 <p><%= t('in_person_proofing.body.expect.info') %></p>
-
-<p class="margin-top-4"><strong><%= t('in_person_proofing.body.barcode.email_sent') %></strong></p>
 
 <p class="margin-top-3 margin-bottom-4">
   <% if @presenter.service_provider_homepage_url.present? %>
