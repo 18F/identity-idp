@@ -32,7 +32,7 @@ RSpec.describe Idv::AcuantConcern, :controller do
       before do
         stub_const(
           'AbTests::ACUANT_SDK',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => 0) },
+          FakeAbTest.new.tap { |ab| ab.assign(session_uuid => 0) },
         )
       end
 
@@ -55,7 +55,7 @@ RSpec.describe Idv::AcuantConcern, :controller do
       before do
         stub_const(
           'AbTests::ACUANT_SDK',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :use_alternate_sdk) },
+          FakeAbTest.new.tap { |ab| ab.assign(session_uuid => :use_alternate_sdk) },
         )
       end
 
@@ -70,7 +70,7 @@ RSpec.describe Idv::AcuantConcern, :controller do
       before do
         stub_const(
           'AbTests::ACUANT_SDK',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => 0) },
+          FakeAbTest.new.tap { |ab| ab.assign(session_uuid => 0) },
         )
       end
 

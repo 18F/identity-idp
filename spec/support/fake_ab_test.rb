@@ -1,5 +1,5 @@
-# Mock version of AbTestBucket, used to pre-assign items to buckets for deterministic tests
-class FakeAbTestBucket
+# Mock version of AbTest, used to pre-assign items to buckets for deterministic tests
+class FakeAbTest
   attr_reader :discriminator_to_bucket, :all_result
 
   def initialize

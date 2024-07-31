@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'ab_test_bucket'
+require 'ab_test'
 
 module AbTests
-  DOC_AUTH_VENDOR = AbTestBucket.new(
+  DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     buckets: {
       alternate_vendor: IdentityConfig.store.doc_auth_vendor_randomize ?
@@ -12,7 +12,7 @@ module AbTests
     }.compact,
   ).freeze
 
-  ACUANT_SDK = AbTestBucket.new(
+  ACUANT_SDK = AbTest.new(
     experiment_name: 'Acuant SDK Upgrade',
     buckets: {
       use_alternate_sdk: IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled ?
