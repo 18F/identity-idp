@@ -94,11 +94,4 @@ module SamlRequestMacros
 
     settings
   end
-
-  def print_pretty_xml(xml_string)
-    doc = REXML::Document.new xml_string
-    outbuf = ''
-    doc.write(outbuf, 1)
-    puts outbuf
-  end
 end

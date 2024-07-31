@@ -34,7 +34,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency('rails', '~> 7.1')
   s.add_development_dependency 'rake'
-  s.add_development_dependency('rexml')
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rubocop', '1.62.0'
   s.add_development_dependency 'rubocop-rails', '2.9'

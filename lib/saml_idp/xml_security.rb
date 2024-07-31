@@ -22,8 +22,6 @@
 # Copyright 2007 Sun Microsystems Inc. All Rights Reserved
 # Portions Copyrighted 2007 Todd W Saxton.
 
-require 'rexml/document'
-require 'rexml/xpath'
 require 'openssl'
 require 'nokogiri'
 require 'digest/sha1'
@@ -31,7 +29,7 @@ require 'digest/sha2'
 
 module SamlIdp
   module XMLSecurity
-    class SignedDocument < REXML::Document
+    class SignedDocument
       class ValidationError < StandardError
         attr_reader :error_code
 
@@ -43,12 +41,12 @@ module SamlIdp
 
       C14N = 'http://www.w3.org/2001/10/xml-exc-c14n#'
       DSIG = 'http://www.w3.org/2000/09/xmldsig#'
+      DS_NS = { "ds" => DSIG }
 
-      attr_accessor :signed_element_id
+      attr_accessor :document
 
       def initialize(response)
-        super(response)
-        extract_signed_element_id
+        @document = Nokogiri.XML(response)
       end
 
       def validate(idp_cert_fingerprint, soft = true, options = {})
@@ -97,10 +95,10 @@ module SamlIdp
         if options[:get_params] && options[:get_params][:SigAlg]
           algorithm(options[:get_params][:SigAlg])
         else
-          ref_elem = REXML::XPath.first(self, '//ds:Reference', { 'ds' => DSIG })
+          ref_elem = document.at_xpath('//ds:Reference | //Reference', DS_NS)
           return nil unless ref_elem
 
-          algorithm(REXML::XPath.first(ref_elem, '//ds:DigestMethod', { 'ds' => DSIG }))
+          algorithm(ref_elem.at_xpath('//ds:DigestMethod | //DigestMethod', DS_NS))
         end
       end
 
@@ -114,7 +112,7 @@ module SamlIdp
       end
 
       def find_base64_cert(options)
-        cert_element = REXML::XPath.first(self, '//ds:X509Certificate', { 'ds' => DSIG })
+        cert_element = document.at_xpath('//ds:X509Certificate | //X509Certificate', DS_NS)
         if cert_element
           return cert_element.text if cert_element.text.present?
 
@@ -139,7 +137,7 @@ module SamlIdp
       end
 
       def request?
-        root.name != 'Response'
+        document.root.name != 'Response'
       end
 
       # matches RubySaml::Utils
@@ -179,55 +177,26 @@ module SamlIdp
       )
         # check for inclusive namespaces
         inclusive_namespaces = extract_inclusive_namespaces
-        document = Nokogiri.parse(to_s)
 
-        # create a working copy so we don't modify the original
-        @working_copy ||= REXML::Document.new(to_s).root
 
-        # store and remove signature node
-        @sig_element ||= begin
-          element = REXML::XPath.first(
-            @working_copy,
-            '//ds:Signature',
-            { 'ds' => DSIG }
-          )
-          element.remove
-        end
+        sig_element = document.at_xpath('//ds:Signature | //Signature', DS_NS)
+        signed_info_element = sig_element.at_xpath('./ds:SignedInfo | //SignedInfo', DS_NS)
 
-        # TODO: Should we be discovering/assigning the sig_namespace_hash differently?
-        sig_ns_elem = REXML::XPath.first(
-          @sig_element,
-          '//ds:SignedInfo',
-          { 'ds' => DSIG }
-        )
-        sig_namespace_hash = { 'ds' => DSIG } if sig_ns_elem
-
-        signed_info_element = REXML::XPath.first(
-          @sig_element,
-          '//ds:SignedInfo',
-          sig_namespace_hash
+        canon_algorithm = canon_algorithm(
+          sig_element.at_xpath('//ds:CanonicalizationMethod | //CanonicalizationMethod', DS_NS)
         )
 
-        noko_sig_element = document.at_xpath('//ds:Signature', 'ds' => DSIG)
-        noko_signed_info_element = noko_sig_element.at_xpath('./ds:SignedInfo', 'ds' => DSIG)
-        canon_algorithm = canon_algorithm REXML::XPath.first(
-          @sig_element,
-          '//ds:CanonicalizationMethod',
-          sig_namespace_hash
-        )
-
-        canon_string = noko_signed_info_element.canonicalize(canon_algorithm)
-        noko_sig_element.remove
-
+        canon_string = signed_info_element.canonicalize(canon_algorithm)
         # check digests
-        REXML::XPath.each(@sig_element, '//ds:Reference', sig_namespace_hash) do |ref|
-          uri = ref.attributes.get_attribute('URI').value
+        sig_element.xpath('//ds:Reference | //Reference', DS_NS).each do |ref|
+          uri = ref.attribute('URI').value
 
-          hashed_element = document.at_xpath("//*[@ID='#{uri[1..-1]}']")
-          canon_algorithm = canon_algorithm REXML::XPath.first(
-            ref,
-            '//ds:CanonicalizationMethod',
-            sig_namespace_hash
+          hashed_element = document.dup.at_xpath("//*[@ID='#{uri[1..-1]}']")
+          # removing the Signature node and children to get digest
+          hashed_element.at_xpath('//ds:Signature | //Signature', DS_NS).remove
+
+          canon_algorithm = canon_algorithm(
+            ref.at_xpath('//ds:CanonicalizationMethod | //CanonicalizationMethod', DS_NS)
           )
 
           canon_hashed_element = hashed_element.canonicalize(
@@ -237,15 +206,13 @@ module SamlIdp
 
           digest_algorithm = digest_method_algorithm(
             ref,
-            sig_namespace_hash,
             digest_method_fix_enabled
           )
 
           hash = digest_algorithm.digest(canon_hashed_element)
-          digest_value = Base64.decode64(REXML::XPath.first(
-            ref,
-            '//ds:DigestValue',
-            sig_namespace_hash
+
+          digest_value = Base64.decode64(ref.at_xpath(
+            '//ds:DigestValue | //DigestValue', DS_NS
           ).text)
 
           unless digests_match?(hash, digest_value)
@@ -255,28 +222,23 @@ module SamlIdp
           end
         end
 
-        base64_signature = REXML::XPath.first(
-          @sig_element,
-          '//ds:SignatureValue',
-          sig_namespace_hash
+        base64_signature = sig_element.at_xpath(
+          '//ds:SignatureValue | //SignatureValue', DS_NS
         ).text
-
         signature = Base64.decode64(base64_signature)
-        sig_alg = REXML::XPath.first(
-          signed_info_element,
-          '//ds:SignatureMethod',
-          sig_namespace_hash
-        )
+
+        sig_alg = sig_element.at_xpath('//ds:SignatureMethod | //SignatureMethod', DS_NS)
 
         log '***** validate_doc_embedded_signature: verify_signature:'
         verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
       end
 
-      def digest_method_algorithm(ref, hash, digest_method_fix_enabled)
-        if digest_method_fix_enabled
-          algorithm(REXML::XPath.first(ref, '//ds:DigestMethod', hash))
+      def digest_method_algorithm(ref, digest_method_fix_enabled)
+        digest_method = ref.at_xpath('//ds:DigestMethod | //DigestMethod', DS_NS)
+        if digest_method_fix_enabled || digest_method.namespace&.prefix.present?
+          algorithm(digest_method)
         else
-          algorithm(REXML::XPath.first(ref, '//ds:DigestMethod'))
+          algorithm(nil)
         end
       end
 
@@ -297,17 +259,6 @@ module SamlIdp
         hash == digest_value
       end
 
-      def extract_signed_element_id
-        reference_element = REXML::XPath.first(
-          self,
-          '//ds:Signature/ds:SignedInfo/ds:Reference',
-          { 'ds' => DSIG }
-        )
-        return if reference_element.nil?
-
-        self.signed_element_id = reference_element.attribute('URI').value[1..-1]
-      end
-
       def canon_algorithm(element)
         algorithm = element.attribute('Algorithm').value if element
         case algorithm
@@ -324,7 +275,7 @@ module SamlIdp
 
       def algorithm(element)
         algorithm = element
-        algorithm = element.attribute('Algorithm').value if algorithm.is_a?(REXML::Element)
+        algorithm = element.attribute('Algorithm').value if algorithm.is_a?(Nokogiri::XML::Element)
         log "~~~~~~ Algorithm: #{algorithm}"
         algorithm = algorithm && algorithm =~ /(rsa-)?sha(.*?)$/i && ::Regexp.last_match(2).to_i
         case algorithm
@@ -344,12 +295,9 @@ module SamlIdp
       end
 
       def extract_inclusive_namespaces
-        if element = REXML::XPath.first(self, '//ec:InclusiveNamespaces', { 'ec' => C14N })
-          prefix_list = element.attributes.get_attribute('PrefixList').value
-          prefix_list.split(' ')
-        else
-          []
-        end
+        document.at_xpath(
+          "//ec:InclusiveNamespaces", { 'ec' =>  C14N }
+        )&.attr('PrefixList')&.split(' ') || []
       end
 
       def log(msg, level: :debug)

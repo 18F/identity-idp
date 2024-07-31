@@ -39,10 +39,8 @@ module SamlIdp
     end
 
     it 'includes the response_id in the signature' do
-      signed = subject.signed
-      doc = REXML::Document.new signed
-      signature = REXML::XPath.first(doc, '//ds:Signature',
-                                     { 'ds' => SamlIdp::XMLSecurity::SignedDocument::DSIG })
+      doc = Nokogiri.XML subject.signed
+      signature = doc.at_xpath('//*:Signature')
       expect(signature.to_s).to include(response_id)
     end
   end

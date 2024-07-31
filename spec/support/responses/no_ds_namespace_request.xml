@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_2b07dcbe-544a-4443-8199-fa45d91c1699" Version="2.0" IssueInstant="2024-05-28T16:49:52.266403Z" Destination="https://secure.login.gov/api/saml/auth2024" ForceAuthn="false" IsPassive="false" ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" AssertionConsumerServiceURL="https://pbgccommercialazureprod.b2clogin.com/pbgccommercialazureprod.onmicrosoft.com/B2C_1A_TrustFrameworkBase/samlp/sso/assertionconsumer">
   <Issuer xmlns="urn:oasis:names:tc:SAML:2.0:assertion">http://login.example.com/issuer</Issuer>
-  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+  <Signature>
     <SignedInfo>
       <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
       <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>

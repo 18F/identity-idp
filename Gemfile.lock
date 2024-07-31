@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    saml_idp (0.21.5.pre.18f)
+    saml_idp (0.21.6.pre.18f)
       activesupport
       builder
       faraday
@@ -308,7 +308,6 @@ DEPENDENCIES
   pry-byebug
   rails (~> 7.1)
   rake
-  rexml
   rspec
   rubocop (= 1.62.0)
   rubocop-rails (= 2.9)
