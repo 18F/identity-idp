@@ -256,11 +256,12 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           pending_profile_pending_reasons: '',
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Password Reset: Password Submitted', analytics_hash)
-
         put :update, params: { reset_password_form: form_params }
 
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
+          analytics_hash,
+        )
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
         expect(response).to render_template(:edit)
       end
@@ -300,11 +301,12 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           pending_profile_pending_reasons: '',
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Password Reset: Password Submitted', analytics_hash)
-
         put :update, params: { reset_password_form: form_params }
 
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
+          analytics_hash,
+        )
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
         expect(response).to render_template(:edit)
       end
@@ -602,11 +604,10 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           active_profile: true,
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Password Reset: Email Submitted', analytics_hash)
-
         params = { password_reset_email_form: { email: user.email } }
         put :create, params: params
+
+        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
       end
     end
 
@@ -623,13 +624,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           active_profile: false,
         }
 
-        expect(@analytics).to receive(:track_event).
-          with('Password Reset: Email Submitted', analytics_hash)
-
         params = { password_reset_email_form: { email: 'foo' } }
         expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
+        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
         expect(response).to render_template :new
       end
     end
@@ -653,9 +652,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     it 'logs visit to analytics' do
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('Password Reset: Email Form Visited')
-
       get :new
+
+      expect(@analytics).to have_logged_event('Password Reset: Email Form Visited')
     end
   end
 
