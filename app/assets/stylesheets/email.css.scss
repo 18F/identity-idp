@@ -5,6 +5,8 @@
 @use 'variables/app' as *;
 @use 'variables/email' as *;
 
+@forward 'usa-tag';
+
 .gray {
   &:active,
   &:hover,
