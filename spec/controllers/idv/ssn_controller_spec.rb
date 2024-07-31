@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::SsnController do
+RSpec.describe Idv::SsnController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -15,7 +15,6 @@ RSpec.describe Idv::SsnController do
     stub_sign_in(user)
     stub_up_to(:document_capture, idv_session: subject.idv_session)
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -67,7 +66,7 @@ RSpec.describe Idv::SsnController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog ssn_view_count' do
@@ -132,7 +131,6 @@ RSpec.describe Idv::SsnController do
           step: 'ssn',
           success: true,
           errors: {},
-          pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end
 
@@ -191,7 +189,6 @@ RSpec.describe Idv::SsnController do
             ssn: [t('idv.errors.pattern_mismatch.ssn')],
           },
           error_details: { ssn: { invalid: true } },
-          pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end
 
@@ -201,7 +198,7 @@ RSpec.describe Idv::SsnController do
         put :update, params: params
 
         expect(response).to have_rendered('idv/shared/ssn')
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         expect(response.body).to include(t('idv.errors.pattern_mismatch.ssn'))
       end
     end

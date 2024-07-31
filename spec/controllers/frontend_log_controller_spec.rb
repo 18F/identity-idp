@@ -17,7 +17,6 @@ RSpec.describe FrontendLogController do
   describe '#create' do
     subject(:action) { post :create, params: params, as: :json }
 
-    let(:fake_analytics) { FakeAnalytics.new }
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
     let(:event) { 'Custom Event' }
     let(:payload) { { 'message' => 'To be logged...' } }
@@ -27,7 +26,7 @@ RSpec.describe FrontendLogController do
     context 'user is signed in' do
       before do
         sign_in user
-        allow(controller).to receive(:analytics).and_return(fake_analytics)
+        stub_analytics
       end
 
       context 'with invalid event name' do
@@ -51,7 +50,7 @@ RSpec.describe FrontendLogController do
         it 'succeeds' do
           action
 
-          expect(fake_analytics).to have_logged_event('IdV: personal key downloaded')
+          expect(@analytics).to have_logged_event('IdV: personal key downloaded')
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
@@ -69,7 +68,7 @@ RSpec.describe FrontendLogController do
           it 'succeeds' do
             action
 
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
               flow_path: flow_path,
@@ -85,7 +84,7 @@ RSpec.describe FrontendLogController do
             it 'gracefully sets the missing values to nil' do
               action
 
-              expect(fake_analytics).to have_logged_event(
+              expect(@analytics).to have_logged_event(
                 'IdV: in person proofing location submitted',
                 flow_path: nil,
                 selected_location: nil,
@@ -112,7 +111,7 @@ RSpec.describe FrontendLogController do
             it 'succeeds' do
               action
 
-              expect(fake_analytics).to have_logged_event(
+              expect(@analytics).to have_logged_event(
                 'IdV: in person proofing location submitted',
                 selected_location: selected_location,
                 flow_path: flow_path,
@@ -127,21 +126,19 @@ RSpec.describe FrontendLogController do
 
       context 'invalid param' do
         it 'rejects a non-hash payload' do
-          expect(fake_analytics).not_to receive(:track_event)
-
           params[:payload] = 'abc'
           action
 
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
 
         it 'rejects a non-string event' do
-          expect(fake_analytics).not_to receive(:track_event)
-
           params[:event] = { abc: 'abc' }
           action
 
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
@@ -149,11 +146,10 @@ RSpec.describe FrontendLogController do
 
       context 'missing a parameter' do
         it 'rejects a request without specifying event' do
-          expect(fake_analytics).not_to receive(:track_event)
-
           params.delete('event')
           action
 
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
@@ -179,7 +175,7 @@ RSpec.describe FrontendLogController do
         it 'logs the analytics event' do
           action
 
-          expect(fake_analytics).to have_logged_event(
+          expect(@analytics).to have_logged_event(
             'IdV: Native camera forced after failed attempts',
             field: field,
             failed_capture_attempts: failed_capture_attempts,
@@ -207,7 +203,6 @@ RSpec.describe FrontendLogController do
         it 'notices the error to NewRelic instead of analytics logger' do
           allow_any_instance_of(FrontendErrorForm).to receive(:submit).
             and_return(FormResponse.new(success: true))
-          expect(fake_analytics).not_to receive(:track_event)
           expect(NewRelic::Agent).to receive(:notice_error).with(
             FrontendErrorLogger::FrontendError.new,
             custom_params: {
@@ -223,6 +218,7 @@ RSpec.describe FrontendLogController do
 
           action
 
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
@@ -234,8 +230,17 @@ RSpec.describe FrontendLogController do
 
       before do
         session[:doc_capture_user_id] = user_id
-        allow(Analytics).to receive(:new).and_return(fake_analytics)
-        expect(Analytics).to receive(:new).with(hash_including(user: user))
+        stub_analytics(user:)
+      end
+
+      context 'allowlisted analytics event' do
+        let(:event) { 'IdV: download personal key' }
+
+        it 'logs as the session-associated user' do
+          action
+
+          expect(@analytics).to have_logged_event('IdV: personal key downloaded')
+        end
       end
 
       context 'with invalid event name' do
@@ -249,6 +254,7 @@ RSpec.describe FrontendLogController do
 
         it 'does not commit session' do
           action
+
           expect(request.session_options[:skip]).to eql(true)
         end
       end

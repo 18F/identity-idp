@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
+RSpec.describe TwoFactorAuthentication::WebauthnVerificationController,
+               allowed_extra_analytics: [:*] do
   include WebAuthnHelper
 
   describe 'when not signed in' do
@@ -39,7 +40,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         let!(:webauthn_configuration) { create(:webauthn_configuration, user:) }
 
         before do
-          allow(@analytics).to receive(:track_event)
+          stub_analytics
         end
 
         it 'tracks an analytics event' do
@@ -50,7 +51,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             webauthn_configuration_id: nil,
             multi_factor_auth_method_created_at: nil,
           }
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication: enter webAuthn authentication visited',
             result,
           )
