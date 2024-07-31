@@ -94,7 +94,7 @@ RSpec.describe EmailAddress do
 
     context 'with an email domain that is a fed email' do
       before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(false)
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
       end
       let(:email) { 'example@example.gov' }
 
@@ -109,7 +109,7 @@ RSpec.describe EmailAddress do
 
     context 'with an email that is not a mil or fed email' do
       before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
       end
 
       let(:email) { 'example@bad.gov' }
@@ -117,9 +117,9 @@ RSpec.describe EmailAddress do
       it { expect(result).to be_falsey }
     end
 
-    context 'with a non fed email while use_fed_domain_file set to true' do
+    context 'with a non fed email while use_fed_domain_class set to true' do
       before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
       end
       let(:email) { 'example@good.gov' }
 
@@ -146,9 +146,9 @@ RSpec.describe EmailAddress do
   describe '#fed_email?' do
     subject(:result) { email_address.fed_email? }
 
-    context 'use_fed_domain_file set to true' do
+    context 'use_fed_domain_class set to true' do
       before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(true)
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
       end
 
       context 'with an email domain not a fed email' do

@@ -102,9 +102,9 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
-  context 'use_fed_domain_file set to true' do
+  context 'use_fed_domain_class set to true' do
     before do
-      allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(true)
+      allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
     end
     scenario 'User with valid fed email directed to recommend page and get to setup piv' do
       user = create(:user, :with_phone, { email: 'example@gsa.gov' })
@@ -165,9 +165,9 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     end
   end
 
-  context 'use_fed_domain_file set to true' do
+  context 'use_fed_domain_class set to false' do
     before do
-      allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(false)
+      allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
     end
     scenario 'User with .gov email directed to recommend page and get to setup piv' do
       user = create(:user, :with_phone, { email: 'example@good.gov' })

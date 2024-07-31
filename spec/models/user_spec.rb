@@ -1678,7 +1678,7 @@ RSpec.describe User do
 
   describe '#has_fed_or_mil_email' do
     before do
-      allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(false)
+      allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
     end
 
     context 'with a valid fed email in domain file' do
@@ -1688,10 +1688,10 @@ RSpec.describe User do
       end
     end
 
-    context 'with use_fed_domain_file set to true and random .gov email' do
+    context 'with use_fed_domain_class set to false and random .gov email' do
       let(:user) { create(:user, email: 'example@example.gov') }
       before do
-        allow(IdentityConfig.store).to receive(:use_fed_domain_file).and_return(false)
+        allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
       end
       it 'should return true' do
         expect(user.has_fed_or_mil_email?).to be_truthy
