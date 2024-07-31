@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EventDisavowalController do
   let(:disavowal_token) { 'asdf1234' }
-  let(:event) do
+  let!(:event) do
     create(
       :event,
       disavowal_token_fingerprint: Pii::Fingerprinter.fingerprint(disavowal_token),
