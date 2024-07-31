@@ -39,7 +39,6 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
       it 'redirects to profile and sends a password change email' do
         stub_sign_in
         stub_analytics
-        allow(@analytics).to receive(:track_event)
 
         params = {
           password: 'salty new password',
@@ -47,7 +46,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         }
         patch :update, params: { update_user_password_form: params }
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Password Changed',
           success: true,
           errors: {},
@@ -148,10 +147,10 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         end
 
         it 'updates the user password and logs analytic event' do
-          allow(@analytics).to receive(:track_event)
+          stub_analytics
           patch :update, params: { update_user_password_form: params }
 
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Password Changed',
             success: true,
             errors: {},
@@ -166,7 +165,7 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         end
 
         it 'sends email notifying user of password change' do
-          allow(@analytics).to receive(:track_event)
+          stub_analytics
 
           patch :update, params: { update_user_password_form: params }
           expect_delivered_email_count(1)
@@ -215,10 +214,10 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         end
 
         it 'renders edit' do
-          allow(@analytics).to receive(:track_event)
+          stub_analytics
           patch :update, params: { update_user_password_form: params }
 
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Password Changed',
             success: false,
             errors: {
@@ -250,13 +249,13 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         before do
           stub_sign_in
           stub_analytics
-          allow(@analytics).to receive(:track_event)
+          stub_analytics
         end
 
         it 'renders edit' do
           patch :update, params: { update_user_password_form: params }
 
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Password Changed',
             success: false,
             errors: {
@@ -298,13 +297,13 @@ RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
         before do
           stub_sign_in
           stub_analytics
-          allow(@analytics).to receive(:track_event)
+          stub_analytics
         end
 
         it 'renders edit' do
           patch :update, params: { update_user_password_form: params }
 
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Password Changed',
             success: false,
             errors: {

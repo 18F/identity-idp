@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::StateIdController do
+RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
   include InPersonHelper
 
@@ -22,7 +22,6 @@ RSpec.describe Idv::InPerson::StateIdController do
     subject.user_session['idv/in_person'] = { pii_from_user: {} }
     subject.idv_session.ssn = nil # This made specs pass. Might need more investigation.
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -78,9 +77,6 @@ RSpec.describe Idv::InPerson::StateIdController do
         flow_path: 'standard',
         opted_in_to_in_person_proofing: nil,
         step: 'state_id',
-        pii_like_keypaths: [[:same_address_as_id],
-                            [:proofing_results, :context, :stages, :state_id,
-                             :state_id_jurisdiction]],
       }.merge(ab_test_args)
     end
 
@@ -107,9 +103,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     it 'logs idv_in_person_proofing_state_id_visited' do
       get :show
 
-      expect(@analytics).to have_received(
-        :track_event,
-      ).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'has correct extra_view_variables' do
@@ -189,9 +183,6 @@ RSpec.describe Idv::InPerson::StateIdController do
           flow_path: 'standard',
           step: 'state_id',
           opted_in_to_in_person_proofing: nil,
-          pii_like_keypaths: [[:same_address_as_id],
-                              [:proofing_results, :context, :stages, :state_id,
-                               :state_id_jurisdiction]],
           same_address_as_id: true,
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),
@@ -201,9 +192,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       it 'logs idv_in_person_proofing_state_id_submitted' do
         put :update, params: params
 
-        expect(@analytics).to have_received(
-          :track_event,
-        ).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
       it 'renders show when validation errors are present when first visiting page' do
