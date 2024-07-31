@@ -110,9 +110,9 @@ RSpec.describe SignUp::CancellationsController do
       stub_analytics
       properties = { request_came_from: 'no referer' }
 
-      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
-
       delete :destroy
+
+      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
     end
 
     it 'tracks the event in analytics when referer is present' do

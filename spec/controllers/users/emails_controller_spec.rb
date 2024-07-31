@@ -17,9 +17,9 @@ RSpec.describe Users::EmailsController do
       stub_analytics
     end
     it 'renders the index view' do
-      expect(@analytics).to have_logged_event('Add Email Address Page Visited')
-
       get :show
+
+      expect(@analytics).to have_logged_event('Add Email Address Page Visited')
     end
   end
 
@@ -66,6 +66,8 @@ RSpec.describe Users::EmailsController do
           domain_name: email.split('@').last,
         )
 
+        post :resend
+
         expect(@analytics).to have_logged_event(
           'Resend Add Email Requested',
           { success: true },
@@ -74,7 +76,6 @@ RSpec.describe Users::EmailsController do
           t('user_mailer.email_confirmation_instructions.subject'),
         )
 
-        post :resend
         expect(response).to redirect_to(add_email_verify_email_url)
         expect(last_email_sent).to have_subject(
           t('user_mailer.email_confirmation_instructions.subject'),
