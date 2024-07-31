@@ -8,11 +8,11 @@ module SignUp
       @sp_name = sp_name
       @user_emails = user_emails
       @last_sign_in_email_address = EmailContext.new(current_user).last_sign_in_email_address.email
-      @select_email_form = new_select_email_form
+      @select_email_form = build_select_email_form
     end
 
     def create
-      @select_email_form = new_select_email_form
+      @select_email_form = build_select_email_form
 
       result = @select_email_form.submit(form_params)
       if result.success?
@@ -43,7 +43,7 @@ module SignUp
 
     private
 
-    def new_select_email_form
+    def build_select_email_form
       SelectEmailForm.new(current_user)
     end
 
