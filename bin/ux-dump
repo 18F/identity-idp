@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+system "bundle exec rspec ux-dumper/#{ARGV[0]}_spec.rb"
+system "markdown #{ARGV[0]}.md >#{ARGV[0]}.html"
+system "zip -r #{ARGV[0]} #{ARGV[0]}.html #{ARGV[0]}-screenshots"
