@@ -51,9 +51,9 @@ RSpec.describe AccountReset::CancelController, allowed_extra_analytics: [:*] do
         user_id: 'anonymous-uuid',
       }
 
-      expect(@analytics).to have_logged_event('Account Reset: cancel', analytics_hash)
-
       post :create
+
+      expect(@analytics).to have_logged_event('Account Reset: cancel', analytics_hash)
     end
 
     it 'redirects to the root without a flash message when the token is missing or invalid' do
