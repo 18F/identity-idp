@@ -19,7 +19,8 @@ ENV BUNDLER_VERSION 2.5.6
 
 # Install dependencies
 RUN apt-get update -qq && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
+    openssh-client \
     git-core \
     build-essential \
     git-lfs \
@@ -168,6 +169,7 @@ ENV REMOTE_ADDRESS_HEADER X-Forwarded-For
 # Install dependencies
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
+    openssh-client \
     git-core \
     curl \
     zlib1g-dev \
