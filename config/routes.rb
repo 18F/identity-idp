@@ -389,7 +389,6 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-
       get '/in_person_proofing/state_id' => 'in_person/state_id#show'
       put '/in_person_proofing/state_id' => 'in_person/state_id#update'
 
