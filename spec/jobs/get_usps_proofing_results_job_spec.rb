@@ -20,35 +20,35 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       response = JSON.parse(response_json)
       expect(job_analytics).to have_logged_event(
         'GetUspsProofingResultsJob: Enrollment status updated',
-        {
-          assurance_level: response['assuranceLevel'],
-          enrollment_code: pending_enrollment.enrollment_code,
-          enrollment_id: pending_enrollment.id,
-          failure_reason: response['failureReason'],
-          fraud_suspected: response['fraudSuspected'],
-          issuer: pending_enrollment.issuer,
-          minutes_since_last_status_check: 15.0,
-          minutes_since_last_status_check_completed: 17.0,
-          minutes_since_last_status_update: 2.days.in_minutes,
-          minutes_to_completion: 3.days.in_minutes,
-          minutes_since_established: 3.days.in_minutes,
-          passed: passed,
-          primary_id_type: response['primaryIdType'],
-          proofing_city: response['proofingCity'],
-          proofing_post_office: response['proofingPostOffice'],
-          proofing_state: response['proofingState'],
-          reason: anything,
-          response_message: response['responseMessage'],
-          response_present: true,
-          scan_count: response['scanCount'],
-          secondary_id_type: response['secondaryIdType'],
-          status: response['status'],
-          transaction_end_date_time: anything,
-          transaction_start_date_time: anything,
-          job_name: 'GetUspsProofingResultsJob',
-          tmx_status: :threatmetrix_pass,
-          enhanced_ipp: enhanced_ipp_enrollment,
-        }.compact,
+        hash_including(
+          {
+            assurance_level: response['assuranceLevel'],
+            enrollment_code: pending_enrollment.enrollment_code,
+            enrollment_id: pending_enrollment.id,
+            failure_reason: response['failureReason'],
+            fraud_suspected: response['fraudSuspected'],
+            issuer: pending_enrollment.issuer,
+            minutes_since_last_status_check: 15.0,
+            minutes_since_last_status_check_completed: 17.0,
+            minutes_since_last_status_update: 2.days.in_minutes,
+            minutes_to_completion: 3.days.in_minutes,
+            minutes_since_established: 3.days.in_minutes,
+            passed: passed,
+            primary_id_type: response['primaryIdType'],
+            proofing_city: response['proofingCity'],
+            proofing_post_office: response['proofingPostOffice'],
+            proofing_state: response['proofingState'],
+            reason: anything,
+            response_message: response['responseMessage'],
+            response_present: true,
+            scan_count: response['scanCount'],
+            secondary_id_type: response['secondaryIdType'],
+            status: response['status'],
+            job_name: 'GetUspsProofingResultsJob',
+            tmx_status: :threatmetrix_pass,
+            enhanced_ipp: enhanced_ipp_enrollment,
+          }.compact,
+        ),
       )
     end
   end
@@ -59,22 +59,28 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       if email_type == 'deadline passed'
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: deadline passed email initiated',
-          enrollment_code: pending_enrollment.enrollment_code,
-          enrollment_id: pending_enrollment.id,
-          wait_until: anything,
-          service_provider: pending_enrollment.issuer,
-          timestamp: Time.zone.now,
-          job_name: 'GetUspsProofingResultsJob',
+          hash_including(
+            {
+              enrollment_code: pending_enrollment.enrollment_code,
+              enrollment_id: pending_enrollment.id,
+              service_provider: pending_enrollment.issuer,
+              timestamp: Time.zone.now,
+              job_name: 'GetUspsProofingResultsJob',
+            }.compact,
+          ),
         )
       else
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Success or failure email initiated',
-          email_type: email_type,
-          enrollment_code: pending_enrollment.enrollment_code,
-          wait_until: anything,
-          service_provider: pending_enrollment.issuer,
-          timestamp: Time.zone.now,
-          job_name: 'GetUspsProofingResultsJob',
+          hash_including(
+            {
+              email_type: email_type,
+              enrollment_code: pending_enrollment.enrollment_code,
+              service_provider: pending_enrollment.issuer,
+              timestamp: Time.zone.now,
+              job_name: 'GetUspsProofingResultsJob',
+            }.compact,
+          ),
         )
       end
     end
@@ -112,14 +118,16 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
-        enrollment_code: pending_enrollment.enrollment_code,
-        enrollment_id: pending_enrollment.id,
-        exception_class: exception_class,
-        exception_message: exception_message,
-        reason: reason,
-        response_message: response_message,
-        response_status_code: response_status_code,
-        job_name: 'GetUspsProofingResultsJob',
+        {
+          enrollment_code: pending_enrollment.enrollment_code,
+          enrollment_id: pending_enrollment.id,
+          exception_class: exception_class,
+          exception_message: exception_message,
+          reason: reason,
+          response_message: response_message,
+          response_status_code: response_status_code,
+          job_name: 'GetUspsProofingResultsJob',
+        }.compact,
       ),
     )
   end

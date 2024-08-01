@@ -172,15 +172,17 @@ RSpec.describe EventDisavowalController do
 
   def build_analytics_hash(success: true, errors: {})
     hash_including(
-      :event_created_at,
-      :disavowed_device_last_used_at,
-      success: success,
-      errors: errors,
-      event_id: event.id,
-      event_type: event.event_type,
-      event_ip: event.ip,
-      disavowed_device_user_agent: event.device.user_agent,
-      disavowed_device_last_ip: event.device.last_ip,
+      {
+        event_created_at: event.created_at,
+        disavowed_device_last_used_at: event.device&.last_used_at,
+        success: success,
+        errors: errors,
+        event_id: event.id,
+        event_type: event.event_type,
+        event_ip: event.ip,
+        disavowed_device_user_agent: event.device.user_agent,
+        disavowed_device_last_ip: event.device.last_ip,
+      }.compact,
     )
   end
 end
