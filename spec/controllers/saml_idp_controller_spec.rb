@@ -1540,7 +1540,6 @@ RSpec.describe SamlIdpController do
             expect(@analytics).to have_logged_event(
               'SAML Auth', hash_including(
                 request_signed: authn_requests_signed,
-                matching_cert_serial:,
                 encryption_cert_matches_matching_cert: true,
                 cert_error_details:,
               )

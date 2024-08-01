@@ -594,19 +594,19 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything
+        step: 'welcome', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything
+        step: 'welcome', analytics_id: 'Doc Auth'
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything, acuant_sdk_upgrade_ab_test_bucket: :default
+        step: 'agreement', analytics_id: 'Doc Auth', acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: consent checkbox toggled' => {
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: anything, acuant_sdk_upgrade_ab_test_bucket: :default
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', acuant_sdk_upgrade_ab_test_bucket: :default
       },
       'IdV: doc auth hybrid handoff visited' => {
         step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', selfie_check_required: boolean
@@ -637,27 +637,27 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         acuant_version: kind_of(String), captureAttempts: 1, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284, liveness_checking_required: boolean, selfie_attempts: 0
       },
       'IdV: doc auth ssn visited' => {
-        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
+        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
+        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify visited' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify submitted' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, analytics_id: 'Doc Auth'
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth'
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default,
         proofing_results: base_proofing_results
       },
       'IdV: phone of record visited' => {
-        acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
-        proofing_components: base_proofing_components
+        acuant_sdk_upgrade_ab_test_bucket: :default,
+        proofing_components: base_proofing_components,
       },
       'IdV: phone confirmation form' => {
-        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, otp_delivery_preference: 'sms',
+        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, otp_delivery_preference: 'sms',
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
@@ -672,20 +672,20 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
         proofing_components: lexis_nexis_address_proofing_components,
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, errors: {},
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0, errors: {},
         proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_visited => {
-        address_verification_method: 'phone', acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything,
+        address_verification_method: 'phone', acuant_sdk_upgrade_ab_test_bucket: :default,
         proofing_components: lexis_nexis_address_proofing_components
       },
       :idv_enter_password_submitted => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
         active_profile_idv_level: 'unsupervised_with_selfie',
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: final resolution' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: anything, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false,
         active_profile_idv_level: 'unsupervised_with_selfie',
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
         proofing_components: lexis_nexis_address_proofing_components
