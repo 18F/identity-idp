@@ -6,6 +6,8 @@ RSpec.describe EventDisavowalController do
     create(
       :event,
       disavowal_token_fingerprint: Pii::Fingerprinter.fingerprint(disavowal_token),
+      created_at: Time.zone.now.change(usec: 0),
+      device: create(:device, last_used_at: Time.zone.now.change(usec: 0)),
     )
   end
 
