@@ -38,7 +38,7 @@ es:
       six: seis
       ten: diez
     format_type:
-      character: carácter
+      character: caracteres
       digit: dígitos
     personal_key_regeneration_notice: Se emitió una nueva clave personal para su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
     personal_key_sign_in_notice: Su clave personal acaba de se usada para iniciar sesión en su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.

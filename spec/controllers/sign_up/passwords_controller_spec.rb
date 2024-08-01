@@ -34,16 +34,16 @@ RSpec.describe SignUp::PasswordsController do
       end
 
       it 'tracks analytics' do
-        expect(@analytics).to receive(:track_event).with(
+        subject
+
+        expect(@analytics).to have_logged_event(
           'User Registration: Email Confirmation',
           analytics_hash.merge({ error_details: nil }),
         )
-        expect(@analytics).to receive(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Password Creation',
           analytics_hash.merge({ request_id_present: false }),
         )
-
-        subject
       end
 
       it 'confirms the user' do
@@ -52,6 +52,17 @@ RSpec.describe SignUp::PasswordsController do
         user.reload
         expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
         expect(user.confirmed?).to eq true
+      end
+
+      it 'initializes user session' do
+        response
+
+        expect(controller.user_session).to match(
+          'unique_session_id' => kind_of(String),
+          'last_request_at' => kind_of(Numeric),
+          new_device: false,
+          in_account_creation_flow: true,
+        )
       end
     end
 

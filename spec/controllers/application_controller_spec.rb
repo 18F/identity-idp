@@ -93,11 +93,10 @@ RSpec.describe ApplicationController do
 
       stub_analytics
       event_properties = { controller: 'anonymous#index', user_signed_in: true }
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', event_properties)
 
       get :index
 
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', event_properties)
       expect(flash[:error]).to eq t('errors.general')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present
@@ -149,11 +148,10 @@ RSpec.describe ApplicationController do
 
       stub_analytics
       event_properties = { controller: 'anonymous#index', user_signed_in: true, referer: referer }
-      expect(@analytics).to receive(:track_event).
-        with('Unsafe Redirect', event_properties)
 
       get :index
 
+      expect(@analytics).to have_logged_event('Unsafe Redirect', event_properties)
       expect(flash[:error]).to eq t('errors.general')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::AddressController do
+RSpec.describe Idv::InPerson::AddressController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
   include InPersonHelper
 
@@ -16,7 +16,6 @@ RSpec.describe Idv::InPerson::AddressController do
     }
     subject.idv_session.ssn = nil
     stub_analytics
-    allow(@analytics).to receive(:track_event)
   end
 
   describe '#step_info' do
@@ -77,9 +76,6 @@ RSpec.describe Idv::InPerson::AddressController do
         flow_path: 'standard',
         opted_in_to_in_person_proofing: nil,
         step: 'address',
-        pii_like_keypaths: [[:same_address_as_id],
-                            [:proofing_results, :context, :stages, :state_id,
-                             :state_id_jurisdiction]],
         same_address_as_id: false,
         skip_hybrid_handoff: nil,
       }
@@ -102,9 +98,7 @@ RSpec.describe Idv::InPerson::AddressController do
     it 'logs idv_in_person_proofing_address_visited' do
       get :show
 
-      expect(@analytics).to have_received(
-        :track_event,
-      ).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'has correct extra_view_variables' do
@@ -148,9 +142,6 @@ RSpec.describe Idv::InPerson::AddressController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',
-          pii_like_keypaths: [[:same_address_as_id],
-                              [:proofing_results, :context, :stages, :state_id,
-                               :state_id_jurisdiction]],
           same_address_as_id: false,
           skip_hybrid_handoff: nil,
           current_address_zip_code: '59010',
@@ -172,9 +163,7 @@ RSpec.describe Idv::InPerson::AddressController do
       it 'logs idv_in_person_proofing_address_submitted with 5-digit zipcode' do
         put :update, params: params
 
-        expect(@analytics).to have_received(
-          :track_event,
-        ).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
       context 'when updating the residential address' do
@@ -236,9 +225,6 @@ RSpec.describe Idv::InPerson::AddressController do
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',
-          pii_like_keypaths: [[:same_address_as_id],
-                              [:proofing_results, :context, :stages, :state_id,
-                               :state_id_jurisdiction]],
           same_address_as_id: false,
           skip_hybrid_handoff: nil,
           current_address_zip_code: '59010',
@@ -254,7 +240,7 @@ RSpec.describe Idv::InPerson::AddressController do
       end
 
       it 'logs idv_in_person_proofing_address_submitted without zipcode' do
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
   end

@@ -92,7 +92,6 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         (requests_per_ip_limit + 1).times do
           get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
@@ -102,8 +101,7 @@ RSpec.describe 'throttling requests' do
         expect(response.body).
           to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
-        expect(analytics).
-          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'req/ip')
       end
 
       it 'does not throttle if the path is in the allowlist' do
@@ -111,7 +109,6 @@ RSpec.describe 'throttling requests' do
           and_return(['/account'])
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         (requests_per_ip_limit + 1).times do
           get '/account', headers: { REMOTE_ADDR: '1.2.3.4' }
@@ -120,14 +117,12 @@ RSpec.describe 'throttling requests' do
         expect(response.status).to eq(302)
         expect(response.body).
           to_not include('Please wait a few minutes before you try again.')
-        expect(analytics).
-          to_not have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to_not have_logged_event('Rate Limit Triggered')
       end
 
       it 'does not throttle if the ip is in the CIDR block allowlist' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         (requests_per_ip_limit + 1).times do
           get '/', headers: { REMOTE_ADDR: '172.18.100.100' }
@@ -136,8 +131,7 @@ RSpec.describe 'throttling requests' do
         expect(response.status).to eq(200)
         expect(response.body).
           to_not include('Please wait a few minutes before you try again.')
-        expect(analytics).
-          to_not have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to_not have_logged_event('Rate Limit Triggered')
       end
     end
 
@@ -149,7 +143,6 @@ RSpec.describe 'throttling requests' do
       it 'logs the user UUID' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         user = create(:user, :fully_registered)
 
@@ -169,8 +162,7 @@ RSpec.describe 'throttling requests' do
         expect(Analytics).to have_received(:new).twice do |arguments|
           expect(arguments[:user]).to eq user
         end
-        expect(analytics).
-          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'req/ip')
       end
 
       it 'logs the service provider' do
@@ -250,11 +242,8 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         Rack::Attack::SIGN_IN_PATHS.each do |path|
-          expect(analytics).
-            to receive(:track_event).with('Rate Limit Triggered', type: 'logins/ip').once
           headers = { REMOTE_ADDR: '1.2.3.4' }
           first_email = 'test1@example.com'
           second_email = 'test2@example.com'
@@ -266,6 +255,7 @@ RSpec.describe 'throttling requests' do
           post path, params: { user: { email: third_email } }, headers: headers
           post path, params: { user: { email: fourth_email } }, headers: headers
 
+          expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'logins/ip')
           expect(response.status).to eq(429)
           expect(response.body).
             to include('Please wait a few minutes before you try again.')
@@ -316,18 +306,16 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
         analytics_hash = { type: 'logins/email+ip' }
 
         Rack::Attack::SIGN_IN_PATHS.each do |path|
-          expect(analytics).
-            to receive(:track_event).with('Rate Limit Triggered', analytics_hash).once
           (logins_per_email_and_ip_limit + 1).times do |index|
             post path, params: {
               user: { email: index.even? ? 'test@example.com' : ' test@EXAMPLE.com   ' },
             }, headers: { REMOTE_ADDR: '1.2.3.4' }
           end
 
+          expect(analytics).to have_logged_event('Rate Limit Triggered', analytics_hash)
           expect(response.status).to eq(429)
           expect(response.body).
             to include('Please wait a few minutes before you try again.')
@@ -378,7 +366,6 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         Rack::Attack::EMAIL_REGISTRATION_PATHS.each do |path|
           headers = { REMOTE_ADDR: '1.2.3.4' }
@@ -387,12 +374,6 @@ RSpec.describe 'throttling requests' do
           third_email = 'test3@example.com'
           fourth_email = 'test4@example.com'
 
-          expect(analytics).
-            to receive(:track_event).with(
-              'Rate Limit Triggered',
-              type: 'email_registrations/ip',
-            )
-
           post path, params: { user: { email: first_email, terms_accepted: '1' } }, headers: headers
           post path, params: { user: { email: second_email, terms_accepted: '1' } },
                      headers: headers
@@ -400,6 +381,10 @@ RSpec.describe 'throttling requests' do
           post path, params: { user: { email: fourth_email, terms_accepted: '1' } },
                      headers: headers
 
+          expect(analytics).to have_logged_event(
+            'Rate Limit Triggered',
+            type: 'email_registrations/ip',
+          )
           expect(response.status).to eq(429)
           expect(response.body).
             to include('Please wait a few minutes before you try again.')

@@ -814,7 +814,7 @@ forms.backup_code_reminder.body_info: If you ever lose access to your primary au
 forms.backup_code_reminder.have_codes: I have my codes
 forms.backup_code_reminder.heading: Do you still have your backup codes?
 forms.backup_code_reminder.need_new_codes: I need a new set of backup codes
-forms.backup_code.caution_codes: Each code can only be used once. We’ll give you new codes after you use all ten.
+forms.backup_code.caution_codes: Each code can only be used once. We’ll give you new codes after you use all %{count}.
 forms.backup_code.caution_delete: If you delete your backup codes you will no longer be able to use them to sign in.
 forms.backup_code.confirm_delete: Are you sure you want to delete your backup codes?
 forms.backup_code.generate: Get codes
@@ -1028,6 +1028,7 @@ idv.failure.phone.rate_limited.body: For security reasons, we limit the number o
 idv.failure.phone.rate_limited.gpo.button: Verify by mail
 idv.failure.phone.rate_limited.heading: We couldn’t verify your identity by phone
 idv.failure.phone.rate_limited.option_try_again_later_html: Cancel and start over again after <strong>%{time_left}</strong>
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: You can try again after <strong>%{time_left}</strong>.
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Verify by mail, which takes <strong>5 to 10 days</strong>
 idv.failure.phone.rate_limited.options_header: 'You can:'
 idv.failure.phone.timeout: Our request to verify your information timed out. Please try again.
@@ -1179,7 +1180,7 @@ in_person_proofing.body.barcode.close_window: You may now close this window.
 in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}.
 in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your information will not be saved and you will need to restart the process.
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'
-in_person_proofing.body.barcode.email_sent: We have sent this information to the email you used to sign in.
+in_person_proofing.body.barcode.email_sent: We have sent your barcode and the information below to the email you used to sign in
 in_person_proofing.body.barcode.learn_more: Learn more about what to bring
 in_person_proofing.body.barcode.location_details: Location details
 in_person_proofing.body.barcode.questions: Questions?
@@ -1631,7 +1632,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>You’ve only set 
 two_factor_authentication.choose_another_option: '‹ Choose another authentication method'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>Backup codes are the least preferred authentication method</strong> because the codes can easily be lost. Try a safer option, like an authentication application or a security key.'
-  - We’ll give you 10 codes that you can download, print, copy or write down. You’ll enter one code every time you sign in.
+  - We’ll give you %{number_of_codes} codes that you can download, print, copy or write down. You’ll enter one code every time you sign in.
 two_factor_authentication.confirm_backup_code_setup_title: Are you sure you want to use backup codes?
 two_factor_authentication.form_legend: Choose your authentication methods
 two_factor_authentication.header_text: Enter your one-time code
@@ -1725,7 +1726,7 @@ two_factor_authentication.two_factor_choice: Authentication method setup
 two_factor_authentication.two_factor_choice_options.auth_app: Authentication application
 two_factor_authentication.two_factor_choice_options.auth_app_info: Download or use an authentication app of your choice to generate secure codes.
 two_factor_authentication.two_factor_choice_options.backup_code: Backup codes
-two_factor_authentication.two_factor_choice_options.backup_code_info: A list of 10 codes you can print or save to your device. When you use the last code, we will generate a new list. Keep in mind backup codes are easy to lose.
+two_factor_authentication.two_factor_choice_options.backup_code_info: A list of %{count} codes you can print or save to your device. Because backup codes are easy to lose, choose this option only as a last resort.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} added'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} added'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Added

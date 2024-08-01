@@ -825,7 +825,7 @@ forms.backup_code_reminder.body_info: 如果你无法使用自己的主要身份
 forms.backup_code_reminder.have_codes: 我有代码
 forms.backup_code_reminder.heading: 你的备用代码还有吗？
 forms.backup_code_reminder.need_new_codes: 我需要新的一套备用代码。
-forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 10 个代码后我们会给你新代码。
+forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 %{count} 个代码后我们会给你新代码。
 forms.backup_code.caution_delete: 如果你删除自己的备用代码，就无法用其来登录了。
 forms.backup_code.confirm_delete: 你确定要删除备用代码吗？
 forms.backup_code.generate: 获得代码
@@ -1039,6 +1039,7 @@ idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网�
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: 您可以在<strong>%{time_left}</strong>后重试。
 idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
@@ -1190,7 +1191,7 @@ in_person_proofing.body.barcode.close_window: 你现在可以关闭这一窗口�
 in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。
 in_person_proofing.body.barcode.deadline_restart: 如果你在截止日期后才去邮局，你的信息不会被存储，你又得从头开始这一过程。
 in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
-in_person_proofing.body.barcode.email_sent: 我们已将该信息发送到你用来登录的电邮。
+in_person_proofing.body.barcode.email_sent: 我们已将条形码和以下信息发到了您用来登录的电邮地址
 in_person_proofing.body.barcode.learn_more: 了解有关携带物品的更多信息
 in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？
@@ -1642,7 +1643,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>你只在自己账
 two_factor_authentication.choose_another_option: '‹ 选择另一个身份证实方法'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
-  - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+  - 我们会给你 %{number_of_codes} 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
 two_factor_authentication.confirm_backup_code_setup_title: 你确定要使用备用代码吗？
 two_factor_authentication.form_legend: 选择你的身份证实方法
 two_factor_authentication.header_text: 输入一次性代码
@@ -1736,7 +1737,7 @@ two_factor_authentication.two_factor_choice: 身份证实方法设置
 two_factor_authentication.two_factor_choice_options.auth_app: 身份证实应用程序
 two_factor_authentication.two_factor_choice_options.auth_app_info: 下载或使用你选择的身份证实应用程序来生成安全代码。
 two_factor_authentication.two_factor_choice_options.backup_code: 备用代码
-two_factor_authentication.two_factor_choice_options.backup_code_info: 你可以打印或存到你设备里一套 10 个代码。你使用最后一个代码时，我们会生成一套新的。谨记备用代码容易丢失
+two_factor_authentication.two_factor_choice_options.backup_code_info: 您可以打印或保存到自己设备上的%{count}个代码清单。由于备用代码容易丢失，请将此选项作为不得已的选择
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: 添加了

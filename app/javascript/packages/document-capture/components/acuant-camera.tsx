@@ -4,7 +4,6 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
 import AcuantContext from '../context/acuant';
 
-declare let AcuantCameraUI: AcuantCameraUIInterface;
 declare global {
   interface Window {
     AcuantCameraUI: AcuantCameraUIInterface;
@@ -262,26 +261,6 @@ interface AcuantCameraContextProps {
   children: ReactNode;
 }
 
-/**
- * Returns a found AcuantCameraUI
- * object, if one is available.
- * This function normalizes differences between
- * the 11.5.0 and 11.7.0 SDKs. The former attached
- * the object to the global window, while the latter
- * sets the object in the global (but non-window)
- * scope.
- */
-const getActualAcuantCameraUI = (): AcuantCameraUIInterface => {
-  if (window.AcuantCameraUI) {
-    return window.AcuantCameraUI;
-  }
-  if (typeof AcuantCameraUI === 'undefined') {
-    // eslint-disable-next-line no-console
-    console.error('AcuantCameraUI is not defined in the global scope');
-  }
-  return AcuantCameraUI;
-};
-
 function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
@@ -318,7 +297,6 @@ function AcuantCamera({
         onFailureCallbackWithOptions[key] = textOptions[key];
       });
 
-      window.AcuantCameraUI = getActualAcuantCameraUI();
       window.AcuantCameraUI.start(
         {
           onCaptured: onCropStart,

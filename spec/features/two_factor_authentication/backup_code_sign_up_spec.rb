@@ -30,7 +30,7 @@ RSpec.feature 'sign up with backup code' do
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
       expect(current_path).to eq confirm_backup_codes_path
-      expect(user.backup_code_configurations.count).to eq(10)
+      expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
 
       click_continue
 
@@ -57,12 +57,12 @@ RSpec.feature 'sign up with backup code' do
         expect(current_path).to eq backup_code_refreshed_path
         expect(page).to have_content(t('forms.backup_code.title'))
         expect(page).to have_content(t('forms.backup_code.last_code'))
-        expect(user.backup_code_configurations.count).to eq(10)
-        click_on 'Continue'
+        expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
+        click_continue
 
         expect(page).to have_content(t('notices.backup_codes_configured'))
         expect(current_path).to eq account_path
-        expect(user.backup_code_configurations.count).to eq(10)
+        expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
       else
         expect(current_path).to eq account_path
         sign_out_user

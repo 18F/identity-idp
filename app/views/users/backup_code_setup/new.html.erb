@@ -2,7 +2,10 @@
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.confirm_backup_code_setup_title')) %>
 
-<% t('two_factor_authentication.confirm_backup_code_setup_content_html').each do |desc_p| %>
+<% t(
+     'two_factor_authentication.confirm_backup_code_setup_content_html',
+     number_of_codes: BackupCodeGenerator::NUMBER_OF_CODES,
+   ).each do |desc_p| %>
   <p><%= desc_p %></p>
 <% end %>
 
