@@ -149,7 +149,7 @@ module SamlIdpAuthConcern
     return session[:sp_email_id] if session[:sp_email_id].present?
     sp = sp_session['issuer']
     identity = current_user.identities.where(service_provider: sp)
-    email_id = identity.pluck('email_address_id')[0]
+    email_id = identity.email_address.id if identity.respond_to? :email_address
     return email_id if email_id.is_a? Integer
     return EmailContext.new(current_user).last_sign_in_email_address.id
   end

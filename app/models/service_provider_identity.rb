@@ -19,6 +19,9 @@ class ServiceProviderIdentity < ApplicationRecord
   # rubocop:enable Rails/InverseOf
   has_one :agency, through: :service_provider_record
 
+  has_one :email_address,
+          dependent: nil
+
   scope :not_deleted, -> { where(deleted_at: nil) }
 
   CONSENT_EXPIRATION = 1.year.freeze
