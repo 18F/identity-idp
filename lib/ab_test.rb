@@ -36,16 +36,13 @@ class AbTest
   end
 
   def valid_bucket_data_structure?
-    hash_bucket = buckets.is_a?(Hash)
-    simple_values = true
-    if hash_bucket
-      buckets.values.each do |v|
-        next unless v.is_a?(Hash) || v.is_a?(Array)
-        simple_values = false
-      end
-    end
+    return false if !buckets.is_a?(Hash)
 
-    hash_bucket && simple_values
+    buckets.values.each { |v| Float(v) }
+
+    true
+  rescue ArgumentError
+    false
   end
 
   def ensure_numeric_percentages
