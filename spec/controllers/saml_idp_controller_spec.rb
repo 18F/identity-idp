@@ -1702,9 +1702,11 @@ RSpec.describe SamlIdpController do
           expect(@analytics).to have_logged_event(
             'SAML Auth',
             hash_including(
-              nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-              requested_nameid_format: requested_nameid_format,
-              success: true,
+              {
+                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+                requested_nameid_format: requested_nameid_format,
+                success: true,
+              }.compact,
             ),
           )
         end
