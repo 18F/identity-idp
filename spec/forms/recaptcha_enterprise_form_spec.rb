@@ -147,6 +147,7 @@ RSpec.describe RecaptchaEnterpriseForm do
           'reCAPTCHA verify result received',
           recaptcha_result: {
             success: false,
+            score: nil,
             errors: [],
             reasons: ['EXPIRED'],
             assessment_id: name,
@@ -185,6 +186,8 @@ RSpec.describe RecaptchaEnterpriseForm do
           'reCAPTCHA verify result received',
           recaptcha_result: {
             success: false,
+            assessment_id: nil,
+            score: nil,
             errors: ['INVALID_ARGUMENT'],
             reasons: [],
           },
