@@ -6,6 +6,22 @@
 class RateLimiter
   attr_reader :rate_limit_type
 
+  EXPONENTIAL_INCREMENT_SCRIPT = <<~LUA
+    local count = redis.call('incr', KEYS[1])
+    local now = tonumber(ARGV[1])
+    local minutes = tonumber(ARGV[2])
+    local exponential_factor = tonumber(ARGV[3])
+    local attempt_window_max = tonumber(ARGV[4])
+    minutes = math.floor(minutes * (exponential_factor ^ (count - 1)))
+    if attempt_window_max then
+      minutes = math.min(minutes, attempt_window_max)
+    end
+    redis.call('expireat', KEYS[1], now + (minutes * 60))
+    return count
+  LUA
+
+  EXPONENTIAL_INCREMENT_SCRIPT_SHA1 = Digest::SHA1.hexdigest(EXPONENTIAL_INCREMENT_SCRIPT).freeze
+
   def initialize(rate_limit_type:, user: nil, target: nil)
     @rate_limit_type = rate_limit_type
     @user = user
@@ -51,7 +67,7 @@ class RateLimiter
 
   def expires_at
     return nil if attempted_at.blank?
-    attempted_at + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
+    attempted_at + expiration_minutes.minutes
   end
 
   def remaining_count
@@ -69,18 +85,40 @@ class RateLimiter
     attempts && attempts >= RateLimiter.max_attempts(rate_limit_type)
   end
 
+  def expiration_minutes
+    minutes = RateLimiter.attempt_window_in_minutes(rate_limit_type)
+    exponential_factor = RateLimiter.attempt_window_exponential_factor(rate_limit_type)
+    attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
+    minutes *= exponential_factor ** (attempts - 1) if exponential_factor && attempts.positive?
+    if attempt_window_max && minutes > attempt_window_max
+      attempt_window_max
+    else
+      minutes
+    end
+  end
+
   def increment!
     return if limited?
     value = nil
 
+    minutes = RateLimiter.attempt_window_in_minutes(rate_limit_type)
+    exponential_factor = RateLimiter.attempt_window_exponential_factor(rate_limit_type)
     now = Time.zone.now
     REDIS_THROTTLE_POOL.with do |client|
-      value, _success = client.multi do |multi|
-        multi.incr(key)
-        multi.expireat(
-          key,
-          now + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
-        )
+      if exponential_factor.present?
+        attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
+        script_args = [now.to_i, minutes, exponential_factor, attempt_window_max].map(&:to_s)
+        begin
+          value = client.evalsha(EXPONENTIAL_INCREMENT_SCRIPT_SHA1, [key], script_args)
+        rescue Redis::CommandError => error
+          raise error unless error.message.start_with?('NOSCRIPT')
+          value = client.eval(EXPONENTIAL_INCREMENT_SCRIPT, [key], script_args)
+        end
+      else
+        value, _success = client.multi do |multi|
+          multi.incr(key)
+          multi.expireat(key, now + minutes.minutes.in_seconds)
+        end
       end
     end
 
@@ -109,7 +147,7 @@ class RateLimiter
     else
       @redis_attempted_at =
         ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
-        RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
+        expiration_minutes.minutes
     end
 
     self
@@ -132,7 +170,7 @@ class RateLimiter
       client.set(
         key,
         value,
-        exat: now.to_i + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes.in_seconds,
+        exat: now + expiration_minutes.minutes.in_seconds,
       )
     end
 
@@ -153,6 +191,14 @@ class RateLimiter
 
   def self.attempt_window_in_minutes(rate_limit_type)
     rate_limit_config.dig(rate_limit_type, :attempt_window)
+  end
+
+  def self.attempt_window_exponential_factor(rate_limit_type)
+    rate_limit_config.dig(rate_limit_type, :attempt_window_exponential_factor)
+  end
+
+  def self.attempt_window_max_in_minutes(rate_limit_type)
+    rate_limit_config.dig(rate_limit_type, :attempt_window_max)
   end
 
   def self.max_attempts(rate_limit_type)
@@ -221,6 +267,13 @@ class RateLimiter
         max_attempts: IdentityConfig.store.short_term_phone_otp_max_attempts,
         attempt_window: IdentityConfig.store.
           short_term_phone_otp_max_attempt_window_in_seconds.seconds.in_minutes.to_f,
+      },
+      sign_in_user_id_per_ip: {
+        max_attempts: IdentityConfig.store.sign_in_user_id_per_ip_max_attempts,
+        attempt_window: IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_in_minutes,
+        attempt_window_exponential_factor:
+          IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_exponential_factor,
+        attempt_window_max: IdentityConfig.store.sign_in_user_id_per_ip_attempt_window_max_minutes,
       },
     }.with_indifferent_access
   end

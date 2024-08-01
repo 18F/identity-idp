@@ -31,15 +31,16 @@ module Users
 
     def create
       session[:sign_in_flow] = :sign_in
-      return process_locked_out_session if session_bad_password_count_max_exceeded?
+      return process_rate_limited if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
+      return process_rate_limited if rate_limited?
       return process_failed_captcha if !valid_captcha_result?
 
       rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
     ensure
-      increment_session_bad_password_count if rate_limit_password_failure && !current_user
+      handle_invalid_authentication if rate_limit_password_failure && !current_user
       track_authentication_attempt(auth_params[:email])
     end
 
@@ -71,7 +72,7 @@ module Users
       session[:max_bad_passwords_at] ||= Time.zone.now.to_i
     end
 
-    def process_locked_out_session
+    def process_rate_limited
       sign_out(:user)
       warden.lock!
 
@@ -83,9 +84,14 @@ module Users
     end
 
     def locked_out_time_remaining
-      locked_at = session[:max_bad_passwords_at]
-      window = IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds
-      time_lockout_expires = Time.zone.at(locked_at) + window
+      if session[:max_bad_passwords_at]
+        locked_at = session[:max_bad_passwords_at]
+        window = IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds
+        time_lockout_expires = Time.zone.at(locked_at) + window
+      else
+        time_lockout_expires = rate_limiter&.expires_at || Time.zone.now
+      end
+
       distance_of_time_in_words(Time.zone.now, time_lockout_expires, true)
     end
 
@@ -147,7 +153,13 @@ module Users
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
     end
 
+    def handle_invalid_authentication
+      rate_limiter&.increment!
+      increment_session_bad_password_count
+    end
+
     def handle_valid_authentication
+      rate_limiter&.reset!
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
       set_new_device_session(nil)
@@ -171,6 +183,7 @@ module Users
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        rate_limited: rate_limited?,
         valid_captcha_result: valid_captcha_result?,
         bad_password_count: session[:bad_password_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
@@ -181,6 +194,20 @@ module Users
 
     def user_locked_out?(user)
       user.locked_out?
+    end
+
+    def rate_limited?
+      !!rate_limiter&.limited?
+    end
+
+    def rate_limiter
+      return @rate_limiter if defined?(@rate_limiter)
+      user = User.find_with_email(auth_params[:email])
+      return @rate_limiter = nil unless user
+      @rate_limiter = RateLimiter.new(
+        rate_limit_type: :sign_in_user_id_per_ip,
+        target: [user.id, request.ip].join('-'),
+      )
     end
 
     def store_sp_metadata_in_session
