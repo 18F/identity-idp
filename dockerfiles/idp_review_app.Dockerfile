@@ -62,7 +62,7 @@ RUN apt-get update && apt-get install -y yarn=1.22.5-1
 
 # Download RDS Combined CA Bundle
 RUN mkdir -p /usr/local/share/aws \
-  && curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
+  && curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
   && chmod 644 /usr/local/share/aws/rds-combined-ca-bundle.pem
 
 # Create a new user and set up the working directory
