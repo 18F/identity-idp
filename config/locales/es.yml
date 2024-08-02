@@ -875,6 +875,7 @@ forms.piv_cac_setup.nickname: Alias de la tarjeta PIV o CAC
 forms.piv_cac_setup.no_thanks: No, gracias
 forms.piv_cac_setup.piv_cac_intro_html: Le pediremos que presente su tarjeta PIV o CAC <strong>cada vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después de hacer clic en “Agregar tarjeta PIV o CAC”, su navegador le pedirá el PIN de su tarjeta PIV o CAC y que seleccione un certificado.
 forms.piv_cac_setup.submit: Inserte su tarjeta PIV o CAC.
+forms.piv_cac_setup.try_again: Vuelva a intentarlo
 forms.registration.labels.email: Ingrese su dirección de correo electrónico
 forms.registration.labels.email_language: Seleccione su preferencia de idioma del correo electrónico
 forms.ssn.show: Mostrar número de Seguro Social
@@ -1348,7 +1349,6 @@ instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de ta
 instructions.mfa.piv_cac.step_3: Agregue su tarjeta PIV o CAC.
 instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingrese su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
 instructions.mfa.piv_cac.try_again: vuelva a intentarlo
-instructions.mfa.piv_cac.try_again_capitalized: Vuelva a intentarlo
 instructions.mfa.sms.number_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.voice.number_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.webauthn_platform.learn_more_help: Obtenga más información sobre el desbloqueo facial o táctil
