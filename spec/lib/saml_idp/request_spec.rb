@@ -32,6 +32,12 @@ module SamlIdp
       "<LogoutRequest ID='_some_response_id' Version='2.0' IssueInstant='2010-06-01T13:00:00Z' Destination='http://localhost:3000/saml/logout' xmlns='urn:oasis:names:tc:SAML:2.0:protocol'><Issuer xmlns='urn:oasis:names:tc:SAML:2.0:assertion'>http://example.com</Issuer><NameID xmlns='urn:oasis:names:tc:SAML:2.0:assertion' Format='urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'>some_name_id</NameID><SessionIndex>abc123index</SessionIndex></LogoutRequest>"
     end
 
+    let(:raw_no_ns_authn_request) { fixture('valid_no_ns.xml', path: 'requests') }
+    let(:raw_unknown_authn_request) do
+      fixture('valid_unknown_ns_authn.xml', path: 'requests')
+    end
+
+
     describe 'deflated request' do
       let(:deflated_request) { Base64.encode64(Zlib::Deflate.deflate(raw_authn_request, 9)[2..-5]) }
 
@@ -76,6 +82,30 @@ module SamlIdp
 
       it "correctly indicates that it isn't signed" do
         expect(subject.signed?).to be_falsey
+      end
+
+      context 'the request has no namespace' do
+        subject { described_class.new raw_no_ns_authn_request }
+
+        it 'has a valid valid_signature' do
+          expect(subject.valid_signature?).to be true
+        end
+
+        it "correctly indicates that it is signed" do
+          expect(subject.signed?).to be true
+        end
+      end
+
+      context 'the request has an unknown namespace' do
+        subject { described_class.new raw_unknown_authn_request }
+
+        it 'has a valid valid_signature' do
+          expect(subject.valid_signature?).to be true
+        end
+
+        it "correctly indicates that it isn't signed" do
+          expect(subject.signed?).to be false
+        end
       end
 
       context 'with signature in params' do
