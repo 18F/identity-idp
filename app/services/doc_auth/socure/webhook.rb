@@ -49,11 +49,14 @@ module DocAuth
       end
 
       def documents_uploaded
-        # return if IdentityConfig.store.socure_verification_level > 1 not needed in v4 doc request
-
-        if (socure_document_uuid = event.dig('data', 'uuid'))
-          uploaded_documents_decision(socure_document_uuid)
+        unless document_capture_session.docv_transaction_token
+          return if IdentityConfig.store.socure_verification_level > 1
         end
+
+        socure_document_uuid = event.dig('data', 'uuid')
+        # if (socure_document_uuid = event.dig('data', 'uuid'))
+          uploaded_documents_decision(socure_document_uuid)
+        # end
       end
 
       def document_capture_session

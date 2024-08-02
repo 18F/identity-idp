@@ -63,7 +63,8 @@ module Idv
       @msg = doc_resp['msg']
       @reference_id = doc_resp.dig('referenceId')
       @qr_code = nil
-
+      docv_transaction_token = doc_resp.dig('data','docvTransactionToken')
+      document_capture_session.update!(docv_transaction_token: docv_transaction_token)
       # redirect_to @url, allow_other_host: true if @url.present? && idv_session.skip_hybrid_handoff?
     end
 
@@ -74,6 +75,8 @@ module Idv
       # fetch result
       if (socure_document_uuid = request.params[:document_uuid])
         uploaded_documents_decision(socure_document_uuid)
+      elsif request.params[:docv_transaction_token]
+        uploaded_documents_decision
       end
 
       # Not used in standard flow, here for data consistency with hybrid flow.

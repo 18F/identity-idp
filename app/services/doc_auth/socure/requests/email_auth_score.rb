@@ -4,16 +4,18 @@ module DocAuth
   module Socure
     module Requests
       class EmailAuthScore < DocAuth::Socure::Request
-        attr_reader :modules, :document_uuid, :customer_user_id
+        attr_reader :modules, :document_uuid, :customer_user_id, :docv_transaction_token
 
         def initialize(
           modules:,
           document_uuid: nil,
-          customer_user_id: nil
+          customer_user_id: nil,
+          docv_transaction_token: nil
         )
           @modules = modules
           @document_uuid = document_uuid
           @customer_user_id = customer_user_id
+          @docv_transaction_token = docv_transaction_token
         end
 
         private
@@ -23,7 +25,8 @@ module DocAuth
             modules: modules,
             customerUserId: customer_user_id,
             documentUuid: document_uuid,
-          }.to_json
+            docvTransactionToken: docv_transaction_token,
+        }.compact.to_json
         end
 
         def handle_http_response(http_response)

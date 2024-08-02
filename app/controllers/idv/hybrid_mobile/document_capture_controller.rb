@@ -72,6 +72,8 @@ module Idv
         # fetch result
         if (socure_document_uuid = request.params[:document_uuid])
           uploaded_documents_decision(socure_document_uuid)
+        elsif request.params[:docv_transaction_token]
+          uploaded_documents_decision
         end
 
         document_capture_session.confirm_ocr
