@@ -19,18 +19,12 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
 
     before do
       allow(subject).to receive(:current_user).and_return(user)
-      expect(subject).to receive(:acuant_sdk_ab_test_analytics_args).
-        and_return(acuant_sdk_args)
     end
 
     context 'idv_session is available' do
       before do
         sign_in(user)
         allow(subject).to receive(:idv_session).and_return(idv_session)
-      end
-
-      it 'includes acuant_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(acuant_sdk_args)
       end
 
       it 'includes skip_hybrid_handoff' do
@@ -54,12 +48,6 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
           expect(controller.ab_test_analytics_buckets).
             not_to include({ opted_in_to_in_person_proofing: :opt_in_value })
         end
-      end
-    end
-
-    context 'idv_session is not available' do
-      it 'still includes acuant_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(acuant_sdk_args)
       end
     end
   end
