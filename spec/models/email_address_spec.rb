@@ -145,6 +145,7 @@ RSpec.describe EmailAddress do
 
   describe '#fed_email?' do
     subject(:result) { email_address.fed_email? }
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
 
     context 'use_fed_domain_class set to true' do
       before do

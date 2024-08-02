@@ -103,9 +103,12 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
   end
 
   context 'use_fed_domain_class set to true' do
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+
     before do
       allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(true)
     end
+
     scenario 'User with valid fed email directed to recommend page and get to setup piv' do
       user = create(:user, :with_phone, { email: 'example@gsa.gov' })
 
@@ -131,7 +134,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     end
 
     scenario 'User with fed email and skips recommendation page' do
-      user = create(:user, :with_phone, { email: 'example@example.gov' })
+      user = create(:user, :with_phone, { email: 'example@gsa.gov' })
 
       visit new_user_session_path
       fill_in_credentials_and_submit(user.email, user.password)
