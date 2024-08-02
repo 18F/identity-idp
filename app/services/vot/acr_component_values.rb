@@ -77,7 +77,7 @@ module Vot
     ).freeze
 
     ## Authentication ACR values
-    DEFAULT = ComponentValue.new(
+    DEFAULT_AAL = ComponentValue.new(
       name: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
       description: 'Legacy default authentication',
       implied_component_values: [],
@@ -117,7 +117,7 @@ module Vot
       name: Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
       description: 'Legacy AAL3 with HSPD12',
       implied_component_values: [],
-      requirements: [:aal2, :hspd12],
+      requirements: [:aal2, :hspd12, :phishing_resistant],
     ).freeze
 
     NAME_HASH = constants.map do |constant|

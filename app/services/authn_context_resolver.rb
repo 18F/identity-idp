@@ -32,6 +32,21 @@ class AuthnContextResolver
     end
   end
 
+  def asserted_aal_acr
+    return if vtr.present?
+    if acr_aal_component_values.any?
+      acr_aal_component_values.first.name
+    elsif service_provider&.default_aal.to_i >= 3
+      Vot::AcrComponentValues::AAL3.name
+    elsif service_provider&.default_aal.to_i == 2
+      Vot::AcrComponentValues::AAL2.name
+    elsif acr_result.identity_proofing_or_ialmax?
+      Vot::AcrComponentValues::AAL2.name
+    else
+      Vot::AcrComponentValues::DEFAULT_AAL.name
+    end
+  end
+
   private
 
   def selected_vtr_parser_result_from_vtr_list
@@ -83,7 +98,11 @@ class AuthnContextResolver
   end
 
   def acr_result_without_sp_defaults
-    @acr_result_without_sp_defaults ||= Vot::Parser.new(acr_values: acr_values).parse
+    @acr_result_without_sp_defaults ||= if acr_values.present?
+                                          Vot::Parser.new(acr_values: acr_values).parse
+                                        else
+                                          Vot::Parser::Result.no_sp_result
+                                        end
   end
 
   def result_with_sp_aal_defaults(result)

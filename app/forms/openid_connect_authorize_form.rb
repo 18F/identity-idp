@@ -140,8 +140,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def requested_aal_value
-    highest_level_aal(aal_values) ||
-      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+    highest_level_aal(aal_values) || default_aal_acr
   end
 
   private
@@ -365,5 +364,15 @@ class OpenidConnectAuthorizeForm
 
   def semantic_authn_contexts_requested?
     Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(acr_values)
+  end
+
+  def default_aal_acr
+    ctx = AuthnContextResolver.new(
+      service_provider: service_provider,
+      user: nil,
+      vtr: nil,
+      acr_values: nil,
+    )
+    ctx.asserted_aal_value
   end
 end
