@@ -13,7 +13,7 @@ module Idv
         buckets = buckets.merge(opt_in_analytics_properties)
       end
 
-      buckets.merge(acuant_sdk_ab_test_analytics_args)
+      buckets
     end
   end
 end
