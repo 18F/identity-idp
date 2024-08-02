@@ -206,7 +206,7 @@ After successful A/B testing clears us to move to a new version of the Acuant SD
 
 1. We want to remove the oldest SDK version from our repository. In the [`/public/acuant/`](/public/acuant/) directory, there should be three versions. We only want to keep the newer two. Delete the directory containing the oldest of the three versions.
 
-2. We also want to update the SDK version in the app's [`config/application.yml.default`](../config/application.yml.default) file. This governs the SDK version that will be used by any environment &mdash; including one's local dev environment &mdash; when no explicit value is set to override it. Modify the file to look something like this:
+2. We also want to update the SDK version in the app's [`/config/application.yml.default`](/config/application.yml.default) file. This governs the SDK version that will be used by any environment &mdash; including one's local dev environment &mdash; when no explicit value is set to override it. Modify the file to look something like this:
 
     ```yml
     idv_acuant_sdk_version_alternate: 11.M.M # previous
