@@ -4,13 +4,10 @@ module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
 
+    include DocAuthVendorConcern
+
     def save_proofing_components(user)
       return unless user
-
-      doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-        discriminator: document_capture_session_uuid,
-        analytics: analytics,
-      )
 
       component_attributes = {
         document_check: doc_auth_vendor,

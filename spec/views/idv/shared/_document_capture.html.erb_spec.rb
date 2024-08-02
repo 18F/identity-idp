@@ -55,6 +55,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+      mock_client: nil,
     }
   end
 

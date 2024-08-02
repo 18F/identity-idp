@@ -17,12 +17,14 @@ module Idv
     def initialize(
       params,
       service_provider:,
+      doc_auth_vendor:,
       analytics: nil,
       uuid_prefix: nil,
       liveness_checking_required: false
     )
       @params = params
       @service_provider = service_provider
+      @doc_auth_vendor = doc_auth_vendor
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
@@ -315,7 +317,7 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
-        vendor_discriminator: document_capture_session_uuid,
+        vendor: @doc_auth_vendor,
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
             **attrs,
