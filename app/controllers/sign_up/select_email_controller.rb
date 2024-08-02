@@ -38,7 +38,7 @@ module SignUp
     end
 
     def user_emails
-      @user_emails = current_user.email_addresses.map { |e| e.email }
+      @user_emails = current_user.confirmed_email_addresses.map { |e| e.email }
     end
 
     private
