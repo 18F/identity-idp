@@ -143,6 +143,41 @@ RSpec.describe Analytics do
         )
       end.to_not raise_error
     end
+
+    context 'with A/B tests' do
+      let(:ab_tests) do
+        {
+          FOO_TEST: AbTest.new(
+            experiment_name: 'Test 1',
+            buckets: {
+              bucket_a: 50,
+              bucket_b: 50,
+            },
+          ) do |user:, **|
+            user.id
+          end,
+        }
+      end
+
+      before do
+        allow(AbTests).to receive(:all).and_return(ab_tests)
+      end
+
+      it 'includes ab_tests in logged event' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge(
+            ab_tests: {
+              foo_test: {
+                bucket: anything,
+              },
+            },
+          ),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+    end
   end
 
   it 'tracks session duration' do

@@ -24,6 +24,11 @@ module AbTests
     end
   end
 
+  # @returns [Hash]
+  def self.all
+    constants.index_with { |test_name| const_get(test_name) }
+  end
+
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     buckets: {
