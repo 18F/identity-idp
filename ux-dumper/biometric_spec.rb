@@ -10,11 +10,14 @@ RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
-  let(:ux_dumper) { UxDumper.new('biometric') }
+  let(:ux_dumper) { UxDumper.new(File.basename(__FILE__, '_spec.rb')) }
 
   before(:each) do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(ux_dumper.analytics)
-    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
+    allow_any_instance_of(ApplicationController).
+      to receive(:analytics).and_return(ux_dumper.analytics)
+
+    allow_any_instance_of(ServiceProviderSession).
+      to receive(:sp_name).and_return(@sp_name)
   end
 
   before(:all) do
