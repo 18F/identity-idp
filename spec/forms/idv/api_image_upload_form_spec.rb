@@ -19,6 +19,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       liveness_checking_required: liveness_checking_required,
+      doc_auth_vendor: 'mock',
     )
   end
 

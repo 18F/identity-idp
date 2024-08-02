@@ -2,24 +2,19 @@ require 'rails_helper'
 
 RSpec.describe DocAuthRouter do
   describe '.client' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-    end
-
     context 'for lexisnexis' do
-      let(:doc_auth_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
-
+      subject do
+        DocAuthRouter.client(vendor: 'lexisnexis')
+      end
       it 'is a translation-proxied lexisnexis client' do
-        expect(DocAuthRouter.client).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
-        expect(DocAuthRouter.client.client).to be_a(DocAuth::LexisNexis::LexisNexisClient)
+        expect(subject).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
+        expect(subject.client).to be_a(DocAuth::LexisNexis::LexisNexisClient)
       end
     end
 
     context 'other config' do
-      let(:doc_auth_vendor) { 'unknown' }
-
       it 'errors' do
-        expect { DocAuthRouter.client }.to raise_error(RuntimeError)
+        expect { DocAuthRouter.client(vendor: 'unknown') }.to raise_error(RuntimeError)
       end
     end
   end
@@ -59,16 +54,6 @@ RSpec.describe DocAuthRouter do
         and_call_original
 
       reload_ab_test_initializer!
-    end
-
-    context 'with a nil discriminator' do
-      it 'is the default vendor, and logs analytics events' do
-        expect(analytics).to receive(:idv_doc_auth_randomizer_defaulted)
-
-        result = DocAuthRouter.doc_auth_vendor(discriminator: nil, analytics: analytics)
-
-        expect(result).to eq(doc_auth_vendor)
-      end
     end
   end
 
