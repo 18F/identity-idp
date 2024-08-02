@@ -838,7 +838,7 @@ DEPENDENCIES
   redis (>= 3.2.0)
   redis-session-store!
   retries
-  rexml (~> 3.3)
+  rexml (~> 3.3, >= 3.3.3)
   rotp (~> 6.3, >= 6.3.0)
   rqrcode
   rspec (~> 3.13.0)
@@ -876,7 +876,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.9)
 
 RUBY VERSION
-   ruby 3.3.1p55
+   ruby 2.7.8p225
 
 BUNDLED WITH
    2.5.6
