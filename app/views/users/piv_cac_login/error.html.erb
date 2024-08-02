@@ -8,6 +8,9 @@
   <%= @presenter.description %>
 </p>
 
-<div class="margin-top-4">
-  <%= link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button' %>
-</div>
+<%= render ButtonComponent.new(
+      url: new_user_session_url,
+      big: true,
+      wide: true,
+      class: 'display-block margin-top-5'
+    ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
