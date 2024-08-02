@@ -455,6 +455,29 @@ RSpec.describe OpenidConnectAuthorizeForm do
   describe '#requested_aal_value' do
     context 'with ACR values' do
       let(:vtr) { nil }
+      context 'when no AAL value is passed' do
+        context 'when identity proofing is requested' do
+          let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+
+          it 'returns AAL2' do
+            expect(form.requested_aal_value).to eq(
+              Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+          context 'when SP default AAL is 3' do
+            before do
+              allow_any_instance_of(ServiceProvider).to receive(:default_aal).
+                and_return(3)
+            end
+
+            it 'returns AAL3' do
+              expect(form.requested_aal_value).to eq(
+                Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+        end
+      end
       context 'when AAL2 passed' do
         let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 

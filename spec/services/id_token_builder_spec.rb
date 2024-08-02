@@ -106,6 +106,10 @@ RSpec.describe IdTokenBuilder do
         it 'sets the acr to the ial2 constant' do
           expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
         end
+
+        it 'sets the aal to the AAL2 ACR value' do
+          expect(decoded_payload[:aal]).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+        end
       end
 
       context 'ial2 with biometric comparison required' do
@@ -129,6 +133,11 @@ RSpec.describe IdTokenBuilder do
 
         it 'sets the acr to the ial1 constant' do
           expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+        end
+        it 'sets the aal to the default ACR value' do
+          expect(decoded_payload[:aal]).to eq(
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
 
