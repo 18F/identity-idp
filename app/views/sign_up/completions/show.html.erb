@@ -24,6 +24,8 @@
             <li><%= item %></li>
           <% end %>
         </ul>
+      <% elsif attribute_key == :verified_at %>
+        <%= render TimeComponent.new(time: attribute_value) %>
       <% elsif attribute_key == :social_security_number %>
         <%= render(
               'shared/masked_text',
