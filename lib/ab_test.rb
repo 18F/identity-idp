@@ -5,8 +5,19 @@ class AbTest
 
   MAX_SHA = (16 ** 64) - 1
 
-  def initialize(experiment_name:, buckets: {}, default_bucket: :default)
+  # @yieldparam [ActionDispatch::Request] request
+  # @yieldparam [String,nil] service_provider Issuer string for the service provider associated with
+  #                                           the current session.
+  # @yieldparam [User] user
+  # @yieldparam [Hash] user_session
+  def initialize(
+    experiment_name:,
+    buckets: {},
+    default_bucket: :default,
+    &discriminator
+  )
     @buckets = buckets
+    @discriminator = discriminator
     @experiment_name = experiment_name
     @default_bucket = default_bucket
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
@@ -14,8 +25,19 @@ class AbTest
     raise 'bucket percentages exceed 100' unless within_100_percent?
   end
 
-  def bucket(discriminator = nil)
-    return @default_bucket if discriminator.blank?
+  # @param [ActionDispatch::Request] request
+  # @param [String,nil] service_provider Issuer string for the service provider associated with
+  #                                      the current session.
+  # @param [User] user
+  # @param [Hash] user_session
+  def bucket(request:, service_provider:, user:, user_session:)
+    return nil if no_percentages?
+
+    discriminator = resolve_discriminator(
+      request:, service_provider:, session:, user:,
+      user_session:
+    )
+    return nil if discriminator.blank?
 
     user_value = percent(discriminator)
 
@@ -30,6 +52,18 @@ class AbTest
   end
 
   private
+
+  def resolve_discriminator(user:, **)
+    if @discriminator
+      @discriminator.call(user:, **)
+    elsif !user.is_a?(AnonymousUser)
+      user&.uuid
+    end
+  end
+
+  def no_percentages?
+    buckets.empty? || buckets.values.all? { |pct| pct == 0 }
+  end
 
   def percent(discriminator)
     Digest::SHA256.hexdigest("#{discriminator}:#{experiment_name}").to_i(16).to_f / MAX_SHA * 100

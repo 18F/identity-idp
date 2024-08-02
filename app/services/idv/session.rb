@@ -290,6 +290,14 @@ module Idv
       IdentityConfig.store.doc_auth_selfie_desktop_test_mode
     end
 
+    def self.ab_test_discriminator
+      ->(request:, service_provider:, user:, user_session:) {
+        # If the user is not logged in, we can't include them in any A/B tests
+        # that rely on Idv::Session to get a discriminator.
+        return nil if !user || user.is_a?(AnonymousUser)
+      }
+    end
+
     private
 
     attr_reader :user_session
