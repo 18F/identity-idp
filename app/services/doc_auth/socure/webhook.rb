@@ -54,9 +54,11 @@ module DocAuth
         end
 
         socure_document_uuid = event.dig('data', 'uuid')
-        # if (socure_document_uuid = event.dig('data', 'uuid'))
+        if (socure_document_uuid = event.dig('data', 'uuid'))
           uploaded_documents_decision(socure_document_uuid)
-        # end
+        else
+          uploaded_documents_decision
+        end
       end
 
       def document_capture_session
