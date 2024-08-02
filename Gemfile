@@ -67,11 +67,11 @@ gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-session-store', github: '18F/redis-session-store', tag: 'v1.0.1-18f'
 gem 'retries'
-gem 'rexml', '~> 3.3'
+gem 'rexml', '~> 3.3', '>= 3.3.3'
 gem 'rotp', '~> 6.3', '>= 6.3.0'
 gem 'rqrcode'
 gem 'ruby-progressbar'
-gem 'ruby-saml'
+gem 'ruby-saml', '>= 1.14.0'
 gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.21.4-18f'
 gem 'scrypt'
@@ -104,7 +104,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
-  gem 'erb_lint', '~> 0.5.0', require: false
+  gem 'erb_lint', '~> 0.6.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
@@ -117,10 +117,10 @@ group :development, :test do
   gem 'psych'
   gem 'rspec', '~> 3.13.0'
   gem 'rspec-rails', '~> 6.0'
-  gem 'rubocop', '~> 1.62.0', require: false
-  gem 'rubocop-performance', '~> 1.20.2', require: false
-  gem 'rubocop-rails', '>= 2.5.2', require: false
-  gem 'rubocop-rspec', require: false
+  gem 'rubocop', '~> 1.63.0', require: false
+  gem 'rubocop-performance', '~> 1.21.0', require: false
+  gem 'rubocop-rails', '>= 2.21.0', require: false
+  gem 'rubocop-rspec', '>= 2.25.0', require: false
 end
 
 group :test do
@@ -139,6 +139,6 @@ group :test do
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'simple_xlsx_reader', require: false
   gem 'tableparser', require: false
-  gem 'webmock'
+  gem 'webmock', '>= 3.19.0'
   gem 'zonebie'
 end
