@@ -12,7 +12,7 @@ RSpec.describe AuthnContextResolver do
         service_provider: nil,
         vtr: vtr,
         acr_values: nil,
-      ).resolve
+      ).result
 
       expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
       expect(result.aal2?).to eq(true)
@@ -32,7 +32,7 @@ RSpec.describe AuthnContextResolver do
         service_provider: nil,
         vtr: vtr,
         acr_values: nil,
-      ).resolve
+      ).result
 
       expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pe')
       expect(result.aal2?).to eq(true)
@@ -57,7 +57,7 @@ RSpec.describe AuthnContextResolver do
         service_provider: nil,
         vtr: vtr,
         acr_values: acr_values,
-      ).resolve
+      ).result
 
       expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
     end
@@ -75,7 +75,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
         expect(result.biometric_comparison?).to eq(true)
@@ -91,7 +91,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1')
         expect(result.biometric_comparison?).to eq(false)
@@ -107,7 +107,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
         expect(result.biometric_comparison?).to eq(true)
@@ -125,7 +125,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1')
         expect(result.identity_proofing?).to eq(true)
@@ -140,7 +140,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2')
         expect(result.identity_proofing?).to eq(false)
@@ -161,7 +161,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(true)
@@ -183,7 +183,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(false)
@@ -205,7 +205,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(true)
@@ -232,7 +232,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(false)
       end
@@ -249,7 +249,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
@@ -267,7 +267,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(true)
@@ -285,7 +285,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(false)
       end
@@ -301,7 +301,7 @@ RSpec.describe AuthnContextResolver do
           acr_values: acr_values,
         )
       end
-      let(:result) { subject.resolve }
+      let(:result) { subject.result }
 
       context 'if IAL ACR value is present' do
         let(:acr_values) do

@@ -10,11 +10,24 @@ class AuthnContextResolver
     @acr_values = acr_values
   end
 
-  def resolve
-    if vtr.present?
-      selected_vtr_parser_result_from_vtr_list
+  def result
+    @result ||= if vtr.present?
+                  selected_vtr_parser_result_from_vtr_list
+                else
+                  acr_result
+                end
+  end
+
+  def asserted_ial_acr
+    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless user.active_profile.present?
+
+    if result.biometric_comparison?
+      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+    elsif result.identity_proofing? ||
+          result.ialmax?
+      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
     else
-      acr_result
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
     end
   end
 

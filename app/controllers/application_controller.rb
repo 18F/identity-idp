@@ -111,7 +111,7 @@ class ApplicationController < ActionController::Base
         service_provider: service_provider,
         vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
-      ).resolve
+      ).result
     end
   end
 

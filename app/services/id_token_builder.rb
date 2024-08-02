@@ -99,7 +99,7 @@ class IdTokenBuilder
       service_provider: identity.service_provider_record,
       vtr: parsed_vtr_value,
       acr_values: identity.acr_values,
-    ).resolve
+    ).result
   end
 
   def parsed_vtr_value
