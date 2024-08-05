@@ -62,10 +62,12 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         in_account_creation_flow: false,
       }
 
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: enter OTP visited', analytics_hash)
-
       get :show, params: { otp_delivery_preference: 'sms' }
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: enter OTP visited',
+        analytics_hash,
+      )
     end
 
     context 'when the user is registering a new landline phone_number with SMS preference' do

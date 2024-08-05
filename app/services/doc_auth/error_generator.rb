@@ -172,7 +172,7 @@ module DocAuth
       liveness_enabled = response_info[:liveness_enabled]
       selfie_error = get_selfie_error(liveness_enabled, response_info)
 
-      if is_generic_selfie_error?(selfie_error)
+      if generic_selfie_error?(selfie_error)
         selfie_general_failure_error
       else
         error = selfie_error
@@ -181,7 +181,7 @@ module DocAuth
       end
     end
 
-    def is_generic_selfie_error?(error)
+    def generic_selfie_error?(error)
       error == Errors::SELFIE_FAILURE
     end
 

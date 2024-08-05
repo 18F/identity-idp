@@ -37,10 +37,8 @@ RSpec.feature 'disabling GPO address verification', allowed_extra_analytics: [:*
     end
   end
 
-  context 'with GPO address verification disallowed for biometric comparison' do
+  context 'GPO address verification disallowed for biometric comparison' do
     before do
-      allow(IdentityConfig.store).to receive(:no_verify_by_mail_for_biometric_comparison_enabled).
-        and_return(true)
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     end
 

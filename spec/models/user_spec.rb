@@ -1000,7 +1000,7 @@ RSpec.describe User do
           OutOfBandSessionAccessor.new(mock_session_id).put_pii(
             profile_id: 123,
             pii: { first_name: 'Mario' },
-            expiration: 5.minutes.to_i,
+            expiration: 5.minutes.in_seconds,
           )
 
           expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq true

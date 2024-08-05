@@ -233,7 +233,7 @@ else
       weekly_protocols_report: {
         class: 'Reports::ProtocolsReport',
         cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact
   end

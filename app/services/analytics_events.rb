@@ -138,6 +138,7 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
+  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean] sms_phone does the user have a phone factor configured?
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
@@ -147,6 +148,7 @@ module AnalyticsEvents
   # An account reset has been requested
   def account_reset_request(
     success:,
+    errors:,
     sms_phone:,
     totp:,
     piv_cac:,
@@ -159,6 +161,7 @@ module AnalyticsEvents
       'Account Reset: request',
       {
         success: success,
+        errors:,
         sms_phone: sms_phone,
         totp: totp,
         piv_cac: piv_cac,
@@ -190,13 +193,15 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [String] domain_name Domain name of email address submitted
   # Tracks request for adding new emails to an account
-  def add_email_request(success:, errors:, error_details: nil, **extra)
+  def add_email_request(success:, errors:, domain_name:, error_details: nil, **extra)
     track_event(
       'Add Email Requested',
       success:,
       errors:,
       error_details:,
+      domain_name:,
       **extra,
     )
   end
@@ -392,27 +397,37 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] required_password_change if user forced to change password
   # When a user views the edit password page
-  def edit_password_visit
-    track_event('Edit Password Page Visited')
+  def edit_password_visit(required_password_change: false, **extra)
+    track_event(
+      'Edit Password Page Visited',
+      required_password_change: required_password_change,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check
   # @param [String] bad_password_count represents number of prior login failures
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
+  # @param [Boolean, nil] new_device Whether the user is authenticating from a new device. Nil if
+  # there is the attempt was unsuccessful, since it cannot be known whether it's a new device.
   # Tracks authentication attempts at the email/password screen
   def email_and_password_auth(
     success:,
     user_id:,
     user_locked_out:,
+    rate_limited:,
     valid_captcha_result:,
     bad_password_count:,
     sp_request_url_present:,
     remember_device:,
+    new_device:,
     **extra
   )
     track_event(
@@ -420,10 +435,12 @@ module AnalyticsEvents
       success:,
       user_id:,
       user_locked_out:,
+      rate_limited:,
       valid_captcha_result:,
       bad_password_count:,
       sp_request_url_present:,
       remember_device:,
+      new_device:,
       **extra,
     )
   end
@@ -5498,6 +5515,11 @@ module AnalyticsEvents
     track_event('Sign in page visited', flash:, **extra)
   end
 
+  # User lands on security check failed page
+  def sign_in_security_check_failed_visited
+    track_event(:sign_in_security_check_failed_visited)
+  end
+
   # @param [Boolean] success
   # @param [Boolean] new_user
   # @param [Boolean] has_other_auth_methods
@@ -5814,6 +5836,8 @@ module AnalyticsEvents
   # @param [Array] sp_session_requested_attributes Attributes requested by the service provider
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration
+  # @param [String, nil] in_person_proofing_status In person proofing status
+  # @param [String, nil] doc_auth_result The doc auth result
   def user_registration_complete(
     ial2:,
     service_provider_name:,
@@ -5823,6 +5847,8 @@ module AnalyticsEvents
     sp_session_requested_attributes:,
     ialmax: nil,
     disposable_email_domain: nil,
+    in_person_proofing_status: nil,
+    doc_auth_result: nil,
     **extra
   )
     track_event(
@@ -5835,6 +5861,8 @@ module AnalyticsEvents
       needs_completion_screen_reason:,
       sp_session_requested_attributes:,
       disposable_email_domain:,
+      in_person_proofing_status:,
+      doc_auth_result:,
       **extra,
     )
   end

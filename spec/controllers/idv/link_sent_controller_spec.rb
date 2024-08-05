@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::LinkSentController do
+RSpec.describe Idv::LinkSentController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -13,7 +13,6 @@ RSpec.describe Idv::LinkSentController do
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -65,7 +64,7 @@ RSpec.describe Idv::LinkSentController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog link_sent_view_count' do
@@ -129,7 +128,7 @@ RSpec.describe Idv::LinkSentController do
     it 'sends analytics_submitted event' do
       put :update
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     context 'check results' do

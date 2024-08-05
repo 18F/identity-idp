@@ -204,7 +204,10 @@ module Features
     end
 
     def user_with_totp_2fa
-      create(:user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD)
+      create(
+        :user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD,
+                                                            email_language: 'en'
+      )
     end
 
     def user_with_phishing_resistant_2fa
@@ -263,7 +266,7 @@ module Features
     end
 
     def click_submit_default
-      click_button t('forms.buttons.submit.default')
+      click_on t('forms.buttons.submit.default')
     end
 
     def click_submit_default_twice

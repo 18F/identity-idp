@@ -129,22 +129,6 @@ class OpenidConnectAuthorizeForm
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
-  def biometric_comparison_requested?
-    !!parsed_vectors_of_trust&.any?(&:biometric_comparison?)
-  end
-
-  def parsed_vectors_of_trust
-    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
-
-    @parsed_vectors_of_trust = begin
-      if vtr.is_a?(Array) && !vtr.empty?
-        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
-      end
-    rescue Vot::Parser::ParseException
-      nil
-    end
-  end
-
   private
 
   attr_reader :identity, :success
@@ -158,6 +142,18 @@ class OpenidConnectAuthorizeForm
     return false if identity_proofing_requested_or_default? || param_value.blank?
     return true if verified_at_requested? && !identity_proofing_service_provider?
     @scope != param_value.split(' ').compact
+  end
+
+  def parsed_vectors_of_trust
+    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
+
+    @parsed_vectors_of_trust = begin
+      if vtr.is_a?(Array) && !vtr.empty?
+        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+      end
+    rescue Vot::Parser::ParseException
+      nil
+    end
   end
 
   def parse_to_values(param_value, possible_values)

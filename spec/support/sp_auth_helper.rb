@@ -11,26 +11,6 @@ module SpAuthHelper
     User.find_with_email(email)
   end
 
-  def create_ial2_account_go_back_to_sp_and_sign_out(sp)
-    user = create(:user, :fully_registered)
-    visit_idp_from_sp_with_ial2(sp)
-    fill_in_credentials_and_submit(user.email, user.password)
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-    complete_all_doc_auth_steps
-    fill_out_phone_form_ok
-    choose_idv_otp_delivery_method_sms
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-    fill_in t('idv.form.password'), with: user.password
-    click_continue
-    acknowledge_and_confirm_personal_key
-    expect(page).to have_current_path(sign_up_completed_path)
-    click_agree_and_continue
-    visit sign_out_url
-    user.reload
-  end
-
   def create_in_person_ial2_account_go_back_to_sp_and_sign_out(sp)
     user = user_with_totp_2fa
     ServiceProvider.find_by(issuer: service_provider_issuer(sp)).

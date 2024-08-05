@@ -40,7 +40,7 @@ Rails.application.configure do
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      Rack::CACHE_CONTROL => "public, max-age=#{2.days.to_i}",
+      Rack::CACHE_CONTROL => "public, max-age=#{2.days.in_seconds}",
     }
   else
     config.action_controller.perform_caching = false

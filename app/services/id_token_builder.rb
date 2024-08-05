@@ -64,12 +64,14 @@ class IdTokenBuilder
   def acr
     return nil unless identity.acr_values.present?
 
-    if resolved_authn_context_result.ialmax?
+    if resolved_authn_context_result.biometric_comparison?
+      Vot::AcrComponentValues::IAL2_BIO_REQUIRED.name
+    elsif resolved_authn_context_result.ialmax?
       determine_ial_max_acr.name
     elsif resolved_authn_context_result.identity_proofing?
-      Vot::LegacyComponentValues::IAL2.name
+      Vot::AcrComponentValues::IAL2.name
     else
-      Vot::LegacyComponentValues::IAL1.name
+      Vot::AcrComponentValues::IAL1.name
     end
   end
 
@@ -85,9 +87,9 @@ class IdTokenBuilder
 
   def determine_ial_max_acr
     if identity.user.identity_verified?
-      Vot::LegacyComponentValues::IAL2
+      Vot::AcrComponentValues::IAL2
     else
-      Vot::LegacyComponentValues::IAL1
+      Vot::AcrComponentValues::IAL1
     end
   end
 
@@ -97,7 +99,7 @@ class IdTokenBuilder
       service_provider: identity.service_provider_record,
       vtr: parsed_vtr_value,
       acr_values: identity.acr_values,
-    ).resolve
+    ).result
   end
 
   def parsed_vtr_value

@@ -1,0 +1,33 @@
+<% self.title = t('security_check_failed.title') %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { t('security_check_failed.title') } %>
+  <p>
+    <%= t('security_check_failed.details') %>
+    <%= new_tab_link_to(
+          t('security_check_failed.learn_more', app_name: APP_NAME),
+          help_center_redirect_path(
+            category: 'trouble-signing-in',
+            article: 'security-check-failed',
+          ),
+        ) %>
+  </p>
+
+  <ul class="usa-list">
+    <li><%= t('security_check_failed.info_p1', app_name: APP_NAME) %></li>
+    <li><%= t('security_check_failed.info_p2_html', piv_cac_url: login_piv_cac_url) %></li> 
+    <li><%= t('security_check_failed.info_p3') %></li> 
+  </ul>
+
+  <% c.with_troubleshooting_options do |tc| %>
+    <% tc.with_header { t('components.troubleshooting_options.default_heading') } %>
+    <% tc.with_option(
+         url: contact_redirect_url,
+         new_tab: true,
+       ).with_content(t('security_check_failed.contact', app_name: APP_NAME)) %>
+  <% end %>
+<% end %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('forms.buttons.back'), root_url %>
+<% end %>

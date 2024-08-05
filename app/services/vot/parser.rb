@@ -6,6 +6,7 @@ module Vot
 
     Result = Data.define(
       :component_values,
+      :component_separator,
       :aal2?,
       :phishing_resistant?,
       :hspd12?,
@@ -18,6 +19,7 @@ module Vot
       def self.no_sp_result
         self.new(
           component_values: [],
+          component_separator: ' ',
           aal2?: false,
           phishing_resistant?: false,
           hspd12?: false,
@@ -34,7 +36,7 @@ module Vot
       end
 
       def expanded_component_values
-        component_values.map(&:name).join('.')
+        component_values.map(&:name).join(component_separator)
       end
     end.freeze
 
@@ -56,6 +58,7 @@ module Vot
       requirement_list = expanded_components.flat_map(&:requirements)
       Result.new(
         component_values: expanded_components,
+        component_separator:,
         aal2?: requirement_list.include?(:aal2),
         phishing_resistant?: requirement_list.include?(:phishing_resistant),
         hspd12?: requirement_list.include?(:hspd12),
@@ -92,7 +95,7 @@ module Vot
       if vector_of_trust.present?
         SupportedComponentValues.by_name
       else
-        LegacyComponentValues.by_name
+        AcrComponentValues.by_name
       end
     end
 

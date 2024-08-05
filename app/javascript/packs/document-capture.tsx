@@ -80,7 +80,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
-    opted_in_to_in_person_proofing: optedInToInPersonProofing,
+    opted_in_to_in_person_proofing: optedInToInPersonProofing === 'true',
   });
 };
 

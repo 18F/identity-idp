@@ -201,4 +201,61 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.remaining_count).to eq(0)
     end
   end
+
+  context 'with exponential factor rate limit configuration' do
+    let(:rate_limit_type) { :example_type }
+
+    subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type:) }
+
+    before do
+      allow(RateLimiter).to receive(:rate_limit_config).and_return(
+        example_type: {
+          max_attempts: 10,
+          attempt_window: 60,
+          attempt_window_exponential_factor: 2,
+          attempt_window_max: 24.hours.in_minutes,
+        },
+      )
+    end
+
+    it 'increases expiration exponentially by attempts', :freeze_time do
+      # Attempt: 1
+      # Assert default expiration
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(1.hour.from_now)
+
+      # Attempt: 2
+      # Assert exponential growth of expiration
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(2.hours.from_now)
+
+      # Attempt: 3
+      # Assert exponential growth of expiration
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(4.hours.from_now)
+
+      # Attempt: 4, 5
+      # Assert last expiration before reaching max attempt window
+      2.times { rate_limiter.increment! }
+      expect(rate_limiter.expires_at).to eq(16.hours.from_now)
+
+      # Attempt: 6
+      # Assert expiration upon reaching max attempt window, not limited
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(24.hours.from_now)
+      expect(rate_limiter.limited?).to eq(false)
+
+      # Attempt: 7, 8, 9
+      # Assert expiration before reaching max attempts, not limited
+      3.times { rate_limiter.increment! }
+      expect(rate_limiter.expires_at).to eq(24.hours.from_now)
+      expect(rate_limiter.limited?).to eq(false)
+
+      # Attempt: 10
+      # Assert expiration, limited upon reaching max attempts
+      rate_limiter.increment!
+      expect(rate_limiter.expires_at).to eq(24.hours.from_now)
+      expect(rate_limiter.limited?).to eq(true)
+    end
+  end
 end

@@ -49,7 +49,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         OutOfBandSessionAccessor.new(rails_session_id).put_pii(
           profile_id: profile.id,
           pii: pii,
-          expiration: 5.minutes.to_i,
+          expiration: 5.minutes.in_seconds,
         )
       end
     end
@@ -183,6 +183,49 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:social_security_number]).to eq('666661234')
           end
         end
+
+        context 'with biometric comparison' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            ].join(' ')
+          end
+
+          it 'includes the correct non-proofed attributes' do
+            aggregate_failures do
+              expect(user_info[:sub]).to eq(identity.uuid)
+              expect(user_info[:iss]).to eq(root_url)
+              expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
+              expect(user_info[:email_verified]).to eq(true)
+              expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+              expect(user_info[:ial]).to eq(
+                Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+              )
+              expect(user_info[:aal]).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+              expect(user_info).to_not have_key(:vot)
+            end
+          end
+
+          it 'includes the proofed attributes' do
+            aggregate_failures do
+              expect(user_info[:given_name]).to eq('John')
+              expect(user_info[:family_name]).to eq('Smith')
+              expect(user_info[:birthdate]).to eq('1970-12-31')
+              expect(user_info[:phone]).to eq('+17035555555')
+              expect(user_info[:phone_verified]).to eq(true)
+              expect(user_info[:address]).to eq(
+                formatted: "123 Fake St\nApt 456\nWashington, DC 12345",
+                street_address: "123 Fake St\nApt 456",
+                locality: 'Washington',
+                region: 'DC',
+                postal_code: '12345',
+              )
+              expect(user_info[:verified_at]).to eq(profile.verified_at.to_i)
+              expect(user_info[:social_security_number]).to eq('666661234')
+            end
+          end
+        end
       end
 
       context 'IALMax' do
@@ -284,7 +327,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
       context 'when the piv/cac was used as a second factor' do
         before do
-          OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.to_i)
+          OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.in_seconds)
         end
 
         it 'includes the x509 claims' do

@@ -97,7 +97,7 @@ module Reporting
             response = fetch_one(query:, start_time:, end_time:)
             with_progress_bar(&:increment)
 
-            if ensure_complete_logs? && has_more_results?(response.results.size)
+            if ensure_complete_logs? && more_results?(response.results.size)
               log(:info, "more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
               mid = midpoint(start_time:, end_time:)
 
@@ -228,7 +228,7 @@ module Reporting
 
     # somehow sample responses returned 10,001 rows when we request 10,000
     # so we check for more than the limit
-    def has_more_results?(size)
+    def more_results?(size)
       size >= MAX_RESULTS_LIMIT
     end
 

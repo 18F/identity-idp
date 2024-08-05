@@ -23,7 +23,7 @@ export function replaceInHTMLContent(html, replacer) {
  */
 export const ellipses = (string) => string.replace(/\.\.\./g, '…');
 
-export default /** @type {import('yaml').visitor} */ ({
+export default /** @type {import('./').Visitor} */ (_options) => ({
   Scalar(_key, node) {
     if (typeof node.value === 'string') {
       node.value = replaceInHTMLContent(node.value, (string) => ellipses(smartquotes(string)));

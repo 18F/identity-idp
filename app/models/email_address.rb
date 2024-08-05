@@ -23,10 +23,6 @@ class EmailAddress < ApplicationRecord
     confirmed_at.present?
   end
 
-  def stale_email_fingerprint?
-    Pii::Fingerprinter.stale?(email, email_fingerprint)
-  end
-
   def confirmation_period_expired?
     expiration_time = confirmation_sent_at +
                       IdentityConfig.store.add_email_link_valid_for_hours.hours

@@ -9,7 +9,7 @@ RSpec.describe 'sign_up/passwords/new.html.erb' do
     allow(view).to receive(:request_id).and_return(nil)
 
     @email_address = user.email_addresses.first
-    @password_form = PasswordForm.new(user)
+    @password_form = PasswordForm.new(user: user)
 
     render
   end

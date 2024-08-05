@@ -183,6 +183,8 @@ Rails.application.routes.draw do
       post '/test/device_profiling' => 'test/device_profiling#create'
     end
 
+    get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
+
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
 
@@ -293,7 +295,6 @@ Rails.application.routes.draw do
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
     get '/user_please_call' => 'users/please_call#show'
-    get '/user_password_compromised' => 'users/password_compromised#show'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
@@ -387,15 +388,6 @@ Rails.application.routes.draw do
       get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
-
-      # DEPRECATION NOTICE
-      # Usage of the /in_person_proofing/address routes is deprecated.
-      # Use the /in_person/address routes instead.
-      #
-      # These have been left in temporarily to prevent any impact to users
-      # during the deprecation process.
-      get '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
-      put '/in_person_proofing/address' => redirect('/verify/in_person/address', status: 307)
 
       get '/in_person_proofing/state_id' => 'in_person/state_id#show'
       put '/in_person_proofing/state_id' => 'in_person/state_id#update'

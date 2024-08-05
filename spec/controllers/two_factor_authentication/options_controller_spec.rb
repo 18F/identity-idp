@@ -14,10 +14,9 @@ RSpec.describe TwoFactorAuthentication::OptionsController do
       sign_in_before_2fa
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: option list visited')
-
       get :index
+
+      expect(@analytics).to have_logged_event('Multi-Factor Authentication: option list visited')
     end
   end
 

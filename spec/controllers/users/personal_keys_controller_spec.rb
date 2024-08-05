@@ -28,10 +28,9 @@ RSpec.describe Users::PersonalKeysController do
       stub_analytics
       analytics_hash = { personal_key_present: true }
 
-      expect(@analytics).to receive(:track_event).
-        with('Personal key viewed', analytics_hash)
-
       get :show
+
+      expect(@analytics).to have_logged_event('Personal key viewed', analytics_hash)
     end
 
     it 'tracks the page visit when there is no personal key in the user session' do
@@ -39,10 +38,9 @@ RSpec.describe Users::PersonalKeysController do
       stub_analytics
       analytics_hash = { personal_key_present: false }
 
-      expect(@analytics).to receive(:track_event).
-        with('Personal key viewed', analytics_hash)
-
       get :show
+
+      expect(@analytics).to have_logged_event('Personal key viewed', analytics_hash)
     end
 
     it 'does not generate a new personal key to avoid CSRF attacks' do
@@ -124,11 +122,9 @@ RSpec.describe Users::PersonalKeysController do
       }
       allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
 
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
-
       post :update
 
+      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end

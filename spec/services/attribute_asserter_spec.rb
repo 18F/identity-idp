@@ -5,6 +5,7 @@ RSpec.describe AttributeAsserter do
 
   let(:ial1_user) { create(:user, :fully_registered) }
   let(:user) { create(:profile, :active, :verified).user }
+  let(:biometric_verified_user) { create(:profile, :active, :verified, idv_level: :in_person).user }
   let(:user_session) { {} }
   let(:identity) do
     build(
@@ -101,6 +102,28 @@ RSpec.describe AttributeAsserter do
     )
     CGI.unescape ialmax_authnrequest.split('SAMLRequest').last
   end
+  let(:raw_biometric_preferred_ial_authn_request) do
+    biometric_preferred_ial_authnrequest = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+        ],
+      },
+    )
+    CGI.unescape biometric_preferred_ial_authnrequest.split('SAMLRequest').last
+  end
+  let(:raw_biometric_required_ial_authn_request) do
+    biometric_preferred_ial_authnrequest = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+        ],
+      },
+    )
+    CGI.unescape biometric_preferred_ial_authnrequest.split('SAMLRequest').last
+  end
   let(:sp1_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_sp1_authn_request)
   end
@@ -125,6 +148,12 @@ RSpec.describe AttributeAsserter do
   let(:ialmax_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ialmax_authn_request)
   end
+  let(:biometric_preferred_ial_authnrequest) do
+    SamlIdp::Request.from_deflated_request(raw_biometric_preferred_ial_authn_request)
+  end
+  let(:biometric_required_ial_authnrequest) do
+    SamlIdp::Request.from_deflated_request(raw_biometric_required_ial_authn_request)
+  end
   let(:decrypted_pii) do
     Pii::Attributes.new_from_hash(
       first_name: 'Jåné',
@@ -135,7 +164,7 @@ RSpec.describe AttributeAsserter do
   end
 
   describe '#build' do
-    context 'verified user and IAL2 request' do
+    context 'when an IAL2 request is made' do
       let(:subject) do
         described_class.new(
           user: user,
@@ -146,175 +175,187 @@ RSpec.describe AttributeAsserter do
           user_session: user_session,
         )
       end
-
-      context 'custom bundle includes email, phone, and first_name' do
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name])
-          subject.build
-        end
-
-        it 'includes all requested attributes + uuid' do
-          expect(user.asserted_attributes.keys).
-            to eq(%i[uuid email phone first_name verified_at aal ial])
-        end
-
-        it 'creates getter function' do
-          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
-        end
-
-        it 'formats the phone number as e164' do
-          expect(user.asserted_attributes[:phone][:getter].call(user)).to eq '+18888675309'
-        end
-
-        it 'gets UUID (MBUN) from Service Provider' do
-          uuid_getter = user.asserted_attributes[:uuid][:getter]
-          expect(uuid_getter.call(user)).to eq user.last_identity.uuid
-        end
-      end
-
-      context 'custom bundle includes dob' do
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[dob])
-          subject.build
-        end
-
-        it 'formats the dob in an international format' do
-          expect(user.asserted_attributes[:dob][:getter].call(user)).to eq '1970-12-31'
-        end
-      end
-
-      context 'custom bundle includes zipcode' do
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[zipcode])
-          subject.build
-        end
-
-        it 'formats zipcode as 5 digits' do
-          expect(user.asserted_attributes[:zipcode][:getter].call(user)).to eq '12345'
-        end
-      end
-
-      context 'bundle includes :ascii' do
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name ascii])
-          subject.build
-        end
-
-        it 'skips ascii as an attribute' do
-          expect(user.asserted_attributes.keys).
-            to eq(%i[uuid email phone first_name verified_at aal ial])
-        end
-
-        it 'transliterates attributes to ASCII' do
-          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jane'
-        end
-      end
-
-      context 'Service Provider does not specify bundle' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(nil)
-          subject.build
-        end
-
-        context 'authn request does not specify bundle' do
-          it 'only returns uuid, verified_at, aal, and ial' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid verified_at aal ial]
+      context 'when the user has been proofed without biometric' do
+        context 'custom bundle includes email, phone, and first_name' do
+          before do
+            user.identities << identity
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[email phone first_name])
+            subject.build
           end
-        end
 
-        context 'authn request specifies bundle' do
-          # rubocop:disable Layout/LineLength
-          let(:raw_ial2_authn_request) do
-            request_url = saml_authn_request_url(
-              overrides: {
-                issuer: sp1_issuer,
-                authn_context: [
-                  Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-                ],
-              },
-            )
-            CGI.unescape(
-              request_url.split('SAMLRequest').last,
-            )
-          end
-          # rubocop:enable Layout/LineLength
-
-          it 'uses authn request bundle' do
+          it 'includes all requested attributes + uuid' do
             expect(user.asserted_attributes.keys).
-              to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
+              to eq(%i[uuid email phone first_name verified_at aal ial])
+          end
+
+          it 'creates getter function' do
+            expect(get_asserted_attribute(user, :first_name)).to eq 'Jåné'
+          end
+
+          it 'formats the phone number as e164' do
+            expect(get_asserted_attribute(user, :phone)).to eq '+18888675309'
+          end
+
+          it 'gets UUID (MBUN) from Service Provider' do
+            expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
+          end
+        end
+
+        context 'custom bundle includes dob' do
+          before do
+            user.identities << identity
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[dob])
+            subject.build
+          end
+
+          it 'formats the dob in an international format' do
+            expect(get_asserted_attribute(user, :dob)).to eq '1970-12-31'
+          end
+        end
+
+        context 'custom bundle includes zipcode' do
+          before do
+            user.identities << identity
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[zipcode])
+            subject.build
+          end
+
+          it 'formats zipcode as 5 digits' do
+            expect(get_asserted_attribute(user, :zipcode)).to eq '12345'
+          end
+        end
+
+        context 'bundle includes :ascii' do
+          before do
+            user.identities << identity
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[email phone first_name ascii])
+            subject.build
+          end
+
+          it 'skips ascii as an attribute' do
+            expect(user.asserted_attributes.keys).
+              to eq(%i[uuid email phone first_name verified_at aal ial])
+          end
+
+          it 'transliterates attributes to ASCII' do
+            expect(get_asserted_attribute(user, :first_name)).to eq 'Jane'
+          end
+        end
+
+        context 'Service Provider does not specify bundle' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(nil)
+            subject.build
+          end
+
+          context 'authn request does not specify bundle' do
+            it 'only returns uuid, verified_at, aal, and ial' do
+              expect(user.asserted_attributes.keys).to eq %i[uuid verified_at aal ial]
+            end
+          end
+
+          context 'authn request specifies bundle' do
+            # rubocop:disable Layout/LineLength
+            let(:raw_ial2_authn_request) do
+              request_url = saml_authn_request_url(
+                overrides: {
+                  issuer: sp1_issuer,
+                  authn_context: [
+                    Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                    "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                    "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                  ],
+                },
+              )
+              CGI.unescape(
+                request_url.split('SAMLRequest').last,
+              )
+            end
+            # rubocop:enable Layout/LineLength
+
+            it 'uses authn request bundle' do
+              expect(user.asserted_attributes.keys).
+                to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
+            end
+          end
+        end
+
+        context 'Service Provider specifies empty bundle' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return([])
+            subject.build
+          end
+
+          it 'only includes uuid, verified_at, aal, and ial' do
+            expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at aal ial])
+          end
+        end
+
+        context 'custom bundle has invalid attribute name' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
+              %w[email foo],
+            )
+            subject.build
+          end
+
+          it 'silently skips invalid attribute name' do
+            expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at aal ial])
+          end
+        end
+
+        context 'x509 attributes included in the SP attribute bundle' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[email x509_subject x509_issuer x509_presented])
+            subject.build
+          end
+
+          context 'user did not present piv/cac' do
+            let(:user_session) do
+              {
+                decrypted_x509: nil,
+              }
+            end
+
+            it 'does not include x509_subject, x509_issuer, and x509_presented' do
+              expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
+            end
+          end
+
+          context 'user presented piv/cac' do
+            let(:user_session) do
+              {
+                decrypted_x509: {
+                  subject: 'x509 subject',
+                  presented: true,
+                }.to_json,
+              }
+            end
+
+            it 'includes x509_subject x509_issuer x509_presented' do
+              expected = %i[uuid email verified_at aal ial x509_subject x509_issuer x509_presented]
+              expect(user.asserted_attributes.keys).to eq expected
+            end
           end
         end
       end
-
-      context 'Service Provider specifies empty bundle' do
+      context 'when the user has been proofed with biometric' do
+        let(:user) { biometric_verified_user }
         before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return([])
+          user.identities << identity
           subject.build
         end
 
-        it 'only includes uuid, verified_at, aal, and ial' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at aal ial])
-        end
-      end
-
-      context 'custom bundle has invalid attribute name' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[email foo],
-          )
-          subject.build
-        end
-
-        it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at aal ial])
-        end
-      end
-
-      context 'x509 attributes included in the SP attribute bundle' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email x509_subject x509_issuer x509_presented])
-          subject.build
-        end
-
-        context 'user did not present piv/cac' do
-          let(:user_session) do
-            {
-              decrypted_x509: nil,
-            }
-          end
-
-          it 'does not include x509_subject, x509_issuer, and x509_presented' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
-          end
-        end
-
-        context 'user presented piv/cac' do
-          let(:user_session) do
-            {
-              decrypted_x509: {
-                subject: 'x509 subject',
-                presented: true,
-              }.to_json,
-            }
-          end
-
-          it 'includes x509_subject x509_issuer x509_presented' do
-            expected = %i[uuid email verified_at aal ial x509_subject x509_issuer x509_presented]
-            expect(user.asserted_attributes.keys).to eq expected
-          end
+        it 'asserts IAL2' do
+          expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
     end
@@ -342,12 +383,12 @@ RSpec.describe AttributeAsserter do
         expect(user.asserted_attributes.keys).to eq(
           [:uuid, :email, :first_name, :last_name, :verified_at, :vot],
         )
-        expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
-        expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2.P1'
+        expect(get_asserted_attribute(user, :first_name)).to eq 'Jåné'
+        expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2.P1'
       end
     end
 
-    context 'verified user and IAL1 request' do
+    context 'when an IAL1 request is made' do
       let(:subject) do
         described_class.new(
           user: user,
@@ -359,178 +400,191 @@ RSpec.describe AttributeAsserter do
         )
       end
 
-      context 'custom bundle includes email, phone, and first_name' do
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email phone first_name])
-          subject.build
-        end
-
-        it 'only includes uuid, email, aal, and ial (no verified_at)' do
-          expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
-        end
-
-        it 'does not create a getter function for IAL1 attributes' do
-          expected_email = EmailContext.new(user).last_sign_in_email_address.email
-          expect(user.asserted_attributes[:email][:getter].call(user)).to eq expected_email
-        end
-
-        it 'gets UUID (MBUN) from Service Provider' do
-          uuid_getter = user.asserted_attributes[:uuid][:getter]
-          expect(uuid_getter.call(user)).to eq user.last_identity.uuid
-        end
-      end
-
-      context 'custom bundle includes verified_at' do
-        before do
-          user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email verified_at])
-          subject.build
-        end
-
-        context 'the service provider is ial1' do
-          let(:service_provider_ial) { 1 }
+      context 'when the user has been proofed without biometric comparison' do
+        context 'custom bundle includes email, phone, and first_name' do
+          before do
+            user.identities << identity
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[email phone first_name])
+            subject.build
+          end
 
           it 'only includes uuid, email, aal, and ial (no verified_at)' do
             expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
           end
-        end
 
-        context 'the service provider is ial2' do
-          let(:service_provider_ial) { 2 }
-
-          it 'includes verified_at' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
+          it 'does not create a getter function for IAL1 attributes' do
+            expected_email = EmailContext.new(user).last_sign_in_email_address.email
+            expect(get_asserted_attribute(user, :email)).to eq expected_email
           end
-        end
-      end
 
-      context 'Service Provider does not specify bundle' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(nil)
-          subject.build
-        end
-
-        context 'authn request does not specify bundle' do
-          it 'only includes uuid, aal, and ial' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid aal ial]
+          it 'gets UUID (MBUN) from Service Provider' do
+            expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
           end
         end
 
-        context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
-          # rubocop:disable Layout/LineLength
-          let(:raw_sp1_authn_request) do
-            request_url = saml_authn_request_url(
-              overrides: {
-                issuer: sp1_issuer,
-                authn_context: [
-                  Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-                  Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-                ],
-              },
+        context 'custom bundle includes verified_at' do
+          before do
+            user.identities << identity
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[email verified_at])
+            subject.build
+          end
+
+          context 'the service provider is ial1' do
+            let(:service_provider_ial) { 1 }
+
+            it 'only includes uuid, email, aal, and ial (no verified_at)' do
+              expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
+            end
+          end
+
+          context 'the service provider is ial2' do
+            let(:service_provider_ial) { 2 }
+
+            it 'includes verified_at' do
+              expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
+            end
+          end
+        end
+
+        context 'Service Provider does not specify bundle' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(nil)
+            subject.build
+          end
+
+          context 'authn request does not specify bundle' do
+            it 'only includes uuid, aal, and ial' do
+              expect(user.asserted_attributes.keys).to eq %i[uuid aal ial]
+            end
+          end
+
+          context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
+            # rubocop:disable Layout/LineLength
+            let(:raw_sp1_authn_request) do
+              request_url = saml_authn_request_url(
+                overrides: {
+                  issuer: sp1_issuer,
+                  authn_context: [
+                    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+                    Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                    "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                    "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                  ],
+                },
+              )
+              CGI.unescape(
+                request_url.split('SAMLRequest').last,
+              )
+            end
+            # rubocop:enable Layout/LineLength
+
+            it 'only includes uuid, email, aal, and ial' do
+              expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
+            end
+          end
+        end
+
+        context 'Service Provider specifies empty bundle' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return([])
+            subject.build
+          end
+
+          it 'only includes UUID, aal, and ial' do
+            expect(user.asserted_attributes.keys).to eq(%i[uuid aal ial])
+          end
+        end
+
+        context 'custom bundle has invalid attribute name' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
+              %w[email foo],
             )
-            CGI.unescape(
-              request_url.split('SAMLRequest').last,
-            )
+            subject.build
           end
-          # rubocop:enable Layout/LineLength
 
-          it 'only includes uuid, email, aal, and ial' do
+          it 'silently skips invalid attribute name' do
             expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
           end
         end
-      end
 
-      context 'Service Provider specifies empty bundle' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return([])
-          subject.build
-        end
-
-        it 'only includes UUID, aal, and ial' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid aal ial])
-        end
-      end
-
-      context 'custom bundle has invalid attribute name' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w[email foo],
-          )
-          subject.build
-        end
-
-        it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
-        end
-      end
-
-      context 'x509 attributes included in the SP attribute bundle' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email x509_subject x509_issuer x509_presented])
-          subject.build
-        end
-
-        context 'user did not present piv/cac' do
-          let(:user_session) do
-            {
-              decrypted_x509: nil,
-            }
+        context 'x509 attributes included in the SP attribute bundle' do
+          before do
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[email x509_subject x509_issuer x509_presented])
+            subject.build
           end
 
-          it 'does not include x509_subject x509_issuer and x509_presented' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
+          context 'user did not present piv/cac' do
+            let(:user_session) do
+              {
+                decrypted_x509: nil,
+              }
+            end
+
+            it 'does not include x509_subject x509_issuer and x509_presented' do
+              expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
+            end
+          end
+
+          context 'user presented piv/cac' do
+            let(:user_session) do
+              {
+                decrypted_x509: {
+                  subject: 'x509 subject',
+                  presented: true,
+                }.to_json,
+              }
+            end
+
+            it 'includes x509_subject x509_issuer and x509_presented' do
+              expected = %i[uuid email aal ial x509_subject x509_issuer x509_presented]
+              expect(user.asserted_attributes.keys).to eq expected
+            end
           end
         end
 
-        context 'user presented piv/cac' do
-          let(:user_session) do
-            {
-              decrypted_x509: {
-                subject: 'x509 subject',
-                presented: true,
-              }.to_json,
-            }
+        context 'request made with a VTR param' do
+          let(:subject) do
+            described_class.new(
+              user: user,
+              name_id_format: name_id_format,
+              service_provider: service_provider,
+              authn_request: vtr_no_proofing_authn_request,
+              decrypted_pii: decrypted_pii,
+              user_session: user_session,
+            )
           end
 
-          it 'includes x509_subject x509_issuer and x509_presented' do
-            expected = %i[uuid email aal ial x509_subject x509_issuer x509_presented]
-            expect(user.asserted_attributes.keys).to eq expected
+          before do
+            user.identities << identity
+            allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+              and_return(%w[email])
+            subject.build
+          end
+
+          it 'includes the correct bundle attributes' do
+            expect(user.asserted_attributes.keys).to eq(
+              [:uuid, :email, :vot],
+            )
+            expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2'
           end
         end
       end
-
-      context 'request made with a VTR param' do
-        let(:subject) do
-          described_class.new(
-            user: user,
-            name_id_format: name_id_format,
-            service_provider: service_provider,
-            authn_request: vtr_no_proofing_authn_request,
-            decrypted_pii: decrypted_pii,
-            user_session: user_session,
-          )
-        end
-
+      context 'when the user has been proofed with biometric comparison' do
+        let(:user) { biometric_verified_user }
         before do
           user.identities << identity
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email])
           subject.build
         end
 
-        it 'includes the correct bundle attributes' do
-          expect(user.asserted_attributes.keys).to eq(
-            [:uuid, :email, :vot],
-          )
-          expect(user.asserted_attributes[:vot][:getter].call(user)).to eq 'C1.C2'
+        it 'asserts IAL1' do
+          expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
     end
@@ -556,13 +610,9 @@ RSpec.describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes aal' do
-          expect(user.asserted_attributes.keys).to include(:aal)
-        end
-
-        it 'creates a getter function for aal attribute' do
+        it 'asserts AAL3' do
           expected_aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq expected_aal
+          expect(get_asserted_attribute(user, :aal)).to eq expected_aal
         end
       end
 
@@ -585,13 +635,9 @@ RSpec.describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes aal' do
-          expect(user.asserted_attributes.keys).to include(:aal)
-        end
-
-        it 'creates a getter function for aal attribute' do
+        it 'asserts AAL3' do
           expected_aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq expected_aal
+          expect(get_asserted_attribute(user, :aal)).to eq expected_aal
         end
       end
     end
@@ -615,13 +661,9 @@ RSpec.describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes ial' do
-          expect(user.asserted_attributes.keys).to include(:ial)
-        end
-
-        it 'creates a getter function for ial attribute' do
+        it 'asserts IAL1' do
           expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-          expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
+          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
 
         it 'does not include proofed attributes' do
@@ -651,18 +693,14 @@ RSpec.describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes ial' do
-          expect(user.asserted_attributes.keys).to include(:ial)
-        end
-
-        it 'creates a getter function for ial attribute' do
+        it 'asserts IAL2' do
           expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-          expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
+          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
 
         it 'includes proofed attributes' do
-          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq('Jåné')
-          expect(user.asserted_attributes[:phone][:getter].call(user)).to eq('+18888675309')
+          expect(get_asserted_attribute(user, :first_name)).to eq('Jåné')
+          expect(get_asserted_attribute(user, :phone)).to eq('+18888675309')
         end
       end
     end
@@ -688,18 +726,78 @@ RSpec.describe AttributeAsserter do
         subject.build
       end
 
-      it 'includes ial' do
-        expect(user.asserted_attributes.keys).to include(:ial)
-      end
-
-      it 'creates a getter function for ial attribute' do
+      it 'asserts IAL1' do
         expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-        expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
+        expect(get_asserted_attribute(user, :ial)).to eq expected_ial
       end
 
-      it 'includes proofed attributes' do
+      it 'does not include proofed attributes' do
         expect(user.asserted_attributes[:first_name]).to eq(nil)
         expect(user.asserted_attributes[:phone]).to eq(nil)
+      end
+    end
+
+    context 'when biometric IAL preferred is requested' do
+      let(:subject) do
+        described_class.new(
+          user: user,
+          name_id_format: name_id_format,
+          service_provider: service_provider,
+          authn_request: biometric_preferred_ial_authnrequest,
+          decrypted_pii: decrypted_pii,
+          user_session: user_session,
+        )
+      end
+
+      context 'when the user has been proofed with biometric' do
+        let(:user) { biometric_verified_user }
+        before do
+          user.identities << identity
+          subject.build
+        end
+
+        it 'asserts IAL2 with biometric comparison' do
+          expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
+        end
+      end
+
+      context 'when the user has been proofed without biometric' do
+        before do
+          user.identities << identity
+          subject.build
+        end
+
+        it 'asserts IAL2 (without biometric comparison)' do
+          expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
+        end
+      end
+    end
+
+    context 'when biometric IAL required is requested' do
+      let(:subject) do
+        described_class.new(
+          user: user,
+          name_id_format: name_id_format,
+          service_provider: service_provider,
+          authn_request: biometric_required_ial_authnrequest,
+          decrypted_pii: decrypted_pii,
+          user_session: user_session,
+        )
+      end
+
+      context 'when the user has been proofed with biometric comparison' do
+        let(:user) { biometric_verified_user }
+        before do
+          user.identities << identity
+          subject.build
+        end
+
+        it 'asserts IAL2 with biometric comparison' do
+          expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+          expect(get_asserted_attribute(user, :ial)).to eq expected_ial
+        end
       end
     end
 
@@ -777,5 +875,9 @@ RSpec.describe AttributeAsserter do
 
       it_behaves_like 'unverified user'
     end
+  end
+
+  def get_asserted_attribute(user, attribute)
+    user.asserted_attributes[attribute][:getter].call(user)
   end
 end
