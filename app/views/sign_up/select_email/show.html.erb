@@ -6,7 +6,7 @@
   <%= I18n.t('help_text.select_preferred_email', sp: @sp_name, app_name: APP_NAME) %>
 </p>
 
-<%= simple_form_for(@select_email_form, url: sign_up_select_email_path) do |f| %>
+<%= simple_form_for('', url: sign_up_select_email_path) do |f| %>
   <% @user_emails.each do |email, index| %>
     <fieldset class="usa-fieldset">
       <div class="usa-radio">
