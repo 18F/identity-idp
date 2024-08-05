@@ -69,12 +69,12 @@ module Users
     end
 
     def phishing_resistant?
-      service_provider_mfa_policy.phishing_resistant_required? && 
+      service_provider_mfa_policy.phishing_resistant_required? &&
         !mfa_context.phishing_resistant_configurations.present?
     end
 
     def piv_cac_required?
-      service_provider_mfa_policy.piv_cac_required? && 
+      service_provider_mfa_policy.piv_cac_required? &&
         !mfa_context.piv_cac_configurations.present?
     end
 
