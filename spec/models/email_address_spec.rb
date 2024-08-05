@@ -114,7 +114,7 @@ RSpec.describe EmailAddress do
 
       let(:email) { 'example@bad.gov' }
 
-      it { expect(result).to be_falsey }
+      it { expect(result).to eq(false) }
     end
 
     context 'with a non fed email while use_fed_domain_class set to true' do
@@ -123,7 +123,7 @@ RSpec.describe EmailAddress do
       end
       let(:email) { 'example@good.gov' }
 
-      it { expect(result).to be_falsey }
+      it { expect(result).to eq(false) }
     end
   end
 
@@ -133,7 +133,7 @@ RSpec.describe EmailAddress do
     context 'with an email domain not a mil email' do
       let(:email) { 'example@example.gov' }
 
-      it { expect(result).to be_falsey }
+      it { expect(result).to eq(false) }
     end
 
     context 'with an email domain ending in a mil domain email' do
@@ -155,7 +155,7 @@ RSpec.describe EmailAddress do
       context 'with an email domain not a fed email' do
         let(:email) { 'example@bad.gov' }
 
-        it { expect(result).to be_falsey }
+        it { expect(result).to eq(false) }
       end
 
       context 'with an email domain ending in a fed domain email' do
