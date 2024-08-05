@@ -1,40 +1,46 @@
 <% self.title = t('titles.select_email') %>
-<%= render AlertIconComponent.new(icon_name: :info_question, class: 'display-block margin-bottom-4', width: 54, height: 54) %>
-<h1><%= t('titles.select_email') %></h1>
 
-<p class="margin-top-4">
-  <%= I18n.t('help_text.select_preferred_email', sp: @sp_name, app_name: APP_NAME) %>
-</p>
+<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
+  <% c.with_header { t('titles.select_email') } %>
+  <p class="margin-top-4">
+    <%= I18n.t('help_text.select_preferred_email', sp: @sp_name, app_name: APP_NAME) %>
+  </p>
 
-<%= simple_form_for('', url: sign_up_select_email_path) do |f| %>
-  <% @user_emails.each do |email, index| %>
-    <fieldset class="usa-fieldset">
-      <div class="usa-radio">
-        <%= radio_button_tag(
-              'select_email_form[selection]',
-              email,
-              email == @last_sign_in_email_address,
-              class: 'usa-radio__input usa-radio__input--bordered',
-            ) %>
-            <%= label_tag(
-                  "select_email_form_selection_#{email}",
-                  class: 'usa-radio__label width-full',
-                ) do %>
-              <%= email %>
-            <% end %>
-      </div>
-    </fieldset>
+  <%= simple_form_for('', url: sign_up_select_email_path) do |f| %>
+    <% @user_emails.each do |email, index| %>
+      <fieldset class="usa-fieldset">
+        <div class="usa-radio">
+          <%= radio_button_tag(
+                'select_email_form[selection]',
+                email,
+                email == @last_sign_in_email_address,
+                class: 'usa-radio__input usa-radio__input--bordered',
+              ) %>
+              <%= label_tag(
+                    "select_email_form_selection_#{email}",
+                    class: 'usa-radio__label width-full',
+                  ) do %>
+                <%= email %>
+              <% end %>
+        </div>
+      </fieldset>
+    <% end %>
+    <%= f.submit t('help_text.requested_attributes.change_email_link'), class: 'margin-top-4' %>
   <% end %>
-  <%= f.submit t('help_text.requested_attributes.change_email_link'), class: 'margin-top-4' %>
+
+   <div class="grid-row">
+    <div class="grid-col-6">
+    <%= render ButtonComponent.new(
+          url: add_email_path,
+          outline: true,
+          icon: :add,
+          class: 'margin-y-2 usa-button--big usa-button--wide',
+        ).with_content(t('account.index.email_add')) %>        
+    </div>
+  </div>
+
+  <p>
+    <%= link_to t('forms.buttons.back'), sign_up_completed_path %>
+  </p>
+
 <% end %>
-
-<%= render ButtonComponent.new(
-      url: add_email_path,
-      outline: true,
-      icon: :add,
-      class: 'margin-y-2 usa-button--big usa-button--wide',
-    ).with_content(t('account.index.email_add')) %>
-
-<p>
-  <%= link_to t('forms.buttons.back'), sign_up_completed_path %>
-</p>
