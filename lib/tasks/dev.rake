@@ -82,6 +82,7 @@ namespace :dev do
   desc 'Create in-person enrollments for N random users'
   task random_in_person_users: [:environment, :random_users] do
     is_enhanced_ipp = false
+    sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id
     usps_request_delay_ms = (ENV['USPS_REQUEST_DELAY_MS'] || 0).to_i
     num_users = (ENV['NUM_USERS'] || 100).to_i
     pw = 'salty pickles'
@@ -140,6 +141,7 @@ namespace :dev do
                 user: user,
                 status: :establishing,
                 profile: profile,
+                sponsor_id: sponsor_id,
               )
               enrollment.save!
 
@@ -170,6 +172,7 @@ namespace :dev do
                 enrollment_established_at: Time.zone.now - random.rand(0..5).days,
                 unique_id: SecureRandom.hex(9),
                 enrollment_code: SecureRandom.hex(16),
+                sponsor_id: sponsor_id,
               )
 
               if raw_enrollment_status == InPersonEnrollment::STATUS_PASSED
@@ -182,6 +185,7 @@ namespace :dev do
           InPersonEnrollment.create!(
             user: user,
             status: enrollment_status,
+            sponsor_id: sponsor_id,
           )
         end
         progress&.increment

@@ -106,7 +106,7 @@ account.login.piv_cac: Connectez-vous avec votre identifiant d’employé.
 account.login.tab_navigation: Onglets de création de compte
 account.navigation.add_authentication_apps: Ajouter des applis d’authentification
 account.navigation.add_email: Ajouter une adresse e-mail
-account.navigation.add_federal_id: Ajouter un identifiant d’employé fédéral
+account.navigation.add_federal_id: Ajouter votre carte d’employé fédéral
 account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité
@@ -863,12 +863,13 @@ forms.personal_key.instructions: Veuillez confirmer que vous avez une copie de v
 forms.personal_key.required_checkbox: J’ai conservé ma clé personnelle en lieu sûr.
 forms.personal_key.title: Saisir votre clé personnelle
 forms.phone.buttons.delete: Supprimer le numéro de téléphone
-forms.piv_cac_login.submit: Insérez votre PIV/CAC
-forms.piv_cac_mfa.submit: Présentez la carte PIV/CAC
+forms.piv_cac_login.submit: Insérer la carte PIV/CAC
+forms.piv_cac_mfa.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.nickname: Surnom de la carte PIV/CAC
 forms.piv_cac_setup.no_thanks: Non, merci
 forms.piv_cac_setup.piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC <strong>chaque fois que vous vous connecterez sur</strong> dans le cadre de l’authentification à deux facteurs.<br><br>Après avoir cliqué sur « Ajouter une carte PIV/CAC », votre navigateur vous demandera de saisir le NIP de votre PIV/CAC et de choisir un certificat.
-forms.piv_cac_setup.submit: Ajouter une carte PIV/CAC
+forms.piv_cac_setup.submit: Insérer la carte PIV/CAC
+forms.piv_cac_setup.try_again: Réessayer
 forms.registration.labels.email: Saisissez votre adresse e-mail
 forms.registration.labels.email_language: Sélectionnez votre langue de préférence pour les e-mails
 forms.ssn.show: Afficher le numéro de sécurité sociale
@@ -922,16 +923,16 @@ headings.passwords.change: Changer votre mot de passe
 headings.passwords.confirm: Confirmer votre mot de passe actuel pour continuer
 headings.passwords.confirm_for_personal_key: Saisir le mot de passe et obtenir une nouvelle clé personnelle
 headings.passwords.forgot: Mot de passe oublié ?
-headings.piv_cac_login.account_not_found: Votre carte PIV/CAC n’est pas connectée à un compte
-headings.piv_cac_login.add: Configurer votre PIV ou votre CAC comme méthode d’authentification à deux facteurs pour pouvoir l’utiliser pour vous connecter.
-headings.piv_cac_login.new: Vous connecter avec votre PIV/CAC
+headings.piv_cac_login.account_not_found: Votre carte d’employé fédéral n’est pas associée à un compte
+headings.piv_cac_login.add: Utilisez votre lecteur de carte à puce pour configurer votre carte PIV (personal identity verification, vérification d’identité personnelle) ou CAC (common access card, carte d’accès commun). Vous pouvez utiliser l’une ou l’autre carte comme méthode d’authentification à deux facteurs pour vous connecter.
+headings.piv_cac_login.new: Insérer votre carte d’employé fédéral
 headings.piv_cac_login.success: Votre carte PIV/CAC a bien été configurée comme méthode d’authentification.
 headings.piv_cac_setup.already_associated: La carte PIV/CAC que vous avez présentée est associée à un autre utilisateur.
 headings.piv_cac_setup.new: Utilisez votre carte PIV/CAC pour sécuriser votre compte.
 headings.piv_cac.certificate.bad: Le certificat PIV/CAC sélectionné n’est pas valide.
 headings.piv_cac.certificate.expired: Le certificat PIV/CAC sélectionné a expiré.
 headings.piv_cac.certificate.invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
-headings.piv_cac.certificate.none: Nous ne pouvons pas détecter de certificat sur votre carte PIV/CAC.
+headings.piv_cac.certificate.none: Nous ne détectons pas de certificat sur votre carte d’employé fédéral.
 headings.piv_cac.certificate.not_auth_cert: Veuillez choisir un autre certificat pour votre carte PIV/CAC.
 headings.piv_cac.certificate.revoked: Le certificat PIV/CAC sélectionné a été révoqué de votre carte.
 headings.piv_cac.certificate.unverified: Le certificat PIV/CAC sélectionné n’est pas valide.
@@ -1330,17 +1331,17 @@ instructions.forgot_password.close_window: Vous pourrez fermer cette fenêtre de
 instructions.go_back_to_mobile_app: Pour continuer, veuillez retourner à l’appli %{friendly_name} et vous connecter.
 instructions.mfa.authenticator.confirm_code_html: Saisissez le code à partir de votre appli d’authentification. Si vous avez plusieurs comptes configurés dans votre appli, saisissez le code correspondant à %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: Ou saisissez ce code manuellement dans votre appli d’authentification
-instructions.mfa.piv_cac.account_not_found_html: '<p><strong>%{sign_in}</strong> avec votre adresse e-mail et votre mot de passe. Ensuite, ajoutez votre carte PIV/CAC à votre compte.</p> <p><strong>Vous n’avez pas de compte %{app_name}?</strong> %{create_account}</p>'
+instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} à l’aide de votre adresse e-mail et de votre mot de passe. Introduisez ensuite la carte PIV/CAC dans un lecteur de carte à puce pour l’ajouter à votre compte.</p><p>Vous n’avez pas de compte %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre NIP</strong> (votre NIP a été créé lors de la configuration de votre carte PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Veuillez choisir un certificat associé à une autre carte PIV/CAC ; contactez votre administrateur afin de vérifier que votre carte PIV/CAC est bien à jour. Si vous pensez qu’il s’agit d’une erreur, veuillez %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Retourner vous connecter
-instructions.mfa.piv_cac.confirm_piv_cac: Veuillez présenter la carte PIV/CAC que vous avez associée à votre compte.
-instructions.mfa.piv_cac.did_not_work_html: Veuillez %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
+instructions.mfa.piv_cac.confirm_piv_cac: Introduisez la carte PIV/CAC que vous avez associée à votre compte dans un lecteur de carte à puce.
+instructions.mfa.piv_cac.did_not_work_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
-instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est connectée et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
+instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide pour ce compte. Veuillez %{please_try_again_html} avec un autre certificat. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.please_try_again: réessayer
-instructions.mfa.piv_cac.sign_in_html: Assurez-vous que <strong>vous disposez d’un compte %{app_name}</strong> et que <strong>vous avez configuré votre carte PIV/CAC</strong> en tant que méthode d’authentification à deux facteurs.
+instructions.mfa.piv_cac.sign_in: Assurez-vous que vous disposez d’un compte %{app_name} et que vous avez configuré votre carte PIV (personal identity verification, vérification d’identité personnelle) ou CAC (common access card, carte d’accès commun) comme méthode d’authentification à deux facteurs.
 instructions.mfa.piv_cac.step_1: Donnez-lui un surnom
 instructions.mfa.piv_cac.step_1_info: Si vous ajoutez plus d’une carte PIV/CAC, vous saurez laquelle.
 instructions.mfa.piv_cac.step_2: Insérez votre PIV/CAC dans votre lecteur de carte
@@ -1419,7 +1420,7 @@ notices.forgot_password.no_email_sent_explanation_start: Vous n’avez pas reçu
 notices.forgot_password.resend_email_success: Nous avons envoyé un autre e-mail de réinitialisation de mot de passe.
 notices.password_changed: Vous avez changé votre mot de passe.
 notices.phone_confirmed: Un téléphone a été ajouté à votre compte.
-notices.piv_cac_configured: Une carte PIV/CAC a été ajoutée à votre compte.
+notices.piv_cac_configured: Ajouter votre carte d’employé fédéral.
 notices.privacy.privacy_act_statement: Déclaration relative à la loi sur la confidentialité
 notices.privacy.security_and_privacy_practices: Déclaration relatives à la loi sur les pratiques de sécurité et la confidentialité
 notices.resend_confirmation_email.success: Nous avons envoyé un autre e-mail de confirmation.
@@ -1596,11 +1597,11 @@ titles.openid_connect.logout: Déconnexion OpenID Connect
 titles.passwords.change: Changer le mot de passe de votre compte
 titles.passwords.forgot: Réinitialiser le mot de passe
 titles.personal_key: Juste au cas où
-titles.piv_cac_login.add: Ajouter votre carte PIV ou CAC
+titles.piv_cac_login.add: Ajouter votre carte d’employé fédéral
 titles.piv_cac_login.new: Utiliser votre carte PIV/CAC pour vous connecter à votre compte
 titles.piv_cac_setup.new: Utiliser votre carte PIV/CAC pour sécuriser votre compte
 titles.piv_cac_setup.upsell: Ajouter votre carte d’employé fédéral pour vous connecter plus rapidement et en toute sécurité
-titles.present_piv_cac: Présenter votre carte PIV/CAC
+titles.present_piv_cac: Insérer votre carte d’employé fédéral
 titles.present_webauthn: Brancher votre clé de sécurité physique
 titles.reactivate_account: Réactiver votre compte
 titles.registrations.new: Créer votre compte
@@ -1709,7 +1710,7 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: Util
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: Je n’ai pas reçu mon code à usage unique
 two_factor_authentication.phone.delete.failure: Impossible de supprimer votre téléphone.
 two_factor_authentication.phone.delete.success: Votre téléphone a été supprimé.
-two_factor_authentication.piv_cac_header_text: Présenter votre carte PIV/CAC
+two_factor_authentication.piv_cac_header_text: Insérer votre carte d’employé fédéral
 two_factor_authentication.piv_cac_upsell.add_piv: Ajouter une carte PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choisir plutôt d’autres méthodes
 two_factor_authentication.piv_cac_upsell.explain: Ceci permettra de renforcer la sécurité de votre compte et de sauter l’étape de saisie de votre e-mail et mot de passe quand vous vous connecterez.
