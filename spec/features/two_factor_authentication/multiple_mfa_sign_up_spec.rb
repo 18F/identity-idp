@@ -293,23 +293,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
   end
 
   context 'User with phishing resistant service provider' do
-    it 'should only show phishing resistant options for first mfa' do
-      allow(IdentityConfig.store).
-        to receive(:show_unsupported_passkey_platform_authentication_setup).
-        and_return(true)
-
-      visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
-      sign_up_and_set_password
-      mock_webauthn_setup_challenge
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
-      expect(page).
-        to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
-      expect(page).
-        to_not have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
-    end
-
-    it 'should show all mfa options for second mfa' do
+    it 'should show phishing option first then all mfa options for second mfa' do
       allow(IdentityConfig.store).
         to receive(:show_unsupported_passkey_platform_authentication_setup).
         and_return(true)
@@ -332,14 +316,14 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
       mock_press_button_on_hardware_key_on_setup
 
       click_link t('mfa.add')
-      expect(page).to
-      have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
-      expect(page).to
-      have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
-      expect(page).to
-      have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
-      expect(page).to
-      have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
     end
   end
 

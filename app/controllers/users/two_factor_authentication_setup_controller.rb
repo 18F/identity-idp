@@ -69,13 +69,13 @@ module Users
     end
 
     def phishing_resistant?
-      return false if user_already_has_mfa?
-      service_provider_mfa_policy.phishing_resistant_required?
+      service_provider_mfa_policy.phishing_resistant_required? && 
+        !mfa_context.phishing_resistant_configurations.present?
     end
 
     def piv_cac_required?
-      return false if user_already_has_mfa?
-      service_provider_mfa_policy.piv_cac_required?
+      service_provider_mfa_policy.piv_cac_required? && 
+        !mfa_context.piv_cac_configurations.present?
     end
 
     def process_valid_form
