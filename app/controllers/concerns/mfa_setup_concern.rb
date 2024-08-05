@@ -75,6 +75,9 @@ module MfaSetupConcern
   def set_mfa_selections(selections)
     user_session[:mfa_selections] = selections
   end
+  def user_already_has_mfa? 
+    mfa_context.enabled_mfa_methods_count > 0 
+  end
 
   def show_skip_additional_mfa_link?
     !(mfa_context.enabled_mfa_methods_count == 1 &&

@@ -60,12 +60,22 @@ module Users
       TwoFactorOptionsPresenter.new(
         user_agent: request.user_agent,
         user: current_user,
-        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
-        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+        phishing_resistant_required: phishing_resistant?,
+        piv_cac_required: piv_cac_required?,
         show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
         after_mfa_setup_path:,
         return_to_sp_cancel_path:,
       )
+    end
+
+    def phishing_resistant?
+      return false if user_already_has_mfa?
+      service_provider_mfa_policy.phishing_resistant_required?
+    end
+
+    def piv_cac_required?
+      return false if user_already_has_mfa?
+      service_provider_mfa_policy.piv_cac_required?
     end
 
     def process_valid_form
