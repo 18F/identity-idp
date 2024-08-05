@@ -16,16 +16,11 @@ module SignUp
 
       result = @select_email_form.submit(form_params)
       if result.success?
-
-        EmailAddress.update_last_sign_in_at_on_user_id_and_email(
-          user_id: current_user.id,
-          email: form_params[:selection],
-        )
-
         session[:sp_email_id] = EmailContext.new(current_user).last_sign_in_email_address.id
         redirect_to sign_up_completed_path
       else
-        render :show
+        flash[:error] = t('anonymous_mailer.password_reset_missing_user.subject')
+        redirect_to sign_up_select_email_path
       end
     end
 
