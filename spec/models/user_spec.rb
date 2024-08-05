@@ -1676,7 +1676,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#has_fed_or_mil_email' do
+  describe '#has_fed_or_mil_email?' do
     before do
       allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
     end
