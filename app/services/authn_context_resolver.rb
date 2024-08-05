@@ -19,7 +19,7 @@ class AuthnContextResolver
   end
 
   def asserted_ial_acr
-    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless user.active_profile.present?
+    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless user&.identity_verified?
 
     if result.biometric_comparison?
       Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF

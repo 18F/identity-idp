@@ -41,7 +41,6 @@ class OpenidConnectUserInfoPresenter
   private
 
   def asserted_ial_value
-    return Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF unless active_profile.present?
     authn_context_resolver.asserted_ial_acr
   end
 
