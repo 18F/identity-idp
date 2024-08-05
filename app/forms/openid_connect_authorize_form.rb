@@ -373,6 +373,6 @@ class OpenidConnectAuthorizeForm
       vtr: nil,
       acr_values: nil,
     )
-    ctx.asserted_aal_value
+    ctx.asserted_aal_acr
   end
 end
