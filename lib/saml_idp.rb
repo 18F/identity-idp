@@ -65,7 +65,7 @@ module Saml
 
     class Document < Nokogiri::XML::Document
       def signed?
-        !!xpath('//ds:Signature', ds: signature_namespace).first
+        !!xpath('//ds:Signature | //Signature', ds: signature_namespace).first
       end
 
       def options_have_signature(options)
