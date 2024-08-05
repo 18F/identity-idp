@@ -18,9 +18,10 @@ module Idv
     validates_presence_of :state_id_number, { message: proc {
       I18n.t('doc_auth.errors.general.no_liveness')
     } }
+    validate :state_id_expired?
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
-                :jurisdiction, :state_id_number
+                :jurisdiction, :state_id_number, :state_id_expiration
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -33,6 +34,7 @@ module Idv
       @zipcode = pii[:zipcode]
       @jurisdiction = pii[:state_id_jurisdiction]
       @state_id_number = pii[:state_id_number]
+      @state_id_expiration = pii[:state_id_expiration]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -103,6 +105,12 @@ module Idv
         (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
       if age < IdentityConfig.store.idv_min_age_years
         errors.add(:dob_min_age, dob_min_age_error, type: :dob)
+      end
+    end
+
+    def state_id_expired?
+      if state_id_expiration && DateParser.parse_legacy(state_id_expiration).past?
+        errors.add(:state_id_expiration, generic_error, type: :state_id_expiration)
       end
     end
 
