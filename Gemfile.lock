@@ -19,10 +19,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-validations.git
-  revision: 21aa405b0ad413b88eecf30227132a2b8d6d6835
-  tag: v0.7.2
+  revision: 3ad1614768e12956c0c1bec18a05ad3dce0a0a1a
+  branch: gitlab-migration
   specs:
-    identity_validations (0.7.2)
+    identity_validations (0.7.4)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
