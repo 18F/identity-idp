@@ -12,15 +12,15 @@
         <div class="usa-radio">
           <%= radio_button_tag(
                 'select_email_form[selection]',
-                email,
-                email == @last_sign_in_email_address,
+                email.id,
+                email.email == @last_sign_in_email_address,
                 class: 'usa-radio__input usa-radio__input--bordered',
               ) %>
               <%= label_tag(
-                    "select_email_form_selection_#{email}",
+                    "select_email_form_selection_#{email.id}",
                     class: 'usa-radio__label width-full',
                   ) do %>
-                <%= email %>
+                <%= email.email %>
               <% end %>
         </div>
       </fieldset>
@@ -28,19 +28,16 @@
     <%= f.submit t('help_text.requested_attributes.change_email_link'), class: 'margin-top-4' %>
   <% end %>
 
-   <div class="grid-row">
-    <div class="grid-col-6">
     <%= render ButtonComponent.new(
           url: add_email_path,
           outline: true,
-          icon: :add,
-          class: 'margin-y-2 usa-button--big usa-button--wide',
-        ).with_content(t('account.index.email_add')) %>        
-    </div>
-  </div>
-
-  <p>
+          big: true,
+          wide: true,
+          class: 'margin-y-2',
+        ).with_content(t('account.index.email_add')) %>
+        
+  <%= render PageFooterComponent.new do %>
     <%= link_to t('forms.buttons.back'), sign_up_completed_path %>
-  </p>
+  <% end %>
 
 <% end %>
