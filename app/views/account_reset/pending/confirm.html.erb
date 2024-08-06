@@ -1,11 +1,16 @@
 <% self.title = t('account_reset.cancel_request.title') %>
 
+<%= render PageHeadingComponent.new.with_content(t('account_reset.pending.header')) %>
+
 <p><%= t('account_reset.pending.confirm', interval: @account_reset_deletion_period_interval) %></p>
 
-<%= button_to(
-      account_reset_pending_cancel_path,
-      class: 'usa-button usa-button--wide usa-button--big margin-bottom-2',
-      method: :post,
-    ) { t('forms.buttons.continue') } %>
+<%= render ButtonComponent.new(
+      url: account_reset_pending_cancel_path,
+      class: 'margin-top-2 margin-bottom-4',
+      wide: true,
+      big: true,
+    ).with_content(t('account_reset.pending.cancel_request')) %>
 
-<%= link_to(t('links.go_back'), account_reset_pending_path) %>
+  <div>
+    <%= link_to(t('links.go_back'), idv_forgot_password_url, class: 'margin-left-1') %>
+  </div>
