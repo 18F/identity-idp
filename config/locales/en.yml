@@ -42,7 +42,7 @@ account.connected_apps.associated: Connected %{timestamp}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
 account.email_language.default: '%{language} (default)'
 account.email_language.edit_title: Edit email language preference
-account.email_language.languages_list: '%{app_name} allows you to receive your email communication in %{list}.'
+account.email_language.languages_list: You will receive emails from %{app_name} in the language you choose.
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français

@@ -42,7 +42,7 @@ account.connected_apps.associated: 已连接 %{timestamp}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
 account.email_language.default: '%{language} （默认）'
 account.email_language.edit_title: 编辑电邮语言选择
-account.email_language.languages_list: '%{app_name} 允许你以 %{list}接受电邮沟通。'
+account.email_language.languages_list: 您将收到%{app_name}用您选择的语言发送的电子邮件。
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
