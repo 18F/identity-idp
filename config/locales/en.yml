@@ -1789,10 +1789,10 @@ user_mailer.account_reset_cancel.intro_html: This email confirms you have cancel
 user_mailer.account_reset_cancel.subject: Request canceled
 user_mailer.account_reset_complete.intro_html: This email confirms you have deleted your %{app_name_html} account.
 user_mailer.account_reset_complete.subject: Account deleted
-user_mailer.account_reset_granted.button: Yes, continue deleting
+user_mailer.account_reset_granted.button: Confirm account deletion
 user_mailer.account_reset_granted.cancel_link_text: please cancel
 user_mailer.account_reset_granted.help_html: If you don’t want to delete your account, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
+user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm account deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
 user_mailer.account_reset_granted.subject: Delete your %{app_name} account
 user_mailer.account_reset_request.cancel: Don’t want to delete your account? Sign in to your %{app_name} account to cancel.
 user_mailer.account_reset_request.header: Your account will be deleted in %{interval}

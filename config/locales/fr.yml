@@ -1789,10 +1789,10 @@ user_mailer.account_reset_cancel.intro_html: Cet e-mail confirme que vous avez a
 user_mailer.account_reset_cancel.subject: Demande annulée
 user_mailer.account_reset_complete.intro_html: Le présent e-mail confirme que vous avez supprimé votre compte %{app_name_html}.
 user_mailer.account_reset_complete.subject: Compte supprimé
-user_mailer.account_reset_granted.button: Oui, continuer la suppression
+user_mailer.account_reset_granted.button: Confirmer la suppression du compte
 user_mailer.account_reset_granted.cancel_link_text: veuillez annuler
 user_mailer.account_reset_granted.help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez “confirmer la suppression” pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
+user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez « Confirmer la suppression du compte » pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
 user_mailer.account_reset_granted.subject: Supprimer votre compte %{app_name}
 user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte %{app_name} pour annuler.
 user_mailer.account_reset_request.header: Votre compte sera supprimé dans %{interval}

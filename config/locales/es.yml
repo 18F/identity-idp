@@ -1801,10 +1801,10 @@ user_mailer.account_reset_cancel.intro_html: Este correo electrónico confirma q
 user_mailer.account_reset_cancel.subject: Solicitud cancelada
 user_mailer.account_reset_complete.intro_html: Este correo electrónico confirma que usted eliminó su cuenta de %{app_name_html}.
 user_mailer.account_reset_complete.subject: Cuenta eliminada
-user_mailer.account_reset_granted.button: Sí, continuar eliminando
+user_mailer.account_reset_granted.button: Confirmar la eliminación de la cuenta
 user_mailer.account_reset_granted.cancel_link_text: cancele
 user_mailer.account_reset_granted.help_html: Si no desea eliminar su cuenta, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Su período de espera de %{waiting_period} finalizó. Complete el paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de autenticación, seleccione “confirmar eliminación” para eliminar su cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los sitios web gubernamentales participantes que utilizan %{app_name}, puede crear una nueva cuenta %{app_name} con la misma dirección de correo electrónico después de que se elimine su cuenta.<br><br>
+user_mailer.account_reset_granted.intro_html: Su período de espera de %{waiting_period} finalizó. Complete el paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de autenticación, seleccione “Confirmar la eliminación de la cuenta” para eliminar su cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los sitios web gubernamentales participantes que utilizan %{app_name}, puede crear una nueva cuenta %{app_name} con la misma dirección de correo electrónico después de que se elimine su cuenta.<br><br>
 user_mailer.account_reset_granted.subject: Elimine su cuenta de %{app_name}
 user_mailer.account_reset_request.cancel: '¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name} para cancelar.'
 user_mailer.account_reset_request.header: Su cuenta será eliminada en %{interval}
