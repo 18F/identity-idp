@@ -1684,7 +1684,7 @@ RSpec.describe User do
     context 'with a valid fed email in domain file' do
       let(:user) { create(:user, email: 'example@example.gov') }
       it 'should return true' do
-        expect(user.has_fed_or_mil_email?).to be_truthy
+        expect(user.has_fed_or_mil_email?).to eq(true)
       end
     end
 
@@ -1694,21 +1694,21 @@ RSpec.describe User do
         allow(IdentityConfig.store).to receive(:use_fed_domain_class).and_return(false)
       end
       it 'should return true' do
-        expect(user.has_fed_or_mil_email?).to be_truthy
+        expect(user.has_fed_or_mil_email?).to eq(true)
       end
     end
 
     context 'with a valid mil email' do
       let(:user) { create(:user, email: 'example@example.mil') }
       it 'should return true' do
-        expect(user.has_fed_or_mil_email?).to be_truthy
+        expect(user.has_fed_or_mil_email?).to eq(true)
       end
     end
 
     context 'with an invalid fed or mil email' do
       let(:user) { create(:user, email: 'example@example.com') }
       it 'should return false' do
-        expect(user.has_fed_or_mil_email?).to be_falsey
+        expect(user.has_fed_or_mil_email?).to eq(false)
       end
     end
   end

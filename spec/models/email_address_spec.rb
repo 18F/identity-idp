@@ -104,7 +104,7 @@ RSpec.describe EmailAddress do
     context 'with an email that is a mil email' do
       let(:email) { 'example@example.mil' }
 
-      it { expect(result).to be_truthy }
+      it { expect(result).to eq(true) }
     end
 
     context 'with an email that is not a mil or fed email' do
@@ -139,7 +139,7 @@ RSpec.describe EmailAddress do
     context 'with an email domain ending in a mil domain email' do
       let(:email) { 'example@example.mil' }
 
-      it { expect(result).to be_truthy }
+      it { expect(result).to eq(true) }
     end
   end
 
@@ -161,7 +161,7 @@ RSpec.describe EmailAddress do
       context 'with an email domain ending in a fed domain email' do
         let(:email) { 'example@gsa.gov' }
 
-        it { expect(result).to be_truthy }
+        it { expect(result).to eq(true) }
       end
     end
   end
