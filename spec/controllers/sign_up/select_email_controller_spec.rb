@@ -28,9 +28,8 @@ RSpec.describe SignUp::SelectEmailController do
 
         expect(user.email_addresses.last.email).
           to include('michael.motorist2@email.com')
-        
-        expect(response).to redirect_to(sign_up_select_email_path)
 
+        expect(response).to redirect_to(sign_up_select_email_path)
       end
     end
   end
