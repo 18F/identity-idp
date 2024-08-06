@@ -42,17 +42,17 @@
                 last_number: attribute_value[-1],
               ),
             ) %>
-      <% else %>
+      <% elsif attribute_key == :email && IdentityConfig.store.feature_select_email_to_share_enabled %>
         <div class="display-flex flex-justify">
           <%= attribute_value.to_s %>
-          <% if attribute_key == :email && IdentityConfig.store.feature_select_email_to_share_enabled %>
             <% if @presenter.multiple_emails? %>
               <p class='font-body-2xs text-right'><%= link_to t('help_text.requested_attributes.change_email_link'), sign_up_select_email_path %></p>
             <% else %>
               <p class='font-body-2xs text-right'><%= link_to t('account.index.email_add'), add_email_path %></p>
             <% end %>
-          <% end %>
         </div>
+      <% else %>
+        <%= attribute_value.to_s %>
       <% end %>
     <% end %>
   <% end %>
