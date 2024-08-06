@@ -106,7 +106,7 @@ account.login.piv_cac: Inicie sesión con su identificación de empleado del gob
 account.login.tab_navigation: Pestañas para creación de cuentas
 account.navigation.add_authentication_apps: Agregar aplicaciones de autenticación
 account.navigation.add_email: Agregar dirección de correo electrónico
-account.navigation.add_federal_id: Agregar identificación de empleado federal
+account.navigation.add_federal_id: Agregue su identificación de empleado del gobierno.
 account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
@@ -651,6 +651,11 @@ doc_auth.info.selfie_capture_status.face_close_to_border: Demasiado cerca del ma
 doc_auth.info.selfie_capture_status.face_not_found: No se detectó el rostro
 doc_auth.info.selfie_capture_status.face_too_small: Rostro demasiado pequeño
 doc_auth.info.selfie_capture_status.too_many_faces: Demasiados rostros
+doc_auth.info.selfie_capture.action.capture: Tomar la foto
+doc_auth.info.selfie_capture.action.close: Cerrar
+doc_auth.info.selfie_capture.action.retake: Volver a tomar foto
+doc_auth.info.selfie_capture.action.submit: Usar esta foto
+doc_auth.info.selfie_capture.intro: Cámara encendida, lista para tomar selfie
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
 doc_auth.info.tag: Recomendado
@@ -869,12 +874,13 @@ forms.personal_key.instructions: Confirme que tiene una copia de su clave person
 forms.personal_key.required_checkbox: Guardé mi clave personal en un lugar seguro.
 forms.personal_key.title: Ingrese su clave personal
 forms.phone.buttons.delete: Eliminar teléfono
-forms.piv_cac_login.submit: Inserte su tarjeta PIV o CAC
-forms.piv_cac_mfa.submit: Presentar la tarjeta PIV o CAC
+forms.piv_cac_login.submit: Inserte su tarjeta PIV o CAC.
+forms.piv_cac_mfa.submit: Inserte su tarjeta PIV o CAC.
 forms.piv_cac_setup.nickname: Alias de la tarjeta PIV o CAC
 forms.piv_cac_setup.no_thanks: No, gracias
 forms.piv_cac_setup.piv_cac_intro_html: Le pediremos que presente su tarjeta PIV o CAC <strong>cada vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después de hacer clic en “Agregar tarjeta PIV o CAC”, su navegador le pedirá el PIN de su tarjeta PIV o CAC y que seleccione un certificado.
-forms.piv_cac_setup.submit: Agregar tarjeta PIV o CAC
+forms.piv_cac_setup.submit: Inserte su tarjeta PIV o CAC.
+forms.piv_cac_setup.try_again: Vuelva a intentarlo
 forms.registration.labels.email: Ingrese su dirección de correo electrónico
 forms.registration.labels.email_language: Seleccione su preferencia de idioma del correo electrónico
 forms.ssn.show: Mostrar número de Seguro Social
@@ -928,16 +934,16 @@ headings.passwords.change: Cambie su contraseña
 headings.passwords.confirm: Confirme su contraseña actual para continuar
 headings.passwords.confirm_for_personal_key: Introduzca la contraseña y obtenga una clave personal nueva
 headings.passwords.forgot: '¿Olvidó su contraseña?'
-headings.piv_cac_login.account_not_found: Su tarjeta PIV o CAC no está conectada a una cuenta
-headings.piv_cac_login.add: Configure su tarjeta PIV o CAC como un método de autenticación de dos factores para que pueda usarla para iniciar sesión.
-headings.piv_cac_login.new: Inicie sesión con su tarjeta PIV o CAC
+headings.piv_cac_login.account_not_found: Su tarjeta de empleado del gobierno no está conectada a una cuenta.
+headings.piv_cac_login.add: Use su lector de tarjetas inteligente para configurar su tarjeta de verificación de identidad personal (PIV) o su tarjeta de acceso común (CAC). Puede usar cualquiera de esas dos tarjetas como un método de autenticación de dos factores para iniciar sesión.
+headings.piv_cac_login.new: Inicie sesión con su identificación de empleado del gobierno.
 headings.piv_cac_login.success: Logró configurar su tarjeta PIV o CAC como un método de autenticación.
 headings.piv_cac_setup.already_associated: La tarjeta PIV o CAC que presentó está asociada con otro usuario.
 headings.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
 headings.piv_cac.certificate.bad: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
 headings.piv_cac.certificate.expired: El certificado de la tarjeta PIV o CAC que seleccionó ya venció
 headings.piv_cac.certificate.invalid: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
-headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta PIV o CAC
+headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
 headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta PIV o CAC
 headings.piv_cac.certificate.revoked: El certificado de la tarjeta PIV o CAC que seleccionó fue revocado para su tarjeta
 headings.piv_cac.certificate.unverified: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
@@ -1190,6 +1196,7 @@ in_person_proofing.body.barcode.cancel_link_text: Cancele su código de barras
 in_person_proofing.body.barcode.close_window: Ya puede cerrar esta ventana.
 in_person_proofing.body.barcode.deadline: Debe acudir a cualquier oficina de correos participante antes del %{deadline}
 in_person_proofing.body.barcode.deadline_restart: Si vence el plazo, su información no se guardará y tendrá que reiniciar el proceso.
+in_person_proofing.body.barcode.eipp_tag: Código de barras piloto mejorado GSA
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Según el tipo de identificación que tenga, es posible que deba presentar documentos comprobatorios. Lea con atención las opciones siguientes:'
 in_person_proofing.body.barcode.email_sent: Enviamos el código de barras y la información más abajo al correo electrónico que usó para iniciar sesión
 in_person_proofing.body.barcode.learn_more: Obtenga más información sobre lo que debe llevar
@@ -1295,9 +1302,10 @@ in_person_proofing.process.barcode.heading: Muestre su código de barras de %{ap
 in_person_proofing.process.barcode.info: El empleado debe escanear el código de barras que aparece en la parte superior de esta página. Puede imprimir esta página o mostrarla en su dispositivo móvil.
 in_person_proofing.process.eipp_bring_id_plus_documents.heading: 'Opción 2: Llevar una identificación estatal estándar emitida por el estado, junto con los documentos comprobatorios'
 in_person_proofing.process.eipp_bring_id_plus_documents.info: 'Puede presentar su licencia de conducir o identificación estatal estándar, junto con los documentos comprobatorios de las opciones A, B o C siguientes. Solo debe escoger UNA opción:'
+in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. REAL ID con dirección actual
 in_person_proofing.process.eipp_bring_id.heading: 'Opción 1: Llevar una REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
-in_person_proofing.process.eipp_bring_id.info: Si presenta una Real ID estatal o licencia de conducir auténtica, no necesita mostrar documentos comprobatorios.
+in_person_proofing.process.eipp_bring_id.info: Si presenta una licencia de conducir o una tarjeta de identificación REAL ID con su dirección actual, no necesita mostrar documentos comprobatorios.
 in_person_proofing.process.eipp_state_id_military_id.heading: B. Identificación emitida por el estado + identificación militar
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: Identificación estatal e identificación militar
 in_person_proofing.process.eipp_state_id_military_id.info: Presente una licencia de conducir o una tarjeta de identificación estatal estándar, junto con una identificación militar.
@@ -1315,6 +1323,9 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Tarjeta de registro de su vehículo
   - Póliza de seguro de su vivienda
   - Póliza de seguro de su vehículo
+in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + dos documentos comprobatorios
+in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID y dos documentos
+in_person_proofing.process.real_id_and_supporting_docs.info: 'Si la dirección que figura en su REAL ID no es su dirección actual, presente un REAL ID, junto con dos documentos comprobatorios de esta lista:'
 in_person_proofing.process.state_id.heading: Muestre su licencia de conducir estatal o su tarjeta de identificación estatal que no sea una licencia de conducir
 in_person_proofing.process.state_id.heading_eipp: Muestre su identificación y los documentos comprobatorios
 in_person_proofing.process.state_id.info: No debe estar vencida. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
@@ -1331,17 +1342,17 @@ instructions.forgot_password.close_window: Puede cerrar esta ventana del navegad
 instructions.go_back_to_mobile_app: Para continuar, vuelva a la aplicación %{friendly_name} e inicie sesión.
 instructions.mfa.authenticator.confirm_code_html: Ingrese el código de su aplicación de autenticación. Si tiene varias cuentas configuradas en su aplicación, ingrese el código correspondiente a %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente en su aplicación de autenticación
-instructions.mfa.piv_cac.account_not_found_html: '<p><strong>%{sign_in}</strong> con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p> <p><strong>¿No tiene una cuenta de %{app_name}?</strong> %{create_account}</p>'
+instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingrese su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
 instructions.mfa.piv_cac.already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Vuelva a iniciar sesión
-instructions.mfa.piv_cac.confirm_piv_cac: Presente la tarjeta PIV o CAC que asoció con su cuenta.
-instructions.mfa.piv_cac.did_not_work_html: '%{please_try_again_html}. Contacte con el administrador de su agencia si persiste este problema.'
+instructions.mfa.piv_cac.confirm_piv_cac: Inserte la tarjeta PIV o CAC asociada con su cuenta en un lector de tarjetas inteligente.
+instructions.mfa.piv_cac.did_not_work_html: 'Asegúrese de que su tarjeta PIV o CAC esté insertada correctamente en el lector de tarjetas inteligente e %{please_try_again_html}. Contacte con el administrador de su agencia si persiste este problema.'
 instructions.mfa.piv_cac.http_failure: El servidor tardó demasiado en responder. Vuelva a intentarlo.
-instructions.mfa.piv_cac.no_certificate_html: Asegúrese de que su tarjeta PIV o CAC esté conectada y %{try_again_html}. Contacte con el administrador de su agencia si persiste este problema.
+instructions.mfa.piv_cac.no_certificate_html: Asegúrese de que su tarjeta PIV o CAC esté insertada correctamente en el lector de tarjetas inteligente e %{try_again_html}. Contacte con el administrador de su agencia si persiste este problema.
 instructions.mfa.piv_cac.not_auth_cert_html: El certificado que seleccionó no es válido para esta cuenta. %{please_try_again_html} con un certificado diferente. Contacte con el administrador de su agencia si persiste este problema.
 instructions.mfa.piv_cac.please_try_again: vuelva a intentarlo
-instructions.mfa.piv_cac.sign_in_html: Asegúrese de que <strong>tiene una cuenta de %{app_name}</strong> y de que <strong>configuró una tarjeta PIV o CAC</strong> como método de autenticación de dos factores.
+instructions.mfa.piv_cac.sign_in: Asegúrese de tener una cuenta de %{app_name} y de tener configurada una tarjeta de verificación de identidad personal (PIV) o una tarjeta de acceso común (CAC) como método de autenticación de dos factores.
 instructions.mfa.piv_cac.step_1: Asígnele un alias.
 instructions.mfa.piv_cac.step_1_info: Si agrega más de una tarjeta PIV o CAC, podrá distinguirlas.
 instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas.
@@ -1420,7 +1431,7 @@ notices.forgot_password.no_email_sent_explanation_start: '¿No recibió un corre
 notices.forgot_password.resend_email_success: Enviamos otro correo electrónico para restablecer la contraseña.
 notices.password_changed: Cambió su contraseña.
 notices.phone_confirmed: Se agregó un teléfono a su cuenta.
-notices.piv_cac_configured: Se agregó una tarjeta PIV o CAC a su cuenta.
+notices.piv_cac_configured: Agregue su identificación de empleado del gobierno.
 notices.privacy.privacy_act_statement: Declaración de privacidad
 notices.privacy.security_and_privacy_practices: Prácticas de seguridad y declaración de privacidad
 notices.resend_confirmation_email.success: Enviamos otro correo electrónico de confirmación.
@@ -1598,11 +1609,11 @@ titles.openid_connect.logout: Cierre de sesión de OpenID Connect
 titles.passwords.change: Cambie la contraseña de su cuenta
 titles.passwords.forgot: Restablecer la contraseña
 titles.personal_key: Por si acaso
-titles.piv_cac_login.add: Agregue su tarjeta PIV o CAC
+titles.piv_cac_login.add: Agregue su identificación de empleado del gobierno
 titles.piv_cac_login.new: Use su tarjeta PIV o CAC para iniciar sesión en su cuenta
 titles.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
 titles.piv_cac_setup.upsell: Agregue su identificación de empleado del gobierno para un inicio de sesión más rápido y más seguro.
-titles.present_piv_cac: Presente su tarjeta PIV o CAC
+titles.present_piv_cac: Inserte su identificación de empleado del gobierno.
 titles.present_webauthn: Conecte su clave de seguridad de hardware
 titles.reactivate_account: Reactive su cuenta
 titles.registrations.new: Cree su cuenta
@@ -1711,7 +1722,7 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: Use 
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: No recibí mi código de un solo uso
 two_factor_authentication.phone.delete.failure: No se puede eliminar su teléfono.
 two_factor_authentication.phone.delete.success: Su teléfono fue eliminado.
-two_factor_authentication.piv_cac_header_text: Presente su tarjeta PIV o CAC
+two_factor_authentication.piv_cac_header_text: Inserte su identificación de empleado del gobierno
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Elegir otros métodos
 two_factor_authentication.piv_cac_upsell.explain: Esto hará que su cuenta sea más segura y no tendrá que ingresar su correo electrónico ni su contraseña cuando inicie sesión.
@@ -1790,10 +1801,10 @@ user_mailer.account_reset_cancel.intro_html: Este correo electrónico confirma q
 user_mailer.account_reset_cancel.subject: Solicitud cancelada
 user_mailer.account_reset_complete.intro_html: Este correo electrónico confirma que usted eliminó su cuenta de %{app_name_html}.
 user_mailer.account_reset_complete.subject: Cuenta eliminada
-user_mailer.account_reset_granted.button: Sí, continuar eliminando
+user_mailer.account_reset_granted.button: Confirmar la eliminación de la cuenta
 user_mailer.account_reset_granted.cancel_link_text: cancele
 user_mailer.account_reset_granted.help_html: Si no desea eliminar su cuenta, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Su período de espera de %{waiting_period} finalizó. Complete el paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de autenticación, seleccione “confirmar eliminación” para eliminar su cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los sitios web gubernamentales participantes que utilizan %{app_name}, puede crear una nueva cuenta %{app_name} con la misma dirección de correo electrónico después de que se elimine su cuenta.<br><br>
+user_mailer.account_reset_granted.intro_html: Su período de espera de %{waiting_period} finalizó. Complete el paso 2 del proceso.<br><br>Si no ha podido localizar sus métodos de autenticación, seleccione “Confirmar la eliminación de la cuenta” para eliminar su cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los sitios web gubernamentales participantes que utilizan %{app_name}, puede crear una nueva cuenta %{app_name} con la misma dirección de correo electrónico después de que se elimine su cuenta.<br><br>
 user_mailer.account_reset_granted.subject: Elimine su cuenta de %{app_name}
 user_mailer.account_reset_request.cancel: '¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name} para cancelar.'
 user_mailer.account_reset_request.header: Su cuenta será eliminada en %{interval}

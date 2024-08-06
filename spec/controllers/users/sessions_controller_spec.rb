@@ -53,6 +53,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          rate_limited: false,
           valid_captcha_result: true,
           bad_password_count: 0,
           sp_request_url_present: false,
@@ -125,6 +126,7 @@ RSpec.describe Users::SessionsController, devise: true do
             success: true,
             user_id: user.uuid,
             user_locked_out: false,
+            rate_limited: false,
             valid_captcha_result: true,
             bad_password_count: 0,
             sp_request_url_present: false,
@@ -165,6 +167,58 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    it 'prevents attempt and logs after exceeding maximum rate limit' do
+      allow(IdentityConfig.store).to receive(:max_bad_passwords).and_return(10_000)
+      allow(RateLimiter).to receive(:rate_limit_config).and_return(
+        sign_in_user_id_per_ip: {
+          max_attempts: 6,
+          attempt_window: 60,
+          attempt_window_exponential_factor: 3,
+          attempt_window_max: 12.hours.in_minutes,
+        },
+      )
+      stub_analytics
+      user = create(:user, :fully_registered)
+
+      travel_to (3.hours + 1.minute).ago do
+        2.times do
+          post :create, params: { user: { email: user.email, password: 'incorrect' } }
+        end
+      end
+
+      post :create, params: { user: { email: user.email, password: 'incorrect' } }
+      expect(flash[:error]).to be_blank
+
+      4.times do
+        post :create, params: { user: { email: user.email, password: 'incorrect' } }
+      end
+
+      travel_to (12.hours - 1.minute).from_now do
+        post :create, params: { user: { email: user.email, password: 'incorrect' } }
+        expect(flash[:error]).to be_blank
+
+        post :create, params: { user: { email: user.email, password: 'incorrect' } }
+        expect(flash[:error]).to eq(
+          t(
+            'errors.sign_in.bad_password_limit',
+            time_left: distance_of_time_in_words(12.hours),
+          ),
+        )
+        expect(@analytics).to have_logged_event(
+          'Email and Password Authentication',
+          success: false,
+          user_id: user.uuid,
+          user_locked_out: false,
+          rate_limited: true,
+          valid_captcha_result: true,
+          bad_password_count: 8,
+          sp_request_url_present: false,
+          remember_device: false,
+          new_device: nil,
+        )
+      end
+    end
+
     it 'tracks the unsuccessful authentication for existing user' do
       user = create(:user, :fully_registered)
 
@@ -178,6 +232,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        rate_limited: false,
         valid_captcha_result: true,
         bad_password_count: 1,
         sp_request_url_present: false,
@@ -198,6 +253,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        rate_limited: false,
         valid_captcha_result: true,
         bad_password_count: 1,
         sp_request_url_present: false,
@@ -222,6 +278,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: true,
+        rate_limited: false,
         valid_captcha_result: true,
         bad_password_count: 0,
         sp_request_url_present: false,
@@ -245,6 +302,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        rate_limited: false,
         valid_captcha_result: false,
         bad_password_count: 0,
         remember_device: false,
@@ -280,6 +338,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        rate_limited: false,
         valid_captcha_result: true,
         bad_password_count: 2,
         sp_request_url_present: false,
@@ -299,6 +358,7 @@ RSpec.describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        rate_limited: false,
         valid_captcha_result: true,
         bad_password_count: 1,
         sp_request_url_present: true,
@@ -470,6 +530,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          rate_limited: false,
           valid_captcha_result: true,
           bad_password_count: 0,
           sp_request_url_present: false,
@@ -590,6 +651,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          rate_limited: false,
           valid_captcha_result: true,
           bad_password_count: 0,
           sp_request_url_present: false,
@@ -616,6 +678,7 @@ RSpec.describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          rate_limited: false,
           valid_captcha_result: true,
           bad_password_count: 0,
           sp_request_url_present: false,
