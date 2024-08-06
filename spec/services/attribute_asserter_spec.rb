@@ -37,7 +37,7 @@ RSpec.describe AttributeAsserter do
     raw = saml_authn_request_url(
       overrides: {
         issuer: sp1_issuer,
-      }.merge(options)
+      }.merge(options),
     )
 
     CGI.unescape raw.split('SAMLRequest').last
@@ -71,7 +71,7 @@ RSpec.describe AttributeAsserter do
     context 'when an IAL2 request is made' do
       let(:authn_context) do
         [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
         ]
       end
 
@@ -508,7 +508,7 @@ RSpec.describe AttributeAsserter do
             authn_context: [
               Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             ],
-            authn_context_comparison: 'minimum'
+            authn_context_comparison: 'minimum',
           }
         end
 
@@ -535,7 +535,7 @@ RSpec.describe AttributeAsserter do
             authn_context: [
               Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             ],
-            authn_context_comparison: 'minimum'
+            authn_context_comparison: 'minimum',
           }
         end
 
@@ -566,7 +566,7 @@ RSpec.describe AttributeAsserter do
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           ],
-          authn_context_comparison: 'minimum'
+          authn_context_comparison: 'minimum',
         }
       end
 
@@ -698,7 +698,7 @@ RSpec.describe AttributeAsserter do
       let(:user) { create(:user, :fully_registered) }
       let(:authn_context) do
         [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
         ]
       end
 
@@ -708,15 +708,397 @@ RSpec.describe AttributeAsserter do
     context 'unverified user and LOA1 request' do
       let(:user) { create(:user, :fully_registered) }
 
-      let(:options) do
-        {
-          authn_context: [
-            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          ]
-        }
+      let(:authn_context) do
+        [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        ]
       end
 
       it_behaves_like 'unverified user'
+    end
+  end
+
+  describe 'aal attributes handling' do
+    before do
+      user.identities << identity
+      allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+        and_return(%w[email])
+      subject.build
+    end
+
+    describe 'when no aal requested' do
+      context 'default_aal is nil' do
+        let(:authn_context) { [] }
+        it 'asserts default aal' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'default_aal is 1' do
+        let(:service_provider_aal) { 1 }
+        let(:authn_context) { [] }
+
+        it 'asserts aal1' do
+          # we do not enforce aal1, we enforce default aal, so this should be updated
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'default_aal is 2' do
+        let(:service_provider_aal) { 2 }
+        let(:authn_context) { [] }
+
+        it 'asserts aal2' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'default_aal is 3' do
+        let(:service_provider_aal) { 3 }
+        let(:authn_context) { [] }
+
+        it 'asserts aa33' do
+          # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
+          # so should be updated
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+    end
+
+    describe 'when aal is passed in via authn_context' do
+      context 'aal1 is requested' do
+        let(:authn_context) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
+
+        # We do not support AAL1. when passed in, we enforce our default AAL value.
+        # However, we are returning the AAL1 value, which is misleading.
+        it 'asserts default aal' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'aal2 is requested' do
+        let(:authn_context) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
+
+        it 'asserts plain aal2' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'aal2 with phishing-resistant mfa is requested' do
+        let(:authn_context) { Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF }
+
+        # we should assert the more specific aal2 value
+        it 'asserts plain aal2' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'aal2 with hspd12 mfa requested' do
+        let(:authn_context) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
+
+        # we should assert the more specific aal2 value
+        it 'asserts plain aal2' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      # we need to deprecate AAL3 values, as we are not enforcing AAL3.
+      context 'aal3 requested' do
+        let(:authn_context) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
+
+        # when aal3 is requested, we are enforcing aal2 with phishing-resistant mfa.
+        # we should update to assert that
+        it 'asserts plain aal3' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'aal3 with hspd12 mfa requested' do
+        let(:authn_context) { Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF }
+
+        # when aal3 is requested, we are enforcing aal2 with HSPD12 mfa.
+        # we should update to assert that
+        it 'asserts plain aal2' do
+          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      describe 'when multiple aal values are requested via authn_context' do
+        # currently, if values are passed in the request, the saml_idp gem only
+        # returns the first option.
+        context 'default is first' do
+          let(:authn_context) do
+            [
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+            ]
+          end
+
+          it 'asserts the default value' do
+            expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+            )
+          end
+        end
+
+        context 'aal1 is first' do
+          let(:authn_context) do
+            [
+              Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            ]
+          end
+
+          it 'asserts the aal1 value' do
+            expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+            )
+          end
+        end
+      end
+    end
+
+    describe 'ial is passed in via authn_context' do
+      context 'auth-only is requested' do
+        let(:authn_context) { [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF] }
+
+        describe 'no aal is requested via authn_context' do
+          context 'default_aal is nil' do
+            it 'asserts default aal' do
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+
+          context 'default_aal is 1' do
+            let(:service_provider_aal) { 1 }
+
+            it 'asserts aal1' do
+              # we do not enforce aal1, we enforce default aal, so this should be updated
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+
+          context 'default_aal is 2' do
+            let(:service_provider_aal) { 2 }
+
+            it 'asserts aal1' do
+              # we do not enforce aal1, we enforce default aal, so this should be updated
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+
+          context 'default_aal is 3' do
+            let(:service_provider_aal) { 3 }
+
+            it 'asserts aal1' do
+              # we do not enforce aal1, we enforce default aal, so this should be updated
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+        end
+      end
+
+      context 'identity-proofing is requested' do
+        let(:authn_context) { [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF] }
+
+        describe 'no aal is requested via authn_context' do
+          context 'default_aal is nil' do
+            it 'asserts default aal' do
+              # this should be upgraded to AAL2, as we enforce that on an identity-proofing request
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+
+          context 'default_aal is 1' do
+            let(:service_provider_aal) { 1 }
+
+            it 'asserts aal1' do
+              # this should be upgraded to AAL2, as we enforce that on an identity-proofing request
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+
+          context 'default_aal is 2' do
+            let(:service_provider_aal) { 2 }
+
+            it 'asserts base aal2' do
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+
+          context 'default_aal is 3' do
+            let(:service_provider_aal) { 3 }
+
+            it 'asserts aal3' do
+              # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+          end
+        end
+
+        describe 'multiple aal values are requested' do
+          context 'default is first' do
+            let(:authn_context) do
+              [
+                Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+              ]
+            end
+
+            # identity proofing enforces aal2, so that is what should be asserted
+            it 'asserts the default value' do
+              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+              )
+            end
+          end
+        end
+      end
+
+      context 'ialmax is requested' do
+        let(:options) do
+          {
+            authn_context: [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            ],
+            authn_context_comparison: 'minimum',
+          }
+        end
+
+        context 'a non-verified user' do
+          # remove any profiles
+          before do
+            user.profiles.delete_all
+            subject.build
+          end
+
+          describe 'no aal is requested via authn_context' do
+            context 'default_aal is nil' do
+              it 'asserts default aal' do
+                # this is fine, as we have enforced auth-only
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+
+            context 'default_aal is 1' do
+              let(:service_provider_aal) { 1 }
+
+              it 'asserts aal1' do
+                # this is fine, as we have enforced auth-only
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+
+            context 'default_aal is 2' do
+              let(:service_provider_aal) { 2 }
+
+              it 'asserts base aal2' do
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+
+            context 'default_aal is 3' do
+              let(:service_provider_aal) { 3 }
+
+              it 'asserts aal3' do
+                # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+          end
+        end
+
+        context 'a verified user' do
+          describe 'no aal is requested via authn_context' do
+            context 'default_aal is nil' do
+              it 'asserts default aal' do
+                # this should be upgraded to AAL2, as we enforce that
+                # on an identity-proofing request
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+
+            context 'default_aal is 1' do
+              let(:service_provider_aal) { 1 }
+
+              it 'asserts aal1' do
+                # this should be upgraded to AAL2, as we enforce that
+                # on an identity-proofing request
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+
+            context 'default_aal is 2' do
+              let(:service_provider_aal) { 2 }
+
+              it 'asserts base aal2' do
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+
+            context 'default_aal is 3' do
+              let(:service_provider_aal) { 3 }
+
+              it 'asserts aal3' do
+                # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
+                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                  Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+            end
+          end
+        end
+      end
     end
   end
 
