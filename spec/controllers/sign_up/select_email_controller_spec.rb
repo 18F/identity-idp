@@ -4,6 +4,7 @@ RSpec.describe SignUp::SelectEmailController do
   describe '#create' do
     let(:email) { 'michael.motorist@email.com' }
     let(:email2) { 'michael.motorist2@email.com' }
+    let(:email3) { 'david.motorist@email.com' }
     let(:user) { create(:user) }
 
     before do
@@ -17,6 +18,20 @@ RSpec.describe SignUp::SelectEmailController do
 
       expect(user.email_addresses.last.email).
         to include('michael.motorist2@email.com')
+    end
+
+    context 'with a corrupted email selection form' do
+      render_views
+      it 'rejects email not belonging to the user' do
+        stub_sign_in(user)
+        post :create, params: { selection: email3 }
+
+        expect(user.email_addresses.last.email).
+          to include('michael.motorist2@email.com')
+        
+        expect(response).to redirect_to(sign_up_select_email_path)
+
+      end
     end
   end
 end
