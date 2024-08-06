@@ -80,12 +80,13 @@ module UspsInPersonProofing
     # @param unique_id [String]
     # @param enrollment_code [String]
     # @return [Hash] API response
-    def request_proofing_results(unique_id, enrollment_code)
+    # def request_proofing_results(enrollment)
+    def request_proofing_results(enrollment)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults"
       request_body = {
-        sponsorID: sponsor_id,
-        uniqueID: unique_id,
-        enrollmentCode: enrollment_code,
+        sponsorID: enrollment.sponsor_id,
+        uniqueID: enrollment.unique_id,
+        enrollmentCode: enrollment.enrollment_code,
       }
 
       faraday.post(url, request_body, dynamic_headers) do |req|

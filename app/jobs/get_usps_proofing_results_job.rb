@@ -103,7 +103,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment_outcomes[:enrollments_checked] += 1
 
     response = proofer.request_proofing_results(
-      enrollment.unique_id, enrollment.enrollment_code
+      enrollment,
     )
   rescue Faraday::BadRequestError => err
     # 400 status code. This is used for some status updates and some common client errors
