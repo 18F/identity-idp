@@ -1114,13 +1114,13 @@ idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouve
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
-idv.messages.phone.description: Nous vérifierons ce numéro dans nos données et vous enverrons un code à usage unique. L’objectif est d’aider à vérifier votre identité.
+idv.messages.phone.description: Nous vérifierons votre numéro dans nos données enregistrées et vous enverrons un code à usage unique afin de confirmer votre identité.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
 idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
 idv.messages.phone.failed_number.try_again_html: Essayez un <strong>autre</strong> numéro.
 idv.messages.phone.rules:
-  - Basé aux Etats-Unis (y compris les territoires américains)
+  - Basé aux Etats-Unis
   - Votre numéro principal (celui que vous utilisez le plus souvent)
 idv.messages.return_to_profile: '‹ Revenir à votre profil %{app_name}'
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
@@ -1131,7 +1131,6 @@ idv.titles.activated: Votre identité a déjà été vérifiée
 idv.titles.come_back_later: Votre lettre est en route
 idv.titles.enter_password: Révisez et validez
 idv.titles.mail.verify: Vérifiez votre adresse
-idv.titles.otp_delivery_method: Comment devrions-nous envoyer un code ?
 idv.titles.session.enter_password: Ressaisissez votre mot de passe %{app_name}
 idv.titles.session.enter_password_letter: Ressaisissez votre mot de passe %{app_name} pour envoyer votre lettre
 idv.titles.unavailable: Nous travaillons à la résolution d’une erreur

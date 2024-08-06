@@ -1114,13 +1114,13 @@ idv.messages.gpo.start_over_link_text: start over and verify with your new addre
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
-idv.messages.phone.description: We’ll check this number with records and send you a one-time code. This is to help verify your identity.
+idv.messages.phone.description: We’ll check your number with records and send you a one-time code to verify your identity.
 idv.messages.phone.failed_number.alert_text: We couldn’t match you to this number.
 idv.messages.phone.failed_number.gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verify by mail
 idv.messages.phone.failed_number.try_again_html: Try <strong>another</strong> number.
 idv.messages.phone.rules:
-  - Based in the United States (including U.S. territories)
+  - Based in the United States
   - Your primary number (the one you use the most often)
 idv.messages.return_to_profile: '‹ Return to your %{app_name} profile'
 idv.messages.sessions.enter_password_message: When you re-enter your password, %{app_name} will protect the information you’ve given us, so that only you can access it.
@@ -1131,7 +1131,6 @@ idv.titles.activated: Your identity has already been verified
 idv.titles.come_back_later: Your letter is on the way
 idv.titles.enter_password: Review and submit
 idv.titles.mail.verify: Verify your address
-idv.titles.otp_delivery_method: How should we send a code?
 idv.titles.session.enter_password: Re-enter your %{app_name} password
 idv.titles.session.enter_password_letter: Re-enter your %{app_name} password to send your letter
 idv.titles.unavailable: We are working to resolve an error
