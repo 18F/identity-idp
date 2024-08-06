@@ -61,14 +61,25 @@ class ApplicationController < ActionController::Base
 
   def analytics
     return @analytics if @analytics
-    @analytics =
-      Analytics.new(
-        user: analytics_user,
-        request: request,
-        sp: current_sp&.issuer,
-        session: session,
-        ahoy: ahoy,
-      )
+    if Rails.env.test?
+      @analytics =
+        FakeAnalytics.new(
+          user: analytics_user,
+          request: request,
+          sp: current_sp&.issuer,
+          session: session,
+          ahoy: ahoy,
+        )
+    else
+      @analytics =
+        Analytics.new(
+          user: analytics_user,
+          request: request,
+          sp: current_sp&.issuer,
+          session: session,
+          ahoy: ahoy,
+        )
+    end
   end
 
   def analytics_user

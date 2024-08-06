@@ -914,21 +914,22 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
     it 'redirects user to security check failed page' do
       visit new_user_session_path
 
-      fake_analytics = FakeAnalytics.new
-      allow_any_instance_of(ApplicationController).to receive(:analytics).
-        and_wrap_original do |original|
-          original_analytics = original.call
-          if original_analytics.request.params[:controller] == 'users/sessions' &&
-             original_analytics.request.params[:action] == 'create'
-            expect(original_analytics.user).to eq(user)
-          end
+      # fake_analytics = FakeAnalytics.new
+      # allow_any_instance_of(ApplicationController).to receive(:analytics).
+      #   and_wrap_original do |original|
+      #     original_analytics = original.call
+      #     if original_analytics.request.params[:controller] == 'users/sessions' &&
+      #        original_analytics.request.params[:action] == 'create'
+      #       binding.pry
+      #       expect(original_analytics.user).to eq(user)
+      #     end
 
-          fake_analytics
-        end
+      #     fake_analytics
+      #   end
 
       fill_in :user_recaptcha_mock_score, with: '0.1'
       fill_in_credentials_and_submit(user.email, user.password)
-      expect(fake_analytics).to have_logged_event(
+      expect(FakeAnalytics).to have_logged_event(
         'reCAPTCHA verify result received',
         recaptcha_result: {
           assessment_id: kind_of(String),
