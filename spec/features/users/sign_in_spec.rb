@@ -918,7 +918,7 @@ RSpec.feature 'Sign in', allowed_extra_analytics: [:*] do
       allow_any_instance_of(ApplicationController).to receive(:analytics).
         and_wrap_original do |original|
           original_analytics = original.call
-          if original_analytics.request.params[:controller] == 'users/sesson' &&
+          if original_analytics.request.params[:controller] == 'users/sessions' &&
              original_analytics.request.params[:action] == 'create'
             expect(original_analytics.user).to eq(user)
           end
