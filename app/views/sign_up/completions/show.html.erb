@@ -44,7 +44,7 @@
             ) %>
       <% else %>
         <div class="display-flex flex-justify">
-          <div><%= attribute_value.to_s %></div>
+          <%= attribute_value.to_s %>
           <% if attribute_key == :email && IdentityConfig.store.feature_select_email_to_share_enabled %>
             <% if @presenter.multiple_emails? %>
               <p class='font-body-2xs text-right'><%= link_to t('help_text.requested_attributes.change_email_link'), sign_up_select_email_path %></p>
