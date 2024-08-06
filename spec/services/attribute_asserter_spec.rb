@@ -26,7 +26,13 @@ RSpec.describe AttributeAsserter do
     )
   end
 
-  let(:options) { {} }
+  let(:authn_context) do
+    [
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+    ]
+  end
+  let(:options) { { authn_context: } }
   let(:raw_authn_request) do
     raw = saml_authn_request_url(
       overrides: {
@@ -63,12 +69,10 @@ RSpec.describe AttributeAsserter do
 
   describe '#build' do
     context 'when an IAL2 request is made' do
-      let(:options) do
-        {
-          authn_context: [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-          ],
-        }
+      let(:authn_context) do
+        [
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+        ]
       end
 
       context 'when the user has been proofed without biometric' do
@@ -157,14 +161,12 @@ RSpec.describe AttributeAsserter do
 
           context 'authn request specifies bundle' do
             # rubocop:disable Layout/LineLength
-            let(:options) do
-              {
-                authn_context: [
-                  Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-                ],
-              }
+            let(:authn_context) do
+              [
+                Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+              ]
             end
             # rubocop:enable Layout/LineLength
 
@@ -252,7 +254,7 @@ RSpec.describe AttributeAsserter do
     end
 
     context 'verified user and proofing VTR request' do
-      let(:options) { { authn_context: 'C1.C2.P1' } }
+      let(:authn_context) { 'C1.C2.P1' }
 
       before do
         user.identities << identity
@@ -341,17 +343,15 @@ RSpec.describe AttributeAsserter do
             end
           end
 
+          # rubocop:disable Layout/LineLength
           context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
-            # rubocop:disable Layout/LineLength
-            let(:options) do
-              {
-                authn_context: [
-                  Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-                  Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-                ]
-              }
+            let(:authn_context) do
+              [
+                Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+                Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+              ]
             end
 
             it 'only includes uuid, email, aal, and ial' do
@@ -458,13 +458,11 @@ RSpec.describe AttributeAsserter do
     context 'verified user and IAL1 AAL3 request' do
       context 'service provider configured for AAL3' do
         let(:service_provider_aal) { 3 }
-        let(:options) do
-          {
-            authn_context: [
-              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-              Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-            ]
-          }
+        let(:authn_context) do
+          [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          ]
         end
 
         before do
@@ -481,13 +479,11 @@ RSpec.describe AttributeAsserter do
       end
 
       context 'service provider requests AAL3' do
-        let(:options) do
-          {
-            authn_context: [
-              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-              Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-            ],
-          }
+        let(:authn_context) do
+          [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          ]
         end
 
         before do
@@ -700,12 +696,10 @@ RSpec.describe AttributeAsserter do
 
     context 'unverified user and IAL2 request' do
       let(:user) { create(:user, :fully_registered) }
-      let(:options) do
-        {
-          authn_context: [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-          ]
-        }
+      let(:authn_context) do
+        [
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+        ]
       end
 
       it_behaves_like 'unverified user'
