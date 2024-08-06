@@ -1,8 +1,8 @@
-<% if @presenter.outage_message_enabled? %>
-<table class="warning-alert margin-y-4">
+<% if @presenter.outage_message_enabled? || true %>
+<table class="usa-alert usa-alert--warning margin-y-4">
   <tr>
     <td style="width:16px;">
-      <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
+      <%= image_tag('email/warning.png', width: 16, height: 14, alt: '', style: 'margin-top: 5px;') %>
     </td>
     <td>
       <%= render 'shared/outage_alert', date: @presenter.formatted_outage_expected_update_date, email_date: @presenter.formatted_outage_emailed_by_date %>
@@ -35,10 +35,10 @@
 </div>
 
 <%# Alert %>
-<table class="info-alert margin-y-4 radius-lg">
+<table class="usa-alert usa-alert--info margin-y-4">
   <tr>
     <td style="width:16px;">
-      <%= image_tag('email/info.png', width: 16, height: 16, alt: '') %>
+      <%= image_tag('email/info.png', width: 16, height: 16, alt: '', style: 'margin-top: 4px;') %>
     </td>
     <td>
       <p class="margin-bottom-1"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
@@ -103,7 +103,7 @@
               <p class="margin-bottom-0"><%= t('in_person_proofing.process.real_id_and_supporting_docs.info') %></p>
               <ul class="usa-list margin-top-0">
                 <% t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |doc| %>
-                  <li><%= doc %></li> 
+                  <li><%= doc %></li>
                 <% end %>
               </ul>
             </td>
@@ -185,7 +185,7 @@
             <p class="margin-bottom-0"><%= t('in_person_proofing.process.eipp_state_id_supporting_docs.info') %></p>
             <ul class="usa-list margin-top-0">
               <% t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |doc| %>
-                <li><%= doc %></li> 
+                <li><%= doc %></li>
               <% end %>
             </ul>
           </td>
@@ -236,7 +236,7 @@
       </td>
     </tr>
   </table>
-  
+
   <% if !@is_enhanced_ipp %>
     <p class="margin-bottom-0 padding-bottom-4">
       <%= t('in_person_proofing.body.barcode.questions') %>
