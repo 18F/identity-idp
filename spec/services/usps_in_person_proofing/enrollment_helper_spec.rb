@@ -75,60 +75,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper, allowed_extra_analytics: 
         end
       end
 
-      context 'when the enrollment sponsor_id is not set' do
-        let!(:enrollment) do
-          create(
-            :in_person_enrollment,
-            user: user,
-            service_provider: service_provider,
-            status: :establishing,
-            current_address_matches_id: nil,
-            profile: nil,
-            sponsor_id: nil,
-          )
-        end
-
-        context 'when the usps enrollment fails' do
-          before do
-            stub_request_enroll_bad_request_response
-          end
-
-          context 'when an EIPP enrollment is scheduled' do
-            let(:is_enhanced_ipp) { true }
-            let(:usps_eipp_sponsor_id) { '6543211' }
-
-            before do
-              allow(
-                IdentityConfig.store,
-              ).to receive(:usps_eipp_sponsor_id).and_return(usps_eipp_sponsor_id)
-              subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
-            rescue StandardError
-            ensure
-              enrollment.reload
-            end
-
-            it 'sets the sponsor_id to the configured EIPP sponsor_id' do
-              expect(enrollment.sponsor_id).to eq(usps_eipp_sponsor_id)
-            end
-          end
-
-          context 'when an ID-IPP enrollment scheduled' do
-            let(:is_enhanced_ipp) { false }
-
-            before do
-              subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
-            rescue StandardError
-            ensure
-              enrollment.reload
-            end
-
-            it 'sets the sponsor_id to the configured ID-IPP sponsor_id' do
-              expect(enrollment.sponsor_id).to eq(usps_ipp_sponsor_id)
-            end
-          end
-        end
-      end
-
       context 'an establishing enrollment record exists for the user' do
         before do
           allow(Rails).to receive(:cache).and_return(

@@ -410,6 +410,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check
   # @param [String] bad_password_count represents number of prior login failures
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
@@ -421,6 +422,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     user_locked_out:,
+    rate_limited:,
     valid_captcha_result:,
     bad_password_count:,
     sp_request_url_present:,
@@ -433,6 +435,7 @@ module AnalyticsEvents
       success:,
       user_id:,
       user_locked_out:,
+      rate_limited:,
       valid_captcha_result:,
       bad_password_count:,
       sp_request_url_present:,

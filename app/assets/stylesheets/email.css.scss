@@ -5,6 +5,8 @@
 @use 'variables/app' as *;
 @use 'variables/email' as *;
 
+@forward 'usa-tag';
+
 .gray {
   &:active,
   &:hover,
@@ -70,10 +72,6 @@ h6 {
   border-radius: 8px;
   color: $gray;
   padding: 10px;
-  width: 50%;
-}
-
-.half {
   width: 50%;
 }
 
