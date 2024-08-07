@@ -43,7 +43,12 @@ class TwoFactorOptionsPresenter
       TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
       TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
     ].map do |klass|
-      klass.new(user:, piv_cac_required:, phishing_resistant_required:, user_agent:)
+      klass.new(
+        user:,
+        piv_cac_required: piv_cac_required?,
+        phishing_resistant_required: phishing_resistant_only?,
+        user_agent:,
+      )
     end.
       partition(&:recommended?).
       flatten
@@ -106,11 +111,13 @@ class TwoFactorOptionsPresenter
   private
 
   def piv_cac_required?
-    @piv_cac_required
+    @piv_cac_required &&
+      !mfa_policy.piv_cac_mfa_enabled?
   end
 
   def phishing_resistant_only?
-    @phishing_resistant_required && !mfa_policy.phishing_resistant_mfa_enabled?
+    @phishing_resistant_required &&
+      !mfa_policy.phishing_resistant_mfa_enabled?
   end
 
   def mfa_policy
