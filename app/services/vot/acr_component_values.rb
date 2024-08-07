@@ -201,6 +201,12 @@ module Vot
       Saml::Idp::Constants::SEMANTIC_ACRS.intersect?(values)
     end
 
+    def self.includes_requirements?(name, *requirements)
+      component = NAME_HASH[name]
+      component.present? &&
+        component.requirements.intersection(requirements).size == requirements.length
+    end
+
     # Get the highest priority ACR value
     # @return [String, nil]
     def self.find_highest_priority(values)
@@ -234,32 +240,56 @@ module Vot
       to_names(values).filter { |acr| AcrComponentValues.ial?(acr) }
     end
 
+    def self.ial_component_values(values)
+      to_components(values).filter { |acr| AcrComponentValues.ial?(acr) }
+    end
+
     def self.aal_values(values)
       to_names(values).filter { |acr| AcrComponentValues.aal?(acr) }
     end
 
+    def self.aal_component_values(values)
+      to_components(values).filter { |acr| AcrComponentValues.aal?(acr) }
+    end
+
     # Convert list of strings or {Vot::ComponentValue} to ACR values
     # @return [Array<String>]
-    def self.to_names(values)
+    def self.to_names(values = '')
       [] unless values.present? &&
-                !(values.is_a?(String) || values.is_a?(Enumerable))
-      names =
-        if values.is_a?(Enumerable)
-          values.
-            map { |v| AcrComponentValues.to_name(v) }.
-            to_a
-        else
-          values.split(DELIM)
-        end
-      names.compact_blank.uniq
+                (values.is_a?(String) || values.is_a?(Enumerable))
+      values_ary = values.is_a?(String) && values.split(DELIM) || values.presence || []
+
+      values_ary.
+        map { |v| AcrComponentValues.to_name(v) }.
+        compact_blank.
+        uniq
+    end
+
+    # Convert list of strings or {Vot::ComponentValue} to an array of ComponentValue
+    # @param values [String, Enumerable]
+    # @return [Array<Vot::ComponentValue>]
+    def self.to_components(values)
+      [] unless values.present? &&
+                (values.is_a?(String) || values.is_a?(Enumerable))
+
+      values_ary = values.is_a?(String) && values.split(DELIM) || values
+
+      values_ary.
+        map { |v| AcrComponentValues.to_component(v) }.
+        compact_blank.
+        uniq
     end
 
     def self.to_name(value)
       value.is_a?(ComponentValue) ? value.name : value.to_s
     end
 
-    def self.join(values)
-      to_names(values).join(DELIM)
+    def self.to_component(value)
+      value.is_a?(String) && by_name[value] || value
+    end
+
+    def self.build(values)
+      values.is_a?(Enumerable) && to_names(values).join(DELIM) || values
     end
 
     def self.ial?(value)

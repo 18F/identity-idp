@@ -21,11 +21,12 @@ class AuthnContextResolver
     Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
   ].freeze
+
   def initialize(user:, service_provider:, vtr:, acr_values:)
     @user = user
     @service_provider = service_provider
     @vtr = vtr
-    @acr_values = acr_values
+    @acr_values = Vot::AcrComponentValues.build(acr_values)
   end
 
   def result
@@ -52,13 +53,25 @@ class AuthnContextResolver
 
   def asserted_aal_acr
     return if vtr.present?
-    if acr_aal_component_values.any?
-      highest_aal_acr(acr_aal_component_values.map(&:name)) || acr_aal_component_values.first.name
-    elsif service_provider&.default_aal.to_i >= 3
+    if acr_aal_component_values.present?
+      highest_aal_acr(acr_aal_component_values) || acr_aal_component_values.first.name
+    # elsif service_provider&.default_aal.to_i >= 3
+    #   Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+    # elsif service_provider&.default_aal.to_i == 2
+    #   Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    # elsif acr_result.identity_proofing_or_ialmax?
+    #   Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    else
+      default_aal_acr
+    end
+  end
+
+  def default_aal_acr
+    if service_provider&.default_aal.to_i >= 3
       Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
     elsif service_provider&.default_aal.to_i == 2
       Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-    elsif acr_result.identity_proofing_or_ialmax?
+    elsif acr_result_with_sp_defaults.identity_proofing_or_ialmax?
       Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     else
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
@@ -160,9 +173,11 @@ class AuthnContextResolver
 
   def acr_aal_component_values
     @acr_aal_component_values ||=
-      acr_result_without_sp_defaults.component_values.filter do |component_value|
-        Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL.include?(component_value.name)
-      end
+      Vot::AcrComponentValues.order_by_priority(
+        Vot::AcrComponentValues.aal_component_values(
+          acr_result_without_sp_defaults.component_values,
+        ),
+      )
   end
 
   def acr_ial_component_values
@@ -186,6 +201,6 @@ class AuthnContextResolver
   end
 
   def highest_aal_acr(aals)
-    AALS_BY_PRIORITY.find { |aal| aals.include?(aal) }
+    Vot::AcrComponentValues.find_highest_priority(aals)
   end
 end

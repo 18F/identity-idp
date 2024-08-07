@@ -37,6 +37,7 @@ module FederatedProtocols
 
     private
 
+    # @return [OpenidConnectAuthorizeForm]
     attr_reader :request
   end
 end
