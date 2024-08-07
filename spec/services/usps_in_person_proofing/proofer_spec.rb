@@ -403,6 +403,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         'applicant',
         unique_id: '123456789',
         enrollment_code: '123456789',
+        sponsor_id: '314159265359',
       )
     end
 
@@ -410,13 +411,33 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_token
     end
 
+    context 'when the user is going through enhanced ipp' do
+      let(:request_body) do
+        {
+          sponsorID: applicant.sponsor_id.to_i,
+          uniqueID: applicant.unique_id,
+          enrollmentCode: applicant.enrollment_code,
+        }
+      end
+      let(:faraday_response) { double('faraday_response', body: 'blah blah') }
+      let(:faraday) { Faraday.new }
+      before do
+        allow(Faraday).to receive(:new).and_return(faraday)
+        allow(Rails.cache).to receive(:read).and_return('some fake token')
+      end
+      it 'sends the correct information in the request body' do
+        expect(faraday).to receive(:post).with(
+          anything, request_body,
+          anything
+        ).and_return(faraday_response)
+        subject.request_proofing_results(applicant)
+      end
+    end
+
     it 'returns failed enrollment information' do
       stub_request_failed_proofing_results
 
-      proofing_results = subject.request_proofing_results(
-        applicant.unique_id,
-        applicant.enrollment_code,
-      )
+      proofing_results = subject.request_proofing_results(applicant)
       expect(proofing_results['status']).to eq 'In-person failed'
       expect(proofing_results['fraudSuspected']).to eq false
     end
@@ -424,10 +445,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
     it 'returns passed enrollment information' do
       stub_request_passed_proofing_results
 
-      proofing_results = subject.request_proofing_results(
-        applicant.unique_id,
-        applicant.enrollment_code,
-      )
+      proofing_results = subject.request_proofing_results(applicant)
       expect(proofing_results['status']).to eq 'In-person passed'
       expect(proofing_results['fraudSuspected']).to eq false
     end
@@ -436,10 +454,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
       stub_request_in_progress_proofing_results
 
       expect do
-        subject.request_proofing_results(
-          applicant.unique_id,
-          applicant.enrollment_code,
-        )
+        subject.request_proofing_results(applicant)
       end.to raise_error(
         an_instance_of(Faraday::BadRequestError).
         and(having_attributes(
@@ -469,10 +484,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         subject.token
         proofing_results = nil
         travel_to(expires_at) do
-          proofing_results = subject.request_proofing_results(
-            applicant.unique_id,
-            applicant.enrollment_code,
-          )
+          proofing_results = subject.request_proofing_results(applicant)
         end
 
         expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate").twice

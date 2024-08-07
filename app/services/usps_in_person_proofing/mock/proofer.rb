@@ -40,7 +40,7 @@ module UspsInPersonProofing
         end
       end
 
-      def request_proofing_results(_unique_id, _enrollment_code)
+      def request_proofing_results(_enrollment)
         JSON.parse(Fixtures.request_passed_proofing_results_response)
       end
     end
