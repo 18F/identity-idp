@@ -19,7 +19,7 @@ RSpec.describe Redirect::HelpCenterController do
 
   describe '#show' do
     let(:category) { 'verify-your-identity' }
-    let(:article) { 'accepted-state-issued-identification' }
+    let(:article) { 'accepted-identification-documents' }
 
     context 'without help center article' do
       it 'redirects to the root url' do
