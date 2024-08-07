@@ -23,7 +23,7 @@ RSpec.describe TwoFactorAuthCode::GenericDeliveryPresenter do
           c.new_tab? &&
           c.url == help_center_redirect_path(
             category: 'get-started',
-            article: 'authentication-options',
+            article: 'authentication-methods',
             flow: :two_factor_authentication,
           )
       end
