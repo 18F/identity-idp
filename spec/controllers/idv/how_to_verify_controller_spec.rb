@@ -40,7 +40,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
           get :show
 
           expect(Idv::HowToVerifyController.enabled?).to be false
-          expect(subject.idv_session.skip_doc_auth).to be_nil
           expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
@@ -56,7 +55,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
           get :show
 
           expect(Idv::HowToVerifyController.enabled?).to be false
-          expect(subject.idv_session.skip_doc_auth).to be_nil
           expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
@@ -72,7 +70,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
           get :show
 
           expect(Idv::HowToVerifyController.enabled?).to be false
-          expect(subject.idv_session.skip_doc_auth).to be_nil
           expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
@@ -85,7 +82,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
 
             expect(Idv::HowToVerifyController.enabled?).to be true
             expect(subject.idv_session.service_provider.in_person_proofing_enabled).to be true
-            expect(subject.idv_session.skip_doc_auth).to be_nil
             expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be_nil
             expect(response).to render_template :show
           end
@@ -120,7 +116,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
     it 'renders the show template' do
       get :show
 
-      expect(subject.idv_session.skip_doc_auth).to be_nil
       expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be_nil
       expect(response).to render_template :show
     end
@@ -170,7 +165,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
         put :update, params: params
 
         expect(flash[:error]).not_to be_present
-        expect(subject.idv_session.skip_doc_auth).to be_nil
         expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
       end
     end
@@ -223,7 +217,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
       it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
         put :update, params: params
 
-        expect(subject.idv_session.skip_doc_auth).to be false
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be false
         expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
@@ -249,7 +242,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
       it 'sets skip doc auth on idv session to true and redirects to document capture' do
         put :update, params: params
 
-        expect(subject.idv_session.skip_doc_auth).to be true
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be true
         expect(response).to redirect_to(idv_document_capture_url)
       end
