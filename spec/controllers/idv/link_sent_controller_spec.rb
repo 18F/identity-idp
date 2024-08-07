@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::LinkSentController do
+RSpec.describe Idv::LinkSentController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -13,7 +13,6 @@ RSpec.describe Idv::LinkSentController do
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -65,7 +64,7 @@ RSpec.describe Idv::LinkSentController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog link_sent_view_count' do
@@ -129,7 +128,7 @@ RSpec.describe Idv::LinkSentController do
     it 'sends analytics_submitted event' do
       put :update
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     context 'check results' do
@@ -185,7 +184,7 @@ RSpec.describe Idv::LinkSentController do
             it 'flashes an error and does not redirect' do
               put :update
 
-              expect(flash[:error]).to eq t('errors.doc_auth.phone_step_incomplete')
+              expect(flash[:error]).to eq t('doc_auth.errors.phone_step_incomplete')
               expect(response.status).to eq(204)
             end
           end
@@ -204,7 +203,7 @@ RSpec.describe Idv::LinkSentController do
 
       context 'document capture session canceled' do
         let(:session_canceled_at) { Time.zone.now }
-        let(:error_message) { t('errors.doc_auth.document_capture_canceled') }
+        let(:error_message) { t('doc_auth.errors.document_capture_canceled') }
 
         before do
           expect(FormResponse).to receive(:new).with(
@@ -228,7 +227,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
-          expect(flash[:error]).to eq(t('errors.doc_auth.phone_step_incomplete'))
+          expect(flash[:error]).to eq(t('doc_auth.errors.phone_step_incomplete'))
         end
       end
     end

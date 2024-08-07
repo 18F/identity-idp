@@ -85,10 +85,10 @@ describe('enrollWebauthnDevice', () => {
           ],
           timeout: 800000,
           attestation: 'none',
+          hints: ['security-key'],
           authenticatorSelection: {
             userVerification: 'discouraged',
             authenticatorAttachment: 'cross-platform',
-            hints: ['security-key'],
           },
           excludeCredentials: [
             {
@@ -139,9 +139,9 @@ describe('enrollWebauthnDevice', () => {
 
         expect(navigator.credentials.create).to.have.been.calledWithMatch({
           publicKey: {
+            hints: ['client-device'],
             authenticatorSelection: {
               authenticatorAttachment: 'platform',
-              hints: ['client-device'],
             },
           },
         });

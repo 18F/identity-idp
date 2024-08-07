@@ -524,18 +524,18 @@ RSpec.describe UserMailer, type: :mailer do
     it 'logs email metadata to analytics' do
       analytics = FakeAnalytics.new
       allow(Analytics).to receive(:new).and_return(analytics)
-      allow(analytics).to receive(:track_event)
 
       user = create(:user)
       email_address = user.email_addresses.first
       mail = UserMailer.with(user: user, email_address: email_address).please_reset_password
       mail.deliver_now
 
-      expect(analytics).
-        to have_received(:track_event).with(
-          'Email Sent',
-          action: 'please_reset_password', ses_message_id: nil, email_address_id: email_address.id,
-        )
+      expect(analytics).to have_logged_event(
+        'Email Sent',
+        action: 'please_reset_password',
+        ses_message_id: nil,
+        email_address_id: email_address.id,
+      )
     end
   end
 
@@ -702,20 +702,24 @@ RSpec.describe UserMailer, type: :mailer do
           aggregate_failures do
             [
               t('in_person_proofing.headings.barcode_eipp'),
-              t('in_person_proofing.process.state_id.heading_eipp'),
-              t('in_person_proofing.process.state_id.info_eipp'),
+              t('in_person_proofing.body.barcode.eipp_tag'),
               t('in_person_proofing.headings.barcode_what_to_bring'),
-              t('in_person_proofing.body.barcode.what_to_bring'),
+              t('in_person_proofing.body.barcode.eipp_what_to_bring'),
               t('in_person_proofing.process.eipp_bring_id.heading'),
+              t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
               t('in_person_proofing.process.eipp_bring_id.info'),
-              t('in_person_proofing.process.eipp_what_to_bring.heading'),
-              t('in_person_proofing.process.eipp_what_to_bring.info'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+              t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+              t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
               t('in_person_proofing.process.eipp_state_id_passport.heading'),
               t('in_person_proofing.process.eipp_state_id_passport.info'),
               t('in_person_proofing.process.eipp_state_id_military_id.heading'),
               t('in_person_proofing.process.eipp_state_id_military_id.info'),
               t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
               t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+              t('in_person_proofing.process.state_id.heading_eipp'),
+              t('in_person_proofing.process.state_id.info_eipp'),
             ].each do |copy|
               Array(copy).each do |part|
                 expect(mail.html_part.body).to_not have_content(part)
@@ -769,52 +773,74 @@ RSpec.describe UserMailer, type: :mailer do
         end
 
         context 'template displays additional Enhanced In-Person Proofing specific content' do
-          it 'renders What to bring section' do
-            aggregate_failures do
-              [
-                t('in_person_proofing.headings.barcode_what_to_bring'),
-                t('in_person_proofing.body.barcode.what_to_bring'),
-              ].each do |copy|
-                Array(copy).each do |part|
-                  expect(mail.html_part.body).to have_content(part)
+          it 'renders GSA Enhanced Pilot Barcode tag' do
+            expect(mail.html_part.body).to have_content(
+              t('in_person_proofing.body.barcode.eipp_tag'),
+            )
+          end
+
+          context 'What to bring to the Post Office section' do
+            it 'What to bring heading and info text' do
+              aggregate_failures do
+                [
+                  t('in_person_proofing.headings.barcode_what_to_bring'),
+                  t('in_person_proofing.body.barcode.eipp_what_to_bring'),
+                ].each do |copy|
+                  Array(copy).each do |part|
+                    expect(mail.html_part.body).to have_content(part)
+                  end
                 end
               end
             end
-          end
 
-          it 'renders Option 1 content' do
-            aggregate_failures do
-              [
-                t('in_person_proofing.process.eipp_bring_id.heading'),
-                t('in_person_proofing.process.eipp_bring_id.info'),
-              ].each do |copy|
-                Array(copy).each do |part|
-                  expect(mail.html_part.body).to have_content(part)
+            it 'renders Option 1 content' do
+              aggregate_failures do
+                [
+                  t('in_person_proofing.process.eipp_bring_id.heading'),
+                  t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+                  t('in_person_proofing.process.eipp_bring_id.info'),
+                  t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+                  t('in_person_proofing.process.real_id_and_supporting_docs.info'),
+                ].each do |copy|
+                  Array(copy).each do |part|
+                    expect(mail.html_part.body).to have_content(part)
+                  end
+
+                  t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
+                    each do |item|
+                    expect(mail.html_part.body).to have_content(strip_tags(item))
+                  end
                 end
               end
             end
-          end
 
-          it 'renders Option 2 content' do
-            aggregate_failures do
-              [
-                t('in_person_proofing.process.eipp_what_to_bring.heading'),
-                t('in_person_proofing.process.eipp_what_to_bring.info'),
-                t('in_person_proofing.process.eipp_state_id_passport.heading'),
-                t('in_person_proofing.process.eipp_state_id_passport.info'),
-                t('in_person_proofing.process.eipp_state_id_military_id.heading'),
-                t('in_person_proofing.process.eipp_state_id_military_id.info'),
-                t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
-                t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
-              ].each do |copy|
-                Array(copy).each do |part|
-                  expect(mail.html_part.body).to have_content(part)
-                end
+            it 'renders Option 2 content' do
+              aggregate_failures do
+                [
+                  t('in_person_proofing.process.eipp_bring_id_plus_documents.heading'),
+                  t('in_person_proofing.process.eipp_bring_id_plus_documents.info'),
+                  t('in_person_proofing.process.eipp_state_id_passport.heading'),
+                  t('in_person_proofing.process.eipp_state_id_passport.info'),
+                  t('in_person_proofing.process.eipp_state_id_military_id.heading'),
+                  t('in_person_proofing.process.eipp_state_id_military_id.info'),
+                  t('in_person_proofing.process.eipp_state_id_supporting_docs.heading'),
+                  t('in_person_proofing.process.eipp_state_id_supporting_docs.info'),
+                ].each do |copy|
+                  Array(copy).each do |part|
+                    expect(mail.html_part.body).to have_content(part)
+                  end
 
-                t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
-                  each do |item|
-                  expect(mail.html_part.body).to have_content(strip_tags(item))
+                  t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').
+                    each do |item|
+                    expect(mail.html_part.body).to have_content(strip_tags(item))
+                  end
                 end
+              end
+            end
+
+            it 'renders supporting document list twice' do
+              t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |item|
+                expect(mail.html_part.body).to have_content(strip_tags(item)).twice
               end
             end
           end
@@ -854,8 +880,12 @@ RSpec.describe UserMailer, type: :mailer do
         it 'renders content that is applicable to Enhanced In-Person Proofing (Enhanced IPP)' do
           aggregate_failures do
             [
+              t('in_person_proofing.body.barcode.eipp_tag'),
+              t('in_person_proofing.process.eipp_bring_id_with_current_address.heading'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.heading'),
+              t('in_person_proofing.process.real_id_and_supporting_docs.info'),
               t('in_person_proofing.headings.barcode_what_to_bring'),
-              t('in_person_proofing.body.barcode.what_to_bring'),
+              t('in_person_proofing.body.barcode.eipp_what_to_bring'),
               t('in_person_proofing.process.eipp_bring_id.heading'),
               t('in_person_proofing.process.eipp_bring_id.info'),
               t('in_person_proofing.process.eipp_state_id_passport.heading'),
@@ -975,10 +1005,33 @@ RSpec.describe UserMailer, type: :mailer do
           to have_selector(
             "a[href='#{MarketingSite.security_and_privacy_practices_url}']",
           )
-        expect(mail.html_part.body).
-          to have_selector(
-            "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
-          )
+      end
+
+      context 'when the user locale is English' do
+        before do
+          user.email_language = 'en'
+          user.save!
+        end
+
+        it 'renders the post opt-in in person completion survey url' do
+          expect(mail.html_part.body).
+            to have_selector(
+              "a[href='#{IdentityConfig.store.in_person_opt_in_available_completion_survey_url}']",
+            )
+        end
+      end
+
+      context 'when the user locale is not English' do
+        before do
+          user.email_language = 'fr'
+          user.save!
+        end
+        it 'renders the pre opt-in in person completion survey url' do
+          expect(mail.html_part.body).
+            to have_selector(
+              "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
+            )
+        end
       end
     end
   end

@@ -52,12 +52,7 @@ module OpenidConnect
       @pending_profile_policy ||= PendingProfilePolicy.new(
         user: current_user,
         resolved_authn_context_result: resolved_authn_context_result,
-        biometric_comparison_requested: biometric_comparison_requested?,
       )
-    end
-
-    def biometric_comparison_requested?
-      @authorize_form.biometric_comparison_requested?
     end
 
     def check_sp_active

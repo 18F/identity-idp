@@ -9,7 +9,7 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
       allow(Identity::Hostdata).to receive(:env).and_return('test')
       allow(Identity::Hostdata).to receive(:domain).and_return('example.com')
 
-      stub_piv_cac_service
+      stub_piv_cac_service(uuid:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -18,14 +18,9 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
       expect(page.response_headers['Content-Security-Policy'].split(';').map(&:strip)).
         to(include("form-action https://*.pivcac.test.example.com 'self'"))
 
-      nonce = piv_cac_nonce_from_form_action
-
-      visit_piv_cac_service(
-        setup_piv_cac_url,
-        nonce: nonce,
-        uuid: uuid,
-        subject: 'SomeIgnoredSubject',
-      )
+      fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+      click_on t('forms.piv_cac_setup.submit')
+      follow_piv_cac_redirect
 
       expect(current_path).to eq account_path
       visit account_two_factor_authentication_path
@@ -56,20 +51,15 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
     end
 
     scenario 'disallows association of a piv/cac with the same name' do
-      stub_piv_cac_service
+      stub_piv_cac_service(uuid:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
-      nonce = piv_cac_nonce_from_form_action
-
-      visit_piv_cac_service(
-        setup_piv_cac_url,
-        nonce: nonce,
-        uuid: uuid,
-        subject: 'SomeIgnoredSubject',
-      )
+      fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+      click_on t('forms.piv_cac_setup.submit')
+      follow_piv_cac_redirect
 
       expect(current_path).to eq account_path
 
@@ -83,19 +73,16 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
     end
 
     scenario 'displays error for piv/cac with no certificate and accepts more error info' do
-      stub_piv_cac_service
+      stub_piv_cac_service(error: 'certificate.none')
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
-      nonce = piv_cac_nonce_from_form_action
-      visit_piv_cac_service(
-        setup_piv_cac_url,
-        nonce: nonce,
-        error: 'certificate.none',
-        key_id: 'AB:CD:EF',
-      )
+      fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+      click_on t('forms.piv_cac_setup.submit')
+      follow_piv_cac_redirect
+
       expect(current_path).to eq setup_piv_cac_error_path
       expect(page).to have_link(t('instructions.mfa.piv_cac.try_again'), href: setup_piv_cac_url)
       expect(page).to have_content(
@@ -107,19 +94,16 @@ RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
     end
 
     scenario 'displays error for expires certificate piv/cac and accepts more error info' do
-      stub_piv_cac_service
+      stub_piv_cac_service(error: 'certificate.expired')
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
-      nonce = piv_cac_nonce_from_form_action
-      visit_piv_cac_service(
-        setup_piv_cac_url,
-        nonce: nonce,
-        error: 'certificate.expired',
-        key_id: 'AB:CD:EF',
-      )
+      fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
+      click_on t('forms.piv_cac_setup.submit')
+      follow_piv_cac_redirect
+
       expect(current_path).to eq setup_piv_cac_error_path
       expect(page).to have_link(
         t('instructions.mfa.piv_cac.please_try_again'),

@@ -49,7 +49,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       'idv.troubleshooting.options.supported_documentslinks.new_tab',
     );
     expect(links[1].getAttribute('href')).to.equal(
-      'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=document_capture_troubleshooting_options',
+      'https://example.com/redirect/?category=verify-your-identity&article=accepted-identification-documents&location=document_capture_troubleshooting_options',
     );
     expect(links[1].target).to.equal('_blank');
   });
@@ -73,18 +73,6 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
         expect(section).not.to.exist();
       });
-
-      context('with showAlternativeProofingOptions', () => {
-        it('renders in-person call to action', () => {
-          const { queryByRole } = render(
-            <DocumentCaptureTroubleshootingOptions showAlternativeProofingOptions />,
-          );
-
-          const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
-
-          expect(section).not.to.exist();
-        });
-      });
     });
 
     context('with inPersonURL', () => {
@@ -94,25 +82,12 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         </InPersonContext.Provider>
       );
 
-      it('does not render in-person call to action', () => {
+      it('renders in-person call to action', () => {
         const { queryByRole } = render(<DocumentCaptureTroubleshootingOptions />, { wrapper });
 
         const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
 
-        expect(section).not.to.exist();
-      });
-
-      context('with showAlternativeProofingOptions', () => {
-        it('renders in-person call to action', () => {
-          const { queryByRole } = render(
-            <DocumentCaptureTroubleshootingOptions showAlternativeProofingOptions />,
-            { wrapper },
-          );
-
-          const section = queryByRole('region', { name: 'in_person_proofing.headings.cta' });
-
-          expect(section).to.exist();
-        });
+        expect(section).to.exist();
       });
     });
   });

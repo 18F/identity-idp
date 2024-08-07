@@ -9,7 +9,7 @@ RSpec.describe 'accounts/_identity_verification.html.erb' do
       service_provider: nil,
       vtr: vtr,
       acr_values: nil,
-    ).resolve
+    ).result
   end
   let(:user) { build(:user) }
   subject(:rendered) { render partial: 'accounts/identity_verification' }

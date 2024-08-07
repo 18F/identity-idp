@@ -10,7 +10,7 @@ RSpec.describe AccountShowPresenter do
       service_provider: nil,
       vtr: vtr,
       acr_values: nil,
-    ).resolve
+    ).result
   end
   let(:sp_name) { nil }
   let(:user) { build(:user) }

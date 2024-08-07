@@ -52,26 +52,19 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   it 'includes a link to security / privacy page and privacy statement act' do
     render
 
-    expect(rendered).
-      to have_link(
-        t('notices.privacy.security_and_privacy_practices'),
-        href: MarketingSite.security_and_privacy_practices_url,
-      )
-    expect(rendered).
-      to have_selector(
-        "a[href='#{MarketingSite.security_and_privacy_practices_url}']\
-[target='_blank'][rel='noopener noreferrer']",
-      )
+    expect(rendered).to have_link(
+      t('notices.privacy.security_and_privacy_practices'),
+      href: policy_redirect_url(
+        policy: :security_and_privacy_practices,
+        flow: :sign_in,
+        step: :sign_in,
+      ),
+    ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
 
-    expect(rendered).
-      to have_link(
-        t('notices.privacy.privacy_act_statement'),
-        href: MarketingSite.privacy_act_statement_url,
-      )
-    expect(rendered).to have_selector(
-      "a[href='#{MarketingSite.privacy_act_statement_url}']\
-[target='_blank'][rel='noopener noreferrer']",
-    )
+    expect(rendered).to have_link(
+      t('notices.privacy.privacy_act_statement'),
+      href: MarketingSite.privacy_act_statement_url,
+    ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
   end
 
   context 'when SP is present' do

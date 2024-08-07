@@ -38,13 +38,18 @@ RSpec.describe Redirect::HelpCenterController do
     end
 
     context 'with valid help center article' do
-      let(:params) { { category: category, article: article } }
-      let(:redirect_url_base) do
-        MarketingSite.help_center_article_url(category: category, article: article)
-      end
-      let(:redirect_url) { redirect_url_base }
+      let(:category) { 'verify-your-identity' }
+      let(:article) { 'accepted-identification-documents' }
+      let(:params) { super().merge(category:, article:) }
 
-      it_behaves_like 'redirects to help center article and logs'
+      it 'redirects to the help center article and logs' do
+        redirect_url = MarketingSite.help_center_article_url(category:, article:)
+        expect(response).to redirect_to redirect_url
+        expect(@analytics).to have_logged_event(
+          'External Redirect',
+          hash_including(redirect_url: redirect_url),
+        )
+      end
 
       context 'with optional anchor' do
         let(:article_anchor) { 'heading' }

@@ -148,7 +148,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
         it 'throws a SOAP exception' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /No close tag for \/br/,
+            /Malformed XML/,
           )
         end
       end

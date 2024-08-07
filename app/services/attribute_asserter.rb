@@ -68,14 +68,18 @@ class AttributeAsserter
   end
 
   def resolved_authn_context_result
-    @resolved_authn_context_result ||= begin
+    authn_context_resolver.result
+  end
+
+  def authn_context_resolver
+    @authn_context_resolver ||= begin
       saml = FederatedProtocols::Saml.new(authn_request)
       AuthnContextResolver.new(
         user: user,
         service_provider: service_provider,
         vtr: saml.vtr,
         acr_values: saml.acr_values,
-      ).resolve
+      )
     end
   end
 
@@ -149,18 +153,8 @@ class AttributeAsserter
   end
 
   def add_ial(attrs)
-    requested_context = authn_request.requested_ial_authn_context
-    context = if ialmax_requested_and_fullfilable?
-                # IAL2 since IALMAX only works for IAL2 SPs
-                sp_ial
-              else
-                requested_context.presence || sp_ial
-              end
-    attrs[:ial] = { getter: ial_getter_function(context) } if context
-  end
-
-  def ialmax_requested_and_fullfilable?
-    resolved_authn_context_result.ialmax? && user.active_profile.present?
+    asserted_ial = authn_context_resolver.asserted_ial_acr
+    attrs[:ial] = { getter: ial_getter_function(asserted_ial) } if asserted_ial
   end
 
   def sp_ial

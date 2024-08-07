@@ -14,22 +14,33 @@
       <p>
         <%= t('idv.failure.phone.rate_limited.body') %>
       </p>
-      <%= t('idv.failure.phone.rate_limited.options_header') %>
-      <ul>
-        <% if @gpo_letter_available %>
+      <% if @gpo_letter_available %>
+        <%= t('idv.failure.phone.rate_limited.options_header') %>
+        <ul>
           <li><%= t('idv.failure.phone.rate_limited.option_verify_by_mail_html') %></li>
-        <% end %>
-        <li>
+            <li>
+            <%= t(
+                  'idv.failure.phone.rate_limited.option_try_again_later_html',
+                  time_left: distance_of_time_in_words(
+                    Time.zone.now,
+                    [@expires_at, Time.zone.now].compact.max,
+                    except: :seconds,
+                  ),
+                ) %>
+          </li>
+        </ul>
+      <% else %>
+        <p>
           <%= t(
-                'idv.failure.phone.rate_limited.option_try_again_later_html',
+                'idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html',
                 time_left: distance_of_time_in_words(
                   Time.zone.now,
                   [@expires_at, Time.zone.now].compact.max,
                   except: :seconds,
                 ),
               ) %>
-        </li>
-      </ul>
+        </p>
+      <% end %>
 
       <% if @gpo_letter_available %>
         <div class="margin-y-5">

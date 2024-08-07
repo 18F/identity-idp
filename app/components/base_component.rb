@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class BaseComponent < ViewComponent::Base
+  include ActiveModel::Model
+
   def before_render
+    raise_validation_errors
     render_assets unless rendered_assets?
   end
 
@@ -46,5 +49,10 @@ class BaseComponent < ViewComponent::Base
     end
 
     @rendered_assets = true
+  end
+
+  def raise_validation_errors
+    return unless IdentityConfig.store.raise_on_component_validation_error
+    validate!
   end
 end

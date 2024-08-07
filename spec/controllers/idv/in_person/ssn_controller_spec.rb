@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::SsnController do
+RSpec.describe Idv::InPerson::SsnController, allowed_extra_analytics: [:*] do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
@@ -19,7 +19,6 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_sign_in(user)
     subject.user_session['idv/in_person'] = flow_session
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     subject.idv_session.flow_path = 'standard'
   end
@@ -49,10 +48,6 @@ RSpec.describe Idv::InPerson::SsnController do
         flow_path: 'standard',
         step: 'ssn',
         same_address_as_id: true,
-        pii_like_keypaths: [
-          [:same_address_as_id],
-          [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
-        ],
       }.merge(ab_test_args)
     end
 
@@ -65,7 +60,7 @@ RSpec.describe Idv::InPerson::SsnController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog ssn_view_count' do
@@ -123,14 +118,13 @@ RSpec.describe Idv::InPerson::SsnController do
           success: true,
           errors: {},
           same_address_as_id: true,
-          pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end
 
       it 'sends analytics_submitted event' do
         put :update, params: params
 
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
       it 'adds ssn to idv_session' do
@@ -168,7 +162,6 @@ RSpec.describe Idv::InPerson::SsnController do
           },
           error_details: { ssn: { invalid: true } },
           same_address_as_id: true,
-          pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end
 
@@ -178,7 +171,7 @@ RSpec.describe Idv::InPerson::SsnController do
         put :update, params: params
 
         expect(response).to have_rendered('idv/shared/ssn')
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         expect(response.body).to include('Enter a nine-digit Social Security number')
       end
 

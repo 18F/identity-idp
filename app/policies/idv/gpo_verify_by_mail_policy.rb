@@ -38,14 +38,10 @@ module Idv
     private
 
     def disabled_for_biometric_comparison?
-      return false unless IdentityConfig.store.no_verify_by_mail_for_biometric_comparison_enabled
-
       resolved_authn_context_result.two_pieces_of_fair_evidence?
     end
 
     def disabled_for_ipp?
-      return false unless IdentityConfig.store.no_verify_by_mail_for_biometric_comparison_enabled
-
       user.has_in_person_enrollment?
     end
 

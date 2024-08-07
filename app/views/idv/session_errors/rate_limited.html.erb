@@ -1,6 +1,6 @@
 <%= render(
       'idv/shared/error',
-      heading: t('errors.doc_auth.rate_limited_heading'),
+      heading: t('doc_auth.errors.rate_limited_heading'),
       options: [
         {
           url: contact_redirect_url,
@@ -11,7 +11,7 @@
     ) do %>
       <p>
         <%= t(
-              'errors.doc_auth.rate_limited_text_html',
+              'doc_auth.errors.rate_limited_text_html',
               timeout: distance_of_time_in_words(
                 Time.zone.now,
                 [@expires_at, Time.zone.now].compact.max,

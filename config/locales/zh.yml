@@ -106,7 +106,7 @@ account.login.piv_cac: 使用你的政府雇员身份证件登录
 account.login.tab_navigation: 账户创建标签页
 account.navigation.add_authentication_apps: 添加身份证实应用程序
 account.navigation.add_email: 添加电邮地址
-account.navigation.add_federal_id: 添加政府雇员身份证件
+account.navigation.add_federal_id: 添加您的政府雇员ID
 account.navigation.add_phone_number: 添加电话号码
 account.navigation.add_platform_authenticator: 添加人脸或触摸解锁
 account.navigation.add_security_key: 添加安全密钥
@@ -534,9 +534,12 @@ doc_auth.errors.camera.blocked: 你的镜头被遮住了。
 doc_auth.errors.camera.blocked_detail_html: '<strong>允许 %{app_name} 进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>'
 doc_auth.errors.camera.failed: 相机未开启，请再试一次。
 doc_auth.errors.card_type: 再用你的驾照或州政府颁发的身份证件试一次。
+doc_auth.errors.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
+doc_auth.errors.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
 doc_auth.errors.doc.doc_type_check: 你的驾照或身份证件必须是美国一个州或属地颁发的。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。
 doc_auth.errors.doc.resubmit_failed_image: 你已经试过这张图像，该图像不行。请尝试添加一个不同的图像。
 doc_auth.errors.doc.wrong_id_type_html: 我们只接受由美国的一个州或属地颁发的驾照或身份证件。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。<a> 了解更多有关我们接受的身份证件的信息 </a>
+doc_auth.errors.document_capture_canceled: 你已取消了用手机上传身份证件照片。
 doc_auth.errors.dpi.failed_short: 图像太小或模糊，请再试一次。
 doc_auth.errors.dpi.top_msg: 我们无法辨认你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或太模糊。确保你的身份证件在图框中比较大，然后试着重拍一下。
 doc_auth.errors.dpi.top_msg_plural: 我们无法读取你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或模糊。确保你的身份证件在图片框中很大，然后试着拍一张新照片。
@@ -551,6 +554,7 @@ doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄�
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
 doc_auth.errors.glare.top_msg_plural: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍。
+doc_auth.errors.how_to_verify_form: 选择一个验证身份的方法。
 doc_auth.errors.http.image_load.failed_short: 系统不支持图像文件，请再试一次。
 doc_auth.errors.http.image_load.top_msg: 你添加的图像文件系统不支持。请重拍你的身份证件并再试一次。
 doc_auth.errors.http.image_size.failed_short: 系统不支持图像文件，请再试一次。
@@ -558,7 +562,14 @@ doc_auth.errors.http.image_size.top_msg: 你的图像尺寸太大或太小。请
 doc_auth.errors.http.pixel_depth.failed_short: 系统不支持图像文件，请再试一次。
 doc_auth.errors.http.pixel_depth.top_msg: 你图像文件的像素深度系统不支持。请重拍你的身份证件并再试一次。系统支持的图像像素深度为 24位 RGB。
 doc_auth.errors.not_a_file: 你选择的不是一个正确的文件。
+doc_auth.errors.phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
 doc_auth.errors.pii.birth_date_min_age: 你的生日不满足最低年龄要求。
+doc_auth.errors.rate_limited_heading: 我们无法验证你的身份证件。
+doc_auth.errors.rate_limited_subheading: 尝试再拍照片
+doc_auth.errors.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
+doc_auth.errors.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
+doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 doc_auth.errors.sharpness.failed_short: 图像模糊，请再试一次。
 doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
@@ -640,6 +651,11 @@ doc_auth.info.selfie_capture_status.face_close_to_border: 距离相框太近
 doc_auth.info.selfie_capture_status.face_not_found: 没找到面孔
 doc_auth.info.selfie_capture_status.face_too_small: 面孔太小
 doc_auth.info.selfie_capture_status.too_many_faces: 太多张面孔
+doc_auth.info.selfie_capture.action.capture: 拍照
+doc_auth.info.selfie_capture.action.close: 关闭
+doc_auth.info.selfie_capture.action.retake: 重拍
+doc_auth.info.selfie_capture.action.submit: 使用这张照片
+doc_auth.info.selfie_capture.intro: 相机已打开，准备自拍
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: 再次验证你的身份以使用这项服务。 %{link_html}
 doc_auth.info.tag: 建议
@@ -707,17 +723,6 @@ errors.attributes.password.too_short.one: 密码必须至少有一个字符
 errors.attributes.password.too_short.other: 密码必须至少有%{count}个字符
 errors.capture_doc.invalid_link: 链接已过期或有误。 请要求另外一个在手机上验证身份的链接。
 errors.confirm_password_incorrect: 密码不对。
-errors.doc_auth.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-errors.doc_auth.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
-errors.doc_auth.document_capture_canceled: 你已取消了用手机上传身份证件照片。
-errors.doc_auth.how_to_verify_form: 选择一个验证身份的方法。
-errors.doc_auth.phone_step_incomplete: 在继续之前你必须使用手机上传你身份证件的图片。我们已给你发了带有说明的链接。
-errors.doc_auth.rate_limited_heading: 我们无法验证你的身份证件。
-errors.doc_auth.rate_limited_subheading: 尝试再拍照片
-errors.doc_auth.rate_limited_text_html: 为了你的安全，我们限制你在网上尝试验证文件的次数。<strong> %{timeout} 后再试。</strong>
-errors.doc_auth.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
-errors.doc_auth.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 errors.enter_code.rate_limited_html: 你输入错误验证码太多次。<strong> %{timeout} 后再试。</strong>
 errors.general: 哎呀，出错了。请再试一次。
 errors.invalid_totp: 代码有误。请再试一次。
@@ -825,7 +830,7 @@ forms.backup_code_reminder.body_info: 如果你无法使用自己的主要身份
 forms.backup_code_reminder.have_codes: 我有代码
 forms.backup_code_reminder.heading: 你的备用代码还有吗？
 forms.backup_code_reminder.need_new_codes: 我需要新的一套备用代码。
-forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 10 个代码后我们会给你新代码。
+forms.backup_code.caution_codes: 每个代码只能使用一次。你用完所有 %{count} 个代码后我们会给你新代码。
 forms.backup_code.caution_delete: 如果你删除自己的备用代码，就无法用其来登录了。
 forms.backup_code.confirm_delete: 你确定要删除备用代码吗？
 forms.backup_code.generate: 获得代码
@@ -869,14 +874,15 @@ forms.personal_key.instructions: 请在下面输入你的个人密钥，以确�
 forms.personal_key.required_checkbox: 我将个人密钥存放到了一个安全的地方。
 forms.personal_key.title: 输入你的个人密钥
 forms.phone.buttons.delete: 去掉电话
-forms.piv_cac_login.submit: 插入 PIV/CAC 卡
-forms.piv_cac_mfa.submit: 提供 PIV/CAC 卡
+forms.piv_cac_login.submit: 插入 PIV/CAC
+forms.piv_cac_mfa.submit: 插入 PIV/CAC
 forms.piv_cac_setup.nickname: PIV/CAC 卡昵称
 forms.piv_cac_setup.no_thanks: 不用，谢谢。
 forms.piv_cac_setup.piv_cac_intro_html:
   "<strong>每次你登录时</strong>，作为双因素身份证实的一部分，\
   我们会要你提供你的 PIV/CAC 卡。<br><br>点击“添加 PIV/CAC”后，你的浏览器会提示要你的 PIV/CAC 并要你选择一个证书。"
-forms.piv_cac_setup.submit: 添加 PIV/CAC 卡
+forms.piv_cac_setup.submit: 插入 PIV/CAC
+forms.piv_cac_setup.try_again: 然后重试
 forms.registration.labels.email: 输入你的电邮地址
 forms.registration.labels.email_language: 选择你的电邮语言偏好
 forms.ssn.show: 显示社会保障号码
@@ -892,9 +898,7 @@ forms.two_factor.try_again: 使用另一个电话号码
 forms.validation.required_checkbox: 请在这一框里打勾来继续。
 forms.webauthn_platform_setup.continue: 继续
 forms.webauthn_platform_setup.info_text: 你设置人脸或触摸解锁后需要再设置另一个身份证实方法。
-forms.webauthn_platform_setup.intro_html:
-  "<p>就像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或\
-  者其他方法。</p><p>如果你使用iCloud Keychain 或 Google Password Manager 这样的密码管理器，管理器可能会要保存一个通行密钥。这会使你能使用那个密码管理器在任何设备上证实身份。%{link}</p>"
+forms.webauthn_platform_setup.intro_html: '<p>就像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p><p>如果你使用iCloud Keychain 或 Google Password Manager 这样的密码管理器，管理器可能会要保存一个通行密钥。这会使你能使用那个密码管理器在任何设备上证实身份。%{link}</p>'
 forms.webauthn_platform_setup.intro_link_text: 了解关于使用不同设备的更多信息。
 forms.webauthn_platform_setup.nickname: 设备昵称
 forms.webauthn_platform_setup.nickname_hint: 这样如果你添加了更多使用人脸或触摸解锁的设备的话，你就能把它们分辨开来。
@@ -932,16 +936,16 @@ headings.passwords.change: 更改密码
 headings.passwords.confirm: 确认你目前密码以继续
 headings.passwords.confirm_for_personal_key: 输入密码并获得一个新个人密钥
 headings.passwords.forgot: 忘了你的密码?
-headings.piv_cac_login.account_not_found: 你的 PIV/CAC 没有连接账户
-headings.piv_cac_login.add: 把你的 PIV 或 CAC 设为一个双因素身份证实方法，这样你可以用其登录。
-headings.piv_cac_login.new: 使用你的 PIV 或 CAC 登录
+headings.piv_cac_login.account_not_found: 您的政府雇员ID未与帐户连接
+headings.piv_cac_login.add: 使用智能卡读卡器设置您的个人身份验证 (PIV) 或通用访问卡 (CAC)。您可以使用其中任何一种作为双因素身份证实方法来登录。
+headings.piv_cac_login.new: 插入您的政府雇员ID
 headings.piv_cac_login.success: 你已成功把 PIV/CAC 设为一个身份证实方法
 headings.piv_cac_setup.already_associated: 你提供的 PIV/CAC 与另外一个用户相关。
 headings.piv_cac_setup.new: 用你的 PIV/CAC 卡来保护你的账户安全
 headings.piv_cac.certificate.bad: 你选择的 PIV/CAC 证书有误
 headings.piv_cac.certificate.expired: 你选择的 PIV/CAC 证书已过期
 headings.piv_cac.certificate.invalid: 你选择的 PIV/CAC 证书有误
-headings.piv_cac.certificate.none: 我们在你的 PIV/CAC 卡上探查不到证书
+headings.piv_cac.certificate.none: 我们在您政府雇员ID上探查不到证书
 headings.piv_cac.certificate.not_auth_cert: 请给你的PIV/CAC 卡选择另外一个证书
 headings.piv_cac.certificate.revoked: 你选择的 PIV/CAC 证书已从你的卡上撤销
 headings.piv_cac.certificate.unverified: 你选择的 PIV/CAC 证书有误
@@ -971,8 +975,7 @@ help_text.requested_attributes.email: 电邮地址
 help_text.requested_attributes.full_name: 姓名
 help_text.requested_attributes.ial1_consent_reminder_html: 你每年都必须授权同意与 <strong>%{sp}</strong> 分享信息。我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
 help_text.requested_attributes.ial1_intro_html: 我们将与 <strong>%{sp}</strong> 分享你的信息来连接你账户。
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息："
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。你每年都必须授权同意与 <strong>%{sp}</strong> 分享已验证过的你的信息。我们会分享这些信息：'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> 需要知道你是谁才能连接你的账户。我们会与 %{sp} 分享这些信息：'
 help_text.requested_attributes.ial2_reverified_consent_info: '因为你重新验证了身份，我们需要得到你的许可才能与 %{sp} 分享该信息。'
 help_text.requested_attributes.phone: 电话号码
@@ -1044,6 +1047,7 @@ idv.failure.phone.rate_limited.body: 为了你的安全，我们限制你在网�
 idv.failure.phone.rate_limited.gpo.button: 通过普通邮件验证
 idv.failure.phone.rate_limited.heading: 我们无法通过电话验证你的身份。
 idv.failure.phone.rate_limited.option_try_again_later_html: 取消并在 <strong>%{time_left}</strong> 后再试
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: 您可以在<strong>%{time_left}</strong>后重试。
 idv.failure.phone.rate_limited.option_verify_by_mail_html: 通过普通邮件验证，这需要<strong>五到十天</strong>
 idv.failure.phone.rate_limited.options_header: 你可以：
 idv.failure.phone.timeout: 我们请你验证自己信息的请求已过期。请再试一次。
@@ -1128,15 +1132,15 @@ idv.messages.gpo.start_over_html: 如果该地址不对，你需要%{start_over_
 idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验证。
 idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong> 的信。
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
-idv.messages.phone.alert_html: '<strong>输入一个这样的电话号码：</strong>'
-idv.messages.phone.description: 我们会将该号码与记录核对并给你发个一次性代码。这是为了帮助你验证身份。
+idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
+idv.messages.phone.description: 我们会将你的号码与记录核对并给你发个一次性代码来验证你的身份。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong> 号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
 idv.messages.phone.failed_number.try_again_html: 试试 <strong>另一个</strong> 号码。
 idv.messages.phone.rules:
-  - 美国的（包括美国属地）
-  - 你的主要号码（你最常用的）
+  - 美国国内电话号码
+  - 你的主要号码（或者你最常用的号码）
 idv.messages.return_to_profile: '‹ 返回你的 %{app_name} 用户资料'
 idv.messages.sessions.enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
 idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的） - 测试站点
@@ -1146,7 +1150,6 @@ idv.titles.activated: 你的身份已验证
 idv.titles.come_back_later: 你的信件已寄出。
 idv.titles.enter_password: 审阅并提交
 idv.titles.mail.verify: 验证你的地址
-idv.titles.otp_delivery_method: 我们应该如何发送代码？
 idv.titles.session.enter_password: 重新输入你的%{app_name}密码
 idv.titles.session.enter_password_letter: 重新输入你的%{app_name}密码来给你发信
 idv.titles.unavailable: 我们正在争取解决错误。
@@ -1194,7 +1197,9 @@ in_person_proofing.body.barcode.cancel_link_text: 取消你的条形码
 in_person_proofing.body.barcode.close_window: 你现在可以关闭这一窗口。
 in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。
 in_person_proofing.body.barcode.deadline_restart: 如果你在截止日期后才去邮局，你的信息不会被存储，你又得从头开始这一过程。
-in_person_proofing.body.barcode.email_sent: 我们已将该信息发送到你用来登录的电邮。
+in_person_proofing.body.barcode.eipp_tag: GSA 增强型试行条形码
+in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：
+in_person_proofing.body.barcode.email_sent: 我们已将条形码和以下信息发到了您用来登录的电邮地址
 in_person_proofing.body.barcode.learn_more: 了解有关携带物品的更多信息
 in_person_proofing.body.barcode.location_details: 详细地址信息
 in_person_proofing.body.barcode.questions: 有问题吗？
@@ -1202,7 +1207,6 @@ in_person_proofing.body.barcode.retail_hours: 营业时间
 in_person_proofing.body.barcode.retail_hours_closed: 关闭
 in_person_proofing.body.barcode.return_to_partner_html: 你现在可以 %{link_html}来完成你可做的任何随后步骤，直到你的身份得到验证。
 in_person_proofing.body.barcode.return_to_partner_link: 登出 %{sp_name} 并返回 %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 取决于你身份证件或驾照的类型，你可能会被要求出示支持性文件。请仔细阅读以下选项：
 in_person_proofing.body.barcode.what_to_expect: 在邮局会发生什么
 in_person_proofing.body.cta.button: 尝试亲身去
 in_person_proofing.body.cta.prompt_detail: 你也许可以到附近一个参与本项目的邮局去亲身验证你的身份证件。
@@ -1297,18 +1301,21 @@ in_person_proofing.headings.update_state_id: 更新你身份证件上的信息
 in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
-in_person_proofing.process.eipp_bring_id.heading: 携带REAL身份证件
+in_person_proofing.process.eipp_bring_id_plus_documents.heading: 选项2：请携带州颁发的标准身份证件和支持性文件
+in_person_proofing.process.eipp_bring_id_plus_documents.info: '您可以出示标准驾照或者州颁发的身份卡以及以下A、B、C选项的支持文件。你只需选择下列选项之一：'
+in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. 带有当前地址的REAL身份证
+in_person_proofing.process.eipp_bring_id.heading: 选项1：携带REAL身份证件
 in_person_proofing.process.eipp_bring_id.image_alt_text: REAL身份证件
-in_person_proofing.process.eipp_bring_id.info: '如果你出示一个州的REAL身份证件或驾照，则无需出示支持性文件'
-in_person_proofing.process.eipp_state_id_military_id.heading: B.州身份证件+军人证件
+in_person_proofing.process.eipp_bring_id.info: 如果您出示是REAL身份证的驾照或身份卡，并且上面的地址是你当前的地址，则无需出示支持性文件。
+in_person_proofing.process.eipp_state_id_military_id.heading: B.州颁发的标准身份+军人证件
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: 州身份证和军人证件
-in_person_proofing.process.eipp_state_id_military_id.info: 出示州的普通身份证件或驾照，以及军人证件。
-in_person_proofing.process.eipp_state_id_passport.heading: A.州身份证件+护照
+in_person_proofing.process.eipp_state_id_military_id.info: 出示标准驾照或州颁发的身份卡, 以及军人证件。
+in_person_proofing.process.eipp_state_id_passport.heading: A.州颁发的标准身份+护照
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: 州身份证件和护照
-in_person_proofing.process.eipp_state_id_passport.info: 出示州的普通身份证件或驾照，以及护照或护照卡。
-in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州身份证件+两种支持文件
+in_person_proofing.process.eipp_state_id_passport.info: 出示标准驾照或州颁发的身份卡, 以及护照或护照卡。
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C.州颁发的标准身份+两种支持文件
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: 州身份证件和两份证明文件
-in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示州的普通身份证件或驾照，以及以下清单中两个支持性文件：'
+in_person_proofing.process.eipp_state_id_supporting_docs.info: '出示标准驾照或州颁发的身份卡, 以及以下清单中两个支持性文件：'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 租约
   - 房贷
@@ -1317,12 +1324,13 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - 车辆登记卡
   - 房屋保险单
   - 车辆保险单
-in_person_proofing.process.eipp_what_to_bring.heading: 选项2：携带州颁发的普通身份证件或驾照以及支持性文件
-in_person_proofing.process.eipp_what_to_bring.info: '你可以出示州颁发的普通身份证件或驾照以及下列A、B或C选项中的支持性文件。你只需选择下列选项之一：'
+in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL身份证 + 两种支持性文件
+in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL身份证和两种文件
+in_person_proofing.process.real_id_and_supporting_docs.info: '如果你的REAL身份证上的地址不是你当前的地址，请出示REAL身份证以及以下清单中的两种支持性文件:'
 in_person_proofing.process.state_id.heading: 出示你州驾照或州非驾照身份卡。
 in_person_proofing.process.state_id.heading_eipp: 出示你的身份证件以及支持性文件
 in_person_proofing.process.state_id.info: 该证件必须在有效期内。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
-in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于你出示的身份证件或驾照的类型，你可能需要出示支持性文件。参见“到邮局要带什么”部分中的要求。
+in_person_proofing.process.state_id.info_eipp: 邮局工作人员会扫描你的身份证件。该证件必须在有效期内。取决于您出示的身份证件类型，您也许需要显示支持文件。参见“到邮局要带什么”部分中的规定。
 in_person_proofing.process.what_to_do.heading: 请排在任何一队里
 in_person_proofing.process.what_to_do.info: 告诉邮局工作人员你是为了%{app_name}验证你的身份。
 instructions.account.reactivate.begin: 我们开始吧。
@@ -1335,17 +1343,17 @@ instructions.forgot_password.close_window: 重设你的密码后，你就可以�
 instructions.go_back_to_mobile_app: 要继续的话，请回到 %{friendly_name}应用程序并登录。
 instructions.mfa.authenticator.confirm_code_html: 输入来自你身份证实应用程序的代码。如果你在应用程序中设了几个账户，请输入与在 %{app_name_html}对应的代码。
 instructions.mfa.authenticator.manual_entry: 或者动手将这个密码输入你的身份证实应用程序。
-instructions.mfa.piv_cac.account_not_found_html: 用你的电邮地址和密码 <p><strong>%{sign_in}</strong>。然后把你的 PIV/CAC 添加到账户。</p> <p><strong>没有%{app_name} 账户？</strong> %{create_account}</p>
+instructions.mfa.piv_cac.account_not_found_html: '<p>使用您的电子邮件地址和密码 %{sign_in}。然后将您的 PIV/CAC 插入智能卡读卡器以添加到您的帐户。</p><p>没有 %{app_name} 帐户？%{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong> （恰当的证书可能会有你的名字）而且<strong>输入你的个人识别号码（PIN）</strong> (你的个人识别号码（PIN）是在设置 PIV/CAC 时设立的)。'
 instructions.mfa.piv_cac.already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
 instructions.mfa.piv_cac.back_to_sign_in: 返回去登录
-instructions.mfa.piv_cac.confirm_piv_cac: 提供与你账户相关的 PIV/CAC。
-instructions.mfa.piv_cac.did_not_work_html: 请 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
+instructions.mfa.piv_cac.confirm_piv_cac: 将与您的帐户关联的 PIV/CAC 插入智能卡读卡器。
+instructions.mfa.piv_cac.did_not_work_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{please_try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.http_failure: 服务器反应时间过长。请再试一次。
-instructions.mfa.piv_cac.no_certificate_html: 请确保你的 PIV/CAC 是连上的并 %{try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
+instructions.mfa.piv_cac.no_certificate_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
 instructions.mfa.piv_cac.please_try_again: 再试一次
-instructions.mfa.piv_cac.sign_in_html: 确保 <strong>你有 %{app_name} 账户</strong> 而且 <strong> PIV/CAC</strong> 已被你设置为一个双因素身份证实方法。
+instructions.mfa.piv_cac.sign_in: 确保您有 %{app_name} 帐户并且已设置个人身份验证 (PIV) 或通用访问卡 (CAC) 作为双因素身份证实方法。
 instructions.mfa.piv_cac.step_1: 给它一个昵称
 instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CAC 话，你就能把它们分辨开来。
 instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
@@ -1356,8 +1364,7 @@ instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短�
 instructions.mfa.voice.number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
 instructions.mfa.webauthn_platform.learn_more_help: 了解更多有关人脸或触摸解锁的信息
 instructions.mfa.webauthn.confirm_webauthn: 提供与你账户相关的安全密钥。
-instructions.mfa.webauthn.confirm_webauthn_platform_html: "<p>你可以像解锁你的设备一样来做身份证\
-  实，无论是用你的面孔还是指纹、密码或者其他方法。</p> <p>如果你用一个密码管理器设置了人脸或触摸解锁，则可以从使用那一密码管理器的任何设备进行身份证实。否则的话，使用你设置人脸或触摸解锁的同一设备。</p>"
+instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>你可以像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p> <p>如果你用一个密码管理器设置了人脸或触摸解锁，则可以从使用那一密码管理器的任何设备进行身份证实。否则的话，使用你设置人脸或触摸解锁的同一设备。</p>'
 instructions.mfa.wrong_number: 输入的电话号码不对？
 instructions.password.forgot: 不知道你的密码？确认你的电邮地址后重设密码。
 instructions.password.help_text: 避免重复使用你其他网上账户（比如银行、电邮和社交媒体）的密码。请勿包括你电邮地址中的单词。
@@ -1425,7 +1432,7 @@ notices.forgot_password.no_email_sent_explanation_start: 没有收到电邮？
 notices.forgot_password.resend_email_success: 我们发了另外一个重设密码的电邮。
 notices.password_changed: 你更改了密码。
 notices.phone_confirmed: 你账户添加了一个电话。
-notices.piv_cac_configured: 你账户添加了一个 PIV/CAC 卡。
+notices.piv_cac_configured: 添加您的政府雇员ID
 notices.privacy.privacy_act_statement: 隐私法声明
 notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
@@ -1503,6 +1510,13 @@ risc.security_event.errors.typ_error: 类型标头必须是 %{expected_typ}
 saml_idp.auth.error.title: 错误
 saml_idp.shared.saml_post_binding.heading: 提交来继续
 saml_idp.shared.saml_post_binding.no_js: 你浏览器中的 JavaScript 似乎已关闭。该步骤通常会自动发生，但因为你把 JavaScript 关闭，请点击提交按钮来继续登入或登出。
+security_check_failed.contact: 请联系 %{app_name}支持
+security_check_failed.details: 我们不认识您登录正在使用的设备或浏览器。
+security_check_failed.info_p1: '使用您设立自己 %{app_name} 账户时的同一设备和浏览器。'
+security_check_failed.info_p2_html: '如果您是政府雇员，尝试<a href="%{piv_cac_url}">用您的政府雇员身份证件登录。</a>'
+security_check_failed.info_p3: 关闭任何 VPN 和广告拦截器并清除缓存。
+security_check_failed.learn_more: 了解 %{app_name} 安全检查的更多信息
+security_check_failed.title: 安全检查未通过
 service_providers.errors.generic_sp_name: 该机构
 service_providers.errors.inactive.button_text: 查看我的 %{app_name} 账户
 service_providers.errors.inactive.heading: '%{sp_name} 不再使用 %{app_name}'
@@ -1595,11 +1609,11 @@ titles.openid_connect.logout: OpenID Connect 登出
 titles.passwords.change: 更改你账户密码
 titles.passwords.forgot: 重设密码
 titles.personal_key: 万一
-titles.piv_cac_login.add: 添加你的 PIV 或者 CAC
+titles.piv_cac_login.add: 添加您的政府雇员ID
 titles.piv_cac_login.new: 用 PIV/CAC 登入你的账户
 titles.piv_cac_setup.new: 用 PIV/CAC 卡来保护你账户安全
 titles.piv_cac_setup.upsell: 添加你的政府雇员身份证件更快、更安全地登录
-titles.present_piv_cac: 提供你的 PIV/CAC
+titles.present_piv_cac: 插入您的政府雇员ID
 titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
 titles.registrations.new: 设立账户
@@ -1641,7 +1655,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>你只在自己账
 two_factor_authentication.choose_another_option: '‹ 选择另一个身份证实方法'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>备用代码是最不宜使用的身份证实方法</strong>，因为备用代码很容易丢失。尝试一个更安全的选项，比如身份证实应用程序或安全密钥。'
-  - 我们会给你 10 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
+  - 我们会给你 %{number_of_codes} 个代码供你下载、打印、复制或记下。每次你登录时输入一个代码。
 two_factor_authentication.confirm_backup_code_setup_title: 你确定要使用备用代码吗？
 two_factor_authentication.form_legend: 选择你的身份证实方法
 two_factor_authentication.header_text: 输入一次性代码
@@ -1708,7 +1722,7 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: 使�
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: 我没收到一次性代码
 two_factor_authentication.phone.delete.failure: 无法去掉你的电话。
 two_factor_authentication.phone.delete.success: 你的电话已被去掉。
-two_factor_authentication.piv_cac_header_text: 提供你的 PIV/CAC
+two_factor_authentication.piv_cac_header_text: 插入您的政府雇员ID
 two_factor_authentication.piv_cac_upsell.add_piv: 添加 PIV/CAC 卡
 two_factor_authentication.piv_cac_upsell.choose_other_method: 选择其他方法
 two_factor_authentication.piv_cac_upsell.explain: 这将改善你账户安全，而且你在登录时无需再输入电邮和密码。
@@ -1735,7 +1749,7 @@ two_factor_authentication.two_factor_choice: 身份证实方法设置
 two_factor_authentication.two_factor_choice_options.auth_app: 身份证实应用程序
 two_factor_authentication.two_factor_choice_options.auth_app_info: 下载或使用你选择的身份证实应用程序来生成安全代码。
 two_factor_authentication.two_factor_choice_options.backup_code: 备用代码
-two_factor_authentication.two_factor_choice_options.backup_code_info: 你可以打印或存到你设备里一套 10 个代码。你使用最后一个代码时，我们会生成一套新的。谨记备用代码容易丢失
+two_factor_authentication.two_factor_choice_options.backup_code_info: 您可以打印或保存到自己设备上的%{count}个代码清单。由于备用代码容易丢失，请将此选项作为不得已的选择
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} 已添加'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: 添加了
@@ -1787,10 +1801,10 @@ user_mailer.account_reset_cancel.intro_html: 这封电邮确认你已取消删�
 user_mailer.account_reset_cancel.subject: 请求已取消
 user_mailer.account_reset_complete.intro_html: 这封电邮确认你已删除你的 %{app_name_html} 账户。
 user_mailer.account_reset_complete.subject: 账户已删除
-user_mailer.account_reset_granted.button: 是的，继续删除
+user_mailer.account_reset_granted.button: 确认删除账户
 user_mailer.account_reset_granted.cancel_link_text: 请取消
 user_mailer.account_reset_granted.help_html: 如果你不想删除你的账户，%{cancel_account_reset_html}。
-user_mailer.account_reset_granted.intro_html: 你%{waiting_period}的等待期已结束。请完成流程的第 2 步。<br><br> 如果您无法找到你的身份证实方法，请选择“确认删除”以删除你的 %{app_name} 帐户。<br><br> 如果你将来需要访问使用 %{app_name} 的参与政府网站，可以在帐户删除后使用相同的电子邮件地址创建一个新的 %{app_name} 帐户.<br><br>
+user_mailer.account_reset_granted.intro_html: 你%{waiting_period}的等待期已结束。请完成流程的第 2 步。<br><br> 如果您无法找到你的身份证实方法，请选择“确认删除账户”以删除你的 %{app_name} 帐户。<br><br> 如果你将来需要访问使用 %{app_name} 的参与政府网站，可以在帐户删除后使用相同的电子邮件地址创建一个新的 %{app_name} 帐户.<br><br>
 user_mailer.account_reset_granted.subject: 删除你的 %{app_name} 账户
 user_mailer.account_reset_request.cancel: 不想删除你的账户？登入你的 %{app_name} 账户来取消。
 user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除。
@@ -1840,7 +1854,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: 如需要更
 user_mailer.in_person_failed_suspected_fraud.body.intro: 我们知道你曾经试图通过 %{app_name} 验证身份，但是你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed_suspected_fraud.greeting: 你好，
 user_mailer.in_person_failed_suspected_fraud.subject: 你的身份未能亲身被验证。
-user_mailer.in_person_failed.body.with_cta: 点击按钮或者复制下面的链接来再次在网上通过 %{sp_or_app_name}验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
+user_mailer.in_person_failed.body.with_cta: 点击按钮或复制下面的链接，尝试通过 %{sp_or_app_name} 再次验证你的身份。
 user_mailer.in_person_failed.body.without_cta: 请尝试从 %{sp_name}的网站再次验证你的身份。如果你仍然遇到问题，请联系你要访问的政府机构。
 user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
@@ -1865,8 +1879,7 @@ user_mailer.in_person_verified.next_sign_in.without_sp: 接下来请点击按钮
 user_mailer.in_person_verified.sign_in: 登录
 user_mailer.in_person_verified.subject: 你在 %{app_name} 成功地验证了身份
 user_mailer.in_person_verified.warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href="%{reset_password_url}"> 重设密码</a>。要报告这件事，<a href="%{contact_us_url}">联系 %{app_name} 支持 %{app_name}</a>。
-user_mailer.letter_reminder_14_days.body_html: "<p><strong>%{date_letter_was_se\
-  nt} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>"
+user_mailer.letter_reminder_14_days.body_html: '<p><strong>%{date_letter_was_sent} 日你要求了带有验证码的信</strong>。</p><p>登录%{app_name} 并输入验证码来完成验证你的身份。 %{help_link}.</p>'
 user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: 如果你没有收到这封信， %{another_letter_link_html}。
 user_mailer.letter_reminder_14_days.finish: 完成验证你的身份
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: 登录要求再发一封信
@@ -1942,6 +1955,7 @@ users.delete.bullet_4: 我们将通知你使用 %{app_name} 访问的政府机�
 users.delete.heading: 你确定要删除账户吗？
 users.delete.instructions: 输入密码来确认你要删除账户。
 users.delete.subheading: 如果你删除自己的账户：
+users.password_compromised.warning: 另一个网站或应用程序的数据泄露中我们发现有你的密码。%{app_name} 要求你更改密码来保护你的账户。
 users.personal_key.accessible_labels.code_example: 有 16 个字符的个人密钥示例
 users.personal_key.accessible_labels.preview: 个人密钥预览
 users.personal_key.confirmation_error: 你输入的个人密钥不对

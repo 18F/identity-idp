@@ -106,7 +106,7 @@ account.login.piv_cac: Sign in with your government employee ID
 account.login.tab_navigation: Account creation tabs
 account.navigation.add_authentication_apps: Add authentication apps
 account.navigation.add_email: Add email address
-account.navigation.add_federal_id: Add federal employee ID
+account.navigation.add_federal_id: Add your government employee ID
 account.navigation.add_phone_number: Add phone number
 account.navigation.add_platform_authenticator: Add face or touch unlock
 account.navigation.add_security_key: Add security key
@@ -523,9 +523,12 @@ doc_auth.errors.camera.blocked: Your camera is blocked
 doc_auth.errors.camera.blocked_detail_html: '<strong>Allow access to your camera to take photos for %{app_name}.</strong><span>Try taking photos again and allowing permission. If that doesn’t work, you may need to check your device settings to allow access.</span>'
 doc_auth.errors.camera.failed: Camera failed to start, please try again.
 doc_auth.errors.card_type: Try again with your driver’s license or state ID card.
+doc_auth.errors.consent_form: Before you can continue, you must give us permission. Please check the box below and then click continue.
+doc_auth.errors.doc_type_not_supported_heading: We only accept a driver’s license or a state ID
 doc_auth.errors.doc.doc_type_check: Your driver’s license or state ID must be issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs.
 doc_auth.errors.doc.resubmit_failed_image: You already tried this image, and it failed. Please try adding a different image.
 doc_auth.errors.doc.wrong_id_type_html: We only accept a driver’s license or a state ID issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs. <a>Learn more about accepted IDs</a>
+doc_auth.errors.document_capture_canceled: You have canceled uploading photos of your ID on your phone.
 doc_auth.errors.dpi.failed_short: Image is too small or blurry, please try again.
 doc_auth.errors.dpi.top_msg: We couldn’t read your ID. Your image size may be too small, or your ID is too small or blurry in the photo. Make sure your ID is large within the image frame and try taking a new picture.
 doc_auth.errors.dpi.top_msg_plural: We couldn’t read your ID. Your image sizes may be too small, or your ID is too small or blurry in the photos. Make sure your ID is large within the image frame and try taking new pictures.
@@ -540,6 +543,7 @@ doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taki
 doc_auth.errors.glare.failed_short: Image has glare, please try again.
 doc_auth.errors.glare.top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
 doc_auth.errors.glare.top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
+doc_auth.errors.how_to_verify_form: Select a way to verify your identity.
 doc_auth.errors.http.image_load.failed_short: Image file is not supported, please try again.
 doc_auth.errors.http.image_load.top_msg: The image file that you added is not supported. Please take new photos of your ID and try again.
 doc_auth.errors.http.image_size.failed_short: Image file is not supported, please try again.
@@ -547,7 +551,14 @@ doc_auth.errors.http.image_size.top_msg: Your image size is too large or too sma
 doc_auth.errors.http.pixel_depth.failed_short: Image file is not supported, please try again.
 doc_auth.errors.http.pixel_depth.top_msg: The pixel depth of your image file is not supported. Please take new photos of your ID and try again. Supported image pixel depth is 24-bit RGB.
 doc_auth.errors.not_a_file: The selection was not a valid file.
+doc_auth.errors.phone_step_incomplete: You must go to your phone and upload photos of your ID before continuing. We sent you a link with instructions.
 doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum age requirement.
+doc_auth.errors.rate_limited_heading: We couldn’t verify your ID
+doc_auth.errors.rate_limited_subheading: Try taking new pictures
+doc_auth.errors.rate_limited_text_html: For your security, we limit the number of times you can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
+doc_auth.errors.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
+doc_auth.errors.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
 doc_auth.errors.sharpness.failed_short: Image is blurry, please try again.
 doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
 doc_auth.errors.sharpness.top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
@@ -629,6 +640,11 @@ doc_auth.info.selfie_capture_status.face_close_to_border: Too close to the frame
 doc_auth.info.selfie_capture_status.face_not_found: Face not found
 doc_auth.info.selfie_capture_status.face_too_small: Face too small
 doc_auth.info.selfie_capture_status.too_many_faces: Too many faces
+doc_auth.info.selfie_capture.action.capture: Take photo
+doc_auth.info.selfie_capture.action.close: close
+doc_auth.info.selfie_capture.action.retake: retake
+doc_auth.info.selfie_capture.action.submit: Use this photo
+doc_auth.info.selfie_capture.intro: Camera is on, ready for selfie
 doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
 doc_auth.info.tag: Recommended
@@ -696,17 +712,6 @@ errors.attributes.password.too_short.one: Password must be at least one characte
 errors.attributes.password.too_short.other: Password must be at least %{count} characters long
 errors.capture_doc.invalid_link: This link is expired or not valid. Please request another link to verify your identity on a mobile phone.
 errors.confirm_password_incorrect: Incorrect password.
-errors.doc_auth.consent_form: Before you can continue, you must give us permission. Please check the box below and then click continue.
-errors.doc_auth.doc_type_not_supported_heading: We only accept a driver’s license or a state ID
-errors.doc_auth.document_capture_canceled: You have canceled uploading photos of your ID on your phone.
-errors.doc_auth.how_to_verify_form: Select a way to verify your identity.
-errors.doc_auth.phone_step_incomplete: You must go to your phone and upload photos of your ID before continuing. We sent you a link with instructions.
-errors.doc_auth.rate_limited_heading: We couldn’t verify your ID
-errors.doc_auth.rate_limited_subheading: Try taking new pictures
-errors.doc_auth.rate_limited_text_html: For your security, we limit the number of times you can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
-errors.doc_auth.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
-errors.doc_auth.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
-errors.doc_auth.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
 errors.enter_code.rate_limited_html: You entered an incorrect verification code too many times. <strong>Try again in %{timeout}.</strong>
 errors.general: Oops, something went wrong. Please try again.
 errors.invalid_totp: Invalid code. Please try again.
@@ -814,7 +819,7 @@ forms.backup_code_reminder.body_info: If you ever lose access to your primary au
 forms.backup_code_reminder.have_codes: I have my codes
 forms.backup_code_reminder.heading: Do you still have your backup codes?
 forms.backup_code_reminder.need_new_codes: I need a new set of backup codes
-forms.backup_code.caution_codes: Each code can only be used once. We’ll give you new codes after you use all ten.
+forms.backup_code.caution_codes: Each code can only be used once. We’ll give you new codes after you use all %{count}.
 forms.backup_code.caution_delete: If you delete your backup codes you will no longer be able to use them to sign in.
 forms.backup_code.confirm_delete: Are you sure you want to delete your backup codes?
 forms.backup_code.generate: Get codes
@@ -858,12 +863,13 @@ forms.personal_key.instructions: Please confirm you have a copy of your personal
 forms.personal_key.required_checkbox: I saved my personal key in a safe place.
 forms.personal_key.title: Enter your personal key
 forms.phone.buttons.delete: Remove phone
-forms.piv_cac_login.submit: Insert your PIV/CAC
-forms.piv_cac_mfa.submit: Present PIV/CAC card
+forms.piv_cac_login.submit: Insert PIV/CAC
+forms.piv_cac_mfa.submit: Insert PIV/CAC
 forms.piv_cac_setup.nickname: PIV/CAC nickname
 forms.piv_cac_setup.no_thanks: No thanks
 forms.piv_cac_setup.piv_cac_intro_html: We’ll ask you to present your PIV/CAC card <strong>each time you sign in</strong> as part of two-factor authentication.<br><br>After clicking “Add PIV/CAC” your browser will prompt you for your PIV/CAC PIN and have you select a certificate.
-forms.piv_cac_setup.submit: Add PIV/CAC card
+forms.piv_cac_setup.submit: Insert PIV/CAC
+forms.piv_cac_setup.try_again: Try again
 forms.registration.labels.email: Enter your email address
 forms.registration.labels.email_language: Select your email language preference
 forms.ssn.show: Show Social Security number
@@ -917,16 +923,16 @@ headings.passwords.change: Change your password
 headings.passwords.confirm: Confirm your current password to continue
 headings.passwords.confirm_for_personal_key: Enter password and get a new personal key
 headings.passwords.forgot: Forgot your password?
-headings.piv_cac_login.account_not_found: Your PIV/CAC is not connected to an account
-headings.piv_cac_login.add: Set up your PIV or CAC as a two-factor authentication method so you can use it to sign in.
-headings.piv_cac_login.new: Sign in with your PIV or CAC
+headings.piv_cac_login.account_not_found: Your government employee ID is not connected to an account
+headings.piv_cac_login.add: Use your smart card reader to set up your Personal Identity Verification (PIV) or Common Access Card (CAC). You can use any of these as a two-factor authentication method to sign in.
+headings.piv_cac_login.new: Sign in with your government employee ID
 headings.piv_cac_login.success: You successfully set up PIV/CAC as an authentication method.
 headings.piv_cac_setup.already_associated: The PIV/CAC you presented is associated with another user.
 headings.piv_cac_setup.new: Use your PIV/CAC card to secure your account
 headings.piv_cac.certificate.bad: The PIV/CAC certificate you selected is invalid
 headings.piv_cac.certificate.expired: The PIV/CAC certificate you selected has expired
 headings.piv_cac.certificate.invalid: The PIV/CAC certificate you selected is invalid
-headings.piv_cac.certificate.none: We cannot detect a certificate on your PIV/CAC card
+headings.piv_cac.certificate.none: We cannot detect a certificate on your government employee ID
 headings.piv_cac.certificate.not_auth_cert: Please choose a different certificate for your PIV/CAC card
 headings.piv_cac.certificate.revoked: The PIV/CAC certificate you selected has been revoked from your card
 headings.piv_cac.certificate.unverified: The PIV/CAC certificate you selected is invalid
@@ -956,8 +962,7 @@ help_text.requested_attributes.email: Email address
 help_text.requested_attributes.full_name: Full name
 help_text.requested_attributes.ial1_consent_reminder_html: You must consent each year to share your information with <strong>%{sp}</strong>. We’ll share your information with <strong>%{sp}</strong> to connect your account.
 help_text.requested_attributes.ial1_intro_html: We’ll share your information with <strong>%{sp}</strong> to connect your account.
-help_text.requested_attributes.ial2_consent_reminder_html: "<strong>%{sp}</stro\
-  ng> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:"
+help_text.requested_attributes.ial2_consent_reminder_html: '<strong>%{sp}</strong> needs to know who you are to connect to your account. You must consent each year to share your verified information with <strong>%{sp}</strong>. We’ll share this information:'
 help_text.requested_attributes.ial2_intro_html: '<strong>%{sp}</strong> needs to know who you are to connect your account. We’ll share this information with %{sp}:'
 help_text.requested_attributes.ial2_reverified_consent_info: 'Because you verified your identity again, we need your permission to share this information with %{sp}:'
 help_text.requested_attributes.phone: Phone number
@@ -1029,6 +1034,7 @@ idv.failure.phone.rate_limited.body: For security reasons, we limit the number o
 idv.failure.phone.rate_limited.gpo.button: Verify by mail
 idv.failure.phone.rate_limited.heading: We couldn’t verify your identity by phone
 idv.failure.phone.rate_limited.option_try_again_later_html: Cancel and start over again after <strong>%{time_left}</strong>
+idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html: You can try again after <strong>%{time_left}</strong>.
 idv.failure.phone.rate_limited.option_verify_by_mail_html: Verify by mail, which takes <strong>5 to 10 days</strong>
 idv.failure.phone.rate_limited.options_header: 'You can:'
 idv.failure.phone.timeout: Our request to verify your information timed out. Please try again.
@@ -1114,13 +1120,13 @@ idv.messages.gpo.start_over_link_text: start over and verify with your new addre
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
-idv.messages.phone.description: We’ll check this number with records and send you a one-time code. This is to help verify your identity.
+idv.messages.phone.description: We’ll check your number with records and send you a one-time code to verify your identity.
 idv.messages.phone.failed_number.alert_text: We couldn’t match you to this number.
 idv.messages.phone.failed_number.gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verify by mail
 idv.messages.phone.failed_number.try_again_html: Try <strong>another</strong> number.
 idv.messages.phone.rules:
-  - Based in the United States (including U.S. territories)
+  - Based in the United States
   - Your primary number (the one you use the most often)
 idv.messages.return_to_profile: '‹ Return to your %{app_name} profile'
 idv.messages.sessions.enter_password_message: When you re-enter your password, %{app_name} will protect the information you’ve given us, so that only you can access it.
@@ -1131,7 +1137,6 @@ idv.titles.activated: Your identity has already been verified
 idv.titles.come_back_later: Your letter is on the way
 idv.titles.enter_password: Review and submit
 idv.titles.mail.verify: Verify your address
-idv.titles.otp_delivery_method: How should we send a code?
 idv.titles.session.enter_password: Re-enter your %{app_name} password
 idv.titles.session.enter_password_letter: Re-enter your %{app_name} password to send your letter
 idv.titles.unavailable: We are working to resolve an error
@@ -1179,7 +1184,9 @@ in_person_proofing.body.barcode.cancel_link_text: Cancel your barcode
 in_person_proofing.body.barcode.close_window: You may now close this window.
 in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}.
 in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your information will not be saved and you will need to restart the process.
-in_person_proofing.body.barcode.email_sent: We have sent this information to the email you used to sign in.
+in_person_proofing.body.barcode.eipp_tag: GSA Enhanced Pilot Barcode
+in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'
+in_person_proofing.body.barcode.email_sent: We have sent your barcode and the information below to the email you used to sign in
 in_person_proofing.body.barcode.learn_more: Learn more about what to bring
 in_person_proofing.body.barcode.location_details: Location details
 in_person_proofing.body.barcode.questions: Questions?
@@ -1187,7 +1194,6 @@ in_person_proofing.body.barcode.retail_hours: Retail hours
 in_person_proofing.body.barcode.retail_hours_closed: Closed
 in_person_proofing.body.barcode.return_to_partner_html: You may now %{link_html} to complete any next steps you can access until your identity has been verified.
 in_person_proofing.body.barcode.return_to_partner_link: sign out and return to %{sp_name}
-in_person_proofing.body.barcode.what_to_bring: 'Depending on the type of ID or Driver’s License you have, you may be required to show supporting documents. Review the following options carefully:'
 in_person_proofing.body.barcode.what_to_expect: What to expect at the Post Office
 in_person_proofing.body.cta.button: Try in person
 in_person_proofing.body.cta.prompt_detail: You may be able to verify your identity at a participating Post Office near you.
@@ -1282,18 +1288,21 @@ in_person_proofing.headings.update_state_id: Update the information on your ID
 in_person_proofing.process.barcode.caption_label: Enrollment code
 in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
 in_person_proofing.process.barcode.info: The retail associate needs to scan your barcode at the top of this page. You can print this page or show it on your mobile device.
-in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Bring a Real ID'
+in_person_proofing.process.eipp_bring_id_plus_documents.heading: 'Option 2: Bring a standard state-issued ID plus supporting documents'
+in_person_proofing.process.eipp_bring_id_plus_documents.info: 'You can present your standard driver’s license or state ID card, along with supporting documents from the following options A, B or C. You only need to pick ONE option:'
+in_person_proofing.process.eipp_bring_id_with_current_address.heading: A. REAL ID with current address
+in_person_proofing.process.eipp_bring_id.heading: 'Option 1: Bring a REAL ID'
 in_person_proofing.process.eipp_bring_id.image_alt_text: Real ID
-in_person_proofing.process.eipp_bring_id.info: 'If you present a Real State ID or Driver’s license, you don’t need to show supporting documents.'
-in_person_proofing.process.eipp_state_id_military_id.heading: B. State ID + Military ID
+in_person_proofing.process.eipp_bring_id.info: 'If you present a REAL ID driver’s license or ID card and the address on it is your current address, you don’t need to show supporting documents.'
+in_person_proofing.process.eipp_state_id_military_id.heading: B. State-issued ID + military ID
 in_person_proofing.process.eipp_state_id_military_id.image_alt_text: State ID and Military ID
-in_person_proofing.process.eipp_state_id_military_id.info: 'Present a standard State ID or Driver’s License, along with a Military ID.'
-in_person_proofing.process.eipp_state_id_passport.heading: A. State ID + Passport
+in_person_proofing.process.eipp_state_id_military_id.info: 'Present a standard driver’s license or state ID card, along with a military ID.'
+in_person_proofing.process.eipp_state_id_passport.heading: A. State-issued ID + passport
 in_person_proofing.process.eipp_state_id_passport.image_alt_text: State ID and passport
-in_person_proofing.process.eipp_state_id_passport.info: 'Present a standard State ID or Driver’s License, along with a Passport or Passport card.'
-in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. State ID + two supporting documents
+in_person_proofing.process.eipp_state_id_passport.info: 'Present a standard driver’s license or state ID card, along with a passport or passport card.'
+in_person_proofing.process.eipp_state_id_supporting_docs.heading: C. State-issued ID + two supporting documents
 in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text: State ID and two documents
-in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Present a standard State ID or Driver’s License, along with two supporting documents from this list:'
+in_person_proofing.process.eipp_state_id_supporting_docs.info: 'Present a standard driver’s license or state ID card, along with two supporting documents from this list:'
 in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Lease
   - Mortgage
@@ -1302,12 +1311,13 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Vehicle registration card
   - Home insurance policy
   - Vehicle insurance policy
-in_person_proofing.process.eipp_what_to_bring.heading: 'Option 2: Bring a standard State ID or Driver’s License plus supporting documents'
-in_person_proofing.process.eipp_what_to_bring.info: 'You can present your standard State ID or Driver’s license along with supporting documents from the following options A, B or C. You only need to pick ONE option:'
+in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + two supporting documents
+in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID and two documents
+in_person_proofing.process.real_id_and_supporting_docs.info: 'If the address on your REAL ID is not your current address, present a REAL ID, along with two supporting documents from this list:'
 in_person_proofing.process.state_id.heading: Show your State Driver’s License or State Non-Driver’s Identification Card
 in_person_proofing.process.state_id.heading_eipp: Show your ID and supporting documents
 in_person_proofing.process.state_id.info: This must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
-in_person_proofing.process.state_id.info_eipp: The retail associate will scan your ID. This must not be expired. Depending on the type of ID or Driver’s License that you present, you may need to present supporting documents. See the requirements on the What to bring to the Post Office section.
+in_person_proofing.process.state_id.info_eipp: The retail associate will scan your ID. This must not be expired. Depending on the type of ID that you present, you may need to show supporting documents. See the requirements in the “What to bring to the Post Office” section.
 in_person_proofing.process.what_to_do.heading: Stand in any line
 in_person_proofing.process.what_to_do.info: Tell the Post Office retail associate you are here to verify your identity with %{app_name}.
 instructions.account.reactivate.begin: Let’s get started.
@@ -1320,17 +1330,17 @@ instructions.forgot_password.close_window: You can close this browser window onc
 instructions.go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app and sign in.
 instructions.mfa.authenticator.confirm_code_html: Enter the code from your authenticator app. If you have several accounts set up in your app, enter the code corresponding to %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: Or enter this code manually into your authentication app
-instructions.mfa.piv_cac.account_not_found_html: '<p><strong>%{sign_in}</strong> with your email address and password. Then add your PIV/CAC to your account.</p> <p><strong>Don’t have a %{app_name} account?</strong> %{create_account}</p>'
+instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email address and password. Then insert your PIV/CAC into a smart card reader to add to your account.</p><p>Don’t have a %{app_name} account? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong> (the right one likely has your name of it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Please choose a certificate from a different PIV/CAC, contact your administrator to ensure your PIV/CAC is up to date. If you think this is an error, %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Go back to sign in
-instructions.mfa.piv_cac.confirm_piv_cac: Present the PIV/CAC that you associated with your account.
-instructions.mfa.piv_cac.did_not_work_html: Please %{please_try_again_html}. If this problem continues, contact your agency administrator.
+instructions.mfa.piv_cac.confirm_piv_cac: Insert your PIV/CAC that you associated with your account into a smart card reader.
+instructions.mfa.piv_cac.did_not_work_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{please_try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
-instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is connected and %{try_again_html}. If this problem continues, contact your agency administrator.
+instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.please_try_again: try again
-instructions.mfa.piv_cac.sign_in_html: Make sure <strong>you have a %{app_name} account</strong> and <strong>you’ve set up PIV/CAC</strong> as a two-factor authentication method.
+instructions.mfa.piv_cac.sign_in: Make sure you have a %{app_name} account and you’ve set up your Personal Identity Verification (PIV) or Common Access Card (CAC) as a two-factor authentication method.
 instructions.mfa.piv_cac.step_1: Give it a nickname
 instructions.mfa.piv_cac.step_1_info: If you add more than one PIV/CAC, you’ll know which one’s which.
 instructions.mfa.piv_cac.step_2: Insert your PIV/CAC into your card reader
@@ -1409,7 +1419,7 @@ notices.forgot_password.no_email_sent_explanation_start: Didn’t receive an ema
 notices.forgot_password.resend_email_success: We sent another password reset email.
 notices.password_changed: You changed your password.
 notices.phone_confirmed: A phone was added to your account.
-notices.piv_cac_configured: A PIV/CAC card was added to your account.
+notices.piv_cac_configured: A government employee ID was added to your account.
 notices.privacy.privacy_act_statement: Privacy Act Statement
 notices.privacy.security_and_privacy_practices: Security Practices and Privacy Act Statement
 notices.resend_confirmation_email.success: We sent another confirmation email.
@@ -1487,6 +1497,13 @@ risc.security_event.errors.typ_error: typ header must be %{expected_typ}
 saml_idp.auth.error.title: Error
 saml_idp.shared.saml_post_binding.heading: Submit to continue
 saml_idp.shared.saml_post_binding.no_js: JavaScript seems to be turned off in your browser. Normally this step happens automatically, but because you have JavaScript turned off, please click the submit button to continue signing in or signing out.
+security_check_failed.contact: Contact %{app_name} support
+security_check_failed.details: We don’t recognize the device or browser you’re signing in from.
+security_check_failed.info_p1: 'Use the same device and browser you created your %{app_name} account with.'
+security_check_failed.info_p2_html: Try <a href="%{piv_cac_url}">signing in with your government employee ID</a> if you are a government employee.
+security_check_failed.info_p3: Turn off any VPN, ad blockers, and clear your cache.
+security_check_failed.learn_more: Learn more about %{app_name}’s security checks
+security_check_failed.title: Security check failed
 service_providers.errors.generic_sp_name: This agency
 service_providers.errors.inactive.button_text: View my %{app_name} account
 service_providers.errors.inactive.heading: '%{sp_name} no longer uses %{app_name}'
@@ -1579,11 +1596,11 @@ titles.openid_connect.logout: OpenID Connect Logout
 titles.passwords.change: Change the password for your account
 titles.passwords.forgot: Reset password
 titles.personal_key: Just in case
-titles.piv_cac_login.add: Add your PIV or CAC
+titles.piv_cac_login.add: Add your government employee ID
 titles.piv_cac_login.new: Use your PIV/CAC to sign in to your account
 titles.piv_cac_setup.new: Use your PIV/CAC card to secure your account
 titles.piv_cac_setup.upsell: Add your government employee ID for a faster, more secure sign in
-titles.present_piv_cac: Present your PIV/CAC
+titles.present_piv_cac: Insert your government employee ID
 titles.present_webauthn: Connect your hardware security key
 titles.reactivate_account: Reactivate your account
 titles.registrations.new: Create your account
@@ -1603,8 +1620,7 @@ titles.verify_email: Check your email
 titles.visitors.index: Welcome
 titles.webauthn_setup: Add your security key
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requires a high-security authentication method, such as face or touch unlock, a security key or a government employee ID.'
-two_factor_authentication.aal2_request.piv_cac_only_html: "<strong>%{sp_name}</\
-  strong> requires your government employee ID, a high-security authentication method."
+two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government employee ID, a high-security authentication method.'
 two_factor_authentication.account_reset.cancel_link: Cancel your request
 two_factor_authentication.account_reset.link: deleting your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.
@@ -1626,7 +1642,7 @@ two_factor_authentication.backup_codes.warning_html: '<strong>You’ve only set 
 two_factor_authentication.choose_another_option: '‹ Choose another authentication method'
 two_factor_authentication.confirm_backup_code_setup_content_html:
   - '<strong>Backup codes are the least preferred authentication method</strong> because the codes can easily be lost. Try a safer option, like an authentication application or a security key.'
-  - We’ll give you 10 codes that you can download, print, copy or write down. You’ll enter one code every time you sign in.
+  - We’ll give you %{number_of_codes} codes that you can download, print, copy or write down. You’ll enter one code every time you sign in.
 two_factor_authentication.confirm_backup_code_setup_title: Are you sure you want to use backup codes?
 two_factor_authentication.form_legend: Choose your authentication methods
 two_factor_authentication.header_text: Enter your one-time code
@@ -1693,7 +1709,7 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: Use 
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: I didn’t receive my one-time code
 two_factor_authentication.phone.delete.failure: Unable to remove your phone.
 two_factor_authentication.phone.delete.success: Your phone has been removed.
-two_factor_authentication.piv_cac_header_text: Present your PIV/CAC
+two_factor_authentication.piv_cac_header_text: Insert your government employee ID
 two_factor_authentication.piv_cac_upsell.add_piv: Add PIV/CAC card
 two_factor_authentication.piv_cac_upsell.choose_other_method: Choose other methods instead
 two_factor_authentication.piv_cac_upsell.explain: This will improve your account security and let you skip entering your email and password when signing in.
@@ -1720,7 +1736,7 @@ two_factor_authentication.two_factor_choice: Authentication method setup
 two_factor_authentication.two_factor_choice_options.auth_app: Authentication application
 two_factor_authentication.two_factor_choice_options.auth_app_info: Download or use an authentication app of your choice to generate secure codes.
 two_factor_authentication.two_factor_choice_options.backup_code: Backup codes
-two_factor_authentication.two_factor_choice_options.backup_code_info: A list of 10 codes you can print or save to your device. When you use the last code, we will generate a new list. Keep in mind backup codes are easy to lose.
+two_factor_authentication.two_factor_choice_options.backup_code_info: A list of %{count} codes you can print or save to your device. Because backup codes are easy to lose, choose this option only as a last resort.
 two_factor_authentication.two_factor_choice_options.configurations_added.one: '%{count} added'
 two_factor_authentication.two_factor_choice_options.configurations_added.other: '%{count} added'
 two_factor_authentication.two_factor_choice_options.no_count_configuration_added: Added
@@ -1772,10 +1788,10 @@ user_mailer.account_reset_cancel.intro_html: This email confirms you have cancel
 user_mailer.account_reset_cancel.subject: Request canceled
 user_mailer.account_reset_complete.intro_html: This email confirms you have deleted your %{app_name_html} account.
 user_mailer.account_reset_complete.subject: Account deleted
-user_mailer.account_reset_granted.button: Yes, continue deleting
+user_mailer.account_reset_granted.button: Confirm account deletion
 user_mailer.account_reset_granted.cancel_link_text: please cancel
 user_mailer.account_reset_granted.help_html: If you don’t want to delete your account, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
+user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm account deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
 user_mailer.account_reset_granted.subject: Delete your %{app_name} account
 user_mailer.account_reset_request.cancel: Don’t want to delete your account? Sign in to your %{app_name} account to cancel.
 user_mailer.account_reset_request.header: Your account will be deleted in %{interval}
@@ -1825,7 +1841,7 @@ user_mailer.in_person_failed_suspected_fraud.body.help_center_html: If you need 
 user_mailer.in_person_failed_suspected_fraud.body.intro: We understand that you were attempting to verify your identity through %{app_name}, however your identity could not be verified at the %{location} Post Office on %{date}.
 user_mailer.in_person_failed_suspected_fraud.greeting: Hello,
 user_mailer.in_person_failed_suspected_fraud.subject: Your identity could not be verified in person
-user_mailer.in_person_failed.body.with_cta: Click the button or copy the link below to try verifying your identity online again through %{sp_or_app_name}. If you are still experiencing issues, please contact the agency you are trying to access.
+user_mailer.in_person_failed.body.with_cta: Click the button or copy the link below to try verifying your identity again through %{sp_or_app_name}. If you are still experiencing issues, please contact the agency you are trying to access.
 user_mailer.in_person_failed.body.without_cta: Please try verifying your identity again from %{sp_name}’s website. If you are still experiencing issues, please contact the agency you are trying to access.
 user_mailer.in_person_failed.intro: Your identity could not be verified at the %{location} Post Office on %{date}.
 user_mailer.in_person_failed.subject: Your identity could not be verified in person
@@ -1926,6 +1942,7 @@ users.delete.bullet_4: We will notify the agencies you access with %{app_name} t
 users.delete.heading: Are you sure you want to delete your account?
 users.delete.instructions: Enter your password to confirm that you want to delete your account.
 users.delete.subheading: 'If you delete your account:'
+users.password_compromised.warning: We found your password in a data breach on another site or app. %{app_name} requires you to change your password to protect your account.
 users.personal_key.accessible_labels.code_example: A personal key example with 16 characters
 users.personal_key.accessible_labels.preview: Personal key preview
 users.personal_key.confirmation_error: You’ve entered an incorrect personal key.

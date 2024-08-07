@@ -12,7 +12,7 @@ RSpec.describe AuthnContextResolver do
         service_provider: nil,
         vtr: vtr,
         acr_values: nil,
-      ).resolve
+      ).result
 
       expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
       expect(result.aal2?).to eq(true)
@@ -32,7 +32,7 @@ RSpec.describe AuthnContextResolver do
         service_provider: nil,
         vtr: vtr,
         acr_values: nil,
-      ).resolve
+      ).result
 
       expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pe')
       expect(result.aal2?).to eq(true)
@@ -57,7 +57,7 @@ RSpec.describe AuthnContextResolver do
         service_provider: nil,
         vtr: vtr,
         acr_values: acr_values,
-      ).resolve
+      ).result
 
       expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
     end
@@ -75,7 +75,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
         expect(result.biometric_comparison?).to eq(true)
@@ -91,7 +91,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1')
         expect(result.biometric_comparison?).to eq(false)
@@ -107,7 +107,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
         expect(result.biometric_comparison?).to eq(true)
@@ -125,7 +125,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2.P1')
         expect(result.identity_proofing?).to eq(true)
@@ -140,7 +140,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: vtr,
           acr_values: nil,
-        ).resolve
+        ).result
 
         expect(result.expanded_component_values).to eq('C1.C2')
         expect(result.identity_proofing?).to eq(false)
@@ -148,8 +148,8 @@ RSpec.describe AuthnContextResolver do
     end
   end
 
-  context 'when users uses an acr_values param' do
-    context 'no service provider' do
+  context 'when resolving acr_values' do
+    context 'with no service provider' do
       it 'parses an ACR value into requirements' do
         acr_values = [
           'http://idmanagement.gov/ns/assurance/aal/2',
@@ -161,7 +161,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(true)
@@ -183,7 +183,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(false)
@@ -205,7 +205,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: nil,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(true)
@@ -218,7 +218,7 @@ RSpec.describe AuthnContextResolver do
       end
     end
 
-    context 'AAL2 service provider' do
+    context 'with an AAL2 service provider' do
       it 'uses the AAL ACR if one is present' do
         service_provider = build(:service_provider, default_aal: 2)
 
@@ -232,7 +232,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(false)
       end
@@ -249,7 +249,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
@@ -267,7 +267,7 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(true)
@@ -285,48 +285,145 @@ RSpec.describe AuthnContextResolver do
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        ).result
 
         expect(result.aal2?).to eq(false)
       end
     end
 
-    context 'IAL2 service provider' do
-      it 'uses the IAL ACR if one is present' do
-        service_provider = build(:service_provider, ial: 2)
-
-        acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/1',
-          'http://idmanagement.gov/ns/assurance/ial/1',
-        ].join(' ')
-
-        result = AuthnContextResolver.new(
+    context 'with an IAL2 service provider' do
+      let(:service_provider) { build(:service_provider, ial: 2) }
+      subject do
+        AuthnContextResolver.new(
           user: user,
           service_provider: service_provider,
           vtr: nil,
           acr_values: acr_values,
-        ).resolve
+        )
+      end
+      let(:result) { subject.result }
 
-        expect(result.identity_proofing?).to eq(false)
-        expect(result.aal2?).to eq(false)
+      context 'if IAL ACR value is present' do
+        let(:acr_values) do
+          [
+            'http://idmanagement.gov/ns/assurance/ial/1',
+            'http://idmanagement.gov/ns/assurance/aal/1',
+          ].join(' ')
+        end
+
+        it 'uses the IAL ACR if one is present' do
+          expect(result.identity_proofing?).to be false
+          expect(result.aal2?).to be false
+        end
       end
 
-      it 'uses the defaul IAL if no IAL ACR is present' do
-        service_provider = build(:service_provider, ial: 2)
+      context 'if multiple IAL ACR values are present' do
+        let(:acr_values) do
+          [
+            'http://idmanagement.gov/ns/assurance/ial/1',
+            'http://idmanagement.gov/ns/assurance/ial/2',
+            'http://idmanagement.gov/ns/assurance/aal/1',
+          ].join(' ')
+        end
 
-        acr_values = [
-          'http://idmanagement.gov/ns/assurance/aal/1',
-        ].join(' ')
+        it 'uses the highest IAL ACR if one is present' do
+          expect(result.identity_proofing?).to be true
+          expect(result.aal2?).to be true
+        end
+      end
 
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: service_provider,
-          vtr: nil,
-          acr_values: acr_values,
-        ).resolve
+      context 'if No IAL ACR is present' do
+        let(:acr_values) do
+          [
+            'http://idmanagement.gov/ns/assurance/aal/1',
+          ].join(' ')
+        end
 
-        expect(result.identity_proofing?).to eq(true)
-        expect(result.aal2?).to eq(true)
+        it 'uses the defaul IAL' do
+          expect(result.identity_proofing?).to be true
+          expect(result.aal2?).to be true
+        end
+      end
+
+      context 'if requesting biometric comparison' do
+        let(:bio_value) { 'required' }
+        let(:acr_values) do
+          [
+            "http://idmanagement.gov/ns/assurance/ial/2?bio=#{bio_value}",
+            'http://idmanagement.gov/ns/assurance/aal/1',
+          ].join(' ')
+        end
+
+        context 'with biometric comparison is required' do
+          context 'when user is not verified' do
+            it 'sets biometric_comparison to true' do
+              expect(result.identity_proofing?).to be true
+              expect(result.biometric_comparison?).to be true
+              expect(result.aal2?).to be true
+              expect(result.two_pieces_of_fair_evidence?).to be true
+            end
+          end
+
+          context 'when the user is already verified' do
+            context 'without biometric comparison' do
+              let(:user) { build(:user, :proofed) }
+
+              it 'asserts biometric_comparison as true' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be true
+                expect(result.aal2?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
+              end
+            end
+
+            context 'with biometric comparison' do
+              let(:user) { build(:user, :proofed_with_selfie) }
+
+              it 'asserts biometric comparison' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
+                expect(result.aal2?).to be true
+              end
+            end
+          end
+        end
+
+        context 'with biometric comparison is preferred' do
+          let(:bio_value) { 'preferred' }
+
+          context 'when the user is already verified' do
+            context 'without biometric comparison' do
+              let(:user) { build(:user, :proofed) }
+
+              it 'falls back on proofing without biometric comparison' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be false
+                expect(result.two_pieces_of_fair_evidence?).to be false
+                expect(result.aal2?).to be true
+              end
+            end
+
+            context 'with biometric comparison' do
+              let(:user) { build(:user, :proofed_with_selfie) }
+
+              it 'asserts biometric comparison' do
+                expect(result.identity_proofing?).to be true
+                expect(result.biometric_comparison?).to be true
+                expect(result.aal2?).to be true
+              end
+            end
+          end
+
+          context 'when the user has not yet been verified' do
+            let(:user) { build(:user) }
+            it 'asserts biometric comparison' do
+              expect(result.identity_proofing?).to be true
+              expect(result.biometric_comparison?).to be true
+              expect(result.aal2?).to be true
+            end
+          end
+        end
       end
     end
   end
