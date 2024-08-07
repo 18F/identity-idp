@@ -426,7 +426,7 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
-  use_fed_domain_class: false
+  use_fed_domain_class: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
   usps_ipp_transliteration_enabled: true
