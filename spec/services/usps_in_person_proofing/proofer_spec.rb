@@ -414,7 +414,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
     context 'when the user is going through enhanced ipp' do
       let(:request_body) do
         {
-          sponsorID: applicant.sponsor_id,
+          sponsorID: applicant.sponsor_id.to_i,
           uniqueID: applicant.unique_id,
           enrollmentCode: applicant.enrollment_code,
         }

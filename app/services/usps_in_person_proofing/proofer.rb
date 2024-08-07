@@ -73,18 +73,16 @@ module UspsInPersonProofing
     end
 
     # Makes HTTP request to retrieve proofing status
-    # Requires the applicant's enrollment code and unique ID.
+    # Requires the applicant's InPersonEnrollment.
     # When proofing is complete the API returns 200 status.
     # If the applicant has not been to the post office, has proofed recently,
     # or there is another issue, the API returns a 400 status with an error message.
-    # @param unique_id [String]
-    # @param enrollment_code [String]
+    # param enrollment [InPersonEnrollment]
     # @return [Hash] API response
-    # def request_proofing_results(enrollment)
     def request_proofing_results(enrollment)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults"
       request_body = {
-        sponsorID: enrollment.sponsor_id,
+        sponsorID: enrollment.sponsor_id.to_i,
         uniqueID: enrollment.unique_id,
         enrollmentCode: enrollment.enrollment_code,
       }
