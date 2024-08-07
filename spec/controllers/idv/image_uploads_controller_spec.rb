@@ -405,7 +405,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           workflow: an_instance_of(String),
           birth_year: 1938,
           zip_code: '59010',
-          issue_year: '2019',
+          issue_year: 2019,
         )
 
         expect(@analytics).to have_logged_event(
