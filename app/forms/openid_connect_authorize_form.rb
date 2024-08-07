@@ -115,7 +115,7 @@ class OpenidConnectAuthorizeForm
       nonce: nonce,
       rails_session_id: rails_session_id,
       ial: ial,
-      acr_values: acr_values&.join(' '),
+      acr_values: Vot::AcrComponentValues.join(acr_values),
       vtr: vtr,
       requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
@@ -140,7 +140,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def requested_aal_value
-    highest_level_aal(aal_values) || default_aal_acr
+    highest_level_aal || default_aal_acr
   end
 
   private
@@ -172,7 +172,7 @@ class OpenidConnectAuthorizeForm
 
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
-    param_value.split(' ').compact & possible_values
+    Vot::AcrComponentValues.order_by_priority(param_value) & possible_values
   end
 
   def parse_vtr(param_value)
@@ -277,7 +277,7 @@ class OpenidConnectAuthorizeForm
       allow_prompt_login: service_provider&.allow_prompt_login,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
-      acr_values: acr_values&.sort&.join(' '),
+      acr_values: Vot::AcrComponentValues.join(acr_values),
       vtr: vtr,
       unauthorized_scope: @unauthorized_scope,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
@@ -334,12 +334,15 @@ class OpenidConnectAuthorizeForm
     if parsed_vectors_of_trust.present?
       parsed_vectors_of_trust.any?(&:identity_proofing?)
     else
-      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 2
+      Vot::AcrComponentValues.
+        by_name[highest_level_ial]&.
+        requirements&.
+        include?(:identity_proofing)
     end
   end
 
   def identity_proofing_service_provider?
-    service_provider&.ial.to_i >= 2
+    service_provider&.identity_proofing_allowed?
   end
 
   def ialmax_allowed_for_sp?
@@ -347,15 +350,19 @@ class OpenidConnectAuthorizeForm
   end
 
   def ialmax_requested?
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
+    ial_values.include?(Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF)
   end
 
   def biometric_ial_requested?
-    ial_values.any? { |ial| Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS.include? ial }
+    ial_values.intersect?(Saml::Idp::Constants::BIOMETRIC_IAL_CONTEXTS)
   end
 
-  def highest_level_aal(aal_values)
-    AALS_BY_PRIORITY.find { |aal| aal_values.include?(aal) }
+  def highest_level_ial
+    @highest_level_ial ||= Vot::AcrComponentValues.find_highest_priority(ial_values)
+  end
+
+  def highest_level_aal
+    @highest_level_aal ||= Vot::AcrComponentValues.find_highest_priority(aal_values)
   end
 
   def verified_within_allowed?

@@ -3,6 +3,24 @@
 class AuthnContextResolver
   attr_reader :user, :service_provider, :vtr, :acr_values
 
+  AALS_BY_PRIORITY = [
+    Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+  ].freeze
+  IALS_BY_PRIORITY = [
+    Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+    Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+  ].freeze
   def initialize(user:, service_provider:, vtr:, acr_values:)
     @user = user
     @service_provider = service_provider
@@ -35,15 +53,15 @@ class AuthnContextResolver
   def asserted_aal_acr
     return if vtr.present?
     if acr_aal_component_values.any?
-      acr_aal_component_values.first.name
+      highest_aal_acr(acr_aal_component_values.map(&:name)) || acr_aal_component_values.first.name
     elsif service_provider&.default_aal.to_i >= 3
-      Vot::AcrComponentValues::AAL3.name
+      Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
     elsif service_provider&.default_aal.to_i == 2
-      Vot::AcrComponentValues::AAL2.name
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     elsif acr_result.identity_proofing_or_ialmax?
-      Vot::AcrComponentValues::AAL2.name
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     else
-      Vot::AcrComponentValues::DEFAULT_AAL.name
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
     end
   end
 
@@ -105,18 +123,6 @@ class AuthnContextResolver
                                         end
   end
 
-  def result_with_sp_aal_defaults(result)
-    if acr_aal_component_values.any?
-      result
-    elsif service_provider&.default_aal.to_i == 2
-      result.with(aal2?: true)
-    elsif service_provider&.default_aal.to_i >= 3
-      result.with(aal2?: true, phishing_resistant?: true)
-    else
-      result
-    end
-  end
-
   def decorate_acr_result_with_user_context(result)
     return result unless result.biometric_comparison?
 
@@ -140,11 +146,23 @@ class AuthnContextResolver
     end
   end
 
-  def acr_aal_component_values
-    acr_result_without_sp_defaults.component_values.filter do |component_value|
-      component_value.name.include?('aal') ||
-        component_value.name == Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+  def result_with_sp_aal_defaults(result)
+    if acr_aal_component_values.any?
+      result
+    elsif service_provider&.default_aal.to_i == 2
+      result.with(aal2?: true)
+    elsif service_provider&.default_aal.to_i >= 3
+      result.with(aal2?: true, phishing_resistant?: true)
+    else
+      result
     end
+  end
+
+  def acr_aal_component_values
+    @acr_aal_component_values ||=
+      acr_result_without_sp_defaults.component_values.filter do |component_value|
+        Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL.include?(component_value.name)
+      end
   end
 
   def acr_ial_component_values
@@ -165,5 +183,9 @@ class AuthnContextResolver
   def use_semantic_authn_contexts?
     @use_semantic_authn_contexts ||= service_provider&.semantic_authn_contexts_allowed? &&
                                      Vot::AcrComponentValues.any_semantic_acrs?(acr_values)
+  end
+
+  def highest_aal_acr(aals)
+    AALS_BY_PRIORITY.find { |aal| aals.include?(aal) }
   end
 end

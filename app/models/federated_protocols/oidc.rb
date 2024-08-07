@@ -2,6 +2,7 @@
 
 module FederatedProtocols
   class Oidc
+    # @param request [OpenidConnectAuthorizeForm]
     def initialize(request)
       @request = request
     end
