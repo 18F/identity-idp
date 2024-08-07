@@ -337,21 +337,6 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_enrollment_code
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode}).to_return(
-      status: 200,
-      body: UspsInPersonProofing::Mock::Fixtures.request_enrollment_code_response,
-      headers: { 'content-type' => 'application/json' },
-    )
-  end
-
-  def stub_request_enrollment_code_with_forbidden_error
-    stub_request(
-      :post,
-      %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode},
-    ).to_raise(Faraday::ForbiddenError)
-  end
-
   private
 
   # Merges an object into the JSON string of a response's body and returns the updated response
