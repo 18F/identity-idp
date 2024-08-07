@@ -113,13 +113,7 @@ RSpec::Matchers.define :have_valid_markup do
 end
 
 RSpec::Matchers.define :have_description do |description|
-  def descriptors(element)
-    element['aria-describedby']&.
-      split(' ')&.
-      map { |descriptor_id| page.find("##{descriptor_id}")&.text }
-  end
-
-  match { |element| descriptors(element)&.include?(description) }
+  match { |element| accessibility_tree(element)['description']['value'] == description }
 
   failure_message do |element|
     <<-STR.squish

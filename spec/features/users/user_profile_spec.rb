@@ -5,7 +5,6 @@ RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
   include NavigationHelper
   include PersonalKeyHelper
   include PushNotificationsHelper
-  include BrowserEmulationHelper
 
   context 'account status badges' do
     before do

@@ -47,6 +47,7 @@ RSpec.configure do |config|
   config.include KeyRotationHelper
   config.include OtpHelper
   config.include XmlHelper
+  config.include BrowserProtocolHelper
 
   config.before(:suite) do
     Rails.application.load_seed
