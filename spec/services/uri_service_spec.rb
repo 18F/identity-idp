@@ -34,6 +34,13 @@ RSpec.describe UriService do
       expect(uri).to eq('https://example.com/foo/bar/?a=b')
     end
 
+    it 'preserves existing query parameters when given empty params' do
+      original_uri = 'https://example.com/foo/bar/?a=b&c=d'
+      uri = UriService.add_params(original_uri, {})
+
+      expect(uri).to eq('https://example.com/foo/bar/?a=b&c=d')
+    end
+
     it 'is nil with a nil uri' do
       uri = UriService.add_params(nil, foo: 'bar')
 
