@@ -124,12 +124,12 @@ RSpec::Matchers.define :have_description do |description|
 end
 
 RSpec::Matchers.define :have_name do |name|
-  match { |element| AccessibleName.new(page:).computed_name(element).strip == name.strip }
+  match { |element| accessibility_tree(element)['name']['value'] == name }
 
   failure_message do |element|
     <<-STR.squish
       Expected element would have computed name "#{name}".
-      Found #{AccessibleName.new(page:).computed_name(element)}.
+      Found #{accessibility_tree(element)['name']['value']}.
     STR
   end
 end
