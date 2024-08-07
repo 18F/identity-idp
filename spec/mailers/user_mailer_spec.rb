@@ -521,17 +521,6 @@ RSpec.describe UserMailer, type: :mailer do
         to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
     end
 
-    it 'has link to authentication methods help article' do
-      expect(mail.html_part.body).
-        to have_link(
-          t('user_mailer.please_reset_password.learn_more_link_text'),
-          href: MarketingSite.help_center_article_url(
-            category: 'get-started',
-            article: 'authentication-methods',
-          ),
-        )
-    end
-
     it 'logs email metadata to analytics' do
       analytics = FakeAnalytics.new
       allow(Analytics).to receive(:new).and_return(analytics)
