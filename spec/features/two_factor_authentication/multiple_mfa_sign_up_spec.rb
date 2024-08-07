@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] do
   include WebAuthnHelper
+  include OidcAuthHelper
 
   describe 'When the user has not set up 2FA' do
     let(:fake_analytics) { FakeAnalytics.new }
@@ -288,6 +289,41 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
         t('links.cancel'),
         href: authentication_methods_setup_path,
       )
+    end
+  end
+
+  context 'User with phishing resistant service provider' do
+    it 'should show phishing option first then all mfa options for second mfa' do
+      allow(IdentityConfig.store).
+        to receive(:show_unsupported_passkey_platform_authentication_setup).
+        and_return(true)
+
+      visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
+      sign_up_and_set_password
+      mock_webauthn_setup_challenge
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
+      expect(page).
+        to_not have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
+      expect(page).
+        to_not have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
+      select_2fa_option('webauthn_platform', visible: :all)
+
+      click_continue
+
+      mock_press_button_on_hardware_key_on_setup
+
+      click_link t('mfa.add')
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.webauthn'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.auth_app'))
+      expect(page).
+        to have_content(t('two_factor_authentication.two_factor_choice_options.phone'))
     end
   end
 
