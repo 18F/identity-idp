@@ -9,7 +9,7 @@ RSpec.describe 'sign_up/select_email/show.html.erb' do
     user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
     user.email_addresses.create(email: email2, confirmed_at: Time.zone.now)
     user.reload
-    @user_emails = user.email_addresses.map { |e| e.email }
+    @user_emails = user.email_addresses
     @select_email_form = SelectEmailForm.new(user)
   end
 

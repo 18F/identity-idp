@@ -30,8 +30,11 @@ class SelectEmailForm
   end
 
   def validate_owns_selected_email
-    user_selected_email = EmailAddress.find(selected_email) if EmailAddress.
-      exists? id: selected_email
+    if EmailAddress.exists? id: selected_email
+      if EmailAddress.find(selected_email).confirmed?
+        user_selected_email = EmailAddress.find(selected_email)
+      end
+    end
     return if @user.id == user_selected_email&.user&.id
 
     errors.add :email, I18n.t(
