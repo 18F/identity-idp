@@ -17,7 +17,7 @@ module BrowserProtocolHelper
   end
 
   def node_id(element)
-    # Selenium internally tracks the ID for an element, and exposes it on a tuple `ref` method as
+    # Selenium internally tracks the ID for an element, and exposes it on a `ref` method tuple as
     # the second member. The Selenium ID includes the Chromium node ID as the last portion of a
     # dot-delimited string.
     #
