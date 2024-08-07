@@ -352,6 +352,7 @@ RSpec.describe AttributeAsserter do
                 "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
                 "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
               ]
+              # rubocop:enable Layout/LineLength
             end
 
             it 'only includes uuid, email, aal, and ial' do
@@ -594,7 +595,7 @@ RSpec.describe AttributeAsserter do
         {
           authn_context: [
             Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
-          ]
+          ],
         }
       end
 
@@ -629,7 +630,7 @@ RSpec.describe AttributeAsserter do
         {
           authn_context: [
             Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
-          ]
+          ],
         }
       end
 
@@ -730,7 +731,7 @@ RSpec.describe AttributeAsserter do
       context 'default_aal is nil' do
         let(:authn_context) { [] }
         it 'asserts default aal' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -742,7 +743,7 @@ RSpec.describe AttributeAsserter do
 
         it 'asserts aal1' do
           # we do not enforce aal1, we enforce default aal, so this should be updated
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -753,7 +754,7 @@ RSpec.describe AttributeAsserter do
         let(:authn_context) { [] }
 
         it 'asserts aal2' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -766,7 +767,7 @@ RSpec.describe AttributeAsserter do
         it 'asserts aa33' do
           # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
           # so should be updated
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -780,7 +781,7 @@ RSpec.describe AttributeAsserter do
         # We do not support AAL1. when passed in, we enforce our default AAL value.
         # However, we are returning the AAL1 value, which is misleading.
         it 'asserts default aal' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -790,7 +791,7 @@ RSpec.describe AttributeAsserter do
         let(:authn_context) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
         it 'asserts plain aal2' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -801,7 +802,7 @@ RSpec.describe AttributeAsserter do
 
         # we should assert the more specific aal2 value
         it 'asserts plain aal2' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -812,7 +813,7 @@ RSpec.describe AttributeAsserter do
 
         # we should assert the more specific aal2 value
         it 'asserts plain aal2' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -825,7 +826,7 @@ RSpec.describe AttributeAsserter do
         # when aal3 is requested, we are enforcing aal2 with phishing-resistant mfa.
         # we should update to assert that
         it 'asserts plain aal3' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -837,7 +838,7 @@ RSpec.describe AttributeAsserter do
         # when aal3 is requested, we are enforcing aal2 with HSPD12 mfa.
         # we should update to assert that
         it 'asserts plain aal2' do
-          expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+          expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
         end
@@ -855,8 +856,8 @@ RSpec.describe AttributeAsserter do
           end
 
           it 'asserts the default value' do
-            expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
-              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+            expect(get_asserted_attribute(user, :aal)).to eq(
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             )
           end
         end
@@ -870,8 +871,8 @@ RSpec.describe AttributeAsserter do
           end
 
           it 'asserts the aal1 value' do
-            expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
-              Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
+            expect(get_asserted_attribute(user, :aal)).to eq(
+              Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
             )
           end
         end
@@ -885,7 +886,7 @@ RSpec.describe AttributeAsserter do
         describe 'no aal is requested via authn_context' do
           context 'default_aal is nil' do
             it 'asserts default aal' do
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -896,7 +897,7 @@ RSpec.describe AttributeAsserter do
 
             it 'asserts aal1' do
               # we do not enforce aal1, we enforce default aal, so this should be updated
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -907,7 +908,7 @@ RSpec.describe AttributeAsserter do
 
             it 'asserts aal1' do
               # we do not enforce aal1, we enforce default aal, so this should be updated
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -918,7 +919,7 @@ RSpec.describe AttributeAsserter do
 
             it 'asserts aal1' do
               # we do not enforce aal1, we enforce default aal, so this should be updated
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -933,7 +934,7 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is nil' do
             it 'asserts default aal' do
               # this should be upgraded to AAL2, as we enforce that on an identity-proofing request
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -944,7 +945,7 @@ RSpec.describe AttributeAsserter do
 
             it 'asserts aal1' do
               # this should be upgraded to AAL2, as we enforce that on an identity-proofing request
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -954,7 +955,7 @@ RSpec.describe AttributeAsserter do
             let(:service_provider_aal) { 2 }
 
             it 'asserts base aal2' do
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -965,7 +966,7 @@ RSpec.describe AttributeAsserter do
 
             it 'asserts aal3' do
               # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+              expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
               )
             end
@@ -983,8 +984,8 @@ RSpec.describe AttributeAsserter do
 
             # identity proofing enforces aal2, so that is what should be asserted
             it 'asserts the default value' do
-              expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
-                Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+              expect(get_asserted_attribute(user, :aal)).to eq(
+                Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
               )
             end
           end
@@ -1012,7 +1013,7 @@ RSpec.describe AttributeAsserter do
             context 'default_aal is nil' do
               it 'asserts default aal' do
                 # this is fine, as we have enforced auth-only
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
                 )
               end
@@ -1023,7 +1024,7 @@ RSpec.describe AttributeAsserter do
 
               it 'asserts aal1' do
                 # this is fine, as we have enforced auth-only
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
                 )
               end
@@ -1033,7 +1034,7 @@ RSpec.describe AttributeAsserter do
               let(:service_provider_aal) { 2 }
 
               it 'asserts base aal2' do
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
                 )
               end
@@ -1044,7 +1045,7 @@ RSpec.describe AttributeAsserter do
 
               it 'asserts aal3' do
                 # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
                 )
               end
@@ -1058,7 +1059,7 @@ RSpec.describe AttributeAsserter do
               it 'asserts default aal' do
                 # this should be upgraded to AAL2, as we enforce that
                 # on an identity-proofing request
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
                 )
               end
@@ -1070,7 +1071,7 @@ RSpec.describe AttributeAsserter do
               it 'asserts aal1' do
                 # this should be upgraded to AAL2, as we enforce that
                 # on an identity-proofing request
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
                 )
               end
@@ -1080,7 +1081,7 @@ RSpec.describe AttributeAsserter do
               let(:service_provider_aal) { 2 }
 
               it 'asserts base aal2' do
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
                 )
               end
@@ -1091,7 +1092,7 @@ RSpec.describe AttributeAsserter do
 
               it 'asserts aal3' do
                 # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
-                expect(user.asserted_attributes[:aal][:getter].call(user)).to eq(
+                expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
                 )
               end
