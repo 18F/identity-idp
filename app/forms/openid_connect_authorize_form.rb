@@ -315,7 +315,12 @@ class OpenidConnectAuthorizeForm
   end
 
   def identity_proofing_requested?
-    requested_authn_context.identity_proofing?
+    if parsed_vectors_of_trust.present?
+      parsed_vectors_of_trust.any?(&:identity_proofing?)
+    else
+      Vot::AcrComponentValues.
+        includes_requirements?(highest_level_ial, :identity_proofing)
+    end
   end
 
   def identity_proofing_service_provider?
@@ -327,11 +332,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def ialmax_requested?
-    requested_authn_context.ialmax?
+    Vot::AcrComponentValues.includes_requirements?(highest_level_ial, :ialmax)
   end
 
   def biometric_ial_requested?
-    requested_authn_context.biometric_comparison?
+    Vot::AcrComponentValues.includes_requirements?(highest_level_ial, :biometric_comparison)
   end
 
   def highest_level_ial
@@ -350,7 +355,7 @@ class OpenidConnectAuthorizeForm
     @request_authn_context_resolver ||= AuthnContextResolver.new(
       service_provider: service_provider,
       user: nil,
-      vtr: parsed_vectors_of_trust.present? && vtr,
+      vtr: nil,
       acr_values: acr_values,
     )
   end
