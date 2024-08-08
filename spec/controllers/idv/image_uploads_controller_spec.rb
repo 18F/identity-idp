@@ -942,6 +942,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
               birth_year: 1938,
               zip_code: '12345',
+              issue_year: nil,
             )
 
             expect(@analytics).to have_logged_event(
