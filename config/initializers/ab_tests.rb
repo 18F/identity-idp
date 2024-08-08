@@ -31,6 +31,7 @@ module AbTests
 
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
+    should_log: /^idv/i,
     buckets: {
       alternate_vendor: IdentityConfig.store.doc_auth_vendor_randomize ?
         IdentityConfig.store.doc_auth_vendor_randomize_percent :
@@ -42,6 +43,7 @@ module AbTests
 
   ACUANT_SDK = AbTest.new(
     experiment_name: 'Acuant SDK Upgrade',
+    should_log: /^idv/i,
     buckets: {
       use_alternate_sdk: IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled ?
         IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_percent :
