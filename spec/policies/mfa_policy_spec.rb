@@ -24,6 +24,20 @@ RSpec.describe MfaPolicy do
     it { expect(subject.multiple_factors_enabled?).to eq true }
   end
 
+  describe '#piv_cac_mfa_enabled?' do
+    context 'with piv configuration' do
+      let(:user) { create(:user, :with_piv_or_cac) }
+
+      it { expect(subject.piv_cac_mfa_enabled?).to eq true }
+    end
+
+    context 'with non PIV MFA option' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it { expect(subject.piv_cac_mfa_enabled?).to eq false }
+    end
+  end
+
   describe '#unphishable?' do
     context 'with unphishable configuration' do
       let(:user) { create(:user, :with_piv_or_cac, :with_webauthn) }

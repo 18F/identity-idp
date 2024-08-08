@@ -238,6 +238,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           workflow: 'test_non_liveness_workflow',
           birth_year: 1938,
           zip_code: '59010',
+          issue_year: 2019,
         )
       end
 
@@ -343,6 +344,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             workflow: 'test_liveness_workflow',
             birth_year: 1938,
             zip_code: '59010',
+            issue_year: 2019,
           )
         end
 

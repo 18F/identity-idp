@@ -405,6 +405,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           workflow: an_instance_of(String),
           birth_year: 1938,
           zip_code: '59010',
+          issue_year: 2019,
         )
 
         expect(@analytics).to have_logged_event(
@@ -551,6 +552,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
               birth_year: 1938,
               zip_code: '12345',
+              issue_year: nil,
             )
 
             expect(@analytics).to have_logged_event(
@@ -649,6 +651,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
               birth_year: 1938,
               zip_code: '12345',
+              issue_year: nil,
             )
 
             expect(@analytics).to have_logged_event(
@@ -747,6 +750,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
               birth_year: 1938,
               zip_code: '12345',
+              issue_year: nil,
             )
 
             expect(@analytics).to have_logged_event(
@@ -842,6 +846,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
               birth_year: nil,
               zip_code: '12345',
+              issue_year: nil,
             )
 
             expect(@analytics).to have_logged_event(
@@ -937,6 +942,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               vendor: nil,
               birth_year: 1938,
               zip_code: '12345',
+              issue_year: nil,
             )
 
             expect(@analytics).to have_logged_event(
@@ -1060,6 +1066,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           vendor: nil,
           birth_year: nil,
           zip_code: nil,
+          issue_year: nil,
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1154,6 +1161,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           workflow: an_instance_of(String),
           birth_year: nil,
           zip_code: nil,
+          issue_year: nil,
         )
 
         expect_funnel_update_counts(user, 1)
