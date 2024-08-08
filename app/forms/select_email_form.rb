@@ -33,7 +33,7 @@ class SelectEmailForm
     return if user.confirmed_email_addresses.exists?(id: selected_email_id)
 
     errors.add :email, I18n.t(
-      'anonymous_mailer.password_reset_missing_user.subject',
+      'email_address.not_found',
     ), type: :selected_email_id
   end
 end

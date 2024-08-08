@@ -692,6 +692,7 @@ doc_auth.tips.review_issues_id_text1: Avez-vous utilisé un arrière-plan de cou
 doc_auth.tips.review_issues_id_text2: Avez-vous pris la photo sur une surface plane ?
 doc_auth.tips.review_issues_id_text3: Le flash de votre appareil photo est-il éteint ?
 doc_auth.tips.review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles ?
+email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
 email_addresses.add.limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
 email_addresses.delete.bullet1: Vous ne pourrez pas vous connecter à %{app_name} (ni à aucune des applications de l’administration associées à votre compte) à l’aide de cette adresse e-mail
