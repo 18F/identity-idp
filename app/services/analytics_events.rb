@@ -1374,7 +1374,6 @@ module AnalyticsEvents
   # @param analytics_id [String] "Doc Auth" for remote unsupervised, "In Person Proofing" for IPP
   # @param errors [Hash] Details about vendor-specific errors encountered during the stages of the identity resolution process
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
-  # @param irs_reproofing [Boolean] Whether the user is being forced to reproof to access the IRS
   # @param lexisnexis_instant_verify_workflow_ab_test_bucket [String] A/B test bucket for Lexis Nexis InstantVerify workflow testing
   # @param opted_in_to_in_person_proofing [Boolean] Whether this user explicitly opted into in-person proofing
   # @param proofing_results [Hash]
@@ -1440,7 +1439,6 @@ module AnalyticsEvents
     analytics_id: nil,
     errors: nil,
     flow_path: nil,
-    irs_reproofing: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
     opted_in_to_in_person_proofing: nil,
     proofing_results: nil,
@@ -1460,7 +1458,6 @@ module AnalyticsEvents
         analytics_id:,
         errors:,
         flow_path:,
-        irs_reproofing:,
         lexisnexis_instant_verify_workflow_ab_test_bucket:,
         opted_in_to_in_person_proofing:,
         proofing_results:,
