@@ -182,6 +182,7 @@ build-idp-image:
       --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
       --cache-ttl=168h
       --cache=true
+      --single-snapshot
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}"
       --build-arg "https_proxy=${https_proxy}"
