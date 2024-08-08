@@ -93,7 +93,7 @@ install:
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
 build-review-image:
-  stage: review
+  stage: build
   needs: []
   environment:
     name: review/$CI_COMMIT_REF_NAME
