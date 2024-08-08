@@ -43,7 +43,7 @@ module SignUp
     end
 
     def form_params
-      params.fetch(:select_email_form, {}).permit(:selection)
+      params.fetch(:select_email_form, {}).permit(:selected_email_id)
     end
   end
 end

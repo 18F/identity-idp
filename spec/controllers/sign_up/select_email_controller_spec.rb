@@ -14,17 +14,17 @@ RSpec.describe SignUp::SelectEmailController do
     end
 
     it 'updates selected email address' do
-      post :create, params: { selection: email2 }
+      post :create, params: { selected_email_id: email2 }
 
       expect(user.email_addresses.last.email).
         to include('michael.motorist2@email.com')
     end
 
-    context 'with a corrupted email selection form' do
+    context 'with a corrupted email selected_email_id form' do
       render_views
       it 'rejects email not belonging to the user' do
         stub_sign_in(user)
-        post :create, params: { selection: email3 }
+        post :create, params: { selected_email_id: email3 }
 
         expect(user.email_addresses.last.email).
           to include('michael.motorist2@email.com')

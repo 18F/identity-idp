@@ -11,13 +11,13 @@
       <fieldset class="usa-fieldset">
         <div class="usa-radio">
           <%= radio_button_tag(
-                'select_email_form[selection]',
+                'select_email_form[selected_email_id]',
                 email.id,
                 email.email == @last_sign_in_email_address,
                 class: 'usa-radio__input usa-radio__input--bordered',
               ) %>
               <%= label_tag(
-                    "select_email_form_selection_#{email.id}",
+                    "select_email_form_selected_email_id_#{email.id}",
                     class: 'usa-radio__label width-full',
                   ) do %>
                 <%= email.email %>

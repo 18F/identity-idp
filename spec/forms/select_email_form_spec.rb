@@ -5,14 +5,14 @@ RSpec.describe SelectEmailForm do
   describe '#submit' do
     it 'returns the email successfully' do
       form = SelectEmailForm.new(user)
-      response = form.submit(selection: user.email_addresses.last.id)
+      response = form.submit(selected_email_id: user.email_addresses.last.id)
 
       expect(response.success?).to eq(true)
     end
 
     it 'returns an error when submitting an invalid email' do
       form = SelectEmailForm.new(user)
-      response = form.submit(selection: nil)
+      response = form.submit(selected_email_id: nil)
 
       expect(response.success?).to eq(false)
     end
@@ -30,7 +30,7 @@ RSpec.describe SelectEmailForm do
 
       it 'returns an error' do
         form = SelectEmailForm.new(user)
-        response = form.submit(selection: user.email_addresses.last.id)
+        response = form.submit(selected_email_id: user.email_addresses.last.id)
 
         expect(response.success?).to eq(false)
       end
@@ -51,7 +51,7 @@ RSpec.describe SelectEmailForm do
 
       it 'returns an error' do
         form = SelectEmailForm.new(user)
-        response = form.submit(selection: @email2)
+        response = form.submit(selected_email_id: @email2)
 
         expect(response.success?).to eq(false)
       end
