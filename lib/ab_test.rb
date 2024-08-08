@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class AbTest
-  attr_reader :buckets, :experiment_name, :default_bucket
+  attr_reader :buckets, :experiment_name, :default_bucket, :should_log
 
   MAX_SHA = (16 ** 64) - 1
 
+  # @param [Proc<String>,RegExp,string,Boolean,nil] should_log Controls whether bucket data for this
+  #                                                            A/B test is logged with specific
+  #                                                            events.
   # @yieldparam [ActionDispatch::Request] request
   # @yieldparam [String,nil] service_provider Issuer string for the service provider associated with
   #                                           the current session.
@@ -13,6 +16,7 @@ class AbTest
   def initialize(
     experiment_name:,
     buckets: {},
+    should_log: nil,
     default_bucket: :default,
     &discriminator
   )
@@ -20,6 +24,7 @@ class AbTest
     @discriminator = discriminator
     @experiment_name = experiment_name
     @default_bucket = default_bucket
+    @should_log = should_log
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?
@@ -49,6 +54,22 @@ class AbTest
     end
 
     @default_bucket
+  end
+
+  def include_in_analytics_event?(event_name)
+    if should_log.is_a?(Proc)
+      should_log.call(event_name)
+    elsif should_log.is_a?(Regexp)
+      should_log.match?(event_name)
+    elsif should_log.is_a?(String)
+      event_name == should_log
+    elsif should_log == true || should_log == false
+      should_log
+    elsif !should_log.nil?
+      raise 'Unexpected value used for should_log'
+    else
+      true
+    end
   end
 
   private

@@ -5,6 +5,7 @@ RSpec.describe AbTest do
     AbTest.new(
       experiment_name: 'test',
       buckets:,
+      should_log:,
       &discriminator
     )
   end
@@ -15,6 +16,10 @@ RSpec.describe AbTest do
 
   let(:buckets) do
     { foo: 20, bar: 30, baz: 50 }
+  end
+
+  let(:should_log) do
+    nil
   end
 
   let(:request) {}
@@ -153,6 +158,93 @@ RSpec.describe AbTest do
 
       it 'raises a RuntimeError' do
         expect { subject }.to raise_error(RuntimeError, 'invalid bucket data structure')
+      end
+    end
+  end
+
+  describe '#include_in_analytics_event?' do
+    let(:event_name) { 'My cool event' }
+
+    let(:return_value) { subject.include_in_analytics_event?(event_name) }
+
+    context 'when should_log is nil' do
+      it 'returns true' do
+        expect(return_value).to eql(true)
+      end
+    end
+
+    context 'when string is used' do
+      context 'and string matches' do
+        let(:should_log) { event_name }
+        it 'returns true' do
+          expect(return_value).to eql(true)
+        end
+      end
+      context 'and string does not match' do
+        let(:should_log) { "Not #{event_name}" }
+        it 'returns false' do
+          expect(return_value).to eql(false)
+        end
+      end
+    end
+
+    context 'when Regexp is used' do
+      context 'and it matches' do
+        let(:should_log) { /cool/ }
+        it 'returns true' do
+          expect(return_value).to eql(true)
+        end
+      end
+      context 'and it does not match' do
+        let(:should_log) { /not cool/ }
+        it 'returns false' do
+          expect(return_value).to eql(false)
+        end
+      end
+    end
+
+    context 'when Proc is used' do
+      let(:should_log) do
+        ->(_event_name) {}
+      end
+
+      it 'calls the proc' do
+        expect(should_log).to receive(:call).with(event_name).and_call_original
+        return_value
+      end
+
+      context 'and it returns true' do
+        let(:should_log) do
+          ->(_event_name) { true }
+        end
+
+        it 'returns true' do
+          expect(return_value).to eql(true)
+        end
+      end
+
+      context 'and it returns false' do
+        let(:should_log) do
+          ->(_event_name) { false }
+        end
+
+        it 'returns false' do
+          expect(return_value).to eql(false)
+        end
+      end
+    end
+
+    context 'when true is used' do
+      let(:should_log) { true }
+      it 'returns true' do
+        expect(return_value).to eql(true)
+      end
+    end
+
+    context 'when false is used' do
+      let(:should_log) { false }
+      it 'returns false' do
+        expect(return_value).to eql(false)
       end
     end
   end
