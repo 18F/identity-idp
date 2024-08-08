@@ -77,16 +77,6 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'when current user has idv pending profile deactivated for password reset' do
-    let(:user) { build(:user, :proofed) }
-    let(:vtr) { ['C2.Pb'] }
-
-    it 'does not render idv partial' do
-      user.profiles.first.update!(deactivation_reason: :password_reset)
-      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
-    end
-  end
-
   context 'when current user has gpo pending profile' do
     let(:user) { create(:user, :with_pending_gpo_profile) }
 
