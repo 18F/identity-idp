@@ -85,6 +85,15 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
+  context 'when current user has ipp pending profile deactivated for password reset' do
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
+
+    it 'renders idv partial?' do
+      user.profiles.first.update!(deactivation_reason: :password_reset)
+      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
   context 'phone listing and adding' do
     context 'user has no phone' do
       let(:user) do
