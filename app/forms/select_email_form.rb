@@ -30,12 +30,7 @@ class SelectEmailForm
   end
 
   def validate_owns_selected_email
-    if EmailAddress.exists? id: selected_email
-      if EmailAddress.find(selected_email).confirmed?
-        user_selected_email = EmailAddress.find(selected_email)
-      end
-    end
-    return if @user.id == user_selected_email&.user&.id
+    return if user.confirmed_email_addresses.exists?(id: selected_email)
 
     errors.add :email, I18n.t(
       'anonymous_mailer.password_reset_missing_user.subject',
