@@ -41,7 +41,7 @@ interface EnrollResult {
   transports?: string[];
 }
 
-interface AuthenticatorSelectionCriteriaWithHints extends AuthenticatorSelectionCriteria {
+interface PublicKeyCredentialCreationOptionsWithHints extends PublicKeyCredentialCreationOptions {
   hints?: Array<PublicKeyCredentialHintType>;
 }
 
@@ -94,14 +94,14 @@ async function enrollWebauthnDevice({
       pubKeyCredParams: SUPPORTED_ALGORITHMS.map((alg) => ({ alg, type: 'public-key' })),
       timeout: 800000,
       attestation: 'none',
+      hints,
       authenticatorSelection: {
         // Prevents user from needing to use PIN with Security Key
         userVerification: 'discouraged',
         authenticatorAttachment,
-        hints,
-      } as AuthenticatorSelectionCriteriaWithHints,
+      },
       excludeCredentials,
-    },
+    } as PublicKeyCredentialCreationOptionsWithHints,
   })) as PublicKeyCredential;
 
   const response = credential.response as AuthenticatorAttestationResponseBrowserSupport;

@@ -28,7 +28,12 @@ RSpec.describe 'idv/agreement/show' do
   it 'renders a link to the privacy & security page' do
     expect(rendered).to have_link(
       t('doc_auth.instructions.learn_more'),
-      href: policy_redirect_url(flow: :idv, step: :agreement, location: :consent),
+      href: policy_redirect_url(
+        policy: :security_and_privacy_practices,
+        flow: :idv,
+        step: :agreement,
+        location: :consent,
+      ),
     )
   end
 end
