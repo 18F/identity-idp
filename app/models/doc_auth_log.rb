@@ -9,7 +9,9 @@ class DocAuthLog < ApplicationRecord
              primary_key: 'issuer'
   # rubocop:enable Rails/InverseOf
 
+  # rubocop:disable Rails/UnusedIgnoredColumns
   self.ignored_columns = [
     :aamva,
   ]
+  # rubocop:enable Rails/UnusedIgnoredColumns
 end
