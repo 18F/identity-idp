@@ -97,7 +97,7 @@ RSpec.describe AttributeAsserter do
             expect(get_asserted_attribute(user, :phone)).to eq '+18888675309'
           end
 
-          it 'gets UUID (MBUN) from Service Provider' do
+          it 'gets UUID from Service Provider' do
             expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
           end
         end
@@ -291,7 +291,7 @@ RSpec.describe AttributeAsserter do
             expect(get_asserted_attribute(user, :email)).to eq expected_email
           end
 
-          it 'gets UUID (MBUN) from Service Provider' do
+          it 'gets UUID from Service Provider' do
             uuid_getter = user.asserted_attributes[:uuid][:getter]
             expect(uuid_getter.call(user)).to eq user.last_identity.uuid
           end
@@ -317,7 +317,7 @@ RSpec.describe AttributeAsserter do
               expect(get_asserted_attribute(user, :email)).to eq expected_email
             end
 
-            it 'gets UUID (MBUN) from Service Provider' do
+            it 'gets UUID from Service Provider' do
               expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
             end
           end
