@@ -3,7 +3,15 @@ require 'rails_helper'
 RSpec.describe 'accounts/show.html.erb' do
   let(:authn_context) { Vot::Parser::Result.no_sp_result }
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
-
+  let(:vtr) { ['C2'] }
+  let(:authn_context) do
+    AuthnContextResolver.new(
+      user:,
+      service_provider: nil,
+      vtr: vtr,
+      acr_values: nil,
+    ).result
+  end
   before do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:user_session).and_return({})
@@ -66,6 +74,16 @@ RSpec.describe 'accounts/show.html.erb' do
       expect(rendered).to_not have_link(
         t('account.index.verification.reactivate_button'), href: idv_verify_by_mail_enter_code_path
       )
+    end
+  end
+
+  context 'when current user has idv pending profile deactivated for password reset' do
+    let(:user) { build(:user, :proofed) }
+    let(:vtr) { ['C2.Pb'] }
+
+    it 'does not render idv partial' do
+      user.profiles.first.update!(deactivation_reason: :password_reset)
+      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
     end
   end
 
