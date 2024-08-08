@@ -704,6 +704,7 @@ doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
 doc_auth.tips.review_issues_id_text2: 是否在平坦平面上拍的照？
 doc_auth.tips.review_issues_id_text3: 你相机的闪光灯是否关闭？
 doc_auth.tips.review_issues_id_text4: 是否所有细节都清晰可见？
+email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
 email_addresses.add.limit: 你添加的电邮地址数目已达最多。
 email_addresses.delete.bullet1: 使用该电邮地址你无法登录进入 %{app_name} （或任何其他与你账户关联的政府应用程序）。
