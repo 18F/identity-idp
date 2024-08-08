@@ -489,6 +489,20 @@ RSpec.describe ApplicationController do
           expect(result).to eq(Vot::Parser::Result.no_sp_result)
         end
       end
+
+      context 'when an unknow acr value is passed in' do
+        let(:acr_values) do
+          [
+            'http://idmanagement.gov/ns/assurance/aal/1',
+            'unknown/acr/value',
+          ].join(' ')
+        end
+
+        it 'returns a resolved authn context result' do
+          expect(result.aal2?).to eq(true)
+          expect(result.identity_proofing?).to eq(true)
+        end
+      end
     end
 
     context 'when using vot values' do

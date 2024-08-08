@@ -100,6 +100,20 @@ RSpec.describe AttributeAsserter do
           it 'gets UUID from Service Provider' do
             expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
           end
+
+          context 'when authn_context includes an unknown value' do
+            let(:authn_context) do
+              [
+                Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                'unknown/authn/context',
+              ]
+            end
+
+            it 'includes all requested attributes + uuid' do
+              expect(user.asserted_attributes.keys).
+                to eq(%i[uuid email phone first_name verified_at aal ial])
+            end
+          end
         end
 
         context 'custom bundle includes dob' do

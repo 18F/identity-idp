@@ -187,6 +187,20 @@ RSpec.describe SamlRequestValidator do
             **extra,
           )
         end
+
+        context 'along with a known authn_context' do
+          before do
+            authn_context.push(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+          end
+
+          it 'returns FormResponse with success: true' do
+            expect(response.to_h).to include(
+              success: true,
+              errors: {},
+              **extra,
+            )
+          end
+        end
       end
 
       context 'authn context is ial2 when sp is ial 1' do

@@ -303,7 +303,7 @@ RSpec.describe AuthnContextResolver do
       end
       let(:result) { subject.result }
 
-      context 'if IAL ACR value is present' do
+      context 'when IAL ACR value is present' do
         let(:acr_values) do
           [
             'http://idmanagement.gov/ns/assurance/ial/1',
@@ -317,7 +317,7 @@ RSpec.describe AuthnContextResolver do
         end
       end
 
-      context 'if multiple IAL ACR values are present' do
+      context 'when multiple IAL ACR values are present' do
         let(:acr_values) do
           [
             'http://idmanagement.gov/ns/assurance/ial/1',
@@ -330,9 +330,25 @@ RSpec.describe AuthnContextResolver do
           expect(result.identity_proofing?).to be true
           expect(result.aal2?).to be true
         end
+
+        context 'when one of the acr values is unknown' do
+          let(:acr_values) do
+            [
+              'http://idmanagement.gov/ns/assurance/ial/1',
+              'http://idmanagement.gov/ns/assurance/ial/2',
+              'http://idmanagement.gov/ns/assurance/aal/1',
+              'unknown/acr/value',
+            ].join(' ')
+          end
+
+          it 'ignores the unknown value and uses the highest IAL ACR' do
+            expect(result.identity_proofing?).to eq(true)
+            expect(result.aal2?).to eq(true)
+          end
+        end
       end
 
-      context 'if No IAL ACR is present' do
+      context 'when No IAL ACR is present' do
         let(:acr_values) do
           [
             'http://idmanagement.gov/ns/assurance/aal/1',
@@ -342,6 +358,14 @@ RSpec.describe AuthnContextResolver do
         it 'uses the defaul IAL' do
           expect(result.identity_proofing?).to be true
           expect(result.aal2?).to be true
+        end
+      end
+
+      context 'when the only ACR value is unknown' do
+        let(:acr_values) { 'unknown/acr/value' }
+
+        it 'errors out as if there were no values' do
+          expect { result }.to raise_error Vot::Parser::ParseException
         end
       end
 

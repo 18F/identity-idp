@@ -62,13 +62,14 @@ RSpec.describe Vot::Parser do
     end
 
     context 'when a vector includes unrecognized components' do
-      it 'raises an exception' do
+      it 'ignores the unknown value' do
         vector_of_trust = 'C1.C2.Xx'
 
-        expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
-          Vot::Parser::ParseException,
-          'C1.C2.Xx contains unkown component Xx',
-        )
+        result = Vot::Parser.new(vector_of_trust:).parse
+
+        expect(result.expanded_component_values).to eq('C1.C2')
+        expect(result.aal2?).to eq(true)
+        expect(result.phishing_resistant?).to eq(false)
       end
     end
 

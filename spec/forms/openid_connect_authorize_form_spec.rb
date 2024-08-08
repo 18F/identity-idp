@@ -546,6 +546,28 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(requested_aal_value).to eq(phishing_resistant)
         end
       end
+
+      context 'when an unknown authn_context is passed' do
+        let(:acr_values) { 'unknown/acr/values' }
+
+        it 'ignores it and returns the default' do
+          expect(form.requested_aal_value).to eq(
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        context 'with other authn_context' do
+          let(:phishing_resistant) do
+            Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+          end
+
+          let(:acr_values) { "unknown/acr/values #{phishing_resistant}" }
+
+          it 'ignores it and uses the other value' do
+            expect(form.requested_aal_value).to eq phishing_resistant
+          end
+        end
+      end
     end
   end
 
