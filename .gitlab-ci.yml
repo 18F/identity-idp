@@ -181,7 +181,7 @@ build-idp-image:
       ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
       --cache-ttl=168h
-      --cache=false
+      --cache=true
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}"
       --build-arg "https_proxy=${https_proxy}"
