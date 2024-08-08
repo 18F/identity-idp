@@ -77,6 +77,15 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
+  context 'when current user has gpo pending profile deactivated for password reset' do
+    let(:user) { create(:user, :with_pending_gpo_profile) }
+
+    it 'does not render idv partial' do
+      user.profiles.first.update!(deactivation_reason: :password_reset)
+      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
   context 'when current user has ipp pending profile' do
     let(:user) { build(:user, :with_pending_in_person_enrollment) }
 
@@ -88,7 +97,7 @@ RSpec.describe 'accounts/show.html.erb' do
   context 'when current user has ipp pending profile deactivated for password reset' do
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
-    it 'renders idv partial?' do
+    it 'does not render idv partial' do
       user.profiles.first.update!(deactivation_reason: :password_reset)
       expect(render).to_not render_template(partial: 'accounts/_identity_verification')
     end
