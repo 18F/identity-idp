@@ -182,6 +182,7 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      # Refresh USPS auth tokens
       usps_auth_token_refresh: (if IdentityConfig.store.usps_auth_token_refresh_job_enabled
                                   {
                                     class: 'UspsAuthTokenRefreshJob',
