@@ -28,7 +28,6 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
     scenario 'signing in with OIDC and selecting an alternative email address at first sign in' do
       user = create(:user, :fully_registered, :with_multiple_emails)
       emails = user.reload.email_addresses.map(&:email)
-      puts emails.first
 
       visit_idp_from_oidc_sp(scope: 'openid email')
       signin(emails.first, user.password)
