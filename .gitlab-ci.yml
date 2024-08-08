@@ -143,7 +143,7 @@ build-review-image:
       --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
 
 build-idp-image:
-  stage: review
+  stage: build
   needs: []
   interruptible: true
   variables:
