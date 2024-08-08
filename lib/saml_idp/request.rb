@@ -171,7 +171,7 @@ module SamlIdp
       Array(service_provider.certs).find do |cert|
         document.valid_signature?(
           fingerprint(cert),
-          options.merge(cert:, digest_method_fix_enabled: true)
+          options.merge(cert:)
         )
       end
     end
@@ -189,7 +189,7 @@ module SamlIdp
       Array(service_provider.certs).map do |cert|
         document.gather_errors(
           fingerprint(cert),
-          options.merge(cert:, digest_method_fix_enabled: true)
+          options.merge(cert:)
         )
       end
     end

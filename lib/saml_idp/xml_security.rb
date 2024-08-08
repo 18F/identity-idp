@@ -83,8 +83,7 @@ module SamlIdp
         else
           validate_doc_embedded_signature(
             base64_cert,
-            soft,
-            digest_method_fix_enabled: options[:digest_method_fix_enabled]
+            soft
           )
         end
       end
@@ -172,8 +171,7 @@ module SamlIdp
 
       def validate_doc_embedded_signature(
         base64_cert,
-        soft = true,
-        digest_method_fix_enabled: false
+        soft = true
       )
         # check for inclusive namespaces
         inclusive_namespaces = extract_inclusive_namespaces
@@ -204,10 +202,7 @@ module SamlIdp
             inclusive_namespaces
           )
 
-          digest_algorithm = digest_method_algorithm(
-            ref,
-            digest_method_fix_enabled
-          )
+          digest_algorithm = digest_method_algorithm(ref)
 
           hash = digest_algorithm.digest(canon_hashed_element)
 
@@ -233,13 +228,8 @@ module SamlIdp
         verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
       end
 
-      def digest_method_algorithm(ref, digest_method_fix_enabled)
-        digest_method = ref.at_xpath('//ds:DigestMethod | //DigestMethod', DS_NS)
-        if digest_method_fix_enabled || digest_method.namespace&.prefix.present?
-          algorithm(digest_method)
-        else
-          algorithm(nil)
-        end
+      def digest_method_algorithm(ref)
+        algorithm(ref.at_xpath('//ds:DigestMethod | //DigestMethod', DS_NS))
       end
 
       def verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
