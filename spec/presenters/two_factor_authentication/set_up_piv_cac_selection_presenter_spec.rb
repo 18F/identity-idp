@@ -42,7 +42,7 @@ RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
     end
 
     context 'with a confirmed email address ending in .gov or .mil' do
-      let(:user) { create(:user, email: 'example@example.gov') }
+      let(:user) { create(:user, email: 'example@gsa.gov') }
 
       it { expect(recommended).to eq(true) }
     end
