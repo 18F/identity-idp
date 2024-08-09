@@ -104,7 +104,7 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
 
 # Precompile assets
-RUN bundle exec rake assets:precompile --trace && rm -r node_modules/
+RUN bundle exec rake assets:precompile --trace && rm -r node_modules/ && rm -r .yarn-cache/
 
 # get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
