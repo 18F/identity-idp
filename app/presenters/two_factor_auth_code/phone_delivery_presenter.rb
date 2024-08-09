@@ -47,7 +47,7 @@ module TwoFactorAuthCode
         BlockLinkComponent.new(
           url: help_center_redirect_path(
             category: 'get-started',
-            article: 'authentication-options',
+            article: 'authentication-methods',
             article_anchor: 'didn-t-receive-your-one-time-code',
             flow: :two_factor_authentication,
             step: :otp_confirmation,
