@@ -792,7 +792,6 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
-            encryption_cert_matches_matching_cert: true,
           ),
         )
         expect(@analytics).to have_logged_event(
@@ -944,7 +943,6 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
-            encryption_cert_matches_matching_cert: true,
           ),
         )
         expect(@analytics).to have_logged_event(
@@ -1424,7 +1422,6 @@ RSpec.describe SamlIdpController do
 
     describe 'SAML signature behavior' do
       let(:authn_requests_signed) { false }
-      let(:encryption_cert_matches_matching_cert) { nil }
       let(:matching_cert_serial) { nil }
       let(:service_provider) { ServiceProvider.find_by(issuer: auth_settings.issuer) }
       let(:user) { create(:user, :fully_registered) }
@@ -1471,7 +1468,6 @@ RSpec.describe SamlIdpController do
               'SAML Auth', hash_including(
                 request_signed: authn_requests_signed,
                 matching_cert_serial: saml_test_sp_cert_serial,
-                encryption_cert_matches_matching_cert: true,
               )
             )
           end
@@ -1494,7 +1490,6 @@ RSpec.describe SamlIdpController do
               expect(@analytics).to have_logged_event(
                 'SAML Auth', hash_including(
                   request_signed: authn_requests_signed,
-                  encryption_cert_matches_matching_cert: false,
                 )
               )
             end
@@ -1540,7 +1535,6 @@ RSpec.describe SamlIdpController do
             expect(@analytics).to have_logged_event(
               'SAML Auth', hash_including(
                 request_signed: authn_requests_signed,
-                encryption_cert_matches_matching_cert: true,
                 cert_error_details:,
               )
             )
@@ -1664,7 +1658,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          encryption_cert_matches_matching_cert: true,
         }
 
         expect(@analytics).to have_logged_event('SAML Auth', hash_including(analytics_hash))
@@ -2378,7 +2371,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          encryption_cert_matches_matching_cert: true,
         }
 
         generate_saml_response(user)
@@ -2432,7 +2424,6 @@ RSpec.describe SamlIdpController do
           finish_profile: true,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          encryption_cert_matches_matching_cert: true,
         }
 
         generate_saml_response(user)
