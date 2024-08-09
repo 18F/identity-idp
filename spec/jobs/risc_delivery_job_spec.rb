@@ -72,14 +72,7 @@ RSpec.describe RiscDeliveryJob do
 
       context 'when the job fails for the 1st time' do
         it 'raises and retries via ActiveJob' do
-          expect do
-            RiscDeliveryJob.new.perform(
-              push_notification_url: push_notification_url,
-              jwt: jwt,
-              event_type: event_type,
-              issuer: issuer,
-            )
-          end.to raise_error(exception)
+          expect { perform }.to raise_error(exception)
 
           expect(job_analytics).not_to have_logged_event(
             :risc_security_event_pushed,
@@ -127,14 +120,7 @@ RSpec.describe RiscDeliveryJob do
 
       context 'when the job fails for the 1st time' do
         it 'raises and retries via ActiveJob' do
-          expect do
-            RiscDeliveryJob.new.perform(
-              push_notification_url: push_notification_url,
-              jwt: jwt,
-              event_type: event_type,
-              issuer: issuer,
-            )
-          end.to raise_error(Errno::ECONNREFUSED)
+          expect { perform }.to raise_error(Errno::ECONNREFUSED)
 
           expect(job_analytics).not_to have_logged_event(
             :risc_security_event_pushed,
@@ -212,14 +198,7 @@ RSpec.describe RiscDeliveryJob do
 
       context 'when the job fails for the 1st time' do
         it 'raises and retries via ActiveJob' do
-          expect do
-            RiscDeliveryJob.new.perform(
-              push_notification_url: push_notification_url,
-              jwt: jwt,
-              event_type: event_type,
-              issuer: issuer,
-            )
-          end.to raise_error(RedisRateLimiter::LimitError)
+          expect { perform }.to raise_error(RedisRateLimiter::LimitError)
 
           expect(job_analytics).not_to have_logged_event(
             :risc_security_event_pushed,
