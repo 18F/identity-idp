@@ -44,17 +44,6 @@ module Idv
       end
     end
 
-    def self.selected_remote(idv_session:)
-      if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-         IdentityConfig.store.in_person_proofing_enabled &&
-         idv_session.service_provider&.in_person_proofing_enabled
-        idv_session.skip_doc_auth == false
-      else
-        idv_session.skip_doc_auth.nil? ||
-          idv_session.skip_doc_auth == false
-      end
-    end
-
     def self.step_info
       Idv::StepInfo.new(
         key: :hybrid_handoff,
@@ -62,9 +51,8 @@ module Idv
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given &&
-                           (self.selected_remote(idv_session: idv_session) || # from opt-in screen
                              # back from ipp doc capture screen
-                             idv_session.skip_doc_auth_from_handoff)
+                             idv_session.skip_doc_auth_from_handoff
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
