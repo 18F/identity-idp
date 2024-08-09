@@ -136,7 +136,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM ruby:3.3.1-slim
+FROM ruby:3.3.1-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app
