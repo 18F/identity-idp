@@ -75,6 +75,10 @@ class ServiceProvider < ApplicationRecord
       IdentityConfig.store.allowed_biometric_ial_providers.include?(issuer)
   end
 
+  def identity_proofing_allowed?
+    ial == 2
+  end
+
   private
 
   # @return [String,nil]

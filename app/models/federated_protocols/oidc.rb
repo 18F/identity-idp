@@ -2,6 +2,7 @@
 
 module FederatedProtocols
   class Oidc
+    # @param request [OpenidConnectAuthorizeForm]
     def initialize(request)
       @request = request
     end
@@ -11,11 +12,11 @@ module FederatedProtocols
     end
 
     def ial
-      request.ial_values.sort.max
+      request.ial_values.first
     end
 
     def aal
-      request.aal_values.sort.max
+      request.aal_values.first
     end
 
     def acr_values
@@ -40,6 +41,7 @@ module FederatedProtocols
 
     private
 
+    # @return [OpenidConnectAuthorizeForm]
     attr_reader :request
   end
 end
