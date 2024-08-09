@@ -56,7 +56,7 @@ class NavigationPresenter
           ),
         ]
       ),
-      NavItem.new(I18n.t('account.navigation.customer_support'), MarketingSite.help_url, []),
+      NavItem.new(I18n.t('account.navigation.customer_support'), help_center_redirect_url, []),
     ]
   end
 
