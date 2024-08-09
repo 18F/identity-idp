@@ -44,8 +44,6 @@ module Idv
       end
     end
 
-    
-
     def self.step_info
       Idv::StepInfo.new(
         key: :hybrid_handoff,
@@ -54,7 +52,7 @@ module Idv
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given? &&
                              # back from ipp doc capture screen
-                             idv_session.skip_doc_auth_from_handoff)
+                             idv_session.skip_doc_auth_from_handoff
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
