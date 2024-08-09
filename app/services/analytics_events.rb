@@ -36,12 +36,10 @@ module AnalyticsEvents
   def account_reset_cancel(user_id:, message_id: nil, request_id: nil, **extra)
     track_event(
       'Account Reset: cancel',
-      {
-        user_id: user_id,
-        message_id: message_id,
-        request_id: request_id,
-        **extra,
-      }.compact,
+      user_id:,
+      message_id:,
+      request_id:,
+      **extra,
     )
   end
 
@@ -159,17 +157,15 @@ module AnalyticsEvents
   )
     track_event(
       'Account Reset: request',
-      {
-        success: success,
-        errors:,
-        sms_phone: sms_phone,
-        totp: totp,
-        piv_cac: piv_cac,
-        email_addresses: email_addresses,
-        request_id: request_id,
-        message_id: message_id,
-        **extra,
-      }.compact,
+      success:,
+      errors:,
+      sms_phone:,
+      totp:,
+      piv_cac:,
+      email_addresses:,
+      request_id:,
+      message_id:,
+      **extra,
     )
   end
 
@@ -1450,23 +1446,21 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth verify proofing results',
-      {
-        ab_tests:,
-        acuant_sdk_upgrade_ab_test_bucket:,
-        address_edited:,
-        address_line2_present:,
-        analytics_id:,
-        errors:,
-        flow_path:,
-        lexisnexis_instant_verify_workflow_ab_test_bucket:,
-        opted_in_to_in_person_proofing:,
-        proofing_results:,
-        skip_hybrid_handoff:,
-        ssn_is_unique:,
-        step:,
-        success:,
-        **extra,
-      }.compact,
+      ab_tests:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      address_edited:,
+      address_line2_present:,
+      analytics_id:,
+      errors:,
+      flow_path:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      opted_in_to_in_person_proofing:,
+      proofing_results:,
+      skip_hybrid_handoff:,
+      ssn_is_unique:,
+      step:,
+      success:,
+      **extra,
     )
   end
   # rubocop:enable Layout/LineLength
@@ -3390,15 +3384,13 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone error visited',
-      {
-        type: type,
-        proofing_components: proofing_components,
-        limiter_expires_at: limiter_expires_at,
-        remaining_submit_attempts: remaining_submit_attempts,
-        active_profile_idv_level: active_profile_idv_level,
-        pending_profile_idv_level: pending_profile_idv_level,
-        **extra,
-      }.compact,
+      type:,
+      proofing_components:,
+      limiter_expires_at:,
+      remaining_submit_attempts:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      **extra,
     )
   end
 
@@ -4103,30 +4095,28 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication',
-      {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        context: context,
-        new_device: new_device,
-        multi_factor_auth_method: multi_factor_auth_method,
-        multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
-        auth_app_configuration_id: auth_app_configuration_id,
-        piv_cac_configuration_id: piv_cac_configuration_id,
-        piv_cac_configuration_dn_uuid:,
-        key_id: key_id,
-        webauthn_configuration_id: webauthn_configuration_id,
-        confirmation_for_add_phone: confirmation_for_add_phone,
-        phone_configuration_id: phone_configuration_id,
-        pii_like_keypaths: pii_like_keypaths,
-        area_code: area_code,
-        country_code: country_code,
-        phone_fingerprint: phone_fingerprint,
-        frontend_error:,
-        in_account_creation_flow:,
-        enabled_mfa_methods_count:,
-        **extra,
-      }.compact,
+      success:,
+      errors:,
+      error_details:,
+      context:,
+      new_device:,
+      multi_factor_auth_method:,
+      multi_factor_auth_method_created_at:,
+      auth_app_configuration_id:,
+      piv_cac_configuration_id:,
+      piv_cac_configuration_dn_uuid:,
+      key_id:,
+      webauthn_configuration_id:,
+      confirmation_for_add_phone:,
+      phone_configuration_id:,
+      pii_like_keypaths:,
+      area_code:,
+      country_code:,
+      phone_fingerprint:,
+      frontend_error:,
+      in_account_creation_flow:,
+      enabled_mfa_methods_count:,
+      **extra,
     )
   end
 
@@ -4144,13 +4134,11 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication: Added phone',
-      {
-        method_name:,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        recaptcha_annotation:,
-        in_account_creation_flow:,
-        **extra,
-      }.compact,
+      method_name:,
+      enabled_mfa_methods_count:,
+      recaptcha_annotation:,
+      in_account_creation_flow:,
+      **extra,
     )
   end
 
@@ -4167,12 +4155,10 @@ module AnalyticsEvents
   )
     track_event(
       :multi_factor_auth_added_piv_cac,
-      {
-        method_name:,
-        enabled_mfa_methods_count:,
-        in_account_creation_flow:,
-        **extra,
-      }.compact,
+      method_name:,
+      enabled_mfa_methods_count:,
+      in_account_creation_flow:,
+      **extra,
     )
   end
 
@@ -4188,12 +4174,10 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication: Added TOTP',
-      {
-        method_name:,
-        in_account_creation_flow:,
-        enabled_mfa_methods_count:,
-        **extra,
-      }.compact,
+      method_name:,
+      in_account_creation_flow:,
+      enabled_mfa_methods_count:,
+      **extra,
     )
   end
 
@@ -4427,25 +4411,23 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication Setup',
-      {
-        success:,
-        errors:,
-        error_details:,
-        multi_factor_auth_method:,
-        in_account_creation_flow:,
-        enabled_mfa_methods_count:,
-        multi_factor_auth_method_created_at:,
-        context:,
-        confirmation_for_add_phone:,
-        area_code:,
-        country_code:,
-        phone_fingerprint:,
-        phone_configuration_id:,
-        totp_secret_present:,
-        auth_app_configuration_id:,
-        new_device:,
-        **extra,
-      }.compact,
+      success:,
+      errors:,
+      error_details:,
+      multi_factor_auth_method:,
+      in_account_creation_flow:,
+      enabled_mfa_methods_count:,
+      multi_factor_auth_method_created_at:,
+      context:,
+      confirmation_for_add_phone:,
+      area_code:,
+      country_code:,
+      phone_fingerprint:,
+      phone_configuration_id:,
+      totp_secret_present:,
+      auth_app_configuration_id:,
+      new_device:,
+      **extra,
     )
   end
 
@@ -5177,15 +5159,13 @@ module AnalyticsEvents
   )
     track_event(
       'reCAPTCHA verify result received',
-      {
-        recaptcha_result:,
-        score_threshold:,
-        evaluated_as_valid:,
-        form_class:,
-        exception_class:,
-        phone_country_code:,
-        **extra,
-      }.compact,
+      recaptcha_result:,
+      score_threshold:,
+      evaluated_as_valid:,
+      form_class:,
+      exception_class:,
+      phone_country_code:,
+      **extra,
     )
   end
 
@@ -5430,17 +5410,15 @@ module AnalyticsEvents
   )
     track_event(
       'SAML Auth Request',
-      {
-        requested_ial: requested_ial,
-        authn_context: authn_context,
-        requested_aal_authn_context: requested_aal_authn_context,
-        requested_vtr_authn_contexts: requested_vtr_authn_contexts,
-        force_authn: force_authn,
-        final_auth_request: final_auth_request,
-        service_provider: service_provider,
-        user_fully_authenticated: user_fully_authenticated,
-        **extra,
-      }.compact,
+      requested_ial:,
+      authn_context:,
+      requested_aal_authn_context:,
+      requested_vtr_authn_contexts:,
+      force_authn:,
+      final_auth_request:,
+      service_provider:,
+      user_fully_authenticated:,
+      **extra,
     )
   end
 
@@ -5753,15 +5731,13 @@ module AnalyticsEvents
   )
     track_event(
       'User Registration: 2FA Setup',
-      {
-        success:,
-        errors:,
-        error_details:,
-        selected_mfa_count:,
-        enabled_mfa_methods_count:,
-        selection:,
-        **extra,
-      }.compact,
+      success:,
+      errors:,
+      error_details:,
+      selected_mfa_count:,
+      enabled_mfa_methods_count:,
+      selection:,
+      **extra,
     )
   end
 
@@ -5941,14 +5917,12 @@ module AnalyticsEvents
   )
     track_event(
       'User Registration: MFA Setup Complete',
-      {
-        success: success,
-        mfa_method_counts: mfa_method_counts,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        pii_like_keypaths: pii_like_keypaths,
-        second_mfa_reminder_conversion:,
-        **extra,
-      }.compact,
+      success:,
+      mfa_method_counts:,
+      enabled_mfa_methods_count:,
+      pii_like_keypaths:,
+      second_mfa_reminder_conversion:,
+      **extra,
     )
   end
 
@@ -5974,53 +5948,22 @@ module AnalyticsEvents
 
   # @param [String] mfa_method
   # Tracks when the the user fully registered by submitting their first MFA method into the system
-  def user_registration_user_fully_registered(
-    mfa_method:,
-    **extra
-  )
-    track_event(
-      'User Registration: User Fully Registered',
-      {
-        mfa_method: mfa_method,
-        **extra,
-      }.compact,
-    )
+  def user_registration_user_fully_registered(mfa_method:, **extra)
+    track_event('User Registration: User Fully Registered', mfa_method:, **extra)
   end
 
   # Tracks when user reinstated
   # @param [Boolean] success
   # @param [String] error_message
-  def user_reinstated(
-    success:,
-    error_message: nil,
-    **extra
-  )
-    track_event(
-      'User Suspension: Reinstated',
-      {
-        success: success,
-        error_message: error_message,
-        **extra,
-      }.compact,
-    )
+  def user_reinstated(success:, error_message: nil, **extra)
+    track_event('User Suspension: Reinstated', success:, error_message:, **extra)
   end
 
   # Tracks when user suspended
   # @param [Boolean] success
   # @param [String] error_message
-  def user_suspended(
-    success:,
-    error_message: nil,
-    **extra
-  )
-    track_event(
-      'User Suspension: Suspended',
-      {
-        success: success,
-        error_message: error_message,
-        **extra,
-      }.compact,
-    )
+  def user_suspended(success:, error_message: nil, **extra)
+    track_event('User Suspension: Suspended', success:, error_message:, **extra)
   end
 
   # Tracks when the user is suspended and attempts to sign in, triggering the please call page.

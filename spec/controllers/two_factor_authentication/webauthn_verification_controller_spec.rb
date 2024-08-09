@@ -48,8 +48,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController,
           result = {
             context: 'authentication',
             multi_factor_auth_method: 'webauthn_platform',
-            webauthn_configuration_id: nil,
-            multi_factor_auth_method_created_at: nil,
           }
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication: enter webAuthn authentication visited',

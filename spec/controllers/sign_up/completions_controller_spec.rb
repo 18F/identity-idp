@@ -228,14 +228,9 @@ RSpec.describe SignUp::CompletionsController do
           'User registration: complete',
           ial2: false,
           ialmax: false,
-          service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
-          sp_session_requested_attributes: nil,
           in_account_creation_flow: true,
-          disposable_email_domain: nil,
-          in_person_proofing_status: nil,
-          doc_auth_result: nil,
         )
       end
 
@@ -290,14 +285,10 @@ RSpec.describe SignUp::CompletionsController do
             'User registration: complete',
             ial2: false,
             ialmax: false,
-            service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: 'agency-page',
             needs_completion_screen_reason: :new_sp,
-            sp_session_requested_attributes: nil,
             in_account_creation_flow: true,
             disposable_email_domain: 'temporary.com',
-            doc_auth_result: nil,
-            in_person_proofing_status: nil,
           )
         end
       end

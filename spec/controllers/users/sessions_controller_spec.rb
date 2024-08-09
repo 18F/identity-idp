@@ -214,7 +214,6 @@ RSpec.describe Users::SessionsController, devise: true do
           bad_password_count: 8,
           sp_request_url_present: false,
           remember_device: false,
-          new_device: nil,
         )
       end
     end
@@ -237,7 +236,6 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
-        new_device: nil,
       )
       expect(subject.session[:sign_in_flow]).to eq(:sign_in)
     end
@@ -258,7 +256,6 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 1,
         sp_request_url_present: false,
         remember_device: false,
-        new_device: nil,
       )
     end
 
@@ -283,7 +280,6 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 0,
         sp_request_url_present: false,
         remember_device: false,
-        new_device: nil,
       )
     end
 
@@ -306,7 +302,6 @@ RSpec.describe Users::SessionsController, devise: true do
         valid_captcha_result: false,
         bad_password_count: 0,
         remember_device: false,
-        new_device: nil,
         sp_request_url_present: false,
       )
     end
@@ -343,7 +338,6 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 2,
         sp_request_url_present: false,
         remember_device: false,
-        new_device: nil,
       )
     end
 
@@ -363,7 +357,6 @@ RSpec.describe Users::SessionsController, devise: true do
         bad_password_count: 1,
         sp_request_url_present: true,
         remember_device: false,
-        new_device: nil,
       )
     end
 
@@ -549,7 +542,7 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks CSRF errors' do
       user = create(:user, :fully_registered)
       stub_analytics
-      analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
+      analytics_hash = { controller: 'users/sessions#create' }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       post :create, params: { user: { email: user.email, password: user.password } }
@@ -562,7 +555,7 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'redirects back to home page if CSRF error and referer is invalid' do
       user = create(:user, :fully_registered)
       stub_analytics
-      analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
+      analytics_hash = { controller: 'users/sessions#create' }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       request.env['HTTP_REFERER'] = '@@@'
