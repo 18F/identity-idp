@@ -5,6 +5,8 @@ RSpec.describe Idv::ProofingComponents do
 
   let(:user_session) { {} }
 
+  let(:session) { {} }
+
   let(:idv_session) do
     Idv::Session.new(
       current_user: user,
@@ -19,6 +21,7 @@ RSpec.describe Idv::ProofingComponents do
 
   subject do
     described_class.new(
+      session:,
       user:,
       user_session:,
       idv_session:,

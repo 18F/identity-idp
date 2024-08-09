@@ -3,13 +3,15 @@
 module Idv
   class ProofingComponents
     def initialize(
-        user:,
-        user_session:,
-        idv_session:
-      )
+      idv_session:,
+      session:,
+      user:,
+      user_session:
+    )
+      @idv_session = idv_session
+      @session = session
       @user = user
       @user_session = user_session
-      @idv_session = idv_session
     end
 
     def document_check
@@ -19,6 +21,7 @@ module Idv
         DocAuthRouter.doc_auth_vendor(
           request: nil,
           service_provider: idv_session.service_provider,
+          session:,
           user_session:,
           user:,
         )
@@ -70,6 +73,6 @@ module Idv
 
     private
 
-    attr_reader :user, :user_session, :idv_session
+    attr_reader :idv_session, :session, :user, :user_session
   end
 end

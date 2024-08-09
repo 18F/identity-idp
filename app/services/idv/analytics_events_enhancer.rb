@@ -194,9 +194,10 @@ module Idv
       )
 
       proofing_components_hash = ProofingComponents.new(
+        idv_session:,
+        session:,
         user:,
         user_session:,
-        idv_session:,
       ).to_h
 
       proofing_components_hash.empty? ? nil : proofing_components_hash

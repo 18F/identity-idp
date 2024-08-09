@@ -204,12 +204,14 @@ module DocAuthRouter
   def self.doc_auth_vendor(
     request:,
     service_provider:,
+    session:,
     user:,
     user_session:
   )
     bucket = AbTests::DOC_AUTH_VENDOR.bucket(
       request:,
       service_provider:,
+      session:,
       user:,
       user_session:,
     )
