@@ -33,9 +33,10 @@ class AbTest
   # @param [ActionDispatch::Request] request
   # @param [String,nil] service_provider Issuer string for the service provider associated with
   #                                      the current session.
+  # @params [Hash] session
   # @param [User] user
   # @param [Hash] user_session
-  def bucket(request:, service_provider:, user:, user_session:)
+  def bucket(request:, service_provider:, session:, user:, user_session:)
     return nil if no_percentages?
 
     discriminator = resolve_discriminator(
