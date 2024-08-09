@@ -7,6 +7,8 @@ cron_24h = '0 0 * * *'
 cron_24h_1am = '0 1 * * *' # 1am UTC is 8pm EST/9pm EDT
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_every_monday = 'every Monday at 0:00 UTC' # equivalent to '0 0 * * 1'
+cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
+cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -226,13 +228,13 @@ else
       # Previous week's drop of report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
-        cron: cron_every_monday,
+        cron: cron_every_monday_1am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous week's protocols report
       weekly_protocols_report: {
         class: 'Reports::ProtocolsReport',
-        cron: cron_every_monday,
+        cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact
