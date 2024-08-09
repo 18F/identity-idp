@@ -167,12 +167,23 @@ module Users
       UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
         user_id: current_user.id,
-        email: auth_params[:email],
+        email: last_email_from_sp,
       )
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
       redirect_to next_url_after_valid_authentication
+    end
+
+    def last_email_from_sp
+      return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+      sp = sp_session['issuer']
+      if sp.present?
+        identity = current_user.identities.where(service_provider: sp)
+        email_id = identity.pick('email_address_id')
+        return current_user.email_addresses.find(email_id).email if email_id.is_a? Integer
+      end
+      return auth_params[:email]
     end
 
     def track_authentication_attempt(email)

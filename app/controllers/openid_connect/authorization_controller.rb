@@ -84,7 +84,17 @@ module OpenidConnect
         current_user: current_user,
         ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
+        email_address_id: email_address_id,
       )
+    end
+
+    def email_address_id
+      return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+      return session[:sp_email_id] if session[:sp_email_id].present?
+      identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
+      email_id = identity&.email_address_id
+      return email_id if email_id.is_a? Integer
+      return EmailContext.new(current_user).last_sign_in_email_address.id
     end
 
     def ial_context
