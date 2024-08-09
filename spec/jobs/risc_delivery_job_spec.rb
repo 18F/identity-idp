@@ -220,6 +220,7 @@ RSpec.describe RiscDeliveryJob do
               issuer: issuer,
             )
           end.to raise_error(RedisRateLimiter::LimitError)
+
           expect(job_analytics).not_to have_logged_event(
             :risc_security_event_pushed,
             risc_event_payload.merge(
