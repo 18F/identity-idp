@@ -282,7 +282,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the user creates a set of backup mfa codes.
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   def backup_code_created(enabled_mfa_methods_count:, in_account_creation_flow:, **extra)
     track_event(
@@ -302,7 +302,7 @@ module AnalyticsEvents
   # Track user creating new BackupCodeSetupForm, record form submission Hash
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
-  # @param [Number] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether page is visited as part of account creation
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
@@ -704,7 +704,7 @@ module AnalyticsEvents
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isCameraSupported
   # @param [Boolean] success
   # @param [Boolean] use_alternate_sdk
@@ -854,7 +854,7 @@ module AnalyticsEvents
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
@@ -909,7 +909,7 @@ module AnalyticsEvents
     track_event(:idv_camera_info_error, error: error)
   end
 
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Array] camera_info Information on the users cameras max resolution
   # as  captured by the browser
   def idv_camera_info_logged(flow_path:, camera_info:, **_extra)
@@ -1020,7 +1020,7 @@ module AnalyticsEvents
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] use_alternate_sdk
   # @param [Boolean] liveness_checking_required
   def idv_capture_troubleshooting_dismissed(
@@ -1055,24 +1055,137 @@ module AnalyticsEvents
 
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
-  def idv_doc_auth_agreement_submitted(**extra)
-    track_event('IdV: doc auth agreement submitted', **extra)
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_agreement_submitted(
+    success:,
+    errors:,
+    step:,
+    analytics_id:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth agreement submitted',
+      success:,
+      errors:,
+      step:,
+      analytics_id:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
   end
 
-  def idv_doc_auth_agreement_visited(**extra)
-    track_event('IdV: doc auth agreement visited', **extra)
+  # User visits IdV agreement step
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_agreement_visited(
+    step:,
+    analytics_id:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth agreement visited',
+      step:,
+      analytics_id:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
   end
 
   def idv_doc_auth_capture_complete_visited(**extra)
     track_event('IdV: doc auth capture_complete visited', **extra)
   end
 
-  def idv_doc_auth_document_capture_submitted(**extra)
-    track_event('IdV: doc auth document_capture submitted', **extra)
+  # User submits IdV document capture step
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
+  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
+  # warning
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  def idv_doc_auth_document_capture_submitted(
+    success:,
+    errors:,
+    step:,
+    analytics_id:,
+    liveness_checking_required:,
+    selfie_check_required:,
+    flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth document_capture submitted',
+      success:,
+      errors:,
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      liveness_checking_required:,
+      selfie_check_required:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      flow_path:,
+      **extra,
+    )
   end
 
-  def idv_doc_auth_document_capture_visited(**extra)
-    track_event('IdV: doc auth document_capture visited', **extra)
+  # User visits IdV document capture step
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
+  # warning
+  # @param [Boolean] liveness_checking_required Whether biometric selfie check is required
+  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_document_capture_visited(
+    step:,
+    analytics_id:,
+    liveness_checking_required:,
+    selfie_check_required:,
+    flow_path:,
+    redo_document_capture: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth document_capture visited',
+      flow_path:,
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      liveness_checking_required:,
+      selfie_check_required:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      **extra,
+    )
   end
 
   # @param [String] step_name which step the user was on
@@ -1109,14 +1222,76 @@ module AnalyticsEvents
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
   # @identity.idp.previous_event_name IdV: doc auth upload submitted
-  def idv_doc_auth_hybrid_handoff_submitted(**extra)
-    track_event('IdV: doc auth hybrid handoff submitted', **extra)
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
+  # warning
+  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param ["document_capture","send_link"] destination Where user is sent after submission
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_hybrid_handoff_submitted(
+    success:,
+    errors:,
+    step:,
+    analytics_id:,
+    redo_document_capture:,
+    selfie_check_required:,
+    destination:,
+    flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth hybrid handoff submitted',
+      success:,
+      errors:,
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      selfie_check_required:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      destination:,
+      flow_path:,
+      **extra,
+    )
   end
 
   # Desktop user has reached the above "hybrid handoff" view
   # @identity.idp.previous_event_name IdV: doc auth upload visited
-  def idv_doc_auth_hybrid_handoff_visited(**extra)
-    track_event('IdV: doc auth hybrid handoff visited', **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
+  # warning
+  # @param [Boolean] selfie_check_required Whether biometric selfie check is required
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # SDK upgrades
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_hybrid_handoff_visited(
+    step:,
+    analytics_id:,
+    redo_document_capture:,
+    selfie_check_required:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth hybrid handoff visited',
+      step:,
+      analytics_id:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      selfie_check_required:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
@@ -1140,26 +1315,76 @@ module AnalyticsEvents
     track_event('IdV: doc auth redo_ssn submitted', **extra)
   end
 
+  # User submits IdV Social Security number step
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
-  def idv_doc_auth_ssn_submitted(**extra)
-    track_event('IdV: doc auth ssn submitted', **extra)
+  # @param [Boolean] success Whether form validation was successful
+  # @param [Hash] errors Errors resulting from form validation
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_ssn_submitted(
+    success:,
+    errors:,
+    step:,
+    analytics_id:,
+    flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth ssn submitted',
+      success:,
+      errors:,
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      flow_path:,
+      **extra,
+    )
   end
 
+  # User visits IdV Social Security number step
   # @identity.idp.previous_event_name IdV: in person proofing ssn visited
-  def idv_doc_auth_ssn_visited(**extra)
-    track_event('IdV: doc auth ssn visited', **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_ssn_visited(
+    step:,
+    analytics_id:,
+    flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth ssn visited',
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      flow_path:,
+      **extra,
+    )
   end
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Integer] submit_attempts (previously called "attempts")
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -1172,6 +1397,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    selfie_image_fingerprint: nil,
     **extra
   )
     track_event(
@@ -1186,6 +1412,7 @@ module AnalyticsEvents
       front_image_fingerprint:,
       back_image_fingerprint:,
       liveness_checking_required:,
+      selfie_image_fingerprint:,
       **extra,
     )
   end
@@ -1198,14 +1425,16 @@ module AnalyticsEvents
   # @param [String] state
   # @param [String] state_id_type
   # @param [Boolean] async
-  # @param [Integer] submit_attempts (previously called "attempts")
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # "attempts")
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] client_image_metrics
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [Boolean] attention_with_barcode
+  # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
   # @param [String] liveness_checking_required Whether or not the selfie is required
@@ -1225,6 +1454,10 @@ module AnalyticsEvents
   # @param [Hash] image_metrics
   # @param [Boolean] address_line2_present
   # @param [String] zip_code
+  # @param [Boolean] selfie_live Selfie liveness result
+  # @param [Boolean] selfie_quality_good Selfie quality result
+  # @param [String] workflow LexisNexis TrueID workflow
+  # @param [String] birth_year Birth year from document
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
   # @option extra [String] 'DocIssuerCode'
@@ -1257,6 +1490,7 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    selfie_image_fingerprint: nil,
     attention_with_barcode: nil,
     doc_type_supported: nil,
     doc_auth_success: nil,
@@ -1276,6 +1510,10 @@ module AnalyticsEvents
     image_metrics: nil,
     address_line2_present: nil,
     zip_code: nil,
+    selfie_live: nil,
+    selfie_quality_good: nil,
+    workflow: nil,
+    birth_year: nil,
     **extra
   )
     track_event(
@@ -1295,6 +1533,7 @@ module AnalyticsEvents
       vendor_request_time_in_ms:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      selfie_image_fingerprint:,
       attention_with_barcode:,
       doc_type_supported:,
       doc_auth_success:,
@@ -1315,6 +1554,10 @@ module AnalyticsEvents
       address_line2_present:,
       liveness_checking_required:,
       zip_code:,
+      selfie_live:,
+      selfie_quality_good:,
+      workflow:,
+      birth_year:,
       **extra,
     )
   end
@@ -1325,10 +1568,15 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] pii_like_keypaths
-  # @param [String] flow_path
-  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param ["present","missing"] id_issued_status Status of state_id_issued field presence
+  # @param ["present","missing"] id_expiration_status Status of state_id_expiration field presence
+  # @param [Boolean] attention_with_barcode Whether result was attention with barcode
+  # @param [Integer] submit_attempts Times that user has tried submitting
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
@@ -1338,10 +1586,15 @@ module AnalyticsEvents
     pii_like_keypaths:,
     flow_path:,
     liveness_checking_required:,
+    attention_with_barcode:,
+    id_issued_status:,
+    id_expiration_status:,
+    submit_attempts:,
     error_details: nil,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    selfie_image_fingerprint: nil,
     classification_info: {},
     **extra
   )
@@ -1351,11 +1604,16 @@ module AnalyticsEvents
       errors:,
       error_details:,
       user_id:,
+      attention_with_barcode:,
+      id_issued_status:,
+      id_expiration_status:,
+      submit_attempts:,
       remaining_submit_attempts:,
       pii_like_keypaths:,
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      selfie_image_fingerprint:,
       classification_info:,
       liveness_checking_required:,
       **extra,
@@ -1465,14 +1723,56 @@ module AnalyticsEvents
   end
   # rubocop:enable Layout/LineLength
 
+  # User submits IdV verify step
   # @identity.idp.previous_event_name IdV: in person proofing verify submitted
-  def idv_doc_auth_verify_submitted(**extra)
-    track_event('IdV: doc auth verify submitted', **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_verify_submitted(
+    step:,
+    analytics_id:,
+    flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth verify submitted',
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      flow_path:,
+      **extra,
+    )
   end
 
+  # User visits IdV verify step
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
-  def idv_doc_auth_verify_visited(**extra)
-    track_event('IdV: doc auth verify visited', **extra)
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_verify_visited(
+    step:,
+    analytics_id:,
+    flow_path:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth verify visited',
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      flow_path:,
+      **extra,
+    )
   end
 
   # @param [String] step_name
@@ -1487,12 +1787,32 @@ module AnalyticsEvents
     )
   end
 
-  def idv_doc_auth_welcome_submitted(**extra)
-    track_event('IdV: doc auth welcome submitted', **extra)
+  # User submits IdV welcome screen
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_welcome_submitted(step:, analytics_id:, skip_hybrid_handoff: nil, **extra)
+    track_event(
+      'IdV: doc auth welcome submitted',
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
   end
 
-  def idv_doc_auth_welcome_visited(**extra)
-    track_event('IdV: doc auth welcome visited', **extra)
+  # User visits IdV welcome screen
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_doc_auth_welcome_visited(step:, analytics_id:, skip_hybrid_handoff: nil, **extra)
+    track_event(
+      'IdV: doc auth welcome visited',
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
   end
 
   # User submitted IDV password confirm page
@@ -1501,6 +1821,8 @@ module AnalyticsEvents
   # @param [Boolean] fraud_rejection
   # @param [Boolean] gpo_verification_pending
   # @param [Boolean] in_person_verification_pending
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -1519,6 +1841,8 @@ module AnalyticsEvents
     fraud_rejection:,
     gpo_verification_pending:,
     in_person_verification_pending:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
     deactivation_reason: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -1527,19 +1851,23 @@ module AnalyticsEvents
   )
     track_event(
       :idv_enter_password_submitted,
-      success: success,
-      deactivation_reason: deactivation_reason,
-      fraud_review_pending: fraud_review_pending,
-      gpo_verification_pending: gpo_verification_pending,
-      in_person_verification_pending: in_person_verification_pending,
-      fraud_rejection: fraud_rejection,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      success:,
+      deactivation_reason:,
+      fraud_review_pending:,
+      gpo_verification_pending:,
+      in_person_verification_pending:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      fraud_rejection:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
 
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -1555,6 +1883,8 @@ module AnalyticsEvents
   # User visited IDV password confirm page
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
     proofing_components: nil,
     address_verification_method: nil,
     active_profile_idv_level: nil,
@@ -1563,10 +1893,12 @@ module AnalyticsEvents
   )
     track_event(
       :idv_enter_password_visited,
-      address_verification_method: address_verification_method,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      address_verification_method:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -1577,6 +1909,8 @@ module AnalyticsEvents
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verification
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verification
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -1597,6 +1931,8 @@ module AnalyticsEvents
     fraud_rejection:,
     gpo_verification_pending:,
     in_person_verification_pending:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
     deactivation_reason: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -1606,16 +1942,18 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: final resolution',
-      success: success,
-      fraud_review_pending: fraud_review_pending,
-      fraud_rejection: fraud_rejection,
-      gpo_verification_pending: gpo_verification_pending,
-      in_person_verification_pending: in_person_verification_pending,
-      deactivation_reason: deactivation_reason,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
-      profile_history: profile_history,
+      success:,
+      fraud_review_pending:,
+      fraud_rejection:,
+      gpo_verification_pending:,
+      in_person_verification_pending:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      deactivation_reason:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      profile_history:,
       **extra,
     )
   end
@@ -1682,7 +2020,7 @@ module AnalyticsEvents
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Integer] glare
   # @param [Integer] glareScoreThreshold
   # @param [Integer] height height of image added in pixels
@@ -1761,7 +2099,7 @@ module AnalyticsEvents
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
@@ -1917,7 +2255,7 @@ module AnalyticsEvents
   # @param [String] error
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] use_alternate_sdk
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_image_capture_failed(
@@ -1980,7 +2318,7 @@ module AnalyticsEvents
   end
 
   # @param [String] selected_location Selected in-person location
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user submitted the in person proofing location step
   def idv_in_person_location_submitted(
@@ -1998,7 +2336,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user visited the in person proofing location step
   def idv_in_person_location_visited(flow_path:, opted_in_to_in_person_proofing:, **extra)
@@ -2063,7 +2401,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user submitted the in person proofing prepare step
   def idv_in_person_prepare_submitted(flow_path:, opted_in_to_in_person_proofing:, **extra)
@@ -2075,7 +2413,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user visited the in person proofing prepare step
   def idv_in_person_prepare_visited(flow_path:, opted_in_to_in_person_proofing:, **extra)
@@ -2087,7 +2425,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -2109,7 +2447,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] success Whether form validation was successful
@@ -2209,7 +2547,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] success Whether form validation was successful
@@ -2244,7 +2582,7 @@ module AnalyticsEvents
     track_event('IdV: in person proofing residential address submitted', **extra)
   end
 
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] success Whether form validation was successful
@@ -2278,7 +2616,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -2437,13 +2775,13 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # The user submitted the in person proofing switch_back step
   def idv_in_person_switch_back_submitted(flow_path:, **extra)
     track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
   end
 
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # The user visited the in person proofing switch_back step
   def idv_in_person_switch_back_visited(flow_path:, **extra)
     track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
@@ -2859,7 +3197,7 @@ module AnalyticsEvents
   # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
   # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
@@ -3023,6 +3361,13 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference
+  # @param [String] phone_type Pinpoint phone classification type
+  # @param [Array<String>] types Phonelib parsed phone types
+  # @param [String] carrier Pinpoint detected phone carrier
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
+  # @param [String] area_code Area code of phone number
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -3038,6 +3383,13 @@ module AnalyticsEvents
     success:,
     otp_delivery_preference:,
     errors:,
+    phone_type:,
+    types:,
+    carrier:,
+    country_code:,
+    area_code:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
     error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -3049,6 +3401,13 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
+      phone_type:,
+      types:,
+      carrier:,
+      country_code:,
+      area_code:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       otp_delivery_preference:,
       proofing_components:,
       active_profile_idv_level:,
@@ -3139,7 +3498,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
-  # @param [String] country_code country code of phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [Hash] telephony_response response from Telephony gem
@@ -3195,7 +3554,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms","voice"] otp_delivery_preference which channel the OTP was delivered by
-  # @param [String] country_code country code of phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
@@ -3255,6 +3614,8 @@ module AnalyticsEvents
   # @param [:sms,:voice] otp_delivery_preference
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -3274,6 +3635,8 @@ module AnalyticsEvents
     otp_delivery_preference:,
     second_factor_attempts_count:,
     second_factor_locked_at:,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
     error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -3290,6 +3653,8 @@ module AnalyticsEvents
       otp_delivery_preference:,
       second_factor_attempts_count:,
       second_factor_locked_at:,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
@@ -3327,6 +3692,13 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Hash,nil] proofing_components User's current proofing components
+  # @param [Hash] vendor Vendor response payload
+  # @param [Boolean] new_phone_added Whether phone number was added to account in submission
+  # @param [Boolean] hybrid_handoff_phone_used Whether phone is the same as what was used for hybrid
+  # document capture
+  # @param [String] area_code Area code of phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
+  # @param [String] phone_fingerprint Fingerprint of submitted phone number
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
@@ -3340,6 +3712,12 @@ module AnalyticsEvents
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
+    vendor:,
+    area_code:,
+    country_code:,
+    phone_fingerprint:,
+    new_phone_added:,
+    hybrid_handoff_phone_used:,
     error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
@@ -3351,6 +3729,12 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
+      vendor:,
+      area_code:,
+      country_code:,
+      phone_fingerprint:,
+      new_phone_added:,
+      hybrid_handoff_phone_used:,
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
@@ -3394,6 +3778,8 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
@@ -3406,6 +3792,8 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # User visited idv phone of record
   def idv_phone_of_record_visited(
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
@@ -3413,9 +3801,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone of record visited',
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      skip_hybrid_handoff:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
       **extra,
     )
   end
@@ -3680,7 +4070,7 @@ module AnalyticsEvents
   # @param [Integer] selfie_attempts number of times SDK captured selfie, user may decide to retake
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Integer] height height of image added in pixels
   # @param [String] mimeType MIME type of image added
   # @param [Integer] size size of image added in bytes
@@ -3725,7 +4115,7 @@ module AnalyticsEvents
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName,
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
-  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
   # @param [String] source
   # @param [String] use_alternate_sdk
@@ -3913,7 +4303,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(
@@ -3931,7 +4321,7 @@ module AnalyticsEvents
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] location
   # @param [Boolean] use_alternate_sdk
   def idv_warning_action_triggered(
@@ -3956,7 +4346,7 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [String] error_message_displayed
-  # @param [String] flow_path
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] heading
   # @param [String] location
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
@@ -4063,11 +4453,11 @@ module AnalyticsEvents
   # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
   # @param [String] area_code Area code of phone number
-  # @param [String] country_code Country code associated with phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [String] frontend_error Name of error that occurred in frontend during submission
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
-  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -4121,7 +4511,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the the user has added the MFA method phone to their account
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   # @param ['phone'] method_name Authentication method added
@@ -4144,7 +4534,7 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
   # Tracks when the user has added the MFA method piv_cac to their account
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   # @param ['piv_cac'] method_name Authentication method added
   def multi_factor_auth_added_piv_cac(
@@ -4163,7 +4553,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the user has added the MFA method TOTP to their account
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   # @param ['totp'] method_name Authentication method added
   def multi_factor_auth_added_totp(
@@ -4204,7 +4594,7 @@ module AnalyticsEvents
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint Fingerprint hash of phone number
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
-  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
@@ -4308,7 +4698,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
-  # @param [integer] enabled_mfa_methods_count
+  # @param [integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] mfa_method_counts
   def multi_factor_auth_option_list(
     success:,
@@ -4342,10 +4732,10 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] otp_delivery_preference
   # @param [String] area_code
-  # @param [String] carrier
-  # @param [String] country_code
-  # @param [String] phone_type
-  # @param [Hash] types
+  # @param [String] carrier Pinpoint detected phone carrier
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
+  # @param [String] phone_type Pinpoint phone classification type
+  # @param [Array<String>] types Phonelib parsed phone types
   def multi_factor_auth_phone_setup(
       success:,
       errors:,
@@ -4379,12 +4769,12 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
-  # @param [integer] enabled_mfa_methods_count
+  # @param [integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param ['authentication','reauthentication','confirmation'] context User session context
   # @param [Boolean] confirmation_for_add_phone Whether authenticating while adding phone
   # @param [String] area_code Area code of phone number
-  # @param [String] country_code Country code associated with phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint The hmac fingerprint of the phone number formatted as e164
   # @param [Integer] phone_configuration_id Database ID of phone configuration
   # @param [Integer] auth_app_configuration_id Database ID of authentication app configuration
@@ -4680,7 +5070,7 @@ module AnalyticsEvents
   # @param ["authentication","reauthentication","confirmation"] context User session context
   # @param [String] otp_delivery_preference (sms or voice)
   # @param [Boolean] resend True if the user re-requested a code
-  # @param [String] country_code Country code associated with phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] area_code Area code of phone number
   def otp_delivery_selection(
     success:,
@@ -4727,9 +5117,30 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] active_profile_present Whether active profile existed at time of change
+  # @param [Boolean] pending_profile_present Whether pending profile existed at time of change
+  # @param [Boolean] required_password_change Whether password change was forced due to compromised
+  # password
   # The user updated their password
-  def password_changed(success:, errors:, error_details: nil, **extra)
-    track_event('Password Changed', success:, errors:, error_details:, **extra)
+  def password_changed(
+    success:,
+    errors:,
+    active_profile_present:,
+    pending_profile_present:,
+    required_password_change:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Password Changed',
+      success:,
+      errors:,
+      error_details:,
+      active_profile_present:,
+      pending_profile_present:,
+      required_password_change:,
+      **extra,
+    )
   end
 
   # @param [Boolean] success Whether form validation was successful
@@ -4854,13 +5265,25 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Integer] emails Number of email addresses the notification was sent to
+  # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
+  # was notified
   # Alert user if a personal key was used to sign in
-  def personal_key_alert_about_sign_in(success:, errors:, error_details: nil, **extra)
+  def personal_key_alert_about_sign_in(
+    success:,
+    errors:,
+    emails:,
+    sms_message_ids:,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Personal key: Alert user about sign in',
       success:,
       errors:,
       error_details:,
+      emails:,
+      sms_message_ids:,
       **extra,
     )
   end
@@ -5019,11 +5442,13 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
   # @identity.idp.previous_event_name PIV CAC setup visited
   # Tracks when user's piv cac setup
-  # @param [Boolean] in_account_creation_flow
-  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  def piv_cac_setup_visited(in_account_creation_flow:, enabled_mfa_methods_count: nil, **extra)
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
+      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -5076,7 +5501,7 @@ module AnalyticsEvents
   end
 
   # @param [true] success this event always succeeds
-  # @param [Integer] emails number of email addresses the notification was sent to
+  # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
   # was notified
   # User has chosen to receive a new personal key, contains stats about notifications that
@@ -5599,8 +6024,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] area_code
-  # @param [String] country_code
+  # @param [String] area_code Area code of phone number
+  # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [String] context the context of the OTP, either "authentication" for confirmed phones
   # or "confirmation" for unconfirmed
@@ -5646,7 +6071,7 @@ module AnalyticsEvents
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
   # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] in_account_creation_flow
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   def totp_setup_visit(
     user_signed_up:,
     totp_secret_present:,
@@ -5742,7 +6167,7 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits MFA selection page
-  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] gov_or_mil_email Whether registered user has government email
   def user_registration_2fa_setup_visit(
     enabled_mfa_methods_count:,
@@ -5903,7 +6328,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] mfa_method_counts
-  # @param [Integer] enabled_mfa_methods_count
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
   # @param [Hash] pii_like_keypaths
   # Tracks when a user has completed MFA setup
@@ -5926,7 +6351,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] enabled_mfa_methods_count
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # Tracks when user visits the phone setup step during registration
   def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
     track_event(
@@ -6055,7 +6480,7 @@ module AnalyticsEvents
   end
 
   # @param [Hash] platform_authenticator
-  # @param [Integer] enabled_mfa_methods_count
+  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
     track_event(
