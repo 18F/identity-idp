@@ -2,6 +2,8 @@
 
 module Idv
   class ImageUploadsController < ApplicationController
+    include DocAuthVendorConcern
+
     respond_to :json
 
     def create
@@ -20,6 +22,7 @@ module Idv
     def image_upload_form
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
+        doc_auth_vendor:,
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
