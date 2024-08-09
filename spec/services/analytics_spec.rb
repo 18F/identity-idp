@@ -182,7 +182,7 @@ RSpec.describe Analytics do
       end
 
       context 'when should_log says not to' do
-        let(:should_log) { false }
+        let(:should_log) { /some other event/ }
         it 'does not include ab_test in logged event' do
           expect(ahoy).to receive(:track).with(
             'Trackable Event',

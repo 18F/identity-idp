@@ -58,14 +58,8 @@ class AbTest
   end
 
   def include_in_analytics_event?(event_name)
-    if should_log.is_a?(Proc)
-      should_log.call(event_name)
-    elsif should_log.is_a?(Regexp)
+    if should_log.is_a?(Regexp)
       should_log.match?(event_name)
-    elsif should_log.is_a?(String)
-      event_name == should_log
-    elsif should_log == true || should_log == false
-      should_log
     elsif !should_log.nil?
       raise 'Unexpected value used for should_log'
     else

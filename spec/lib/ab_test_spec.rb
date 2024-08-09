@@ -173,21 +173,6 @@ RSpec.describe AbTest do
       end
     end
 
-    context 'when string is used' do
-      context 'and string matches' do
-        let(:should_log) { event_name }
-        it 'returns true' do
-          expect(return_value).to eql(true)
-        end
-      end
-      context 'and string does not match' do
-        let(:should_log) { "Not #{event_name}" }
-        it 'returns false' do
-          expect(return_value).to eql(false)
-        end
-      end
-    end
-
     context 'when Regexp is used' do
       context 'and it matches' do
         let(:should_log) { /cool/ }
@@ -203,48 +188,17 @@ RSpec.describe AbTest do
       end
     end
 
-    context 'when Proc is used' do
-      let(:should_log) do
-        ->(_event_name) {}
-      end
-
-      it 'calls the proc' do
-        expect(should_log).to receive(:call).with(event_name).and_call_original
-        return_value
-      end
-
-      context 'and it returns true' do
-        let(:should_log) do
-          ->(_event_name) { true }
-        end
-
-        it 'returns true' do
-          expect(return_value).to eql(true)
-        end
-      end
-
-      context 'and it returns false' do
-        let(:should_log) do
-          ->(_event_name) { false }
-        end
-
-        it 'returns false' do
-          expect(return_value).to eql(false)
-        end
-      end
-    end
-
     context 'when true is used' do
       let(:should_log) { true }
-      it 'returns true' do
-        expect(return_value).to eql(true)
+      it 'raises' do
+        expect { return_value }.to raise_error
       end
     end
 
     context 'when false is used' do
       let(:should_log) { false }
-      it 'returns false' do
-        expect(return_value).to eql(false)
+      it 'raises' do
+        expect { return_value }.to raise_error
       end
     end
   end
