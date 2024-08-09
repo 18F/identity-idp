@@ -755,11 +755,7 @@ function AcuantCapture(
           onSelfieTaken={onSelfieTaken}
           onSelfieRetaken={onSelfieRetaken}
         >
-          <FullScreen
-            ref={fullScreenRef}
-            label={t('doc_auth.accessible_labels.document_capture_dialog')}
-            hideCloseButton
-          >
+          <FullScreen ref={fullScreenRef} label={undefined} hideCloseButton>
             <AcuantSelfieCaptureCanvas
               imageCaptureText={imageCaptureText}
               onSelfieCaptureClosed={onSelfieCaptureClosed}
