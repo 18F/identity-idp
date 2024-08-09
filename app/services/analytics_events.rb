@@ -1166,10 +1166,10 @@ module AnalyticsEvents
   def idv_doc_auth_document_capture_visited(
     step:,
     analytics_id:,
-    redo_document_capture:,
     liveness_checking_required:,
     selfie_check_required:,
     flow_path:,
+    redo_document_capture: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -5423,7 +5423,7 @@ module AnalyticsEvents
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  def piv_cac_setup_visited(in_account_creation_flow:, enabled_mfa_methods_count:, **extra)
+  def piv_cac_setup_visited(in_account_creation_flow:, enabled_mfa_methods_count: nil, **extra)
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
