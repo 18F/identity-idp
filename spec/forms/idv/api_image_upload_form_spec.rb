@@ -528,6 +528,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           extra: {
             pii_like_keypaths: pii_like_keypaths,
             attention_with_barcode: false,
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
           },
         )
       end
