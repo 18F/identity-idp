@@ -329,8 +329,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
       context 'when acuant a/b test is enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent).and_return(50)
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent).
+            and_return(50)
         end
 
         it 'returns the expected response' do
@@ -342,7 +344,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(response.selfie_status).to eq(:not_processed)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
-          expect(response.pii_from_doc).to eq(Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT))
+          expect(response.pii_from_doc).to eq(
+            Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT),
+          )
         end
       end
     end
