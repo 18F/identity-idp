@@ -423,21 +423,4 @@ RSpec.describe Idv::Session do
       expect(subject.address_mechanism_chosen?).to eq(false)
     end
   end
-
-  describe '#ab_test_discriminator' do
-    context 'when user is logged in' do
-      it 'works' do
-        discriminator = described_class.ab_test_discriminator do |idv_session|
-          expect(idv_session).not_to be_nil
-        end
-
-        discriminator.call(
-          request: nil,
-          user_session: nil,
-          user: nil,
-          service_provider: nil,
-        )
-      end
-    end
-  end
 end
