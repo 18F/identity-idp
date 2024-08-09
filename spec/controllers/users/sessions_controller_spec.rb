@@ -542,12 +542,14 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks CSRF errors' do
       user = create(:user, :fully_registered)
       stub_analytics
-      analytics_hash = { controller: 'users/sessions#create' }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 
-      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'users/sessions#create',
+      )
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end
@@ -555,13 +557,15 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'redirects back to home page if CSRF error and referer is invalid' do
       user = create(:user, :fully_registered)
       stub_analytics
-      analytics_hash = { controller: 'users/sessions#create' }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       request.env['HTTP_REFERER'] = '@@@'
       post :create, params: { user: { email: user.email, password: user.password } }
 
-      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'users/sessions#create',
+      )
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end

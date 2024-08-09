@@ -19,12 +19,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
       stub_sign_in_before_2fa(user)
       stub_analytics
-      analytics_hash = { context: 'authentication' }
 
       get :show
 
       expect(@analytics).to have_logged_event(
-        'Multi-Factor Authentication: enter personal key visited', analytics_hash
+        'Multi-Factor Authentication: enter personal key visited',
+        context: 'authentication',
       )
     end
 

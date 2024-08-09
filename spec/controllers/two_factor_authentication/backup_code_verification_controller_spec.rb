@@ -11,12 +11,12 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
     it 'tracks the page visit' do
       stub_sign_in_before_2fa(user)
       stub_analytics
-      analytics_hash = { context: 'authentication' }
 
       get :show
 
       expect(@analytics).to have_logged_event(
-        'Multi-Factor Authentication: enter backup code visited', analytics_hash
+        'Multi-Factor Authentication: enter backup code visited',
+        context: 'authentication',
       )
     end
   end

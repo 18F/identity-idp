@@ -306,7 +306,6 @@ RSpec.describe 'throttling requests' do
       it 'throttles with a custom response' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        analytics_hash = { type: 'logins/email+ip' }
 
         Rack::Attack::SIGN_IN_PATHS.each do |path|
           (logins_per_email_and_ip_limit + 1).times do |index|
@@ -315,7 +314,7 @@ RSpec.describe 'throttling requests' do
             }, headers: { REMOTE_ADDR: '1.2.3.4' }
           end
 
-          expect(analytics).to have_logged_event('Rate Limit Triggered', analytics_hash)
+          expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'logins/email+ip')
           expect(response.status).to eq(429)
           expect(response.body).
             to include('Please wait a few minutes before you try again.')
