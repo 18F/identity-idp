@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::PasswordsController, allowed_extra_analytics: [:*] do
+RSpec.describe Users::PasswordsController do
   context 'user visits edit password page' do
     let(:user) { create(:user) }
     before do
