@@ -88,7 +88,11 @@
   <p class="margin-y-1">
     <%= new_tab_link_to(
           t('notices.privacy.privacy_act_statement'),
-          MarketingSite.privacy_act_statement_url,
+          policy_redirect_url(
+            policy: :privacy_act_statement,
+            flow: :sign_in,
+            step: :sign_in,
+          ),
         ) %>
   </p>
 <% end %>
