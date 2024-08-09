@@ -5117,9 +5117,30 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] active_profile_present Whether active profile existed at time of change
+  # @param [Boolean] pending_profile_present Whether pending profile existed at time of change
+  # @param [Boolean] required_password_change Whether password change was forced due to compromised
+  # password
   # The user updated their password
-  def password_changed(success:, errors:, error_details: nil, **extra)
-    track_event('Password Changed', success:, errors:, error_details:, **extra)
+  def password_changed(
+    success:,
+    errors:,
+    active_profile_present:,
+    pending_profile_present:,
+    required_password_change:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Password Changed',
+      success:,
+      errors:,
+      error_details:,
+      active_profile_present:,
+      pending_profile_present:,
+      required_password_change:,
+      **extra,
+    )
   end
 
   # @param [Boolean] success Whether form validation was successful
