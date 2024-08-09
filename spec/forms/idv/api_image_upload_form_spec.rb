@@ -20,6 +20,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
       analytics: fake_analytics,
       liveness_checking_required: liveness_checking_required,
       doc_auth_vendor: 'mock',
+      acuant_sdk_upgrade_ab_test_bucket:,
     )
   end
 
@@ -52,6 +53,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:acuant_sdk_upgrade_ab_test_bucket) {}
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -322,6 +324,25 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
+        end
+      end
+
+      context 'when acuant a/b test is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_percent).and_return(50)
+        end
+
+        it 'returns the expected response' do
+          response = form.submit
+
+          expect(response).to be_a_kind_of DocAuth::Response
+          expect(response.success?).to eq(true)
+          expect(response.doc_auth_success?).to eq(true)
+          expect(response.selfie_status).to eq(:not_processed)
+          expect(response.errors).to eq({})
+          expect(response.attention_with_barcode?).to eq(false)
+          expect(response.pii_from_doc).to eq(Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT))
         end
       end
     end

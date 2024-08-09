@@ -18,6 +18,7 @@ module Idv
       params,
       service_provider:,
       doc_auth_vendor:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       analytics: nil,
       uuid_prefix: nil,
       liveness_checking_required: false
@@ -25,6 +26,7 @@ module Idv
       @params = params
       @service_provider = service_provider
       @doc_auth_vendor = doc_auth_vendor
+      @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
@@ -63,7 +65,7 @@ module Idv
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :liveness_checking_required
+                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -366,11 +368,9 @@ module Idv
     end
 
     def acuant_sdk_upgrade_ab_test_data
-      return {} unless IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
       {
-        acuant_sdk_upgrade_ab_test_bucket:
-          AbTests::ACUANT_SDK.bucket(document_capture_session.uuid),
-      }
+        acuant_sdk_upgrade_ab_test_bucket:,
+      }.compact
     end
 
     def acuant_sdk_captured?
