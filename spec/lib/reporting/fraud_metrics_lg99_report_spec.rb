@@ -52,7 +52,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
         { 'user_id' => 'user7', 'name' => 'User Suspension: Suspended' },
       ],
     )
-    user7.profiles.verified.last.update(created_at: 1.day.ago, verified_at: 1.day.ago)
+    user7&.profiles&.verified&.last&.update(created_at: 1.day.ago, verified_at: 1.day.ago)
   end
 
   describe '#lg99_metrics_table' do
@@ -73,10 +73,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     end
 
     context 'when there are no users' do
-      before do
-        user6.destroy
-        user7.destroy
-      end
+      let(:user6) { nil }
+      let(:user7) { nil }
 
       it 'returns n/a' do
         expect(report.user_days_to_suspension_avg).to eq('n/a')
@@ -92,10 +90,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     end
 
     context 'when there are no users' do
-      before do
-        user6.destroy
-        user7.destroy
-      end
+      let(:user6) { nil }
+      let(:user7) { nil }
 
       it 'returns n/a' do
         expect(report.user_days_to_reinstatement_avg).to eq('n/a')
@@ -111,10 +107,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     end
 
     context 'when there are no users' do
-      before do
-        user6.destroy
-        user7.destroy
-      end
+      let(:user6) { nil }
+      let(:user7) { nil }
 
       it 'returns n/a' do
         expect(report.user_days_proofed_to_suspension_avg).to eq('n/a')
