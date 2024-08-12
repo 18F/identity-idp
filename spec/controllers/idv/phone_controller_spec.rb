@@ -293,26 +293,24 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
 
         put :create, params: improbable_phone_form
 
-        result = {
-          success: false,
-          errors: {
-            phone: [improbable_phone_message],
-            otp_delivery_preference: [improbable_otp_message],
-          },
-          error_details: {
-            phone: { improbable_phone: true },
-            otp_delivery_preference: { inclusion: true },
-          },
-          carrier: 'Test Mobile Carrier',
-          phone_type: :mobile,
-          otp_delivery_preference: '🎷',
-          types: [],
-          **ab_test_args,
-        }
-
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation form',
-          hash_including(result),
+          hash_including(
+            success: false,
+            errors: {
+              phone: [improbable_phone_message],
+              otp_delivery_preference: [improbable_otp_message],
+            },
+            error_details: {
+              phone: { improbable_phone: true },
+              otp_delivery_preference: { inclusion: true },
+            },
+            carrier: 'Test Mobile Carrier',
+            phone_type: :mobile,
+            otp_delivery_preference: '🎷',
+            types: [],
+            **ab_test_args,
+          ),
         )
 
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
@@ -342,21 +340,19 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
       it 'tracks events with valid phone' do
         put :create, params: phone_params
 
-        result = {
-          success: true,
-          errors: {},
-          area_code: '703',
-          country_code: 'US',
-          carrier: 'Test Mobile Carrier',
-          phone_type: :mobile,
-          otp_delivery_preference: 'sms',
-          types: [:fixed_or_mobile],
-          **ab_test_args,
-        }
-
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation form',
-          hash_including(result),
+          hash_including(
+            success: true,
+            errors: {},
+            area_code: '703',
+            country_code: 'US',
+            carrier: 'Test Mobile Carrier',
+            phone_type: :mobile,
+            otp_delivery_preference: 'sms',
+            types: [:fixed_or_mobile],
+            **ab_test_args,
+          ),
         )
       end
 
@@ -436,23 +432,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
       it 'tracks event with valid phone' do
         proofing_phone = Phonelib.parse(good_phone)
 
-        result = {
-          success: true,
-          new_phone_added: true,
-          hybrid_handoff_phone_used: false,
-          errors: {},
-          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
-          country_code: proofing_phone.country,
-          area_code: proofing_phone.area_code,
-          vendor: {
-            vendor_name: 'AddressMock',
-            exception: nil,
-            timed_out: false,
-            transaction_id: 'address-mock-transaction-id-123',
-            reference: '',
-          },
-        }
-
         put :create, params: { idv_phone_form: { phone: good_phone } }
 
         expect(@analytics).to have_logged_event(
@@ -466,7 +445,22 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation vendor',
-          hash_including(result),
+          hash_including(
+            success: true,
+            new_phone_added: true,
+            hybrid_handoff_phone_used: false,
+            errors: {},
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+            country_code: proofing_phone.country,
+            area_code: proofing_phone.area_code,
+            vendor: {
+              vendor_name: 'AddressMock',
+              exception: nil,
+              timed_out: false,
+              transaction_id: 'address-mock-transaction-id-123',
+              reference: '',
+            },
+          ),
         )
       end
     end
@@ -518,25 +512,6 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
       it 'tracks event with invalid phone' do
         proofing_phone = Phonelib.parse(bad_phone)
 
-        result = {
-          success: false,
-          new_phone_added: true,
-          hybrid_handoff_phone_used: false,
-          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
-          country_code: proofing_phone.country,
-          area_code: proofing_phone.area_code,
-          errors: {
-            phone: ['The phone number could not be verified.'],
-          },
-          vendor: {
-            vendor_name: 'AddressMock',
-            exception: nil,
-            timed_out: false,
-            transaction_id: 'address-mock-transaction-id-123',
-            reference: '',
-          },
-        }
-
         put :create, params: { idv_phone_form: { phone: bad_phone } }
 
         expect(@analytics).to have_logged_event(
@@ -550,7 +525,24 @@ RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
 
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation vendor',
-          hash_including(result),
+          hash_including(
+            success: false,
+            new_phone_added: true,
+            hybrid_handoff_phone_used: false,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+            country_code: proofing_phone.country,
+            area_code: proofing_phone.area_code,
+            errors: {
+              phone: ['The phone number could not be verified.'],
+            },
+            vendor: {
+              vendor_name: 'AddressMock',
+              exception: nil,
+              timed_out: false,
+              transaction_id: 'address-mock-transaction-id-123',
+              reference: '',
+            },
+          ),
         )
       end
 
