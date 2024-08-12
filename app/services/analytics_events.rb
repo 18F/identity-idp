@@ -5768,7 +5768,6 @@ module AnalyticsEvents
   # @param [Integer] requested_ial
   # @param [Boolean] request_signed
   # @param [String] matching_cert_serial
-  # @param [Boolean|nil] encryption_cert_matches_matching_cert If the encryption certificate
   # matches the request certificate in a successful, signed request
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
   # signature
@@ -5786,7 +5785,6 @@ module AnalyticsEvents
     requested_ial:,
     request_signed:,
     matching_cert_serial:,
-    encryption_cert_matches_matching_cert: nil,
     error_details: nil,
     cert_error_details: nil,
     **extra
@@ -5807,7 +5805,6 @@ module AnalyticsEvents
       requested_ial:,
       request_signed:,
       matching_cert_serial:,
-      encryption_cert_matches_matching_cert:,
       cert_error_details:,
       **extra,
     )
