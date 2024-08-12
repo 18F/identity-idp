@@ -158,7 +158,11 @@ class InPersonEnrollment < ApplicationRecord
   private
 
   def days_to_expire
-    enhanced_ipp? ? IdentityConfig.store.in_person_eipp_enrollment_validity_in_days.days : IdentityConfig.store.in_person_enrollment_validity_in_days.days
+    if enhanced_ipp?
+      IdentityConfig.store.in_person_eipp_enrollment_validity_in_days.days
+    else
+      IdentityConfig.store.in_person_enrollment_validity_in_days.days
+    end
   end
 
   def on_notification_sent_at_updated
