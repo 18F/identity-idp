@@ -16,18 +16,10 @@ class SelectEmailForm
     @selected_email_id = params[:selected_email_id]
 
     success = valid?
-    process_successful_submission if success
     FormResponse.new(success:, errors:)
   end
 
   private
-
-  def process_successful_submission
-    EmailAddress.update_last_sign_in_at_on_user_id_and_email(
-      user_id: @user.id,
-      email: EmailAddress.find(@selected_email_id).email,
-    )
-  end
 
   def validate_owns_selected_email
     return if user.confirmed_email_addresses.exists?(id: selected_email_id)

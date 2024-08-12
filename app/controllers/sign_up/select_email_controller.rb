@@ -7,7 +7,7 @@ module SignUp
     def show
       @sp_name = sp_name
       @user_emails = user_emails
-      @last_sign_in_email_address = EmailContext.new(current_user).last_sign_in_email_address.email
+      @last_sign_in_email_address = last_email
       @select_email_form = build_select_email_form
     end
 
@@ -16,7 +16,7 @@ module SignUp
 
       result = @select_email_form.submit(form_params)
       if result.success?
-        session[:sp_email_id] = EmailContext.new(current_user).last_sign_in_email_address.id
+        session[:selected_email_id] = form_params[:selected_email_id]
         redirect_to sign_up_completed_path
       else
         flash[:error] = t('anonymous_mailer.password_reset_missing_user.subject')
@@ -44,6 +44,12 @@ module SignUp
 
     def form_params
       params.fetch(:select_email_form, {}).permit(:selected_email_id)
+    end
+
+    def last_email
+      session_selected_email_id = session[:selected_email_id] ||
+                                  EmailContext.new(current_user).last_sign_in_email_address.id
+      EmailAddress.find(session_selected_email_id).email
     end
   end
 end
