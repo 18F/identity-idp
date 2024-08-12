@@ -47,7 +47,6 @@ account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
-account.email_language.sentence_connector: 或者
 account.email_language.updated: 你的电邮语言选择已更新。
 account.forget_all_browsers.longer_description: 你选择“忘掉所有浏览器”后，我们将需要额外信息来知道的确是你在登录你自己的账户。每次你要访问自己的账户时，我们都会向你要一个多因素身份证实方法（比如短信/SMS 代码或安全密钥）
 account.index.auth_app_add: 添加应用程序
