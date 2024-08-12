@@ -52,7 +52,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
         { 'user_id' => 'user7', 'name' => 'User Suspension: Suspended' },
       ],
     )
-    user7.profiles.verified.last.update(created_at: 1.day.ago)
+    user7.profiles.verified.last.update(created_at: 1.day.ago, verified_at: 1.day.ago)
   end
 
   describe '#lg99_metrics_table' do
@@ -106,7 +106,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
 
     context 'when there are no users' do
       it 'returns n/a' do
-        allow(User).to receive_message_chain(:joins, :where).and_return([])
+        allow(User).to receive_message_chain(:joins, :group, :pluck).and_return([])
 
         expect(report.user_days_proofed_to_suspension_avg).to eq('n/a')
       end
