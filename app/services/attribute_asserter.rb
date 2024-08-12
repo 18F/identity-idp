@@ -220,8 +220,9 @@ class AttributeAsserter
   def last_email_from_sp
     return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
     sp = service_provider.issuer
-    identity = user.identities.where(service_provider: sp)
-    email_id = identity.pick('email_address_id')
+    # identity = user.identities.where(service_provider: sp)
+    identity = user.identities.find_by(service_provider: sp)
+    email_id = identity&.email_address_id
     return user.email_addresses.find(email_id).email if email_id.is_a? Integer
   end
 

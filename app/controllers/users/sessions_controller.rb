@@ -177,10 +177,10 @@ module Users
 
     def last_email_from_sp
       return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
-      sp = sp_session['issuer']
-      if sp.present?
-        identity = current_user.identities.where(service_provider: sp)
-        email_id = identity.pick('email_address_id')
+      if sp_session['issuer'].present?
+        # identity = current_user.identities.where(service_provider: sp)
+        identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
+        email_id = identity&.email_address_id
         return current_user.email_addresses.find(email_id).email if email_id.is_a? Integer
       end
       return auth_params[:email]
