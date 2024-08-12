@@ -5,7 +5,13 @@
 <%= @message %><br>
 <% @reports.each do |report| %>
   <% header, *rows = report.table %>
-  <h2><%= report.title %></h2>
+  <%# FIXME: Where is "Table 8" coming when no title is present? %>
+  <% if report.title && !report.title.match(/Table (\d)+/) %>
+    <h2><%= report.title %></h2>
+  <% end %>
+  <% if report.subtitle %>
+    <h3><%= report.subtitle %></h3>
+  <% end %>
 
   <table class="usa-table">
     <thead>

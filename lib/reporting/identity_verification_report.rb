@@ -85,7 +85,7 @@ module Reporting
 
     def identity_verification_emailable_report
       EmailableReport.new(
-        title: 'Identity Verification Metrics',
+        subtitle: 'Identity Verification Metrics',
         table: as_csv,
         filename: 'identity_verification_metrics',
       )
@@ -202,6 +202,10 @@ module Reporting
 
     def idv_final_resolution_gpo_in_person_fraud_review
       data[Results::IDV_FINAL_RESOLUTION_GPO_IN_PERSON_FRAUD_REVIEW].count
+    end
+
+    def idv_final_resolution_rate
+      idv_final_resolution.to_f / idv_started
     end
 
     def gpo_verification_submitted
@@ -354,7 +358,14 @@ module Reporting
       QUERY
     end
 
+    class FakeCloudwatchClient
+      def fetch(**)
+        []
+      end
+    end
+
     def cloudwatch_client
+      return FakeCloudwatchClient.new # FIXME so, so much
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         num_threads: @threads,
         ensure_complete_logs: true,

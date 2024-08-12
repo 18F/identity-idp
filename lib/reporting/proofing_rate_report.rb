@@ -8,20 +8,22 @@ module Reporting
   class ProofingRateReport
     DATE_INTERVALS = [30, 60, 90].freeze
 
-    attr_reader :end_date, :wait_duration
+    attr_reader :end_date, :wait_duration, :by_month
 
     def initialize(
       end_date:,
       verbose: false,
       progress: false,
       wait_duration: CloudwatchClient::DEFAULT_WAIT_DURATION,
-      parallel: false
+      parallel: false,
+      by_month: false
     )
       @end_date = end_date.in_time_zone('UTC')
       @verbose = verbose
       @progress = progress
       @wait_duration = wait_duration
       @parallel = parallel
+      @by_month = by_month
     end
 
     def verbose?
@@ -38,7 +40,7 @@ module Reporting
 
     def proofing_rate_emailable_report
       EmailableReport.new(
-        title: 'Proofing Rate Metrics',
+        subtitle: 'Detail',
         float_as_percent: true,
         precision: 2,
         table: as_csv,
@@ -52,20 +54,20 @@ module Reporting
 
       csv << ['Metric', *DATE_INTERVALS.map { |days| "Trailing #{days}d" }]
 
-      csv << ['Start Date', *reports.map(&:time_range).map(&:begin).map(&:to_date)]
-      csv << ['End Date', *reports.map(&:time_range).map(&:end).map(&:to_date)]
+      csv << ['Start Date', *reduced_reports.map(&:time_range).map(&:begin).map(&:to_date)]
+      csv << ['End Date', *reduced_reports.map(&:time_range).map(&:end).map(&:to_date)]
 
-      csv << ['IDV Started', *reports.map(&:idv_started)]
-      csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
-      csv << ['Image Submitted', *reports.map(&:idv_doc_auth_image_vendor_submitted)]
-      csv << ['Successfully Verified', *reports.map(&:successfully_verified_users)]
-      csv << ['IDV Rejected (Non-Fraud)', *reports.map(&:idv_doc_auth_rejected)]
-      csv << ['IDV Rejected (Fraud)', *reports.map(&:idv_fraud_rejected)]
+      csv << ['IDV Started', *reduced_reports.map(&:idv_started)]
+      csv << ['Welcome Submitted', *reduced_reports.map(&:idv_doc_auth_welcome_submitted)]
+      csv << ['Image Submitted', *reduced_reports.map(&:idv_doc_auth_image_vendor_submitted)]
+      csv << ['Successfully Verified', *reduced_reports.map(&:successfully_verified_users)]
+      csv << ['IDV Rejected (Non-Fraud)', *reduced_reports.map(&:idv_doc_auth_rejected)]
+      csv << ['IDV Rejected (Fraud)', *reduced_reports.map(&:idv_fraud_rejected)]
 
-      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *reports.map(&:blanket_proofing_rates)]
-      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *reports.map(&:intent_proofing_rates)]
-      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *reports.map(&:actual_proofing_rates)]
-      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *reports.map(&:industry_proofing_rates)]
+      csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *reduced_reports.map(&:blanket_proofing_rates)]
+      csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *reduced_reports.map(&:intent_proofing_rates)]
+      csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *reduced_reports.map(&:actual_proofing_rates)]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *reduced_reports.map(&:industry_proofing_rates)]
 
       csv
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
@@ -84,51 +86,38 @@ module Reporting
       end
     end
 
+    def sub_reports
+      @sub_reports ||= by_month ? by_month_ranges : trailing_days_ranges
+    end
+
     def reports
       @reports ||= begin
-        sub_reports = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
-          time_range = if slice_end.zero?
-                         Range.new(
-                           (end_date - slice_start.days).beginning_of_day,
-                           (end_date - slice_end.days).end_of_day,
-                         )
-                       else
-                         Range.new(
-                           (end_date - slice_start.days).beginning_of_day,
-                           (end_date - slice_end.days).end_of_day - 1.day,
-                         )
-                       end
-          Reporting::IdentityVerificationReport.new(
-            issuers: nil, # all issuers
-            time_range: time_range,
-            cloudwatch_client: cloudwatch_client,
-          )
-        end
-
-        reports = if parallel?
-                    threads = sub_reports.map do |report|
-                      Thread.new do
-                        report.tap(&:data)
-                      end.tap do |thread|
-                        thread.report_on_exception = false
-                      end
-                    end
-
-                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-                      threads.map(&:value)
-                    end
-                  else
-                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-                      sub_reports.each(&:data)
-                    end
-                  end
-
-        reports.reduce([]) do |acc, report|
-          if acc.empty?
-            acc << report
-          else
-            acc << report.merge(acc.last)
+        if parallel?
+          threads = sub_reports.map do |report|
+            Thread.new do
+              report.tap(&:data)
+            end.tap do |thread|
+              thread.report_on_exception = false
+            end
           end
+
+          Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+            threads.map(&:value)
+          end
+        else
+          Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+            sub_reports.each(&:data)
+          end
+        end
+      end
+    end
+
+    def reduced_reports
+      reports.reduce([]) do |acc, report|
+        if acc.empty?
+          acc << report
+        else
+          acc << report.merge(acc.last)
         end
       end
     end
@@ -140,6 +129,43 @@ module Reporting
         logger: verbose? ? Logger.new(STDERR) : nil,
         wait_duration: wait_duration,
       )
+    end
+
+    def trailing_days_ranges
+      [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
+        time_range = if slice_end.zero?
+                       Range.new(
+                         (end_date - slice_start.days).beginning_of_day,
+                         (end_date - slice_end.days).end_of_day,
+                       )
+                     else
+                       Range.new(
+                         (end_date - slice_start.days).beginning_of_day,
+                         (end_date - slice_end.days).end_of_day - 1.day,
+                       )
+                     end
+        Reporting::IdentityVerificationReport.new(
+          issuers: nil, # all issuers
+          time_range: time_range,
+          cloudwatch_client: cloudwatch_client,
+        )
+      end
+    end
+
+    def by_month_ranges
+      ranges = [
+        end_date.last_month.last_month.all_month,
+        end_date.last_month.all_month,
+        end_date.all_month,
+      ]
+
+      ranges.map do |range|
+        Reporting::IdentityVerificationReport.new(
+          issuers: nil, # all issuers
+          time_range: range,
+          cloudwatch_client: cloudwatch_client,
+        )
+      end
     end
   end
 end
