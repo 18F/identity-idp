@@ -146,6 +146,7 @@ module Reporting
 
     def user_days_proofed_to_suspension_avg
       user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).joins(:profiles).
+        where.not(profiles: { verified_at: nil }).
         group('users.id').
         pluck(
           'MAX(profiles.verified_at)',
