@@ -5,7 +5,6 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'rails', '~> 7.1.3'
 
-gem 'abbrev'
 gem 'ahoy_matey', '~> 3.0'
 # pod identity requires 3.188.0
 # https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html
