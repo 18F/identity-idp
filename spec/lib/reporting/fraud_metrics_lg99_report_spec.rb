@@ -20,8 +20,8 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
       :proofed,
       :reinstated,
       uuid: 'user6',
-      suspended_at: Time.zone.now + 3.days,
-      reinstated_at: Time.zone.now + 6.days,
+      suspended_at: 3.days.from_now,
+      reinstated_at: 6.days.from_now,
     )
   end
   let!(:user7) { create(:user, :proofed, :suspended, uuid: 'user7') }
@@ -73,9 +73,12 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     end
 
     context 'when there are no users' do
-      it 'returns n/a' do
-        allow(User).to receive(:where).and_return([])
+      before do
+        user6.destroy
+        user7.destroy
+      end
 
+      it 'returns n/a' do
         expect(report.user_days_to_suspension_avg).to eq('n/a')
       end
     end
@@ -89,9 +92,12 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     end
 
     context 'when there are no users' do
-      it 'returns n/a' do
-        allow(User).to receive(:where).and_return([])
+      before do
+        user6.destroy
+        user7.destroy
+      end
 
+      it 'returns n/a' do
         expect(report.user_days_to_reinstatement_avg).to eq('n/a')
       end
     end
@@ -105,9 +111,12 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     end
 
     context 'when there are no users' do
-      it 'returns n/a' do
-        allow(User).to receive_message_chain(:joins, :group, :pluck).and_return([])
+      before do
+        user6.destroy
+        user7.destroy
+      end
 
+      it 'returns n/a' do
         expect(report.user_days_proofed_to_suspension_avg).to eq('n/a')
       end
     end

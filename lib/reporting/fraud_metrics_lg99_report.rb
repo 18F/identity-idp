@@ -141,19 +141,21 @@ module Reporting
       return 'n/a' if user_data.empty?
 
       difference = user_data.map { |created_at, suspended_at| suspended_at - created_at }
-      convert_to_days(difference.sum / difference.size)
+      (difference.sum / difference.size).seconds.in_days.round(2)
     end
 
     def user_days_proofed_to_suspension_avg
-      user_data = User.joins(:profiles).group('users.id').pluck(
-        'MAX(profiles.verified_at)',
-        :suspended_at,
-      )
+      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).joins(:profiles).
+        group('users.id').
+        pluck(
+          'MAX(profiles.verified_at)',
+          :suspended_at,
+        )
 
       return 'n/a' if user_data.empty?
 
       difference = user_data.map { |profiled_at, suspended_at| suspended_at - profiled_at }
-      convert_to_days(difference.sum / difference.size)
+      (difference.sum / difference.size).seconds.in_days.round(2)
     end
 
     def unique_reinstated_users_count
@@ -168,13 +170,7 @@ module Reporting
       return 'n/a' if user_data.empty?
 
       difference = user_data.map { |suspended_at, reinstated_at| reinstated_at - suspended_at }
-      convert_to_days(difference.sum / difference.size)
-    end
-
-    private
-
-    def convert_to_days(seconds)
-      (seconds / (24 * 3600)).round(2)
+      (difference.sum / difference.size).seconds.in_days.round(2)
     end
   end
 end
