@@ -79,6 +79,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    abbrev (0.1.2)
     actioncable (7.1.3.4)
       actionpack (= 7.1.3.4)
       activesupport (= 7.1.3.4)
@@ -751,6 +752,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  abbrev
   ahoy_matey (~> 3.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-core (>= 3.188.0)
