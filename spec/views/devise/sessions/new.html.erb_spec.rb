@@ -63,7 +63,11 @@ RSpec.describe 'devise/sessions/new.html.erb' do
 
     expect(rendered).to have_link(
       t('notices.privacy.privacy_act_statement'),
-      href: MarketingSite.privacy_act_statement_url,
+      href: policy_redirect_url(
+        policy: :privacy_act_statement,
+        flow: :sign_in,
+        step: :sign_in,
+      ),
     ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
   end
 
