@@ -7,8 +7,24 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     [
       ['Metric', 'Total'],
       ['Unique users seeing LG-99', '5'],
+      ['Unique users suspended', '2'],
+      ['Average Days Creation to Suspension', '1.5'],
+      ['Average Days Proofed to Suspension', '2.0'],
+      ['Unique users reinstated', '1'],
+      ['Average Days to Reinstatement', '3.0'],
     ]
   end
+  let!(:user6) do
+    create(
+      :user,
+      :proofed,
+      :reinstated,
+      uuid: 'user6',
+      suspended_at: Time.zone.now + 3.days,
+      reinstated_at: Time.zone.now + 6.days,
+    )
+  end
+  let!(:user7) { create(:user, :proofed, :suspended, uuid: 'user7') }
 
   subject(:report) { Reporting::FraudMetricsLg99Report.new(time_range:) }
 
@@ -29,8 +45,14 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
 
         { 'user_id' => 'user5', 'name' => 'IdV: Verify please call visited' },
         { 'user_id' => 'user5', 'name' => 'IdV: Verify setup errors visited' },
+
+        { 'user_id' => 'user6', 'name' => 'User Suspension: Suspended' },
+        { 'user_id' => 'user6', 'name' => 'User Suspension: Reinstated' },
+
+        { 'user_id' => 'user7', 'name' => 'User Suspension: Suspended' },
       ],
     )
+    user7.profiles.verified.last.update(created_at: 1.day.ago)
   end
 
   describe '#lg99_metrics_table' do
@@ -39,6 +61,54 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
         report.lg99_metrics_table.zip(expected_lg99_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)
         end
+      end
+    end
+  end
+
+  describe '#user_days_to_suspension_avg' do
+    context 'when there are suspended users' do
+      it 'returns average time to suspension' do
+        expect(report.user_days_to_suspension_avg).to eq(1.5)
+      end
+    end
+
+    context 'when there are no users' do
+      it 'returns n/a' do
+        allow(User).to receive(:where).and_return([])
+
+        expect(report.user_days_to_suspension_avg).to eq('n/a')
+      end
+    end
+  end
+
+  describe '#user_days_to_reinstatement_avg' do
+    context 'where there are reinstated users' do
+      it 'returns average time to reinstatement' do
+        expect(report.user_days_to_reinstatement_avg).to eq(3.0)
+      end
+    end
+
+    context 'when there are no users' do
+      it 'returns n/a' do
+        allow(User).to receive(:where).and_return([])
+
+        expect(report.user_days_to_reinstatement_avg).to eq('n/a')
+      end
+    end
+  end
+
+  describe '#user_days_proofed_to_suspended_avg' do
+    context 'when there are suspended users' do
+      it 'returns average time proofed to suspension' do
+        expect(report.user_days_proofed_to_suspension_avg).to eq(2.0)
+      end
+    end
+
+    context 'when there are no users' do
+      it 'returns n/a' do
+        allow(User).to receive_message_chain(:joins, :where).and_return([])
+
+        expect(report.user_days_proofed_to_suspension_avg).to eq('n/a')
       end
     end
   end
