@@ -168,23 +168,17 @@ RSpec.describe ActionAccount do
         expect(analytics).to have_logged_event(
           'Fraud: Profile review rejected',
           success: true,
-          errors: nil,
-          exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review rejected',
           success: false,
           errors: { message: 'Error: User does not have a pending fraud review' },
-          exception: nil,
-          profile_fraud_review_pending_at: nil,
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review rejected',
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
-          exception: nil,
-          profile_fraud_review_pending_at: nil,
         )
       end
     end
@@ -228,23 +222,17 @@ RSpec.describe ActionAccount do
         expect(analytics).to have_logged_event(
           'Fraud: Profile review passed',
           success: true,
-          errors: nil,
-          exception: nil,
           profile_fraud_review_pending_at: profile_fraud_review_pending_at,
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review passed',
           success: false,
           errors: { message: 'Error: User does not have a pending fraud review' },
-          exception: nil,
-          profile_fraud_review_pending_at: nil,
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review passed',
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
-          exception: nil,
-          profile_fraud_review_pending_at: nil,
         )
       end
     end

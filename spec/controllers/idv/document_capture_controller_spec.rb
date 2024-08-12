@@ -106,8 +106,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        redo_document_capture: nil,
-        skip_hybrid_handoff: nil,
         step: 'document_capture',
         liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled,
@@ -300,8 +298,6 @@ RSpec.describe Idv::DocumentCaptureController, allowed_extra_analytics: [:*] do
         errors: {},
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        redo_document_capture: nil,
-        skip_hybrid_handoff: nil,
         step: 'document_capture',
         liveness_checking_required: false,
         selfie_check_required: sp_selfie_enabled,

@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:0cea6ebf8fa4d693177f46ae9a8c24e6030245f3c795753269b7910178d5cfdd'
+  IDP_CI_SHA: 'sha256:5c4953f8efba18b7a6d6a9a961cb77ba7143059cbb2176499432b4275fbe67db'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
 
@@ -182,6 +182,7 @@ build-idp-image:
       --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
       --cache-ttl=168h
       --cache=true
+      --single-snapshot 
       --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}"
       --build-arg "https_proxy=${https_proxy}"

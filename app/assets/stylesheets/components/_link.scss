@@ -1,0 +1,8 @@
+// USWDS link screen reader text needs improvement for placement and lack of localization support,
+// and conflicts with `new_tab_link_to` customizations.
+//
+// See: https://github.com/uswds/uswds/issues/5942
+.usa-link--external::before,
+.usa-link--external[target='_blank']::before {
+  content: '';
+}
