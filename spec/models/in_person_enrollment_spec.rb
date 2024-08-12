@@ -457,6 +457,26 @@ RSpec.describe InPersonEnrollment, type: :model do
         end
       end
     end
+
+    context 'eipp enrollment' do
+      let(:eipp_validity_in_days) { 7 }
+      before do
+        allow(IdentityConfig.store).
+          to(
+            receive(:in_person_eipp_enrollment_validity_in_days).
+            and_return(eipp_validity_in_days),
+          )
+      end
+      it 'days_to_due_date returns the number of days left until the due date' do
+          freeze_time do
+            enrollment = create(
+              :in_person_enrollment, :enhanced_ipp,
+              enrollment_established_at: (eipp_validity_in_days - 2).days.ago,
+            )
+            expect(enrollment.days_to_due_date).to eq(2)
+          end
+      end
+    end
   end
 
   describe 'eligible_for_notification?' do
