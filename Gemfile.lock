@@ -354,7 +354,8 @@ GEM
     hashdiff (1.1.0)
     heapy (0.2.0)
       thor
-    highline (2.1.0)
+    highline (3.1.0)
+      reline
     htmlbeautifier (1.4.3)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
