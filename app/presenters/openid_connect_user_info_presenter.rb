@@ -54,8 +54,10 @@ class OpenidConnectUserInfoPresenter
   end
 
   def email_from_sp_identity
-    EmailAddress.find(identity.email_address_id).email ||
-      email_context.last_sign_in_email_address.email
+    if identity.email_address_id
+      return EmailAddress.find(identity.email_address_id).email
+    end
+    email_context.last_sign_in_email_address.email
   end
 
   def all_emails_from_sp_identity(identity)
