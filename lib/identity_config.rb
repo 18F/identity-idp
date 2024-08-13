@@ -163,6 +163,7 @@ module IdentityConfig
     config.add(:idv_sp_required, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_doc_auth_button_enabled, type: :boolean)
+    config.add(:in_person_eipp_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)

@@ -98,22 +98,30 @@ class DataPull
       partner_uuids = args
 
       table = []
-      table << %w[partner_uuid source internal_uuid]
-      identities = AgencyIdentity.includes(:user, :agency).where(uuid: partner_uuids).order(:uuid)
+      table << %w[partner_uuid source internal_uuid deleted]
+      identities = ServiceProviderIdentity.
+        includes(:user, :deleted_user, :agency).
+        where(uuid: partner_uuids).
+        order(:uuid)
 
       identities.each do |identity|
-        table << [identity.uuid, identity.agency.name, identity.user.uuid]
+        table << [
+          identity.uuid,
+          identity.agency.name,
+          (identity.user || identity.deleted_user).uuid,
+          identity.deleted_user ? true : nil,
+        ]
       end
 
       if config.include_missing?
         (partner_uuids - identities.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, '[NOT FOUND]', '[NOT FOUND]']
+          table << [missing_uuid, '[NOT FOUND]', '[NOT FOUND]', nil]
         end
       end
 
       ScriptBase::Result.new(
         subtask: 'uuid-convert',
-        uuids: identities.map { |u| u.user.uuid },
+        uuids: identities.map { |u| (u.user || u.deleted_user).uuid },
         table:,
       )
     end
