@@ -17,7 +17,7 @@ module Reporting
   class MonthlyIdvReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :end_date, :first_month, :second_month, :third_month
+    attr_reader :end_date
 
     def initialize(end_date:)
       @end_date = end_date.in_time_zone('UTC')
@@ -35,19 +35,19 @@ module Reporting
     end
 
     def as_csv
-      puts "... found #{reports.count} reports"
-      puts "!! #{reports.inspect}"
       csv = []
 
-      csv << ['Timeframe/month', *reports.map {|t| t.time_range.begin.strftime('%b %Y') }]
+      csv << ['Metric', *reports.map {|t| t.time_range.begin.strftime('%b %Y') }]
       csv << ['IDV started', *reports.map(&:idv_started)]
 
       csv << ['# of successfully verified users', *reports.map(&:successfully_verified_users)]
       # successfully_verified / idv_started, "blanked_proofing_rates"
-      csv << ['% rate of successfully verified users', *reports.map(&:blanket_proofing_rates)]
+      csv << ['% IDV started to successfully verified', *reports.map(&:blanket_proofing_rates)]
 
       csv << ['# of workflow completed', *reports.map(&:idv_final_resolution)]
       csv << ['% rate of workflow completed', *reports.map(&:idv_final_resolution_rate)]
+
+      csv << ['# of users verified (total)', *reports.map(&:verified_user_count)]
     end
 
     def reports

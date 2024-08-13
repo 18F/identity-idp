@@ -5,8 +5,8 @@
 <%= @message %><br>
 <% @reports.each do |report| %>
   <% header, *rows = report.table %>
-  <%# FIXME: Where is "Table 8" coming when no title is present? %>
-  <% if report.title && !report.title.match(/Table (\d)+/) %>
+  <%# Allow nil title if a subtitle is set %>
+  <% if report.title && report.title != report.subtitle %>
     <h2><%= report.title %></h2>
   <% end %>
   <% if report.subtitle %>

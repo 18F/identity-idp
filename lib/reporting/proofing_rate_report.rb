@@ -22,7 +22,7 @@ module Reporting
       @verbose = verbose
       @progress = progress
       @wait_duration = wait_duration
-      @parallel = parallel
+      @parallel = false # remove me, 50/50 state risk?
       @by_month = by_month
     end
 
@@ -92,22 +92,8 @@ module Reporting
 
     def reports
       @reports ||= begin
-        if parallel?
-          threads = sub_reports.map do |report|
-            Thread.new do
-              report.tap(&:data)
-            end.tap do |thread|
-              thread.report_on_exception = false
-            end
-          end
-
-          Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-            threads.map(&:value)
-          end
-        else
-          Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-            sub_reports.each(&:data)
-          end
+        Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+          sub_reports.each(&:data)
         end
       end
     end
@@ -154,9 +140,9 @@ module Reporting
 
     def by_month_ranges
       ranges = [
-        end_date.last_month.last_month.all_month,
-        end_date.last_month.all_month,
-        end_date.all_month,
+        (end_date - 3.months).all_month,
+        (end_date - 2.months).all_month,
+        (end_date - 1.month).all_month,
       ]
 
       ranges.map do |range|
@@ -179,13 +165,11 @@ if __FILE__ == $PROGRAM_NAME
              end
   progress = !ARGV.include?('--no-progress')
   verbose = ARGV.include?('--verbose')
-  parallel = !ARGV.include?('--no-parallel')
 
   puts Reporting::ProofingRateReport.new(
     end_date: end_date,
     progress: progress,
     verbose: verbose,
-    parallel: parallel,
   ).to_csv
 end
 # rubocop:enable Rails/Output

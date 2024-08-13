@@ -259,6 +259,13 @@ module Reporting
       data[Events::FRAUD_REVIEW_PASSED].count
     end
 
+    # Currently copypasta'd right out of TotalUserCountReport...
+    def verified_user_count
+      Reports::BaseReport.transaction_with_timeout do
+        Profile.where(active: true).where('verified_at <= ?', time_range.end).count
+      end
+    end
+
     # rubocop:disable Layout/LineLength
     # rubocop:disable Metrics/BlockLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
