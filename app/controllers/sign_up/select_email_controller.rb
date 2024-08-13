@@ -3,6 +3,7 @@
 module SignUp
   class SelectEmailController < ApplicationController
     before_action :confirm_two_factor_authenticated
+    before_action :verify_needs_completions_screen
 
     def show
       @sp_name = sp_name
@@ -19,7 +20,7 @@ module SignUp
         session[:selected_email_id] = form_params[:selected_email_id]
         redirect_to sign_up_completed_path
       else
-        flash[:error] = t('anonymous_mailer.password_reset_missing_user.subject')
+        flash[:error] = result.first_error_message
         redirect_to sign_up_select_email_path
       end
     end
@@ -50,6 +51,10 @@ module SignUp
       session_selected_email_id = session[:selected_email_id] ||
                                   EmailContext.new(current_user).last_sign_in_email_address.id
       EmailAddress.find(session_selected_email_id).email
+    end
+
+    def verify_needs_completions_screen
+      redirect_to account_url unless needs_completion_screen_reason
     end
   end
 end
