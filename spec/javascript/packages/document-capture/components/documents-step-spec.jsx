@@ -9,14 +9,14 @@ import {
   FailedCaptureAttemptsContextProvider,
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
-import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
+import { DocumentsAndSelfieStep } from '@18f/identity-document-capture/components/documents-step';
 import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/documents-step', () => {
   it('renders with only front and back inputs by default', () => {
-    const { getByLabelText, queryByLabelText } = render(<DocumentsStep />);
+    const { getByLabelText, queryByLabelText } = render(<DocumentsAndSelfieStep />);
 
     const front = getByLabelText('doc_auth.headings.document_capture_front');
     const back = getByLabelText('doc_auth.headings.document_capture_back');
@@ -34,7 +34,7 @@ describe('document-capture/components/documents-step', () => {
         maxCaptureAttemptsBeforeNativeCamera={3}
         maxSubmissionAttemptsBeforeNativeCamera={3}
       >
-        <DocumentsStep onChange={onChange} />,
+        <DocumentsAndSelfieStep onChange={onChange} />,
       </FailedCaptureAttemptsContextProvider>,
     );
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
@@ -52,13 +52,13 @@ describe('document-capture/components/documents-step', () => {
   it('renders device-specific instructions', () => {
     let { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <DocumentsStep />
+        <DocumentsAndSelfieStep />
       </DeviceContext.Provider>,
     );
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).to.throw();
 
-    getByText = render(<DocumentsStep />).getByText;
+    getByText = render(<DocumentsAndSelfieStep />).getByText;
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
   });
@@ -67,7 +67,7 @@ describe('document-capture/components/documents-step', () => {
     const { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
         <UploadContextProvider flowPath="hybrid">
-          <DocumentsStep />
+          <DocumentsAndSelfieStep />
         </UploadContextProvider>
       </DeviceContext.Provider>,
     );
@@ -80,7 +80,7 @@ describe('document-capture/components/documents-step', () => {
     const { queryByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
         <UploadContextProvider flowPath="standard">
-          <DocumentsStep />
+          <DocumentsAndSelfieStep />
         </UploadContextProvider>
       </DeviceContext.Provider>,
     );
@@ -100,7 +100,7 @@ describe('document-capture/components/documents-step', () => {
             },
           },
         ],
-        [DocumentsStep],
+        [DocumentsAndSelfieStep],
       );
       const { getAllByRole, getByText, getByRole, getByLabelText, queryByLabelText } = render(
         <App />,
@@ -150,7 +150,7 @@ describe('document-capture/components/documents-step', () => {
           },
         },
       ],
-      [DocumentsStep],
+      [DocumentsAndSelfieStep],
     );
     const { queryByRole, getByRole, getByLabelText } = render(<App />);
 
