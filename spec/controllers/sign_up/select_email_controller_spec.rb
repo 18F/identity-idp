@@ -9,8 +9,8 @@ RSpec.describe SignUp::SelectEmailController do
 
     before do
       user.email_addresses = []
-      user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
-      user.email_addresses.create(email: email2, confirmed_at: Time.zone.now)
+      create(:email_address, user:, email: email)
+      create(:email_address, user:, email: email2)
     end
 
     it 'updates selected email address' do
@@ -24,6 +24,7 @@ RSpec.describe SignUp::SelectEmailController do
       render_views
       it 'rejects email not belonging to the user' do
         stub_sign_in(user)
+        allow(controller).to receive(:needs_completion_screen_reason).and_return(true)
         post :create, params: { selected_email_id: email3 }
 
         expect(user.email_addresses.last.email).
