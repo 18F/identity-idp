@@ -9,12 +9,12 @@ import {
   FailedCaptureAttemptsContextProvider,
   SelfieCaptureContext,
 } from '@18f/identity-document-capture';
-import { DocumentsAndSelfieStep } from '@18f/identity-document-capture/components/documents-step';
+import { DocumentsAndSelfieStep } from '@18f/identity-document-capture/components/documents-and-selfie-step';
 import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
-describe('document-capture/components/documents-step', () => {
+describe('document-capture/components/documents-and-selfie-step', () => {
   it('renders with only front and back inputs by default', () => {
     const { getByLabelText, queryByLabelText } = render(<DocumentsAndSelfieStep />);
 

@@ -11,7 +11,7 @@ import {
   DocumentCaptureSubheaderOne,
   SelfieCaptureWithHeader,
   DocumentFrontAndBackCapture,
-} from './documents-step';
+} from './documents-and-selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
