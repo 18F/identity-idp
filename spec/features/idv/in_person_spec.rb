@@ -5,6 +5,7 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include SpAuthHelper
   include InPersonHelper
+  include UspsIppHelper
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -492,6 +493,32 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       sign_in_live_with_2fa(user)
       visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+    end
+  end
+
+  context 'when the USPS enrollment fails during enter password' do
+    before do
+      user = user_with_2fa
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      complete_prepare_step(user)
+      complete_location_step
+      # Causes the schedule USPS enrollment request to throw a bad request error
+      complete_state_id_step(user, first_name: 'usps client error')
+      complete_ssn_step(user)
+      complete_verify_step(user)
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      click_idv_send_security_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      complete_enter_password_step(user)
+    end
+
+    it 'then an error displayed on the enter password page', allow_browser_log: true do
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
+      expect(page).to have_content(
+        'There was an internal error processing your request. Please try again.',
+      )
     end
   end
 end

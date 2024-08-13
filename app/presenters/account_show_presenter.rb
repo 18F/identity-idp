@@ -63,11 +63,11 @@ class AccountShowPresenter
   end
 
   def pending_ipp?
-    user.pending_in_person_enrollment.present?
+    !!user.pending_profile&.in_person_verification_pending?
   end
 
   def pending_gpo?
-    user.gpo_verification_pending_profile?
+    !!user.pending_profile&.gpo_verification_pending?
   end
 
   def show_idv_partial?

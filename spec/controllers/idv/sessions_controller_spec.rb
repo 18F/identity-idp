@@ -46,9 +46,6 @@ RSpec.describe Idv::SessionsController do
         'IdV: start over',
         hash_including(
           location: 'get_help',
-          cancelled_enrollment: nil,
-          enrollment_code: nil,
-          enrollment_id: nil,
           step: 'first',
         ),
       )
@@ -97,9 +94,6 @@ RSpec.describe Idv::SessionsController do
           'IdV: start over',
           hash_including(
             location: 'clear_and_start_over',
-            cancelled_enrollment: nil,
-            enrollment_code: nil,
-            enrollment_id: nil,
             step: 'gpo_verify',
           ),
         )

@@ -96,28 +96,30 @@ RSpec.describe AccountReset::RequestController do
   describe '#create' do
     it 'logs totp user in the analytics' do
       stub_sign_in_before_2fa(user)
-
       stub_analytics
-      attributes = {
+
+      post :create
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: request',
         success: true,
         sms_phone: false,
         totp: true,
         piv_cac: false,
         email_addresses: 1,
         errors: {},
-      }
-
-      post :create
-
-      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
+      )
     end
 
     it 'logs sms user in the analytics' do
       user = create(:user, :fully_registered)
       stub_sign_in_before_2fa(user)
-
       stub_analytics
-      attributes = {
+
+      post :create
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: request',
         success: true,
         sms_phone: true,
         totp: false,
@@ -126,30 +128,25 @@ RSpec.describe AccountReset::RequestController do
         request_id: 'fake-message-request-id',
         message_id: 'fake-message-id',
         errors: {},
-      }
-
-      post :create
-
-      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
+      )
     end
 
     it 'logs PIV/CAC user in the analytics' do
       user = create(:user, :with_piv_or_cac, :with_backup_code)
       stub_sign_in_before_2fa(user)
-
       stub_analytics
-      attributes = {
+
+      post :create
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: request',
         success: true,
         sms_phone: false,
         totp: false,
         piv_cac: true,
         email_addresses: 1,
         errors: {},
-      }
-
-      post :create
-
-      expect(@analytics).to have_logged_event('Account Reset: request', attributes)
+      )
     end
 
     it 'redirects to root if user not signed in' do

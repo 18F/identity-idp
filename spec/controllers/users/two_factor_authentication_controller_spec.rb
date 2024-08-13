@@ -326,22 +326,20 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       it 'tracks the analytics events' do
         stub_analytics
 
-        analytics_hash = {
+        get :send_code, params: {
+          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
+        }
+
+        expect(@analytics).to have_logged_event(
+          'OTP: Delivery Selection',
           success: true,
           errors: {},
-          error_details: nil,
           **otp_preference_sms,
           resend: true,
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
-        }
-
-        get :send_code, params: {
-          otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
-        }
-
-        expect(@analytics).to have_logged_event('OTP: Delivery Selection', analytics_hash)
+        )
         expect(@analytics).to have_logged_event(
           'Telephony: OTP sent',
           hash_including(
@@ -493,23 +491,21 @@ RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics
       it 'tracks the event' do
         stub_analytics
 
-        analytics_hash = {
-          success: true,
-          errors: {},
-          error_details: nil,
-          otp_delivery_preference: 'voice',
-          resend: false,
-          context: 'authentication',
-          country_code: 'US',
-          area_code: '202',
-        }
-
         get :send_code, params: {
           otp_delivery_selection_form: { otp_delivery_preference: 'voice',
                                          otp_make_default_number: nil },
         }
 
-        expect(@analytics).to have_logged_event('OTP: Delivery Selection', analytics_hash)
+        expect(@analytics).to have_logged_event(
+          'OTP: Delivery Selection',
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'voice',
+          resend: false,
+          context: 'authentication',
+          country_code: 'US',
+          area_code: '202',
+        )
         expect(@analytics).to have_logged_event(
           'Telephony: OTP sent',
           hash_including(
