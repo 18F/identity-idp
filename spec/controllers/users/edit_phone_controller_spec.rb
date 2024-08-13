@@ -12,20 +12,20 @@ RSpec.describe Users::EditPhoneController do
     context 'when the user submits a valid otp delivery preference' do
       it 'updates the phone configuration and redirects' do
         stub_analytics
-        attributes = {
-          success: true,
-          errors: {},
-          delivery_preference: 'voice',
-          make_default_number: true,
-          phone_configuration_id: phone_configuration.id,
-        }
 
         put :update, params: {
           id: phone_configuration.id,
           edit_phone_form: { delivery_preference: 'voice' },
         }
 
-        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
+        expect(@analytics).to have_logged_event(
+          'Phone Number Change: Form submitted',
+          success: true,
+          errors: {},
+          delivery_preference: 'voice',
+          make_default_number: true,
+          phone_configuration_id: phone_configuration.id,
+        )
         expect(response).to redirect_to(account_url)
         expect(phone_configuration.reload.delivery_preference).to eq('voice')
       end
@@ -34,21 +34,21 @@ RSpec.describe Users::EditPhoneController do
     context 'when the user submits an invalid delivery preference' do
       it 'renders the edit screen' do
         stub_analytics
-        attributes = {
-          success: false,
-          errors: hash_including(:delivery_preference),
-          error_details: { delivery_preference: { inclusion: true } },
-          delivery_preference: 'noise',
-          make_default_number: true,
-          phone_configuration_id: phone_configuration.id,
-        }
 
         put :update, params: {
           id: phone_configuration.id,
           edit_phone_form: { delivery_preference: 'noise' },
         }
 
-        expect(@analytics).to have_logged_event('Phone Number Change: Form submitted', attributes)
+        expect(@analytics).to have_logged_event(
+          'Phone Number Change: Form submitted',
+          success: false,
+          errors: hash_including(:delivery_preference),
+          error_details: { delivery_preference: { inclusion: true } },
+          delivery_preference: 'noise',
+          make_default_number: true,
+          phone_configuration_id: phone_configuration.id,
+        )
         expect(response).to render_template(:edit)
         expect(phone_configuration.reload.delivery_preference).to eq('sms')
       end
@@ -63,16 +63,15 @@ RSpec.describe Users::EditPhoneController do
       stub_sign_in(user.reload)
       stub_analytics
 
-      attributes = {
-        success: true,
-        phone_configuration_id: phone_configuration.id,
-      }
-
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
       delete :destroy, params: { id: phone_configuration.id }
 
-      expect(@analytics).to have_logged_event('Phone Number Deletion: Submitted', attributes)
+      expect(@analytics).to have_logged_event(
+        'Phone Number Deletion: Submitted',
+        success: true,
+        phone_configuration_id: phone_configuration.id,
+      )
       expect(response).to redirect_to(account_url)
       expect(flash[:success]).to eq(t('two_factor_authentication.phone.delete.success'))
       expect(PhoneConfiguration.find_by(id: phone_configuration.id)).to eq(nil)
