@@ -75,7 +75,6 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
-        opted_in_to_in_person_proofing: nil,
         step: 'state_id',
       }.merge(ab_test_args)
     end
@@ -178,11 +177,9 @@ RSpec.describe Idv::InPerson::StateIdController, allowed_extra_analytics: [:*] d
         {
           success: true,
           errors: {},
-          error_details: nil,
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'state_id',
-          opted_in_to_in_person_proofing: nil,
           same_address_as_id: true,
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),

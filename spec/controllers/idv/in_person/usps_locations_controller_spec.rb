@@ -146,9 +146,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           success: false,
           errors: 'No USPS locations found',
           result_total: 0,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
       end
     end
@@ -165,11 +162,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
           success: true,
-          errors: nil,
           result_total: 3,
-          exception_class: nil,
-          exception_message: nil,
-          response_status_code: nil,
         )
       end
     end
@@ -190,8 +183,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: timeout_error.message,
           response_body_present:
           timeout_error.response_body.present?,
-          response_body: timeout_error.response_body,
-          response_status_code: timeout_error.response_status,
         )
 
         status = response.status
@@ -215,8 +206,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: server_error.message,
           response_body_present:
           server_error.response_body.present?,
-          response_body: server_error.response_body,
-          response_status_code: server_error.response_status,
         )
 
         status = response.status
@@ -248,8 +237,6 @@ RSpec.describe Idv::InPerson::UspsLocationsController, allowed_extra_analytics: 
           exception_message: exception.message,
           response_body_present:
           exception.response_body.present?,
-          response_body: exception.response_body,
-          response_status_code: exception.response_status,
         )
 
         facilities = JSON.parse(response.body)

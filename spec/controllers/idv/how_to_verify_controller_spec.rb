@@ -114,7 +114,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
       {
         step: 'how_to_verify',
         analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: nil,
       }.merge(ab_test_args)
     end
 
@@ -181,7 +180,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
         {
           step: 'how_to_verify',
           analytics_id: 'Doc Auth',
-          skip_hybrid_handoff: nil,
           error_details: { selection: { blank: true } },
           errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
@@ -201,7 +199,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
         {
           step: 'how_to_verify',
           analytics_id: 'Doc Auth',
-          skip_hybrid_handoff: nil,
           'selection' => selection,
           error_details: { selection: { inclusion: true } },
           errors: { selection: ['Select a way to verify your identity.'] },
@@ -217,7 +214,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
       let(:analytics_args) do
         {
           analytics_id: 'Doc Auth',
-          skip_hybrid_handoff: nil,
           step: 'how_to_verify',
           errors: {},
           success: true,
@@ -244,7 +240,6 @@ RSpec.describe Idv::HowToVerifyController, allowed_extra_analytics: [:*] do
       let(:analytics_args) do
         {
           analytics_id: 'Doc Auth',
-          skip_hybrid_handoff: nil,
           step: 'how_to_verify',
           errors: {},
           success: true,

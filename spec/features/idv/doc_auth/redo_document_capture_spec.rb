@@ -114,10 +114,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
   shared_examples_for 'image re-upload allowed' do
     it 'allows user to submit the same image again' do
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        hash_including(redo_document_capture: nil),
-      )
+      expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
         hash_including(remaining_submit_attempts: 3),
@@ -135,10 +132,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
   shared_examples_for 'image re-upload not allowed' do
     it 'stops user submitting the same image again' do
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        hash_including(redo_document_capture: nil),
-      )
+      expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
         hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -155,10 +149,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
 
   shared_examples_for 'document and selfie images re-upload not allowed' do
     it 'stops user submitting the same images again' do
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        hash_including(redo_document_capture: nil),
-      )
+      expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
         hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -278,10 +269,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
 
       it 'stops user submitting the same images again' do
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(redo_document_capture: nil),
-        )
+        expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -324,10 +312,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
 
       it 'stops user submitting the same images again' do
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(redo_document_capture: nil),
-        )
+        expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
@@ -403,10 +388,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       end
 
       it 'stops user submitting the same images again' do
-        expect(fake_analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(redo_document_capture: nil),
-        )
+        expect(fake_analytics).to have_logged_event('IdV: doc auth document_capture visited')
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           hash_including(remaining_submit_attempts: 3, submit_attempts: 1),

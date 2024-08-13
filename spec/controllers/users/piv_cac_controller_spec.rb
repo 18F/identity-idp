@@ -73,7 +73,6 @@ RSpec.describe Users::PivCacController do
       expect(@analytics).to have_logged_event(
         :piv_cac_update_name_submitted,
         success: true,
-        error_details: nil,
         configuration_id: configuration.id.to_s,
       )
     end
@@ -152,7 +151,6 @@ RSpec.describe Users::PivCacController do
         :piv_cac_delete_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
-        error_details: nil,
       )
     end
 
