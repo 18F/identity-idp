@@ -104,7 +104,7 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 COPY ./config/application.yml.default.prod $RAILS_ROOT/config/application.yml
 
 # Precompile assets
-RUN bundle exec rake assets:precompile --trace
+RUN bundle exec rake assets:precompile --trace && rm -r node_modules/ && rm -r .yarn-cache/
 
 # get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
@@ -136,7 +136,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM ruby:3.3.4-slim
+FROM ruby:3.3.4-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -179,7 +179,6 @@ RUN apt-get update -qq && \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    software-properties-common \
     libffi-dev \
     libpq-dev \
     unzip && \
