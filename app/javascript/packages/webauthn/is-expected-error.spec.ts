@@ -10,7 +10,7 @@ describe('isExpectedWebauthnError', () => {
   });
 
   it('returns false for instance of DOMException of an unexpected name', () => {
-    const error = new DOMException('', 'UnknownError');
+    const error = new DOMException('', 'GeneralError');
     const result = isExpectedWebauthnError(error);
 
     expect(result).to.be.false();

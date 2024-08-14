@@ -56,7 +56,7 @@ const LEGACY_FILE_EXCEPTIONS = [
   'spec/javascript/packages/document-capture/components/submission-spec.jsx',
   'spec/javascript/packages/document-capture/components/suspense-error-boundary-spec.jsx',
   'spec/javascript/packages/document-capture/components/tip-list-spec.jsx',
-  'spec/javascript/packages/document-capture/components/unknown-error-spec.jsx',
+  'spec/javascript/packages/document-capture/components/general-error-spec.jsx',
   'spec/javascript/packages/document-capture/components/warning-spec.jsx',
   'spec/javascript/packages/document-capture/context/acuant-spec.jsx',
   'spec/javascript/packages/document-capture/context/device-spec.jsx',
