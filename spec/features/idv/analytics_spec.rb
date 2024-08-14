@@ -75,6 +75,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
 
   let(:base_proofing_results) do
     {
+      error_details: nil,
       exception: nil,
       ssn_is_unique: true,
       timed_out: false,
@@ -104,6 +105,7 @@ RSpec.feature 'Analytics Regression', js: true, allowed_extra_analytics: [:*] do
 
   let(:in_person_path_proofing_results) do
     {
+      error_details: nil,
       exception: nil,
       ssn_is_unique: true,
       timed_out: false,
