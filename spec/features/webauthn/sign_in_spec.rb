@@ -15,13 +15,18 @@ RSpec.feature 'webauthn sign in', allowed_extra_analytics: [:*] do
     )
   end
 
-  it 'allows the user to sign in if webauthn is successful' do
-    mock_webauthn_verification_challenge
+  context 'with javascript enabled', :js do
+    # While JavaScript tests are slower to run, these tests provide increased confidence in the
+    # real-world behavior of WebAuthn browser interaction for the critical pathways.
 
-    sign_in_user(user)
-    mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+    it 'allows the user to sign in if webauthn is successful' do
+      mock_webauthn_verification_challenge
 
-    expect(page).to have_current_path(account_path)
+      sign_in_user(user)
+      mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+
+      expect(page).to have_current_path(account_path)
+    end
   end
 
   it 'does not allow the user to sign in if the challenge/secret is incorrect' do
