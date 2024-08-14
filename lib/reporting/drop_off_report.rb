@@ -49,14 +49,18 @@ module Reporting
       OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
       IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
+      IPP_ENROLLMENT_UPDATE = 'GetUspsProofingResultsJob: Enrollment status updated'
 
       def self.all_events
         constants.map { |c| const_get(c) }
       end
+
+      def self.must_pass_events
+        [IPP_ENROLLMENT_UPDATE]
+      end
     end
 
     module Results
-      IPP_ENROLLMENT_UPDATE = 'GetUspsProofingResultsJob: Enrollment status updated'
       IDV_FINAL_RESOLUTION_VERIFIED = 'IdV: final resolution - Verified'
     end
 
@@ -252,7 +256,7 @@ module Reporting
     end
 
     def ipp_verification_total
-      @ipp_verification_total ||= data[Results::IPP_ENROLLMENT_UPDATE].count
+      @ipp_verification_total ||= data[Events::IPP_ENROLLMENT_UPDATE].count
     end
 
     STEP_DEFINITIONS = [
@@ -307,7 +311,7 @@ module Reporting
       ],
       [
         'Successfully verified via in-person proofing',
-        'The count of users who successfully verified their identity in-person at a USPS location within the report period',
+        'The count of users who successfully verified their identity in-person at a USPS location within the report period', # rubocop:disable Layout/LineLength
       ],
     ].freeze
 
@@ -394,35 +398,22 @@ module Reporting
       params = {
         issuers: issuers.present? && quote(issuers),
         event_names: quote(Events.all_events),
+        must_pass_event_names: quote(Events.must_pass_events),
       }
 
       format(<<~QUERY, params)
         fields
             name
           , properties.user_id AS user_id
-          , coalesce(properties.event_properties.success, 0) AS success
+          , coalesce(properties.event_properties.success, properties.event_properties.passed, 0) AS success
           , coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
           , !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
-        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
-        | limit 10000
-      QUERY
-    end
-
-    def ipp_query
-      params = {
-        issuers: issuers.present? && quote(issuers),
-        event_names: quote(Results::IPP_ENROLLMENT_UPDATE),
-      }
-      format(<<~QUERY, params)
-        name
-        , properties.user_id AS user_id
-        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
-        | filter name in %{event_names}
-        | filter properties.event_properties.passed or properties.event_properties.success
+        #{issuers.present? ? '| filter properties.service_provider IN %{issuers} or properties.event_properties.issuer IN %{issuers}' : ''}
+        | filter (name in %{must_pass_event_names} and properties.event_properties.passed = 1) or (name not in %{must_pass_event_names})
         | limit 10000
       QUERY
     end
@@ -435,9 +426,7 @@ module Reporting
           h[uuid] = Set.new
         end
 
-        # Splitting out the `ipp_query` is hopefully temporary until we can get the events
-        # to use similar schema
-        (fetch_results + fetch_results(query: ipp_query)).each do |row|
+        fetch_results.each do |row|
           event = row['name']
           user_id = row['user_id']
           event_users[event] << user_id
