@@ -1,13 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
-  include FederalEmailDomainHelper
-
   let(:user) { create(:user) }
+  let!(:federal_domain) { create(:federal_email_domain, name: 'gsa.gov') }
   subject(:presenter) { described_class.new(user:) }
-  before do
-    default_federal_domains
-  end
+
   describe '#type' do
     it 'returns piv_cac' do
       expect(presenter.type).to eq :piv_cac
