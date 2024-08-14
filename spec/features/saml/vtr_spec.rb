@@ -126,7 +126,9 @@ RSpec.feature 'SAML requests using VTR' do
     expect_successful_saml_redirect
   end
 
-  scenario 'sign in with VTR request for idv requires idv', :js do
+  scenario 'sign in with VTR request for idv requires idv',
+           :js,
+           allowed_extra_analytics: [:*] do
     user = create(:user, :fully_registered)
 
     visit_saml_authn_request_url(
