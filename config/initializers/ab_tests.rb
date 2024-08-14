@@ -9,13 +9,19 @@ module AbTests
     user:,
     user_session:
   )
-    # If we don't have a user, there _may_ be a document capture session UUID
-    # sitting in session if the user is currently doing hybrid handoff.
-    return session[:document_capture_session_uuid] if !user
+    # For users doing hybrid handoff, their document capture session uuid
+    # will be stored in session. See Idv::HybridMobile::EntryController
+    if session[:document_capture_session_uuid].present?
+      return session[:document_capture_session_uuid]
+    end
 
     # Otherwise, try to get the user's current Idv::Session and read
     # the generated document_capture_session UUID from there
-    return if !user_session
+    return if !(user && user_session)
+
+    # Avoid creating a pointless :idv entry in user_session if the
+    # user has not already started IdV
+    return unless user_session.key?(:idv)
 
     Idv::Session.new(
       current_user: user,
@@ -37,7 +43,7 @@ module AbTests
         IdentityConfig.store.doc_auth_vendor_randomize_percent :
         0,
     }.compact,
-  ) do |session:, user:, user_session:, **|
+  ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
 
