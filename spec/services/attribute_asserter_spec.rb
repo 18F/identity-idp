@@ -100,6 +100,11 @@ RSpec.describe AttributeAsserter do
           it 'gets UUID from Service Provider' do
             expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
           end
+
+          it 'gets the user\'s last sign in email' do
+            expect(get_asserted_attribute(user, :email)).
+              to eq EmailContext.new(user).last_sign_in_email_address.email
+          end
         end
 
         context 'custom bundle includes dob' do

@@ -8,10 +8,12 @@ class DisplayablePiiFormatter
 
   attr_reader :current_user
   attr_reader :pii
+  attr_reader :selected_email_id
 
-  def initialize(current_user:, pii:)
+  def initialize(current_user:, pii:, selected_email_id:)
     @current_user = current_user
     @pii = pii
+    @selected_email_id = selected_email_id
   end
 
   # @return [FormattedPii]
@@ -36,7 +38,9 @@ class DisplayablePiiFormatter
   private
 
   def email
-    EmailContext.new(current_user).last_sign_in_email_address.email
+    session_selected_email_id = @selected_email_id ||
+                                EmailContext.new(current_user).last_sign_in_email_address.id
+    EmailAddress.find(session_selected_email_id).email
   end
 
   def all_emails
