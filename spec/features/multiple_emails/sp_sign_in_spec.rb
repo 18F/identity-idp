@@ -65,9 +65,13 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       # Delete email from account
       visit manage_email_confirm_delete_url(id: email2.id)
       click_button t('forms.email.buttons.delete')
+      logout
 
       # Sign in again to partner application
       visit_idp_from_oidc_sp(scope: 'openid email')
+      signin(email1.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
       decoded_id_token = fetch_oidc_id_token_info
       expect(decoded_id_token[:email]).to eq(email1.email)
