@@ -6000,6 +6000,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] new_user Whether this is an incomplete user (no associated MFA methods)
   # @param [Boolean] has_other_auth_methods Whether the user has other authentication methods
   # @param [Integer] phone_configuration_id Phone configuration associated with request
@@ -6017,10 +6018,10 @@ module AnalyticsEvents
       'SMS Opt-In: Submitted',
       success:,
       errors:,
+      error_details:,
       new_user:,
       has_other_auth_methods:,
       phone_configuration_id:,
-      error_details:,
       **extra,
     )
   end
