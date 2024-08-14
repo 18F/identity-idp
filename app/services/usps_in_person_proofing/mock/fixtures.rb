@@ -83,8 +83,12 @@ module UspsInPersonProofing
         )
       end
 
-      def self.request_expired_proofing_results_response
-        load_response_fixture('request_expired_proofing_results_response.json')
+      def self.request_expired_enhanced_ipp_results_response
+        load_response_fixture('request_expired_enhanced_ipp_results_response.json')
+      end
+
+      def self.request_expired_id_ipp_results_response
+        load_response_fixture('request_expired_id_ipp_results_response.json')
       end
 
       def self.request_unexpected_expired_proofing_results_response

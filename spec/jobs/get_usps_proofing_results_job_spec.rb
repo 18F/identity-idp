@@ -366,7 +366,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               request_in_progress_proofing_results_args,
               { status: 500 },
               request_failed_proofing_results_args,
-              request_expired_proofing_results_args,
+              request_expired_id_ipp_results_args,
             ).and_raise(Faraday::TimeoutError).and_raise(Faraday::ConnectionFailed)
 
             job.perform(Time.zone.now)
@@ -527,7 +527,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             end
 
             it 'sends deadline passed email on response with expired status' do
-              stub_request_expired_proofing_results
+              stub_request_expired_id_ipp_proofing_results
               user = pending_enrollment.user
               expect(pending_enrollment.deadline_passed_sent).to be false
               freeze_time do
@@ -851,7 +851,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           context 'when an enrollment expires' do
             before(:each) do
-              stub_request_expired_proofing_results
+              stub_request_expired_id_ipp_proofing_results
             end
 
             it_behaves_like(
@@ -860,7 +860,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               email_type: 'deadline passed',
               enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
               response_json: UspsInPersonProofing::Mock::Fixtures.
-                request_expired_proofing_results_response,
+              request_expired_id_ipp_results_response,
             )
 
             it 'logs that the enrollment expired' do
@@ -1229,7 +1229,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
 
               it 'does not set the fraud related fields of an expired enrollment' do
-                stub_request_expired_proofing_results
+                stub_request_expired_id_ipp_proofing_results
 
                 job.perform(Time.zone.now)
                 profile = pending_enrollment.reload.profile
@@ -1354,7 +1354,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               end
 
               it 'deactivates and sets fraud related fields of an expired enrollment' do
-                stub_request_expired_proofing_results
+                stub_request_expired_id_ipp_proofing_results
 
                 job.perform(Time.zone.now)
 
@@ -1449,7 +1449,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
 
           context 'enrollment is expired' do
             it 'deletes the notification phone configuration without sending an sms' do
-              stub_request_expired_proofing_results
+              stub_request_expired_id_ipp_proofing_results
 
               expect(pending_enrollment.notification_phone_configuration).to_not be_nil
 
@@ -1531,7 +1531,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
         end
 
         context <<~STR.squish do
-          When an Enhanced IPP enrollment passess proofing
+          When an Enhanced IPP enrollment passes proofing
           with unsupported ID,enrollment by-passes the
           Primary ID check and
         STR
@@ -1585,7 +1585,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
           end
         end
 
-        context 'By passes the Secondary ID check when enrollment is Enhanced IPP' do
+        context 'Bypasses the Secondary ID check when enrollment is Enhanced IPP' do
           before do
             stub_request_passed_proofing_secondary_id_type_results_ial_2
           end
@@ -1599,6 +1599,39 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
             request_passed_proofing_secondary_id_type_results_response_ial_2,
             enhanced_ipp_enrollment: true,
           )
+        end
+
+        context 'when an enrollment expires' do
+          before(:each) do
+            stub_request_expired_enhanced_ipp_proofing_results
+          end
+
+          it_behaves_like(
+            'enrollment_with_a_status_update',
+            passed: false,
+            email_type: 'deadline passed',
+            enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
+            response_json: UspsInPersonProofing::Mock::Fixtures.
+            request_expired_enhanced_ipp_results_response,
+            enhanced_ipp_enrollment: true,
+          )
+
+          it 'logs that the enrollment expired' do
+            job.perform(Time.zone.now)
+
+            expect(pending_enrollment.proofed_at).to eq(nil)
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Enrollment status updated',
+              hash_including(
+                reason: 'Enrollment has expired',
+                job_name: 'GetUspsProofingResultsJob',
+                enhanced_ipp: true,
+              ),
+            )
+          end
+
+          context 'when the in_person_stop_expiring_enrollments flag is true' do
+          end
         end
       end
     end
