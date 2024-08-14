@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe IdentityConfig do
+  let(:default_yaml_config) do
+    YAML.safe_load_file(Rails.root.join('config', 'application.yml.default')).freeze
+  end
+
   describe '.key_types' do
     subject(:key_types) { Identity::Hostdata.config_builder.key_types }
 
@@ -71,6 +75,50 @@ RSpec.describe IdentityConfig do
   describe '.unused_keys' do
     it 'does not have any unused keys' do
       expect(Identity::Hostdata.config_builder.unused_keys).to be_empty
+    end
+  end
+
+  describe 'redundant configuration' do
+    it 'does not use the default value in development' do
+      check_for_default('development')
+    end
+
+    it 'does not use the default value in production' do
+      check_for_default('production')
+    end
+
+    it 'does not use the default value in test' do
+      check_for_default('test')
+    end
+
+    it 'does not define an identical value in development, production, and test' do
+      keys = Identity::Hostdata.config_builder.key_types.map { |key, _type| key.to_s }
+      aggregate_failures do
+        keys.each do |key|
+          expect(
+            !default_yaml_config.key?(key) && (
+              default_yaml_config['production'].key?(key) &&
+              default_yaml_config['production'][key] == default_yaml_config['test'][key] &&
+              default_yaml_config['test'][key] == default_yaml_config['development'][key]
+            ),
+          ).to(
+            eq(false),
+            "#{key} uses the same value in development, production and test instead of a default",
+          )
+        end
+      end
+    end
+  end
+
+  def check_for_default(env_name)
+    aggregate_failures do
+      default_yaml_config[env_name].each do |key, value|
+        next unless default_yaml_config.key?(key)
+        expect(value).to_not(
+          eq(default_yaml_config[key]),
+          "#{key} in #{env_name} uses the default value",
+        )
+      end
     end
   end
 end
