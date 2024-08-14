@@ -42,12 +42,11 @@ account.connected_apps.associated: Connecté %{timestamp}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
-account.email_language.languages_list: '%{app_name} vous permet de recevoir des communications par e-mail en %{list}.'
+account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
-account.email_language.sentence_connector: ou
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
@@ -1120,13 +1119,13 @@ idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouve
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
-idv.messages.phone.description: Nous vérifierons ce numéro dans nos données et vous enverrons un code à usage unique. L’objectif est d’aider à vérifier votre identité.
+idv.messages.phone.description: Nous vérifierons votre numéro dans nos données enregistrées et vous enverrons un code à usage unique afin de confirmer votre identité.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
 idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
 idv.messages.phone.failed_number.try_again_html: Essayez un <strong>autre</strong> numéro.
 idv.messages.phone.rules:
-  - Basé aux Etats-Unis (y compris les territoires américains)
+  - Basé aux Etats-Unis
   - Votre numéro principal (celui que vous utilisez le plus souvent)
 idv.messages.return_to_profile: '‹ Revenir à votre profil %{app_name}'
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
@@ -1137,7 +1136,6 @@ idv.titles.activated: Votre identité a déjà été vérifiée
 idv.titles.come_back_later: Votre lettre est en route
 idv.titles.enter_password: Révisez et validez
 idv.titles.mail.verify: Vérifiez votre adresse
-idv.titles.otp_delivery_method: Comment devrions-nous envoyer un code ?
 idv.titles.session.enter_password: Ressaisissez votre mot de passe %{app_name}
 idv.titles.session.enter_password_letter: Ressaisissez votre mot de passe %{app_name} pour envoyer votre lettre
 idv.titles.unavailable: Nous travaillons à la résolution d’une erreur

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Resetting password with a pending profile', allowed_extra_analytics: [:*] do
+RSpec.describe 'Resetting password with a pending profile' do
   include OidcAuthHelper
 
   let(:sp_name) { 'Test SP' }

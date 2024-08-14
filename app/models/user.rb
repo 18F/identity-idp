@@ -235,6 +235,11 @@ class User < ApplicationRecord
     pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
   end
 
+  # @return [Boolean] Whether the user has an establishing in person enrollment.
+  def has_establishing_in_person_enrollment?
+    establishing_in_person_enrollment.present?
+  end
+
   # Trust `pending_profile` rather than enrollment associations
   def has_establishing_in_person_enrollment_safe?
     !!pending_profile&.in_person_enrollment&.establishing?

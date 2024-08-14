@@ -181,7 +181,6 @@ RSpec.describe OutageStatus do
 
       expect(analytics).to have_logged_event(
         'Vendor Outage',
-        redirect_from: nil,
         vendor_status: OutageStatus::ALL_VENDORS.index_with do |_vendor|
           satisfy { |status| IdentityConfig::VENDOR_STATUS_OPTIONS.include?(status) }
         end,

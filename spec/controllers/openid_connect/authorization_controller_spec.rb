@@ -130,18 +130,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
               success: true,
               client_id: client_id,
               prompt: 'select_account',
-              referer: nil,
               allow_prompt_login: true,
               errors: {},
-              error_details: nil,
               unauthorized_scope: true,
               user_fully_authenticated: true,
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
               code_challenge_present: false,
-              service_provider_pkce: nil,
               scope: 'openid',
-              vtr: nil,
-              vtr_param: nil,
             )
             expect(@analytics).to have_logged_event(
               'OpenID Connect: authorization request handoff',
@@ -157,7 +152,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
               sign_in_duration_seconds: 15,
               sign_in_flow:,
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-              vtr: nil,
             )
           end
         end
@@ -187,15 +181,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
               success: true,
               client_id: client_id,
               prompt: 'select_account',
-              referer: nil,
               allow_prompt_login: true,
               errors: {},
-              error_details: nil,
               unauthorized_scope: true,
               user_fully_authenticated: true,
               acr_values: '',
               code_challenge_present: false,
-              service_provider_pkce: nil,
               scope: 'openid',
               vtr: ['C1'],
               vtr_param: ['C1'].to_json,
@@ -385,18 +376,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 success: true,
                 client_id: client_id,
                 prompt: 'select_account',
-                referer: nil,
                 allow_prompt_login: true,
                 errors: {},
-                error_details: nil,
                 unauthorized_scope: false,
                 user_fully_authenticated: true,
                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
                 code_challenge_present: false,
-                service_provider_pkce: nil,
                 scope: 'openid profile',
-                vtr: nil,
-                vtr_param: nil,
               )
 
               expect(@analytics).to have_logged_event(
@@ -414,7 +400,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 billed_ial: 2,
                 sign_in_flow:,
                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
-                vtr: nil,
               )
             end
 
@@ -723,18 +708,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   success: true,
                   client_id: client_id,
                   prompt: 'select_account',
-                  referer: nil,
                   allow_prompt_login: true,
                   errors: {},
-                  error_details: nil,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
-                  service_provider_pkce: nil,
                   scope: 'openid profile',
-                  vtr: nil,
-                  vtr_param: nil,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -752,7 +732,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   billed_ial: 2,
                   sign_in_flow:,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
                 )
               end
             end
@@ -817,18 +796,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   success: true,
                   client_id: client_id,
                   prompt: 'select_account',
-                  referer: nil,
                   allow_prompt_login: true,
                   errors: {},
-                  error_details: nil,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
-                  service_provider_pkce: nil,
                   scope: 'openid profile',
-                  vtr: nil,
-                  vtr_param: nil,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -846,7 +820,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   billed_ial: 1,
                   sign_in_flow:,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
                 )
               end
             end
@@ -914,18 +887,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   success: true,
                   client_id: client_id,
                   prompt: 'select_account',
-                  referer: nil,
                   allow_prompt_login: true,
                   errors: {},
-                  error_details: nil,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
-                  service_provider_pkce: nil,
                   scope: 'openid profile',
-                  vtr: nil,
-                  vtr_param: nil,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -943,7 +911,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   billed_ial: 1,
                   sign_in_flow:,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
                 )
               end
             end
@@ -1082,18 +1049,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
               success: true,
               client_id: client_id,
               prompt: 'select_account',
-              referer: nil,
               allow_prompt_login: true,
               errors: {},
-              error_details: nil,
               unauthorized_scope: true,
               user_fully_authenticated: true,
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
               code_challenge_present: false,
-              service_provider_pkce: nil,
               scope: 'openid',
-              vtr: nil,
-              vtr_param: nil,
             )
 
             expect(@analytics).to have_logged_event(
@@ -1111,7 +1073,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
               billed_ial: 1,
               sign_in_flow:,
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-              vtr: nil,
             )
           end
         end
@@ -1141,15 +1102,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
               success: true,
               client_id: client_id,
               prompt: 'select_account',
-              referer: nil,
               allow_prompt_login: true,
               errors: {},
-              error_details: nil,
               unauthorized_scope: true,
               user_fully_authenticated: true,
               acr_values: '',
               code_challenge_present: false,
-              service_provider_pkce: nil,
               scope: 'openid',
               vtr: ['C1'],
               vtr_param: ['C1'].to_json,
@@ -1340,18 +1298,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 success: true,
                 client_id: client_id,
                 prompt: 'select_account',
-                referer: nil,
                 allow_prompt_login: true,
                 errors: {},
-                error_details: nil,
                 unauthorized_scope: false,
                 user_fully_authenticated: true,
                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
                 code_challenge_present: false,
-                service_provider_pkce: nil,
                 scope: 'openid profile',
-                vtr: nil,
-                vtr_param: nil,
               )
 
               expect(@analytics).to have_logged_event(
@@ -1369,7 +1322,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 billed_ial: 2,
                 sign_in_flow:,
                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
-                vtr: nil,
               )
             end
 
@@ -1680,18 +1632,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   success: true,
                   client_id: client_id,
                   prompt: 'select_account',
-                  referer: nil,
                   allow_prompt_login: true,
                   errors: {},
-                  error_details: nil,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
-                  service_provider_pkce: nil,
                   scope: 'openid profile',
-                  vtr: nil,
-                  vtr_param: nil,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -1709,7 +1656,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   billed_ial: 2,
                   sign_in_flow:,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
                 )
               end
             end
@@ -1774,18 +1720,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   success: true,
                   client_id: client_id,
                   prompt: 'select_account',
-                  referer: nil,
                   allow_prompt_login: true,
                   errors: {},
-                  error_details: nil,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
-                  service_provider_pkce: nil,
                   scope: 'openid profile',
-                  vtr: nil,
-                  vtr_param: nil,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -1803,7 +1744,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   billed_ial: 1,
                   sign_in_flow:,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
                 )
               end
             end
@@ -1871,18 +1811,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   success: true,
                   client_id: client_id,
                   prompt: 'select_account',
-                  referer: nil,
                   allow_prompt_login: true,
                   errors: {},
-                  error_details: nil,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                   code_challenge_present: false,
-                  service_provider_pkce: nil,
                   scope: 'openid profile',
-                  vtr: nil,
-                  vtr_param: nil,
                 )
 
                 expect(@analytics).to have_logged_event(
@@ -1900,7 +1835,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   billed_ial: 1,
                   sign_in_flow:,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                  vtr: nil,
                 )
               end
             end
@@ -2081,7 +2015,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             success: false,
             client_id: client_id,
             prompt: '',
-            referer: nil,
             allow_prompt_login: true,
             unauthorized_scope: true,
             errors: hash_including(:prompt),
@@ -2089,10 +2022,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             user_fully_authenticated: true,
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
-            service_provider_pkce: nil,
             scope: 'openid',
-            vtr: nil,
-            vtr_param: nil,
           )
 
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
@@ -2211,7 +2141,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             success: false,
             client_id: client_id,
             prompt: '',
-            referer: nil,
             allow_prompt_login: true,
             unauthorized_scope: true,
             errors: hash_including(:prompt),
@@ -2219,7 +2148,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             user_fully_authenticated: true,
             acr_values: '',
             code_challenge_present: false,
-            service_provider_pkce: nil,
             scope: 'openid',
             vtr: ['C1'],
             vtr_param: '["C1"]',
@@ -2252,20 +2180,14 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to have_logged_event(
             'OpenID Connect: authorization request',
             success: false,
-            client_id: nil,
             prompt: 'select_account',
-            referer: nil,
-            allow_prompt_login: nil,
             unauthorized_scope: true,
             errors: hash_including(:client_id),
             error_details: hash_including(:client_id),
             user_fully_authenticated: true,
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
-            service_provider_pkce: nil,
             scope: 'openid',
-            vtr: nil,
-            vtr_param: nil,
           )
 
           expect(@analytics).to_not have_logged_event('SP redirect initiated')
@@ -2293,17 +2215,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to have_logged_event(
             'OpenID Connect: authorization request',
             success: false,
-            client_id: nil,
             prompt: 'select_account',
-            referer: nil,
-            allow_prompt_login: nil,
             unauthorized_scope: true,
             errors: hash_including(:client_id),
             error_details: hash_including(:client_id),
             user_fully_authenticated: true,
             acr_values: '',
             code_challenge_present: false,
-            service_provider_pkce: nil,
             scope: 'openid',
             vtr: ['C1'],
             vtr_param: '["C1"]',
@@ -2421,18 +2339,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
             success: true,
             client_id: client_id,
             prompt: 'select_account',
-            referer: nil,
             allow_prompt_login: true,
             errors: {},
-            error_details: nil,
             unauthorized_scope: true,
             user_fully_authenticated: false,
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             code_challenge_present: false,
-            service_provider_pkce: nil,
             scope: 'openid',
-            vtr: nil,
-            vtr_param: nil,
           )
         end
 
@@ -2555,15 +2468,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
             success: true,
             client_id: client_id,
             prompt: 'select_account',
-            referer: nil,
             allow_prompt_login: true,
             errors: {},
-            error_details: nil,
             unauthorized_scope: true,
             user_fully_authenticated: false,
             acr_values: '',
             code_challenge_present: false,
-            service_provider_pkce: nil,
             scope: 'openid',
             vtr: ['C1'],
             vtr_param: ['C1'].to_json,
