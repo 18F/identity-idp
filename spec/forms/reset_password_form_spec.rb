@@ -95,6 +95,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         expect(result).to eq(
           success: true,
           errors: {},
+          error_details: nil,
           user_id: '123',
           profile_deactivated: false,
           pending_profile_invalidated: false,

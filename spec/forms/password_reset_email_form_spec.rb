@@ -15,6 +15,7 @@ RSpec.describe PasswordResetEmailForm do
         expect(subject.submit.to_h).to eq(
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           confirmed: true,
           active_profile: false,
@@ -28,6 +29,7 @@ RSpec.describe PasswordResetEmailForm do
         expect(subject.submit.to_h).to eq(
           success: true,
           errors: {},
+          error_details: nil,
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,

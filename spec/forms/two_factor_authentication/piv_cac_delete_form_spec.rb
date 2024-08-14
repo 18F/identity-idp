@@ -16,7 +16,11 @@ RSpec.describe TwoFactorAuthentication::PivCacDeleteForm do
 
       it 'returns a successful result' do
         expect(result.success?).to eq(true)
-        expect(result.to_h).to eq(success: true, configuration_id: configuration_id)
+        expect(result.to_h).to eq(
+          success: true,
+          error_details: nil,
+          configuration_id:,
+        )
       end
 
       context 'with blank configuration' do

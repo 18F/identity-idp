@@ -63,7 +63,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       it 'is successful without assessment id' do
         response, assessment_id = result
 
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
         expect(assessment_id).to be_nil
       end
 
@@ -175,7 +175,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       it 'is successful with nil assessment id' do
         response, assessment_id = result
 
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
         expect(assessment_id).to be_nil
       end
 
@@ -208,7 +208,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       it 'is successful with nil assessment id' do
         response, assessment_id = result
 
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
         expect(assessment_id).to be_nil
       end
 
@@ -288,7 +288,7 @@ RSpec.describe RecaptchaEnterpriseForm do
         it 'is successful with assessment id' do
           response, assessment_id = result
 
-          expect(response.to_h).to eq(success: true)
+          expect(response.to_h).to eq(success: true, error_details: nil)
           expect(assessment_id).to eq(name)
         end
 
@@ -335,7 +335,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       it 'is successful with assessment id' do
         response, assessment_id = result
 
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
         expect(assessment_id).to eq(name)
       end
 

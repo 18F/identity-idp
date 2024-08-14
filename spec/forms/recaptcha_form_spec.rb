@@ -43,7 +43,7 @@ RSpec.describe RecaptchaForm do
       it 'is successful' do
         response, assessment_id = result
 
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
         expect(assessment_id).to be_nil
       end
 
@@ -144,7 +144,7 @@ RSpec.describe RecaptchaForm do
           it 'is successful' do
             response, assessment_id = result
 
-            expect(response.to_h).to eq(success: true)
+            expect(response.to_h).to eq(success: true, error_details: nil)
             expect(assessment_id).to be_nil
           end
 
@@ -178,7 +178,7 @@ RSpec.describe RecaptchaForm do
           it 'is successful' do
             response, assessment_id = result
 
-            expect(response.to_h).to eq(success: true)
+            expect(response.to_h).to eq(success: true, error_details: nil)
             expect(assessment_id).to be_nil
           end
 
@@ -213,7 +213,7 @@ RSpec.describe RecaptchaForm do
       it 'is successful' do
         response, assessment_id = result
 
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
         expect(assessment_id).to be_nil
       end
 
@@ -280,7 +280,7 @@ RSpec.describe RecaptchaForm do
       it 'is successful' do
         response, assessment_id = result
 
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
         expect(assessment_id).to be_nil
       end
 

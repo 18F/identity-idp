@@ -43,6 +43,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(result.to_h).to eq(
           success: true,
           errors: {},
+          error_details: nil,
           client_id: client_id,
           prompt: 'select_account',
           allow_prompt_login: true,

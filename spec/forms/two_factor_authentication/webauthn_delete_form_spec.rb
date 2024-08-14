@@ -16,6 +16,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
         expect(result.success?).to eq(true)
         expect(result.to_h).to eq(
           success: true,
+          error_details: nil,
           configuration_id:,
           platform_authenticator: false,
         )

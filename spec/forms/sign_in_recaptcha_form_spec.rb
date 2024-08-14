@@ -64,7 +64,7 @@ RSpec.describe SignInRecaptchaForm do
         let(:device_cookie) { user.devices.first.cookie_uuid }
 
         it 'is successful' do
-          expect(response.to_h).to eq(success: true)
+          expect(response.to_h).to eq(success: true, error_details: nil)
         end
       end
 
@@ -80,7 +80,7 @@ RSpec.describe SignInRecaptchaForm do
 
     context 'recaptcha form validates as successful' do
       it 'is successful' do
-        expect(response.to_h).to eq(success: true)
+        expect(response.to_h).to eq(success: true, error_details: nil)
       end
     end
   end

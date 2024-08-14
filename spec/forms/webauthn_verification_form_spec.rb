@@ -48,6 +48,7 @@ RSpec.describe WebauthnVerificationForm do
       it 'returns successful result' do
         expect(result.to_h).to eq(
           success: true,
+          error_details: nil,
           webauthn_configuration_id: webauthn_configuration.id,
         )
       end
@@ -58,6 +59,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns successful result' do
           expect(result.to_h).to eq(
             success: true,
+            error_details: nil,
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end
@@ -69,6 +71,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns successful result excluding frontend_error' do
           expect(result.to_h).to eq(
             success: true,
+            error_details: nil,
             webauthn_configuration_id: webauthn_configuration.id,
           )
         end

@@ -34,6 +34,7 @@ RSpec.describe OtpDeliverySelectionForm do
         expect(subject.submit(otp_delivery_preference: 'sms', resend: 'true').to_h).to eq(
           success: true,
           errors: {},
+          error_details: nil,
           **extra,
         )
       end
