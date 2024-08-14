@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
+RSpec.feature 'User profile' do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper
@@ -158,7 +158,9 @@ RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
         expect(current_path).to eq(account_path)
       end
 
-      it 'allows the user reactivate their profile by reverifying', js: true do
+      it 'allows the user reactivate their profile by reverifying',
+         :js,
+         allowed_extra_analytics: [:*] do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 
