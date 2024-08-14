@@ -4,15 +4,15 @@ RSpec.describe 'shared/_footer_lite.html.erb' do
   it 'contains link to help page' do
     render
 
-    expect(rendered).to have_link(t('links.help'), href: MarketingSite.help_url)
-    expect(rendered).to have_selector("a[href='#{MarketingSite.help_url}'][target='_blank']")
+    expect(rendered).to have_link(t('links.help'), href: help_center_redirect_url)
+    expect(rendered).to have_selector("a[href='#{help_center_redirect_url}'][target='_blank']")
   end
 
   it 'contains link to contact page' do
     render
 
-    expect(rendered).to have_link(t('links.contact'), href: MarketingSite.contact_url)
-    expect(rendered).to have_selector("a[href='#{MarketingSite.contact_url}'][target='_blank']")
+    expect(rendered).to have_link(t('links.contact'), href: contact_redirect_url)
+    expect(rendered).to have_selector("a[href='#{contact_redirect_url}'][target='_blank']")
   end
 
   it 'contains link to privacy page' do

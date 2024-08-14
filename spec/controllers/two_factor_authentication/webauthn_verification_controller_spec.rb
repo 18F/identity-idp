@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::WebauthnVerificationController,
-               allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
   include WebAuthnHelper
 
   describe 'when not signed in' do

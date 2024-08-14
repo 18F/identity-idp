@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
+RSpec.feature 'SAML requests using VTR' do
   include SamlAuthHelper
   include IdvHelper
   include DocAuthHelper
@@ -126,7 +126,9 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect_successful_saml_redirect
   end
 
-  scenario 'sign in with VTR request for idv requires idv', :js do
+  scenario 'sign in with VTR request for idv requires idv',
+           :js,
+           allowed_extra_analytics: [:*] do
     user = create(:user, :fully_registered)
 
     visit_saml_authn_request_url(
@@ -148,7 +150,8 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect_successful_saml_redirect
   end
 
-  scenario 'sign in with VTR request for idv includes proofed attributes' do
+  scenario 'sign in with VTR request for idv includes proofed attributes',
+           allowed_extra_analytics: [:*] do
     pii = {
       first_name: 'Jonathan',
       ssn: '900-66-6666',
@@ -186,7 +189,9 @@ RSpec.feature 'SAML requests using VTR', allowed_extra_analytics: [:*] do
     expect(ssn).to eq(pii[:ssn])
   end
 
-  scenario 'sign in with VTR request for idv with biometric requires idv with biometric', :js do
+  scenario 'sign in with VTR request for idv with biometric requires idv with biometric',
+           :js,
+           allowed_extra_analytics: [:*] do
     user = create(:user, :proofed)
     user.active_profile.update!(idv_level: :legacy_unsupervised)
 

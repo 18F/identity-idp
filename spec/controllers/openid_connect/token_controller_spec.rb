@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OpenidConnect::TokenController, allowed_extra_analytics: [:*] do
+RSpec.describe OpenidConnect::TokenController do
   include Rails.application.routes.url_helpers
 
   describe '#create' do

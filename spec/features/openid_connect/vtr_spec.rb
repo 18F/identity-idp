@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
+RSpec.feature 'OIDC requests using VTR' do
   include OidcAuthHelper
   include IdvHelper
   include WebAuthnHelper
@@ -10,7 +10,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
       and_return(true)
   end
 
-  scenario 'sign in with VTR request for authentication', :js do
+  scenario 'sign in with VTR request for authentication' do
     user = create(:user, :fully_registered)
 
     visit_idp_from_oidc_sp_with_vtr(vtr: ['C1'])
@@ -25,10 +25,10 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
 
     click_agree_and_continue
 
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
-  scenario 'sign in with VTR request for AAL2 disables remember device', :js do
+  scenario 'sign in with VTR request for AAL2 disables remember device' do
     user = create(:user, :fully_registered)
 
     # Sign in and remember device
@@ -48,10 +48,10 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
 
     click_agree_and_continue
 
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
-  scenario 'sign in with VTR for phishing-resistance requires phishing-resistanc auth', :js do
+  scenario 'sign in with VTR for phishing-resistance requires phishing-resistanc auth' do
     mock_webauthn_setup_challenge
     user = create(:user, :fully_registered)
 
@@ -69,7 +69,7 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
 
     click_agree_and_continue
 
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
   scenario 'sign in with VTR request for HSDP12 auth requires PIV/CAC setup' do
@@ -94,12 +94,11 @@ RSpec.feature 'OIDC requests using VTR', allowed_extra_analytics: [:*] do
     follow_piv_cac_redirect
 
     click_agree_and_continue
-    click_submit_default
 
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
-  scenario 'sign in with VTR request for idv requires idv', :js do
+  scenario 'sign in with VTR request for idv requires idv' do
     user = create(:user, :fully_registered)
 
     visit_idp_from_oidc_sp_with_vtr(vtr: ['P1'])
