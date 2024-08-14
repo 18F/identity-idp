@@ -1250,6 +1250,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: doc auth upload submitted
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] redo_document_capture Whether user is redoing document capture after barcode
@@ -1263,6 +1264,7 @@ module AnalyticsEvents
   def idv_doc_auth_hybrid_handoff_submitted(
     success:,
     errors:,
+    error_details:,
     step:,
     analytics_id:,
     redo_document_capture:,
@@ -1277,6 +1279,7 @@ module AnalyticsEvents
       'IdV: doc auth hybrid handoff submitted',
       success:,
       errors:,
+      error_details:,
       step:,
       analytics_id:,
       redo_document_capture:,
@@ -6007,6 +6010,7 @@ module AnalyticsEvents
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
+    error_details: nil,
     **extra
   )
     track_event(
@@ -6016,6 +6020,7 @@ module AnalyticsEvents
       new_user:,
       has_other_auth_methods:,
       phone_configuration_id:,
+      error_details:,
       **extra,
     )
   end
