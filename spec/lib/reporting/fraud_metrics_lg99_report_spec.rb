@@ -52,7 +52,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
         { 'user_id' => 'user7', 'name' => 'User Suspension: Suspended' },
       ],
     )
-    user7&.profiles&.verified&.last&.update(created_at: 1.day.ago, verified_at: 1.day.ago)
+    user7&.profiles&.verified&.last&.update(created_at: 1.day.ago, activated_at: 1.day.ago)
   end
 
   describe '#lg99_metrics_table' do
