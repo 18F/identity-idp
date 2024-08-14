@@ -16,7 +16,15 @@ import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/documents-and-selfie-step', () => {
   it('renders with only front and back inputs by default', () => {
-    const { getByLabelText, queryByLabelText } = render(<DocumentsAndSelfieStep />);
+    const useless_function_forced_by_typescript = () => {};
+    const { getByLabelText, queryByLabelText } = render(
+      <DocumentsAndSelfieStep
+        value = { foo: 'bar' }
+        onChange = {}
+        errors = {}
+        onError = {}
+        registerField = {} />
+    );
 
     const front = getByLabelText('doc_auth.headings.document_capture_front');
     const back = getByLabelText('doc_auth.headings.document_capture_back');
