@@ -365,14 +365,7 @@ module Reporting
       QUERY
     end
 
-    class FakeCloudwatchClient
-      def fetch(**)
-        []
-      end
-    end
-
     def cloudwatch_client
-      return FakeCloudwatchClient.new # FIXME so, so much
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         num_threads: @threads,
         ensure_complete_logs: true,

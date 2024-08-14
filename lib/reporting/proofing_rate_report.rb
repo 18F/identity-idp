@@ -50,6 +50,8 @@ module Reporting
 
     # rubocop:disable Layout/LineLength
     def as_csv
+      @by_month = false
+      @reports = nil
       csv = []
 
       csv << ['Metric', *DATE_INTERVALS.map { |days| "Trailing #{days}d" }]
@@ -78,6 +80,35 @@ module Reporting
     end
     # rubocop:enable Layout/LineLength
 
+    def monthly_idv_report_emailable_report
+      EmailableReport.new(
+        title: 'Proofing Rate Metrics',
+        subtitle: 'Condensed (NEW)',
+        float_as_percent: true,
+        precision: 2,
+        table: divr_as_csv,
+        filename: 'condensed_hop_results', # FIXME, ask May
+      )
+    end
+
+    # Should I cargo cult in the ThrottlingException from above? Can we extract that?
+    def divr_as_csv
+      @by_month = true # tsk tsk
+      @reports = nil
+      csv = []
+
+      csv << ['Metric', *reports.map { |t| t.time_range.begin.strftime('%b %Y') }]
+      csv << ['IDV started', *reports.map(&:idv_started)]
+
+      csv << ['# of successfully verified users', *reports.map(&:successfully_verified_users)]
+      csv << ['% IDV started to successfully verified', *reports.map(&:blanket_proofing_rates)]
+
+      csv << ['# of workflow completed', *reports.map(&:idv_final_resolution)]
+      csv << ['% rate of workflow completed', *reports.map(&:idv_final_resolution_rate)]
+
+      csv << ['# of users verified (total)', *reports.map(&:verified_user_count)]
+    end
+
     def to_csv
       CSV.generate do |csv|
         as_csv.each do |row|
@@ -87,7 +118,7 @@ module Reporting
     end
 
     def sub_reports
-      @sub_reports ||= by_month ? by_month_ranges : trailing_days_ranges
+      by_month ? by_month_ranges : trailing_days_ranges
     end
 
     def reports
@@ -140,9 +171,9 @@ module Reporting
 
     def by_month_ranges
       ranges = [
-        (end_date - 3.months).all_month,
         (end_date - 2.months).all_month,
         (end_date - 1.month).all_month,
+        end_date.all_month,
       ]
 
       ranges.map do |range|
