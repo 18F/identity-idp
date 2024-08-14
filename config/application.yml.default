@@ -368,7 +368,6 @@ development:
   aamva_public_key: 123abc
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  aws_logo_bucket: ''
   check_user_password_compromised_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   component_previews_enabled: true
@@ -403,7 +402,6 @@ development:
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
-  max_bad_passwords: 5
   newrelic_license_key: ''
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
@@ -445,7 +443,6 @@ production:
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   available_locales: 'en,es,fr'
-  aws_logo_bucket: ''
   biometric_ial_enabled: false
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
@@ -506,7 +503,6 @@ production:
   telephony_adapter: pinpoint
   use_kms: true
   usps_auth_token_refresh_job_enabled: true
-  usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
   usps_upload_sftp_host: ''
   usps_upload_sftp_password: ''
@@ -547,7 +543,6 @@ test:
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2
   logins_per_ip_limit: 3
-  max_bad_passwords: 5
   max_mail_events: 2
   newrelic_license_key: ''
   otp_delivery_blocklist_findtime: 1
@@ -561,10 +556,8 @@ test:
   phone_confirmation_max_attempts: 5
   phone_setups_per_ip_limit: 3
   phone_setups_per_ip_period: 10
-  phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
-  prometheus_exporter: false
   raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
