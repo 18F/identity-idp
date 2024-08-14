@@ -10,11 +10,14 @@ class ServiceProviderIdentity < ApplicationRecord
   validates :service_provider, presence: true
 
   # rubocop:disable Rails/InverseOf
+  belongs_to :deleted_user, foreign_key: 'user_id', primary_key: 'user_id'
+
   belongs_to :service_provider_record,
              class_name: 'ServiceProvider',
              foreign_key: 'service_provider',
              primary_key: 'issuer'
   # rubocop:enable Rails/InverseOf
+  has_one :agency, through: :service_provider_record
 
   scope :not_deleted, -> { where(deleted_at: nil) }
 

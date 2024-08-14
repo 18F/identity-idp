@@ -157,6 +157,27 @@ RSpec.describe AccountShowPresenter do
 
       it { is_expected.to eq(true) }
     end
+
+    context 'when current user has ipp pending profile deactivated for password reset' do
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
+
+      before do
+        user.profiles.first.update!(deactivation_reason: :password_reset)
+      end
+
+      it 'is expected to return false' do
+        account_show = AccountShowPresenter.new(
+          decrypted_pii: {},
+          sp_session_request_url: nil,
+          authn_context: nil,
+          sp_name: nil,
+          user: user,
+          locked_for_session: false,
+        )
+
+        expect(account_show.pending_ipp?).to be(false)
+      end
+    end
   end
 
   context '#pending_gpo?' do
@@ -168,6 +189,27 @@ RSpec.describe AccountShowPresenter do
       let(:user) { create(:user, :with_pending_gpo_profile) }
 
       it { is_expected.to eq(true) }
+    end
+
+    context 'when current user has gpo pending profile deactivated for password reset' do
+      let(:user) { create(:user, :with_pending_gpo_profile) }
+
+      before do
+        user.profiles.first.update!(deactivation_reason: :password_reset)
+      end
+
+      it 'is expected to return false' do
+        account_show = AccountShowPresenter.new(
+          decrypted_pii: {},
+          sp_session_request_url: nil,
+          authn_context: nil,
+          sp_name: nil,
+          user: user,
+          locked_for_session: false,
+        )
+
+        expect(account_show.pending_ipp?).to be(false)
+      end
     end
   end
 

@@ -34,7 +34,6 @@ RSpec.describe Users::BackupCodeSetupController do
         success: true,
         errors: {},
         mfa_method_counts: { phone: 1 },
-        error_details: nil,
         enabled_mfa_methods_count: 1,
         in_account_creation_flow: false,
       )

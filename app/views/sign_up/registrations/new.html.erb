@@ -50,13 +50,21 @@
 <p class='margin-top-2'>
   <%= new_tab_link_to(
         t('notices.privacy.security_and_privacy_practices'),
-        MarketingSite.security_and_privacy_practices_url,
+        policy_redirect_url(
+          policy: :security_and_privacy_practices,
+          flow: :create_account,
+          step: :enter_email,
+        ),
       ) %>
 </p>
 
 <p>
   <%= new_tab_link_to(
         t('notices.privacy.privacy_act_statement'),
-        MarketingSite.privacy_act_statement_url,
+        policy_redirect_url(
+          policy: :privacy_act_statement,
+          flow: :create_account,
+          step: :enter_email,
+        ),
       ) %>
 </p>

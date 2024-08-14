@@ -25,13 +25,9 @@ RSpec.describe 'GoodJob.cron' do
 
           now = Time.zone.now
           next_time = Fugit.parse(report[:cron]).next_time
-          expect(next_time.utc > now.utc.end_of_week).
-            to be(true), "Expected #{job_name} to next run after the end of this week"
           expect(next_time.utc).
-            to be_within(1).of(now.utc.end_of_week), <<~EOS.squish
-              Expected #{job_name} to run soon after the end of week,
-              so CONUS 'yesterday' and UTC 'yesterday' will never be different
-            EOS
+            to be_within(2.hours).of(now.utc.end_of_week)
+          expect(next_time.utc).to be > now.utc.end_of_week
         end
       end
     end

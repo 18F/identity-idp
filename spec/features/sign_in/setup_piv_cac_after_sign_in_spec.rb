@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Setup PIV/CAC after sign-in' do
+RSpec.describe 'Setup PIV/CAC after sign-in', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
 
   scenario 'user opts to not add piv/cac card' do

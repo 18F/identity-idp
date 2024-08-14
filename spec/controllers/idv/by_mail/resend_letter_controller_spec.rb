@@ -86,7 +86,6 @@ RSpec.describe Idv::ByMail::ResendLetterController,
           first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
           hours_since_first_letter: 24,
           enqueued_at: Time.zone.now,
-          proofing_components: nil,
         ),
       )
     end

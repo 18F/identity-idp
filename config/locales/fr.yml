@@ -42,12 +42,11 @@ account.connected_apps.associated: Connecté %{timestamp}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
 account.email_language.default: '%{language} (par défaut)'
 account.email_language.edit_title: Modifier la langue dans laquelle vous préférez recevoir les e-mails
-account.email_language.languages_list: '%{app_name} vous permet de recevoir des communications par e-mail en %{list}.'
+account.email_language.languages_list: Vous recevrez des e-mails de %{app_name} dans la langue de votre choix.
 account.email_language.name.en: English
 account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文 (简体)
-account.email_language.sentence_connector: ou
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli

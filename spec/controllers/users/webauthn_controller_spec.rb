@@ -82,7 +82,6 @@ RSpec.describe Users::WebauthnController do
         success: true,
         configuration_id: configuration.id.to_s,
         platform_authenticator: false,
-        error_details: nil,
       )
     end
 
@@ -168,7 +167,6 @@ RSpec.describe Users::WebauthnController do
         success: true,
         configuration_id: configuration.id.to_s,
         platform_authenticator: false,
-        error_details: nil,
       )
     end
 

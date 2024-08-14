@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
+RSpec.describe Idv::Session do
   let(:user) { create(:user) }
   let(:user_session) { {} }
   let(:is_enhanced_ipp) { false }
@@ -129,7 +129,7 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
 
   describe '#create_profile_from_applicant_with_password' do
     let(:opt_in_param) { nil }
-    let(:is_enhanced_ipp) { false }
+
     before do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
@@ -181,10 +181,11 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
         expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
 
-      context 'with establishing in person enrollment' do
+      context 'when the user has an establishing in person enrollment' do
         let!(:enrollment) do
           create(:in_person_enrollment, :establishing, user: user, profile: nil)
         end
+        let(:profile) { subject.profile }
 
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
@@ -193,41 +194,98 @@ RSpec.describe Idv::Session, allowed_extra_analytics: [:*] do
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access
         end
 
-        it 'sets profile to pending in person verification' do
-          subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
-          profile = subject.profile
+        context 'when the USPS enrollment is successful' do
+          before do
+            allow(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+          end
 
-          expect(profile.activated_at).to eq nil
-          expect(profile.active).to eq false
-          expect(profile.in_person_verification_pending?).to eq(true)
-          expect(profile.fraud_review_pending?).to eq(false)
-          expect(profile.gpo_verification_pending_at.present?).to eq false
-          expect(profile.initiating_service_provider).to eq nil
-          expect(profile.verified_at).to eq nil
+          it 'creates an USPS enrollment' do
+            subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+            expect(UspsInPersonProofing::EnrollmentHelper).to have_received(
+              :schedule_in_person_enrollment,
+            ).with(
+              user: user,
+              pii: Pii::Attributes.new_from_hash(subject.applicant),
+              is_enhanced_ipp: is_enhanced_ipp,
+              opt_in: opt_in_param,
+            )
+          end
 
-          pii_from_session = Pii::Cacher.new(user, user_session).fetch(profile.id)
-          expect(pii_from_session).to_not be_nil
-          expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn])
+          it 'creates a profile with in person verification pending' do
+            subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+            expect(profile).to have_attributes(
+              {
+                activated_at: nil,
+                active: false,
+                in_person_verification_pending?: true,
+                fraud_review_pending?: false,
+                gpo_verification_pending_at: nil,
+                initiating_service_provider: nil,
+                verified_at: nil,
+              },
+            )
+          end
+
+          it 'saves the pii to the session' do
+            subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+            expect(Pii::Cacher.new(user, user_session).fetch(profile.id)).to_not be_nil
+          end
+
+          it 'associates the in person enrollment with the created profile' do
+            subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+            expect(enrollment.reload.profile_id).to eq(profile.id)
+          end
         end
 
-        it 'creates a USPS enrollment' do
-          expect(UspsInPersonProofing::EnrollmentHelper).
-            to receive(:schedule_in_person_enrollment).
-            with(user: user, pii: Pii::Attributes.new_from_hash(subject.applicant),
-                 is_enhanced_ipp: is_enhanced_ipp,
-                 opt_in: opt_in_param)
+        context 'when the USPS enrollment throws an enroll exception' do
+          before do
+            allow(UspsInPersonProofing::EnrollmentHelper).to receive(
+              :schedule_in_person_enrollment,
+            ).and_throw('Enrollment Failure')
+          end
 
+          it 'does not create a profile' do
+            subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+          rescue
+            expect(profile).to be_nil
+          end
+        end
+      end
+
+      context 'when the user does not have an establishing in person enrollment' do
+        let(:profile) { subject.profile }
+
+        before do
+          allow(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          subject.user_phone_confirmation = true
+          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access
+        end
+
+        it 'does not create an USPS enrollment' do
           subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+          expect(UspsInPersonProofing::EnrollmentHelper).to_not have_received(
+            :schedule_in_person_enrollment,
+          )
+        end
 
-          profile = enrollment.reload.profile
-          expect(profile).to eq(user.profiles.last)
-          expect(profile.activated_at).to eq nil
-          expect(profile.active).to eq false
-          expect(profile.in_person_verification_pending?).to eq(true)
-          expect(profile.fraud_review_pending?).to eq(false)
-          expect(profile.gpo_verification_pending_at.present?).to eq false
-          expect(profile.initiating_service_provider).to eq nil
-          expect(profile.verified_at).to eq nil
+        it 'creates a profile' do
+          subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+          expect(profile).to have_attributes(
+            {
+              active: true,
+              in_person_verification_pending?: false,
+              fraud_review_pending?: false,
+              gpo_verification_pending_at: nil,
+              initiating_service_provider: nil,
+            },
+          )
+        end
+
+        it 'saves the pii to the session' do
+          subject.create_profile_from_applicant_with_password(user.password, is_enhanced_ipp)
+          expect(Pii::Cacher.new(user, user_session).fetch(profile.id)).to_not be_nil
         end
       end
     end

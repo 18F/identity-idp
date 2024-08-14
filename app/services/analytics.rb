@@ -18,7 +18,7 @@ class Analytics
     attributes.delete(:pii_like_keypaths)
     update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
-      event_properties: attributes.except(:user_id),
+      event_properties: attributes.except(:user_id).compact,
       new_event: first_event_this_session?,
       path: request&.path,
       session_duration: session_duration,

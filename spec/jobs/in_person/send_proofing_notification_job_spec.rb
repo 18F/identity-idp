@@ -256,7 +256,6 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
           expect(analytics).to have_logged_event(
             'SendProofingNotificationJob: exception raised',
-            enrollment_code: nil,
             enrollment_id: passed_enrollment.id,
             exception_class: 'ActiveRecord::DatabaseConnectionError',
             exception_message: 'Database connection error',

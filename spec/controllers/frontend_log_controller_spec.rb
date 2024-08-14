@@ -72,7 +72,6 @@ RSpec.describe FrontendLogController do
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
               flow_path: flow_path,
-              opted_in_to_in_person_proofing: nil,
             )
             expect(response).to have_http_status(:ok)
             expect(json[:success]).to eq(true)
@@ -86,9 +85,6 @@ RSpec.describe FrontendLogController do
 
               expect(@analytics).to have_logged_event(
                 'IdV: in person proofing location submitted',
-                flow_path: nil,
-                selected_location: nil,
-                opted_in_to_in_person_proofing: nil,
               )
             end
           end

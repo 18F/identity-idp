@@ -40,7 +40,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
 
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code visited',
-          source: nil,
           otp_rate_limited: false,
           user_can_request_another_letter: true,
         )
@@ -73,7 +72,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
 
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code visited',
-            source: nil,
             user_can_request_another_letter: true,
             otp_rate_limited: true,
           )
@@ -92,7 +90,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           action
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code visited',
-            source: nil,
             user_can_request_another_letter: false,
             otp_rate_limited: false,
           )
@@ -201,7 +198,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           'IdV: enter verify by mail code submitted',
           success: true,
           errors: {},
-          error_details: nil,
           pending_in_person_enrollment: false,
           fraud_check_failed: false,
           enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -244,7 +240,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
             'IdV: enter verify by mail code submitted',
             success: true,
             errors: {},
-            error_details: nil,
             pending_in_person_enrollment: true,
             fraud_check_failed: false,
             enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -273,7 +268,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
-              error_details: nil,
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -302,7 +296,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
-              error_details: nil,
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -336,7 +329,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
-              error_details: nil,
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
@@ -367,8 +359,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           errors: otp_code_error_message,
           pending_in_person_enrollment: false,
           fraud_check_failed: false,
-          enqueued_at: nil,
-          which_letter: nil,
           letter_count: 1,
           submit_attempts: 1,
           error_details: { otp: { confirmation_code_incorrect: true } },
@@ -402,8 +392,6 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
             errors: otp_code_error_message,
             pending_in_person_enrollment: false,
             fraud_check_failed: false,
-            enqueued_at: nil,
-            which_letter: nil,
             letter_count: 1,
             submit_attempts: 1,
             error_details: { otp: { confirmation_code_incorrect: true } },

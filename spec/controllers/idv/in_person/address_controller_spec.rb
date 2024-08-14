@@ -74,10 +74,8 @@ RSpec.describe Idv::InPerson::AddressController, allowed_extra_analytics: [:*] d
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
-        opted_in_to_in_person_proofing: nil,
         step: 'address',
         same_address_as_id: false,
-        skip_hybrid_handoff: nil,
       }
     end
 
@@ -143,7 +141,6 @@ RSpec.describe Idv::InPerson::AddressController, allowed_extra_analytics: [:*] d
           flow_path: 'standard',
           step: 'address',
           same_address_as_id: false,
-          skip_hybrid_handoff: nil,
           current_address_zip_code: '59010',
         }
       end
@@ -226,7 +223,6 @@ RSpec.describe Idv::InPerson::AddressController, allowed_extra_analytics: [:*] d
           flow_path: 'standard',
           step: 'address',
           same_address_as_id: false,
-          skip_hybrid_handoff: nil,
           current_address_zip_code: '59010',
         }
       end

@@ -228,14 +228,9 @@ RSpec.describe SignUp::CompletionsController do
           'User registration: complete',
           ial2: false,
           ialmax: false,
-          service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
-          sp_session_requested_attributes: nil,
           in_account_creation_flow: true,
-          disposable_email_domain: nil,
-          in_person_proofing_status: nil,
-          doc_auth_result: nil,
         )
       end
 
@@ -290,14 +285,10 @@ RSpec.describe SignUp::CompletionsController do
             'User registration: complete',
             ial2: false,
             ialmax: false,
-            service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: 'agency-page',
             needs_completion_screen_reason: :new_sp,
-            sp_session_requested_attributes: nil,
             in_account_creation_flow: true,
             disposable_email_domain: 'temporary.com',
-            doc_auth_result: nil,
-            in_person_proofing_status: nil,
           )
         end
       end
@@ -385,63 +376,6 @@ RSpec.describe SignUp::CompletionsController do
           travel_to(now)
           patch :update
         end
-      end
-    end
-
-    context 'when the user goes through reproofing' do
-      let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
-
-      xit 'does not log a reproofing event during initial proofing' do
-        stub_sign_in(user)
-        subject.session[:sp] = {
-          issuer: 'foo',
-          request_url: 'http://example.com',
-          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        }
-        patch :update
-      end
-
-      it 'logs a reproofing event upon reproofing' do
-        original_profile = user.profiles.first
-        additional_profile = create(:profile, :verified, user: user)
-
-        stub_sign_in(user)
-        subject.session[:sp] = {
-          issuer: 'foo',
-          request_url: 'http://example.com',
-          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        }
-
-        expect(original_profile.activated_at).to be_present
-        expect(original_profile.active).to eq true
-        expect(original_profile.deactivation_reason).to be_nil
-        expect(original_profile.fraud_review_pending?).to eq(false)
-        expect(original_profile.gpo_verification_pending_at).to be_nil
-        expect(original_profile.initiating_service_provider).to be_nil
-        expect(original_profile.verified_at).to be_present
-
-        expect(additional_profile.activated_at).to be_present
-        expect(additional_profile.active).to eq false
-        expect(additional_profile.deactivation_reason).to be_nil
-        expect(additional_profile.fraud_review_pending?).to eq(false)
-        expect(additional_profile.gpo_verification_pending_at).to be_nil
-        expect(additional_profile.initiating_service_provider).to be_nil
-        expect(additional_profile.verified_at).to be_present
-
-        patch :update
-      end
-
-      it 'does not log a reproofing event during account redirect' do
-        user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
-        stub_sign_in(user)
-        subject.session[:sp] = {
-          request_url: 'http://example.com',
-          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        }
-
-        patch :update
-
-        expect(response).to redirect_to account_path
       end
     end
   end

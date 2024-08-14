@@ -83,7 +83,6 @@ RSpec.shared_examples 'webauthn setup' do
       expect(fake_analytics).to have_logged_event(
         :webauthn_setup_submitted,
         success: true,
-        errors: nil,
         platform_authenticator: false,
       )
     end

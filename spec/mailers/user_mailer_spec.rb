@@ -533,7 +533,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(analytics).to have_logged_event(
         'Email Sent',
         action: 'please_reset_password',
-        ses_message_id: nil,
         email_address_id: email_address.id,
       )
     end

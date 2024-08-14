@@ -26,21 +26,19 @@ RSpec.describe Users::PersonalKeysController do
       stub_sign_in
       controller.user_session[:personal_key] = 'foo'
       stub_analytics
-      analytics_hash = { personal_key_present: true }
 
       get :show
 
-      expect(@analytics).to have_logged_event('Personal key viewed', analytics_hash)
+      expect(@analytics).to have_logged_event('Personal key viewed', personal_key_present: true)
     end
 
     it 'tracks the page visit when there is no personal key in the user session' do
       stub_sign_in
       stub_analytics
-      analytics_hash = { personal_key_present: false }
 
       get :show
 
-      expect(@analytics).to have_logged_event('Personal key viewed', analytics_hash)
+      expect(@analytics).to have_logged_event('Personal key viewed', personal_key_present: false)
     end
 
     it 'does not generate a new personal key to avoid CSRF attacks' do
@@ -116,15 +114,15 @@ RSpec.describe Users::PersonalKeysController do
     it 'tracks CSRF errors' do
       stub_sign_in
       stub_analytics
-      analytics_hash = {
-        controller: 'users/personal_keys#update',
-        user_signed_in: true,
-      }
       allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
 
       post :update
 
-      expect(@analytics).to have_logged_event('Invalid Authenticity Token', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'users/personal_keys#update',
+        user_signed_in: true,
+      )
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end

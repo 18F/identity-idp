@@ -8,14 +8,4 @@ class DocAuthLog < ApplicationRecord
              foreign_key: 'issuer',
              primary_key: 'issuer'
   # rubocop:enable Rails/InverseOf
-
-  # rubocop:disable Rails/UnusedIgnoredColumns
-  self.ignored_columns = [
-    :aamva,
-    :email_sent_view_at,
-    :email_sent_view_count,
-    :send_link_view_at,
-    :send_link_view_count,
-  ]
-  # rubocop:enable Rails/UnusedIgnoredColumns
 end

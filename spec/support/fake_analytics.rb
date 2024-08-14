@@ -6,7 +6,7 @@ class FakeAnalytics < Analytics
 
   module PiiAlerter
     def track_event(event, original_attributes = {})
-      attributes = original_attributes.dup
+      attributes = original_attributes.compact
       pii_like_keypaths = attributes.delete(:pii_like_keypaths) || []
 
       constant_name = Analytics.constants.find { |c| Analytics.const_get(c) == event }

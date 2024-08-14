@@ -204,7 +204,7 @@ module SamlIdpAuthConcern
   end
 
   def encryption_cert
-    saml_request.service_provider.matching_cert ||
+    saml_request.matching_cert ||
       saml_request_service_provider&.ssl_certs&.first
   end
 

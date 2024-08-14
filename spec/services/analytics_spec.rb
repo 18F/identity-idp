@@ -61,6 +61,12 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
 
+    it 'does not track nil values' do
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
+
+      analytics.track_event('Trackable Event', { example: nil })
+    end
+
     it 'does not track unique events and paths when an event fails' do
       expect(ahoy).to receive(:track).with(
         'Trackable Event',

@@ -32,9 +32,7 @@ RSpec.describe Users::PivCacLoginController do
           expect(@analytics).to have_logged_event(
             :piv_cac_login,
             errors: {},
-            key_id: nil,
             success: false,
-            new_device: nil,
           )
         end
 
@@ -84,9 +82,7 @@ RSpec.describe Users::PivCacLoginController do
               errors: {
                 type: 'user.not_found',
               },
-              key_id: nil,
               success: false,
-              new_device: nil,
             )
           end
 
@@ -125,7 +121,6 @@ RSpec.describe Users::PivCacLoginController do
             expect(@analytics).to have_logged_event(
               :piv_cac_login,
               errors: {},
-              key_id: nil,
               success: true,
               new_device: true,
             )
@@ -186,7 +181,6 @@ RSpec.describe Users::PivCacLoginController do
               expect(@analytics).to have_logged_event(
                 :piv_cac_login,
                 errors: {},
-                key_id: nil,
                 success: true,
                 new_device: false,
               )

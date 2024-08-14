@@ -134,7 +134,7 @@ class InPersonEnrollment < ApplicationRecord
 
   def due_date
     start_date = enrollment_established_at.presence || created_at
-    start_date + IdentityConfig.store.in_person_enrollment_validity_in_days.days
+    start_date + days_to_expire
   end
 
   def days_to_due_date
@@ -156,6 +156,14 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   private
+
+  def days_to_expire
+    if enhanced_ipp?
+      IdentityConfig.store.in_person_eipp_enrollment_validity_in_days.days
+    else
+      IdentityConfig.store.in_person_enrollment_validity_in_days.days
+    end
+  end
 
   def on_notification_sent_at_updated
     change_will_be_saved = notification_sent_at_change_to_be_saved&.last.present?

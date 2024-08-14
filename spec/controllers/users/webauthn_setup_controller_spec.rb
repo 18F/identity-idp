@@ -126,7 +126,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           :webauthn_setup_submitted,
           platform_authenticator: false,
           success: true,
-          errors: nil,
         )
       end
     end
@@ -253,7 +252,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
           )
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
-            errors: nil,
             platform_authenticator: false,
             success: true,
           )
@@ -291,7 +289,6 @@ RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
 
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
-            errors: nil,
             platform_authenticator: true,
             success: true,
           )

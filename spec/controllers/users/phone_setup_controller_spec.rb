@@ -59,9 +59,17 @@ RSpec.describe Users::PhoneSetupController do
 
     it 'tracks an event when the number is invalid' do
       sign_in(user)
-
       stub_analytics
-      result = {
+
+      post :create, params: {
+        new_phone_form: {
+          phone: '703-555-010',
+          international_code: 'US',
+        },
+      }
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: phone setup',
         success: false,
         errors: {
           phone: [
@@ -76,21 +84,10 @@ RSpec.describe Users::PhoneSetupController do
           },
         },
         otp_delivery_preference: 'sms',
-        area_code: nil,
         carrier: 'Test Mobile Carrier',
-        country_code: nil,
         phone_type: :mobile,
         types: [],
-      }
-
-      post :create, params: {
-        new_phone_form: {
-          phone: '703-555-010',
-          international_code: 'US',
-        },
-      }
-
-      expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
+      )
       expect(response).to render_template(:index)
       expect(flash[:error]).to be_blank
     end
@@ -144,19 +141,7 @@ RSpec.describe Users::PhoneSetupController do
 
       it 'prompts to confirm the number' do
         sign_in(user)
-
         stub_analytics
-        result = {
-          success: true,
-          errors: {},
-          error_details: nil,
-          otp_delivery_preference: 'voice',
-          area_code: '703',
-          carrier: 'Test Mobile Carrier',
-          country_code: 'US',
-          phone_type: :mobile,
-          types: [:fixed_or_mobile],
-        }
 
         post(
           :create,
@@ -166,14 +151,23 @@ RSpec.describe Users::PhoneSetupController do
           },
         )
 
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'voice',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+        )
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'voice',
                                            otp_make_default_number: false },
           ),
         )
-
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
@@ -181,20 +175,7 @@ RSpec.describe Users::PhoneSetupController do
     context 'with SMS' do
       it 'prompts to confirm the number' do
         sign_in(user)
-
         stub_analytics
-
-        result = {
-          success: true,
-          errors: {},
-          error_details: nil,
-          otp_delivery_preference: 'sms',
-          area_code: '703',
-          carrier: 'Test Mobile Carrier',
-          country_code: 'US',
-          phone_type: :mobile,
-          types: [:fixed_or_mobile],
-        }
 
         post(
           :create,
@@ -204,14 +185,23 @@ RSpec.describe Users::PhoneSetupController do
           },
         )
 
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+        )
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'sms',
                                            otp_make_default_number: false },
           ),
         )
-
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
@@ -219,19 +209,7 @@ RSpec.describe Users::PhoneSetupController do
     context 'without selection' do
       it 'prompts to confirm via SMS by default' do
         sign_in(user)
-
         stub_analytics
-        result = {
-          success: true,
-          errors: {},
-          error_details: nil,
-          otp_delivery_preference: 'sms',
-          area_code: '703',
-          carrier: 'Test Mobile Carrier',
-          country_code: 'US',
-          phone_type: :mobile,
-          types: [:fixed_or_mobile],
-        }
 
         patch(
           :create,
@@ -241,14 +219,23 @@ RSpec.describe Users::PhoneSetupController do
           },
         )
 
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: phone setup', result)
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+        )
         expect(response).to redirect_to(
           otp_send_path(
             otp_delivery_selection_form: { otp_delivery_preference: 'sms',
                                            otp_make_default_number: false },
           ),
         )
-
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end

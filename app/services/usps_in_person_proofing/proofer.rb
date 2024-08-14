@@ -92,25 +92,6 @@ module UspsInPersonProofing
       end.body
     end
 
-    # Makes HTTP request to retrieve enrollment code
-    # If an applicant has a currently valid enrollment code, it will be returned.
-    # If they do not, a new one will be generated and returned. USPS sends the applicant an email
-    # with instructions and the enrollment code.
-    # Requires the applicant's unique ID.
-    # @param unique_id [String]
-    # @return [Hash] API response
-    def request_enrollment_code(unique_id)
-      url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode"
-      request_body = {
-        sponsorID: sponsor_id,
-        uniqueID: unique_id,
-      }
-
-      faraday.post(url, request_body, dynamic_headers) do |req|
-        req.options.context = { service_name: 'usps_enrollment_code' }
-      end.body
-    end
-
     # Makes a request to retrieve a new OAuth token, caches it, and returns it. Tokens have
     # historically had 15 minute expirys
     # @return [String] the token

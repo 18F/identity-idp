@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'disavowing an action', allowed_extra_analytics: [:*] do
+RSpec.feature 'disavowing an action' do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   context 'with aggregated sign-in notifications enabled' do

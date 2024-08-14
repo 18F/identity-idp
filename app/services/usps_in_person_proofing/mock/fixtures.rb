@@ -115,10 +115,6 @@ module UspsInPersonProofing
         load_response_fixture('request_in_progress_proofing_results_response.json')
       end
 
-      def self.request_enrollment_code_response
-        load_response_fixture('request_enrollment_code_response.json')
-      end
-
       def self.load_response_fixture(filename)
         path = File.join(
           File.dirname(__FILE__),

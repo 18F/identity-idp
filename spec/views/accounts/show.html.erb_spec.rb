@@ -3,7 +3,15 @@ require 'rails_helper'
 RSpec.describe 'accounts/show.html.erb' do
   let(:authn_context) { Vot::Parser::Result.no_sp_result }
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
-
+  let(:vtr) { ['C2'] }
+  let(:authn_context) do
+    AuthnContextResolver.new(
+      user:,
+      service_provider: nil,
+      vtr: vtr,
+      acr_values: nil,
+    ).result
+  end
   before do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:user_session).and_return({})
@@ -77,11 +85,29 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
+  context 'when current user has gpo pending profile deactivated for password reset' do
+    let(:user) { create(:user, :with_pending_gpo_profile) }
+
+    it 'does not render idv partial' do
+      user.profiles.first.update!(deactivation_reason: :password_reset)
+      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
   context 'when current user has ipp pending profile' do
     let(:user) { build(:user, :with_pending_in_person_enrollment) }
 
     it 'renders idv partial' do
       expect(render).to render_template(partial: 'accounts/_identity_verification')
+    end
+  end
+
+  context 'when current user has ipp pending profile deactivated for password reset' do
+    let(:user) { create(:user, :with_pending_in_person_enrollment) }
+
+    it 'does not render idv partial' do
+      user.profiles.first.update!(deactivation_reason: :password_reset)
+      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
     end
   end
 

@@ -71,7 +71,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           new_device: true,
-          piv_cac_configuration_id: nil,
         )
       end
     end

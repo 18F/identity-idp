@@ -48,9 +48,12 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       stub_sign_in_before_2fa(user)
       parsed_phone = Phonelib.parse(subject.current_user.default_phone_configuration.phone)
       subject.user_session[:mfa_selections] = ['sms']
-
       stub_analytics
-      analytics_hash = {
+
+      get :show, params: { otp_delivery_preference: 'sms' }
+
+      expect(@analytics).to have_logged_event(
+        'Multi-Factor Authentication: enter OTP visited',
         context: 'authentication',
         multi_factor_auth_method: 'sms',
         confirmation_for_add_phone: false,
@@ -60,13 +63,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         enabled_mfa_methods_count: 1,
         in_account_creation_flow: false,
-      }
-
-      get :show, params: { otp_delivery_preference: 'sms' }
-
-      expect(@analytics).to have_logged_event(
-        'Multi-Factor Authentication: enter OTP visited',
-        analytics_hash,
       )
     end
 

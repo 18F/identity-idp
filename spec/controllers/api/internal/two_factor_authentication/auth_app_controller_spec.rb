@@ -26,7 +26,6 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::AuthAppController do
       expect(@analytics).to have_logged_event(
         :auth_app_update_name_submitted,
         success: true,
-        error_details: nil,
         configuration_id: configuration.id.to_s,
       )
     end
@@ -118,7 +117,6 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::AuthAppController do
         :auth_app_delete_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
-        error_details: nil,
       )
     end
 

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
-               allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
   let(:personal_key) { { personal_key: 'foo' } }
   let(:payload) { { personal_key_form: personal_key } }
 
@@ -20,12 +19,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController,
       user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
       stub_sign_in_before_2fa(user)
       stub_analytics
-      analytics_hash = { context: 'authentication' }
 
       get :show
 
       expect(@analytics).to have_logged_event(
-        'Multi-Factor Authentication: enter personal key visited', analytics_hash
+        'Multi-Factor Authentication: enter personal key visited',
+        context: 'authentication',
       )
     end
 

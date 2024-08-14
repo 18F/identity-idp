@@ -23,7 +23,6 @@ RSpec.describe Idv::UnavailableController, type: :controller do
     it 'logs an analytics event with redirect_from nil' do
       expect(@analytics).to have_logged_event(
         'Vendor Outage',
-        redirect_from: nil,
         vendor_status: {
           lexisnexis_instant_verify: :operational,
           lexisnexis_trueid: :operational,

@@ -10,13 +10,7 @@ locals:
       label: t('forms.registration.labels.email_language'),
       hint: local_assigns.fetch(
         :hint,
-        t(
-          'account.email_language.languages_list',
-          app_name: APP_NAME,
-          list: I18n.available_locales.
-            map { |locale| t("account.email_language.name.#{locale}") }.
-            to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
-        ),
+        t('account.email_language.languages_list', app_name: APP_NAME),
       ),
       collection: I18n.available_locales.map do |locale|
         label = locale == I18n.locale ?

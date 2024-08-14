@@ -25,19 +25,16 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       before do
         session[:reset_password_token] = token
       end
-      let(:analytics_hash) do
-        {
-          success: false,
-          errors: { user: ['invalid_token'] },
-          error_details: { user: { blank: true } },
-          user_id: nil,
-        }
-      end
 
       it 'redirects to page where user enters email for password reset token' do
         get :edit
 
-        expect(@analytics).to have_logged_event('Password Reset: Token Submitted', analytics_hash)
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Token Submitted',
+          success: false,
+          errors: { user: ['invalid_token'] },
+          error_details: { user: { blank: true } },
+        )
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.invalid_token')
       end
@@ -48,14 +45,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       before do
         session[:reset_password_token] = token
       end
-      let(:analytics_hash) do
-        {
-          success: false,
-          errors: { user: ['token_expired'] },
-          error_details: { user: { token_expired: true } },
-          user_id: '123',
-        }
-      end
       let(:user) { instance_double('User', uuid: '123') }
 
       before do
@@ -65,15 +54,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
 
       context 'no user matches token' do
-        let(:analytics_hash) do
-          {
-            success: false,
-            errors: { user: ['invalid_token'] },
-            error_details: { user: { blank: true } },
-            user_id: nil,
-          }
-        end
-
         before do
           session[:reset_password_token] = 'bar'
         end
@@ -81,21 +61,18 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           get :edit
 
-          expect(@analytics).to have_logged_event('Password Reset: Token Submitted', analytics_hash)
+          expect(@analytics).to have_logged_event(
+            'Password Reset: Token Submitted',
+            success: false,
+            errors: { user: ['invalid_token'] },
+            error_details: { user: { blank: true } },
+          )
           expect(response).to redirect_to new_user_password_path
           expect(flash[:error]).to eq t('devise.passwords.invalid_token')
         end
       end
 
       context 'token expired' do
-        let(:analytics_hash) do
-          {
-            success: false,
-            errors: { user: ['token_expired'] },
-            error_details: { user: { token_expired: true } },
-            user_id: '123',
-          }
-        end
         let(:user) { instance_double('User', uuid: '123') }
 
         before do
@@ -106,7 +83,13 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           get :edit
 
-          expect(@analytics).to have_logged_event('Password Reset: Token Submitted', analytics_hash)
+          expect(@analytics).to have_logged_event(
+            'Password Reset: Token Submitted',
+            success: false,
+            errors: { user: ['token_expired'] },
+            error_details: { user: { token_expired: true } },
+            user_id: '123',
+          )
           expect(response).to redirect_to new_user_password_path
           expect(flash[:error]).to eq t('devise.passwords.token_expired')
         end
@@ -184,7 +167,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         get :edit, params: { reset_password_token: raw_reset_token }
         put :update, params: { reset_password_form: params }
 
-        analytics_hash = {
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
           success: false,
           errors: {
             password: [password_error_message],
@@ -203,11 +187,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-        }
-
-        expect(@analytics).to have_logged_event(
-          'Password Reset: Password Submitted',
-          analytics_hash,
         )
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -234,7 +213,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           password_confirmation: password_confirmation,
           reset_password_token: raw_reset_token,
         }
-        analytics_hash = {
+
+        put :update, params: { reset_password_form: form_params }
+
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
           success: false,
           errors: {
             password: [password_error_message],
@@ -251,13 +234,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-        }
-
-        put :update, params: { reset_password_form: form_params }
-
-        expect(@analytics).to have_logged_event(
-          'Password Reset: Password Submitted',
-          analytics_hash,
         )
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
         expect(response).to render_template(:edit)
@@ -284,7 +260,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           password_confirmation: password_confirmation,
           reset_password_token: raw_reset_token,
         }
-        analytics_hash = {
+
+        put :update, params: { reset_password_form: form_params }
+
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
           success: false,
           errors: {
             password_confirmation: [t('errors.messages.password_mismatch')],
@@ -296,13 +276,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-        }
-
-        put :update, params: { reset_password_form: form_params }
-
-        expect(@analytics).to have_logged_event(
-          'Password Reset: Password Submitted',
-          analytics_hash,
         )
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
         expect(response).to render_template(:edit)
@@ -368,7 +341,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           get :edit, params: { reset_password_token: raw_reset_token }
           put :update, params: { reset_password_form: params }
 
-          analytics_hash = {
+          expect(@analytics).to have_logged_event(
+            'Password Reset: Password Submitted',
             success: true,
             errors: {},
             error_details: {},
@@ -376,11 +350,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             profile_deactivated: false,
             pending_profile_invalidated: false,
             pending_profile_pending_reasons: '',
-          }
-
-          expect(@analytics).to have_logged_event(
-            'Password Reset: Password Submitted',
-            analytics_hash,
           )
           expect(user.events.password_changed.size).to be 1
 
@@ -420,7 +389,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         put :update, params: { reset_password_form: params }
 
-        analytics_hash = {
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
           success: true,
           errors: {},
           error_details: {},
@@ -428,11 +398,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           profile_deactivated: true,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-        }
-
-        expect(@analytics).to have_logged_event(
-          'Password Reset: Password Submitted',
-          analytics_hash,
         )
         expect(user.active_profile.present?).to eq false
         expect(response).to redirect_to new_user_session_path
@@ -469,7 +434,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         get :edit, params: { reset_password_token: raw_reset_token }
         put :update, params: { reset_password_form: params }
 
-        analytics_hash = {
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
           success: true,
           errors: {},
           error_details: {},
@@ -477,11 +443,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           profile_deactivated: false,
           pending_profile_invalidated: false,
           pending_profile_pending_reasons: '',
-        }
-
-        expect(@analytics).to have_logged_event(
-          'Password Reset: Password Submitted',
-          analytics_hash,
         )
         expect(user.reload.confirmed?).to eq true
         expect(response).to redirect_to new_user_session_path
@@ -504,17 +465,15 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(ActionMailer::Base.deliveries.last.subject).
           to eq t('anonymous_mailer.password_reset_missing_user.subject')
-
-        analytics_hash = {
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Email Submitted',
           success: true,
           errors: {},
           error_details: {},
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
-        }
-
-        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
+        )
         expect(response).to redirect_to forgot_password_path
       end
     end
@@ -523,16 +482,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       let(:email) { 'test@example.com' }
       let(:email_param) { { email: email } }
       let!(:user) { create(:user, :fully_registered, **email_param) }
-      let(:analytics_hash) do
-        {
-          success: true,
-          errors: {},
-          error_details: {},
-          user_id: user.uuid,
-          confirmed: true,
-          active_profile: false,
-        }
-      end
 
       before do
         stub_analytics
@@ -543,23 +492,21 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           put :create, params: { password_reset_email_form: email_param }
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
-        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Email Submitted',
+          success: true,
+          errors: {},
+          error_details: {},
+          user_id: user.uuid,
+          confirmed: true,
+          active_profile: false,
+        )
         expect(response).to redirect_to forgot_password_path
       end
     end
 
     context 'user exists but is unconfirmed' do
       let(:user) { create(:user, :unconfirmed) }
-      let(:analytics_hash) do
-        {
-          success: true,
-          errors: {},
-          error_details: {},
-          user_id: user.uuid,
-          confirmed: false,
-          active_profile: false,
-        }
-      end
       let(:params) do
         {
           password_reset_email_form: {
@@ -576,7 +523,15 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
-        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Email Submitted',
+          success: true,
+          errors: {},
+          error_details: {},
+          user_id: user.uuid,
+          confirmed: false,
+          active_profile: false,
+        )
 
         expect(ActionMailer::Base.deliveries.last.subject).
           to eq t('anonymous_mailer.password_reset_missing_user.subject')
@@ -587,23 +542,21 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     context 'user is verified' do
       it 'captures in analytics that the user was verified' do
         stub_analytics
-
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user)
 
-        analytics_hash = {
+        params = { password_reset_email_form: { email: user.email } }
+        put :create, params: params
+
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Email Submitted',
           success: true,
           errors: {},
           error_details: {},
           user_id: user.uuid,
           confirmed: true,
           active_profile: true,
-        }
-
-        params = { password_reset_email_form: { email: user.email } }
-        put :create, params: params
-
-        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
+        )
       end
     end
 
@@ -611,20 +564,19 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       it 'displays an error and tracks event' do
         stub_analytics
 
-        analytics_hash = {
+        params = { password_reset_email_form: { email: 'foo' } }
+        expect { put :create, params: params }.
+          to change { ActionMailer::Base.deliveries.count }.by(0)
+
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Email Submitted',
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
           error_details: { email: { invalid: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
-        }
-
-        params = { password_reset_email_form: { email: 'foo' } }
-        expect { put :create, params: params }.
-          to change { ActionMailer::Base.deliveries.count }.by(0)
-
-        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
+        )
         expect(response).to render_template :new
       end
     end

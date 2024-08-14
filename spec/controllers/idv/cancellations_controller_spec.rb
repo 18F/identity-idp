@@ -24,7 +24,6 @@ RSpec.describe Idv::CancellationsController do
         'IdV: cancellation visited',
         hash_including(
           request_came_from: 'no referer',
-          step: nil,
         ),
       )
     end
@@ -40,7 +39,6 @@ RSpec.describe Idv::CancellationsController do
         'IdV: cancellation visited',
         hash_including(
           request_came_from: 'users/sessions#new',
-          step: nil,
         ),
       )
     end

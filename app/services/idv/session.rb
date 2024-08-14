@@ -63,6 +63,15 @@ module Idv
     end
 
     def create_profile_from_applicant_with_password(user_password, is_enhanced_ipp)
+      if user_has_unscheduled_in_person_enrollment?
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+          user: current_user,
+          pii: Pii::Attributes.new_from_hash(applicant),
+          is_enhanced_ipp: is_enhanced_ipp,
+          opt_in: opt_in_param,
+        )
+      end
+
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
@@ -85,13 +94,6 @@ module Idv
 
       if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes, profile)
-      elsif profile.in_person_verification_pending?
-        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-          user: current_user,
-          pii: profile_maker.pii_attributes,
-          is_enhanced_ipp: is_enhanced_ipp,
-          opt_in: opt_in_param,
-        )
       end
     end
 
@@ -322,6 +324,10 @@ module Idv
       when 'review'
         'threatmetrix_review'
       end
+    end
+
+    def user_has_unscheduled_in_person_enrollment?
+      current_user.has_establishing_in_person_enrollment?
     end
   end
 end

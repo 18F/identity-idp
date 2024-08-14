@@ -5,12 +5,12 @@ RSpec.describe SignUp::CancellationsController do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer' }
 
       get :new
 
       expect(@analytics).to have_logged_event(
-        'User registration: cancellation visited', properties
+        'User registration: cancellation visited',
+        request_came_from: 'no referer',
       )
     end
 
@@ -18,12 +18,12 @@ RSpec.describe SignUp::CancellationsController do
       stub_sign_in
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new' }
 
       get :new
 
       expect(@analytics).to have_logged_event(
-        'User registration: cancellation visited', properties
+        'User registration: cancellation visited',
+        request_came_from: 'users/sessions#new',
       )
     end
   end
@@ -108,11 +108,13 @@ RSpec.describe SignUp::CancellationsController do
       user = create(:user)
       stub_sign_in_before_2fa(user)
       stub_analytics
-      properties = { request_came_from: 'no referer' }
 
       delete :destroy
 
-      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
+      expect(@analytics).to have_logged_event(
+        'Account Deletion Requested',
+        request_came_from: 'no referer',
+      )
     end
 
     it 'tracks the event in analytics when referer is present' do
@@ -120,11 +122,13 @@ RSpec.describe SignUp::CancellationsController do
       stub_sign_in_before_2fa(user)
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new' }
 
       delete :destroy
 
-      expect(@analytics).to have_logged_event('Account Deletion Requested', properties)
+      expect(@analytics).to have_logged_event(
+        'Account Deletion Requested',
+        request_came_from: 'users/sessions#new',
+      )
     end
 
     it 'calls ParseControllerFromReferer' do
