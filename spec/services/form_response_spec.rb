@@ -150,6 +150,7 @@ RSpec.describe FormResponse do
         response_hash = {
           success: true,
           errors: errors,
+          error_details: nil,
         }
 
         expect(response.to_h).to eq response_hash
@@ -164,6 +165,7 @@ RSpec.describe FormResponse do
         response_hash = {
           success: true,
           errors: errors,
+          error_details: nil,
           user_id: 1,
           context: 'confirmation',
         }
@@ -215,6 +217,7 @@ RSpec.describe FormResponse do
         response_hash = {
           success: true,
           errors: {},
+          error_details: nil,
         }
 
         expect(response.to_h).to eq response_hash
@@ -228,6 +231,7 @@ RSpec.describe FormResponse do
         response_hash = {
           success: true,
           errors: {},
+          error_details: nil,
         }
 
         expect(combined_response.to_h).to eq response_hash
