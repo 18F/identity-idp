@@ -760,7 +760,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Boolean] address_edited
-  # @param [Hash] pii_like_keypaths
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # User submitted an idv address
@@ -768,7 +767,6 @@ module AnalyticsEvents
     success:,
     errors:,
     address_edited: nil,
-    pii_like_keypaths: nil,
     error_details: nil,
     **extra
   )
@@ -777,7 +775,6 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       address_edited: address_edited,
-      pii_like_keypaths: pii_like_keypaths,
       error_details: error_details,
       **extra,
     )
@@ -1590,7 +1587,6 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
-  # @param [Hash] pii_like_keypaths
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param ["present","missing"] id_issued_status Status of state_id_issued field presence
@@ -1606,7 +1602,6 @@ module AnalyticsEvents
     success:,
     errors:,
     remaining_submit_attempts:,
-    pii_like_keypaths:,
     flow_path:,
     liveness_checking_required:,
     attention_with_barcode:,
@@ -1632,7 +1627,6 @@ module AnalyticsEvents
       id_expiration_status:,
       submit_attempts:,
       remaining_submit_attempts:,
-      pii_like_keypaths:,
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
@@ -4271,7 +4265,6 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Hash] pii_like_keypaths
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
@@ -4285,7 +4278,6 @@ module AnalyticsEvents
   def idv_verify_by_mail_enter_code_submitted(
     success:,
     errors:,
-    pii_like_keypaths:,
     enqueued_at:,
     which_letter:,
     letter_count:,
@@ -4300,7 +4292,6 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
-      pii_like_keypaths:,
       enqueued_at:,
       which_letter:,
       letter_count:,
@@ -4498,7 +4489,6 @@ module AnalyticsEvents
     webauthn_configuration_id: nil,
     confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
-    pii_like_keypaths: nil,
     area_code: nil,
     country_code: nil,
     phone_fingerprint: nil,
@@ -4522,7 +4512,6 @@ module AnalyticsEvents
       webauthn_configuration_id:,
       confirmation_for_add_phone:,
       phone_configuration_id:,
-      pii_like_keypaths:,
       area_code:,
       country_code:,
       phone_fingerprint:,
@@ -5354,12 +5343,10 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [Hash] pii_like_keypaths
   # Personal key form submitted
   def personal_key_reactivation_submitted(
     success:,
     errors:,
-    pii_like_keypaths:,
     error_details: nil,
     **extra
   )
@@ -5368,7 +5355,6 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
-      pii_like_keypaths:,
       **extra,
     )
   end
@@ -6416,14 +6402,12 @@ module AnalyticsEvents
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
-  # @param [Hash] pii_like_keypaths
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
     success:,
     mfa_method_counts:,
     enabled_mfa_methods_count:,
-    pii_like_keypaths:,
     in_account_creation_flow: nil,
     second_mfa_reminder_conversion: nil,
     **extra
@@ -6433,7 +6417,6 @@ module AnalyticsEvents
       success:,
       mfa_method_counts:,
       enabled_mfa_methods_count:,
-      pii_like_keypaths:,
       in_account_creation_flow:,
       second_mfa_reminder_conversion:,
       **extra,
