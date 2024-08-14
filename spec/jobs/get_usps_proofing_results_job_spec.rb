@@ -1631,6 +1631,24 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
           end
 
           context 'when the in_person_stop_expiring_enrollments flag is true' do
+            before do
+              allow(IdentityConfig.store).to(
+                receive(:in_person_stop_expiring_enrollments).and_return(true),
+              )
+            end
+
+            it 'treats the enrollment as incomplete' do
+              job.perform(Time.zone.now)
+
+              expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+              expect(job_analytics).to have_logged_event(
+                'GetUspsProofingResultsJob: Enrollment incomplete',
+                hash_including(
+                  response_message: 'More than 7 days have passed since opt-in to IPP',
+                  job_name: 'GetUspsProofingResultsJob',
+                ),
+              )
+            end
           end
         end
       end
