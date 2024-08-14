@@ -80,32 +80,15 @@ RSpec.describe IdentityConfig do
 
   describe 'redundant configuration' do
     it 'does not use the default value in development' do
-      aggregate_failures do
-        default_yaml_config['development'].each do |key, value|
-          next unless default_yaml_config.key?(key)
-          expect(value).to_not eq(default_yaml_config[key]),
-                               "#{key} in development uses the default value"
-        end
-      end
+      check_for_default('development')
     end
 
     it 'does not use the default value in production' do
-      aggregate_failures do
-        default_yaml_config['production'].each do |key, value|
-          next unless default_yaml_config.key?(key)
-          expect(value).to_not eq(default_yaml_config[key]),
-                               "#{key} in production uses the default value"
-        end
-      end
+      check_for_default('production')
     end
 
     it 'does not use the default value in test' do
-      aggregate_failures do
-        default_yaml_config['test'].each do |key, value|
-          next unless default_yaml_config.key?(key)
-          expect(value).to_not eq(default_yaml_config[key]), "#{key} in test uses the default value"
-        end
-      end
+      check_for_default('test')
     end
 
     it 'does not define an identical value in development, production, and test' do
@@ -123,6 +106,18 @@ RSpec.describe IdentityConfig do
             "#{key} uses the same value in development, production and test instead of a default",
           )
         end
+      end
+    end
+  end
+
+  def check_for_default(env_name)
+    aggregate_failures do
+      default_yaml_config[env_name].each do |key, value|
+        next unless default_yaml_config.key?(key)
+        expect(value).to_not(
+          eq(default_yaml_config[key]),
+          "#{key} in #{env_name} uses the default value",
+        )
       end
     end
   end
