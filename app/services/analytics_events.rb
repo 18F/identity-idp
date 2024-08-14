@@ -1080,6 +1080,7 @@ module AnalyticsEvents
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
@@ -1088,6 +1089,7 @@ module AnalyticsEvents
   def idv_doc_auth_agreement_submitted(
     success:,
     errors:,
+    error_details:,
     step:,
     analytics_id:,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -1098,6 +1100,7 @@ module AnalyticsEvents
       'IdV: doc auth agreement submitted',
       success:,
       errors:,
+      error_details:,
       step:,
       analytics_id:,
       acuant_sdk_upgrade_ab_test_bucket:,
@@ -5994,7 +5997,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
-  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] new_user Whether this is an incomplete user (no associated MFA methods)
   # @param [Boolean] has_other_auth_methods Whether the user has other authentication methods
   # @param [Integer] phone_configuration_id Phone configuration associated with request
@@ -6005,14 +6007,12 @@ module AnalyticsEvents
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
-    error_details:,
     **extra
   )
     track_event(
       'SMS Opt-In: Submitted',
       success:,
       errors:,
-      error_details:,
       new_user:,
       has_other_auth_methods:,
       phone_configuration_id:,
@@ -6384,7 +6384,7 @@ module AnalyticsEvents
   def user_registration_email_confirmation(
     success:,
     errors:,
-    error_details:,
+    error_details: nil,
     user_id: nil,
     **extra
   )
