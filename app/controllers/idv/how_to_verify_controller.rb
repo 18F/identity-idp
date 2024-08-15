@@ -34,6 +34,7 @@ module Idv
       if result.success?
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
+          idv_session.skip_doc_auth_from_handoff = false
           idv_session.skip_doc_auth_from_how_to_verify = false
           redirect_to idv_hybrid_handoff_url
         else
