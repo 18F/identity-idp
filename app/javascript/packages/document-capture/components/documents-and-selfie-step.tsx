@@ -84,7 +84,7 @@ export function DocumentFrontAndBackCapture({
 
 type ImageValue = Blob | string | null | undefined;
 
-interface DocumentsStepValue {
+interface DocumentsAndSelfieStepValue {
   front: ImageValue;
   back: ImageValue;
   selfie: ImageValue;
@@ -93,7 +93,7 @@ interface DocumentsStepValue {
 }
 
 type DefaultSideProps = Pick<
-  FormStepComponentProps<DocumentsStepValue>,
+  FormStepComponentProps<DocumentsAndSelfieStepValue>,
   'registerField' | 'onChange' | 'errors' | 'onError'
 >;
 
@@ -103,7 +103,7 @@ export function DocumentsAndSelfieStep({
   errors = [],
   onError = () => {},
   registerField = () => undefined,
-}: FormStepComponentProps<DocumentsStepValue>) {
+}: FormStepComponentProps<DocumentsAndSelfieStepValue>) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
