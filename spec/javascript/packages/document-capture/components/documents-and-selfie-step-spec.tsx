@@ -16,14 +16,15 @@ import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/documents-and-selfie-step', () => {
   it('renders with only front and back inputs by default', () => {
-    const useless_function_forced_by_typescript = () => {};
     const { getByLabelText, queryByLabelText } = render(
       <DocumentsAndSelfieStep
-        value = { foo: 'bar' }
-        onChange = {}
-        errors = {}
-        onError = {}
-        registerField = {} />
+        value = { {} }
+        onChange = { () => undefined }
+        errors = { [] }
+        onError = { () => undefined }
+        registerField = { () => undefined }
+        unknownFieldErrors = { [] }
+        toPreviousStep = { () => undefined } />
     );
 
     const front = getByLabelText('doc_auth.headings.document_capture_front');
@@ -41,8 +42,16 @@ describe('document-capture/components/documents-and-selfie-step', () => {
       <FailedCaptureAttemptsContextProvider
         maxCaptureAttemptsBeforeNativeCamera={3}
         maxSubmissionAttemptsBeforeNativeCamera={3}
+        failedFingerprints={{front: [], back: []}}
       >
-        <DocumentsAndSelfieStep onChange={onChange} />,
+        <DocumentsAndSelfieStep
+          value={{}}
+          onChange={onChange}
+          errors={[]}
+          onError={ () => undefined }
+          registerField={()=>undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={()=>undefined} />,
       </FailedCaptureAttemptsContextProvider>,
     );
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
@@ -60,13 +69,29 @@ describe('document-capture/components/documents-and-selfie-step', () => {
   it('renders device-specific instructions', () => {
     let { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <DocumentsAndSelfieStep />
+        <DocumentsAndSelfieStep
+          value = { {} }
+          onChange = { () => undefined }
+          errors = { [] }
+          onError = { () => undefined }
+          registerField = { () => undefined }
+          unknownFieldErrors = { [] }
+          toPreviousStep = { () => undefined } />
       </DeviceContext.Provider>,
     );
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).to.throw();
 
-    getByText = render(<DocumentsAndSelfieStep />).getByText;
+    getByText = render(
+      <DocumentsAndSelfieStep
+        value = { {} }
+        onChange = { () => undefined }
+        errors = { [] }
+        onError = { () => undefined }
+        registerField = { () => undefined }
+        unknownFieldErrors = { [] }
+        toPreviousStep = { () => undefined } />
+    ).getByText;
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
   });
@@ -74,8 +99,15 @@ describe('document-capture/components/documents-and-selfie-step', () => {
   it('renders the hybrid flow warning if the flow is hybrid', () => {
     const { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider flowPath="hybrid">
-          <DocumentsAndSelfieStep />
+        <UploadContextProvider flowPath="hybrid" endpoint="unused">
+          <DocumentsAndSelfieStep
+            value = { {} }
+            onChange = { () => undefined }
+            errors = { [] }
+            onError = { () => undefined }
+            registerField = { () => undefined }
+            unknownFieldErrors = { [] }
+            toPreviousStep = { () => undefined } />
         </UploadContextProvider>
       </DeviceContext.Provider>,
     );
@@ -87,8 +119,15 @@ describe('document-capture/components/documents-and-selfie-step', () => {
   it('does not render the hybrid flow warning if the flow is standard (default)', () => {
     const { queryByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider flowPath="standard">
-          <DocumentsAndSelfieStep />
+        <UploadContextProvider flowPath="standard" endpoint="unused">
+          <DocumentsAndSelfieStep
+            value = { {} }
+            onChange = { () => undefined }
+            errors = { [] }
+            onError = { () => undefined }
+            registerField = { () => undefined }
+            unknownFieldErrors = { [] }
+            toPreviousStep = { () => undefined } />
         </UploadContextProvider>
       </DeviceContext.Provider>,
     );
