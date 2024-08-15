@@ -100,11 +100,6 @@ RSpec.describe AttributeAsserter do
           it 'gets UUID from Service Provider' do
             expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
           end
-
-          it 'gets the user\'s last sign in email' do
-            expect(get_asserted_attribute(user, :email)).
-              to eq EmailContext.new(user).last_sign_in_email_address.email
-          end
         end
 
         context 'custom bundle includes dob' do
@@ -721,6 +716,39 @@ RSpec.describe AttributeAsserter do
       end
 
       it_behaves_like 'unverified user'
+    end
+
+    context 'with a deleted email' do
+      let(:subject) do
+        described_class.new(
+          user: user,
+          name_id_format: name_id_format,
+          service_provider: service_provider,
+          authn_request: ial2_authn_request,
+          decrypted_pii: decrypted_pii,
+          user_session: user_session,
+        )
+      end
+      before do
+        user.identities << identity
+        allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+          and_return(%w[email phone first_name])
+        create(:email_address, user:, email: 'email@example.com')
+
+        ident = user.identities.last
+        ident.email_address_id = user.email_addresses.first.id
+        ident.save
+        subject.build
+
+        user.email_addresses.first.delete
+
+        subject.build
+      end
+
+      it 'defers to user alternate email' do
+        expect(get_asserted_attribute(user, :email)).
+          to eq 'email@example.com'
+      end
     end
   end
 
